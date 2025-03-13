@@ -9,7 +9,8 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  users = require("./users");
 
 module.exports = (function () {
   const API = {
@@ -23,21 +24,22 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    // todo forbiddenFiles txt
-    // app.use(forbiddenFiles);
     app.use("/_api2/*", [cors(_corsCheck)]);
-    // app.options("/_api2/*", cors());
 
     app.get(
       "/_api2/_networkInfos",
       _generalPasswordCheck,
       _getLocalNetworkInfos
     );
-    app.get("/_api2/_authCheck", _checkGeneralPasswordAndToken);
+    app.get("/_api2/_authCheck", _checkGeneralPassword);
+    app.get("/_api2/_tokenCheck", _checkToken);
 
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
-    app.post("/_api2/_restart", _onlyAdmins, _restart);
+    app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+
+    app.get("/_api2/_users", _getAllUsers);
+    app.patch("/_api2/_users/:id", _updateUser);
 
     /* PUBLIC FILES */
     app.get(
@@ -77,7 +79,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_optimize",
       ],
       _generalPasswordCheck,
-      _restrictToLocalAdmins,
+      _restrictToContributors,
       _exportToParent
     );
     app.patch(
@@ -90,8 +92,19 @@ module.exports = (function () {
       _restrictToContributors,
       _updateFile
     );
+    app.patch(
+      [
+        "/_api2/:folder_type/:folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename/_regenerateThumbs",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_regenerateThumbs",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _regenerateThumbs
+    );
     app.delete(
       [
+        "/_api2/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:meta_filename",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename",
@@ -119,6 +132,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolders
     );
     app.post(
@@ -208,6 +222,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug",
       ],
       _generalPasswordCheck,
+      _restrictIfPrivate,
       _getFolder
     );
 
@@ -233,13 +248,14 @@ module.exports = (function () {
       _removeFolder
     );
 
+    app.get("/site.webmanifest", _loadManifest);
+    app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
     console.log();
     dev.logapi({ path: req.path }, { params: req.params });
-
     // TODO check origin
     callback(null, { origin: true });
   }
@@ -280,16 +296,13 @@ module.exports = (function () {
     }
   }
 
-  async function _checkGeneralPasswordAndToken(req, res, next) {
+  async function _checkGeneralPassword(req, res, next) {
     dev.logapi();
-
-    let response = {};
-    try {
-      await _generalPasswordCheck(req);
-      response.general_password_is_valid = true;
-    } catch (err) {
-      response.general_password_is_wrong = err.code;
-    }
+    await _generalPasswordCheck(req, res);
+    return res.status(200).send();
+  }
+  async function _checkToken(req, res, next) {
+    dev.logapi();
 
     try {
       const { token, token_path } = JSON.parse(req.headers.authorization);
@@ -299,12 +312,10 @@ module.exports = (function () {
         throw err;
       }
       auth.checkTokenValidity({ token, token_path });
-      response.token_is_valid = true;
     } catch (err) {
-      response.token_is_wrong = err.code;
+      return res.status(401).send({ code: err.code });
     }
-
-    return res.json(response);
+    return res.status(200).send();
   }
 
   async function _canContributeToFolder({ path_to_type, path_to_folder, req }) {
@@ -322,8 +333,7 @@ module.exports = (function () {
     )
       return "Folder opened to any contributors or admins";
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === path_to_folder) return "Token editing self";
       if (
@@ -374,10 +384,10 @@ module.exports = (function () {
       else return false;
     }
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
-      if (token_path === path_to_folder) return "Token editing self";
+      if (token_path === utils.convertToSlashPath(path_to_folder))
+        return "Token editing self";
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return "Token is instance admin";
       if (
@@ -415,8 +425,8 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
-      if (res) return res.status(401).send({ code: "not_allowed" });
+      dev.error(`not allowed to contribute to folder ${path_to_folder}`);
+      if (res) return res.status(403).send({ code: "not_allowed" });
       return false;
     }
   }
@@ -433,15 +443,42 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.log("not allowed to contribute");
+      dev.error(`not allowed to admin folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
+    }
+  }
+  async function _restrictIfPrivate(req, res, next) {
+    const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const folder_is_private = await auth.isFolderPrivate({ path_to_folder });
+      if (!folder_is_private) {
+        dev.log("Folder is not private, can be listed without restrictions");
+        return next();
+      } else dev.log("Folder is private");
+
+      const allowed = await _canContributeToFolder({
+        path_to_type,
+        path_to_folder,
+        req,
+      });
+      if (allowed) {
+        dev.log("User allowed to open private folder");
+        return next();
+      } else {
+        dev.error("User NOT allowed to open private");
+        return res.status(401).send({ code: "folder_private" });
+      }
+    } catch (err) {
+      return res.status(404).send({ code: "not_found" });
     }
   }
   async function _onlyAdmins(req, res, next) {
     dev.logapi();
 
     try {
-      const token_path = auth.extrackAndCheckToken({ req });
+      const token_path = auth.extractAndCheckToken({ req });
 
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return next ? next() : undefined;
@@ -461,6 +498,7 @@ module.exports = (function () {
     let d = {};
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
+    d.is_livereload = dev.isLivereload();
 
     // get instance name
     // get logo/favicon
@@ -477,15 +515,17 @@ module.exports = (function () {
       general_password,
       signup_password,
       require_signup_to_contribute,
+      users_must_accept_terms_to_signup,
+      terms_in_footer,
+      confidentiality_in_footer,
       require_mail_to_signup,
       enable_events,
+      enable_indexing,
       $admins,
       $contributors,
-
       favicon_image_name,
       topbar_image_name,
       hero_image_name,
-      $files = [],
     } = await settings
       .get()
       .catch((err) => dev.error("Error while getting settings", err));
@@ -503,11 +543,21 @@ module.exports = (function () {
       : "";
     d.require_signup_to_contribute = require_signup_to_contribute === true;
     d.require_mail_to_signup = require_mail_to_signup === true;
+    d.users_must_accept_terms_to_signup =
+      users_must_accept_terms_to_signup === true;
+    d.terms_in_footer = terms_in_footer === true;
+    d.confidentiality_in_footer = confidentiality_in_footer === true;
     d.enable_events = enable_events === true;
+    d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
 
+    const $files = await settings
+      .getFiles()
+      .catch((err) => dev.error("Error while getting settings", err));
+
     const findMatchingFileThumb = ({ meta_name, resolution }) => {
+      if (!meta_name) return false;
       const matching_file = $files.find(
         (f) => utils.getFilename(f.$path) === meta_name
       );
@@ -520,26 +570,45 @@ module.exports = (function () {
       meta_name: favicon_image_name,
       resolution: 640,
     });
-    if (favicon_thumb) d.favicon_url = `/thumbs/${favicon_thumb}`;
+    if (favicon_thumb) d.favicon_url = `./thumbs/${favicon_thumb}`;
 
     const topbar_thumb = findMatchingFileThumb({
       meta_name: topbar_image_name,
       resolution: 320,
     });
-    if (topbar_thumb) d.topbar_thumb = `/thumbs/${topbar_thumb}`;
+    if (topbar_thumb) d.topbar_thumb = `./thumbs/${topbar_thumb}`;
 
     const hero_thumb = findMatchingFileThumb({
       meta_name: hero_image_name,
       resolution: 2000,
     });
-    if (hero_thumb) d.hero_thumb = `/thumbs/${hero_thumb}`;
+    if (hero_thumb) d.hero_thumb = `./thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
     d.custom_suggested_categories = (await _loadCustomCategories()) || {};
 
-    res.render("index2", d);
+    res.render("index", d);
   }
-  function loadPerf(rea, res) {
+
+  async function _loadManifest(req, res) {
+    const { name_of_instance } = await settings.get();
+    res.type("application/json");
+    res.send({
+      name: name_of_instance || "do•doc",
+      short_name: name_of_instance || "do•doc",
+      theme_color: "#ffffff",
+      background_color: "#ffffff",
+      display: "standalone",
+    });
+  }
+  async function _loadRobots(req, res) {
+    const { enable_indexing } = await settings.get();
+    const disallow = enable_indexing === true ? "" : "/";
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow: ${disallow}`);
+  }
+
+  function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();
     res.render("perf", d);
@@ -584,8 +653,8 @@ module.exports = (function () {
         path_to_folder,
       });
 
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+      notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -602,20 +671,18 @@ module.exports = (function () {
     dev.logapi({ path_to_type });
 
     try {
-      const new_folder_slug = await folder.importFolder({
+      const path_to_new_folder = await folder.importFolder({
         path_to_type,
         req,
       });
-      dev.logpackets(`folder was imported with name ${new_folder_slug}`);
-      res.status(200).json({ new_folder_slug });
-
-      const path_to_folder = path.join(path_to_type, new_folder_slug);
+      dev.logpackets(`folder was imported with path ${path_to_new_folder}`);
       const new_folder_meta = await folder.getFolder({
-        path_to_folder,
+        path_to_folder: path_to_new_folder,
       });
 
-      notifier.emit("folderCreated", path_to_type, {
-        path: path_to_type,
+      res.status(200).json({ new_folder_meta });
+      notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -633,12 +700,12 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     const detailed = req.query?.detailed === "true";
+    const no_files = req.query?.no_files === "true";
     const hrstart = process.hrtime();
 
     try {
       let d = await folder.getFolder({ path_to_folder, detailed });
-      const files = await file.getFiles({ path_to_folder });
-      d.$files = files;
+      if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
       let hrend = process.hrtime(hrstart);
       dev.performance(
@@ -650,7 +717,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get folder: " + message);
       res.status(404).send({
         code,
         err_infos,
@@ -666,11 +733,14 @@ module.exports = (function () {
     try {
       let d = await folder.getFolder({ path_to_folder });
 
-      // make sure $public === true
-      if (d.$public !== true) {
-        const err = new Error("Folder is not public");
-        err.code = "folder_not_public";
-        throw err;
+      const { general_password } = await settings.get();
+      if (d.$public !== true && general_password) {
+        // only allow queries with superadmintoken
+        if (!auth.checkSuperadminToken(req.query?.superadmintoken)) {
+          const err = new Error("Folder is not public");
+          err.code = "folder_not_public";
+          throw err;
+        }
       }
 
       const files = await file.getFiles({ path_to_folder, embed_source: true });
@@ -682,7 +752,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get public folder: " + message);
       res.status(404).send({
         code,
         err_infos,
@@ -710,13 +780,13 @@ module.exports = (function () {
       res.status(200).json({ status: "ok" });
 
       // TODO if $password is updated successfully, then revoke all tokens except current
-      notifier.emit("folderUpdated", path_to_folder, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
       if (path_to_type)
-        notifier.emit("folderUpdated", path_to_type, {
-          path: path_to_folder,
+        notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+          path: utils.convertToSlashPath(path_to_folder),
           changed_data,
         });
     } catch (err) {
@@ -795,8 +865,12 @@ module.exports = (function () {
 
       await auth.removeAllTokensForFolder({ token_path: path_to_folder });
 
-      notifier.emit("folderRemoved", path_to_folder, { path: path_to_folder });
-      notifier.emit("folderRemoved", path_to_type, { path: path_to_folder });
+      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
+      });
+      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
+      });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remove content: " + message);
@@ -812,21 +886,23 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const meta_filename = await file.importFile({
+      const { meta: saved_meta, meta_filename } = await file.importFile({
         path_to_folder,
         req,
       });
       dev.logpackets({
         status: `uploaded file`,
         path_to_folder,
-        meta_filename,
+        saved_meta,
       });
-      res.status(200).json({ meta_filename });
-
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
-      notifier.emit("fileCreated", path_to_folder, { path_to_folder, meta });
+      res.status(200).json({ saved_meta, meta_filename });
+      notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        meta,
+      });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to upload file: " + message);
@@ -847,6 +923,9 @@ module.exports = (function () {
     const folder_to_export_to = meta_filename
       ? path_to_folder
       : path_to_parent_folder;
+
+    // add res to data so res becomes available to Exporter to generate HTML
+    data.express_res = res;
 
     // DISPATCH TASKS
     const task = new Exporter({
@@ -877,10 +956,14 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: exported_path_to_meta,
       });
-      notifier.emit("fileCreated", folder_to_export_to, {
-        path_to_folder: folder_to_export_to,
-        meta,
-      });
+      notifier.emit(
+        "fileCreated",
+        utils.convertToSlashPath(folder_to_export_to),
+        {
+          path_to_folder: utils.convertToSlashPath(folder_to_export_to),
+          meta,
+        }
+      );
     } catch (err) {
       dev.error("Failed to export file: " + err);
       notifier.emit("taskEnded", task_id, {
@@ -934,10 +1017,14 @@ module.exports = (function () {
         path_to_folder: copy_folder_path,
       });
 
-      notifier.emit("folderCreated", path_to_destination_type, {
-        path: path_to_destination_type,
-        meta: new_folder_meta,
-      });
+      notifier.emit(
+        "folderCreated",
+        utils.convertToSlashPath(path_to_destination_type),
+        {
+          path: utils.convertToSlashPath(path_to_destination_type),
+          meta: new_folder_meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
@@ -1041,10 +1128,14 @@ module.exports = (function () {
         path_to_folder: remix_folder_path,
       });
 
-      notifier.emit("folderCreated", path_to_destination_type, {
-        path: path_to_destination_type,
-        meta: new_folder_meta,
-      });
+      notifier.emit(
+        "folderCreated",
+        utils.convertToSlashPath(path_to_destination_type),
+        {
+          path: utils.convertToSlashPath(path_to_destination_type),
+          meta: new_folder_meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remix folder: " + message);
@@ -1077,13 +1168,14 @@ module.exports = (function () {
       data,
     });
 
-    notifier.emit("folderUpdated", path_to_folder, {
-      path: path_to_folder,
+    notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
       changed_data,
     });
+
     if (path_to_type)
-      notifier.emit("folderUpdated", path_to_type, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
   }
@@ -1112,12 +1204,12 @@ module.exports = (function () {
         update_cover_req: true,
       });
 
-      notifier.emit("folderUpdated", path_to_folder, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
-      notifier.emit("folderUpdated", path_to_type, {
-        path: path_to_folder,
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
     } catch (err) {
@@ -1141,12 +1233,10 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta,
       });
-      const file_archives = await file
-        .getArchives({
-          path_to_folder,
-          meta_filename,
-        })
-        .catch(() => {});
+      const file_archives = await file.getArchives({
+        path_to_folder,
+        meta_filename,
+      });
       if (file_archives) meta.$archives = file_archives;
 
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -1175,9 +1265,9 @@ module.exports = (function () {
       dev.logpackets({ status: "file was updated" });
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileUpdated", path_to_folder, {
-        path_to_folder,
-        path_to_meta,
+      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
         changed_data,
       });
     } catch (err) {
@@ -1190,22 +1280,53 @@ module.exports = (function () {
     }
   }
 
-  async function _removeFile(req, res, next) {
-    const { path_to_folder, meta_filename, path_to_meta } =
+  async function _regenerateThumbs(req, res, next) {
+    const { path_to_folder, path_to_meta, meta_filename } =
       utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_meta, meta_filename });
+
+    try {
+      const changed_data = await file._regenerateThumbs({
+        path_to_folder,
+        path_to_meta,
+        meta_filename,
+      });
+      res.status(200).json({ status: "ok" });
+      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
+        changed_data,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to regenerate thumbs: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
+  async function _removeFile(req, res, next) {
+    const {
+      path_to_folder = "",
+      meta_filename,
+      path_to_meta,
+    } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, meta_filename });
 
     try {
       await file.removeFile({
         path_to_folder,
         meta_filename,
+        path_to_meta,
       });
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileRemoved", path_to_folder, {
-        path_to_folder,
-        path_to_meta,
+      notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
       });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -1259,10 +1380,14 @@ module.exports = (function () {
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_destination_folder, copy_meta_filename),
       });
-      notifier.emit("fileCreated", path_to_destination_folder, {
-        path_to_folder: path_to_destination_folder,
-        meta,
-      });
+      notifier.emit(
+        "fileCreated",
+        utils.convertToSlashPath(path_to_destination_folder),
+        {
+          path_to_folder: utils.convertToSlashPath(path_to_destination_folder),
+          meta,
+        }
+      );
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy folder: " + message);
@@ -1287,11 +1412,9 @@ module.exports = (function () {
     });
   }
 
-  async function _checkAuth(req, res, next) {}
-  async function _restart(req, res, next) {
-    notifier.emit("restart");
+  async function _restartApp(req, res, next) {
+    notifier.emit("restartApp");
   }
-
   async function _getStoragePath(req, res, next) {
     res.json({ pathToUserContent: global.pathToUserContent });
   }
@@ -1300,6 +1423,19 @@ module.exports = (function () {
     const new_path = data.new_path;
     settings.updatePath({ new_path });
     res.status(200).json({ status: "ok" });
+  }
+
+  async function _getAllUsers(req, res, next) {
+    const all_users = users.getAllUsers();
+    res.json(all_users);
+  }
+  async function _updateUser(req, res, next) {
+    const id = req.params.id;
+    const { path } = req.body;
+    const user = users.updateUser(id, { path });
+    if (!user) return res.status(404).json({ status: "user not found" });
+    res.json(user);
+    notifier.emit("userUpdated", { id, changed_data: { path } });
   }
 
   async function _loadCustomFonts() {

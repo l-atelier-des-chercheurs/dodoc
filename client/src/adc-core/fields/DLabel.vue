@@ -1,6 +1,6 @@
 <template>
   <div class="_dLabel">
-    <div class="_labelLine" @click="toggleInstructions">
+    <div class="_labelLine" @click.stop="toggleInstructions">
       <component
         :is="tag"
         :class="tag === 'label' ? 'u-label' : ''"
@@ -24,7 +24,7 @@
         </button>
       </template>
     </div>
-    <div class="u-instructions _instr" v-if="show_instructions">
+    <div class="u-instructions _instr" v-if="show_instructions && instructions">
       <small v-html="instructions" />
     </div>
   </div>
@@ -83,9 +83,9 @@ export default {
 ._icon {
   font-size: var(--sl-font-size-x-small);
   padding: 0;
-  padding-left: calc(var(--spacing) / 4);
+  margin-left: calc(var(--spacing) / 4);
 }
 ._instr {
-  margin-bottom: calc(var(--spacing) / 2);
+  // margin-bottom: calc(var(--spacing) / 2);
 }
 </style>

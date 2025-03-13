@@ -2,10 +2,16 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+import "./utils/icons";
+
 Vue.config.productionTip = false;
+
+const publicPath = "/_client/";
 
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
+
+import "@/utils/utils.scss";
 
 import {
   i18n,
@@ -15,22 +21,6 @@ import {
 
 import alertify from "alertify.js";
 Vue.prototype.$alertify = alertify;
-
-Vue.config.ignoredElements = [/sl-/];
-// todo : replace shoelace components
-/*
-  sl-spinner
-  sl-icon
-  sl-icon-button
-  sl-tab
-  sl-tab-group
-  sl-tab-panel
-*/
-import { IconsPlugin } from "bootstrap-vue";
-Vue.use(IconsPlugin);
-// import { BootstrapVueIcons } from "bootstrap-vue";
-// import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
-// Vue.use(BootstrapVueIcons);
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
@@ -47,7 +37,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+    iconUrl: publicPath + `plyr.svg`,
   },
 });
 Vue.directive("uppercase", {
@@ -61,15 +51,17 @@ Vue.directive("uppercase", {
 
 if (window.app_infos.is_electron)
   document.body.addEventListener("click", (event) => {
-    event.path.every((item) => {
-      if (item.tagName === "A" && item.target === "_blank" && !item.download) {
-        event.preventDefault();
-        window.electronAPI.send("toMain", {
-          type: "open_external",
-          url: item.href,
-        });
-      }
-    });
+    if (
+      event.target.tagName === "A" &&
+      event.target.target === "_blank" &&
+      !event.target.download
+    ) {
+      event.preventDefault();
+      window.electronAPI.send("toMain", {
+        type: "open_external",
+        url: event.target.href,
+      });
+    }
   });
 
 import api from "@/adc-core/api.js";
@@ -77,8 +69,6 @@ Vue.prototype.$api = api();
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
-import MarkdownField from "@/adc-core/fields/MarkdownField.vue";
-Vue.component("MarkdownField", MarkdownField);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
@@ -125,6 +115,8 @@ import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
 import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
 Vue.component("ReorderedList", ReorderedList);
+import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
+Vue.component("CustomResolutionInput", CustomResolutionInput);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
@@ -142,6 +134,8 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import NumberInput from "@/adc-core/inputs/NumberInput.vue";
 Vue.component("NumberInput", NumberInput);
+import PositionPicker from "@/adc-core/inputs/PositionPicker.vue";
+Vue.component("PositionPicker", PositionPicker);
 import ColorInput from "@/adc-core/inputs/ColorInput.vue";
 Vue.component("ColorInput", ColorInput);
 import SearchInput from "@/adc-core/inputs/SearchInput.vue";
@@ -155,9 +149,9 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
-import CreateFolder from "@/adc-core/modals/CreateFolder";
+import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 Vue.component("CreateFolder", CreateFolder);
-import ImportFolder from "@/adc-core/modals/ImportFolder";
+import ImportFolder from "@/adc-core/modals/ImportFolder.vue";
 Vue.component("ImportFolder", ImportFolder);
 //
 
@@ -171,8 +165,6 @@ import ResolutionDisplay from "@/adc-core/fields/ResolutionDisplay.vue";
 Vue.component("ResolutionDisplay", ResolutionDisplay);
 import DurationDisplay from "@/adc-core/fields/DurationDisplay.vue";
 Vue.component("DurationDisplay", DurationDisplay);
-import ShowOnMap from "@/adc-core/fields/ShowOnMap.vue";
-Vue.component("ShowOnMap", ShowOnMap);
 
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
@@ -184,14 +176,20 @@ import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
+import CollaborativeEditor3 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue";
+Vue.component("CollaborativeEditor3", CollaborativeEditor3);
+import TableEditor from "@/adc-core/fields/TableEditor.vue";
+Vue.component("TableEditor", TableEditor);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
 Vue.component("AuthorTag", AuthorTag);
 import DLabel from "@/adc-core/fields/DLabel.vue";
 Vue.component("DLabel", DLabel);
 import DownloadFile from "@/adc-core/fields/DownloadFile.vue";
 Vue.component("DownloadFile", DownloadFile);
-import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
-Vue.component("OptimizeMedia", OptimizeMedia);
+import ShareFile from "@/adc-core/fields/ShareFile.vue";
+Vue.component("ShareFile", ShareFile);
+import EmbedFile from "@/adc-core/fields/EmbedFile.vue";
+Vue.component("EmbedFile", EmbedFile);
 import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
 Vue.component("ImageSelect", ImageSelect);
 // import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
@@ -200,14 +198,15 @@ Vue.component("ImageSelect", ImageSelect);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
 
-Vue.component("LoaderSpinner", {
-  name: "LoaderSpinner",
-  template: `
-  <div class="u-loader">
-    <sl-spinner style="font-size: 2rem; --track-width: 5px; --indicator-color: currentColor" />
-  </div>
-  `,
-});
+import { compileToFunctions } from "vue-template-compiler";
+Vue.component(
+  "LoaderSpinner",
+  compileToFunctions(`
+    <div class="u-loader">
+      <div class="_spinner" />
+    </div>
+  `)
+);
 
 document.addEventListener(
   "dragover",
@@ -252,6 +251,8 @@ import Tags from "@/mixins/Tags";
 Vue.mixin(Tags);
 import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
+import DodocIcon from "@/mixins/DodocIcon";
+Vue.mixin(DodocIcon);
 
 import Stacks from "@/mixins/Stacks";
 Vue.mixin(Stacks);
@@ -290,10 +291,10 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: process.env.BASE_URL,
+    publicPath,
 
-    modal_is_opened: false,
     has_file_dragover_on_window: false,
+    opened_modals: 0,
 
     current_time: "",
 
@@ -301,6 +302,11 @@ new Vue({
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+    mobile_breakpoint: parseInt(
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--mobile-breakpoint")
+    ),
 
     dropzones: [],
 
@@ -335,18 +341,23 @@ new Vue({
   watch: {},
   computed: {
     is_mobile_view() {
-      // return false;
-      return this.window.innerWidth < 600;
+      return this.window.innerWidth < this.mobile_breakpoint;
+    },
+    is_touch_device() {
+      return window.matchMedia("(pointer: coarse)").matches;
+    },
+    modal_is_opened() {
+      return this.opened_modals > 0;
     },
   },
   methods: {
     modalIsOpened() {
-      document.body.style.overflow = "hidden";
-      this.modal_is_opened = true;
+      this.opened_modals++;
+      if (this.opened_modals === 1) document.body.style.overflow = "hidden";
     },
     modalIsClosed() {
-      document.body.style.overflow = "";
-      this.modal_is_opened = false;
+      this.opened_modals--;
+      if (this.opened_modals === 0) document.body.style.overflow = "";
     },
     async changeLocale(lang) {
       await changeLocale(lang);

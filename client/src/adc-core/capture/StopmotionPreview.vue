@@ -15,7 +15,7 @@
         >
           {{ $t("open") }}
         </button>
-        <RemoveMenu :remove_text="$t('remove')" @remove="$emit('remove')" />
+        <RemoveMenu @remove="$emit('remove')" />
       </div>
     </div>
 
@@ -61,16 +61,14 @@ export default {
   computed: {
     images() {
       if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
-        const medias = this.stopmotion.images_list.reduce(
-          (acc, meta_filename) => {
-            const m = this.stopmotion.$files.find((f) =>
-              f.$path.endsWith(meta_filename)
-            );
-            if (m) acc.push(m);
-            return acc;
-          },
-          []
-        );
+        const medias = this.stopmotion.images_list.reduce((acc, item) => {
+          const meta = item.m || item;
+          const m = this.stopmotion.$files.find((f) =>
+            f.$path.endsWith("/" + meta)
+          );
+          if (m && !acc.find((m2) => m2.$path === m.$path)) acc.push(m);
+          return acc;
+        }, []);
         return medias;
       }
       return [];

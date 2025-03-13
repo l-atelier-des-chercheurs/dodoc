@@ -1,19 +1,10 @@
 <template>
   <div class="_saveCancelBtns">
-    <button
-      :size="pill_size"
-      variant="default"
-      pill
-      class="u-button u-button_white"
-      @click="$emit('cancel')"
-    >
+    <button class="u-button" @click="$emit('cancel')">
       <b-icon icon="x-circle" />
-      {{ $t("back") }}
+      {{ cancel_text ? cancel_text : $t("cancel") }}
     </button>
     <button
-      :size="pill_size"
-      variant="success"
-      pill
       class="u-button u-button_bleuvert"
       :loading="is_saving"
       :disabled="!allow_save"
@@ -28,14 +19,11 @@
 export default {
   props: {
     save_text: String,
+    cancel_text: String,
     is_saving: Boolean,
     autofocus_save: {
       type: Boolean,
       default: false,
-    },
-    pill_size: {
-      type: String,
-      default: "small",
     },
     allow_save: {
       type: Boolean,
@@ -59,6 +47,9 @@ export default {
 <style lang="scss" scoped>
 ._saveCancelBtns {
   display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 4);
+  flex-grow: 1;
 }
 </style>

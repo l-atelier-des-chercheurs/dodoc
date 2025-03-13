@@ -24,6 +24,33 @@
           />
         </div> -->
         <!-- <template v-if="publication.template === 'page_by_page'">
+      <div v-else-if="fetch_publication_error">
+        {{ fetch_publication_error }}
+      </div>
+      <div v-else-if="publication" key="publication" ref="fsContainer">
+        <template v-if="!is_serversidepreview && !is_fullscreen">
+          <transition name="pagechange" mode="out-in">
+            <div class="_pubTopbar" v-if="show_topbar">
+              <PublicationTopbar
+                :publication="publication"
+                :no_back_button="true"
+                :can_edit="false"
+              />
+            </div>
+          </transition>
+          <div class="_toggleTopbar">
+            <button
+              type="button"
+              class="u-button u-button_small u-button_icon"
+              @click="show_topbar = !show_topbar"
+            >
+              <b-icon icon="chevron-up" :rotate="show_topbar ? 0 : 180" />
+            </button>
+          </div>
+        </template>
+
+        <template v-if="publication.template === 'page_by_page'">
+
           <PageSlides
             :publication="publication"
             :is_serversidepreview="is_serversidepreview"
@@ -43,6 +70,10 @@
         <!-- <div v-else-if="publication.template === 'cartography'">
           <MapForPrint :publication="publication" />
         </div> -->
+        <!-- </div>
+        <div v-else-if="publication.template === 'edition'">
+          <EditionExport :publication="publication" />
+        </div> -->
       </div>
     </transition>
   </div>
@@ -51,7 +82,7 @@
 <script>
 import screenfull from "screenfull";
 
-// import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 
 export default {
   props: {},
@@ -65,11 +96,24 @@ export default {
       import("@/components/publications/story/SectionWithPrint.vue"),
     // MapForPrint: () =>
     //   import("@/components/publications/cartography/MapForPrint.vue"),
+    // PublicationTopbar,
+    // PageSlides: () =>
+    //   import("@/components/publications/page_by_page/PageSlides.vue"),
+    // StoryTemplate: () =>
+    //   import("@/components/publications/templates/StoryTemplate.vue"),
+    SectionWithPrint: () =>
+      import("@/components/publications/story/SectionWithPrint.vue"),
+    // MapForPrint: () =>
+    //   import("@/components/publications/cartography/MapForPrint.vue"),
+    // EditionExport: () =>
+    //   import("@/components/publications/edition/EditionExport.vue"),
   },
   data() {
     return {
       project: null,
       publication: null,
+      fetch_publication_error: undefined,
+      show_topbar: false,
 
       is_fullscreen: false,
       is_serversidepreview: false,
@@ -82,14 +126,21 @@ export default {
     if (this.$route.query?.make_preview === "true")
       this.is_serversidepreview = true;
 
-    this.publication = await this.$api
-      .getPublicFolder({
-        path: this.publication_path,
-      })
-      .catch((err) => {
-        this.fetch_publication_error = err.response;
-        this.$root.is_loading = false;
-      });
+    let superadmintoken = undefined;
+    if (this.$route.query?.superadmintoken)
+      superadmintoken = this.$route.query.superadmintoken;
+
+    if (window.app_infos.page_is_standalone_html) {
+      this.publication = window.folder_data;
+    } else
+      this.publication = await this.$api
+        .getPublicFolder({
+          path: this.publication_path,
+          superadmintoken,
+        })
+        .catch((err) => {
+          this.fetch_publication_error = err.code;
+        });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
@@ -120,7 +171,10 @@ export default {
     },
     set_print_margins() {
       let margins = 15;
-      if (this.publication && this.publication.template === "page_by_page")
+      if (
+        this.publication &&
+        ["page_by_page", "edition"].includes(this.publication.template)
+      )
         margins = 0;
       return `
       @page {
@@ -159,21 +213,34 @@ export default {
 }
 html,
 body {
+  background: white !important;
   @media print {
-    background: white !important;
+    // background: white !important;
   }
 }
 ._storyTemplate {
   padding: calc(var(--spacing) / 1);
 }
 
-._pubTopbar ._topbar {
-  margin: var(--spacing) auto;
+._pubTopbar {
+  // margin: 0 auto;
+  // max-width: 86ch;
+
+  @media print {
+    display: none;
+  }
 }
 
-._pubTopbar {
-  margin: 0 auto;
-  max-width: 86ch;
+._toggleTopbar {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  pointer-events: none;
+
+  button {
+    pointer-events: auto;
+  }
 
   @media print {
     display: none;

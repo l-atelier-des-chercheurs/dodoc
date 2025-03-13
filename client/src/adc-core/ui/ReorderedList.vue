@@ -1,25 +1,17 @@
 <template>
   <div>
-    <SlickList
-      class="_reorderedList"
-      axis="x"
-      :value="local_items"
-      :useDragHandle="true"
-      @input="updateOrder($event)"
-    >
-      <SlickItem
+    <div class="_reorderedList">
+      <div
         v-for="(item, index) of local_items"
         :key="item.$path"
         :index="index"
         class="_reorderedList--item"
       >
-        <span v-handle class="_dragHandle" v-if="can_edit && change_order" />
         <button
           type="button"
           class="u-linkList"
           :class="{
             'is--active': isActive(item.$path),
-            'is--redorderable': change_order,
           }"
           @click="
             !isActive(item.$path) ? $emit('openItem', item.$path) : undefined
@@ -29,47 +21,69 @@
             <slot :item="item" :index="index" />
           </span>
         </button>
-      </SlickItem>
-      &nbsp;
-      <div class="_reorderedList--item">
-        <EditBtn
-          v-if="can_edit"
-          :btn_type="'add'"
-          :label_position="'left'"
-          @click="$emit('createItem')"
-        />
       </div>
-      &nbsp;
-      <div
-        class="_reorderedList--item _changeOrderBtn"
-        v-if="can_edit && local_items.length > 1"
-      >
+      <template v-if="can_edit">
+        <EditBtn :btn_type="'add'" @click="$emit('createItem')" />
+        <EditBtn
+          :btn_type="'order'"
+          @click="show_change_order_modal = !show_change_order_modal"
+        />
+      </template>
+    </div>
+
+    <BaseModal2
+      v-if="show_change_order_modal"
+      :title="$t('change_order')"
+      @close="show_change_order_modal = false"
+    >
+      <div>
+        <SlickList
+          class="_reorderableList"
+          axis="y"
+          :value="local_items"
+          :useDragHandle="true"
+          @input="updateOrder($event)"
+        >
+          <SlickItem
+            v-for="(item, index) of local_items"
+            class="_reorderableList--item"
+            :key="item.$path"
+            :index="index"
+          >
+            <button type="button" class="u-button u-button_icon _dragHandle">
+              <b-icon v-handle icon="grip-vertical" :label="$t('move')" />
+            </button>
+            <span>
+              <slot :item="item" :index="index" />
+            </span>
+          </SlickItem>
+        </SlickList>
+        <div></div>
+      </div>
+      <template #footer>
+        <div />
         <button
           type="button"
-          class="u-buttonLink"
-          :class="{
-            'is--active': change_order,
-          }"
-          @click="change_order = !change_order"
+          class="u-button"
+          @click="show_change_order_modal = false"
+          :disabled="save_status === 'saving'"
         >
           <transition name="fade" mode="out-in">
-            <b-icon v-if="!save_status" :key="'none'" icon="arrow-left-right" />
             <b-icon
-              v-else-if="save_status === 'saving'"
-              :key="save_status"
+              v-if="save_status === 'saving'"
+              key="saving"
               icon="stopwatch"
             />
             <b-icon
               v-else-if="save_status === 'saved'"
-              :key="save_status"
+              key="saved"
               icon="check"
             />
           </transition>
-
-          <!-- {{ $t("change_order") }} -->
+          {{ $t("close") }}
         </button>
-      </div>
-    </SlickList>
+      </template>
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -94,8 +108,7 @@ export default {
   data() {
     return {
       local_items: undefined,
-      change_order: false,
-
+      show_change_order_modal: false,
       save_status: undefined,
     };
   },
@@ -151,11 +164,12 @@ export default {
           [this.field_name]: sections_list,
         },
       });
+      await new Promise((r) => setTimeout(r, 150));
+
       this.save_status = "saved";
 
-      setTimeout(() => {
-        this.save_status = undefined;
-      }, 500);
+      await new Promise((r) => setTimeout(r, 1000));
+      this.save_status = undefined;
     },
   },
 };
@@ -165,7 +179,6 @@ export default {
   position: relative;
   display: flex;
   flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 4);
 
   margin: 0 calc(var(--spacing) / -2);
 }
@@ -177,11 +190,22 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  // gap: calc(var(--spacing) / 2);
+  background: white;
+}
 
+._reorderableList {
+  position: relative;
+}
+._reorderableList--item {
+  background: transparent;
+  z-index: 10000;
+  min-height: 2em;
   background: white;
 
-  border-radius: 4px;
+  border: 1px solid var(--c-gris);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 
   &:has(._dragHandle:hover) {
     z-index: 1;
@@ -190,46 +214,9 @@ export default {
   }
 
   // only target item dragged
-  body > & {
-    z-index: 10000;
-
-    ._dragHandle {
-      // background: var(--c-noir);
-      border-color: var(--c-noir);
-      // color: white;
-    }
-  }
-
-  // color: black;
-  // background: blue;
 }
+
 ._dragHandle {
-  position: absolute;
   cursor: grab;
-  padding: calc(var(--spacing) / 4);
-
-  background: transparent;
-  // color: var(--c-noir);
-  // border-radius: 2px;
-
-  // margin-right: -1em;
-  width: 100%;
-  height: 100%;
-  height: 2em;
-
-  border-radius: 1em;
-  border: 2px solid var(--c-gris);
-
-  // background: var(--c-gris_clair);
-
-  &:hover,
-  &:focus-visible {
-    border-color: var(--c-noir);
-    // background: var(--c-noir);
-    // color: white;
-  }
-}
-._changeOrderBtn {
-  // text-align: right;
 }
 </style>

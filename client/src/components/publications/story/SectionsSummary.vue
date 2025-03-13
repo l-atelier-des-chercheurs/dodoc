@@ -1,12 +1,5 @@
 <template>
   <div class="_sectionsSummary" :style="story_styles">
-    <!-- <DetailsPane
-      ref="details"
-      :header="$t('chapters')"
-      :icon="'card-list'"
-      :has_items="sections.length > 0 ? sections.length : false"
-      :is_open_initially="sections.length === 0"
-    > -->
     <ReorderedList
       :field_name="'sections_list'"
       :items="sections"
@@ -24,16 +17,6 @@
         <i>{{ $t("untitled") }}</i>
       </template>
     </ReorderedList>
-
-    <!-- <template v-if="can_edit">
-      <button
-        type="button"
-        class="u-buttonLink _createSection"
-        @click="createSection"
-      >
-        {{ $t("create_section") }}
-      </button>
-    </template> -->
   </div>
 </template>
 <script>
@@ -52,16 +35,6 @@ export default {
   },
   data() {
     return {};
-  },
-  i18n: {
-    messages: {
-      fr: {
-        create_section: "Créer un chapitre",
-      },
-      en: {
-        create_section: "Create chapter",
-      },
-    },
   },
   created() {},
   mounted() {
@@ -108,25 +81,20 @@ export default {
     },
     openFirstSectionIfNoneOpened() {
       if (this.sections.length > 0 && !this.opened_section_meta_filename) {
-        this.openFirstSection();
+        this.$emit("openFirstSection");
       }
-    },
-    openFirstSection() {
-      const section_path = this.sections[0].$path;
-      this.openSection(section_path);
     },
     openExistingSectionIfNotExisting() {
       if (this.opened_section_meta_filename && !this.opened_section) {
-        this.openFirstSection();
+        this.$emit("openFirstSection");
       }
     },
-
     async createSection() {
       const new_section_meta = await this.createSection2({
         publication: this.publication,
-        type: "section",
-        group: "sections_list",
-        title: this.new_section_title,
+        additional_meta: {
+          section_title: this.new_section_title,
+        },
       });
       this.$emit("toggleSection", new_section_meta);
     },
@@ -138,7 +106,7 @@ export default {
   // max-width: 60ch;
   width: 100%;
   margin: 0 auto;
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 1);
   // padding: 0 calc(var(--spacing) * 1);
 
   // ::v-deep summary {

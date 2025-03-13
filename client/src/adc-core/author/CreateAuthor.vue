@@ -46,6 +46,7 @@
             :content.sync="new_author_name"
             :label_str="'name_or_pseudonym'"
             :required="true"
+            :autofocus="true"
             :maxlength="40"
             :autocomplete="'username'"
             @toggleValidity="($event) => (allow_save = $event)"
@@ -67,15 +68,27 @@
 
           <div class="">
             <DLabel :str="$t('pick_portrait')" />
-            <ImageSelect
-              :available_options="['import', 'capture']"
-              :preview_format="'circle'"
-              @newPreview="
-                (value) => {
-                  new_cover = value;
-                }
-              "
-            />
+            <div>
+              <img class="_imgPreview" :src="new_cover_object_url" />
+              <EditBtn
+                :label="!new_cover ? $t('add') : undefined"
+                @click="select_image = true"
+              />
+              <ImageSelect
+                v-if="select_image"
+                :label="$t('pick_portrait')"
+                :ratio="'square'"
+                :preview_format="'circle'"
+                :available_options="['import', 'capture']"
+                @close="select_image = false"
+                @newPreview="
+                  (value) => {
+                    new_cover = value;
+                    select_image = false;
+                  }
+                "
+              />
+            </div>
           </div>
 
           <div class="u-spacingBottom" />
@@ -93,9 +106,36 @@
 
           <div class="u-spacingBottom" />
 
+          <template
+            v-if="
+              $root.app_infos.instance_meta.users_must_accept_terms_to_signup
+            "
+          >
+            <ToggleInput
+              :content.sync="terms_accepted"
+              :label="$t('i_read_and_accept_terms')"
+            />
+
+            <div class="u-instructions">
+              <router-link
+                :to="createURLFromPath('pages/terms')"
+                class="u-buttonLink"
+              >
+                {{ $t("click_here_to_read") }}
+              </router-link>
+            </div>
+
+            <div class="u-spacingBottom" />
+          </template>
+
           <button
             slot="footer"
             :loading="is_creating_author"
+            :disabled="
+              $root.app_infos.instance_meta
+                .users_must_accept_terms_to_signup === true &&
+              terms_accepted === false
+            "
             class="u-button u-button_bleuvert"
             type="submit"
           >
@@ -127,6 +167,8 @@ export default {
       new_author_password: "",
       new_author_cover_raw: undefined,
 
+      select_image: false,
+
       is_creating_author: false,
       error_msg: "",
 
@@ -137,17 +179,8 @@ export default {
       account_created_notice: false,
 
       new_cover: undefined,
+      terms_accepted: false,
     };
-  },
-  i18n: {
-    messages: {
-      fr: {
-        account_created: "Ce compte a été créé",
-      },
-      en: {
-        account_created: "Account created",
-      },
-    },
   },
   created() {
     if (!this.has_signup_password) this.can_create_author = true;
@@ -165,6 +198,10 @@ export default {
     },
     has_signup_password() {
       return !!this.signup_password;
+    },
+    new_cover_object_url() {
+      if (!this.new_cover) return undefined;
+      return URL.createObjectURL(this.new_cover);
     },
   },
   methods: {
@@ -185,9 +222,7 @@ export default {
           },
         });
 
-        this.$alertify
-          .delay(4000)
-          .success(this.$t("notifications.account_created"));
+        this.$alertify.delay(4000).success(this.$t("account_created"));
 
         this.new_author_name = "";
 
@@ -195,9 +230,7 @@ export default {
         if (!this.connected_as) {
           await this.$api.loginToFolder({
             path: "authors/" + author_slug,
-            auth_infos: {
-              $password: this.new_author_password,
-            },
+            password: this.new_author_password,
           });
         } else {
           // otherwise we are instance admins
@@ -222,7 +255,7 @@ export default {
         if (err.code === "unique_field_taken") {
           this.$alertify
             .delay(4000)
-            .error(this.$t("notifications.name_taken") + " : " + err.err_infos);
+            .error(this.$t("name_taken") + " : " + err.err_infos);
           this.$refs.titleInput.$el.querySelector("input").select();
         }
         this.is_creating_space = false;
@@ -237,8 +270,7 @@ export default {
       const hashed_submitted_pw = this.hashCode(this.submitted_signup_password);
       if (hashed_submitted_pw === this.signup_password)
         this.can_create_author = true;
-      else
-        this.$alertify.delay(4000).error("notifications.wrong_signup_password");
+      else this.$alertify.delay(4000).error("wrong_signup_password");
 
       this.is_submitting_signup_password = false;
     },
@@ -263,5 +295,16 @@ export default {
   // padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   // margin: calc(var(--spacing) / 2) 0;
   // border-radius: 4px;
+}
+
+._imgPreview {
+  width: 100%;
+  max-width: 140px;
+  border: 2px solid var(--c-gris);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  object-fit: cover;
+  object-position: center;
 }
 </style>

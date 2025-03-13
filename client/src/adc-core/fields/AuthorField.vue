@@ -14,6 +14,7 @@
           :path="author_path"
           :key="author_path"
           :mode="'link'"
+          :show_image_only="show_image_only"
         />
       </template>
       <div v-else class="t-500" key="noone">
@@ -28,11 +29,13 @@
 
     <div class="_footer" v-if="edit_mode">
       <BaseModal2 @close="cancel" :title="label">
-        <div v-if="instructions" class="u-instructions" :key="'noprojects'">
+        <div
+          v-if="instructions"
+          class="u-instructions u-spacingBottom"
+          :key="'noprojects'"
+        >
           {{ instructions }}
         </div>
-
-        <br />
 
         <RadioCheckboxInput
           :value.sync="radio_mode"
@@ -68,17 +71,17 @@
           />
         </div>
 
-        <br />
+        <div class="u-spacingBottom" />
 
-        <div>
+        <template slot="footer">
+          <div />
           <SaveCancelButtons
-            class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
             @save="updateAuthors"
             @cancel="cancel"
           />
-        </div>
+        </template>
       </BaseModal2>
     </div>
   </div>
@@ -92,7 +95,6 @@ export default {
     },
     field: {
       type: String,
-      required: true,
     },
     authors_paths: {
       type: [Boolean, String, Array],
@@ -108,6 +110,10 @@ export default {
       type: Boolean,
     },
     no_options: {
+      type: Boolean,
+      default: false,
+    },
+    show_image_only: {
       type: Boolean,
       default: false,
     },
@@ -193,7 +199,11 @@ export default {
       ) {
         this.new_authors_paths = "noone";
       } else if (Array.isArray(this.authors_paths)) {
-        this.new_authors_paths = JSON.parse(JSON.stringify(this.authors_paths));
+        this.new_authors_paths = this.authors_paths.reduce((acc, a) => {
+          const author = this.getAuthor(a);
+          if (author) acc.push(author.$path);
+          return acc;
+        }, []);
       }
     },
     enableEditMode() {
@@ -227,6 +237,13 @@ export default {
       if (this.new_authors_paths === "noone") _new_authors_paths = [];
       else _new_authors_paths = this.new_authors_paths;
 
+      this.$emit("save", _new_authors_paths);
+      if (!this.path) {
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
+
       try {
         const new_meta = {
           [this.field]: _new_authors_paths,
@@ -245,7 +262,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
+          .error(this.$t("couldntbesaved"));
         this.$alertify.closeLogOnClick(true).error(e.response.data);
       }
     },

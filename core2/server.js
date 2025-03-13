@@ -5,10 +5,11 @@ var https = require("https");
 var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
-const { Server } = require("socket.io");
+const helmet = require("helmet");
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
+  // cors_for_ressources = require("./cors_for_ressources"),
   serverRTC = require("./serverRTC.js");
 
 module.exports = function () {
@@ -17,6 +18,14 @@ module.exports = function () {
   const app = express();
 
   app.use(compression());
+
+  app.use(
+    helmet({
+      // todo: set correct CSP
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: false,
+    })
+  );
 
   // only for HTTPS, works without asking for a certificate
   const options = {
@@ -51,13 +60,8 @@ module.exports = function () {
       ? https.createServer(options, app)
       : http.createServer(app);
 
-  const io = new Server(server, {
-    cookie: false,
-    serveClient: false,
-  });
-
   dev.logverbose("Starting server 2");
-  sockets.init(io);
+  sockets.init(server);
 
   dev.logverbose("Starting express-settings");
 
@@ -65,21 +69,21 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  // app.use(function (req, res, next) {
-  // if (req.url.includes(".txt")) res.status(403).send(`Access not allowed.`);
-  // else next();
-  // });
+  // prevent access to general admin and folders meta.txt
+  app.use(function (req, res, next) {
+    if (req.url.includes("/meta.txt"))
+      res.status(403).send(`Access not allowed.`);
+    // TODO: allow loading medias from domains that admin has allowed (set to ”domain1”, ”domain2”, ”domain3”, etc., or to "all")
+    // else if (!(cors_for_ressources.allowed(req, res, next)))
+    //   res.status(403).send(`Access not allowed.`);
+    else next();
+  });
 
   app.use(express.static(global.pathToUserContent));
   app.use(
     "/_client",
     express.static(path.join(global.appRoot, "client", "dist"))
   );
-  // not used yet
-  // app.use(
-  //   "/_cache",
-  //   express.static(path.join(global.appRoot, global.settings.cacheDirname))
-  // );
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // To parse the incoming requests with JSON payloads

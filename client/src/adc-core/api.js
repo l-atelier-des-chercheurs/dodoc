@@ -16,6 +16,10 @@ export default function () {
 
       rooms_joined: [],
 
+      is_tracking_users: false,
+      self_user_id: null,
+      users: new Array(),
+
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
 
@@ -27,15 +31,15 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
+        setTimeout(async () => {
+          await this.getAndTrackUsers();
+        }, 10);
       },
       async initSocketio() {
         console.log("initSocketio");
         this.socket = io({
           autoConnect: false,
         });
-
-        const sessionID = localStorage.getItem("sessionID");
-        if (sessionID) this.socket.auth = { sessionID };
 
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
@@ -44,6 +48,13 @@ export default function () {
           await this.getCurrentAuthor().catch(() => {});
           this.trackCurrentAuthor();
         }
+
+        const sessionID = localStorage.getItem("sessionID");
+        let auth = {};
+        if (sessionID) auth.sessionID = sessionID;
+        if (this.tokenpath.token_path)
+          auth.token_path = this.tokenpath.token_path;
+        if (Object.keys(auth).length > 0) this.socket.auth = auth;
 
         await this.socket.connect();
 
@@ -60,8 +71,8 @@ export default function () {
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
+          this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
-          this.socket.userID = userID;
         });
         this.socket.on("connect_error", (reason) => {
           console.log("socket connect error");
@@ -73,9 +84,9 @@ export default function () {
           this.connected = false;
           this.$eventHub.$emit("socketio.disconnect", reason);
           this.socket.disconnect();
-          this.emptyStore();
           this.socket.once("connect", () => {
             this.rejoinRooms();
+            if (this.is_tracking_users) this.getAndTrackUsers();
           });
         });
 
@@ -106,6 +117,10 @@ export default function () {
 
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
+
+        this.socket.on("userJoined", this.userJoined);
+        this.socket.on("userUpdated", this.userUpdated);
+        this.socket.on("userLeft", this.userLeft);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -117,7 +132,7 @@ export default function () {
         // join room only if not tracking
         if (!this.rooms_joined.includes(room)) {
           // console.log("JOIN – room isnt tracked, joining", room);
-          this.socket.emit("joinRoom", { room });
+          this.apiJoinRoom({ room });
         } else {
           // console.log("JOIN – room already tracked", room);
         }
@@ -139,73 +154,59 @@ export default function () {
         }
       },
 
-      emptyStore() {
-        // called when client disconnects from socket
-        // since we cant be sure of what happens before reconnect, we nuke all store
-        // this.store = {};
-      },
-
       async rejoinRooms() {
-        console.log("rejoinRooms");
-        // refresh full content of all rooms tracked
         const paths = this.rooms_joined.filter(
           (value, index, array) => array.indexOf(value) === index
         );
         for (const path of paths) {
           await this.updateStore(path);
-          this.socket.emit("joinRoom", { room: path });
+          this.apiJoinRoom({ room: path });
         }
       },
-
+      apiJoinRoom({ room }) {
+        let infos = { room };
+        if (this.tokenpath.token && this.tokenpath.token_path) {
+          infos.token = this.tokenpath.token;
+          infos.token_path = this.tokenpath.token_path;
+        }
+        this.socket.emit("joinRoom", infos);
+      },
       async _setAuthFromStorage() {
-        let auth = {};
+        // check if password
+        if (window.app_infos.instance_meta.has_general_password === true) {
+          const search_params = new URLSearchParams(location.href);
 
-        const tokenpath = localStorage.getItem("tokenpath");
-        try {
-          const { token, token_path } = JSON.parse(tokenpath);
-          auth.token = token;
-          auth.token_path = token_path;
-        } catch (err) {
-          err;
+          let general_password;
+          if (search_params && search_params.has("general_password"))
+            general_password = search_params.get("general_password");
+          else if (localStorage.getItem("general_password"))
+            general_password = localStorage.getItem("general_password");
+
+          if (general_password)
+            await this.submitGeneralPassword({
+              password: general_password,
+            }).catch(() => {
+              if (localStorage.getItem("general_password"))
+                localStorage.removeItem("general_password");
+              this.$eventHub.$emit("app.prompt_general_password");
+            });
+          else this.$eventHub.$emit("app.prompt_general_password");
         }
 
-        const search_params = new URLSearchParams(location.href);
-        if (search_params && search_params.has("general_password"))
-          auth.general_password = search_params.get("general_password");
-        else if (localStorage.getItem("general_password"))
-          auth.general_password = localStorage.getItem("general_password");
-
-        if (Object.keys(auth).length === 0) return;
-
-        const Authorization = JSON.stringify(auth);
-
-        // check with route
-        const response = await this.$axios.get("_authCheck", {
-          headers: {
-            Authorization,
-          },
-        });
-
-        if (auth.general_password) {
-          if (response.data.general_password_is_valid)
-            this.general_password = auth.general_password;
-          else if (response.data.general_password_is_wrong) {
-            this.$alertify
-              .delay(4000)
-              .error(response.data.general_password_is_wrong);
-            this.$eventHub.$emit("app.prompt_general_password");
+        const token_and_tokenpath = localStorage.getItem("tokenpath");
+        if (token_and_tokenpath) {
+          try {
+            const { token, token_path } = JSON.parse(token_and_tokenpath);
+            await this.submitFolderToken({
+              token,
+              token_path,
+            });
+          } catch (err) {
+            localStorage.removeItem("tokenpath");
           }
-        } else if (response.data.general_password_is_wrong) {
-          this.$eventHub.$emit("app.prompt_general_password");
         }
 
-        if (auth.token && auth.token_path)
-          if (response.data.token_is_valid) {
-            this.tokenpath.token = auth.token;
-            this.tokenpath.token_path = auth.token_path;
-            // token is valid, get author info
-          } else if (response.data.token_is_wrong)
-            this.$alertify.delay(4000).error(response.data.token_is_wrong);
+        // if (Object.keys(auth).length === 0) return;
 
         // Todo change all this? if a user has a valid token and token_path,
         // then they must also have access
@@ -233,13 +234,58 @@ export default function () {
         this.join({ room: this.tokenpath.token_path });
       },
 
+      async getAndTrackUsers() {
+        const response = await this.$axios.get("_users").catch((err) => {
+          throw this.processError(err);
+        });
+        const users = response.data;
+        this.$set(this, "users", users);
+        if (!this.is_tracking_users) {
+          this.is_tracking_users = true;
+          this.socket.emit("trackUsers");
+        }
+        return this.users;
+      },
+      userJoined(user) {
+        this.users.push(user);
+      },
+      userUpdated({ id, changed_data }) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index === -1) {
+          this.getAndTrackUsers();
+        } else {
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.users[index].meta, key, value);
+          });
+        }
+      },
+      userLeft(id) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index !== -1) this.users.splice(index, 1);
+      },
+      async unTrackUsers() {
+        this.socket.emit("leaveUsers");
+        this.users = [];
+        this.is_tracking_users = false;
+      },
+      async updateSelfPath(path) {
+        if (!this.self_user_id) return;
+        const response = await this.$axios
+          .patch(`_users/${this.self_user_id}`, {
+            path,
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
+      },
+
       folderCreated({ path, meta }) {
         // only update store if content is tracked
         if (!this.rooms_joined.includes(path)) {
           // console.log("folderCreated – room isnt tracked, not adding to store");
           return;
         }
-
         if (!Object.prototype.hasOwnProperty.call(this.store, path))
           this.store[path] = new Array();
         this.store[path].push(meta);
@@ -298,11 +344,13 @@ export default function () {
       fileCreated({ path_to_folder, meta }) {
         const folder = this.store[path_to_folder];
         if (!folder)
-          this.$alertify
-            .delay(4000)
-            .error("Folder missing in store : " + path_to_folder);
+          if (this.debug_mode)
+            this.$alertify
+              .delay(4000)
+              .error("Folder missing in store : " + path_to_folder);
         if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
+        this.$eventHub.$emit("file.created", { meta });
       },
       fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
         const folder = this.store[path_to_folder];
@@ -323,6 +371,9 @@ export default function () {
         const response = await this.$axios.get(`_storagePath`);
         const storage_path = response.data.pathToUserContent;
         return storage_path;
+      },
+      async restartApp() {
+        await this.$axios.post(`_restartApp`);
       },
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
@@ -351,14 +402,38 @@ export default function () {
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
       },
-      async getFolder({ path, detailed_infos = false }) {
-        if (!detailed_infos && this.store[path]) return this.store[path];
+      async getFolder({ path, no_files = false, detailed_infos = false }) {
+        const use_store = detailed_infos === false && no_files === false;
+        if (use_store && this.store[path]) return this.store[path];
 
         let queries = [];
         if (detailed_infos) queries.push("detailed=true");
+        if (no_files) queries.push("no_files=true");
         if (queries.length > 0) path += `?${queries.join("&")}`;
 
         const response = await this.$axios.get(path).catch((err) => {
+          throw this.processError(err);
+        });
+        const folder = response.data;
+
+        if (use_store) {
+          // to get reactivity
+          this.$set(this.store, folder.$path, folder);
+          return this.store[folder.$path];
+        } else {
+          // to only get data
+          return folder;
+        }
+      },
+
+      async getPublicFolder({ path, superadmintoken }) {
+        path += "/_public";
+
+        let queries = [];
+        if (superadmintoken) queries.push("superadmintoken=" + superadmintoken);
+        if (queries.length > 0) path += `?${queries.join("&")}`;
+
+        const response = await this.$axios.get(`${path}`).catch((err) => {
           throw this.processError(err);
         });
         const folder = response.data;
@@ -366,18 +441,7 @@ export default function () {
         return this.store[folder.$path];
       },
 
-      async getPublicFolder({ path }) {
-        const response = await this.$axios
-          .get(`${path}/_public`)
-          .catch((err) => {
-            throw this.processError(err);
-          });
-        const folder = response.data;
-        this.$set(this.store, folder.$path, folder);
-        return this.store[folder.$path];
-      },
-
-      async getArchives({ path }) {
+      async getFile({ path }) {
         const response = await this.$axios.get(path);
         return response.data;
       },
@@ -394,9 +458,11 @@ export default function () {
         this.$eventHub.$emit("hooks.createFolder", { path });
         return response.data.new_folder_slug;
       },
-      async loginToFolder({ path, auth_infos }) {
+      async loginToFolder({ path, password }) {
         try {
-          const response = await this.$axios.post(`${path}/_login`, auth_infos);
+          const response = await this.$axios.post(`${path}/_login`, {
+            $password: password,
+          });
           const token = response.data.token;
 
           this.tokenpath.token = token;
@@ -435,7 +501,6 @@ export default function () {
         password,
         remember_on_this_device = false,
       }) {
-        // TODO
         await this.$axios
           .get(`_authCheck`, {
             headers: {
@@ -450,6 +515,22 @@ export default function () {
           localStorage.setItem("general_password", password);
 
         this.general_password = password;
+        this.setAuthorizationHeader();
+        return true;
+      },
+      async submitFolderToken({ token, token_path }) {
+        await this.$axios
+          .get(`_tokenCheck`, {
+            headers: {
+              Authorization: JSON.stringify({ token, token_path }),
+            },
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+
+        this.tokenpath.token = token;
+        this.tokenpath.token_path = token_path;
         this.setAuthorizationHeader();
         return true;
       },
@@ -493,7 +574,8 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.uploadFile", { path });
-        return res.data.meta_filename;
+        const { saved_meta, meta_filename } = res.data;
+        return { saved_meta, meta_filename };
       },
       async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         const response = await this.$axios
@@ -547,7 +629,7 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.importFolder", { path });
-        return res.data.new_folder_slug;
+        return res.data.new_folder_meta;
       },
       async remixFolder({
         path,
@@ -603,7 +685,11 @@ export default function () {
         this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
-
+      async regenerateThumbs({ path }) {
+        const response = await this.$axios.patch(`${path}/_regenerateThumbs`);
+        this.$eventHub.$emit("hooks.regenerateThumbs", { path });
+        return response.data;
+      },
       async updateCover({ path, new_cover_data, onProgress }) {
         if (typeof new_cover_data === "string") {
           // its a meta filename in that same folder
@@ -660,12 +746,16 @@ export default function () {
             this.$eventHub.$emit("app.prompt_general_password");
           } else if (code === "no_general_password_submitted") {
             this.$eventHub.$emit("app.prompt_general_password");
-          } else if (code === "token_not_allowed_must_be_local_admin") {
-            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
-          } else if (code === "token_not_allowed_must_be_contributors") {
-            // this.$alertify.delay(4000).error("notifications.action_not_allowed");
+          } else if (code === "not_allowed") {
+            this.$eventHub.$emit("app.notify_error", code);
+          } else if (code === "file_size_limit_exceeded") {
+            let msg = "File size limit exceeded. Maximum file size is ";
+            msg +=
+              err_infos.upload_max_file_size_in_mo +
+              " Mo. Please try again with a smaller file.";
+            this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
-          this.$alertify.delay(4000).error("Message d’erreur : " + code);
+          // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);
         } else console.error("processError – NO ERROR CODES");
 
@@ -675,6 +765,16 @@ export default function () {
         // this.$alertify.delay(4000).error(err);
       },
     },
-    computed: {},
+    computed: {
+      all_devices_connected() {
+        return this.users.map((u) => {
+          if (u.id === this.self_user_id) u.is_self = true;
+          return u;
+        });
+      },
+      other_devices_connected() {
+        return this.users.filter((u) => !u.is_self);
+      },
+    },
   });
 }

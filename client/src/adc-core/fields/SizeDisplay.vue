@@ -1,11 +1,8 @@
 <template>
-  <div class="_metaField">
+  <div class="u-metaField">
     <DLabel :str="$t('size')" />
     <div>
-      <template v-if="size">
-        {{ formatBytes(size) }}
-      </template>
-      <template v-else> – </template>
+      {{ formatBytes(size) }}
     </div>
   </div>
 </template>
@@ -26,12 +23,4 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss">
-._metaField {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: calc(var(--spacing) / 16);
-}
-</style>
+<style lang="scss"></style>

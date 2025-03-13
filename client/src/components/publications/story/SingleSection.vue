@@ -9,7 +9,11 @@
           "
         >
           <div class="_text">
-            <div class="_sectionTitle">
+            <div
+              class="_sectionTitle"
+              v-if="can_edit || title_is_visible"
+              :class="{ 'is--hidden': !title_is_visible }"
+            >
               <TitleField
                 :field_name="'section_title'"
                 :content="section.section_title || $t('untitled')"
@@ -19,37 +23,35 @@
                 :tag="'h1'"
                 :can_edit="can_edit"
               />
-              <RemoveMenu
+              <EditBtn
                 v-if="can_edit"
-                :remove_text="$t('remove_section')"
-                :show_button_text="false"
-                @remove="removeSection"
+                :btn_type="title_is_visible ? 'show' : 'hide'"
+                :label="$t('show_title')"
+                @click="toggleSectionVisibility"
               />
             </div>
 
             <!-- legacy field – only existing description can be edited -->
-            <TitleField
-              v-if="section.section_description"
-              :field_name="'section_description'"
-              :label="can_edit ? $t('description') : ''"
-              :content="section.section_description"
-              :path="section.$path"
-              :maxlength="1280"
-              :input_type="'markdown'"
-              :can_edit="can_edit"
-            />
+            <div v-if="section.section_description">
+              <div v-text="section.section_description" />
+            </div>
           </div>
           <div class="_buttons" v-if="can_edit">
-            <!-- <div>
+            <DropDown v-if="can_edit" :show_label="false" :right="true">
               <button
                 type="button"
                 class="u-buttonLink"
-                @click="$emit('close')"
+                @click="duplicateSection"
               >
-                <sl-icon name="x" />
-                {{ $t("close") }}
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
               </button>
-            </div> -->
+
+              <RemoveMenu
+                :modal_title="$t('remove_section')"
+                @remove="removeSection"
+              />
+            </DropDown>
           </div>
         </div>
         <transition-group
@@ -64,7 +66,7 @@
               <ModuleCreator
                 v-if="can_edit"
                 :publication_path="publication.$path"
-                :types_available="['text', 'link']"
+                :types_available="['write', 'embed', 'table']"
                 @addModules="
                   ({ meta_filenames }) =>
                     insertModules({ meta_filenames, index })
@@ -98,6 +100,9 @@
                   copy_meta_filename: $event,
                 })
               "
+              @changeSectionForModule="
+                $emit('changeSectionForModule', _module.$path)
+              "
               @remove="removeModule(_module.$path)"
             />
           </template>
@@ -107,7 +112,7 @@
           class="_lastModule"
           :start_collapsed="false"
           :publication_path="publication.$path"
-          :types_available="['text', 'link']"
+          :types_available="['write', 'embed', 'table']"
           @addModules="addModules"
         />
       </div>
@@ -134,16 +139,7 @@ export default {
       module_being_edited: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        remove_section: "Supprimer le chapitre",
-      },
-      en: {
-        remove_section: "Remove this chapter",
-      },
-    },
-  },
+
   created() {
     this.$eventHub.$on("module.none_edited", this.unselectModuleEdited);
   },
@@ -161,6 +157,9 @@ export default {
     },
     story_styles() {
       return this.makeStoryStyles({ publication: this.publication });
+    },
+    title_is_visible() {
+      return this.section.section_title_is_visible !== false;
     },
   },
   methods: {
@@ -191,6 +190,30 @@ export default {
         this.$eventHub.$emit("publication.map.openPin", pin_path);
       }, 150);
     },
+    async toggleSectionVisibility() {
+      await this.$api.updateMeta({
+        path: this.section.$path,
+        new_meta: {
+          section_title_is_visible: !this.title_is_visible,
+        },
+      });
+    },
+    async duplicateSection() {
+      await this.duplicateSection2({
+        publication: this.publication,
+        og_modules: this.section_modules_list,
+        section: this.section,
+      });
+      this.$emit("nextSection");
+    },
+    async removeSection() {
+      this.$emit("prevSection");
+      this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        section: this.section,
+      });
+    },
     async moveModuleTo({ path, new_position }) {
       await this.moveModuleTo2({
         publication: this.publication,
@@ -213,14 +236,6 @@ export default {
     },
     unselectModuleEdited() {
       this.module_being_edited = undefined;
-    },
-    async removeSection() {
-      this.$emit("prevSection");
-      await this.removeSection2({
-        publication: this.publication,
-        group: "sections_list",
-        path: this.section.$path,
-      });
     },
 
     async removeModule(path) {
@@ -249,7 +264,7 @@ export default {
 }
 ._storyContent {
   width: 100%;
-  background: white;
+  // background: white;
   max-width: 800px;
   padding: 0;
   margin: 0 auto;
@@ -269,6 +284,14 @@ export default {
 ._sectionTitle {
   display: flex;
   align-items: baseline;
+
+  &.is--hidden {
+    ::v-deep {
+      h1 {
+        opacity: 0.5;
+      }
+    }
+  }
 }
 
 ._mediaPublication {
@@ -281,7 +304,7 @@ export default {
 
   ::v-deep {
     > ._content {
-      min-height: 45px;
+      min-height: 1.5rem;
     }
     // ._floatingEditBtn[data-action="disable"] {
     //   display: none;
@@ -293,11 +316,11 @@ export default {
   }
 }
 ._spacer {
-  min-height: 3rem;
+  min-height: 24px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  // padding: 0 calc(var(--spacing) * 2);
+  clear: both;
 
   transition: all 0.2s linear;
 
@@ -308,10 +331,6 @@ export default {
       // padding: calc(var(--spacing) / 4);
       // z-index: 1;
       // border-radius: 0;
-
-      &.is--collapsed {
-        padding: 0;
-      }
     }
   }
 }
@@ -319,8 +338,8 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  align-items: baseline;
   justify-content: space-between;
+  align-items: flex-end;
 
   margin: calc(var(--spacing) * 1) 0 0;
 
@@ -330,7 +349,7 @@ export default {
       flex: 1 1 56ch;
     }
     &._buttons {
-      flex: 1 1 auto;
+      flex: 0 0 auto;
       display: flex;
       flex-flow: row wrap;
       // justify-content: flex-end;
@@ -340,6 +359,6 @@ export default {
 }
 
 ._lastModule {
-  margin-top: calc(var(--spacing) * 2);
+  margin-top: calc(var(--spacing) * 1);
 }
 </style>

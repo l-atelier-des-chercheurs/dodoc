@@ -1,21 +1,31 @@
 <template>
   <div
     class="_dropDown"
-    :class="{ dropup: top }"
+    :class="{
+      dropup: top,
+    }"
     @mouseleave="mouseLeave"
     @mouseover="mouseOver"
     @mouseenter="mouseEnter"
     @click="toggleMenu"
   >
-    <button type="button" class="u-button">
+    <button
+      type="button"
+      class="u-button _toggleDropdown"
+      :class="{ 'is--active': show_dropdown, 'u-button_icon': !show_label }"
+    >
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
+        <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
-        {{ $t("options") }}
+        <template v-if="show_label">
+          {{ $t("options") }}
+        </template>
+        <b-icon icon="three-dots" :aria-label="$t('options')" />
       </template>
-      <span class="b-icon bi _caret" />
     </button>
+
     <transition name="fade_fast">
       <div
         v-show="show_dropdown"
@@ -40,9 +50,17 @@ export default {
       type: Boolean,
       default: false,
     },
+    force_top: {
+      type: Boolean,
+      default: false,
+    },
     hover: {
       type: Boolean,
       default: false,
+    },
+    show_caret: {
+      type: Boolean,
+      default: true,
     },
     hover_time: {
       type: Number,
@@ -64,6 +82,10 @@ export default {
       default: true,
     },
     closeOnClickOutside: {
+      type: Boolean,
+      default: true,
+    },
+    show_label: {
       type: Boolean,
       default: true,
     },
@@ -144,6 +166,11 @@ export default {
   },
   watch: {
     show_dropdown(v) {
+      if (this.force_top) {
+        this.top = true;
+        return;
+      }
+
       if (v) {
         let vm = this;
         this.top = false;
@@ -170,6 +197,18 @@ export default {
 <style lang="scss" scoped>
 ._dropDown {
   position: relative;
+
+  &.dropup {
+    ._dropDown--content {
+      bottom: 100%;
+    }
+  }
+}
+
+._toggleDropdown {
+  &.is--active ._caret {
+    transform: rotate(-180deg);
+  }
 }
 
 ._caret {
@@ -177,6 +216,8 @@ export default {
   background-position: 50% 55%;
   background-repeat: no-repeat;
   background-size: 0.75rem;
+
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._dropDown--content {
@@ -186,14 +227,15 @@ export default {
 
   display: flex;
   flex-flow: column nowrap;
-
+  // gap: 2px;
   margin-top: 2px;
-  padding: 0;
+  // padding: 2px;
   background: white;
-  border: 2px solid var(--c-gris);
+  // border: 2px solid var(--c-gris);
   border-radius: 4px;
   max-width: 40ch;
 
+  border: 1px solid var(--c-gris);
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
@@ -201,17 +243,21 @@ export default {
 
   ::v-deep button,
   ::v-deep a {
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 1.5) calc(var(--spacing) / 1.5);
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
 
     width: 100%;
     text-align: left;
+    border-radius: 2px;
+
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:hover,
-    &:focus {
-      background: var(--c-gris_clair);
+    &:active,
+    &:focus-visible {
+      background: var(--c-gris);
     }
   }
 

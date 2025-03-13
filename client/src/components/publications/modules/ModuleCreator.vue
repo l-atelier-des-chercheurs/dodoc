@@ -9,85 +9,83 @@
       <div v-if="show_module_selector || !start_collapsed" class="_typePicker">
         <button
           type="button"
-          class="u-button u-button_black"
-          v-if="types_available.includes('text')"
-          @click="createText"
+          class="u-button u-button_red"
+          v-if="types_available.includes('capture')"
+          @click="show_capture_modal = true"
         >
           <b-icon
-            icon="fonts"
+            icon="record-circle-fill"
             style="font-size: var(--icon-size)"
-            :label="$t('add_text')"
           />
-          <template v-if="show_labels">{{ $t("text") }}</template>
+          <template v-if="show_labels">{{ $t("capture") }}</template>
         </button>
+        <CaptureModal
+          v-if="show_capture_modal"
+          :path="project_path"
+          :available_modes="available_modes"
+          @createMosaic="createMosaic"
+          @close="show_capture_modal = false"
+        />
 
         <button
           type="button"
-          class="u-button u-button_black"
-          v-if="types_available.includes('medias')"
+          class="u-button u-button_orange"
+          v-if="types_available.includes('import')"
           @click="show_media_picker = true"
         >
-          <b-icon
-            icon="image"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_medias')"
-          />
-          <template v-if="show_labels">{{ $t("medias") }}</template>
+          <b-icon icon="image" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("import") }}</template>
         </button>
         <MediaPicker
           v-if="show_media_picker"
           :publication_path="publication_path"
           :select_mode="select_mode"
+          :pick_from_types="pick_from_types"
           @addMedias="createMosaic"
           @close="show_media_picker = false"
         />
 
-        <!-- <button
+        <button
           type="button"
-          class="u-button u-button_black"
-          v-if="types_available.includes('files')"
-          @click="show_file_picker = true"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('write')"
+          @click="createText"
         >
-          <template v-if="show_labels">{{ $t("files") }}</template>
-          <sl-icon
-            name="file-earmark-binary-fill"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_files')"
-          />
-        </button> -->
-        <!-- <MediaPicker
-          v-if="show_file_picker"
-          :publication_path="publication_path"
-          :select_mode="select_mode"
-          @addMedias="createFiles"
-          @close="show_file_picker = false"
-        /> -->
+          <b-icon icon="fonts" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("write") }}</template>
+        </button>
 
         <button
           type="button"
-          class="u-button u-button_black"
-          v-if="types_available.includes('link')"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('embed')"
           @click="show_link_picker = true"
         >
-          <b-icon
-            icon="link"
-            style="font-size: var(--icon-size)"
-            :label="$t('add_link')"
-          />
-          <template v-if="show_labels">{{ $t("link") }}</template>
+          <b-icon icon="link" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("embed") }}</template>
         </button>
-        <LinkPicker
+        <EmbedPicker
           v-if="show_link_picker"
           @embed="createEmbed"
           @close="show_link_picker = false"
         />
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          v-if="types_available.includes('table')"
+          @click="createTable"
+        >
+          <b-icon icon="table" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("table") }}</template>
+        </button>
 
         <template v-if="types_available.includes('shapes')">
           <button
             type="button"
             v-for="shape in shapes"
             :key="shape.type"
-            class="u-button u-button_black"
+            class="u-button u-button_bleumarine"
             @click="
               createCustomModule({
                 module_type: shape.type,
@@ -95,11 +93,7 @@
               })
             "
           >
-            <b-icon
-              :icon="shape.icon"
-              style="font-size: var(--icon-size)"
-              :label="$t(shape.type)"
-            />
+            <b-icon :icon="shape.icon" style="font-size: var(--icon-size)" />
             <template v-if="show_labels">{{ $t(shape.type) }}</template>
             <!-- {{ $t("add_medias") }} -->
           </button>
@@ -121,23 +115,29 @@
         @click="show_module_selector = true"
       />
     </transition>
+    <DropZone class="_dropZone" @mediaDropped="mediaDropped" />
 
-    <!-- <button
-      type="button"
-      class="u-button u-button_transparent u-addBtn"
-      v-if="start_collapsed"
-      :style="show_module_selector ? 'transform: rotate(45deg);' : ''"
-      @click="show_module_selector = !show_module_selector"
-    >
-      <b-icon icon="plus-circle-fill" />
-    </button> -->
-
-    <DropZone @mediaDropped="createMosaic" />
+    <template v-if="enable_clipboard_paste">
+      <ImportFileZone
+        v-show="false"
+        :multiple="true"
+        :files_to_import.sync="files_to_import"
+      />
+      <UploadFiles
+        v-if="files_to_import.length > 0"
+        :files_to_import="files_to_import"
+        :path="project_path"
+        @importedMedias="mediaJustImported($event)"
+        @close="files_to_import = []"
+      />
+    </template>
   </div>
 </template>
 <script>
+import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
-import LinkPicker from "@/adc-core/modals/LinkPicker.vue";
+import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
 export default {
   props: {
@@ -145,6 +145,8 @@ export default {
     pre_addtl_meta: Object,
     post_addtl_meta: Object,
     select_mode: String,
+    pick_from_types: [String, Array],
+    available_modes: Array,
     show_labels: {
       type: Boolean,
       default: true,
@@ -152,23 +154,32 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["text", "medias", "files", "link", "shapes"],
+      default: () => ["capture", "import", "write", "embed", "table", "shapes"],
     },
     start_collapsed: {
       type: Boolean,
       default: true,
     },
+    enable_clipboard_paste: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
+    CaptureModal,
     MediaPicker,
-    LinkPicker,
+    EmbedPicker,
+    ImportFileZone,
   },
   data() {
     return {
+      show_capture_modal: false,
       show_module_selector: false,
       show_media_picker: false,
       show_file_picker: false,
       show_link_picker: false,
+
+      files_to_import: [],
 
       shapes: [
         {
@@ -222,9 +233,27 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
-  computed: {},
+  watch: {
+    show_module_selector() {},
+  },
+  computed: {
+    project_path() {
+      if (this.$root.publication_include_mode === "link")
+        return this.getParent(this.getParent(this.publication_path));
+      return this.publication_path;
+    },
+  },
   methods: {
+    async mediaDropped({ path_to_source_media_metas }) {
+      // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
+      this.createMosaic({ path_to_source_media_metas });
+    },
+    async mediaJustImported(list_of_added_metas) {
+      const path_to_source_media_metas = list_of_added_metas.map(
+        (meta_filename) => this.project_path + "/" + meta_filename
+      );
+      this.createMosaic({ path_to_source_media_metas });
+    },
     async createMosaic({ meta_filename, path_to_source_media_metas }) {
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
@@ -237,10 +266,11 @@ export default {
         });
       } else if (path_to_source_media_metas) {
         for (const path_to_source_media_meta of path_to_source_media_metas) {
-          // if link, then we use medias stored in parent project and link to them
+          const import_mode = this.$root.publication_include_mode;
           const new_entry = await this.prepareMediaForPublication({
             path_to_source_media_meta,
             publication_path: this.publication_path,
+            import_mode,
           });
           source_medias.push(new_entry);
         }
@@ -252,7 +282,7 @@ export default {
         });
       }
 
-      if (this.context === "page_by_page") {
+      if (["page_by_page", "montage"].includes(this.context)) {
         await this.createMultipleModules({
           module_type: "mosaic",
           source_medias,
@@ -269,7 +299,7 @@ export default {
     async createEmbed(full_url) {
       const filename = "url-" + +new Date() + ".txt";
 
-      const text_meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: full_url,
@@ -277,7 +307,7 @@ export default {
           $type: "url",
         },
       });
-      this.createMosaic({ meta_filename: text_meta_filename });
+      this.createMosaic({ meta_filename });
       this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
@@ -299,6 +329,7 @@ export default {
 
       this.show_file_picker = false;
     },
+
     async createCustomModule({ module_type, addtl_meta }) {
       await this.createModule({
         module_type,
@@ -307,16 +338,39 @@ export default {
     },
     async createText() {
       const filename = "text-" + +new Date() + ".txt";
-      const meta_filename = await this.$api.uploadText({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
         content: "",
       });
       const source_medias = [{ meta_filename }];
+
+      const module_type = this.context === "page_by_page" ? "text" : "mosaic";
       await this.createModule({
-        module_type: "text",
+        module_type,
         source_medias,
       });
+    },
+    async createTable() {
+      const filename = "table-" + +new Date() + ".json";
+
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.publication_path,
+        filename,
+        content: JSON.stringify(
+          [
+            [{ content: "" }, { content: "" }],
+            [{ content: "" }, { content: "" }],
+          ],
+          null,
+          4
+        ),
+        additional_meta: {
+          $type: "table",
+        },
+      });
+      this.createMosaic({ meta_filename });
+      this.show_link_picker = false;
     },
 
     async createModule({ module_type, source_medias = [], addtl_meta = {} }) {
@@ -326,7 +380,7 @@ export default {
           source_media: source_medias[0],
           folder_path: this.publication_path,
         });
-        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+        if (media?.$location) addtl_meta.location = media.$location;
       }
 
       const meta_filename = await this.createMetaForModule({
@@ -347,12 +401,10 @@ export default {
         });
 
         let addtl_meta = {};
-        if (this.context === "page_by_page")
-          if (media?.$infos?.ratio)
-            addtl_meta.height =
-              this.$root.default_new_module_width * media.$infos.ratio;
-
-        if (media?.$infos?.gps) addtl_meta.location = media.$infos.gps;
+        if (["page_by_page", "montage"].includes(this.context))
+          if (media?.$infos?.ratio && this.pre_addtl_meta?.width)
+            addtl_meta.height = this.pre_addtl_meta.width * media.$infos.ratio;
+        if (media?.$location) addtl_meta.location = media.$location;
 
         const meta_filename = await this.createMetaForModule({
           module_type,
@@ -378,7 +430,7 @@ export default {
       if (this.post_addtl_meta)
         Object.assign(additional_meta, this.post_addtl_meta);
 
-      return await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.publication_path,
           additional_meta,
@@ -387,6 +439,7 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
+      return meta_filename;
     },
   },
 };
@@ -399,12 +452,16 @@ export default {
   align-items: center;
   width: 100%;
   pointer-events: none;
-  gap: calc(var(--spacing) / 4); // padding: 0 calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2) 0;
 
-  // color: var(--c-bleuvert);
-  // border-radius: 1rem;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   --icon-size: 1.2rem;
+
+  &.is--collapsed {
+    padding: 0;
+  }
 
   > * {
     pointer-events: auto;
@@ -427,18 +484,13 @@ export default {
   pointer-events: none;
 }
 
-sl-icon-button::part(base) {
-  // font-size: 1.5em;
-  // color: var(--c-bleuvert);
-}
-
 ._showModuleSelector {
   // position: absolute;
   // right: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-.u-addBtn {
-  color: var(--c-noir);
+._addBtn {
+  margin-left: -24px;
 }
 </style>

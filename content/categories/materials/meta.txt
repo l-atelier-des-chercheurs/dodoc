@@ -1,0 +1,5 @@
+title = "Matériaux"
+"$status" = "public"
+"$date_modified" = 2024-03-01T15:43:10.259Z
+"$date_created" = 2024-03-01T15:36:06.542Z
+list_of_suggestions = [ "Vinyle","Flex","Silicone","Bois CP 3mm","Bois CP 5mm","Palettes","Plexi/PMMA","Carton","Papier","Caoutchouc Tampon","Tissu","Cuir","Résine","Filament PLA","Filament PETG","Filament NYLON","Filament ABS","Fil électrique","câbles Dupont","câble USB","Piles LR3","Piles LR6","Batterie Lithium 3,6V","Batterie 9V" ]

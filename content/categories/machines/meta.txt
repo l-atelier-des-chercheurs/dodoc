@@ -1,0 +1,5 @@
+title = "Machines"
+"$status" = "public"
+"$date_modified" = 2024-03-01T10:58:00.854Z
+"$date_created" = 2024-02-29T15:14:38.129Z
+list_of_suggestions = [ "Brodeuse numérique","Découpeuse laser","Découpeuse vinyle","Fraiseuse numérique","Imprimante 3D","Imprimante résine","Imprimante laser noir et blanc","Imprimante laser couleur","Arduino","micro:bit","Makey Makey","Machine à coudre","Raspberry Pi","Capteurs","Actuateurs","Fer à souder","Outils à bois","Perceuse","Ponceuse","Scie","Scie à chantourner" ]

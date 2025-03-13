@@ -5,7 +5,13 @@
     target="_blank"
     class="u-buttonLink"
   >
-    <slot />
+    <template v-if="$slots.hasOwnProperty('default')">
+      <slot />
+    </template>
+    <template v-else>
+      <b-icon icon="file-earmark-arrow-down" />
+      {{ $t("download") }}
+    </template>
   </a>
 </template>
 <script>

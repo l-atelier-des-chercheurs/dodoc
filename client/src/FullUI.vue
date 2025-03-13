@@ -5,6 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
+    <DynamicCursor v-if="!$root.is_touch_device" />
 
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
@@ -33,7 +34,6 @@
   </div>
 </template>
 <script>
-// import TopBar from "@/components/TopBar.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
@@ -42,7 +42,6 @@ import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 export default {
   props: {},
   components: {
-    // TopBar,
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,
@@ -55,19 +54,8 @@ export default {
       show_authors_modal: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   async created() {
     console.log("Loading FullUI");
-
-    await this.$api.init({ debug_mode: this.$root.debug_mode });
-    this.$eventHub.$on("socketio.connect", this.socketConnected);
-    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
-    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
-    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
 
     this.$eventHub.$on(
       `app.prompt_general_password`,
@@ -75,7 +63,14 @@ export default {
     );
     this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
-    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$on(`app.notify_error`, this.notifyError);
+
+    await this.$api.init({ debug_mode: this.$root.debug_mode });
+
+    this.$eventHub.$on("socketio.connect", this.socketConnected);
+    this.$eventHub.$on("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
 
     this.$root.is_loading = false;
   },
@@ -87,7 +82,12 @@ export default {
     );
     this.$eventHub.$off(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
-    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$off(`app.notify_error`, this.notifyError);
+
+    this.$eventHub.$off("socketio.connect", this.socketConnected);
+    this.$eventHub.$off("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$off("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
   },
   watch: {},
   computed: {},
@@ -111,15 +111,19 @@ export default {
         .delay(4000)
         .error(`Connect error ${reason}`);
     },
-
     showDisconnectModal() {
       this.show_disconnect_modal = true;
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;
     },
+
     showAuthorModal() {
       this.show_authors_modal = true;
+    },
+    notifyError(msg) {
+      if (msg === "not_allowed")
+        this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
     },
   },
 };

@@ -1,65 +1,63 @@
 <template>
   <div class="_uploadFiles">
-    <transition-group tag="div" name="fileupload_list">
-      <div
-        v-for="f in files_to_upload"
-        :key="f.name"
-        class="_uploadFile"
-        :class="cssStatus(f)"
-        :style="`--progress-percent: ${
-          files_to_upload_meta[f.name].upload_percentages / 100
-        }`"
-      >
-        <div class="_uploadFile--progressBar"></div>
+    <div
+      v-for="f in files_to_upload"
+      :key="f.name"
+      class="_uploadFile"
+      :class="cssStatus(f)"
+      :style="`--progress-percent: ${
+        files_to_upload_meta[f.name].upload_percentages / 100
+      }`"
+    >
+      <div class="_uploadFile--progressBar"></div>
 
-        <img
-          v-if="
-            !!f.type &&
-            f.type.includes('image') &&
-            files_to_upload_meta[f.name].status === 'sending'
-          "
-          class="_uploadFile--image"
-          width="50"
-          :src="getImgPreview(f)"
-        />
-        <div v-else class="_uploadFile--image" />
+      <img
+        v-if="
+          !!f.type &&
+          f.type.includes('image') &&
+          files_to_upload_meta[f.name].status === 'sending'
+        "
+        class="_uploadFile--image"
+        width="50"
+        :src="getImgPreview(f)"
+      />
+      <div v-else class="_uploadFile--image" />
 
-        <div :title="f.name" class="_uploadFile--filename">{{ f.name }}</div>
-        <div class="_uploadFile--size">{{ formatBytes(f.size) }}</div>
-        <div class="_uploadFile--action">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="sendThisFile(f)"
-            :disabled="files_to_upload_meta[f.name].status !== 'failed'"
+      <div :title="f.name" class="_uploadFile--filename">{{ f.name }}</div>
+      <div class="_uploadFile--size">{{ formatBytes(f.size) }}</div>
+      <div class="_uploadFile--action">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="sendThisFile(f)"
+          :disabled="files_to_upload_meta[f.name].status !== 'failed'"
+        >
+          <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
+            {{ $t("import") }}
+          </template>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'waiting'"
           >
-            <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
-              {{ $t("import") }}
-            </template>
-            <template
-              v-else-if="files_to_upload_meta[f.name].status === 'waiting'"
-            >
-              {{ $t("waiting") }}
-            </template>
-            <template
-              v-else-if="files_to_upload_meta[f.name].status === 'sending'"
-            >
-              {{ $t("sending") }}
-            </template>
-            <template
-              v-else-if="files_to_upload_meta[f.name].status === 'success'"
-            >
-              {{ $t("sent") }}
-            </template>
-            <template
-              v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-            >
-              {{ $t("retry") }}
-            </template>
-          </button>
-        </div>
+            {{ $t("waiting") }}
+          </template>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'sending'"
+          >
+            {{ $t("sending") }}
+          </template>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'success'"
+          >
+            {{ $t("sent") }}
+          </template>
+          <template
+            v-else-if="files_to_upload_meta[f.name].status === 'failed'"
+          >
+            {{ $t("retry") }}
+          </template>
+        </button>
       </div>
-    </transition-group>
+    </div>
   </div>
 </template>
 <script>
@@ -67,10 +65,6 @@ export default {
   props: {
     files_to_import: Array,
     path: String,
-    read_only: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {},
   data() {
@@ -116,7 +110,7 @@ export default {
         );
       };
 
-      let meta_filename = await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: this.path,
           filename,
@@ -125,7 +119,8 @@ export default {
           onProgress,
         })
         .catch((err) => {
-          this.$alertify.delay(4000).error(err);
+          if (err.code !== "file_size_limit_exceeded")
+            this.$alertify.delay(4000).error(err.message);
           this.files_to_upload_meta[filename].status = "failed";
           this.files_to_upload_meta[filename].upload_percentages = 0;
           throw err;
@@ -162,10 +157,9 @@ export default {
 </script>
 <style lang="scss">
 ._uploadFiles {
-  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
   display: flex;
   flex-flow: column nowrap;
-  // max-width: 350px;
 }
 
 ._uploadFile {
@@ -179,8 +173,8 @@ export default {
   font-size: 75%;
   height: 60px;
 
-  margin-bottom: calc(var(--spacing) / 2);
   background-color: white;
+  color: var(--c-noir);
 
   border-radius: 4px;
   overflow: hidden;

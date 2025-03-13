@@ -8,6 +8,8 @@ const folder = require("./folder"),
 
 module.exports = (function () {
   let tokens = {};
+  let superadmintoken = undefined;
+
   const path_to_tokens = path.join(global.appRoot, "tokens.json");
   (async () => {
     try {
@@ -24,37 +26,39 @@ module.exports = (function () {
       // todo replace with jwt with expiration
       // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
       const token = crypto.randomBytes(32).toString("hex");
-      tokens[token] = { token_path: path_to_folder, issued: +new Date() };
+      tokens[token] = {
+        token_path: utils.convertToSlashPath(path_to_folder),
+        issued: +new Date(),
+      };
 
       API.updateTokensFile();
       dev.logverbose("set new token", { token, path_to_folder });
       return token;
     },
 
-    extrackAndCheckToken({ req }) {
+    createSuperadminToken() {
+      superadmintoken = crypto.randomBytes(32).toString("hex");
+    },
+    getSuperadminToken() {
+      return superadmintoken;
+    },
+    checkSuperadminToken(t) {
+      return superadmintoken === t;
+    },
+    extractAndCheckToken({ req }) {
       if (!req.headers || !req.headers.authorization) {
-        // const err = new Error("Headers missing");
-        // err.code = "missing_headers";
-        // throw err;
-        return false;
-      }
-
-      const { token, token_path } = JSON.parse(req.headers.authorization);
-      if (!token || !token_path) {
-        // const err = new Error("Token and/or token_path missing in headers");
-        // err.code = "no_token_submitted";
-        // throw err;
         return false;
       }
 
       try {
-        API.checkTokenValidity({ token, token_path });
+        const { token, token_path } = JSON.parse(req.headers.authorization);
+        if (token && token_path) {
+          API.checkTokenValidity({ token, token_path });
+          return token_path;
+        }
       } catch (err) {
-        err;
         return false;
       }
-
-      return token_path;
     },
 
     checkTokenValidity({ token, token_path }) {
@@ -105,6 +109,13 @@ module.exports = (function () {
       return (
         folder_meta.hasOwnProperty(field) &&
         folder_meta[field] === "parent_contributors"
+      );
+    },
+    async isFolderPrivate({ path_to_folder = "" }) {
+      const folder_meta = await folder.getFolder({ path_to_folder });
+      return (
+        folder_meta.hasOwnProperty("$status") &&
+        folder_meta["$status"] === "private"
       );
     },
     async isTokenInstanceAdmin({ token_path }) {

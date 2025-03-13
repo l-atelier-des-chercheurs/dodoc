@@ -5,34 +5,65 @@
       'is--beingEdited': edit_mode,
     }"
   >
-    <RadioCheckboxInput
-      v-if="edit_mode || new_content.length > 0"
-      :value.sync="new_content"
-      :input_type="input_type"
-      :options="options"
-      :can_edit="can_edit && edit_mode"
+    <DLabel
+      v-if="label"
+      class="_label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
     />
-    <span v-else>
-      <template v-if="current_option">
-        {{ current_option.label }}
-      </template>
-      <template v-else></template>
-    </span>
+    <div>
+      <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
+        <template v-if="current_option && current_option.hasOwnProperty('key')">
+          <img
+            v-if="current_option.thumb_src"
+            :src="current_option.thumb_src"
+            class="_option_preview"
+          />
+          <span :class="{ _emptyOption: current_option.key === '' }">
+            {{ current_option.label }}
+          </span>
+        </template>
+      </slot>
+      <slot
+        name="preview"
+        v-if="input_type === 'checkbox'"
+        :items="current_options"
+      >
+        <div v-for="option in current_options" :key="option.key">
+          {{ option.label }}
+        </div>
+      </slot>
+    </div>
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
-    <div class="_footer">
+
+    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        {{ instructions }}
+      </div>
+
+      <div class="u-spacingBottom">
+        <RadioCheckboxInput
+          :value.sync="new_content"
+          :input_type="input_type"
+          :options="options"
+          :can_edit="can_edit && edit_mode"
+        />
+      </div>
+
       <SaveCancelButtons
-        v-if="edit_mode"
-        class="_scb"
+        slot="footer"
         :is_saving="is_saving"
         @save="updateSelect"
         @cancel="cancel"
       />
-    </div>
+    </BaseModal2>
   </div>
 </template>
 <script>
 export default {
   props: {
+    label: String,
+    instructions: String,
     field_name: String,
     content: {
       type: [String, Array],
@@ -69,6 +100,12 @@ export default {
     },
   },
   computed: {
+    current_options() {
+      const filtered_options = this.options.filter((o) =>
+        this.content.includes(o.key)
+      );
+      return filtered_options;
+    },
     current_option() {
       return this.options.find((o) => o.key === this.content);
     },
@@ -110,7 +147,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.couldntbesaved"));
+          .error(this.$t("couldntbesaved"));
         this.$alertify.closeLogOnClick(true).error(e.response.data);
       }
     },
@@ -134,13 +171,14 @@ export default {
   }
 }
 
-._footer {
-  margin-top: calc(var(--spacing) / 4);
+._option_preview {
+  display: inline-block;
+  vertical-align: middle;
+  height: 1em;
+  aspect-ratio: 1;
+  object-fit: cover;
 }
-
-._scb {
-  width: 100%;
-  text-align: center;
-  justify-content: center;
+._emptyOption {
+  font-size: var(--sl-font-size-small);
 }
 </style>

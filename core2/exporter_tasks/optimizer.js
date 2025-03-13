@@ -1,6 +1,6 @@
 const { promisify } = require("util"),
   fs = require("fs"),
-  decode = require("heic-decode"),
+  heicdecode = require("heic-decode"),
   sharp = require("sharp"),
   ffmpeg = require("fluent-ffmpeg");
 
@@ -21,29 +21,29 @@ ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
-    async convertHEIC({ source, destination, quality_preset }) {
+    async convertHEIC({ source, destination, image_width, image_height }) {
       const heic_buffer = await promisify(fs.readFile)(source);
-      const { width, height, data } = await decode({ buffer: heic_buffer });
+      const { width, height, data } = await heicdecode({ buffer: heic_buffer });
 
-      const buffer = new Uint8Array(data);
       const addtl_infos = {
         raw: {
           width,
           height,
           channels: 4,
-          density: 300,
+          // density: 300,
         },
       };
 
-      await _saveImage({
-        source: buffer,
+      return await _saveImage({
+        source: data,
         addtl_infos,
         destination,
-        quality_preset,
+        image_width,
+        image_height,
       });
     },
 
-    async convertCameraRAW({ source, destination, quality_preset }) {
+    async convertCameraRAW({ source, destination, image_width, image_height }) {
       let infos = await require("extractd").generate(source, {
         base64: true,
         datauri: true,
@@ -54,23 +54,27 @@ module.exports = (function () {
       const uri = infos.preview.split(";base64,").pop();
       const buffer = Buffer.from(uri, "base64");
 
-      await _saveImage({
+      return await _saveImage({
         source: buffer,
         destination,
-        quality_preset,
+        image_width,
+        image_height,
       });
     },
-    async convertImage({ source, destination, quality_preset }) {
-      await _saveImage({
+    async convertImage({ source, destination, image_width, image_height }) {
+      return await _saveImage({
         source,
         destination,
-        quality_preset,
+        image_width,
+        image_height,
       });
     },
     async convertAudio({
       source,
       destination,
-      quality_preset,
+      audio_bitrate,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
@@ -80,15 +84,18 @@ module.exports = (function () {
         // https://stackoverflow.com/a/70899710
         let totalTime;
 
-        let bitrate = "256k";
-        if (quality_preset === "high") bitrate = "192k";
-        else if (quality_preset === "medium") bitrate = "128k";
+        ffmpeg_cmd.input(source);
+
+        // if (audio_bitrate === "no_audio") ffmpeg_cmd.noAudio();
+        if (audio_bitrate)
+          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+
+        destination = destination + ".aac";
+
+        if (trim_start !== undefined && trim_end !== undefined)
+          ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
 
         ffmpeg_cmd
-          .input(source)
-          .withAudioCodec("aac")
-          .withAudioBitrate(bitrate)
-
           .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
@@ -101,7 +108,7 @@ module.exports = (function () {
             reportProgress(percent);
           })
           .on("end", async () => {
-            return resolve();
+            return resolve(destination);
           })
           .on("error", async (err, stdout, stderr) => {
             dev.error("An error happened: " + err.message);
@@ -115,73 +122,98 @@ module.exports = (function () {
     async convertVideo({
       source,
       destination,
-      quality_preset,
+      image_width,
+      image_height,
+      video_bitrate,
+      audio_bitrate,
+      trim_start,
+      trim_end,
       ffmpeg_cmd,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
-        let resolution, bitrate;
-        if (quality_preset === "high") {
-          resolution = { width: 1920, height: 1080 };
-          bitrate = "4000k";
-        } else if (quality_preset === "medium") {
-          resolution = { width: 1920, height: 1080 };
-          bitrate = "2000k";
+        try {
+          if (video_bitrate === "no_video") destination = destination + ".aac";
+          else destination = destination + ".mp4";
+
+          await utils.convertVideoToStandardFormat({
+            source,
+            destination,
+            image_width,
+            image_height,
+            video_bitrate,
+            audio_bitrate,
+            trim_start,
+            trim_end,
+            ffmpeg_cmd,
+            reportProgress,
+          });
+          return resolve(destination);
+        } catch (err) {
+          dev.error(err);
+          return reject(err);
         }
-
-        await utils.convertVideoToStandardFormat({
-          source,
-          destination,
-          resolution,
-          bitrate,
-          ffmpeg_cmd,
-          reportProgress,
-        });
-
-        return resolve();
       });
     },
   };
 
   async function _saveImage({
     source,
-    addtl_infos = undefined,
+    addtl_infos = {},
     destination,
-    quality_preset,
+    image_width,
+    image_height,
   }) {
+    // check if source has transparency
+
+    let output_format = "jpeg";
+    let quality = global.settings.mediaThumbQuality;
+    let background = "white";
+
+    try {
+      const { hasAlpha } = await sharp(source).metadata();
+      if (hasAlpha) {
+        output_format = "png";
+        quality = 100;
+        background = "transparent";
+      }
+    } catch (err) {}
+
+    destination = destination + "." + output_format;
+
     const sharp_buffer = await sharp(source, addtl_infos)
       .rotate()
-      .toFormat("jpeg", {
-        quality: global.settings.mediaThumbQuality,
-      })
+      // .flatten({ background })
+      .toFormat(output_format, { quality })
       .toBuffer()
       .catch((err) => {
         dev.error(`Failed to sharp create image to destination.`);
         throw err;
       });
 
-    if (quality_preset === "source")
-      await sharp(sharp_buffer).toFile(destination);
-    else if (quality_preset === "high")
+    if (image_width && image_height)
       await sharp(sharp_buffer)
         .resize({
-          width: 1920,
-          height: 1920,
-          fit: "inside",
-          withoutEnlargement: true,
+          width: image_width,
+          height: image_height,
+          fit: "fill",
+          background,
         })
         .toFile(destination);
-    else if (quality_preset === "medium")
+    else if (image_width || image_height)
       await sharp(sharp_buffer)
         .resize({
-          width: 1280,
-          height: 1280,
+          width: image_width,
+          height: image_height,
           fit: "inside",
-          withoutEnlargement: true,
+          background,
         })
         .toFile(destination);
+    else await sharp(sharp_buffer).toFile(destination);
+
+    return destination;
   }
 
   return API;

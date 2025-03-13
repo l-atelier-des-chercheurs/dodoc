@@ -1,16 +1,8 @@
 <template>
-  <div v-if="filtered_suggestions.length > 0">
-    <button
-      type="button"
-      v-if="new_tag_name.length === 0"
-      @click="show_suggestions = !show_suggestions"
-      class="u-buttonLink"
-    >
-      {{ $t("suggestions") }}
-    </button>
-
-    <template v-if="new_tag_name.length > 0 || show_suggestions">
-      <!-- <DLabel :str="$t('suggestions')" /> -->
+  <div>
+    <DLabel :str="$t('suggestions')" />
+    <div v-if="filtered_suggestions.length === 0">–</div>
+    <template v-else>
       <TagsList
         v-if="filtered_suggestions.length > 0"
         :tags="filtered_suggestions"
@@ -22,30 +14,28 @@
   </div>
 </template>
 <script>
-import suggestions from "@/adc-core/fields/TagsSuggestionsList";
-
 export default {
   props: {
     tag_type: String,
+    local_suggestions: Array,
     new_tag_name: String,
     tags_to_exclude: Array,
   },
   components: {},
   data() {
     return {
-      suggestions,
-      show_suggestions: false,
+      suggestions: [],
     };
   },
-  created() {},
+  async created() {
+    if (this.local_suggestions !== undefined)
+      this.suggestions = this.local_suggestions;
+    else this.suggestions = await this.loadSuggestions(this.tag_type);
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
-    new_tag_name() {
-      if (this.new_tag_name === 0) {
-        this.show_suggestions = false;
-      }
-    },
+    new_tag_name() {},
     // suggestions_list(new_suggestions_list, old_suggestions_list) {
     // if (old_suggestions_list.length === 0 && new_suggestions_list.length > 0)
     //   this.show_suggestions = true;
@@ -53,12 +43,8 @@ export default {
   },
   computed: {
     suggestions_list() {
-      const suggestions_by_type = this.suggestions[this.tag_type] || [];
-      return suggestions_by_type.sort((a, b) => {
-        return a.localeCompare(b);
-      });
+      return this.suggestions;
     },
-
     filtered_suggestions() {
       return this.suggestions_list.filter(
         (s) =>
@@ -67,7 +53,23 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    async loadSuggestions(tag_type) {
+      const path = `categories/${tag_type}`;
+      const suggestions = await this.$api
+        .getFolders({
+          path,
+        })
+        .catch((err) => {
+          // probably no suggestions, abort
+          err;
+          return;
+        });
+      return suggestions?.list_of_suggestions
+        ? suggestions.list_of_suggestions
+        : [];
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

@@ -4,10 +4,11 @@
     :is="component_tag"
     :type="component_tag === 'button' ? 'button' : ''"
     :to="author_url"
-    class="_author"
+    :title="author.name"
     :class="{
-      'u-card2': component_tag === 'button' || component_tag === 'link',
+      'u-card2': !show_image_only,
     }"
+    class="_author"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click="$emit('click')"
@@ -39,17 +40,32 @@
       </span>
     </div>
 
-    <b-icon
-      v-if="mode === 'select'"
-      icon="box-arrow-in-right"
-      :aria-label="$t('select')"
-    />
-    <b-icon v-if="mode === 'add'" icon="plus-circle" :aria-label="$t('add')" />
-    <b-icon
-      v-if="mode === 'remove'"
-      icon="x-circle"
-      :aria-label="$t('remove')"
-    />
+    <transition name="pagechange" mode="out-in">
+      <b-icon
+        v-if="mode === 'select'"
+        icon="box-arrow-in-right"
+        :aria-label="$t('select')"
+        :key="'select'"
+      />
+      <b-icon
+        v-else-if="mode === 'add'"
+        icon="plus-circle"
+        :aria-label="$t('add')"
+        :key="'add'"
+      />
+      <b-icon
+        v-else-if="mode === 'remove'"
+        icon="x-circle"
+        :aria-label="$t('remove')"
+        :key="'remove'"
+      />
+      <b-icon
+        v-else-if="mode === 'disable'"
+        icon="x-circle-fill"
+        :aria-label="$t('disable')"
+        :key="'disable'"
+      />
+    </transition>
   </component>
 </template>
 <script>
@@ -95,7 +111,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._author {
-  display: flex;
+  display: inline-flex;
   flex-flow: row nowrap;
   align-items: center;
   // background: var(--c-bleumarine_clair);
@@ -106,6 +122,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
+  // background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);
@@ -113,6 +130,7 @@ export default {
   &:where(button) {
     &:hover,
     &:focus-visible {
+      font-weight: 800;
       background-color: var(--c-gris_clair);
     }
   }

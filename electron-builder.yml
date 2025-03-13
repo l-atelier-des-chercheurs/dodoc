@@ -1,0 +1,50 @@
+appId: "dodoc"
+productName: "do•doc"
+
+electronVersion: "35.0.0"
+asar: true
+asarUnpack:
+  - "content/"
+  - "./node_modules/sharp/**/*"
+  - "./node_modules/@img/**/*"
+  - "./client/dist/"
+icon: build/icon.png
+
+win:
+  artifactName: dodoc-${version}-windows.${ext}
+  target: nsis
+
+nsis:
+  oneClick: true
+  uninstallDisplayName: "do•doc ${version}"
+  createDesktopShortcut: always
+  shortcutName: "do•doc"
+
+mac:
+  artifactName: dodoc-${version}-macos.${ext}
+  category: public.app-category.education
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  provisioningProfile: build/dodoc.provisionprofile
+  extendInfo:
+    NSMicrophoneUsageDescription: Merci d’accorder l’accès au micro pour réaliser des enregistrements.
+    NSCameraUsageDescription: Merci d’accorder l’accès à la caméra pour réaliser des enregistrements.
+    NSScreenCaptureDescription: Merci d’accorder l’accès à l’affichage pour réaliser des enregistrements.
+    com.apple.security.device.audio-input: true
+    com.apple.security.device.camera: true
+
+linux:
+  artifactName: dodoc-${version}-linux.${ext}
+  target: AppImage
+  category: Education
+  icon: build/icons/512x512.png
+  executableName: do•doc
+  executableArgs:
+    - '--js-flags="--max-old-space-size=4096"'
+
+appImage:
+  synopsis: A documentation tool for creativity.
+  category: Game
+  desktop: dodoc-linux-desktop-entry.desktop

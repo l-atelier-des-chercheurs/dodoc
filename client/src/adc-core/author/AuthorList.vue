@@ -63,8 +63,8 @@
           @click.native="$emit('close')"
           class="u-buttonLink"
         >
-          <b-icon icon="person-video2" />
-          {{ $t("show_all_contributors") }}
+          <b-icon icon="person-circle" />
+          {{ $t("show_all_accounts") }}
         </router-link>
       </template>
     </div>
@@ -128,6 +128,7 @@ export default {
     async logout() {
       try {
         this.reponse = await this.$api.logoutFromFolder();
+        window.location.reload();
       } catch (err) {
         this.response = err;
         this.$alertify.delay(4000).error(err);

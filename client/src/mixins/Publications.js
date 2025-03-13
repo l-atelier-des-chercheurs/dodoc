@@ -163,14 +163,13 @@ export default {
         return acc;
       }, []);
     },
-    async createSection2({ publication, type, group, title }) {
-      let additional_meta = {
-        section_type: "-",
-        section_title: title,
-        requested_slug: type,
-      };
-
-      const section_meta_filename = await this.$api
+    async createSection2({
+      publication,
+      group = "sections_list",
+      index,
+      additional_meta = {},
+    }) {
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
           additional_meta,
@@ -181,9 +180,10 @@ export default {
         });
 
       let sections_list = this.getSectionsList({ publication, group }).slice();
-      sections_list.push({
-        meta_filename: section_meta_filename,
-      });
+
+      if (typeof index === "number")
+        sections_list.splice(index, 0, { meta_filename });
+      else sections_list.push({ meta_filename });
 
       await this.$api.updateMeta({
         path: publication.$path,
@@ -192,10 +192,41 @@ export default {
         },
       });
 
-      return section_meta_filename;
+      return meta_filename;
     },
-    async removeSection2({ publication, group, path }) {
-      const section_meta_filename = this.getFilename(path);
+    async duplicateSection2({ publication, og_modules, section }) {
+      const section_index = this.getSectionsList({
+        publication: this.publication,
+        group: "sections_list",
+      }).findIndex((s) => s.meta_filename === this.getFilename(section.$path));
+
+      const new_title = this.$t("copy_of") + " " + section.section_title;
+      const new_section_meta = await this.createSection2({
+        publication: this.publication,
+        type: "section",
+        group: "sections_list",
+        title: new_title,
+        index: section_index + 1,
+      });
+
+      const new_modules_meta = [];
+      for (const og_module of og_modules) {
+        const new_module_meta = await this.duplicateModuleWithSourceMedias({
+          og_module,
+        });
+        new_modules_meta.push(new_module_meta);
+      }
+
+      const section_path = publication.$path + "/" + new_section_meta;
+      await this.$api.updateMeta({
+        path: section_path,
+        new_meta: {
+          modules_list: new_modules_meta,
+        },
+      });
+    },
+    async removeSection2({ publication, group, section }) {
+      const section_meta_filename = this.getFilename(section.$path);
       let sections_list = this.getSectionsList({ publication, group }).slice();
       sections_list = sections_list.filter(
         (f) => f.meta_filename !== section_meta_filename
@@ -208,9 +239,16 @@ export default {
         },
       });
 
-      await this.$api.deleteItem({
-        path,
-      });
+      // remove modules
+      if (section.modules_list) {
+        for (let _module_meta_filename of section.modules_list) {
+          const path = publication.$path + "/" + _module_meta_filename;
+          await this.removeModule2({ publication, path });
+        }
+      }
+
+      // remove section module
+      await this.$api.deleteItem({ path: section.$path });
     },
     async insertModuleMetaFilenamesToList2({
       publication,
@@ -285,21 +323,27 @@ export default {
     },
 
     async removeModule2({ publication, section, path }) {
-      const meta_filename = this.getFilename(path);
+      // remove module from section
+      if (section) {
+        const meta_filename = this.getFilename(path);
+        let modules_list = this.getModulesForSection({
+          publication,
+          section,
+        })
+          .map((m) => m.meta_filename)
+          .slice()
+          .filter((_mf) => _mf !== meta_filename);
+        await this.$api.updateMeta({
+          path: section.$path,
+          new_meta: {
+            modules_list,
+          },
+        });
+      }
 
-      let modules_list = this.getModulesForSection({
-        publication,
-        section,
-      })
-        .map((m) => m.meta_filename)
-        .slice()
-        .filter((_mf) => _mf !== meta_filename);
-      await this.$api.updateMeta({
-        path: section.$path,
-        new_meta: {
-          modules_list,
-        },
-      });
+      this.$api.deleteItem({ path });
+
+      // todo remove media as well if local
     },
 
     getMediasAlreadyPresentInPublication({
@@ -333,8 +377,15 @@ export default {
     async prepareMediaForPublication({
       path_to_source_media_meta,
       publication_path,
+      import_mode = "link",
     }) {
-      if (this.$root.publication_include_mode === "link") {
+      // check if media is already in publication, in which case we do nothing
+      // for dodoc: texts in publi
+      // for lumadoc: texts and images
+      if (this.getParent(path_to_source_media_meta) === this.publication_path)
+        return { meta_filename: this.getFilename(path_to_source_media_meta) };
+
+      if (import_mode === "link") {
         // check if already in parent project
         const parent_project_path_for_media = this.getParent(
           path_to_source_media_meta
@@ -363,7 +414,7 @@ export default {
         }
 
         return { meta_filename_in_project };
-      } else if (this.$root.publication_include_mode === "copy") {
+      } else if (import_mode === "copy") {
         // if copy, we copy media to the local folder and append meta_filename
         const parent_project_path_for_media = this.getParent(
           path_to_source_media_meta
@@ -386,6 +437,11 @@ export default {
 
         return { meta_filename };
       }
+    },
+    getModuleType(t) {
+      if (["ellipsis", "rectangle", "line", "arrow"].includes(t))
+        return "shape";
+      return t;
     },
   },
 };

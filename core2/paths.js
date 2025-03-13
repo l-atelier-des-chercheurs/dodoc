@@ -1,7 +1,7 @@
 module.exports = (function () {
   const API = {
-    getCacheFolder(is_electron) {
-      if (is_electron) {
+    getCacheFolder() {
+      if (global.is_electron) {
         const { app } = require("electron");
         return app.getPath("temp");
       } else {
@@ -9,8 +9,8 @@ module.exports = (function () {
         return getPath.getCacheFolder();
       }
     },
-    getDocumentsFolder(is_electron) {
-      if (is_electron) {
+    getDocumentsFolder() {
+      if (global.is_electron) {
         const { app } = require("electron");
         return app.getPath("documents");
       } else {

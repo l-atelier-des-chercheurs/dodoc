@@ -6,7 +6,7 @@ export default {
       if (this.$route.query)
         query = JSON.parse(JSON.stringify(this.$route.query));
       if (val === false) delete query[prop];
-      else if (val) query[prop] = val;
+      else if (val !== undefined) query[prop] = val;
       this.$router.push({ query });
     },
   },

@@ -17,10 +17,9 @@ export default {
       } catch (err) {
         return false;
       }
-
-      if ($path === "") return `/thumbs/${thumb_path}`;
-
-      return `/thumbs/${$path}/${thumb_path}`;
+      if ($path === "" || window.app_infos.page_is_standalone_html)
+        return `./thumbs/${thumb_path}`;
+      return `./thumbs/${$path}/${thumb_path}`;
     },
     makeURLFromThumbs({ $type, $path, $thumbs, resolution }) {
       if (!$thumbs) return false;
@@ -45,14 +44,29 @@ export default {
         resolution: resolution,
       });
     },
-    makeMediaFilePath({ $path, $media_filename }) {
+    makeMediaFilePath({
+      $path,
+      $media_filename,
+      $date_created,
+      with_timestamp,
+    }) {
+      if (window.app_infos.page_is_standalone_html)
+        return "./medias/" + $media_filename;
+
       const path_to_parent_folder = $path.substring(0, $path.lastIndexOf("/"));
-      const full_path = path_to_parent_folder + "/" + $media_filename;
+      let full_path = "/" + path_to_parent_folder + "/" + $media_filename;
+
+      if (with_timestamp) {
+        let timestamp = +new Date().getTime();
+        if ($date_created) timestamp = +new Date($date_created);
+        full_path += "?v=" + timestamp;
+      }
+
       return full_path;
     },
     makeMediaFileURL({ $path, $media_filename }) {
       const full_path = this.makeMediaFilePath({ $path, $media_filename });
-      return window.location.origin + "/" + full_path;
+      return window.location.origin + full_path;
     },
     getSourceMedia({ source_media, folder_path }) {
       // three cases : source_media contains
@@ -79,7 +93,8 @@ export default {
         meta_filename = this.getFilename(source_media.path);
       }
       if (!source_path) {
-        return this.$alertify.delay(4000).error("couldnt find media");
+        this.$alertify.delay(4000).error("couldnt find media");
+        return;
       }
       return this.getMediaInFolder({ folder_path: source_path, meta_filename });
     },
@@ -92,6 +107,13 @@ export default {
         folder_path = this.getParent(path_to_source_media_meta);
         meta_filename = this.getFilename(path_to_source_media_meta);
       }
+
+      if (window.app_infos.page_is_standalone_html) {
+        return window.folder_data.$files?.find(
+          ({ $path }) => $path === folder_path + "/" + meta_filename
+        );
+      }
+
       return this.$api.store[folder_path]?.$files?.find(
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );
@@ -268,6 +290,7 @@ export default {
 
         ".jpeg",
         ".jpg",
+        ".png",
 
         ".wav",
         ".m4a",
@@ -276,6 +299,17 @@ export default {
         ".aac",
       ];
       return ext.some((e) => path.toLowerCase().endsWith(e));
+    },
+    dataURLtoBlob(dataurl) {
+      var arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
     },
   },
 };

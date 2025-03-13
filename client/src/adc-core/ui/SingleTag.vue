@@ -9,16 +9,37 @@
     :data-mode="mode"
     @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
-    <b-icon class="_picto" :icon="icon_to_show" />
+    <b-icon v-if="icon_to_show" class="_picto" :icon="icon_to_show" />
 
     <span class="_tagName">
       {{ tag_name }}
     </span>
 
     <transition name="pagechange" mode="out-in">
-      <b-icon v-if="mode === 'add'" icon="plus-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'remove'" icon="x-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
+      <b-icon
+        v-if="mode === 'select'"
+        icon="box-arrow-in-right"
+        :aria-label="$t('select')"
+        :key="'select'"
+      />
+      <b-icon
+        v-else-if="mode === 'add'"
+        icon="plus-circle"
+        :aria-label="$t('add')"
+        :key="'add'"
+      />
+      <b-icon
+        v-else-if="mode === 'remove'"
+        icon="x-circle"
+        :aria-label="$t('remove')"
+        :key="'remove'"
+      />
+      <b-icon
+        v-else-if="mode === 'disable'"
+        icon="x-circle-fill"
+        :aria-label="$t('disable')"
+        :key="'disable'"
+      />
     </transition>
   </div>
 </template>
@@ -58,10 +79,11 @@ export default {
       if (this.tag_type === "machines") return "gear-wide-connected";
       if (this.tag_type === "keywords") return "tag";
       if (this.tag_type === "disciplines") return "book";
+      if (this.tag_type === "accountgroup") return "diagram2";
       if (this.tag_type === "status")
         if (this.tag_str === "finished") return "check-circle-fill";
         else if (this.tag_str === "private") return "file-lock2-fill";
-      return "";
+      return false;
     },
   },
   methods: {},
@@ -73,7 +95,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  gap: calc(var(--spacing) / 8);
+  gap: calc(var(--spacing) / 4);
 
   border-radius: 1em;
   font-weight: 400;
@@ -82,7 +104,7 @@ export default {
 
   text-transform: none;
 
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 3);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   background-color: var(--c-gris_clair);
 
   &:not(.is--inactive) {
@@ -112,6 +134,11 @@ export default {
   }
   &[data-tagtype="materials"] {
     background-color: var(--c-bleumarine_clair);
+  }
+  &[data-tagtype="accountgroup"] {
+    // background-color: #edbdff;
+    background-color: var(--c-gris);
+    color: var(--c-noir);
   }
   &[data-tagtype="status"] {
     &[data-tagvalue="finished"] {

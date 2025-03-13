@@ -75,6 +75,17 @@
         :mode="'link'"
       />
     </div>
+
+    <select class="u-spacingBottom">
+      <option value="1">Premier</option>
+      <option value="2">Deuxième</option>
+      <option value="3">Troisième</option>
+    </select>
+    <select class="u-spacingBottom" size="small">
+      <option value="1">Premier</option>
+      <option value="2">Deuxième</option>
+      <option value="3">Troisième</option>
+    </select>
   </div>
 </template>
 <script>
@@ -85,11 +96,6 @@ export default {
     return {
       authors: [],
     };
-  },
-  i18n: {
-    messages: {
-      fr: {},
-    },
   },
   created() {},
   async mounted() {

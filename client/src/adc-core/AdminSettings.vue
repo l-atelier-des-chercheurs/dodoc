@@ -1,38 +1,29 @@
 <template>
-  <BaseModal2 :title="$t('admin_settings')" @close="$emit('close')">
-    <div class="">
+  <BaseModal2
+    :title="$t('admin_settings')"
+    size="x-large"
+    @close="$emit('close')"
+  >
+    <div class="_adminSettings">
       <div class="_spinner" v-if="is_loading" key="loader">
         <LoaderSpinner />
       </div>
       <div v-else>
-        <sl-tab-group ref="tabgroup" @sl-tab-show="newTabShown">
-          <sl-tab slot="nav" panel="informations">
-            {{ $t("informations") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="logo_and_images">
-            {{ $t("logo_and_images") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="administration_and_access_control">
-            {{ $t("administration_and_access_control") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="fonts">
-            {{ $t("fonts") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="events">
-            {{ $t("events") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="pages">
-            {{ $t("pages") }}
-          </sl-tab>
-          <sl-tab slot="nav" panel="storage">
-            {{ $t("storage") }}
-          </sl-tab>
-
-          <sl-tab-panel name="informations">
-            <template v-if="current_tab === 'informations'">
+        <div>
+          <div class="_selectMenu">
+            <SelectField2
+              :value="current_tab"
+              :options="tabs"
+              :can_edit="true"
+              :hide_validation="true"
+              @change="current_tab = $event"
+            />
+          </div>
+          <div class="u-spacingBottom" />
+          <transition name="fade" mode="out-in">
+            <div v-if="current_tab === 'informations'">
               <div class="u-spacingBottom">
                 <TitleField
-                  class="u-spacingBottom"
                   :field_name="'name_of_instance'"
                   :label="$t('name_of_instance')"
                   :instructions="$t('name_of_instance_instructions')"
@@ -46,13 +37,13 @@
 
               <div class="u-spacingBottom">
                 <TitleField
-                  :field_name="'presentation_of_instance'"
                   :label="$t('presentation_of_instance')"
+                  :field_name="'presentation_of_instance'"
                   :instructions="$t('presentation_of_instance_instructions')"
-                  :content="settings.presentation_of_instance"
+                  :input_type="'editor'"
+                  :custom_formats="['bold', 'italic', 'link']"
+                  :content="settings.presentation_of_instance || ''"
                   :path="settings.$path"
-                  :required="false"
-                  :input_type="'markdown'"
                   :can_edit="is_instance_admin"
                 />
               </div>
@@ -72,23 +63,19 @@
 
               <div class="u-instructions">
                 <button type="button" class="u-buttonLink" @click="reloadPage">
-                  {{ $t("refresh_window_to_apply") }}
+                  {{ $t("refresh_window_to_see_changes") }}
                 </button>
               </div>
-            </template>
-          </sl-tab-panel>
-          <sl-tab-panel name="logo_and_images">
-            <template v-if="current_tab === 'logo_and_images'">
+            </div>
+            <div v-else-if="current_tab === 'logo_and_images'">
               <ImagesPanel
                 :settings="settings"
                 :can_edit="is_instance_admin"
                 @reloadPage="reloadPage"
               />
-            </template>
-          </sl-tab-panel>
-          <sl-tab-panel name="administration_and_access_control">
-            <template
-              v-if="current_tab === 'administration_and_access_control'"
+            </div>
+            <div
+              v-else-if="current_tab === 'administration_and_access_control'"
             >
               <AdminsAndContributorsField
                 :folder="settings"
@@ -98,7 +85,8 @@
                 :admin_instructions="$t('instance_admin_instructions')"
                 :contrib_instructions="$t('instance_contrib_instructions')"
               />
-              <br />
+
+              <div class="u-spacingBottom" />
 
               <ToggleField
                 :label="$t('require_signup_to_contribute')"
@@ -107,7 +95,8 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
-              <br />
+
+              <div class="u-spacingBottom" />
 
               <ToggleField
                 :label="$t('require_mail_to_signup')"
@@ -116,7 +105,8 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
-              <br />
+
+              <div class="u-spacingBottom" />
 
               <TitleField
                 :field_name="'general_password'"
@@ -128,7 +118,8 @@
                 :required="false"
                 :can_edit="is_instance_admin"
               />
-              <br />
+
+              <div class="u-spacingBottom" />
 
               <TitleField
                 :field_name="'signup_password'"
@@ -139,18 +130,66 @@
                 :required="false"
                 :can_edit="is_instance_admin"
               />
-              <br />
+
+              <div class="u-spacingBottom" />
+
+              <ToggleField
+                :label="$t('enable_indexing')"
+                :field_name="'enable_indexing'"
+                :content="settings.enable_indexing === true"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+
+              <div class="u-spacingBottom" />
+
+              <div class="_setMaxFileSize">
+                <TitleField
+                  :field_name="'upload_max_file_size_in_mo'"
+                  :label="$t('upload_max_file_size_in_mo')"
+                  :instructions="$t('umo_instructions')"
+                  :content="settings.upload_max_file_size_in_mo"
+                  :path="settings.$path"
+                  :input_type="'number'"
+                  :required="false"
+                  :can_edit="is_instance_admin"
+                />
+
+                <!-- <NumberInput
+                :label="$t('upload_max_file_size_in_mo')"
+                :value="settings.upload_max_file_size_in_mo || 10000"
+                :default_value="10000"
+                :min="0"
+                :max="10000"
+                :suffix="$t('mb')"
+                :size="'medium'"
+                @save="updateUploadMaxFileSizeInMo($event)"
+              /> -->
+              </div>
+
+              <div class="u-spacingBottom" />
+
+              <ToggleField
+                :label="$t('remove_permanently')"
+                :field_name="'remove_permanently'"
+                :content="settings.remove_permanently === true"
+                :path="settings.$path"
+                :options="{
+                  true: $t('remove_permanently_true'),
+                  false: $t('remove_permanently_false'),
+                }"
+                :can_edit="is_instance_admin"
+              />
+
+              <div class="u-spacingBottom" />
+
               <div class="u-instructions">
                 {{ $t("restart_to_apply") }}
               </div>
-            </template>
-          </sl-tab-panel>
-          <sl-tab-panel name="fonts">
-            <FontsPanel v-if="current_tab === 'fonts'" />
-          </sl-tab-panel>
-          <sl-tab-panel name="events">
-            <template v-if="current_tab === 'events'">
-              <div class="">{{ $t("events") }}</div>
+            </div>
+            <FontsPanel v-else-if="current_tab === 'fonts'" />
+            <div v-else-if="current_tab === 'events'">
+              <DLabel :str="$t('events')" />
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
@@ -158,26 +197,26 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
-            </template>
-          </sl-tab-panel>
-          <sl-tab-panel name="pages">
-            <PagesPanel
-              v-if="current_tab === 'pages'"
+            </div>
+            <TermsPanel
+              v-else-if="current_tab === 'terms'"
+              :settings="settings"
               @close="$emit('close')"
             />
-          </sl-tab-panel>
-          <sl-tab-panel name="storage">
+            <PagesPanel
+              v-else-if="current_tab === 'pages'"
+              :settings="settings"
+              @close="$emit('close')"
+            />
+            <SuggestedCategories
+              v-else-if="current_tab === 'suggested_cat_kw'"
+            />
             <PickNativePath
-              v-if="current_tab === 'storage'"
+              v-else-if="current_tab === 'storage'"
               :can_edit="is_instance_admin && $root.app_infos.is_electron"
             />
-            <br />
-            <div class="u-instructions">
-              {{ $t("restart_to_apply") }}
-            </div>
-          </sl-tab-panel>
-        </sl-tab-group>
-
+          </transition>
+        </div>
         <!-- seulement modifiable dans la version appli/electron (à configurer côté code source par le dev dans la version server) -->
 
         <!-- <button type="button" class="u-button" @click="restartDodoc">
@@ -190,7 +229,9 @@
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
 import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
+import TermsPanel from "@/adc-core/ui/TermsPanel.vue";
 import PagesPanel from "@/adc-core/ui/PagesPanel.vue";
+import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
 
 export default {
   props: {
@@ -199,7 +240,9 @@ export default {
   components: {
     FontsPanel,
     ImagesPanel,
+    TermsPanel,
     PagesPanel,
+    SuggestedCategories,
   },
   data() {
     return {
@@ -208,7 +251,42 @@ export default {
       settings: undefined,
       is_loading: true,
 
-      current_tab: "informations",
+      current_tab: this.starting_tab || "informations",
+
+      tabs: [
+        {
+          key: "informations",
+          text: this.$t("informations"),
+        },
+        {
+          text: this.$t("logo_and_images"),
+          key: "logo_and_images",
+        },
+        {
+          text: this.$t("administration_and_access_control"),
+          key: "administration_and_access_control",
+        },
+        {
+          text: this.$t("fonts"),
+          key: "fonts",
+        },
+        {
+          text: this.$t("events"),
+          key: "events",
+        },
+        {
+          text: this.$t("terms"),
+          key: "terms",
+        },
+        {
+          text: this.$t("suggested_cat_kw"),
+          key: "suggested_cat_kw",
+        },
+        {
+          text: this.$t("storage"),
+          key: "storage",
+        },
+      ],
     };
   },
   created() {},
@@ -221,15 +299,8 @@ export default {
         this.is_loading = false;
         return err;
       });
-    this.is_loading = false;
-
-    if (this.starting_tab) {
-      setTimeout(() => {
-        this.$refs.tabgroup.show(this.starting_tab);
-      }, 100);
-    }
-
     this.$api.join({ room: this.settings.$path });
+    this.is_loading = false;
   },
   beforeDestroy() {
     this.$api.leave({ room: this.settings.$path });
@@ -247,7 +318,25 @@ export default {
     newTabShown($event) {
       this.current_tab = $event.detail.name;
     },
+    updateUploadMaxFileSizeInMo(value) {
+      this.$api.updateMeta({
+        path: this.settings.$path,
+        new_meta: { upload_max_file_size_in_mo: value },
+      });
+    },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._selectMenu {
+  max-width: 320px;
+  margin: 0 auto;
+}
+._adminSettings {
+  // margin-top: calc(var(--spacing) / -1);
+  // margin-bottom: calc(var(--spacing) / -1);
+}
+._setMaxFileSize {
+  max-width: 40ch;
+}
+</style>

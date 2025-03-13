@@ -6,16 +6,14 @@
   >
     <div class="_archives" v-if="archives">
       <div class="_topbar">
-        <sl-button
-          variant="default"
-          size="small"
-          pill
+        <button
+          class="u-button u-button_small"
           :disabled="archive_shown_index === 0"
           @click="newerVersion"
         >
           <b-icon icon="arrow-up" />
-          récent
-        </sl-button>
+          {{ $t("recent") }}
+        </button>
 
         <select v-model="selected_archive_filename">
           <option
@@ -32,16 +30,14 @@
           />
         </select>
 
-        <sl-button
-          variant="default"
-          size="small"
-          pill
+        <button
+          class="u-button u-button_small"
           :disabled="archive_shown_index === archives.length - 1"
           @click="olderVersion"
         >
           <b-icon icon="arrow-down" />
-          ancient
-        </sl-button>
+          {{ $t("ancient") }}
+        </button>
       </div>
 
       <transition name="pagechange" mode="out-in" appear>
@@ -52,18 +48,23 @@
           "
           :key="selected_archive_filename"
         >
-          <!-- <DateDisplay :show_detail_initially="true" :date="archive_shown.date" /> -->
-          <div class="_archiveText" v-html="archive_shown.content" />
+          <div class="_archiveText">
+            <CollaborativeEditor2
+              :content="archive_shown.content"
+              :can_edit="false"
+            />
+          </div>
         </div>
       </transition>
     </div>
-    <sl-button
+
+    <SaveCancelButtons
       slot="footer"
-      variant="primary"
-      @click="restoreVersion(archive_shown.content)"
-    >
-      {{ $t("restore_this_version") }}
-    </sl-button>
+      :allow_save="selected_archive_filename !== 'current'"
+      :save_text="$t('restore_this_version')"
+      @save="restoreVersion(archive_shown.content)"
+      @cancel="$emit('close')"
+    />
   </BaseModal2>
 </template>
 <script>
@@ -104,10 +105,10 @@ export default {
   },
   methods: {
     async getAllArchives() {
-      const { $archives } = await this.$api.getArchives({
+      const { $archives } = await this.$api.getFile({
         path: this.path,
       });
-      this.archives = $archives;
+      this.archives = $archives || [];
       this.archives.push({
         filename: "current",
         content: this.current_content,
@@ -150,22 +151,49 @@ export default {
 }
 
 ._topbar {
+  position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 1) 0;
+  background: white;
+  z-index: 1;
   gap: calc(var(--spacing) / 1);
 }
 
 ._archiveText {
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
+  border: 1px solid var(--c-gris_clair);
+  border-radius: 1px;
+
   padding: calc(var(--spacing) / 2);
   width: 100%;
+  overflow-x: auto;
   // max-height: 150px;
   // overflow: auto;
 
   ::v-deep {
-    @import "./imports/mainText.scss";
+    > * {
+      padding: 0;
+      margin: 0;
+    }
+    > img {
+      max-width: 30ch;
+    }
+
+    blockquote {
+      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+      border-radius: 5px;
+      border: none;
+      border-left: 2px solid var(--c-gris);
+      background-color: var(--c-gris_clair);
+    }
+
+    pre.ql-syntax {
+      font-family: Fira Mono;
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

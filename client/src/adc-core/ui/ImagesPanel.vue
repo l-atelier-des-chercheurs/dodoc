@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div class="u-instructions">
+      {{ $t("start_by_uploading_images") }}
+    </div>
+
+    <div class="u-spacingBottom" />
+
     <DLabel :str="$t('images')" />
     <div class="u-spacingBottom">
       <input
@@ -33,10 +39,15 @@
     >
       <div
         class="_imagesList--image"
-        v-for="image in settings.$files"
+        v-for="image in settings_file"
         :key="image.$path"
       >
         <MediaContent :file="image" :context="'preview'" :resolution="640" />
+        <RemoveMenu
+          class="_removeMedia"
+          :show_button_text="false"
+          @remove="removeMedia(image.$path)"
+        />
       </div>
     </div>
 
@@ -46,8 +57,9 @@
         class="u-spacingBottom"
         :key="ptype.key"
       >
-        <DLabel :str="ptype.label" :instructions="ptype.instructions" />
         <RadioCheckboxField
+          :label="ptype.label"
+          :instructions="ptype.instructions"
           :field_name="ptype.key"
           :input_type="'radio'"
           :content="settings[ptype.key]"
@@ -61,6 +73,7 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('hero_background_color')"
+      :allow_transparent="true"
       :value="settings.hero_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'hero_background_color' })"
     />
@@ -68,13 +81,14 @@
     <ColorInput
       class="u-spacingBottom"
       :label="$t('text_background_color')"
+      :allow_transparent="true"
       :value="settings.text_background_color"
       @save="saveNewHeroBgColor({ $event, field: 'text_background_color' })"
     />
 
     <div class="u-spacingBottom">
-      <DLabel :str="$t('text_image_layout')" />
       <RadioCheckboxField
+        :label="$t('text_image_layout')"
         :field_name="'text_image_layout'"
         :input_type="'radio'"
         :content="settings['text_image_layout']"
@@ -86,7 +100,7 @@
 
     <div class="u-instructions">
       <button type="button" class="u-buttonLink" @click="$emit('reloadPage')">
-        {{ $t("refresh_window_to_apply") }}
+        {{ $t("refresh_window_to_see_changes") }}
       </button>
     </div>
   </div>
@@ -144,6 +158,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    settings_file() {
+      return this.settings?.$files;
+    },
     editing_options() {
       if (!this.settings.$files || this.settings.$files.length === 0) return [];
 
@@ -197,6 +214,11 @@ export default {
         },
       });
     },
+    async removeMedia(path) {
+      await this.$api.deleteItem({
+        path,
+      });
+    },
   },
 };
 </script>
@@ -220,6 +242,7 @@ export default {
   padding: calc(var(--spacing) / 4);
 }
 ._imagesList--image {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
 
@@ -237,5 +260,15 @@ export default {
       max-width: none;
     }
   }
+}
+._removeMedia {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -8,7 +8,9 @@ const path = require("path"),
   sharp = require("sharp"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
-  crypto = require("crypto");
+  exifr = require("exifr"),
+  crypto = require("crypto"),
+  archiver = require("archiver");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -33,6 +35,11 @@ module.exports = (function () {
     getPathToUserContent(...paths) {
       return path.join(global.pathToUserContent, ...paths);
     },
+    getBinFolder(p) {
+      const pre = p.substr(0, p.lastIndexOf(path.sep));
+      const post = p.substr(p.lastIndexOf(path.sep) + 1);
+      return path.join(pre, global.settings.deletedFolderName, post);
+    },
     getPathToCache(...paths) {
       return path.join(global.pathToCache, ...paths);
     },
@@ -41,6 +48,11 @@ module.exports = (function () {
       const full_path_to_folder_in_cache = API.getPathToCache(folder_name);
       await fs.ensureDir(full_path_to_folder_in_cache);
       return full_path_to_folder_in_cache;
+    },
+    async createUniqueFilenameInCache(ext) {
+      let folder_name = await API.createUniqueFolderInCache();
+      let filename = ext ? `document.${ext}` : "document";
+      return path.join(folder_name, filename);
     },
     createUniqueName(prefix = "prefix") {
       return `${prefix}_${+API.getCurrentDate()}-${(
@@ -159,6 +171,8 @@ module.exports = (function () {
         $public: { type: "boolean" },
         $admins: { type: "any" },
         $preview: { type: "string" },
+        $credits: { type: "string" },
+        $location: { type: "object" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },
@@ -258,7 +272,37 @@ module.exports = (function () {
       return results;
     },
 
-    async handleForm({ path_to_folder, destination_full_folder_path, req }) {
+    createZIPFromFolder({ full_path_to_folder }) {
+      return new Promise((resolve, reject) => {
+        const containing_folder = API.getContainingFolder(full_path_to_folder);
+        const folder_name = API.getFilename(full_path_to_folder);
+        const path_to_zip = path.join(containing_folder, `${folder_name}.zip`);
+
+        const output = fs.createWriteStream(path_to_zip);
+        const archive = archiver("zip", {
+          zlib: { level: 0 },
+        });
+        archive.on("warning", (err) => {
+          throw err;
+        });
+        archive.on("error", function (err) {
+          dev.error(`Failed to create ZIP from folder: ${err}`);
+          return reject(err);
+        });
+        archive.on("finish", function () {
+          return resolve(path_to_zip);
+        });
+        archive.pipe(output);
+        archive.directory(full_path_to_folder, false);
+        archive.finalize();
+      });
+    },
+    async handleForm({
+      path_to_folder,
+      destination_full_folder_path,
+      req,
+      upload_max_file_size_in_mo = 10_000,
+    }) {
       dev.logfunction({ path_to_folder, destination_full_folder_path });
 
       if (
@@ -273,7 +317,7 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
-          maxFileSize: global.settings.maxFileSizeInMoForUpload * 1024 * 1024,
+          maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
         let file = null;
@@ -296,9 +340,22 @@ module.exports = (function () {
 
         form
           .on("error", (err) => {
-            return reject(err);
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            } else {
+              return reject(err);
+            }
           })
           .on("aborted", (err) => {
+            if (err.code === 1009) {
+              dev.error(
+                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+              );
+              return reject("file_size_limit_exceeded");
+            }
             return reject(err);
           });
 
@@ -359,11 +416,11 @@ module.exports = (function () {
             throw err;
           });
     },
-    async convertAndCopyImage({ source, destination, resolution }) {
+    async convertAndCopyImage({ source, destination, width, height }) {
       await sharp(source)
         .rotate()
         .flatten({ background: "white" })
-        .resize(resolution.width, resolution.height, {
+        .resize(width, height, {
           fit: "contain",
           withoutEnlargement: false,
           background: "black",
@@ -393,7 +450,7 @@ module.exports = (function () {
       const schema = global.settings.schema;
 
       let items_in_path =
-        relative_path.length === 0 ? [] : relative_path.split("/");
+        relative_path.length === 0 ? [] : relative_path.split(path.sep);
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
 
       // –––   / => schema (admin settings)
@@ -444,11 +501,6 @@ module.exports = (function () {
       throw new Error(`no_schema_for_folder`);
     },
 
-    cleanReqPath(path) {
-      let p = path.substring(7);
-      if (p.endsWith("/")) p = p.slice(0, -1);
-      return p;
-    },
     endsWithAny(suffixes, string) {
       return suffixes.some(function (suffix) {
         return string.endsWith(suffix);
@@ -467,27 +519,39 @@ module.exports = (function () {
 
       const obj = {};
 
-      if (subsub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}`;
-      else if (sub_folder_type)
-        obj.path_to_type = `${folder_type}/${folder_slug}/${sub_folder_type}`;
-      else if (folder_type) obj.path_to_type = `${folder_type}`;
+      let path_to_type = [];
+      if (folder_type) {
+        path_to_type.push(folder_type);
+        if (sub_folder_type) {
+          path_to_type.push(folder_slug, sub_folder_type);
+          if (subsub_folder_type)
+            path_to_type.push(sub_folder_slug, subsub_folder_type);
+        }
+      }
+      obj.path_to_type = path.join(...path_to_type);
 
-      if (subsub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}/${subsub_folder_type}/${subsub_folder_slug}`;
-      else if (sub_folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
-      else if (folder_slug)
-        obj.path_to_folder = `${folder_type}/${folder_slug}`;
+      let path_to_folder = [];
+      if (folder_slug) {
+        path_to_folder.push(folder_type, folder_slug);
+        if (sub_folder_slug) {
+          path_to_folder.push(sub_folder_type, sub_folder_slug);
+          if (subsub_folder_slug)
+            path_to_folder.push(subsub_folder_type, subsub_folder_slug);
+        }
+      }
+      obj.path_to_folder = path.join(...path_to_folder);
 
-      if (subsub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}/${sub_folder_type}/${sub_folder_slug}`;
-      else if (sub_folder_slug)
-        obj.path_to_parent_folder = `${folder_type}/${folder_slug}`;
+      let path_to_parent_folder = [];
+      if (sub_folder_slug) {
+        path_to_parent_folder.push(folder_type, folder_slug);
+        if (subsub_folder_slug)
+          path_to_parent_folder.push(sub_folder_type, sub_folder_slug);
+      }
+      obj.path_to_parent_folder = path.join(...path_to_parent_folder);
 
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
-        obj.path_to_meta = `${obj.path_to_folder}/${meta_filename}`;
+        obj.path_to_meta = path.join(obj.path_to_folder, meta_filename);
       }
 
       if (req.body) obj.data = req.body;
@@ -513,18 +577,18 @@ module.exports = (function () {
       return submitted_password_with_salt === stored_password_with_salt;
     },
 
-    getSlugFromPath(path) {
-      return path.split("/").at(-1);
+    getSlugFromPath(p) {
+      return path.basename(p);
     },
-    getContainingFolder(path) {
-      return path.substring(0, path.lastIndexOf("/"));
+    getContainingFolder(p) {
+      return path.dirname(p);
     },
-    getFolderParent(path) {
-      if (!path) return false;
-      let paths = path.split("/");
+    getFolderParent(p) {
+      if (!p) return false;
+      let paths = p.split(path.sep);
       if (paths.length >= 2) {
         paths = paths.slice(0, -2);
-        return paths.join("/");
+        return paths.join(path.sep);
       }
       return false;
     },
@@ -535,8 +599,8 @@ module.exports = (function () {
       }
       return false;
     },
-    getFilename(path) {
-      return path.substring(path.lastIndexOf("/") + 1);
+    getFilename(p) {
+      return p.substring(p.lastIndexOf(path.sep) + 1);
     },
     hashCode(s) {
       return (
@@ -548,9 +612,9 @@ module.exports = (function () {
       );
     },
     remap(val, in_min, in_max, out_min, out_max) {
-      return (
-        ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min
-      );
+      const new_val =
+        ((val - in_min) * (out_max - out_min)) / (in_max - in_min) + out_min;
+      return Math.min(Math.max(new_val, out_min), out_max);
     },
     fileExtensionIs(media_path, ext) {
       const exts = typeof ext === "string" ? [ext] : ext;
@@ -563,8 +627,12 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      bitrate = "6000k",
-      resolution,
+      image_width,
+      image_height,
+      video_bitrate = "4000k",
+      audio_bitrate = "192k",
+      trim_start,
+      trim_end,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
@@ -574,25 +642,34 @@ module.exports = (function () {
         let totalTime;
 
         ffmpeg_cmd.input(source);
-        const { duration, streams } = await API.getVideoDurationFromMetadata({
-          ffmpeg_cmd,
-          video_path: source,
-        });
 
-        if (duration) ffmpeg_cmd.duration(duration);
+        try {
+          const { duration, streams } = await API.getVideoDurationFromMetadata({
+            ffmpeg_cmd,
+            video_path: source,
+          });
+          if (trim_start !== undefined && trim_end !== undefined)
+            ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+          else if (duration) ffmpeg_cmd.duration(duration);
 
-        // check if has audio track or not
-        if (streams?.some((s) => s.codec_type === "audio"))
-          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
-        else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          if (audio_bitrate === "no_audio") {
+            ffmpeg_cmd.noAudio();
+          } else {
+            if (streams?.some((s) => s.codec_type === "audio")) {
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+            } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
-        const filter = API.makeFilterToPadMatchDurationAudioVideo({ streams });
-        if (filter) ffmpeg_cmd.addOptions([filter]);
-
-        if (resolution)
-          ffmpeg_cmd.videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-          ]);
+            if (streams) {
+              const filter = API.makeFilterToPadMatchDurationAudioVideo({
+                streams,
+              });
+              if (filter) ffmpeg_cmd.addOptions([filter]);
+            }
+          }
+        } catch (err) {
+          dev.error(err);
+          ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+        }
 
         // if (streams?.some((s) => s.codec_type === "audio"))
         // if (temp_video_volume) {
@@ -614,13 +691,24 @@ module.exports = (function () {
           ffmpeg_cmd.toFormat("mpegts");
         }
 
+        if (video_bitrate === "no_video") {
+          ffmpeg_cmd.noVideo();
+        } else {
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(["setsar=1/1"]);
+          if (image_width && image_height) {
+            ffmpeg_cmd.videoFilter([
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
+            ]);
+          }
+        }
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
-          .withVideoCodec("libx264")
-          .withVideoBitrate(bitrate)
           .addOptions(flags)
-          .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
@@ -630,6 +718,7 @@ module.exports = (function () {
           .on("progress", (progress) => {
             if (reportProgress) {
               const time = parseInt(progress.timemark.replace(/:/g, ""));
+              if (time < 0 || time > totalTime) return;
               const percent = (time / totalTime) * 100;
               reportProgress(percent);
             }
@@ -657,6 +746,16 @@ module.exports = (function () {
         });
       });
     },
+    hasAudioTrack({ ffmpeg_cmd, video_path }) {
+      return new Promise(async (resolve, reject) => {
+        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
+          return resolve(
+            metadata?.streams?.filter((s) => s.codec_type === "audio").length >
+              0
+          );
+        });
+      });
+    },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
       const audio_stream = streams.find((s) => s.codec_type === "audio");
@@ -673,6 +772,33 @@ module.exports = (function () {
         }
       }
       return false;
+    },
+
+    async getGPSFromFile(full_media_path) {
+      return await exifr.gps(full_media_path);
+    },
+
+    convertToSlashPath(p) {
+      return p.replaceAll(path.sep, "/");
+    },
+    convertToLocalPath(p) {
+      return p.replaceAll("/", path.sep);
+    },
+    async testWriteFileInFolder(folder_path) {
+      dev.logfunction({ folder_path });
+      const path_to_test_file = path.join(folder_path, "__test.txt");
+      const created_on_date = API.getCurrentDate();
+      await fs.ensureDir(folder_path);
+      await writeFileAtomic(
+        path_to_test_file,
+        `Test file created and immediately deleted by dodoc while starting, on ${created_on_date}.`
+      );
+      await fs.remove(path_to_test_file);
+      return;
+    },
+    addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
     },
   };
 

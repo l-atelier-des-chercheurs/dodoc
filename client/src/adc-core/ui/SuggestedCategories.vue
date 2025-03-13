@@ -6,9 +6,12 @@
           v-for="category in categories"
           :key="category.$path"
           class="_categoryRow"
+          :style="categoryStyles(category)"
         >
-          <div class="_title" :style="categoryStyles(category)">
-            {{ category.title }}
+          <div class="_title">
+            <strong>{{ category.title }}</strong> ({{
+              getCatSuggLength(category)
+            }})
           </div>
           <button
             type="button"
@@ -22,6 +25,7 @@
       <button
         type="button"
         class="u-buttonLink"
+        v-if="missing_suggested_categories.length > 0"
         :class="{
           'is--active': show_create_category,
         }"
@@ -30,33 +34,30 @@
         {{ $t("add_category") }}
       </button>
 
-      <form
-        class="input-validation-required"
-        v-if="show_create_category"
-        @submit.prevent="createCategory"
-      >
+      <form class="input-validation-required" v-if="show_create_category">
         <fieldset>
-          <legend class="u-label">{{ $t("add_category") }}</legend>
-
-          <TextInput
-            class="u-spacingBottom"
-            :content.sync="new_category_title"
-            :label_str="'category_name'"
-            :required="true"
-            :input_type="'text'"
-          />
-          <div class="u-instructions">
-            <small> Tout en majuscule </small>
+          <legend class="u-label">
+            {{ $t("create_suggestion_list_for") }}
+          </legend>
+          <div class="u-sameRow">
+            <button
+              type="button"
+              v-for="cat in missing_suggested_categories"
+              :key="cat.key"
+              class="u-button u-button_bleuvert"
+              @click="createCategory(cat)"
+            >
+              {{ cat.label }}
+            </button>
           </div>
-
-          <button
+          <!-- <button
             slot="footer"
             class="u-button u-button_bleuvert"
             :disabled="new_category_title.length === 0"
             type="submit"
           >
             {{ $t("create") }}
-          </button>
+          </button> -->
         </fieldset>
       </form>
     </template>
@@ -83,7 +84,24 @@ export default {
 
       opened_category_path: false,
 
-      new_category_title: "",
+      suggestion_list_cat: [
+        {
+          key: "machines",
+          label: this.$t("machines"),
+        },
+        {
+          key: "materials",
+          label: this.$t("materials"),
+        },
+        {
+          key: "keywords",
+          label: this.$t("keywords"),
+        },
+        {
+          key: "accountgroup",
+          label: this.$t("account_group"),
+        },
+      ],
 
       path: "categories",
     };
@@ -104,18 +122,27 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    missing_suggested_categories() {
+      return this.suggestion_list_cat.filter((c) => {
+        return !this.categories?.some((_c) => _c.$path.endsWith("/" + c.key));
+      });
+    },
+  },
   methods: {
-    async createCategory() {
+    async createCategory(cat) {
       const slug = await this.$api.createFolder({
         path: this.path,
         additional_meta: {
-          title: this.new_category_title.toUpperCase(),
-          requested_slug: this.new_category_title,
+          title: cat.label,
+          requested_slug: cat.key,
           $status: "public",
         },
       });
       this.openCategory(this.path + "/" + slug);
+    },
+    getCatSuggLength(cat) {
+      return cat.list_of_suggestions?.length || 0;
     },
     openCategory(path) {
       this.opened_category_path = path;
@@ -123,7 +150,7 @@ export default {
     categoryStyles(category) {
       if (category.tag_color)
         return `
-        color: ${category.tag_color}
+        --cat-color: ${category.tag_color}
       `;
       return "";
     },
@@ -140,8 +167,6 @@ export default {
 }
 
 ._title {
-  background: var(--c-noir);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-  border-radius: 4px;
+  background: var(--cat-color, #ffffff);
 }
 </style>

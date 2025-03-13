@@ -14,50 +14,29 @@
       class="_popup"
       :class="{
         'is--pin': clicked_location.module,
+        'is--shown': has_module_content_to_show,
       }"
-      v-show="clicked_location.module || $slots.hasOwnProperty('popup_message')"
     >
       <div class="_popupShadow" />
+      <button
+        type="button"
+        class="u-button u-button_transparent u-button_icon _popupClose"
+        ref="closePopup"
+        @click="closePopup"
+      >
+        <b-icon icon="x-circle-fill" />
+      </button>
+
       <div
         class="_popup--content"
         :key="clicked_location.latitude + '-' + clicked_location.longitude"
       >
-        <button
-          type="button"
-          class="u-button u-button_icon _popupClose"
-          ref="closePopup"
-          @click="closePopup"
-        >
-          <b-icon icon="x-circle-fill" />
-        </button>
-
         <div
           v-if="clicked_location.module"
           :key="clicked_location.module.$path"
           class="_pinContent"
-        >
-          <!-- <PublicationModule
-            :publimodule="clicked_location.module"
-            :can_edit="false"
-          /> -->
-          <!-- <MediaContent
-            :file="clicked_location.file"
-            :is_draggable="false"
-            :resolution="1600"
-            :context="'full'"
-            :show_fs_button="true"
-          /> -->
-        </div>
+        ></div>
 
-        <!-- <div class="u-instructions">
-          <small>
-            <span class="complementaryText"> {{ $t("latitude") }} = </span>
-            {{ clicked_location.latitude }}°
-            <br />
-            <span class="complementaryText"> {{ $t("longitude") }} = </span>
-            {{ clicked_location.longitude }}°
-          </small>
-        </div> -->
         <div
           v-if="popup_message"
           class="_popupMessage"
@@ -76,6 +55,13 @@
     <div id="mouse-position" />
 
     <div class="_leftTopMenu">
+      <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
+        <!-- hidden if electron, need to find alternative strategy -->
+        <button type="button" class="u-button" @click="getCurrentPosition">
+          <b-icon class="inlineSVG" icon="disc-fill" />
+        </button>
+      </div>
+
       <div class="_buttonRow">
         <button type="button" class="u-button" @click="zoomIn">
           <b-icon class="inlineSVG" icon="plus" />
@@ -85,7 +71,10 @@
         </button>
       </div>
 
-      <div class="_buttonRow" v-if="map_baselayer !== 'image'">
+      <div
+        class="_buttonRow"
+        v-if="!['image', 'color'].includes(map_baselayer)"
+      >
         <button type="button" class="u-button" @click="toggleSearch">
           <b-icon class="inlineSVG" icon="search" />
         </button>
@@ -191,6 +180,7 @@
                 :can_toggle="false"
                 :live_editing="true"
                 :label="$t('outline_color')"
+                :allow_transparent="true"
                 :value="selected_feature.get('stroke_color')"
                 :default_value="opened_view_color"
                 @save="
@@ -205,6 +195,7 @@
                 v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
                 :can_toggle="false"
                 :live_editing="true"
+                :allow_transparent="true"
                 :label="$t('background_color')"
                 :value="selected_feature.get('fill_color')"
                 @save="
@@ -216,7 +207,7 @@
               />
 
               <RangeValueInput
-                class="_strokeWidth"
+                class="u-spacingBottom _strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -313,13 +304,7 @@ export default {
     pins: Array,
     lines: Object,
     geometries: Array,
-    // start_coords: {
-    //   type: [Boolean, Object],
-    // },
-    start_zoom: {
-      type: [Boolean, Number],
-      default: 2,
-    },
+    start_zoom: Number,
     map_baselayer: {
       type: String,
       default: "OSM",
@@ -332,6 +317,11 @@ export default {
       type: Number,
       default: 1,
     },
+    zoom_animation: {
+      type: Number,
+      default: 0,
+    },
+    map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
       type: Boolean,
@@ -343,9 +333,9 @@ export default {
     },
     opened_view_color: String,
     opened_pin_path: String,
-    can_add_media_to_point: {
+    can_click: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     can_edit: Boolean,
   },
@@ -365,6 +355,8 @@ export default {
         longitude: undefined,
         module: undefined,
       },
+
+      is_looking_for_gps_coords: false,
 
       pin_features: undefined,
       line_features: undefined,
@@ -452,53 +444,6 @@ export default {
       start_map_print: false,
     };
   },
-  i18n: {
-    messages: {
-      fr: {
-        lines: "Droites",
-        freehand: "Tracé libre",
-        circle: "Cercle",
-        polygon: "Polygone",
-        select: "Sélection",
-
-        mouse_position: "Position de la balise",
-        search_for_a_place: "Rechercher un lieu",
-        click_to_start_drawing: "cliquer pour commencer le tracé",
-        click_to_continue_drawing: "cliquez pour ajouter un autre point",
-        click_drag_to_draw_line: "cliquer-glisser pour dessiner une ligne",
-        click_to_place_center: "cliquer pour placer le centre",
-        click_to_define_circle_radius: "cliquer pour définir le rayon",
-        click_to_place_first_point: "cliquer pour placer le premier point",
-        finish_drawing: "Terminer le dessin",
-        or_double_click: "Ou double-cliquez sur la carte",
-        drag_to_modify: "cliquer-glisser pour modifier",
-
-        select_by_clicking: "sélectionner une forme en cliquant dessus",
-        move_drawing: "cliquer-glisser pour déplacer la forme",
-      },
-      en: {
-        lines: "Lines",
-        freehand: "Path",
-        circle: "Circle",
-        polygon: "Polygon",
-        select: "Select",
-
-        search_for_a_place: "Search for a place",
-        click_to_start_drawing: "click to start drawing",
-        click_to_continue_drawing: "click to continue drawing",
-        click_drag_to_draw_line: "click and hold to draw",
-        click_to_place_center: "click to place center",
-        click_to_define_circle_radius: "click to set circle radius",
-        click_to_place_first_point: "click to draw first point",
-        finish_drawing: "End drawing",
-        or_double_click: "Or double click for the last point",
-        drag_to_modify: "click and hold to modify",
-
-        select_by_clicking: "select by clicking",
-        move_drawing: "click and hold to draw",
-      },
-    },
-  },
   created() {
     this.$eventHub.$on("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$on("publication.map.openPin", this.openPin);
@@ -556,12 +501,20 @@ export default {
       if (this.opened_pin_path) this.openFeature(this.opened_pin_path);
       else this.closePopup();
     },
+    current_zoom() {
+      this.$emit("zoomUpdated", this.current_zoom);
+    },
   },
   computed: {
     map_styles() {
-      return {
-        "--current-view-color": this.opened_view_color,
-      };
+      let styles = {};
+      if (this.opened_view_color)
+        styles["--current-view-color"] = this.opened_view_color;
+      if (this.map_baselayer_color)
+        styles["--map-background-color"] = this.map_baselayer_color;
+      // if (this.map_baselayer === "color" && this.map_baselayer_color)
+      //   styles["--map-background-color"] = this.map_baselayer_color;
+      return styles;
     },
     default_pin_svg() {
       const svg = `<svg enable-background="new 0 0 100 100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" width="30" height="30">
@@ -583,24 +536,28 @@ export default {
       if (!this.selected_feature) return undefined;
       return this.selected_feature.getGeometry().getType();
     },
+    has_module_content_to_show() {
+      if (!this.clicked_location.module)
+        return Object.prototype.hasOwnProperty.call(
+          this.$slots,
+          "popup_message"
+        );
+
+      // do not show empty text blocks
+      const fm = this.firstMedia(this.clicked_location.module);
+      if (
+        !fm ||
+        (fm.$type === "text" && (fm.$content === "" || fm.$content === "\n"))
+      )
+        return false;
+
+      return true;
+    },
   },
   methods: {
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = 6;
       let center;
-
-      // if (this.start_coords?.longitude && this.start_coords?.latitude)
-      //   center = [this.start_coords.longitude, this.start_coords.latitude];
-      // else
-      //  if (
-      //   this.pins &&
-      //   this.pins.length > 0 &&
-      //   this.pins[0] &&
-      //   this.pins[0].longitude &&
-      //   this.pins[0].latitude
-      // ) {
-      //   center = [this.pins[0].longitude, this.pins[0].latitude];
-      // }
 
       // destroy map if exist
       if (this.map) {
@@ -696,7 +653,9 @@ export default {
         })
       );
 
-      const fs_option = new olFullScreen();
+      const fs_option = new olFullScreen({
+        source: this.$el,
+      });
       this.map.addControl(fs_option);
 
       ////////////////////////////////////////////////////////////////////////// SCALELINE
@@ -710,8 +669,8 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SEARCH FIELD
 
-      let lang = "fr-FR";
-      if (this.$i18n.locale === "en") lang = "en-US";
+      let lang = "en-US";
+      if (this.$i18n.locale === "fr") lang = "fr-FR";
 
       const geocoder = new Geocoder("nominatim", {
         provider: "osm",
@@ -720,36 +679,82 @@ export default {
         placeholder: this.$t("search_for_a_place"),
         // targetType: "text-input",
         limit: 5,
-        keepOpen: false,
+        keepOpen: true,
         preventDefault: true,
       });
       this.map.addControl(geocoder);
+
+      let search_timeout;
+      const startTimeout = () => {
+        console.log("startTimeout");
+        search_timeout = setTimeout(() => {
+          clearTimeout(search_timeout);
+          this.$alertify.error(this.$t("no_results"));
+        }, 2000);
+      };
+
+      const search_button = document.querySelector(
+        ".ol-geocoder #gcd-input-search"
+      );
+      if (search_button) search_button.addEventListener("click", startTimeout);
+
+      const search_input = document.querySelector(
+        ".ol-geocoder #gcd-input-query"
+      );
+      if (search_input)
+        search_input.addEventListener("keyup", function (e) {
+          if (e.key === "Enter" || e.keyCode === 13) {
+            startTimeout();
+          }
+        });
+
       geocoder.on("addresschosen", async (evt) => {
+        if (search_timeout) clearTimeout(search_timeout);
+
         this.closePopup();
 
         await this.$nextTick();
 
-        if (evt.place?.lon && evt.place?.lat) {
-          this.clicked_location.latitude = +evt.place.lat;
-          this.clicked_location.longitude = +evt.place.lon;
-          const coordinate = [
-            this.clicked_location.longitude,
-            this.clicked_location.latitude,
-          ];
+        const place = evt.place;
 
-          this.$emit("newPositionClicked", {
-            longitude: this.clicked_location.longitude,
-            latitude: this.clicked_location.latitude,
-            zoom: this.current_zoom,
+        if (place?.lon && place?.lat) {
+          const longitude = +place.lon;
+          const latitude = +place.lat;
+          await this.setClickBtn({
+            longitude,
+            latitude,
           });
+
+          // not working, but should
+
+          let { bbox } = place;
+          if (bbox) {
+            const feature1 = new olFeature({
+              geometry: new olPoint([parseFloat(bbox[3]), parseFloat(bbox[0])]),
+            });
+            const feature2 = new olFeature({
+              geometry: new olPoint([parseFloat(bbox[2]), parseFloat(bbox[1])]),
+            });
+            const features = new olSourceVector({
+              wrapX: false,
+            });
+            features.addFeature(feature1);
+            features.addFeature(feature2);
+            const extent = features.getExtent();
+
+            this.map
+              .getView()
+
+              .fit(extent, {
+                padding: [50, 50, 50, 50],
+              });
+          } else {
+            this.navigateTo({
+              center: [longitude, latitude],
+            });
+          }
 
           this.popup_message = evt.address.formatted;
-
-          this.overlay.setPosition(coordinate);
-
-          this.navigateTo({
-            center: [+evt.place.lon, +evt.place.lat],
-          });
         }
       });
 
@@ -788,23 +793,11 @@ export default {
         if (pin_path && type_of_pin === "media") {
           this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`);
           this.openPin(pin_path);
-        } else {
-          this.$emit("newPositionClicked", {
-            longitude,
-            latitude,
-            zoom: this.current_zoom,
-          });
-          this.$eventHub.$emit("publication.map.click", {
+        } else if (this.can_click) {
+          this.setClickBtn({
             longitude,
             latitude,
           });
-          this.mouse_feature
-            .getGeometry()
-            .setCoordinates([longitude, latitude]);
-
-          this.overlay.setPosition([longitude, latitude]);
-          this.clicked_location.longitude = longitude;
-          this.clicked_location.latitude = latitude;
         }
       });
 
@@ -830,13 +823,21 @@ export default {
           extent = this.map.getView().getProjection().getExtent();
         }
 
-        if (extent)
+        if (extent) {
+          let padding =
+            this.map_baselayer === "image" ? [0, 0, 0, 0] : [50, 50, 50, 50];
           this.map.getView().fit(extent, {
-            padding: [50, 50, 50, 50],
+            padding,
           });
+        }
 
-        // prevent zoom from being too high (even though it may be correct for the extent)
-        if (this.map_baselayer !== "image" && this.map.getView().getZoom() > 15)
+        if (this.start_zoom) {
+          this.map.getView().setZoom(this.start_zoom);
+        } else if (
+          // prevent zoom from being too high (even though it may be correct for the extent)
+          this.map_baselayer !== "image" &&
+          this.map.getView().getZoom() > 15
+        )
           this.map.getView().setZoom(15);
       }
     },
@@ -849,6 +850,57 @@ export default {
       var view = this.map.getView();
       var zoom = view.getZoom();
       view.setZoom(zoom - 1);
+    },
+    async setClickBtn({ longitude, latitude }) {
+      this.$emit("newPositionClicked", {
+        longitude,
+        latitude,
+        zoom: this.current_zoom,
+      });
+      this.$eventHub.$emit("publication.map.click", {
+        longitude,
+        latitude,
+      });
+      this.mouse_feature.getGeometry().setCoordinates([longitude, latitude]);
+
+      this.overlay.setPosition([longitude, latitude]);
+      this.clicked_location.longitude = longitude;
+      this.clicked_location.latitude = latitude;
+
+      setTimeout(() => {
+        this.navigateTo({
+          center: [longitude, latitude],
+        });
+      }, 100);
+    },
+    getCurrentPosition() {
+      this.is_looking_for_gps_coords = true;
+      var options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+      const success = async (pos) => {
+        var crd = pos.coords;
+        this.is_looking_for_gps_coords = false;
+        await this.setClickBtn({
+          longitude: crd.longitude,
+          latitude: crd.latitude,
+        });
+        this.navigateTo({
+          center: [crd.longitude, crd.latitude],
+        });
+      };
+      const error = (err) => {
+        this.$alertify
+          .delay(4000)
+          .error(
+            `Échec de la localisation de votre appareil.<br>(${err.code}): ${err.message}`
+          );
+        this.is_looking_for_gps_coords = false;
+      };
+      // not working in Electron, use something like http://ip-api.com/json https://www.reddit.com/r/electronjs/comments/hbxick/comment/fvq96v6/?utm_source=reddit&utm_medium=web2x&context=3 ?
+      navigator.geolocation.getCurrentPosition(success, error, options);
     },
     toggleSearch() {
       this.$el.querySelector("#gcd-button-control").click();
@@ -897,6 +949,42 @@ export default {
           }),
           className: "ol-layer ol-basemap",
         });
+      } else if (this.map_baselayer === "color") {
+        const img_width = 2000;
+        const img_height = 2000;
+
+        const extent = [0, 0, img_width, img_height];
+        const projection = new olProjection({
+          code: "solid-color",
+          units: "pixels",
+          extent,
+        });
+        center = getCenter(extent);
+        zoom = 1;
+
+        var canvas = document.createElement("canvas");
+        canvas.width = img_width;
+        canvas.height = img_height;
+        // var ctx = canvas.getContext("2d");
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, img_width, img_height);
+        var imageDataURL = canvas.toDataURL();
+
+        view = new olView({
+          projection,
+          center,
+          zoom,
+          maxZoom: 6,
+        });
+        background_layer = new olImageLayer({
+          source: new olStatic({
+            // attributions,
+            url: imageDataURL,
+            projection,
+            imageExtent: extent,
+          }),
+          className: "ol-layer ol-basemap",
+        });
       } else {
         // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
@@ -914,6 +1002,10 @@ export default {
         background_layer = new olTileLayer({
           source,
           className: "ol-layer ol-basemap",
+        });
+        background_layer.getSource().on("tileloaderror", (err) => {
+          console.error(err.tile.l);
+          this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
         });
       }
 
@@ -970,7 +1062,7 @@ export default {
         }
 
         return new olSourceWMTS({
-          url: "https://wxs.ign.fr/decouverte/geoportail/wmts",
+          url: "https://data.geopf.fr/wmts",
           layer,
           matrixSet: "PM",
           format,
@@ -1142,7 +1234,8 @@ export default {
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
-      fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
+      if (fill_color !== "transparent")
+        fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
 
       if (is_selected) {
         const style = new olStyle({
@@ -1223,8 +1316,26 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      const duration = 1400;
+
+      // if (this.zoom_animation && this.zoom_animation > 0)
+      //   this.view.animate(
+      //     {
+      //       zoom: zoom - this.zoom_animation,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   this.view.animate(
+      //     {
+
+      //       zoom: zoom,
+      //       duration: duration / 2,
+      //     },
+      //   );
+      //   else
       this.view.animate({
         center,
+        duration,
         zoom,
       });
     },
@@ -1243,11 +1354,14 @@ export default {
       this.overlay.setPosition(coordinates);
       this.clicked_location.longitude = coordinates[0];
       this.clicked_location.latitude = coordinates[1];
+
+      const pin_zoom_level = this.clicked_location.module?.zoom_level;
       this.navigateTo({
         center: [
           this.clicked_location.longitude,
           this.clicked_location.latitude,
         ],
+        zoom: pin_zoom_level,
       });
     },
     closePopup() {
@@ -1771,6 +1885,7 @@ export default {
 ._map {
   width: 100%;
   height: 100%;
+  background-color: var(--map-background-color);
 
   ::v-deep {
     .ol-geocoder {
@@ -1808,6 +1923,7 @@ export default {
         left: 0;
         top: 0;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+        padding-right: 2em;
         height: calc(2rem + 2px);
         position: relative;
         border: 1px solid var(--c-gris_fonce);
@@ -1816,6 +1932,19 @@ export default {
           box-shadow: none;
           border-color: var(--active-color);
         }
+      }
+      .gcd-gl-search:after {
+        content: "→";
+
+        line-height: 1;
+        font-weight: 800;
+        background: var(--active-color);
+        color: white;
+        display: inline-block;
+        border-radius: 50%;
+        margin-top: 3px;
+        padding: 4px;
+        font-size: 90%;
       }
     }
     .gcd-road {
@@ -1853,6 +1982,7 @@ export default {
   bottom: 9px;
   left: -48px;
   min-width: 280px;
+  opacity: 0;
 
   font-size: var(--sl-font-size-normal);
 
@@ -1888,6 +2018,10 @@ export default {
   //   left: 48px;
   //   margin-left: -11px;
   // }
+
+  &.is--shown {
+    opacity: 1;
+  }
   &.is--pin {
     bottom: 38px;
   }
@@ -1917,24 +2051,30 @@ export default {
 ._popupClose {
   position: absolute;
   z-index: 1000;
-  top: calc(var(--spacing) / -2);
-  right: calc(var(--spacing) / -2);
+  top: calc(var(--spacing) * -2);
+  right: calc(var(--spacing) * -2);
   padding: calc(var(--spacing) / 1);
 }
 
 ._pinContent {
   position: relative;
-  // border-radius: var(--panel-radius);
-  overflow: hidden;
-  min-height: 2em;
 
-  ::v-deep ._publicationModule[data-type="text"] {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  min-height: 1em;
+  max-height: 40vh;
+  overflow: auto;
+
+  ::v-deep ._publicationModule ._collaborativeEditor {
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
+  }
+
+  ::v-deep ._captionField {
+    padding: calc(var(--spacing) / 2);
+    padding-top: 0;
   }
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 }
 
 ._leftTopMenu {
@@ -2016,7 +2156,7 @@ export default {
     pointer-events: auto;
     margin: 0 auto;
     width: 100%;
-    max-width: 245px;
+    max-width: 250px;
 
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);

@@ -12,6 +12,7 @@
       class="u-button u-button_icon"
       :class="{
         'is--dragged': is_dragged,
+        'u-button_small': size === 'small',
       }"
     >
       <b-icon icon="hand-index-thumb" />
@@ -22,16 +23,12 @@
 export default {
   props: {
     file: Object,
+    size: String,
     is_dragged: Boolean,
   },
   components: {},
   data() {
     return {};
-  },
-  i18n: {
-    messages: {
-      fr: {},
-    },
   },
   created() {},
   mounted() {},
@@ -46,16 +43,27 @@ export default {
   },
   methods: {
     startMediaDrag($event) {
-      console.log(`MediaFocus / startMediaDrag`);
+      console.log(`DragFile / startMediaDrag`);
       this.$emit("update:is_dragged", true);
       $event.dataTransfer.setData("text/plain", JSON.stringify(this.file));
       $event.dataTransfer.effectAllowed = "move";
-      this.$eventHub.$emit(`mediatile.drag.start`);
+      this.$eventHub.$emit(`dragfile.start`);
+      this.$eventHub.$on("dragfile.success", this.dragfileSuccess);
     },
     endMediaDrag() {
-      console.log(`MediaFocus / endMediaDrag`);
+      console.log(`DragFile / endMediaDrag`);
       this.$emit("update:is_dragged", false);
-      this.$eventHub.$emit(`mediatile.drag.end`);
+      this.$eventHub.$emit(`dragfile.end`);
+      this.$nextTick(() => {
+        this.$eventHub.$off("dragfile.success", this.dragfileSuccess);
+      });
+    },
+    dragfileSuccess() {
+      console.log(`DragFile / dragfileSuccess`);
+      // adding some timeout to make sure some operations finished
+      setTimeout(() => {
+        this.$emit("dragfileSuccess");
+      }, 100);
     },
   },
 };

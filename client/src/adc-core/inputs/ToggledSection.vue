@@ -7,7 +7,7 @@
       :disabled="disabled"
       @update:content="$emit('update:show_toggle', $event)"
     />
-    <DLabel v-else :str="label" />
+    <DLabel v-else-if="label" :str="label" />
 
     <!-- <label :for="id" class="u-label _inputLabel">
       <input
@@ -91,13 +91,16 @@ export default {
 }
 
 ._toggled {
-  margin-top: calc(var(--spacing) / 2 * -1);
-  padding-top: calc(var(--spacing) / 2);
+  // margin-top: calc(var(--spacing) / 2 * -1);
+  margin-top: 0px;
+  padding-top: 0px;
 
   &.can--toggle {
-    border-left: 3px solid var(--c-orange);
+    border-left: 3px dotted var(--c-gris_fonce);
     padding-left: calc(var(--spacing) / 2);
-    margin-left: calc(var(--spacing) / 3);
+    margin-left: calc(var(--spacing) / 2);
+    padding-left: calc(var(--spacing) / 2);
+    padding-top: calc(var(--spacing) / 4);
   }
 }
 </style>

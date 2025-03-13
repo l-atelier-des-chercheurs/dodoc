@@ -4,7 +4,7 @@
     :data-type="module_type"
     @click="preventClickTraversing"
   >
-    <transition name="toggleLock" mode="out-in">
+    <transition name="showOptions" mode="out-in" appear>
       <div
         class="_sideOptions"
         v-if="edit_mode && page_template !== 'page_by_page'"
@@ -70,21 +70,12 @@
                   </option>
                 </select>
               </div>
-
-              <!-- <sl-button
-            variant="default"
-            size="small"
-            pill
-            @click="changeModuleType"
-          >
-            {{ $t(`module.label.${publimodule.module_type}`) }}
-          </sl-button> -->
               <div class="_buttonRow">
                 <button
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_small u-button_transparent _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -104,7 +95,7 @@
                   v-for="align in ['left', 'center', 'right']"
                   :key="align"
                   type="button"
-                  class="u-buttonLink"
+                  class="u-button u-button_small u-button_transparent"
                   :class="{
                     'is--active':
                       (!publimodule.align && align === 'left') ||
@@ -112,31 +103,10 @@
                   }"
                   @click="updateMeta({ align: align })"
                 >
-                  <sl-icon v-if="align === 'left'" name="align-start" />
-                  <sl-icon v-if="align === 'center'" name="align-center" />
-                  <sl-icon v-if="align === 'right'" name="align-end" />
+                  <b-icon v-if="align === 'left'" icon="align-start" />
+                  <b-icon v-if="align === 'center'" icon="align-center" />
+                  <b-icon v-if="align === 'right'" icon="align-end" />
                 </button>
-              </div>
-
-              <div class="_buttonRow">
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  @click="duplicateModule"
-                >
-                  <b-icon icon="file-plus" />
-                  <!-- {{ $t("duplicate") }} -->
-                </button>
-                <RemoveMenu
-                  v-if="can_edit"
-                  :remove_text="$t('remove')"
-                  :show_button_text="true"
-                  @remove="removeModule"
-                />
-
-                <!-- <button type="button" class="u-button" @click="removeModule">
-                  <sl-icon name="trash3" />
-                </button> -->
               </div>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
@@ -161,7 +131,7 @@
               <div class="">
                 <button
                   type="button"
-                  class="u-button u-button_red"
+                  class="u-button u-button_red u-button_small"
                   @click.stop="repickLocation"
                 >
                   <template v-if="!has_coordinates">
@@ -175,12 +145,65 @@
                 </button>
               </div>
               <div class="" v-if="has_coordinates">
+                <SelectField2
+                  :value="publimodule.zoom_level"
+                  :options="zoom_level_options"
+                  :can_edit="can_edit"
+                  :hide_validation="true"
+                  :size="'small'"
+                  @change="
+                    updateMeta({
+                      zoom_level: $event,
+                    })
+                  "
+                />
+
+                <!-- <select
+                  :value="publimodule.zoom_level"
+                  :disabled="!can_edit"
+                  @change="updateMeta({ zoom_level: $event })"
+                >
+                  <option
+                    v-for="option in zoom_level_options"
+                    :key="option.key"
+                    :value="option.key"
+                    v-text="option.text || option.key"
+                  />
+                </select> -->
+              </div>
+              <div class="" v-if="has_coordinates">
                 <button type="button" class="u-buttonLink" @click="eraseCoords">
                   <b-icon icon="x-circle" />
                   {{ $t("erase") }}
                 </button>
               </div>
             </div>
+
+            <DropDown :right="true">
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="duplicateModule"
+              >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate") }}
+              </button>
+
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="$emit('changeSectionForModule')"
+              >
+                <b-icon icon="arrow-left-right" />
+                {{ $t("change_section") }}
+              </button>
+
+              <RemoveMenu
+                v-if="can_edit"
+                :show_button_text="true"
+                @remove="removeModule"
+              />
+            </DropDown>
           </div>
 
           <div class="_saveBtn">
@@ -193,7 +216,7 @@
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
               <div>
-                {{ $t("click_on_map_to_repick_location_for_media") }}
+                {{ $t("click_on_map_to_repick_location") }}
               </div>
               <button
                 type="button"
@@ -230,18 +253,24 @@
         </span> -->
       </button>
 
-      <div class="_floatingEditBtn" v-if="can_edit">
-        <EditBtn
-          v-if="!edit_mode"
-          :label_position="'left'"
-          @click="enableEdit"
-        />
+      <div
+        class="_floatingEditBtn"
+        v-if="
+          can_edit &&
+          (page_template !== 'page_by_page' ||
+            publimodule.module_type === 'text')
+        "
+      >
+        <span @click.stop="enableEdit" @touchstart.stop="enableEdit">
+          <EditBtn v-if="!edit_mode" :label_position="'left'" />
+        </span>
       </div>
 
       <MediasModule
         v-if="['mosaic', 'carousel', 'files'].includes(publimodule.module_type)"
         :publimodule="publimodule"
-        :can_edit="edit_mode"
+        :edit_mode="edit_mode"
+        :can_edit="can_edit"
         :context="context"
         :page_template="page_template"
         :number_of_max_medias="number_of_max_medias"
@@ -249,6 +278,7 @@
         @updateMeta="updateMeta"
         @remove="removeModule"
       />
+      <!-- // specific to page by page -->
       <CollaborativeEditor2
         v-else-if="publimodule.module_type === 'text' && first_media"
         ref="textBloc"
@@ -256,7 +286,7 @@
         :content="first_media.$content"
         :scrollingContainer="$el"
         :line_selected="false"
-        :can_edit="edit_mode"
+        :can_edit="can_edit"
         @lineClicked="$emit('lineClicked', $event)"
         @contentIsEdited="$emit('contentIsEdited', $event)"
         @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
@@ -347,15 +377,9 @@
 
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
-      <div
-        class="_captionField"
-        v-if="
-          (publimodule.caption || edit_mode) &&
-          module_type !== 'shape' &&
-          module_type !== 'text'
-        "
-      >
-        <TitleField
+      <div class="_captionField" v-if="show_caption">
+        <CollaborativeEditor2
+          class="_caption"
           :label="
             edit_mode &&
             !publimodule.caption &&
@@ -363,12 +387,12 @@
               ? $t('add_caption')
               : undefined
           "
-          :field_name="'caption'"
+          :field_to_edit="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
-          :input_type="'markdown'"
-          :tag="'small'"
-          :can_edit="edit_mode && can_edit"
+          :custom_formats="['bold', 'italic', 'link']"
+          :is_collaborative="false"
+          :can_edit="page_template !== 'page_by_page' ? can_edit : false"
         />
 
         <div
@@ -442,12 +466,6 @@ export default {
       observer: undefined,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-      en: {},
-    },
-  },
   created() {},
   mounted() {
     this.$eventHub.$on(
@@ -492,10 +510,19 @@ export default {
   },
   watch: {
     edit_mode() {
+      // if text bloc in text bloc module
       if (this.$refs.textBloc)
         if (this.edit_mode)
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
         else this.$refs.textBloc.disableEditor();
+      else {
+        // this.$nextTick(() => {
+        //   const edit_btn = this.$el.querySelector(
+        //     "._collaborativeEditor ._floatingEditBtn ._editBtn"
+        //   );
+        //   if (edit_btn) edit_btn.click();
+        // });
+      }
       if (!this.edit_mode) this.is_repicking_location = false;
     },
   },
@@ -508,8 +535,35 @@ export default {
         return this.$getMapOptions().opened_pin_path === this.publimodule.$path;
       return false;
     },
+    zoom_level_options() {
+      const max = 20;
+      return new Array(max).fill(0).map((e, i) => {
+        if (i === 0)
+          return {
+            key: "",
+            text: this.$t("dont_zoom"),
+          };
+        else if (i === 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_far") + ")",
+          };
+        else if (i === max - 1)
+          return {
+            key: i,
+            text: i + " (" + this.$t("very_close") + ")",
+          };
+        else
+          return {
+            key: i,
+          };
+      });
+    },
+
     available_module_types() {
-      if (this.publimodule.module_type === "text") return ["text"];
+      // a text module can become something else but not the other way around
+      if (this.publimodule.module_type === "text")
+        return ["text", "mosaic", "carousel", "files"];
       return ["mosaic", "carousel", "files"];
     },
     pin_options() {
@@ -533,15 +587,20 @@ export default {
     module_meta_filename() {
       return this.publimodule.$path.split("/").at(-1);
     },
+    show_caption() {
+      if (this.module_type === "text") return false;
+      if (this.module_type === "shape") return false;
+      if (
+        this.publimodule.source_medias.length === 1 &&
+        this.publimodule.source_medias[0].meta_filename?.startsWith("text-")
+      )
+        return false;
+      if (!this.publimodule.caption && !this.edit_mode) return false;
+      return true;
+    },
 
     module_type() {
-      if (
-        ["ellipsis", "rectangle", "line", "arrow"].includes(
-          this.publimodule.module_type
-        )
-      )
-        return "shape";
-      return this.publimodule.module_type;
+      return this.getModuleType(this.publimodule.module_type);
     },
     show_fs_button() {
       if (this.page_template === "page_by_page")
@@ -624,7 +683,7 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "smooth") {
+    scrollToModule(behavior = "auto") {
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
@@ -641,14 +700,12 @@ export default {
           if (entry.isIntersecting) {
             // entry.target.classList.add('tracked-element--visible');
             // if (entry.isIntersecting && entry.intersectionRatio === 1) {
-            //   debugger;
             if (
               this.is_associated_to_map &&
               this.has_coordinates &&
               !this.is_active_on_map
             )
               this.showModuleOnMap();
-            // debugger;
           }
         });
       };
@@ -693,30 +750,36 @@ export default {
         addtl_meta_to_module,
       });
       this.$emit("duplicate", meta_filename);
+      this.disableEdit();
     },
-    async removeModule() {
+    async removeModule({ with_content = true } = {}) {
       // todo also empty sharedb path, since $path can be retaken
-      try {
-        for (let source_media of this.publimodule.source_medias) {
-          // do not remove linked medias, only those in this specific folder
-          if (
-            Object.prototype.hasOwnProperty.call(source_media, "meta_filename")
-          ) {
-            const publication_path = this.getParent(this.publimodule.$path);
-            const full_source_media = this.getSourceMedia({
-              source_media,
-              folder_path: publication_path,
-            });
-
-            if (full_source_media)
-              await this.$api.deleteItem({
-                path: full_source_media.$path,
+      if (with_content) {
+        try {
+          for (let source_media of this.publimodule.source_medias) {
+            // do not remove linked medias, only those in this specific folder
+            if (
+              Object.prototype.hasOwnProperty.call(
+                source_media,
+                "meta_filename"
+              )
+            ) {
+              const publication_path = this.getParent(this.publimodule.$path);
+              const full_source_media = this.getSourceMedia({
+                source_media,
+                folder_path: publication_path,
               });
+
+              if (full_source_media)
+                await this.$api.deleteItem({
+                  path: full_source_media.$path,
+                });
+            }
           }
+        } catch (err) {
+          this.$alertify.delay(4000).error(err);
+          // throw err;
         }
-      } catch (err) {
-        this.$alertify.delay(4000).error(err);
-        throw err;
       }
 
       await this.$api
@@ -737,7 +800,8 @@ export default {
 ._publicationModule {
   position: relative;
   scroll-margin-top: calc(var(--spacing) * 1.5);
-  // padding: 0 calc(var(--spacing) * 2);
+  // not sure why 16px ?
+  // font-size: 16px;
 
   &[data-type="shape"] {
     ._content,
@@ -795,20 +859,13 @@ export default {
   ._sideOptions--content {
     width: 100%;
     margin: 0 auto;
-    padding: calc(var(--spacing) / 4);
-    background: var(--active-color);
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
 
-    // border: 2px solid var(--active-color);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    background: var(--active-color);
     box-shadow: var(--panel-shadows);
 
-    // border-radius: 4px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    border-radius: 12px;
     gap: calc(var(--spacing) / 2);
-    // border: 2px solid white;
-
     display: flex;
     align-items: center;
   }
@@ -827,7 +884,7 @@ export default {
   width: var(--side-width);
   height: var(--side-width);
   padding: 0;
-  border-radius: calc(var(--side-width) / 2);
+  border-radius: 50%;
   background: transparent;
 
   &:hover,
@@ -855,22 +912,28 @@ export default {
 
 ._advanced_menu,
 ._carto {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
 }
 
+._carto {
+  justify-content: flex-end;
+}
+
 ._buttonRow {
   display: flex;
+  flex-flow: row wrap;
   padding: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
   align-items: center;
 
-  .is--active {
-    color: white;
-  }
+  --active-color: white;
+}
+
+._sizes.is--active {
 }
 
 ._floatingEditBtn {
@@ -882,7 +945,7 @@ export default {
   > * {
     position: absolute;
     top: 0;
-    right: 0;
+    left: 100%;
     margin: calc(var(--spacing) / 2);
   }
 }
@@ -904,32 +967,35 @@ export default {
   flex-flow: column nowrap;
 }
 ._repickNotice--content {
+  display: flex;
   background: white;
   padding: calc(var(--spacing) / 2);
 }
 
 ._carto {
-  // display: flex;
-  // justify-content: center;
-  // gap: calc(var(--spacing) / 4);
-  // background: white;
+  padding: calc(var(--spacing) / 4);
+  border: 2px solid rgba(0, 0, 0, 0.2);
 }
 
 ._pinButton {
   position: absolute;
   background: transparent;
   top: 0;
-  left: 0;
+  right: 100%;
+  width: 30px;
+  height: 30px;
   z-index: 1;
-  margin: calc(var(--spacing) / 4);
-  padding: calc(var(--spacing) / 4);
 
-  ._publicationModule[data-type="text"] & {
-    position: relative;
-    float: left;
-    margin-top: calc(var(--spacing) / 4);
-    margin-right: calc(var(--spacing) / 4);
-  }
+  margin: 0 calc(var(--spacing) / 2);
+
+  padding: 0;
+
+  // ._publicationModule[data-type="text"] & {
+  //   position: relative;
+  //   float: left;
+  //   margin-top: calc(var(--spacing) / 4);
+  //   margin-right: calc(var(--spacing) / 4);
+  // }
 
   &.is--active {
     background: var(--c-bleuvert);
@@ -950,5 +1016,23 @@ export default {
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 1);
+
+  > ._caption {
+    flex: 1 1 auto;
+    font-size: var(--sl-font-size-small);
+  }
+}
+
+.showOptions {
+  &-enter-active,
+  &-leave-active {
+    transition: all 0.2s;
+    max-height: 230px;
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    max-height: 0px;
+  }
 }
 </style>

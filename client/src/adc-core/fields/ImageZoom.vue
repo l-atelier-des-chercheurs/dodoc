@@ -55,11 +55,7 @@ export default {
       padding: 100,
     };
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
+
   created() {},
   mounted() {
     this.updateContSize();
@@ -69,7 +65,12 @@ export default {
   beforeDestroy() {
     this.ro.unobserve(this.$el);
   },
-  watch: {},
+  watch: {
+    is_zoomed(new_val) {
+      if (new_val) this.$emit("zoomingIn");
+      else this.$emit("zoomingOut");
+    },
+  },
   computed: {
     pos_x_percent() {
       return this.pos_x / this.cont_width;

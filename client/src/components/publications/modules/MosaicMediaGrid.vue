@@ -3,16 +3,23 @@
     class="_mediaGrid"
     :class="{
       'is--multipleMedias': is_multiple_medias,
+      'is--singleText': is_single_text,
     }"
   >
     <template v-for="(media_with_linked, index) in medias_with_linked">
+      <!-- <DropZone
+        v-if="
+          !number_of_max_medias ||
+          medias_with_linked.length < number_of_max_medias
+        "
+        :key="'dz-' + index"
+        class="_dzInbetween"
+        @mediaDropped="$emit('addMedias', $event)"
+      /> -->
       <div
         class="_mediaGrid--item"
-        :key="
-          (media_with_linked._linked_media &&
-            media_with_linked._linked_media.$path) ||
-          'no_media_' + index
-        "
+        :key="itemKey(media_with_linked._linked_media, index)"
+        :data-mediatype="media_with_linked._linked_media.$type"
         :style="itemStyle({ media_with_linked })"
       >
         <div
@@ -20,67 +27,90 @@
           class="u-instructions _noSourceMedia"
           v-text="$t('source_media_missing')"
         />
+        <CollaborativeEditor2
+          v-else-if="media_with_linked._linked_media.$type === 'text'"
+          class="_mediaContent--collabEditor"
+          :key="edit_mode"
+          :content="media_with_linked._linked_media.$content"
+          :path="media_with_linked._linked_media.$path"
+          :edit_on_mounted="edit_mode"
+          :can_edit="edit_mode"
+        />
+        <TableEditor
+          v-else-if="media_with_linked._linked_media.$type === 'table'"
+          class="_mediaContent--table"
+          :content="media_with_linked._linked_media.$content"
+          :path="media_with_linked._linked_media.$path"
+          :can_edit="edit_mode"
+        />
         <MediaContent
           v-else
           :file="media_with_linked._linked_media"
           :resolution="context === 'preview' ? 220 : 1600"
           :context="context"
           :show_fs_button="show_fs_button"
-          :is_draggable="can_edit"
+          :can_edit="can_edit"
+        />
+        <CaptionCreditsPage
+          :media="media_with_linked._linked_media"
+          :publication_path="publication_path"
+          :can_edit="can_edit"
         />
 
-        <div class="_btnRow" v-if="can_edit">
-          <template
-            v-if="
-              (is_multiple_medias ||
-                (page_template === 'page_by_page' &&
-                  !single_media_displayed_at_full_ratio)) &&
-              !mediaIsSquare(media_with_linked._linked_media) &&
-              media_with_linked._linked_media.$type !== 'stl' &&
-              media_with_linked._linked_media.$type !== 'obj' &&
-              media_with_linked._linked_media.$type !== 'other'
-            "
-          >
+        <div class="_btnRow">
+          <DragFile
+            v-if="edit_mode && page_template !== 'page_by_page'"
+            class="_df"
+            :size="'small'"
+            :file="media_with_linked._linked_media"
+            @dragfileSuccess="mediaDraggedSuccessfully(index)"
+          />
+          <template v-if="edit_mode">
+            <template v-if="showAspectRatioOptions(media_with_linked)">
+              <button
+                type="button"
+                class="u-button u-button_icon u-button_small"
+                v-if="
+                  !(
+                    !media_with_linked.objectFit ||
+                    media_with_linked.objectFit === 'cover'
+                  )
+                "
+                @click.stop="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'cover' },
+                  })
+                "
+              >
+                <b-icon icon="aspect-ratio" />
+                <!-- {{ $t("object_fit_cover") }} -->
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_icon u-button_small"
+                v-if="media_with_linked.objectFit !== 'contain'"
+                @click.stop="
+                  $emit('updateMediaOpt', {
+                    index,
+                    opt: { objectFit: 'contain' },
+                  })
+                "
+              >
+                <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
+                <!-- {{ $t("object_fit_contain") }} -->
+                <b-icon icon="aspect-ratio-fill" />
+              </button>
+            </template>
             <button
               type="button"
-              class="u-buttonLink"
-              v-if="
-                !(
-                  !media_with_linked.objectFit ||
-                  media_with_linked.objectFit === 'cover'
-                )
-              "
-              @click="
-                $emit('updateMediaOpt', { index, opt: { objectFit: 'cover' } })
-              "
+              class="u-button u-button_icon u-button_small"
+              v-if="is_multiple_medias"
+              @click="removeMedia(index)"
             >
-              <sl-icon name="aspect-ratio" />
-              <!-- {{ $t("object_fit_cover") }} -->
-            </button>
-            <button
-              type="button"
-              class="u-buttonLink"
-              v-if="media_with_linked.objectFit !== 'contain'"
-              @click="
-                $emit('updateMediaOpt', {
-                  index,
-                  opt: { objectFit: 'contain' },
-                })
-              "
-            >
-              <!-- v-if="media_with_linked.objectFit !== 'contain'" -->
-              <!-- {{ $t("object_fit_contain") }} -->
-              <sl-icon name="aspect-ratio-fill" />
+              <b-icon icon="trash" />
             </button>
           </template>
-          <button
-            type="button"
-            class="u-buttonLink"
-            v-if="is_multiple_medias"
-            @click="$emit('removeMediaAtIndex', index)"
-          >
-            <sl-icon name="trash3" />
-          </button>
         </div>
       </div>
     </template>
@@ -92,13 +122,13 @@
           medias_with_linked.length < number_of_max_medias)
       "
     >
-      <button
-        type="button"
-        class="u-button u-button_transparent u-addBtn"
+      <EditBtn
+        v-if="edit_mode"
+        :btn_type="'add'"
+        :is_unfolded="false"
         @click="show_media_picker = true"
-      >
-        <sl-icon name="plus-circle" />
-      </button>
+      />
+
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
@@ -111,13 +141,14 @@
           medias_with_linked.length < number_of_max_medias
         "
       >
-        <DropZone @mediaDropped="$emit('addMedias', $event)" />
+        <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
       </template>
     </div>
   </div>
 </template>
 <script>
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
 
 export default {
   props: {
@@ -128,10 +159,12 @@ export default {
     show_fs_button: Boolean,
     number_of_max_medias: [Boolean, Number],
     publication_path: String,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
     MediaPicker,
+    CaptionCreditsPage,
   },
   data() {
     return {
@@ -143,13 +176,16 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    is_single_text() {
+      return (
+        this.medias_with_linked.length === 1 &&
+        this.medias_with_linked[0]._linked_media.$type === "text"
+      );
+    },
     is_multiple_medias() {
       return this.medias_with_linked.length > 1;
     },
-
     single_media_displayed_at_full_ratio() {
-      if (this.medias_with_linked.length > 1) return false;
-
       const theoretical_ratio =
         this.medias_with_linked[0]._linked_media.$infos?.ratio;
       const current_ratio =
@@ -166,13 +202,49 @@ export default {
     },
   },
   methods: {
+    itemKey(_lm, index) {
+      if (_lm?.$path) return _lm.$path + "_" + index;
+      return "no_media_" + index;
+      // if (_lm?.$path) return _lm.$path + "_" + _lm.$date_created;
+      // return "no_media_" + index;
+    },
     itemStyle({ media_with_linked }) {
       let props = {};
       props["--object-fit"] = media_with_linked.objectFit || "cover";
+
       return props;
     },
     mediaIsSquare(media) {
       return media.$infos?.ratio === 1;
+    },
+    removeMedia(index) {
+      this.$emit("removeMediaAtIndex", { index });
+    },
+    mediaDraggedSuccessfully(index) {
+      console.log("mediaDraggedSuccessfully");
+      this.$emit("removeMediaAtIndex", { index, remove_source: false });
+      // if
+    },
+    showAspectRatioOptions(media_with_linked) {
+      if (
+        this.medias_with_linked.length === 1 &&
+        this.page_template !== "page_by_page"
+      )
+        return false;
+
+      const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
+      if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
+        return false;
+
+      if (
+        this.page_template !== "page_by_page" &&
+        this.mediaIsSquare(media_with_linked._linked_media)
+      )
+        return false;
+
+      if (this.single_media_displayed_at_full_ratio) return false;
+
+      return true;
     },
   },
 };
@@ -181,11 +253,21 @@ export default {
 ._mediaGrid {
   position: relative;
   width: 100%;
+  page-break-inside: avoid;
+  -webkit-region-break-inside: avoid;
+
+  ::v-deep ._mediaContent .plyr__controls {
+    padding-right: calc(var(--spacing) * 3);
+  }
+
+  &.is--singleText {
+    page-break-inside: auto;
+  }
 
   &.is--multipleMedias {
     display: flex;
     flex-flow: row nowrap;
-    gap: calc(var(--spacing) / 4);
+    gap: calc(var(--spacing) / 2);
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
@@ -194,11 +276,23 @@ export default {
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
+  // ._dzInbetween {
+  //   position: relative !important;
+  //   width: 20px;
+  // }
+
   &.is--multipleMedias > ._mediaGrid--item {
     aspect-ratio: 1/1;
     overflow: hidden;
-    background: var(--c-gris_clair);
+    // background: var(--c-gris_clair);
     flex: 1 1 calc(100% / var(--number_of_medias));
+
+    &[data-mediatype="text"] {
+      aspect-ratio: auto;
+    }
+    &:not([data-mediatype="text"]) {
+      background: var(--c-gris_clair);
+    }
   }
 
   &.is--multipleMedias ::v-deep ._mediaContent {
@@ -256,16 +350,17 @@ export default {
 
   pointer-events: none;
 
-  button {
-    // background: white;
-    pointer-events: auto;
+  ::v-deep {
+    button {
+      // background: white;
+      pointer-events: auto;
 
-    border-radius: 4px;
-    color: var(--c-noir);
-    background: rgb(255 255 255 / 40%);
-    backdrop-filter: blur(8px);
-    padding: 4px;
-    // background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      color: var(--c-noir);
+      background: rgb(255 255 255 / 40%);
+      backdrop-filter: blur(8px);
+      padding: 4px;
+    }
   }
 }
 
@@ -273,5 +368,19 @@ export default {
   width: 100%;
   padding: calc(var(--spacing) / 4);
   text-align: center;
+}
+
+._dragFileIcon {
+  // position: absolute;
+  // top: 0;
+  // right: 0;
+  // z-index: 10;
+}
+._df {
+  display: inline-flex;
+}
+
+._dzAfter {
+  z-index: 1000;
 }
 </style>

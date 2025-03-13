@@ -42,7 +42,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder, detailed });
 
       let d = cache.get({
-        key: path_to_folder,
+        key: _getCacheKey({ path_to_folder }),
       });
       if (d) {
         d = JSON.parse(JSON.stringify(d));
@@ -68,7 +68,7 @@ module.exports = (function () {
         .catch((err) => {
           throw err;
         });
-      folder_meta.$path = path_to_folder;
+      folder_meta.$path = utils.convertToSlashPath(path_to_folder);
 
       if (item_in_schema.$cover) {
         let cover = await _getFolderCover({
@@ -92,7 +92,7 @@ module.exports = (function () {
 
       // TODO get number of files if files in item_in_schema
       cache.set({
-        key: path_to_folder,
+        key: _getCacheKey({ path_to_folder }),
         value: JSON.parse(JSON.stringify(folder_meta)),
       });
 
@@ -177,7 +177,9 @@ module.exports = (function () {
 
       if (!meta_file) {
         meta_file = directory.files.find((f) => {
-          const path_splits = f.path.split("/");
+          // Replace all path separators with '/' for consistency
+          const normalizedPath = f.path.replace(/\\/g, "/");
+          const path_splits = normalizedPath.split("/");
           if (path_splits.length === 2 && path_splits[1] === "meta.txt") {
             subfolder_name = path_splits[0];
             return true;
@@ -185,11 +187,23 @@ module.exports = (function () {
           return false;
         });
       }
-
       if (!meta_file) {
         await fs.remove(full_path_to_folder_in_cache);
         const err = new Error("Imported folder is missing meta.txt");
         err.code = "imported_folder_not_valid";
+        throw err;
+      }
+
+      // check edge case: if someone download a space and tried importing it as a project, catch that
+      const is_space = directory.files.find((f) => {
+        const normalizedPath = f.path.replace(/\\/g, "/");
+        return normalizedPath.endsWith("projects/");
+      });
+      if (is_space) {
+        const err = new Error(
+          "Imported folder seems to be a space and not a project"
+        );
+        err.code = "imported_folder_is_a_space";
         throw err;
       }
 
@@ -215,16 +229,13 @@ module.exports = (function () {
         data: valid_meta,
       });
 
-      // copy all medias to new folder
-      const full_path_to_folder = utils.getPathToUserContent(
-        path_to_type,
-        new_folder_slug
-      );
-
-      // await directory.extract({ path: full_path_to_folder, concurrency: 5 });
+      const path_to_new_folder = path.join(path_to_type, new_folder_slug);
+      const full_path_to_folder =
+        utils.getPathToUserContent(path_to_new_folder);
 
       const files_to_copy = directory.files.filter((f) => {
-        const path_splits = f.path.split("/");
+        const normalizedPath = f.path.replace(/\\/g, "/");
+        const path_splits = normalizedPath.split("/");
         return path_splits.length >= 2 && path_splits[1] !== "meta.txt";
       });
 
@@ -261,7 +272,7 @@ module.exports = (function () {
 
       await fs.remove(full_path_to_folder_in_cache);
 
-      return new_folder_slug;
+      return path_to_new_folder;
     },
     updateFolder: async ({
       path_to_type,
@@ -334,8 +345,9 @@ module.exports = (function () {
         else delete changed_meta.$preview;
       }
 
+      const cache_key = _getCacheKey({ path_to_folder });
       cache.delete({
-        key: path_to_folder,
+        key: _getCacheKey({ path_to_folder }),
       });
 
       return changed_meta;
@@ -395,13 +407,15 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder });
 
       try {
-        if (global.settings.removePermanently === true)
+        const { remove_permanently } = await require("./settings").get();
+        if (remove_permanently === true)
           await _removeFolderForGood({ path_to_folder });
         else await _moveFolderToBin({ path_to_folder });
 
         await thumbs.removeFolderThumbs({ path_to_folder });
+
         cache.delete({
-          key: path_to_folder,
+          key: _getCacheKey({ path_to_folder }),
         });
 
         return;
@@ -485,7 +499,7 @@ module.exports = (function () {
     if (data.hasOwnProperty("path_to_meta")) {
       if (data.path_to_meta === "") return;
 
-      const path_to_meta = data.path_to_meta;
+      const path_to_meta = utils.convertToLocalPath(data.path_to_meta);
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       const meta = await file.getFile({
@@ -497,7 +511,8 @@ module.exports = (function () {
       await utils.makeImageFromPath({
         full_path: path_to_file,
         new_path: full_path_to_thumb,
-        resolution: 2000,
+        resolution: 4000,
+        withoutEnlargement: true,
       });
     } else if (req) {
       const { originalFilename, path_to_temp_file } = await utils
@@ -598,8 +613,9 @@ module.exports = (function () {
       relative_path: path_to_type,
     });
 
-    if (path_to_type) {
+    if (path_to_type && path_to_type !== ".") {
       // not applicable to instance settings
+      // TODO check for impact on performance
       let siblings_folders = await API.getFolders({ path_to_type });
       siblings_folders = siblings_folders.filter(
         (sf) => sf.$path !== path_to_folder
@@ -621,13 +637,7 @@ module.exports = (function () {
   }
 
   async function _moveFolderToBin({ path_to_folder }) {
-    const bin_folder_path =
-      path_to_folder.substr(0, path_to_folder.lastIndexOf("/")) +
-      "/" +
-      global.settings.deletedFolderName +
-      "/" +
-      path_to_folder.substr(path_to_folder.lastIndexOf("/") + 1);
-
+    const bin_folder_path = utils.getBinFolder(path_to_folder);
     const full_folder_path = utils.getPathToUserContent(path_to_folder);
     const full_bin_folder_path = utils.getPathToUserContent(bin_folder_path);
 
@@ -639,6 +649,10 @@ module.exports = (function () {
     } catch (err) {
       throw err;
     }
+  }
+
+  function _getCacheKey({ path_to_folder }) {
+    return path_to_folder || "global_settings";
   }
 
   return API;

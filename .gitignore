@@ -40,3 +40,4 @@ access.csv
 client/dist/report.html
 client/dist/*.hot-update.js
 tokens.json
+dist/builder-effective-config.yaml

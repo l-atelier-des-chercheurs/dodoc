@@ -10,7 +10,6 @@
     <summary>
       <div class="_icon">
         <b-icon v-if="icon" :icon="icon" />
-        <!-- <sl-icon v-if="icon" :name="icon" /> -->
       </div>
       <span class="_name">
         {{ header }}
@@ -24,19 +23,19 @@
           {{ has_items }}
         </template>
         <template v-else-if="has_items === true">
-          <sl-icon name="check" />
+          <b-icon icon="check" />
         </template>
         <template v-else>–</template>
       </div>
 
       <transition name="fade_fast" mode="out-in">
-        <sl-icon
-          v-if="can_be_toggled"
-          class="_openIcon"
-          :name="
-            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
-          "
-        />
+        <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
+          <b-icon
+            :icon="
+              !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+            "
+          />
+        </div>
       </transition>
     </summary>
     <div class="">
@@ -113,6 +112,11 @@ export default {
   border-radius: 8px;
   overflow: hidden;
 
+  &:hover,
+  &:focus-visible {
+    transform: none;
+  }
+
   &.is--unclosable summary {
     pointer-events: none;
   }
@@ -123,7 +127,7 @@ export default {
     height: auto;
     margin: calc(var(--spacing) / 4);
     padding: calc(var(--spacing) / 2);
-    background-color: var(--c-gris);
+    // background-color: var(--c-gris);
     border-radius: 50%;
     color: var(--c-noir);
 
@@ -139,13 +143,12 @@ export default {
   }
 
   ._openIcon {
-    padding: calc(var(--spacing) / 8);
     margin: calc(var(--spacing) / 4);
-  }
+    padding: calc(var(--spacing) / 2);
 
-  ::marker {
-    display: none;
-    content: "";
+    svg {
+      display: block;
+    }
   }
 
   summary {
@@ -168,6 +171,11 @@ export default {
     &:focus-visible {
       // color: white;
       // background-color: var(--c-gris);
+    }
+
+    &::marker {
+      display: none;
+      content: "";
     }
   }
 

@@ -16,6 +16,7 @@
           :show_fs_button="show_fs_button"
           :number_of_max_medias="number_of_max_medias"
           :publication_path="publication_path"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
@@ -24,8 +25,10 @@
         <FilesList
           v-else-if="publimodule.module_type === 'files'"
           key="filelist"
+          :mode="'source'"
           :medias_with_linked="medias_with_linked"
           :publication_path="publication_path"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
           @reorderMedias="reorderMedias"
@@ -39,8 +42,10 @@
           :show_fs_button="show_fs_button"
           :publication_path="publication_path"
           :publi_width="publimodule.size"
+          :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
+          @reorderMedias="reorderMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
           @updateMediaOpt="updateMediaOpt"
         />
@@ -63,6 +68,7 @@ export default {
     page_template: String,
     number_of_max_medias: [Boolean, Number],
     show_fs_button: Boolean,
+    edit_mode: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -102,25 +108,29 @@ export default {
     async addMedias({ path_to_source_media_metas }) {
       let source_medias = this.publimodule.source_medias.slice() || [];
       for (const path_to_source_media_meta of path_to_source_media_metas) {
-        // if link, then we use medias stored in parent project and link to them
+        const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
           path_to_source_media_meta,
           publication_path: this.publication_path,
+          import_mode,
         });
         source_medias.push(new_entry);
       }
       this.$emit("updateMeta", { source_medias });
     },
-    async removeMediaAtIndex(index) {
+    async removeMediaAtIndex({ index, remove_source = true }) {
       const source_medias = this.publimodule.source_medias.slice();
-
       const source_media = source_medias[index];
 
       source_medias.splice(index, 1);
-      if (source_medias.length === 0) this.$emit("remove");
+      if (source_medias.length === 0)
+        this.$emit("remove", { with_content: false });
       else this.$emit("updateMeta", { source_medias });
 
-      if (Object.prototype.hasOwnProperty.call(source_media, "meta_filename")) {
+      if (
+        Object.prototype.hasOwnProperty.call(source_media, "meta_filename") &&
+        remove_source === true
+      ) {
         const media = this.getSourceMedia({
           source_media: { meta_filename: source_media.meta_filename },
           folder_path: this.publication_path,
@@ -159,10 +169,5 @@ export default {
   ::v-deep ._dropNotice {
     transform: rotate(-90deg);
   }
-}
-
-sl-icon-button::part(base) {
-  font-size: 1.5em;
-  color: var(--c-bleuvert);
 }
 </style>

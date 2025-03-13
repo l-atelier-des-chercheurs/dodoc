@@ -1,98 +1,53 @@
 <template>
   <div>
-    <button type="button" class="u-buttonLink" @click="$emit('close')">
-      <sl-icon name="arrow-left-short" />
-      {{ $t("back") }}
-    </button>
-    <div class="u-spacingBottom" />
+    <div class="u-spacingBottom _top">
+      <div>
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
+      </div>
+
+      <RemoveMenu :button_text="$t('remove_category')" @remove="removeCat" />
+    </div>
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
     <div v-else>
-      <div class="_top">
-        <div class="u-spacingBottom">
-          <TitleField
-            class="_title"
-            :label="$t('category_title')"
-            :field_name="'title'"
-            :content="category.title"
-            :path="category.$path"
-            tag="h3"
-            :required="true"
-            :maxlength="20"
-            :can_edit="true"
-          />
-        </div>
-
-        <ColorInput
-          :label="$t('custom_color')"
-          :default_value="'#ffffff'"
-          :value="category.tag_color"
-          :can_toggle="true"
-          @save="saveNewColor"
-        />
-      </div>
-
-      <div class="u-spacingBottom _kwSimulation">
-        <SingleKeyword
-          :keyword="category.title + '/couleur'"
-          :cat_color="category.tag_color"
-        />
-      </div>
-
-      <div class="u-spacingBottom u-keywords">
-        <SingleKeyword
-          v-for="suggestion in new_list_of_suggestions"
-          :key="suggestion"
-          :keyword="suggestion"
-          :can_remove="true"
-          @remove="removeSuggestion(suggestion)"
-        />
-      </div>
-
       <div class="u-spacingBottom">
-        <input
-          type="text"
-          v-model="new_suggestion"
-          placeholder="Nouveau mot-clé"
-          @keydown.enter.exact.prevent="newKeyword"
+        <TitleField
+          class="_title"
+          :label="$t('category_title')"
+          :field_name="'title'"
+          :content="category.title"
+          :path="category.$path"
+          tag="h3"
+          :required="true"
+          :maxlength="20"
+          :can_edit="false"
         />
-        <div class="u-instructions" v-if="new_keyword_already_exists">
-          <small
-            >Ce mot-clé existe déjà, vous ne pouvez pas l’ajouter. Si vous
-            souhaitez changer la case, supprimez le de la liste puis ajoutez le
-            à nouveau.</small
-          >
-        </div>
-        <div class="u-instructions" v-else-if="new_keyword_contains_slash">
-          <small>Ce mot-clé contient le caractère "/", qui est interdit.</small>
-        </div>
-        <div class="u-instructions" v-else-if="new_suggestion.length > 0">
-          <small>Validez avec la touche entrée.</small>
-        </div>
       </div>
 
-      <SaveCancelButtons
-        class="_scb"
-        v-if="new_suggestion.length === 0"
-        @save="saveNewSuggestion"
-        @cancel="cancel"
-      />
-
-      <RemoveMenu :remove_text="$t('remove')" @remove="removeCat" />
+      <!-- <div class="">
+        <TagsField
+          :label="$t('list_of_suggestions')"
+          :field_name="'list_of_suggestions'"
+          :tag_type="tag_type"
+          :content="category.list_of_suggestions"
+          :path="path"
+          :never_shorten_list="true"
+          :can_edit="true"
+        />
+      </div> -->
     </div>
   </div>
 </template>
 <script>
-import SingleKeyword from "@/components/SingleKeyword.vue";
-
 export default {
   props: {
     path: String,
   },
-  components: {
-    SingleKeyword,
-  },
+  components: {},
   data() {
     return {
       category: undefined,
@@ -120,6 +75,9 @@ export default {
   },
   watch: {},
   computed: {
+    tag_type() {
+      return this.path.split("/").at(-1);
+    },
     new_keyword_already_exists() {
       return this.new_list_of_suggestions.some(
         (s) => s.toLowerCase() === this.new_suggestion.toLowerCase()

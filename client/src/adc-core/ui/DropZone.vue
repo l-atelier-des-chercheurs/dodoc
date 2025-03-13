@@ -1,5 +1,5 @@
 <template>
-  <transition name="pagechange">
+  <transition name="scaleInFade_fast">
     <div
       v-if="show_dropzone"
       class="_dropZone"
@@ -48,15 +48,15 @@ export default {
     if (this.media_types_allowed) dz.allowed_types = this.media_types_allowed;
 
     this.$root.registerDropzone(dz);
-    this.$eventHub.$on(`mediatile.drag.start`, this.showDropzone);
-    this.$eventHub.$on(`mediatile.drag.end`, this.hideDropzone);
+    this.$eventHub.$on(`dragfile.start`, this.showDropzone);
+    this.$eventHub.$on(`dragfile.end`, this.hideDropzone);
   },
   beforeDestroy() {
     this.$root.unregisterDropzone({
       id: this.id,
     });
-    this.$eventHub.$off(`mediatile.drag.start`, this.showDropzone);
-    this.$eventHub.$off(`mediatile.drag.end`, this.hideDropzone);
+    this.$eventHub.$off(`dragfile.start`, this.showDropzone);
+    this.$eventHub.$off(`dragfile.end`, this.hideDropzone);
   },
   watch: {},
   computed: {},
@@ -93,6 +93,7 @@ export default {
     droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
       const path_to_source_media_metas = [file.$path];
+      this.$eventHub.$emit("dragfile.success");
       this.$emit("mediaDropped", { path_to_source_media_metas });
     },
   },
@@ -108,7 +109,7 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: calc(var(--spacing) / 1);
+  padding: 0;
 
   display: flex;
   flex-flow: row wrap;
@@ -125,15 +126,17 @@ export default {
 
 ._dzBg {
   --dropzone-color1: white;
-  --dropzone-color2: var(--c-bleuvert);
+  --dropzone-color2: var(--active-color);
 
   position: absolute;
   z-index: 0;
   inset: 0;
+  border-radius: 4px;
 }
 
 ._dropNotice {
   position: relative;
   pointer-events: none;
+  white-space: nowrap;
 }
 </style>

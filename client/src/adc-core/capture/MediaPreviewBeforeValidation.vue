@@ -82,54 +82,14 @@ export default {
   height: 100%;
   object-fit: contain;
 
-  > * {
-    // position: absolute;
-    object-fit: contain;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    // .padding-medium;
-  }
-  .m_previewValidation--audio {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-flow: column nowrap;
-
-    .plyr .plyr__controls {
-      color: white;
-    }
-
-    ::v-deep .plyr--audio {
-      flex: 0 0 0;
-    }
-
-    img {
-      object-fit: contain;
-    }
-
+  ::v-deep {
     > * {
-      flex: 1 1 auto;
-      // width: 100%;
-      // height: 100%;
-      height: 90%;
-
-      &:last-child {
-        height: auto;
-      }
+      // position: absolute;
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      margin: 0;
     }
-  }
-}
-
-.play_picto {
-  position: absolute;
-  top: 0;
-  left: 0;
-  svg {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
-    border-radius: 50%;
   }
 }
 

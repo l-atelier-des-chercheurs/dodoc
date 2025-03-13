@@ -1,6 +1,6 @@
 <template>
   <div class="_toggleInput">
-    <label :for="id" class="u-label _inputLabel">
+    <label :for="id" class="_inputLabel">
       <input
         ref="field"
         :id="id"
@@ -11,7 +11,7 @@
         :checked="content"
         @change="$emit('update:content', $event.target.checked)"
       />
-      <span v-if="label">
+      <span v-if="label" class="u-label _label">
         {{ label }}
       </span>
     </label>
@@ -70,9 +70,12 @@ export default {
   flex: 0 0 auto;
   padding: calc(var(--spacing) / 4) 0;
 }
-.u-label {
+._label {
   margin-bottom: 0;
 }
-._inputCb {
+._inputCb:checked {
+  + ._label {
+    font-weight: 500;
+  }
 }
 </style>

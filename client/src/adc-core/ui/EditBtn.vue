@@ -4,20 +4,23 @@
     class="u-button u-button_verysmall _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
+      'is--spinning': is_spinning,
     }"
+    :disabled="disabled"
     :style="btn_styles"
     @click="$emit('click')"
   >
     <span class="_label" :data-position="label_position">
-      {{ btn_props.label }}
+      <template v-if="label">{{ label }}</template>
+      <template v-else>{{ btn_props.label }}</template>
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
-    <!-- <sl-icon :name="icon" :label="label" /> -->
   </button>
 </template>
 <script>
 export default {
   props: {
+    label: String,
     btn_type: {
       type: String,
       default: "edit",
@@ -26,7 +29,19 @@ export default {
       type: String,
       default: "right",
     },
+    style_type: {
+      type: String,
+      default: "default",
+    },
     is_unfolded: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    is_spinning: {
       type: Boolean,
       default: false,
     },
@@ -56,6 +71,11 @@ export default {
           label: this.$t("add"),
           icon: "plus-lg",
         };
+      else if (this.btn_type === "order")
+        return {
+          label: this.$t("change_order"),
+          icon: "arrow-left-right",
+        };
       else if (this.btn_type === "close")
         return {
           label: this.$t("close"),
@@ -63,31 +83,88 @@ export default {
         };
       else if (this.btn_type === "check")
         return {
-          label: this.$t("ok"),
+          label: this.$t("save"),
           icon: "check-lg",
         };
-
+      else if (this.btn_type === "credits")
+        return {
+          label: this.$t("informations"),
+          icon: "info-circle",
+        };
+      else if (this.btn_type === "remove")
+        return {
+          label: this.$t("remove"),
+          icon: "trash",
+        };
+      else if (this.btn_type === "show")
+        return {
+          label: this.$t("show"),
+          icon: "eye-fill",
+        };
+      else if (this.btn_type === "hide")
+        return {
+          label: this.$t("hide"),
+          icon: "eye-slash-fill",
+        };
+      else if (this.btn_type === "create_page")
+        return {
+          label: this.$t("create_page"),
+          icon: "plus-lg",
+        };
+      else if (this.btn_type === "create_chapter")
+        return {
+          label: this.$t("create_chapter"),
+          icon: "plus-lg",
+        };
+      else if (this.btn_type === "regenerate_thumbs")
+        return {
+          label: this.$t("regenerate_thumbs"),
+          icon: "arrow-clockwise",
+        };
+      else if (this.btn_type === "duplicate")
+        return {
+          label: this.$t("duplicate"),
+          icon: "file-plus",
+        };
       return {
         label: this.$t("edit"),
         icon: "pencil-fill",
       };
     },
     btn_styles() {
-      if (this.btn_type === "fullscreen" || this.btn_type === "close")
+      if (this.style_type === "black")
+        return `
+          --color1: var(--c-noir);
+          --color2: white;        `;
+
+      if (
+        this.btn_type === "fullscreen" ||
+        this.btn_type === "close" ||
+        this.btn_type === "show" ||
+        this.btn_type === "hide"
+      )
         return `
           --color2: var(--c-noir);
         `;
-      if (this.btn_type === "add")
+      // if (this.btn_type === "add")
+      //   return `
+      //     --color1: white;
+      //     --color2: var(--c-noir);
+      //     --color-hover-icon: white;
+      //   `;
+      else if (this.btn_type === "credits")
         return `
-          --color1: white;
           --color2: var(--c-noir);
-          --color-hover-icon: white;
         `;
+      else if (this.btn_type === "remove")
+        return `
+          --color2: var(--c-rouge);
+        `;
+
       if (this.btn_type === "fullscreen-exit")
         return `
           --color1: var(--c-noir);
           --color2: white;
-          --color-hover-icon: var(--c-noir);
         `;
       return ``;
     },
@@ -97,18 +174,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0);
-  // --color1: white;
+  --color1: rgba(255, 255, 255, 0.68);
   --color2: var(--active-color);
-  --color-hover-icon: white;
 
   position: relative;
   display: inline-flex;
   background: var(--color1);
   color: var(--color2);
-  border: 1px solid var(--color1);
+  // border: 1px solid var(--color1);
 
-  box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
+  // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
@@ -120,6 +195,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
+  &:active,
   &:focus-visible {
     z-index: 2;
     transform: scale(1.2);
@@ -146,6 +222,9 @@ export default {
     border-radius: 1rem;
     white-space: nowrap;
 
+    max-width: 0;
+    overflow: hidden;
+
     pointer-events: none;
     opacity: 0;
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -162,18 +241,31 @@ export default {
     }
   }
 
+  &.is--unfolded {
+    ._label {
+      pointer-events: auto;
+    }
+  }
+
+  &.is--spinning {
+    ._icon {
+      animation: spin 1s linear infinite;
+    }
+  }
+
   &:hover,
   &:active,
   &:focus-visible,
   &.is--unfolded {
-    // background: var(--color2);
-    color: var(--color-hover-icon);
+    background: var(--color2);
+    color: var(--color1);
 
     ._label {
       transform: none;
       color: inherit;
       opacity: 1;
-      pointer-events: auto;
+      max-width: 40ch;
+      // pointer-events: auto;
       // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
       transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
     }

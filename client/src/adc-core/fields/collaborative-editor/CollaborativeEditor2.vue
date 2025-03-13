@@ -8,6 +8,11 @@
     }"
     @click="editorClick"
   >
+    <DLabel
+      v-if="label"
+      :str="label"
+      :instructions="can_edit ? instructions : ''"
+    />
     <TextVersioning
       v-if="show_archives"
       :path="path"
@@ -31,13 +36,13 @@
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
           </button> -->
-          <transition name="fade_fast" mode="out-in">
+          <transition name="pagechange" mode="out-in">
             <div
               class="u-button _savingStatus"
               v-if="is_loading_or_saving"
               key="saving"
             >
-              <sl-spinner style="--indicator-color: currentColor" />
+              <LoaderSpinner />
               {{ $t("saving") }}
             </div>
             <div
@@ -54,7 +59,7 @@
             <button
               type="button"
               class="u-button _archivesBtn"
-              v-else
+              v-else-if="field_to_edit === '$content' && path"
               @click="show_archives = !show_archives"
             >
               <b-icon icon="archive" />
@@ -62,15 +67,13 @@
             </button>
           </transition>
           <EditBtn
+            class="_editBtn"
             :btn_type="'check'"
             :label_position="'left'"
             @click="disableEditor"
           />
         </template>
       </div>
-      <!-- <sl-button v-show="editor_is_enabled" @click="saveText" size="small">
-          Enregistrer
-        </sl-button> -->
     </div>
 
     <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
@@ -87,7 +90,8 @@ import TextVersioning from "./TextVersioning.vue";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
-ShareDB.types.register(require("rich-text").type);
+import richText from "rich-text";
+ShareDB.types.register(richText.type);
 
 import {
   fonts as default_fonts,
@@ -96,30 +100,31 @@ import {
   lineHeightArr,
 } from "./imports/defaults.js";
 
-var Parchment = Quill.import("parchment");
-var lineHeightConfig = {
-  scope: Parchment.Scope.BLOCK,
-  whitelist: lineHeightArr,
-};
-var lineHeightClass = new Parchment.Attributor.Class(
-  "lineheight",
-  "ql-line-height",
-  lineHeightConfig
-);
-var lineHeightStyle = new Parchment.Attributor.Style(
-  "lineheight",
-  "line-height",
-  lineHeightConfig
-);
-Parchment.register(lineHeightClass);
-Parchment.register(lineHeightStyle);
+// var Parchment = Quill.import("parchment");
+// var lineHeightConfig = {
+//   scope: Parchment.Scope.BLOCK,
+//   whitelist: lineHeightArr,
+// };
+// var lineHeightClass = new Parchment.Attributor.Class(
+//   "lineheight",
+//   "ql-line-height",
+//   lineHeightConfig
+// );
+// var lineHeightStyle = new Parchment.Attributor.Style(
+//   "lineheight",
+//   "line-height",
+//   lineHeightConfig
+// );
+// Parchment.register(lineHeightClass);
+// Parchment.register(lineHeightStyle);
 var Size = Quill.import("attributors/style/size");
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
+const merge = (a, b, i = 0) => [...a.slice(0, i), ...b, ...a.slice(i)];
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
-const all_fonts = default_fonts.concat(custom_fonts_titles);
+const all_fonts = merge(default_fonts, custom_fonts_titles, 1);
 FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
 
@@ -141,6 +146,11 @@ Quill.register("modules/cardEditable", CardEditableModule);
 
 export default {
   props: {
+    label: {
+      type: String,
+      default: "",
+    },
+    instructions: String,
     path: String,
     sharedb_id: String,
     content: String,
@@ -153,6 +163,10 @@ export default {
     line_selected: [Boolean, Number],
     edit_on_mounted: Boolean,
     can_edit: Boolean,
+    is_collaborative: {
+      type: Boolean,
+      default: true,
+    },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -175,7 +189,6 @@ export default {
 
       debounce_textUpdate: undefined,
 
-      is_collaborative: true,
       collaborative_is_loaded: false,
 
       autosave: true,
@@ -288,12 +301,12 @@ export default {
       this.setStatusButton();
 
       this.editor.on("selection-change", () => {
-        console.log(`CollaborativeEditor / selection-change`);
+        // console.log(`CollaborativeEditor / selection-change`);
         this.updateSelectedLines();
       });
       this.editor.on("text-change", (delta, oldDelta, source) => {
         delta, oldDelta, source;
-        console.log(`CollaborativeEditor / text-change w source ${source}`);
+        // console.log(`CollaborativeEditor / text-change w source ${source}`);
         this.$nextTick(() => {
           // todo : only update if possibly changing line (backspace and enter)
           this.updateSelectedLines();
@@ -315,8 +328,8 @@ export default {
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
         container.push([{ size: fontSizeArr }]);
-      if (reference_formats.includes("lineheight"))
-        container.push([{ lineheight: lineHeightArr }]);
+      // if (reference_formats.includes("lineheight"))
+      //   container.push([{ lineheight: lineHeightArr }]);
 
       let formatting_opt = [];
       const basic_formatting = [
@@ -345,7 +358,6 @@ export default {
               "#ffbe32",
               "#fc4b60",
 
-              "#ff3333",
               "#08cc11",
               "#1c52ee",
               "#ff9c33",
@@ -395,9 +407,10 @@ export default {
 
       if (reference_formats.includes("code-block"))
         container.push(["code-block"]);
+      if (reference_formats.includes("table")) container.push(["table"]);
 
       // todo divider
-      container.push(["clean"]);
+      if (reference_formats.length > 0) container.push(["clean"]);
 
       let handlers = {
         divider: function () {
@@ -415,7 +428,6 @@ export default {
           new_line_height;
           // var range = this.quill.getSelection();
           // if (range) {
-          //   debugger;
           //   this.quill.format(
           //     range.index,
           //     range.length,
@@ -433,7 +445,7 @@ export default {
       };
     },
     getEditorContent() {
-      console.log(`CollaborativeEditor • getEditorContent`);
+      // console.log(`CollaborativeEditor • getEditorContent`);
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
       let html = this.editor.root.innerHTML;
 
@@ -442,7 +454,7 @@ export default {
       return html;
     },
     cleanEditorContent(html) {
-      console.log(`CollaborativeEditor • cleanEditorContent`);
+      // console.log(`CollaborativeEditor • cleanEditorContent`);
 
       var t = document.createElement("template");
       t.innerHTML = html;
@@ -472,7 +484,7 @@ export default {
       const bloc_height = this.$el.offsetHeight;
       this.$el.style.setProperty("min-height", bloc_height + "px");
 
-      console.log(`CollaborativeEditor2 • enableEditor`);
+      // console.log(`CollaborativeEditor2 • enableEditor`);
 
       if (this.is_collaborative) await this.startCollaborative();
 
@@ -481,10 +493,10 @@ export default {
       this.editor.focus();
 
       // todo select latest used font as selected font
-      if (this.editor.getLength() <= 1) {
-        const fontLastUsed = localStorage.getItem("fontLastUsed");
-        this.editor.format("font", fontLastUsed);
-      }
+      // if (this.editor.getLength() <= 1) {
+      //   const fontLastUsed = localStorage.getItem("fontLastUsed");
+      //   this.editor.format("font", fontLastUsed);
+      // }
 
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
@@ -498,7 +510,7 @@ export default {
     async disableEditor() {
       if (!this.editor_is_enabled || this.is_disabling_editor) return false;
 
-      console.log(`CollaborativeEditor2 • disableEditor`);
+      // console.log(`CollaborativeEditor2 • disableEditor`);
       this.is_disabling_editor = true;
 
       this.editor.setSelection(null);
@@ -510,7 +522,6 @@ export default {
       }
 
       if (this.is_collaborative) this.endCollaborative();
-
       await this.saveText();
 
       // check if toolbar is away, get it back if it is
@@ -544,12 +555,13 @@ export default {
     },
 
     restoreVersion(content) {
-      // TODO : with delta to allow for undo
-      // this.editor.root.innerHTML = content;
-      const value = content;
-      const delta = this.editor.clipboard.convert(value);
+      // it seems this allows for undo
+      this.editor.root.innerHTML = content;
 
-      this.editor.setContents(delta, "user");
+      // do not use, it doesnt respect \n
+      // const value = content;
+      // const delta = this.editor.clipboard.convert(value);
+      // this.editor.setContents(delta, "user");
 
       this.show_archives = false;
     },
@@ -601,20 +613,25 @@ export default {
         return "content_not_changed";
       }
 
+      if (!this.path) {
+        this.$emit("save", new_content);
+        return;
+      }
+
       const new_meta = {
         [this.field_to_edit]: new_content,
       };
 
       try {
         this.is_loading_or_saving = true;
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 300));
         await this.$api.updateMeta({
           path: this.path,
           new_meta,
         });
         this.is_loading_or_saving = false;
         this.show_saved_icon = true;
-        await new Promise((r) => setTimeout(r, 500));
+        await new Promise((r) => setTimeout(r, 300));
         this.show_saved_icon = false;
       } catch (err) {
         if (err.message === "content not changed") err;
@@ -640,9 +657,9 @@ export default {
           "/isSharedb" +
           `?path_to_meta=${path_to_meta}`;
 
-        console.log(
-          `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
-        );
+        // console.log(
+        //   `CollaborativeEditor / startCollaborative : will connect to ws server with ${requested_resource_url}`
+        // );
 
         this.rtc.socket = new ReconnectingWebSocket(requested_resource_url);
         const connection = new ShareDB.Connection(this.rtc.socket);
@@ -650,18 +667,18 @@ export default {
           this.rtc.connection_state = state.toString();
         });
 
-        console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
+        // console.log(`CollaborativeEditor / connecting to doc ${path_to_meta}`);
         this.doc = connection.get("collaborative_texts", path_to_meta);
 
         this.doc.subscribe((err) => {
           if (err) console.error(`CollaborativeEditor / err ${err}`);
-          console.log(`CollaborativeEditor / doc subscribe`);
+          // console.log(`CollaborativeEditor / doc subscribe`);
 
           if (this.doc.type) {
-            console.log(`CollaborativeEditor / doc already exists`);
+            // console.log(`CollaborativeEditor / doc already exists`);
             this.editor.setContents(this.doc.data, "init");
           } else {
-            console.log(`CollaborativeEditor / doc does not exists`);
+            // console.log(`CollaborativeEditor / doc does not exists`);
             this.doc.create(this.editor.getContents(), "rich-text");
           }
 
@@ -669,10 +686,10 @@ export default {
 
           this.editor.on("text-change", this.submitOPAndSave);
           this.doc.on("op", (op, source) => {
-            console.log(`CollaborativeEditor / op applied`);
+            // console.log(`CollaborativeEditor / op applied`);
             this.text_deltas = this.doc.data;
             if (source === this.editor_id) return;
-            console.log(`CollaborativeEditor / outside op applied`);
+            // console.log(`CollaborativeEditor / outside op applied`);
             this.editor.updateContents(op);
           });
 
@@ -704,14 +721,14 @@ export default {
       this.collaborative_is_loaded = false;
     },
     submitOPAndSave(delta, oldDelta, source) {
-      console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
+      // console.log(`CollaborativeEditor / submitOPAndSave w source ${source}`);
       if (source === "user") {
         this.doc.submitOp(delta, { source: this.editor_id });
-        console.log(
-          `CollaborativeEditor / submitted op to server ${JSON.stringify(
-            delta
-          )}`
-        );
+        // console.log(
+        //   `CollaborativeEditor / submitted op to server ${JSON.stringify(
+        //     delta
+        //   )}`
+        // );
         this.updateTextMedia();
       }
     },
@@ -719,14 +736,14 @@ export default {
     updateTextMedia() {
       if (this.debounce_textUpdate) clearTimeout(this.debounce_textUpdate);
       this.debounce_textUpdate = setTimeout(async () => {
-        console.log(
-          `CollaborativeEditor • updateTextMedia: saving new snapshot`
-        );
+        // console.log(
+        //   `CollaborativeEditor • updateTextMedia: saving new snapshot`
+        // );
         await this.saveText();
 
-        const { font } = this.editor.getFormat();
-        localStorage.setItem("fontLastUsed", font);
-      }, 1000);
+        // const { font } = this.editor.getFormat();
+        // localStorage.setItem("fontLastUsed", font);
+      }, 5000);
     },
 
     addMediaAtTheEnd(media) {
@@ -741,7 +758,7 @@ export default {
       this.addMediaAtTheEnd(media);
     },
     addMediaAtIndex(index, media) {
-      console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
+      // console.log(`CollaborativeEditor • addMediaAtIndex ${index}`);
       // TODO fix
       const mediaURL = `./${this.folder_slug}/${media.media_filename}`;
       // const mediaURL =
@@ -771,7 +788,7 @@ export default {
               caption,
               // TODO update with $path
               // meta_filename: $slug,
-              // src: `/thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
+              // src: `./thumbs/${this.folder_type}/${this.folder_slug}/${thumb_path}`,
             },
             Quill.sources.USER
           );
@@ -809,13 +826,13 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error(this.$t("notifications.media_type_not_handled"));
+          .error(this.$t("media_type_not_handled"));
       }
     },
 
     onDragover($event) {
       if (!this.editor_is_enabled) return;
-      console.log(`CollaborativeEditor2 / onDragover`);
+      // console.log(`CollaborativeEditor2 / onDragover`);
       $event.preventDefault();
       // todo debounce dragover to trigger only a handful of times per seconds
       // const el = $event.target;
@@ -829,7 +846,7 @@ export default {
       if (!_blot.domNode.classList.contains("is--dragover")) {
         _blot.domNode.classList.add("is--dragover");
         _blot.domNode.addEventListener("dragleave", () => {
-          console.log(`CollaborativeEditor2 / dragleave`);
+          // console.log(`CollaborativeEditor2 / dragleave`);
           _blot.domNode.classList.remove("is--dragover");
         });
       }
@@ -837,7 +854,7 @@ export default {
     // onDragLeave($event) {},
     onDrop($event) {
       if (!this.editor_is_enabled) return;
-      console.log(`CollaborativeEditor2 / onDrop`);
+      // console.log(`CollaborativeEditor2 / onDrop`);
 
       // Prevent default behavior (Prevent file from being opened)
       $event.preventDefault();
@@ -846,9 +863,9 @@ export default {
       this.removeDragoverFromBlots();
 
       if ($event.dataTransfer.getData("text/plain") === "media_in_quill") {
-        console.log(
-          `CollaborativeEditor2 / onDrop : : drag and dropped a media from quill`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : : drag and dropped a media from quill`
+        // );
 
         let _blot = this.getBlockFromElement($event.target);
         const index = this.editor.getIndex(_blot);
@@ -857,21 +874,21 @@ export default {
         // find where it was dropped (B)
         // move delta from A to B
 
-        console.log(`_blot is currently at index ${index}`);
+        // console.log(`_blot is currently at index ${index}`);
       } else if ($event.dataTransfer.getData("text/plain")) {
-        console.log(
-          `CollaborativeEditor2 / onDrop : : dropped a media from the library`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : : dropped a media from the library`
+        // );
 
         const media = JSON.parse($event.dataTransfer.getData("text/plain"));
-        console.log(media);
+        // console.log(media);
 
         if (media.media_filename) {
           // drop sur l’éditor et pas sur une ligne
           if ($event.target.classList.contains("ql-editor")) {
-            console.log(
-              "dropped on editor and not on line, will insert at the end of doc"
-            );
+            // console.log(
+            //   "dropped on editor and not on line, will insert at the end of doc"
+            // );
             this.addMediaAtIndex(this.editor.getLength() - 1, media);
             return;
           }
@@ -882,7 +899,7 @@ export default {
             this.$alertify
               .closeLogOnClick(true)
               .delay(4000)
-              .error(this.$t("notifications.failed_to_find_block_line"));
+              .error(this.$t("failed_to_find_block_line"));
             return;
           }
 
@@ -893,9 +910,9 @@ export default {
           this.addMediaAtIndex(index - 1, media);
         }
       } else {
-        console.log(
-          `CollaborativeEditor2 / onDrop : missing meta for drop to occur`
-        );
+        // console.log(
+        //   `CollaborativeEditor2 / onDrop : missing meta for drop to occur`
+        // );
       }
     },
 
@@ -940,7 +957,7 @@ export default {
 
   ::v-deep {
     .ql-container {
-      font-size: 16px;
+      font-size: inherit;
       font-family: inherit;
       font-weight: normal;
       background-color: transparent;
@@ -967,7 +984,25 @@ export default {
       padding: 0px;
       padding-bottom: 0.4em;
 
-      @import "./imports/mainText.scss";
+      > * {
+        padding: 0;
+        margin: 0;
+      }
+      > img {
+        max-width: 30ch;
+      }
+
+      blockquote {
+        padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+        margin: calc(var(--spacing) * 1) 0;
+        border: none;
+        border-left: 2px solid var(--c-gris);
+      }
+
+      pre.ql-syntax {
+        font-family: Fira Mono;
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+      }
 
       &[contenteditable="true"] {
         // padding: 2px;
@@ -977,7 +1012,7 @@ export default {
       > * {
         // counter-increment: listCounter;
         position: relative;
-        padding: 0;
+        // padding: 0;
 
         &::before {
           // content: counter(listCounter);
@@ -1038,8 +1073,11 @@ export default {
     }
 
     .ql-container.ql-disabled {
-      .ql-editor > * {
-        cursor: inherit;
+      .ql-editor {
+        padding-bottom: 0;
+        > * {
+          cursor: inherit;
+        }
       }
     }
   }
@@ -1048,6 +1086,7 @@ export default {
   ::v-deep {
     .ql-toolbar {
       padding: 0;
+      margin: 0;
     }
     .ql-formats {
       display: none;
@@ -1387,10 +1426,12 @@ export default {
     justify-content: space-between;
     align-items: center;
 
-    // ._editBtn {
-    //   background-color: var(--c-bleuvert);
-    // }
+    ._editBtn {
+      background-color: var(--c-bleuvert) !important;
+      border-radius: 0 !important;
+    }
   }
+
   // background-color: var(--editor-bg);
 }
 

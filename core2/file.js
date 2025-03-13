@@ -3,6 +3,7 @@ const path = require("path"),
 
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
+  archives = require("./archives"),
   cache = require("./cache");
 
 module.exports = (function () {
@@ -32,6 +33,9 @@ module.exports = (function () {
         meta_filename =
           prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
       } else {
+        const { upload_max_file_size_in_mo } =
+          await require("./settings").get();
+
         const {
           originalFilename,
           path_to_temp_file,
@@ -40,9 +44,22 @@ module.exports = (function () {
           .handleForm({
             path_to_folder,
             req,
+            upload_max_file_size_in_mo,
           })
           .catch((err) => {
-            dev.error(`Failed to handle form`, err);
+            if (err === "file_size_limit_exceeded") {
+              const err = new Error("File size limit exceeded");
+              err.code = "file_size_limit_exceeded";
+              err.err_infos = {
+                upload_max_file_size_in_mo,
+              };
+              throw err;
+            } else {
+              dev.error(`Failed to handle form`, err);
+              const err = new Error("Failed to save file");
+              err.code = "failed_to_save_file";
+              throw err;
+            }
           });
 
         additional_meta = _additional_meta;
@@ -58,6 +75,7 @@ module.exports = (function () {
         extracted_meta = await _initMeta({
           additional_meta,
           filename: new_filename,
+          path_to_media: new_path,
         });
 
         meta_filename = await _preventFileOverride({
@@ -92,7 +110,7 @@ module.exports = (function () {
         meta,
       });
 
-      return meta_filename;
+      return { meta, meta_filename };
     },
 
     getFiles: async ({ path_to_folder, embed_source }) => {
@@ -110,7 +128,6 @@ module.exports = (function () {
           const path_to_meta = path.join(path_to_folder, meta_filename);
           let meta = await API.getFile({
             path_to_meta,
-            embed_source,
           });
 
           if (embed_source) meta = await _embedSourceMedias({ meta });
@@ -124,7 +141,7 @@ module.exports = (function () {
 
       return metas;
     },
-    getFile: async ({ path_to_meta, embed_source }) => {
+    getFile: async ({ path_to_meta }) => {
       dev.logfunction({ path_to_meta });
 
       const d = cache.get({
@@ -135,12 +152,17 @@ module.exports = (function () {
       const path_to_folder = utils.getContainingFolder(path_to_meta);
 
       let meta = await utils.readMetaFile(path_to_meta);
-      meta.$path = path_to_meta;
+      meta.$path = utils.convertToSlashPath(path_to_meta);
 
       const media_filename = meta.$media_filename;
       const media_type = meta.$type;
 
-      if (media_filename && media_filename.endsWith(".txt"))
+      if (
+        media_filename &&
+        [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
+          path.extname(media_filename)
+        )
+      )
         meta.$content = await utils.readFileContent(
           path_to_folder,
           media_filename
@@ -154,7 +176,8 @@ module.exports = (function () {
             path_to_folder,
           })
           .catch((err) => {
-            dev.error(err);
+            if (err.message) dev.error(err.message);
+            else dev.error(err);
           });
         if (_thumbs) meta.$thumbs = _thumbs;
       }
@@ -165,7 +188,12 @@ module.exports = (function () {
           media_filename,
           path_to_folder,
         });
-        if (file_infos) meta.$infos = file_infos;
+        if (file_infos) {
+          if (!meta.$location && file_infos.gps)
+            meta.$location = file_infos.gps;
+          if (file_infos.gps) delete file_infos.gps;
+          meta.$infos = file_infos;
+        }
       }
 
       cache.set({
@@ -177,10 +205,12 @@ module.exports = (function () {
     },
     getArchives: async ({ path_to_folder, meta_filename }) => {
       dev.logfunction({ path_to_folder, meta_filename });
-      return await _readArchives({
+      const archives_content = await archives.getArchives({
         path_to_folder,
         meta_filename,
       });
+      if (archives_content) return archives_content;
+      return [];
     },
 
     updateFile: async ({ path_to_folder, path_to_meta, data }) => {
@@ -192,7 +222,7 @@ module.exports = (function () {
       let { $content, $media_filename, ...new_meta } = data;
 
       // update meta file
-      if (new_meta) {
+      if (new_meta && Object.keys(new_meta).length) {
         const clean_meta = await utils.cleanNewMeta({
           relative_path: path_to_meta,
           new_meta,
@@ -210,7 +240,7 @@ module.exports = (function () {
       }
 
       if ($media_filename) meta.$media_filename = $media_filename;
-      if (typeof $content !== "undefined" && meta.$type === "text") {
+      if (typeof $content !== "undefined") {
         await _updateTextContent({
           new_content: $content,
           path_to_folder,
@@ -243,26 +273,78 @@ module.exports = (function () {
           path_to_meta,
         });
 
-      if (typeof $content !== "undefined" && meta.$type === "text")
-        changed_data.$content = $content;
+      if (typeof $content !== "undefined") changed_data.$content = $content;
 
       return changed_data;
     },
+    _regenerateThumbs: async ({
+      path_to_folder,
+      path_to_meta,
+      meta_filename,
+    }) => {
+      dev.logfunction({ path_to_folder, path_to_meta, meta_filename });
 
-    removeFile: async ({ path_to_folder, meta_filename }) => {
-      dev.logfunction({ path_to_folder, meta_filename });
+      let { $media_filename, $type } = await utils.readMetaFile(path_to_meta);
+      await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+
+      if ($type) {
+        const $thumbs = await thumbs
+          .makeThumbForMedia({
+            media_type: $type,
+            media_filename: $media_filename,
+            path_to_folder,
+          })
+          .catch((err) => {
+            if (err.message) dev.error(err.message);
+            else dev.error(err);
+          });
+        if ($thumbs) return { $thumbs };
+      }
+      return { $thumbs: {} };
+    },
+    removeFile: async ({ path_to_folder, meta_filename, path_to_meta }) => {
+      dev.logfunction({ path_to_folder, meta_filename, path_to_meta });
 
       try {
         await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+        await archives.removeFileArchives({ path_to_folder, meta_filename });
+
         // todo check if file exists in sharedb collection, remove
         // await serverRTC.removeDoc({});
 
-        if (global.settings.removePermanently === true)
-          await _removeFileForGood({ path_to_folder, meta_filename });
-        else await _moveFileToBin({ path_to_folder, meta_filename });
+        const _all_files_and_folders = await _getAllFilesAndFolders({
+          path_to_folder,
+          meta_filename,
+        });
+
+        const { remove_permanently } = await require("./settings").get();
+
+        try {
+          for (const file_folder_names of _all_files_and_folders) {
+            const full_path_to_file_or_folder = utils.getPathToUserContent(
+              path_to_folder,
+              file_folder_names
+            );
+
+            if (remove_permanently === true)
+              await fs.remove(full_path_to_file_or_folder);
+            else {
+              const dest_path = utils.getPathToUserContent(
+                path_to_folder,
+                global.settings.deletedFolderName,
+                file_folder_names
+              );
+              await fs.move(full_path_to_file_or_folder, dest_path, {
+                overwrite: true,
+              });
+            }
+          }
+        } catch (err) {
+          // don't catch error if missing target at path (can be an "…_archives" folder)
+        }
 
         cache.delete({
-          key: `${path_to_folder}/${meta_filename}`,
+          key: `${path_to_meta}`,
         });
 
         return;
@@ -330,12 +412,6 @@ module.exports = (function () {
 
       let meta = await utils.readMetaFile(path_to_meta);
       let desired_meta_filename = meta_filename;
-
-      // todo copy all related meta (archives as well)
-      // const _all_file_paths = await _getAllFilesRelatedToMeta({
-      //   path_to_folder,
-      //   meta_filename,
-      // });
 
       if (meta.hasOwnProperty("$media_filename")) {
         // copy media
@@ -442,13 +518,14 @@ module.exports = (function () {
     return new_filename;
   }
 
-  async function _initMeta({ additional_meta = {}, filename }) {
+  async function _initMeta({ additional_meta = {}, filename, path_to_media }) {
     dev.logfunction();
 
     // TODO need to rewrite this to match additional_meta with schema
 
     let new_meta = {};
 
+    // set date created (see readme)
     if (additional_meta.$date_created)
       new_meta.$date_created = utils.parseDate(additional_meta.$date_created);
     else {
@@ -456,6 +533,7 @@ module.exports = (function () {
       // await fs.stat(filepath);
     }
 
+    // set date uploaded (see readme)
     new_meta.$date_uploaded = new_meta.$date_modified = utils.getCurrentDate();
     if (filename) new_meta.$media_filename = filename;
 
@@ -464,12 +542,15 @@ module.exports = (function () {
       ? additional_meta.$status
       : "private";
 
+    // set origin
     if (additional_meta.$origin && typeof additional_meta.$origin === "string")
       new_meta.$origin = additional_meta.$origin;
 
+    // set authors
     if (additional_meta.$authors && Array.isArray(additional_meta.$authors))
       new_meta.$authors = additional_meta.$authors;
 
+    // set type
     if (additional_meta.$type) {
       new_meta.$type = additional_meta.$type;
     } else if (filename) {
@@ -499,9 +580,13 @@ module.exports = (function () {
         case ".ogg":
           new_meta.$type = "audio";
           break;
-        case ".md":
-        case ".rtf":
         case ".txt":
+        case ".md":
+        case ".json":
+        case ".csv":
+        case ".js":
+        case ".ino":
+        case ".css":
           new_meta.$type = "text";
           break;
         case ".pdf":
@@ -512,6 +597,23 @@ module.exports = (function () {
       }
       dev.logfunction(`Type determined to be ${new_meta.$type}`);
     }
+
+    if (
+      additional_meta.$location &&
+      additional_meta.$location.latitude &&
+      additional_meta.$location.longitude
+    ) {
+      new_meta.$location = additional_meta.$location;
+    } else {
+      if (new_meta.$type === "image" && path_to_media) {
+        try {
+          const gps = await utils.getGPSFromFile(path_to_media);
+          if (gps) new_meta.$location = gps;
+        } catch (err) {}
+      }
+    }
+
+    if (additional_meta.$credits) new_meta.$credits = additional_meta.$credits;
 
     return new_meta;
   }
@@ -537,81 +639,20 @@ module.exports = (function () {
     }
   }
 
-  async function _removeFileForGood({ path_to_folder, meta_filename }) {
-    dev.logfunction({ path_to_folder, meta_filename });
-
-    const _all_file_paths = await _getAllFilesRelatedToMeta({
-      path_to_folder,
-      meta_filename,
-    });
-
-    try {
-      for (const file_path of _all_file_paths) {
-        await fs.remove(file_path);
-      }
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async function _moveFileToBin({ path_to_folder, meta_filename }) {
-    dev.logfunction({ path_to_folder, meta_filename });
-
-    const _all_file_paths = await _getAllFilesRelatedToMeta({
-      path_to_folder,
-      meta_filename,
-    });
-
-    try {
-      for (const file_path of _all_file_paths) {
-        const path_in_bin = file_path.replace(
-          path.join(path_to_folder),
-          path.join(path_to_folder, global.settings.deletedFolderName)
-        );
-        dev.logverbose({ file_path, path_in_bin });
-        await fs
-          .move(file_path, path_in_bin, { overwrite: true })
-          .catch((err) => {
-            // don't catch error if missing target at path (can be an "…_archives" folder)
-          });
-      }
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  async function _getAllFilesRelatedToMeta({ path_to_folder, meta_filename }) {
-    let paths = [];
-
-    const full_meta_path = utils.getPathToUserContent(
-      path_to_folder,
-      meta_filename
-    );
-    paths.push(full_meta_path);
+  async function _getAllFilesAndFolders({ path_to_folder, meta_filename }) {
+    let files_and_folders_name = [];
+    files_and_folders_name.push(meta_filename);
 
     let meta = await utils.readMetaFile(path_to_folder, meta_filename);
     const media_filename = meta.$media_filename;
 
-    if (!media_filename) return paths;
+    if (media_filename) {
+      files_and_folders_name.push(media_filename);
+    }
 
-    const full_media_path = utils.getPathToUserContent(
-      path_to_folder,
-      media_filename
-    );
-    paths.push(full_media_path);
+    dev.logfunction({ files_and_folders_name });
 
-    const archive_folder_name = _getArchivePath(media_filename);
-    const full_archive_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-    if (await fs.pathExists(full_archive_path)) paths.push(full_archive_path);
-
-    dev.logfunction({ paths });
-
-    return paths;
+    return files_and_folders_name;
   }
 
   async function _updateTextContent({
@@ -638,7 +679,7 @@ module.exports = (function () {
     );
 
     if (global.settings.versioning === true)
-      await _archiveVersion({
+      await archives.archiveVersion({
         path_to_folder,
         media_filename,
       });
@@ -658,107 +699,41 @@ module.exports = (function () {
       });
   }
 
-  async function _archiveVersion({ path_to_folder, media_filename }) {
-    dev.logfunction(arguments[0]);
-    const media_path = utils.getPathToUserContent(
-      path_to_folder,
-      media_filename
-    );
-
-    const archive_folder_name = _getArchivePath(media_filename);
-
-    const full_archived_folder_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-    await fs.ensureDir(full_archived_folder_path);
-
-    try {
-      // keep file name, append -1, -2, etc. if necessary to prevent override
-      // const archived_media_filename = await _preventFileOverride({
-      //   folder_path: archived_folder_path,
-      //   original_filename: media_filename,
-      // });
-
-      // use timestamp to mark time archived
-      const archived_media_filename =
-        +utils.getCurrentDate() + path.parse(media_filename).ext;
-
-      const archived_media_path = path.join(
-        full_archived_folder_path,
-        archived_media_filename
-      );
-
-      await fs.move(media_path, archived_media_path, {
-        overwrite: true,
-      });
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-  async function _readArchives({ path_to_folder, meta_filename }) {
-    dev.logfunction();
-
-    let meta = await utils.readMetaFile(path_to_folder, meta_filename);
-
-    const archive_folder_name = _getArchivePath(meta.$media_filename);
-    const full_archived_folder_path = utils.getPathToUserContent(
-      path_to_folder,
-      archive_folder_name
-    );
-
-    try {
-      let filenames = (
-        await fs.readdir(full_archived_folder_path, { withFileTypes: true })
-      )
-        .filter((dirent) => !dirent.isDirectory())
-        .map((dirent) => dirent.name);
-      dev.logfunction({ filenames });
-
-      const files_content = [];
-      for (const filename of filenames) {
-        const content = await utils.readFileContent(
-          path_to_folder,
-          archive_folder_name,
-          filename
-        );
-        const date = +path.parse(filename).name;
-        files_content.push({
-          date,
-          filename,
-          content,
-        });
-      }
-      return files_content;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  function _getArchivePath(media_filename) {
-    return "_archives_" + path.parse(media_filename).name;
-  }
-
   async function _embedSourceMedias({ meta }) {
-    if (!meta.hasOwnProperty("source_medias")) return meta;
+    // if (
+    //   !["source_medias", "map_base_media_filename", "cover_meta_filename"].some(
+    //     (key) => meta.hasOwnProperty(key)
+    //   )
+    // )
+    //   return meta;
 
     const source_folder = utils.getFolderParent(
-      utils.getContainingFolder(meta.$path)
+      utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
-    for (const [index, source_media] of meta.source_medias.entries()) {
-      if (source_media.hasOwnProperty("meta_filename_in_project")) {
-        const path_to_meta = path.join(
-          source_folder,
-          source_media.meta_filename_in_project
-        );
+    const findSourceMedia = async (source_media, key) => {
+      if (source_media.hasOwnProperty(key)) {
+        const path_to_meta = path.join(source_folder, source_media[key]);
         const source_media_meta = await API.getFile({
           path_to_meta,
         });
-        meta.source_medias[index]._media = source_media_meta;
+        return source_media_meta;
       }
-    }
+    };
+
+    if (meta.source_medias)
+      for (const [index, source_media] of meta.source_medias.entries()) {
+        const source_media_meta = await findSourceMedia(
+          source_media,
+          "meta_filename_in_project"
+        );
+        if (source_media_meta)
+          meta.source_medias[index]._media = source_media_meta;
+      }
+
+    const _map = await findSourceMedia(meta, "map_base_media_filename");
+    if (_map) meta["_map_base_media"] = _map;
+
     return meta;
   }
 

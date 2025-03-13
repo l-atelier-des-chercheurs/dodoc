@@ -5,19 +5,17 @@
   "redirect_port": "",
   "cache_content": true,
   "bonjour_domain": false,
-  "removePermanently": false,
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
-  "cacheDirname": "luma_cache",
   "contentPath": "luma_next",
 
   "privateKeyPath": "",
   "certificatePath": "",
   "passphrase": "",
 
-  "lruCacheMax": 3000,
-  "lruCacheMaxSize": 10000000,
+  "lruCacheMax": 10000,
+  "lruCacheMaxSize": 25000000,
 
   "deletedFolderName": "_bin",
 
@@ -27,17 +25,6 @@
   },
 
   "mediaThumbQuality": 90,
-  "maxFileSizeInMoForUpload": 10000,
-
-  "regexpMatchFolderNames": "^([^.]+)$",
-  "regexpGetFileExtension": "\\.[^.]*$",
-  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
-
-  "api": {
-    "enabled": false,
-    "allow_all_domains": false,
-    "domains_whitelist": ["localhost"]
-  },
 
   "schema": {
     "fields": {
@@ -135,6 +122,7 @@
                 "caption": {
                   "type": "string"
                 },
+
                 "date_created_corrected": {
                   "type": "string"
                 }

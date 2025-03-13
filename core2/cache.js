@@ -1,4 +1,4 @@
-const LRU = require("lru-cache");
+const { LRUCache } = require("lru-cache");
 
 module.exports = (function () {
   let _lru_cache;
@@ -16,7 +16,7 @@ module.exports = (function () {
           return value.length;
         },
       };
-      _lru_cache = new LRU(options);
+      _lru_cache = new LRUCache(options);
       _is_enabled = true;
     },
     get: ({ key }) => {

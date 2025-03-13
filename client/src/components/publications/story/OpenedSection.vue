@@ -6,7 +6,17 @@
       :section="opened_section"
       :can_edit="can_edit"
       @prevSection="prevSection"
+      @nextSection="nextSection"
+      @changeSectionForModule="change_section_for_module = $event"
     />
+
+    <ChangeSectionForModule
+      v-if="change_section_for_module"
+      :module_path="change_section_for_module"
+      :sections="sections"
+      @close="change_section_for_module = false"
+    />
+
     <div class="_navBtns">
       <div class="_navBtns--content">
         <button
@@ -15,7 +25,7 @@
           v-if="prev_section"
           @click="prevSection"
         >
-          <b-icon icon="arrow-left-circle" />
+          <b-icon icon="arrow-left-square" />
           <span>
             {{ prev_section.section_title }}
           </span>
@@ -30,7 +40,7 @@
           <span>
             {{ next_section.section_title }}
           </span>
-          <b-icon icon="arrow-right-circle" />
+          <b-icon icon="arrow-right-square" />
         </button>
       </div>
     </div>
@@ -38,6 +48,7 @@
 </template>
 <script>
 import SingleSection from "@/components/publications/story/SingleSection.vue";
+import ChangeSectionForModule from "@/components/publications/modules/ChangeSectionForModule.vue";
 
 export default {
   props: {
@@ -48,9 +59,12 @@ export default {
   },
   components: {
     SingleSection,
+    ChangeSectionForModule,
   },
   data() {
-    return {};
+    return {
+      change_section_for_module: false,
+    };
   },
   created() {},
   mounted() {},
@@ -81,11 +95,13 @@ export default {
   methods: {
     nextSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.next_section.$path));
+      if (this.next_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.next_section.$path));
     },
     prevSection() {
       this.scrollToTop();
-      this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
+      if (this.prev_section?.$path)
+        this.$emit("toggleSection", this.getFilename(this.prev_section.$path));
     },
     async scrollToTop() {
       //https://phuoc.ng/collection/html-dom/get-the-first-scrollable-parent-of-an-element/

@@ -18,18 +18,18 @@
               )
             "
           />
-          <b-icon v-else class="_preview" icon="file-earmark-arrow-down-fill" />
-
+          <div v-else class="_preview" />
           <span class="_link--filename" v-text="file.$media_filename" />
+          <b-icon icon="file-earmark-arrow-down" />
         </DownloadFile>
 
         <button
           type="button"
           v-if="can_edit"
-          class="u-button u-button_icon u-button_small"
+          class="u-button u-button_icon"
           @click.prevent="removeFile(file.$path)"
         >
-          <b-icon icon="x" :aria-label="$t('first_image')" />
+          <b-icon icon="x-lg" />
         </button>
       </div>
     </template>
@@ -148,7 +148,6 @@ export default {
   > ._file {
     // margin: calc(var(--spacing) / 4) 0;
     padding: 0;
-    border-radius: 2px;
     min-height: 2em;
     // border: 1px solid var(--c-gris_fonce);
 
@@ -160,18 +159,18 @@ export default {
 
     gap: calc(var(--spacing) / 4);
     border-radius: 4px;
+    overflow: hidden;
 
     justify-content: space-between;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       background: var(--c-gris);
     }
 
     ._link {
       flex: 1 1 auto;
       overflow: hidden;
-
-      display: block;
 
       font-variant: none;
       font-weight: 400;
@@ -186,9 +185,11 @@ export default {
         flex: 0 0 auto;
         font-size: 100%;
 
-        width: 25px;
-        height: 25px;
+        flex: 0 0 auto;
+        width: 35px;
+        height: 35px;
         overflow: hidden;
+        background-color: var(--c-gris);
 
         ::v-deep ._mediaContent--image {
           position: absolute;
@@ -200,9 +201,7 @@ export default {
       }
 
       ._link--filename {
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
-        // overflow: hidden;
+        flex: 1 1 auto;
         white-space: break-spaces;
       }
     }

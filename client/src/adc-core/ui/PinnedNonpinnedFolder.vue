@@ -110,11 +110,6 @@ export default {
   data() {
     return {};
   },
-  i18n: {
-    messages: {
-      fr: {},
-    },
-  },
   created() {},
   mounted() {},
   beforeDestroy() {},
@@ -192,14 +187,14 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
 
   z-index: 100;
   color: var(--c-orange);
 
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 8);
 
   > button {
     display: block;
@@ -227,9 +222,10 @@ export default {
 }
 ._list_pinned {
   // border-radius: 3px;
-  background-image: radial-gradient(rgba(51, 51, 51, 0.2) 2px, transparent 2px);
-  background-size: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  background-image: radial-gradient(rgba(51, 51, 51, 0.1) 2px, transparent 2px);
+  background-size: calc(var(--spacing)) calc(var(--spacing));
 
   padding: calc(var(--spacing) / 1);
+  margin: 0 calc(var(--spacing) / -1);
 }
 </style>

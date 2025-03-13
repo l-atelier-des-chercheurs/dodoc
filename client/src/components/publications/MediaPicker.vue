@@ -1,12 +1,13 @@
 <template>
   <div class="_mediaPicker">
-    <!-- <PickMediaFromProjects
+    <PickMediaFromProjects
       :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
       :path="current_project_path"
       :select_mode="select_mode"
+      :pick_from_types="pick_from_types"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
-    /> -->
+    />
   </div>
 </template>
 <script>
@@ -17,6 +18,7 @@ export default {
       type: String,
       default: "multiple",
     },
+    pick_from_types: [String, Array],
   },
   components: {},
   data() {
@@ -26,10 +28,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    // current_project_path() {
-    //   const all_publications_path = this.getParent(this.publication_path);
-    //   return this.getParent(all_publications_path);
-    // },
+    current_project_path() {
+      const all_publications_path = this.getParent(this.publication_path);
+      return this.getParent(all_publications_path);
+    },
   },
   methods: {},
 };

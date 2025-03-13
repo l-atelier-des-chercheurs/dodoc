@@ -7,17 +7,17 @@
         <transition name="pagechange" mode="out-in">
           <div v-if="!author_to_login_to" key="search">
             <transition name="pagechange" mode="out-in">
-              <div v-if="!author_suggestions" key="none" />
+              <div v-if="!author_suggestions" class="" key="none" />
               <div
                 v-else-if="author_suggestions.length === 0"
-                class="u-instructions _noAuthorNotice"
+                class="u-instructions u-spacingBottom _noAuthorNotice"
                 key="no_author"
               >
                 <b-icon icon="exclamation-triangle-fill" />
-                {{ $t("login_no_author_matches") }}
+                {{ $t("login_no_account_matches") }}
               </div>
               <div
-                class="u-listOfAvatars"
+                class="u-spacingBottom u-listOfAvatars"
                 key="list"
                 v-else-if="author_suggestions.length > 0"
               >
@@ -35,6 +35,7 @@
               ref="nameField"
               :label_str="'name_or_pseudonym'"
               :required="true"
+              :autofocus="true"
               :input_type="'text'"
               :autocomplete="'username'"
               @toggleValidity="($event) => (allow_save = $event)"
@@ -53,12 +54,14 @@
                 {{ $t("back") }}
               </button>
 
-              <transition name="fade" mode="out-in">
-                <AuthorTag
-                  :key="author_to_login_to.$path"
-                  :path="author_to_login_to.$path"
-                />
-              </transition>
+              <div>
+                <transition name="fade" mode="out-in">
+                  <AuthorTag
+                    :key="author_to_login_to.$path"
+                    :path="author_to_login_to.$path"
+                  />
+                </transition>
+              </div>
 
               <input
                 style="display: none"
@@ -74,6 +77,7 @@
                 ref="passwordField"
                 :content.sync="input_password"
                 :required="true"
+                :autofocus="true"
                 :input_type="'password'"
                 :autocomplete="'current-password'"
                 @toggleValidity="($event) => (allow_save = $event)"
@@ -113,7 +117,7 @@
 
       <LoaderSpinner v-if="connection_status === 'pending'" />
       <div class="" v-else-if="connection_status === 'success'">
-        {{ $t("notifications.logged_in") }}
+        {{ $t("logged_in") }}
       </div>
     </form>
   </div>
@@ -150,12 +154,10 @@ export default {
     author_suggestions() {
       if (this.search_author_name.length === 0 || this.authors.length === 0)
         return false;
-
       const matching = this.authors.filter((a) => {
         return this.twoStringsSearch(a.name, this.search_author_name);
       });
-
-      return matching.map((m) => m.$path);
+      return matching.map((m) => m.$path).slice(0, 5);
     },
   },
   methods: {
@@ -180,14 +182,12 @@ export default {
       this.$api
         .loginToFolder({
           path,
-          auth_infos: {
-            $password: this.input_password,
-          },
+          password: this.input_password,
         })
         .then(() => {
           // this.$alertify
           //   .delay(4000)
-          //   .success(this.$t("notifications.logged_in"));
+          //   .success(this.$t("logged_in"));
           this.connection_status = "success";
           window.location.reload();
         })
