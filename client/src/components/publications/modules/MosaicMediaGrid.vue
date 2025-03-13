@@ -3,6 +3,7 @@
     class="_mediaGrid"
     :class="{
       'is--multipleMedias': is_multiple_medias,
+      'is--singleText': is_single_text,
     }"
   >
     <template v-for="(media_with_linked, index) in medias_with_linked">
@@ -58,26 +59,14 @@
 
         <div class="_btnRow">
           <DragFile
-            v-if="edit_mode"
+            v-if="edit_mode && page_template !== 'page_by_page'"
             class="_df"
             :size="'small'"
             :file="media_with_linked._linked_media"
             @dragfileSuccess="mediaDraggedSuccessfully(index)"
           />
           <template v-if="edit_mode">
-            <template
-              v-if="
-                (is_multiple_medias ||
-                  (page_template === 'page_by_page' &&
-                    !single_media_displayed_at_full_ratio)) &&
-                !mediaIsSquare(media_with_linked._linked_media) &&
-                media_with_linked._linked_media.$type !== 'stl' &&
-                media_with_linked._linked_media.$type !== 'obj' &&
-                media_with_linked._linked_media.$type !== 'text' &&
-                media_with_linked._linked_media.$type !== 'table' &&
-                media_with_linked._linked_media.$type !== 'other'
-              "
-            >
+            <template v-if="showAspectRatioOptions(media_with_linked)">
               <button
                 type="button"
                 class="u-button u-button_icon u-button_small"
@@ -187,12 +176,16 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    is_single_text() {
+      return (
+        this.medias_with_linked.length === 1 &&
+        this.medias_with_linked[0]._linked_media.$type === "text"
+      );
+    },
     is_multiple_medias() {
       return this.medias_with_linked.length > 1;
     },
     single_media_displayed_at_full_ratio() {
-      if (this.medias_with_linked.length > 1) return false;
-
       const theoretical_ratio =
         this.medias_with_linked[0]._linked_media.$infos?.ratio;
       const current_ratio =
@@ -232,6 +225,27 @@ export default {
       this.$emit("removeMediaAtIndex", { index, remove_source: false });
       // if
     },
+    showAspectRatioOptions(media_with_linked) {
+      if (
+        this.medias_with_linked.length === 1 &&
+        this.page_template !== "page_by_page"
+      )
+        return false;
+
+      const unsupportedTypes = ["stl", "obj", "text", "table", "other"];
+      if (unsupportedTypes.includes(media_with_linked._linked_media.$type))
+        return false;
+
+      if (
+        this.page_template !== "page_by_page" &&
+        this.mediaIsSquare(media_with_linked._linked_media)
+      )
+        return false;
+
+      if (this.single_media_displayed_at_full_ratio) return false;
+
+      return true;
+    },
   },
 };
 </script>
@@ -244,6 +258,10 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+  }
+
+  &.is--singleText {
+    page-break-inside: auto;
   }
 
   &.is--multipleMedias {

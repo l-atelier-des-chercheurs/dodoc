@@ -2,7 +2,7 @@
   <div class="_authorsView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="arrow-left-short" />
+        <b-icon icon="house" />
         {{ $t("home") }}
       </router-link>
     </div>
@@ -34,18 +34,43 @@
       </div>
     </div>
 
+    <div
+      class="_currentlyConnected"
+      v-if="$api.all_devices_connected.length > 1"
+    >
+      <DetailsPane
+        :header="$t('devices_connected')"
+        :icon="'people'"
+        :has_items="$api.all_devices_connected.length"
+      >
+        <div
+          v-for="device in $api.all_devices_connected"
+          :key="device.id"
+          class="u-spacingBottom"
+        >
+          <!-- <hr /> -->
+          <div>
+            <AuthorTag
+              v-if="device.meta.token_path"
+              :path="device.meta.token_path"
+            />
+            <span v-else>{{ $t("not_logged_in") }}</span>
+          </div>
+          <div>{{ device.meta.user_agent }}</div>
+          <div>{{ device.meta.path }}</div>
+        </div>
+      </DetailsPane>
+    </div>
+
     <transition-group
       tag="section"
       class="_allAuthors"
       name="listComplete"
       appear
     >
-      <AuthorCard
-        v-for="author in filtered_authors"
-        :key="author.$path"
-        :author="author"
-        :links_to_author_page="true"
-      />
+      <div v-for="author in filtered_authors" :key="author.$path">
+        <AuthorCard :author="author" :links_to_author_page="true" />
+      </div>
     </transition-group>
     <div v-if="filtered_authors.length === 0">
       {{ $t("no_accounts_to_show") }}
@@ -70,6 +95,7 @@ export default {
   },
   created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.path);
     this.authors = await this.$api.getFolders({
       path: this.path,
     });
@@ -90,7 +116,7 @@ export default {
             return false;
 
         if (this.filter_by_group)
-          if (!a.group.includes(this.filter_by_group)) return false;
+          if (!a.group?.includes(this.filter_by_group)) return false;
 
         return true;
       });
@@ -127,10 +153,20 @@ export default {
   max-width: calc(var(--max-column-width));
   margin: 0 auto;
 }
+
+._currentlyConnected {
+  max-width: 400px;
+  margin-bottom: calc(var(--spacing) * 1);
+}
 ._allAuthors {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: calc(var(--spacing) / 1);
+
+  > * {
+    // for listComplete
+    z-index: 1;
+  }
 }
 ._title {
   margin-bottom: calc(var(--spacing) * 1);

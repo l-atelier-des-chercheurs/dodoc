@@ -2,7 +2,7 @@
   <div class="_authorView">
     <div class="_backBtn">
       <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="arrow-left-short" />
+        <b-icon icon="house" />
         {{ $t("home") }}
       </router-link>
       <router-link :to="'/@'" class="u-buttonLink">
@@ -53,22 +53,26 @@ export default {
   },
   created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.author_path);
     await this.listAuthor();
-    this.$api.join({ room: this.author.$path });
+    this.$api.join({ room: this.author_path });
   },
   beforeDestroy() {
-    this.$api.leave({ room: this.author.$path });
+    this.$api.leave({ room: this.author_path });
   },
   watch: {},
-  computed: {},
-  methods: {
-    async listAuthor() {
-      const path = this.createPath({
+  computed: {
+    author_path() {
+      return this.createPath({
         author_slug: this.$route.params.author_slug,
       });
+    },
+  },
+  methods: {
+    async listAuthor() {
       const author = await this.$api
         .getFolder({
-          path,
+          path: this.author_path,
         })
         .catch((err) => {
           this.fetch_author_error = err.response;

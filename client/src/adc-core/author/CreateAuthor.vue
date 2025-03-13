@@ -68,15 +68,27 @@
 
           <div class="">
             <DLabel :str="$t('pick_portrait')" />
-            <ImageSelect
-              :available_options="['import', 'capture']"
-              :preview_format="'circle'"
-              @newPreview="
-                (value) => {
-                  new_cover = value;
-                }
-              "
-            />
+            <div>
+              <img class="_imgPreview" :src="new_cover_object_url" />
+              <EditBtn
+                :label="!new_cover ? $t('add') : undefined"
+                @click="select_image = true"
+              />
+              <ImageSelect
+                v-if="select_image"
+                :label="$t('pick_portrait')"
+                :ratio="'square'"
+                :preview_format="'circle'"
+                :available_options="['import', 'capture']"
+                @close="select_image = false"
+                @newPreview="
+                  (value) => {
+                    new_cover = value;
+                    select_image = false;
+                  }
+                "
+              />
+            </div>
           </div>
 
           <div class="u-spacingBottom" />
@@ -155,6 +167,8 @@ export default {
       new_author_password: "",
       new_author_cover_raw: undefined,
 
+      select_image: false,
+
       is_creating_author: false,
       error_msg: "",
 
@@ -184,6 +198,10 @@ export default {
     },
     has_signup_password() {
       return !!this.signup_password;
+    },
+    new_cover_object_url() {
+      if (!this.new_cover) return undefined;
+      return URL.createObjectURL(this.new_cover);
     },
   },
   methods: {
@@ -277,5 +295,16 @@ export default {
   // padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   // margin: calc(var(--spacing) / 2) 0;
   // border-radius: 4px;
+}
+
+._imgPreview {
+  width: 100%;
+  max-width: 140px;
+  border: 2px solid var(--c-gris);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  object-fit: cover;
+  object-position: center;
 }
 </style>

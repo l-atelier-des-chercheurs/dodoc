@@ -27,7 +27,6 @@
       </button> -->
         <div class="_footer">
           <SaveCancelButtons
-            class="_scb"
             :is_saving="is_saving"
             :allow_save="allow_save"
             @save="updatePath"
@@ -201,9 +200,6 @@ export default {
     visibility: hidden;
     white-space: break-spaces;
   }
-}
-
-._scb {
 }
 
 ._sameLine {

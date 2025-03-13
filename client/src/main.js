@@ -6,8 +6,12 @@ import "./utils/icons";
 
 Vue.config.productionTip = false;
 
+const publicPath = "/_client/";
+
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
+
+import "@/utils/utils.scss";
 
 import {
   i18n,
@@ -33,7 +37,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+    iconUrl: publicPath + `plyr.svg`,
   },
 });
 Vue.directive("uppercase", {
@@ -111,6 +115,8 @@ import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
 import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
 Vue.component("ReorderedList", ReorderedList);
+import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
+Vue.component("CustomResolutionInput", CustomResolutionInput);
 
 import QRModal from "@/adc-core/modals/QRModal.vue";
 Vue.component("QRModal", QRModal);
@@ -143,9 +149,9 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
-import CreateFolder from "@/adc-core/modals/CreateFolder";
+import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 Vue.component("CreateFolder", CreateFolder);
-import ImportFolder from "@/adc-core/modals/ImportFolder";
+import ImportFolder from "@/adc-core/modals/ImportFolder.vue";
 Vue.component("ImportFolder", ImportFolder);
 //
 
@@ -170,6 +176,8 @@ import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
 import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
 Vue.component("CollaborativeEditor2", CollaborativeEditor2);
+import CollaborativeEditor3 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue";
+Vue.component("CollaborativeEditor3", CollaborativeEditor3);
 import TableEditor from "@/adc-core/fields/TableEditor.vue";
 Vue.component("TableEditor", TableEditor);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
@@ -190,14 +198,15 @@ Vue.component("ImageSelect", ImageSelect);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
 
-Vue.component("LoaderSpinner", {
-  name: "LoaderSpinner",
-  template: `
-  <div class="u-loader">
+import { compileToFunctions } from "vue-template-compiler";
+Vue.component(
+  "LoaderSpinner",
+  compileToFunctions(`
+    <div class="u-loader">
       <div class="_spinner" />
-  </div>
-  `,
-});
+    </div>
+  `)
+);
 
 document.addEventListener(
   "dragover",
@@ -242,6 +251,8 @@ import Tags from "@/mixins/Tags";
 Vue.mixin(Tags);
 import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
+import DodocIcon from "@/mixins/DodocIcon";
+Vue.mixin(DodocIcon);
 
 import Stacks from "@/mixins/Stacks";
 Vue.mixin(Stacks);
@@ -280,10 +291,10 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: process.env.BASE_URL,
+    publicPath,
 
-    modal_is_opened: false,
     has_file_dragover_on_window: false,
+    opened_modals: 0,
 
     current_time: "",
 
@@ -291,6 +302,11 @@ new Vue({
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+    mobile_breakpoint: parseInt(
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--mobile-breakpoint")
+    ),
 
     dropzones: [],
 
@@ -326,17 +342,23 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < 600;
+      return this.window.innerWidth < this.mobile_breakpoint;
+    },
+    is_touch_device() {
+      return window.matchMedia("(pointer: coarse)").matches;
+    },
+    modal_is_opened() {
+      return this.opened_modals > 0;
     },
   },
   methods: {
     modalIsOpened() {
-      document.body.style.overflow = "hidden";
-      this.modal_is_opened = true;
+      this.opened_modals++;
+      if (this.opened_modals === 1) document.body.style.overflow = "hidden";
     },
     modalIsClosed() {
-      document.body.style.overflow = "";
-      this.modal_is_opened = false;
+      this.opened_modals--;
+      if (this.opened_modals === 0) document.body.style.overflow = "";
     },
     async changeLocale(lang) {
       await changeLocale(lang);

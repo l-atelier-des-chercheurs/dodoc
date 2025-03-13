@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="m_captureview"
-    :class="{ 'is--collapsed': collapse_capture_pane }"
-  >
+  <div class="m_captureview">
     <CapturePane
       v-show="show_capture_settings"
       :label="$t('settings')"
@@ -109,8 +106,8 @@
             name="slideFromTop"
             mode="out-in"
           >
-            <label
-              class="u-label"
+            <div
+              class="_duration_timer"
               v-if="
                 selected_mode !== 'stopmotion' &&
                 is_recording &&
@@ -129,7 +126,7 @@
               :key="'timelapse_interval'"
               class="record_options"
             >
-              <label class="u-label">
+              <div>
                 <span>{{ $t("interval_between_pictures") }}</span>
                 <input
                   type="number"
@@ -137,7 +134,7 @@
                   v-model.number="timelapse_interval"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
 
             <div
@@ -201,8 +198,8 @@
               :key="'delay_interval'"
               class="record_options"
             >
-              <label class="u-label">
-                <span>{{ $t("delay").toLowerCase() }}</span>
+              <div>
+                <span>{{ $t("delay") }}</span>
                 <input
                   type="number"
                   v-model.number="delay_seconds"
@@ -210,7 +207,7 @@
                   max="60"
                 />
                 <span>{{ $t("seconds") }}</span>
-              </label>
+              </div>
             </div>
           </transition-group>
 
@@ -219,12 +216,13 @@
               v-if="delay_remaining_time"
               :key="'delay_before_' + delay_remaining_time"
               class="_delay_timer"
+              :class="{ 'is--small': capture_pane_is_small }"
               v-html="delay_remaining_time"
             />
             <label
               v-else-if="timelapse_time_before_next_picture"
               :key="'timelapse_before_' + timelapse_time_before_next_picture"
-              class="_delay_timer is--timelapse"
+              class="_delay_timer is--small is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
             <!-- necessary to handle timely out-in transition -->
@@ -255,7 +253,7 @@
 
           <div
             class="_video_grid_overlay"
-            v-if="enable_grid && enable_video && !media_to_validate"
+            v-if="current_grid_type && enable_video && !media_to_validate"
           >
             <svg
               :width="actual_camera_resolution.width"
@@ -275,53 +273,56 @@
           </div>
 
           <transition name="fade_fast">
-            <div class="_settingsTag">
-              <template v-if="!(must_validate_media && media_to_validate)">
+            <div class="_settingsTag" v-if="!is_recording">
+              <template
+                v-if="
+                  !(must_validate_media && media_to_validate) &&
+                  selected_mode !== 'audio'
+                "
+              >
                 <button
                   type="button"
                   class="u-button u-button_small"
                   @click="show_capture_settings = !show_capture_settings"
                   v-if="enable_video"
                 >
-                  {{ actual_camera_resolution.width }}×{{
-                    actual_camera_resolution.height
-                  }}
+                  {{ actual_camera_resolution.width }} ×
+                  {{ actual_camera_resolution.height }}
                 </button>
-                <button
-                  type="button"
-                  class="u-button u-button_small"
-                  :class="{ 'is--active': enable_grid }"
-                  v-if="enable_video"
-                  @click="enable_grid = !enable_grid"
+
+                <select
+                  v-model="current_grid_type"
+                  v-if="enable_video && selected_mode !== 'audio'"
+                  size="small"
+                  :class="{
+                    'is--active': current_grid_type !== false,
+                  }"
                 >
-                  {{ $t("grid").toLowerCase() }}
-                </button>
-                <div v-if="enable_video && enable_grid">
-                  <button
-                    type="button"
-                    class="u-button u-button_small"
+                  <option :value="false">
+                    --{{ $t("grid").toLowerCase() }}--
+                  </option>
+                  <option
                     v-for="grid_type in Object.keys(grids)"
+                    :value="grid_type"
                     :key="grid_type"
-                    :class="{ 'is--active': current_grid_type === grid_type }"
-                    @click="current_grid_type = grid_type"
                   >
                     {{ $t(grid_type).toLowerCase() }}
-                  </button>
-                </div>
+                  </option>
+                </select>
               </template>
 
               <button
                 type="button"
                 class="u-button u-button_small"
                 :class="{
-                  'is--active': location_to_add_to_medias,
+                  'is--active': has_location_to_add_to_medias,
                 }"
                 @click="show_position_modal = true"
               >
-                {{ $t("location") }}
+                <!-- {{ $t("location") }} -->
                 <b-icon
                   :icon="
-                    !!location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
+                    has_location_to_add_to_medias ? 'pin-map-fill' : 'pin-map'
                   "
                 />
               </button>
@@ -335,7 +336,7 @@
 
           <transition name="enableMode" :duration="800">
             <div
-              v-if="mode_just_changed"
+              v-if="mode_just_changed && !is_loading_stream"
               class="_mode_indicator"
               v-html="$t(selected_mode)"
             />
@@ -352,12 +353,9 @@
           <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
-          <!-- <transition name="scaleInFade_fast">
-            <div class="_capture_flash" v-if="capture_button_pressed" />
-          </transition> -->
         </div>
       </div>
-      <!-- <transition name="slideup" :duration="150" mode="out-in"> -->
+
       <StopmotionPanel
         v-if="stopmotion_slug"
         :current_stopmotion_path="`${path}/stopmotions/${stopmotion_slug}`"
@@ -432,6 +430,7 @@
 
                   <button
                     type="button"
+                    v-if="selected_mode !== 'audio'"
                     class="u-button u-button_bleumarine _settingsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
@@ -932,6 +931,14 @@
               v-else-if="media_to_validate && must_validate_media"
               key="validation"
             >
+              <MediaValidationButtons
+                :media_is_being_sent="media_is_being_sent"
+                :media_being_sent_percent="media_being_sent_percent"
+                :can_add_to_fav="true"
+                @cancel="cancelValidation()"
+                @save="sendMedia()"
+                @save_and_fav="sendMedia({ fav: true })"
+              />
               <div class="_download_media_without_validation">
                 <small>
                   <a
@@ -947,15 +954,6 @@
                   </a>
                 </small>
               </div>
-
-              <MediaValidationButtons
-                :media_is_being_sent="media_is_being_sent"
-                :media_being_sent_percent="media_being_sent_percent"
-                :can_add_to_fav="true"
-                @cancel="cancelValidation()"
-                @save="sendMedia({})"
-                @save_and_fav="sendMedia({ fav: true })"
-              />
             </div>
           </transition>
         </div>
@@ -1007,6 +1005,10 @@ export default {
         "lines",
       ],
     },
+    origin: {
+      type: String,
+      default: "capture",
+    },
     return_temp_media: {
       type: Boolean,
       default: false,
@@ -1039,6 +1041,8 @@ export default {
 
       ask_before_leaving_capture: false,
 
+      capture_pane_is_small: false,
+
       media_to_validate: false,
       media_is_being_sent: false,
       media_being_sent_percent: 0,
@@ -1047,9 +1051,6 @@ export default {
       is_validating_stopmotion_video: false,
       video_recording_is_paused: false,
 
-      collapse_capture_pane: false,
-
-      enable_grid: false,
       grids: {
         halfs: [
           [50, 0, 50, 100],
@@ -1070,7 +1071,7 @@ export default {
           [0, 75, 100, 75],
         ],
       },
-      current_grid_type: "thirds",
+      current_grid_type: false,
 
       location_to_add_to_medias: undefined,
       show_position_modal: false,
@@ -1142,14 +1143,19 @@ export default {
     };
   },
   created() {
-    const location_to_add_to_medias = localStorage.getItem(
-      "location_to_add_to_medias"
-    );
-    if (location_to_add_to_medias && location_to_add_to_medias !== "undefined")
-      this.location_to_add_to_medias = JSON.parse(location_to_add_to_medias);
+    try {
+      const l = localStorage.getItem("location_to_add_to_medias");
+      if (l && l !== "undefined")
+        this.location_to_add_to_medias = JSON.parse(l);
+    } catch (e) {
+      console.error(e);
+      this.location_to_add_to_medias = undefined;
+    }
   },
   mounted() {
-    if (!this.selected_mode) this.$emit("changeMode", this.available_modes[0]);
+    if (!this.selected_mode) {
+      this.$emit("changeMode", this.available_modes[0]);
+    }
 
     document.addEventListener("keyup", this.captureKeyListener);
 
@@ -1164,6 +1170,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
     this.$refs.videoElement.addEventListener(
@@ -1182,6 +1189,7 @@ export default {
       `stream.newDistantAccessInformations`,
       this.updateDistantStream
     );
+    this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
@@ -1233,10 +1241,12 @@ export default {
       }
     },
     location_to_add_to_medias() {
-      localStorage.setItem(
-        "location_to_add_to_medias",
-        JSON.stringify(this.location_to_add_to_medias)
-      );
+      if (this.has_location_to_add_to_medias)
+        localStorage.setItem(
+          "location_to_add_to_medias",
+          JSON.stringify(this.location_to_add_to_medias)
+        );
+      else localStorage.removeItem("location_to_add_to_medias");
     },
     is_validating_stopmotion_video() {
       if (this.is_validating_stopmotion_video) {
@@ -1259,8 +1269,8 @@ export default {
         `WATCH • Capture: media_to_validate = ${!!this.media_to_validate}`
       );
 
-      if (!this.must_validate_media) {
-        this.sendMedia({});
+      if (this.media_to_validate && !this.must_validate_media) {
+        this.sendMedia();
         return;
       }
 
@@ -1282,6 +1292,12 @@ export default {
         !this.is_recording &&
         !this.is_making_stopmotion &&
         !this.delay_event
+      );
+    },
+    has_location_to_add_to_medias() {
+      return (
+        this.location_to_add_to_medias?.longitude &&
+        this.location_to_add_to_medias?.latitude
       );
     },
     is_making_stopmotion() {
@@ -1431,13 +1447,9 @@ export default {
       // this.ask_before_leaving_capture = true;
     },
     checkCapturePanelSize() {
-      if (this.$el && this.$el.offsetWidth && this.$el.offsetWidth <= 600)
-        this.collapse_capture_pane = true;
-      else this.collapse_capture_pane = false;
-
-      // this.updateVideoDisplayedSize();
+      if (this.$el?.offsetHeight <= 400) this.capture_pane_is_small = true;
+      else this.capture_pane_is_small = false;
     },
-
     stopStopmotion() {
       // two options : remove or save
       this.closeStopmotionPanel();
@@ -1843,6 +1855,7 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
           this.$alertify
@@ -1853,7 +1866,7 @@ export default {
       });
     },
 
-    async sendMedia({ fav = false }) {
+    async sendMedia({ fav = false } = {}) {
       console.log(`METHODS • CaptureView: sendMedia with fav=${fav}`);
       if (this.$root.debug_mode === true)
         console.log(`METHODS • CaptureView / sendMedia`);
@@ -1889,12 +1902,12 @@ export default {
 
       let additional_meta = {
         fav,
-        $origin: "capture",
+        $origin: this.origin,
       };
 
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
-      if (this.location_to_add_to_medias)
+      if (this.has_location_to_add_to_medias)
         additional_meta.$location = this.location_to_add_to_medias;
 
       const onProgress = (progressEvent) => {
@@ -1938,6 +1951,8 @@ export default {
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
 
+      this.$eventHub.$emit("pane.animate", "collect");
+
       this.$emit("insertMedia", meta_filename);
       return;
     },
@@ -1953,14 +1968,6 @@ export default {
   flex-flow: row nowrap;
   max-height: 100vh;
   height: 100%;
-
-  // &.is--collapsed {
-  //   .m_captureview--videoPane--bottom--buttons {
-  //     > * {
-  //       padding: 0;
-  //     }
-  //   }
-  // }
 
   .m_captureview--settingsPaneButton {
     position: relative;
@@ -1992,7 +1999,7 @@ export default {
   .m_captureview--videoPane--top {
     position: relative;
     margin: 0 auto;
-    min-height: 300px;
+    min-height: 60px;
 
     flex: 1 1 auto;
     overflow: hidden;
@@ -2032,9 +2039,16 @@ export default {
       }
 
       > * {
+        flex: 0 0 auto;
         display: flex;
-        flex: 1 1 100px;
-        padding: calc(var(--spacing) / 2);
+
+        &:not(:empty) {
+          padding: calc(var(--spacing) / 2);
+        }
+
+        @media only screen and (min-width: 781px) {
+          flex: 1 0 200px;
+        }
 
         > * {
           margin-right: calc(var(--spacing) / 2);
@@ -2045,7 +2059,7 @@ export default {
           padding: calc(var(--spacing) / 2);
         }
         &:nth-child(2) {
-          flex: 5 1 220px;
+          // flex: 5 1 220px;
           text-align: center;
           display: flex;
           flex-flow: row wrap;
@@ -2074,27 +2088,13 @@ export default {
     display: flex;
     flex-flow: row wrap;
     gap: calc(var(--spacing) / 4);
-    text-align: right;
 
-    button {
-      // display: inline-block;
-      // background-color: white;
-      // border-radius: 4px;
-      // line-height: 1;
-      // margin: 0;
-      // padding: 2px 4px;
-      // font-weight: 500;
+    button,
+    select {
       pointer-events: auto;
-      // cursor: pointer;
-
-      // &:hover {
-      //   font-weight: 600;
-      // }
-
-      // &.is--active {
-      //   background-color: var(--c-rouge);
-      //   color: white;
-      // }
+    }
+    select {
+      width: 11ch;
     }
   }
 
@@ -2148,7 +2148,7 @@ export default {
   background-color: var(--c-rouge);
   font-weight: 700;
   font-family: "Fira Code";
-  font-size: var(--font-large);
+  font-size: var(--sl-font-size-large);
   text-transform: uppercase;
 
   letter-spacing: 0.06em;
@@ -2183,13 +2183,23 @@ export default {
   //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
   //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
 
-  &.is--timelapse {
+  &.is--small {
     font-size: 10vmin;
     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
-    height: 50%;
     bottom: 0;
+
+    &.is--timelapse {
+      height: 50%;
+    }
   }
 }
+
+// @container video-pane (height < 400px) {
+//   ._delay_timer {
+//     font-size: 10vmin;
+//     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
+//   }
+// }
 
 ._capture_options {
   position: absolute;
@@ -2202,13 +2212,15 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
-  margin: 0 auto;
+  gap: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2);
 
-  label {
+  ._duration_timer {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
     padding: 0 calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-normal);
 
     margin-bottom: calc(var(--spacing) / 8);
     color: white;
@@ -2218,7 +2230,7 @@ export default {
 
   .record_options {
     max-width: 450px;
-    margin: calc(var(--spacing) / 2) auto;
+    margin: 0 auto;
     // .padding-verysmall;
     pointer-events: auto;
     // .font-small;
@@ -2342,15 +2354,15 @@ export default {
 ._enable_timelapse_button {
   color: #fff;
   background: var(--c-orange);
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: block;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
   text-align: center;
   font-weight: bold;
-  padding: 0;
+  padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 4);
 
   svg {
@@ -2397,6 +2409,7 @@ export default {
   background: transparent;
   color: white;
   color: var(--c-rouge);
+  margin-bottom: calc(var(--spacing) * 2);
 }
 
 ._stopmotionValidation {

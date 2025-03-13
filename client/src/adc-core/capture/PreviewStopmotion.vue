@@ -2,10 +2,14 @@
   <div>
     <div class="_player">
       <template v-if="!created_stopmotion">
-        <MediaContent :file="current_media" :resolution="1600" />
+        <MediaContent
+          v-if="current_media"
+          :file="current_media.media"
+          :resolution="1600"
+        />
         <div v-if="!is_playing" class="_miniListPreview">
           <MediaContent
-            v-for="media in medias"
+            v-for="{ media } in medias"
             :key="'previews-' + media.$path"
             :file="media"
             :resolution="1600"
@@ -29,16 +33,39 @@
 
         <transition name="fade">
           <div class="_fps" v-if="!is_playing">
-            <div class="">
-              <label class="u-label">{{ $t("img_per_second") }}</label>
-              <select v-model.number="new_frame_rate">
-                <option>2</option>
-                <option>4</option>
-                <option>8</option>
-                <option>15</option>
-                <option>24</option>
-                <option>30</option>
-              </select>
+            <div class="u-sameRow">
+              <div>
+                <label class="u-label" for="fps_select">{{
+                  $t("img_per_second")
+                }}</label>
+                <select
+                  v-model.number="new_frame_rate"
+                  size="small"
+                  name="fps_select"
+                  id="fps_select"
+                >
+                  <option>2</option>
+                  <option>4</option>
+                  <option>8</option>
+                  <option>15</option>
+                  <option>24</option>
+                  <option>30</option>
+                </select>
+              </div>
+              <div>
+                <label class="u-label" for="output_format">{{
+                  $t("format")
+                }}</label>
+                <select
+                  v-model="new_output_format"
+                  size="small"
+                  name="output_format"
+                  :id="output_format"
+                >
+                  <option :value="'gif'">{{ $t("gif") }}</option>
+                  <option :value="'mp4'">{{ $t("video") }}</option>
+                </select>
+              </div>
             </div>
           </div>
         </transition>
@@ -59,6 +86,7 @@ export default {
   props: {
     medias: Array,
     frame_rate: Number,
+    output_format: String,
     created_stopmotion: [Boolean, Object],
   },
   components: {},
@@ -66,8 +94,9 @@ export default {
     return {
       current_media_index: 0,
       is_playing: false,
-      preview_playing_event: undefined,
       new_frame_rate: this.frame_rate,
+      new_output_format: this.output_format,
+      next_image_timeout: null,
     };
   },
   created() {},
@@ -78,6 +107,9 @@ export default {
   watch: {
     new_frame_rate() {
       this.$emit("update:frame_rate", this.new_frame_rate);
+    },
+    new_output_format() {
+      this.$emit("update:output_format", this.new_output_format);
     },
   },
   computed: {
@@ -90,23 +122,31 @@ export default {
       if (!this.is_playing) this.playPreview();
       else this.stopPreview();
     },
-    playPreview() {
-      this.is_playing = true;
-      this.current_media_index = 0;
-
-      this.preview_playing_event = window.setInterval(() => {
-        this.current_media_index++;
-        this.$nextTick(() => {
-          if (this.current_media_index === this.medias.length - 1)
-            this.stopPreview();
-        });
-      }, 1000 / this.frame_rate);
-    },
     stopPreview() {
       this.is_playing = false;
+      window.clearTimeout(this.next_image_timeout);
+    },
+    playPreview() {
+      this.is_playing = true;
 
-      window.clearInterval(this.preview_playing_event);
-      this.preview_playing_event = undefined;
+      const playCurrentImage = () => {
+        const duration = this.current_media.duration;
+        const time_between_images = 1000 / this.frame_rate;
+        const time_for_image = duration * time_between_images;
+
+        this.next_image_timeout = window.setTimeout(() => {
+          if (this.current_media_index < this.medias.length - 1) {
+            this.current_media_index++;
+            playCurrentImage();
+          } else {
+            this.is_playing = false;
+            return;
+          }
+        }, time_for_image);
+      };
+
+      this.current_media_index = 0;
+      playCurrentImage(this.current_media_index);
     },
   },
 };
@@ -123,6 +163,14 @@ export default {
   justify-content: center;
   align-items: center;
   background: black;
+
+  ::v-deep {
+    ._mediaContent,
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
 }
 
 ._playPauseBtn {
@@ -154,6 +202,15 @@ export default {
   bottom: 0;
   width: 100%;
   padding: calc(var(--spacing) / 1);
+
+  > * {
+    background: var(--c-noir);
+
+    label {
+      color: white;
+    }
+    padding: calc(var(--spacing) / 4);
+  }
 }
 
 ._miniListPreview {
@@ -184,6 +241,6 @@ export default {
   right: 0;
   padding: calc(var(--spacing) / 2);
   color: white;
-  font-size: var(--sl-font-size-x-small);
+  font-size: var(--sl-font-size-small);
 }
 </style>

@@ -159,7 +159,7 @@ module.exports = (function () {
 
       if (
         media_filename &&
-        [".txt", ".md", ".json", ".csv", ".js", ".ino"].includes(
+        [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
           path.extname(media_filename)
         )
       )
@@ -302,8 +302,8 @@ module.exports = (function () {
       }
       return { $thumbs: {} };
     },
-    removeFile: async ({ path_to_folder, meta_filename }) => {
-      dev.logfunction({ path_to_folder, meta_filename });
+    removeFile: async ({ path_to_folder, meta_filename, path_to_meta }) => {
+      dev.logfunction({ path_to_folder, meta_filename, path_to_meta });
 
       try {
         await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
@@ -339,13 +339,12 @@ module.exports = (function () {
               });
             }
           }
-          return;
         } catch (err) {
           // don't catch error if missing target at path (can be an "…_archives" folder)
         }
 
         cache.delete({
-          key: `${path_to_folder}/${meta_filename}`,
+          key: `${path_to_meta}`,
         });
 
         return;
@@ -587,6 +586,7 @@ module.exports = (function () {
         case ".csv":
         case ".js":
         case ".ino":
+        case ".css":
           new_meta.$type = "text";
           break;
         case ".pdf":
@@ -605,7 +605,6 @@ module.exports = (function () {
     ) {
       new_meta.$location = additional_meta.$location;
     } else {
-      // for images, check if exif
       if (new_meta.$type === "image" && path_to_media) {
         try {
           const gps = await utils.getGPSFromFile(path_to_media);
@@ -613,6 +612,8 @@ module.exports = (function () {
         } catch (err) {}
       }
     }
+
+    if (additional_meta.$credits) new_meta.$credits = additional_meta.$credits;
 
     return new_meta;
   }
@@ -699,41 +700,39 @@ module.exports = (function () {
   }
 
   async function _embedSourceMedias({ meta }) {
-    if (
-      !["source_medias", "map_base_media_filename"].some((key) =>
-        meta.hasOwnProperty(key)
-      )
-    )
-      return meta;
+    // if (
+    //   !["source_medias", "map_base_media_filename", "cover_meta_filename"].some(
+    //     (key) => meta.hasOwnProperty(key)
+    //   )
+    // )
+    //   return meta;
 
     const source_folder = utils.getFolderParent(
       utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
+    const findSourceMedia = async (source_media, key) => {
+      if (source_media.hasOwnProperty(key)) {
+        const path_to_meta = path.join(source_folder, source_media[key]);
+        const source_media_meta = await API.getFile({
+          path_to_meta,
+        });
+        return source_media_meta;
+      }
+    };
+
     if (meta.source_medias)
       for (const [index, source_media] of meta.source_medias.entries()) {
-        if (source_media.hasOwnProperty("meta_filename_in_project")) {
-          const path_to_meta = path.join(
-            source_folder,
-            source_media.meta_filename_in_project
-          );
-          const source_media_meta = await API.getFile({
-            path_to_meta,
-          });
+        const source_media_meta = await findSourceMedia(
+          source_media,
+          "meta_filename_in_project"
+        );
+        if (source_media_meta)
           meta.source_medias[index]._media = source_media_meta;
-        }
       }
 
-    if (meta.map_base_media_filename) {
-      const path_to_meta = path.join(
-        source_folder,
-        meta.map_base_media_filename
-      );
-      const source_media_meta = await API.getFile({
-        path_to_meta,
-      });
-      meta._map_base_media = source_media_meta;
-    }
+    const _map = await findSourceMedia(meta, "map_base_media_filename");
+    if (_map) meta["_map_base_media"] = _map;
 
     return meta;
   }

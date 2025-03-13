@@ -4,41 +4,29 @@ const crypto = require("crypto");
 const randomId = () => crypto.randomBytes(8).toString("hex");
 
 module.exports = (function () {
-  let sessions = new Map();
+  let sessions = [];
 
   return {
-    get({ sessionID }) {
+    getOrCreate(sessionID) {
       dev.logfunction({ sessionID });
-      if (sessionID) {
-        // find existing session
-        const session = this.findSession(sessionID);
-        if (session) {
-          dev.logverbose(`found session, returning`, { session });
-          return {
-            sessionID,
-            userID: session.userID,
-          };
-        }
-      }
+      if (sessionID && this.findSession(sessionID)) return sessionID;
       dev.logverbose(`session not found/does not exists, creating new one`);
-
-      // create new session
-      return {
-        sessionID: randomId(),
-        userID: randomId(),
-      };
+      const $path = "_users/" + randomId();
+      sessions.push({ $path });
+      return $path;
     },
-
-    findSession(id) {
-      return sessions.get(id);
+    findSession($path) {
+      return sessions.find((session) => session.$path === $path);
     },
-
-    saveSession(id, session) {
-      sessions.set(id, session);
+    updateSession($path, content) {
+      sessions = sessions.map((session) => {
+        if (session.$path === $path)
+          session = Object.assign({}, session, content);
+        return session;
+      });
     },
-
     findAllSessions() {
-      return [...sessions.values()];
+      return [...sessions];
     },
   };
 })();

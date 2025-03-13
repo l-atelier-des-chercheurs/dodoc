@@ -1,10 +1,15 @@
 <template>
   <div>
-    <button type="button" class="u-buttonLink" @click="$emit('close')">
-      <b-icon icon="arrow-left-short" />
-      {{ $t("back") }}
-    </button>
-    <div class="u-spacingBottom" />
+    <div class="u-spacingBottom _top">
+      <div>
+        <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <b-icon icon="arrow-left-short" />
+          {{ $t("back") }}
+        </button>
+      </div>
+
+      <RemoveMenu :button_text="$t('remove_category')" @remove="removeCat" />
+    </div>
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>

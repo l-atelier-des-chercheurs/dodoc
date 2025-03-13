@@ -90,7 +90,8 @@ import TextVersioning from "./TextVersioning.vue";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 import ShareDB from "sharedb/lib/client";
 import Quill from "quill";
-ShareDB.types.register(require("rich-text").type);
+import richText from "rich-text";
+ShareDB.types.register(richText.type);
 
 import {
   fonts as default_fonts,
@@ -121,8 +122,9 @@ Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
+const merge = (a, b, i = 0) => [...a.slice(0, i), ...b, ...a.slice(i)];
 const custom_fonts_titles = window.app_infos.custom_fonts.map((cf) => cf.title);
-const all_fonts = default_fonts.concat(custom_fonts_titles);
+const all_fonts = merge(default_fonts, custom_fonts_titles, 1);
 FontAttributor.whitelist = all_fonts;
 Quill.register(FontAttributor, true);
 
@@ -356,7 +358,6 @@ export default {
               "#ffbe32",
               "#fc4b60",
 
-              "#ff3333",
               "#08cc11",
               "#1c52ee",
               "#ff9c33",
@@ -492,10 +493,10 @@ export default {
       this.editor.focus();
 
       // todo select latest used font as selected font
-      if (this.editor.getLength() <= 1) {
-        const fontLastUsed = localStorage.getItem("fontLastUsed");
-        this.editor.format("font", fontLastUsed);
-      }
+      // if (this.editor.getLength() <= 1) {
+      //   const fontLastUsed = localStorage.getItem("fontLastUsed");
+      //   this.editor.format("font", fontLastUsed);
+      // }
 
       this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
@@ -740,9 +741,9 @@ export default {
         // );
         await this.saveText();
 
-        const { font } = this.editor.getFormat();
-        localStorage.setItem("fontLastUsed", font);
-      }, 1000);
+        // const { font } = this.editor.getFormat();
+        // localStorage.setItem("fontLastUsed", font);
+      }, 5000);
     },
 
     addMediaAtTheEnd(media) {
@@ -983,7 +984,25 @@ export default {
       padding: 0px;
       padding-bottom: 0.4em;
 
-      @import "./imports/mainText.scss";
+      > * {
+        padding: 0;
+        margin: 0;
+      }
+      > img {
+        max-width: 30ch;
+      }
+
+      blockquote {
+        padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+        margin: calc(var(--spacing) * 1) 0;
+        border: none;
+        border-left: 2px solid var(--c-gris);
+      }
+
+      pre.ql-syntax {
+        font-family: Fira Mono;
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+      }
 
       &[contenteditable="true"] {
         // padding: 2px;

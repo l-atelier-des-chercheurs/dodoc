@@ -2,40 +2,23 @@
   <div class="m_captureEffects">
     <div class="_content">
       <div class="_options">
-        <!-- :class="{
-          'is--disabled': !enable_effects,
-        }" -->
-        <div class="u-switch u-switch-xs">
-          <input
-            id="flip_horizontally"
-            type="checkbox"
-            v-model="flip_horizontally"
-          />
-          <label for="flip_horizontally">{{ $t("flip_horizontally") }}</label>
-        </div>
-        <div class="u-switch u-switch-xs">
-          <input
-            id="flip_vertically"
-            type="checkbox"
-            v-model="flip_vertically"
-          />
-          <label for="flip_vertically">{{ $t("flip_vertically") }}</label>
-        </div>
+        <ToggleInput
+          :content.sync="flip_horizontally"
+          :label="$t('flip_horizontally')"
+        />
+        <ToggleInput
+          :content.sync="flip_vertically"
+          :label="$t('flip_vertically')"
+        />
 
-        <div>
-          <div class="u-switch u-switch-xs">
-            <input
-              id="chroma_key"
-              type="checkbox"
-              v-model="chroma_key_settings.enable"
-            />
-            <label for="chroma_key">{{ $t("chroma_key") }}</label>
-          </div>
-          <div
-            :class="{
-              'is--disabled': !chroma_key_settings.enable,
-            }"
-          >
+        <ToggledSection
+          class=""
+          :label="$t('chroma_key')"
+          :show_toggle.sync="chroma_key_settings.enable"
+        >
+          <fieldset>
+            <legend class="u-label">{{ $t("chroma_key_color") }}</legend>
+
             <ColorInput
               :label="$t('color')"
               :can_toggle="false"
@@ -97,47 +80,45 @@
                 />
               </div>
             </div>
+          </fieldset>
 
-            <br />
-            <label>{{ $t("replace_color_with") }}</label>
+          <fieldset>
+            <legend class="u-label">{{ $t("replace_color_with") }}</legend>
 
-            <div
-              class="u-switch u-switch-xs u-switch_twoway u-padding_verysmall"
-            >
-              <label
-                for="chroma_key_use_image"
-                class="cursor-pointer"
-                :class="{
-                  'is--active':
-                    chroma_key_settings.replacement_mode === 'color',
-                }"
-              >
-                <span class>{{ $t("color") }}</span>
-              </label>
-              <input
-                type="checkbox"
-                id="chroma_key_use_image"
-                v-model="chroma_key_settings.replacement_mode"
-                value="color"
-                true-value="image"
-                false-value="color"
-              />
-              <label
-                for="chroma_key_use_image"
-                :class="{
-                  'is--active':
-                    chroma_key_settings.replacement_mode === 'image',
-                }"
-              >
-                <span class>{{ $t("image") }}</span>
-              </label>
-            </div>
+            <RadioCheckboxInput
+              :value="chroma_key_settings.replacement_mode"
+              :options="[
+                {
+                  label: $t('color'),
+                  key: 'color',
+                },
+                {
+                  label: $t('image'),
+                  key: 'image',
+                },
+              ]"
+              :can_edit="true"
+              @update:value="chroma_key_settings.replacement_mode = $event"
+            />
 
             <div v-if="chroma_key_settings.replacement_mode === 'image'">
+              <img
+                class="_imgPreview"
+                :src="chroma_key_replacement_image_url"
+              />
+              <EditBtn
+                :label="
+                  !chroma_key_replacement_image_url ? $t('select') : $t('edit')
+                "
+                :is_unfolded="true"
+                @click="select_image = true"
+              />
               <ImageSelect
-                :path="project_path"
-                :available_options="['project']"
+                v-if="select_image"
+                :label="$t('image')"
+                :project_path="project_path"
                 @newPreview="newChromaKeyImage"
+                @close="select_image = false"
               />
             </div>
             <div v-else>
@@ -147,35 +128,29 @@
                 @save="chroma_key_replacement_color_hex = $event"
               />
             </div>
-          </div>
-        </div>
+          </fieldset>
+        </ToggledSection>
+
         <div
           v-for="[name, props] in Object.entries(image_filters_settings)"
           :key="name"
         >
-          <div class="u-switch u-switch-xs">
-            <input
-              :id="`${name}_slider`"
-              type="checkbox"
-              v-model="image_filters_settings[name].enable"
-            />
-            <label :for="`${name}_slider`"
-              >{{ $t(name) }} — {{ image_filters_settings[name].value }}</label
-            >
-          </div>
-
-          <div v-if="image_filters_settings[name].enable">
-            <input
-              class="margin-none"
-              type="range"
-              v-model.number="image_filters_settings[name].value"
-              :min="props.min"
-              :max="props.max"
-              :step="props.step"
-              :title="image_filters_settings[name].value"
-            />
-          </div>
+          <RangeValueInput
+            :label="$t(name)"
+            :value="image_filters_settings[name].value"
+            :can_toggle="true"
+            :min="props.min"
+            :max="props.max"
+            :step="props.step"
+            :ticks="props.ticks"
+            :default_value="props.default"
+            @save="image_filters_settings[name].value = $event"
+          />
         </div>
+
+        <!-- <pre>
+          {{ image_filters_settings }}
+        </pre> -->
       </div>
     </div>
   </div>
@@ -199,6 +174,8 @@ export default {
       flip_horizontally: false,
       flip_vertically: false,
 
+      select_image: false,
+      chroma_key_replacement_image_url: undefined,
       chroma_key_settings: {
         enable: false,
         key_color: {
@@ -220,7 +197,6 @@ export default {
 
       image_filters_settings: {
         brightness: {
-          enable: false,
           value: 1,
           order: 0,
           default: 1,
@@ -229,7 +205,6 @@ export default {
           step: 0.01,
         },
         contrast: {
-          enable: false,
           value: 1,
           order: 1,
           default: 1,
@@ -238,7 +213,6 @@ export default {
           step: 0.01,
         },
         hue: {
-          enable: false,
           value: 0,
           order: 2,
           default: 0,
@@ -247,7 +221,6 @@ export default {
           step: 0.01,
         },
         saturation: {
-          enable: false,
           value: 0,
           order: 3,
           default: 0,
@@ -256,7 +229,6 @@ export default {
           step: 0.01,
         },
         lightness: {
-          enable: false,
           value: 0,
           order: 4,
           default: 0,
@@ -265,7 +237,6 @@ export default {
           step: 0.01,
         },
         dotscreen: {
-          enable: false,
           value: 10,
           order: 6,
           default: 10,
@@ -522,6 +493,12 @@ void main(void) {
         });
       }
     },
+    "chroma_key_settings.replacement_mode"() {
+      if (this.chroma_key_settings.replacement_mode === "image") {
+        this.chroma_key_replacement_image_url = undefined;
+        this.select_image = true;
+      }
+    },
   },
   computed: {
     enable__() {
@@ -529,8 +506,10 @@ void main(void) {
         this.flip_vertically === true ||
         this.flip_horizontally === true ||
         this.chroma_key_settings.enable === true ||
-        Object.keys(this.image_filters_settings).find(
-          (ifs) => this.image_filters_settings[ifs].enable === true
+        Object.keys(this.image_filters_settings).some(
+          (ifs) =>
+            this.image_filters_settings[ifs].value !==
+            this.image_filters_settings[ifs].default
         )
       );
     },
@@ -558,7 +537,8 @@ void main(void) {
       this.chroma_key_settings.enable = false;
 
       Object.keys(this.image_filters_settings).map((ifs) => {
-        this.image_filters_settings[ifs].enable = false;
+        this.image_filters_settings[ifs].value =
+          this.image_filters_settings[ifs].default;
       });
     },
     hexToRgb(hex) {
@@ -754,7 +734,8 @@ void main(void) {
           gl.uniform1f(
             loc,
             parseFloat(
-              this.image_filters_settings[name].enable
+              this.image_filters_settings[name].value !==
+                this.image_filters_settings[name].default
                 ? this.image_filters_settings[name].value
                 : -1000
             )
@@ -785,31 +766,27 @@ void main(void) {
     stopWebGL() {
       this.offscreen_canvas = undefined;
     },
-    async newChromaKeyImage(img) {
+    async newChromaKeyImage(blob) {
       console.log(`CaptureEffects • METHODS : newChromaKeyImage`);
 
-      if (img === false) {
+      if (!blob) {
         this.chroma_key_settings.replacement_image = undefined;
+        this.chroma_key_replacement_image_url = undefined;
         this.loadReplacementImageInShader();
         return;
       }
 
-      let src = "";
-      if (typeof img === "string") {
-        src = window.location.origin + this.getMediaSrcFromPath(img);
-      } else if (typeof img === "object" && img.thumb) {
-        // src = window.location.origin + "/" + img.thumb;
-      }
-      if (!src) return;
+      const img = await createImageBitmap(blob);
+      this.chroma_key_replacement_image_url = URL.createObjectURL(blob);
 
-      let img_el = new Image();
-      img_el.src = src;
+      // let img_el = new Image();
+      // img_el.src = img;
 
-      try {
-        await img_el.decode();
-      } catch (e) {
-        console.error(e);
-      }
+      // try {
+      //   await img_el.decode();
+      // } catch (e) {
+      //   console.error(e);
+      // }
 
       const canvas = document.createElement("canvas"),
         ctx = canvas.getContext("2d");
@@ -819,21 +796,21 @@ void main(void) {
 
       const type = "cover";
 
-      const img_ratio = img_el.height / img_el.width;
+      const img_ratio = img.height / img.width;
       const c_ratio = canvas.height / canvas.width;
       if (
         (img_ratio < c_ratio && type === "contain") ||
         (img_ratio > c_ratio && type === "cover")
       ) {
         const h = canvas.width * img_ratio;
-        ctx.drawImage(img_el, 0, (canvas.height - h) / 2, canvas.width, h);
+        ctx.drawImage(img, 0, (canvas.height - h) / 2, canvas.width, h);
       }
       if (
         (img_ratio > c_ratio && type === "contain") ||
         (img_ratio < c_ratio && type === "cover")
       ) {
         const w = (canvas.width * c_ratio) / img_ratio;
-        ctx.drawImage(img_el, (canvas.width - w) / 2, 0, w, canvas.height);
+        ctx.drawImage(img, (canvas.width - w) / 2, 0, w, canvas.height);
       }
 
       this.chroma_key_settings.replacement_image = ctx.getImageData(
@@ -913,7 +890,7 @@ void main(void) {
         // margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
         margin: calc(var(--spacing) / 2) 0;
         padding: calc(var(--spacing) / 2);
-        background-color: var(--c-gris_clair);
+        background-color: white;
         border-radius: 4px;
 
         &:first-child {

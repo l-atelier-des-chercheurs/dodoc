@@ -9,7 +9,6 @@
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
-  "cacheDirname": "luma_cache",
   "contentPath": "luma_next",
 
   "privateKeyPath": "",
@@ -27,16 +26,6 @@
   },
 
   "mediaThumbQuality": 90,
-
-  "regexpMatchFolderNames": "^([^.]+)$",
-  "regexpGetFileExtension": "\\.[^.]*$",
-  "regexpRemoveFileExtension": "(.+?)(\\.[^.]*$|$)",
-
-  "api": {
-    "enabled": false,
-    "allow_all_domains": false,
-    "domains_whitelist": ["localhost"]
-  },
 
   "schema": {
     "fields": {

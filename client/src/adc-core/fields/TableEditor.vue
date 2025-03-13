@@ -33,20 +33,23 @@
       </table>
 
       <template v-if="can_edit">
-        <button
-          type="button"
-          class="u-button u-button_small u-button_icon"
-          @click="addCol"
-        >
-          <b-icon icon="plus-circle" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_small u-button_icon"
-          @click="removeCol"
-        >
-          <b-icon icon="dash-circle" />
-        </button>
+        <div class="_addColButtons">
+          <button
+            type="button"
+            class="u-button u-button_small u-button_icon"
+            @click="addCol"
+          >
+            <b-icon icon="plus-circle" />
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_small u-button_icon"
+            @click="removeCol"
+          >
+            <b-icon icon="dash-circle" />
+          </button>
+        </div>
+        <div class="_addMarginToClearDragHandle" />
       </template>
     </div>
     <template v-if="can_edit">
@@ -172,6 +175,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: flex-start;
+  overflow-x: auto;
 }
 
 table {
@@ -194,5 +198,14 @@ table th,
 table td {
   padding: 0.5em;
   border: 1px solid lightgrey;
+}
+
+._addMarginToClearDragHandle {
+  flex: 0 0 3rem;
+}
+._addColButtons {
+  > * {
+    display: block;
+  }
 }
 </style>

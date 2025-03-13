@@ -1,52 +1,55 @@
 <template>
   <span class="_titleField">
     <DLabel
-      v-if="label"
+      v-if="label && show_label"
       class="_label"
       :str="label"
       :instructions="can_edit ? instructions : ''"
     />
 
-    <component :is="tag" class="_container">
-      <template v-if="!can_edit || (can_edit && !edit_mode)">
-        <template v-if="content && content !== ' '">
-          <div class="_content">
-            <span v-text="content" />
-          </div>
-        </template>
-      </template>
-      <TextInput
-        v-else
-        ref="TextInput"
-        :content.sync="new_content"
-        :required="required"
-        :input_type="input_type"
-        :autofocus="true"
-        :autocomplete="input_type === 'email' ? 'email' : undefined"
-        :minlength="minlength"
-        :maxlength="maxlength"
-        :key="edit_mode + content"
-        @toggleValidity="($event) => (allow_save = $event)"
-        @onEnter="updateText"
-      />
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        class="_edit"
-        @click="enableEditMode"
-      />
-    </component>
-
-    <template v-if="can_edit">
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          :allow_save="allow_save"
-          @save="updateText"
-          @cancel="cancel"
-        />
+    <div class="_container">
+      <div class="_content" v-if="content && content.length > 0">
+        <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
+        <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
       </div>
-    </template>
+      <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
+    </div>
+
+    <BaseModal2
+      v-if="edit_mode"
+      :title="label"
+      :confirm_before_closing="content_is_changed"
+      @close="cancel"
+      @save="updateText"
+    >
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        <span v-html="instructions" />
+      </div>
+
+      <component :is="tag">
+        <TextInput
+          ref="TextInput"
+          :content.sync="new_content"
+          :required="required"
+          :input_type="input_type"
+          :autofocus="true"
+          :autocomplete="input_type === 'email' ? 'email' : undefined"
+          :minlength="minlength"
+          :maxlength="maxlength"
+          :key="edit_mode + content"
+          @toggleValidity="($event) => (allow_save = $event)"
+          @onEnter="updateText"
+        />
+      </component>
+
+      <SaveCancelButtons
+        slot="footer"
+        :is_saving="is_saving"
+        :allow_save="allow_save && new_content !== content"
+        @save="updateText"
+        @cancel="cancel"
+      />
+    </BaseModal2>
   </span>
 </template>
 <script>
@@ -56,6 +59,10 @@ export default {
     label: {
       type: String,
       default: "",
+    },
+    show_label: {
+      type: Boolean,
+      default: true,
     },
     instructions: {
       type: String,
@@ -111,7 +118,11 @@ export default {
       this.new_content = this.content;
     },
   },
-  computed: {},
+  computed: {
+    content_is_changed() {
+      return this.new_content !== this.content;
+    },
+  },
   methods: {
     enableEditMode() {
       this.edit_mode = true;
@@ -174,6 +185,10 @@ export default {
   ._content {
     display: inline-block;
     margin-right: calc(var(--spacing) / 2);
+
+    > * {
+      margin: 0;
+    }
 
     span {
       white-space: break-spaces;

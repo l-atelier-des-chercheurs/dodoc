@@ -9,7 +9,8 @@ const folder = require("./folder"),
   notifier = require("./notifier"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  users = require("./users");
 
 module.exports = (function () {
   const API = {
@@ -23,10 +24,7 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    // todo forbiddenFiles txt
-    // app.use(forbiddenFiles);
     app.use("/_api2/*", [cors(_corsCheck)]);
-    // app.options("/_api2/*", cors());
 
     app.get(
       "/_api2/_networkInfos",
@@ -39,6 +37,9 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+
+    app.get("/_api2/_users", _getAllUsers);
+    app.patch("/_api2/_users/:id", _updateUser);
 
     /* PUBLIC FILES */
     app.get(
@@ -78,7 +79,7 @@ module.exports = (function () {
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/:meta_filename/_optimize",
       ],
       _generalPasswordCheck,
-      _restrictToLocalAdmins,
+      _restrictToContributors,
       _exportToParent
     );
     app.patch(
@@ -247,13 +248,14 @@ module.exports = (function () {
       _removeFolder
     );
 
+    app.get("/site.webmanifest", _loadManifest);
+    app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
   }
 
   function _corsCheck(req, callback) {
     console.log();
     dev.logapi({ path: req.path }, { params: req.params });
-
     // TODO check origin
     callback(null, { origin: true });
   }
@@ -331,8 +333,7 @@ module.exports = (function () {
     )
       return "Folder opened to any contributors or admins";
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === path_to_folder) return "Token editing self";
       if (
@@ -383,8 +384,7 @@ module.exports = (function () {
       else return false;
     }
 
-    const token_path = auth.extrackAndCheckToken({ req });
-
+    const token_path = auth.extractAndCheckToken({ req });
     if (token_path) {
       if (token_path === utils.convertToSlashPath(path_to_folder))
         return "Token editing self";
@@ -425,8 +425,8 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.error("not allowed to contribute");
-      if (res) return res.status(401).send({ code: "not_allowed" });
+      dev.error(`not allowed to contribute to folder ${path_to_folder}`);
+      if (res) return res.status(403).send({ code: "not_allowed" });
       return false;
     }
   }
@@ -443,7 +443,7 @@ module.exports = (function () {
       dev.log(allowed);
       return next();
     } else {
-      dev.log("not allowed to contribute");
+      dev.error(`not allowed to admin folder ${path_to_folder}`);
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
@@ -478,7 +478,7 @@ module.exports = (function () {
     dev.logapi();
 
     try {
-      const token_path = auth.extrackAndCheckToken({ req });
+      const token_path = auth.extractAndCheckToken({ req });
 
       if (await auth.isTokenInstanceAdmin({ token_path }))
         return next ? next() : undefined;
@@ -498,6 +498,7 @@ module.exports = (function () {
     let d = {};
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
+    d.is_livereload = dev.isLivereload();
 
     // get instance name
     // get logo/favicon
@@ -588,6 +589,25 @@ module.exports = (function () {
 
     res.render("index", d);
   }
+
+  async function _loadManifest(req, res) {
+    const { name_of_instance } = await settings.get();
+    res.type("application/json");
+    res.send({
+      name: name_of_instance || "do•doc",
+      short_name: name_of_instance || "do•doc",
+      theme_color: "#ffffff",
+      background_color: "#ffffff",
+      display: "standalone",
+    });
+  }
+  async function _loadRobots(req, res) {
+    const { enable_indexing } = await settings.get();
+    const disallow = enable_indexing === true ? "" : "/";
+    res.type("text/plain");
+    res.send(`User-agent: *\nDisallow: ${disallow}`);
+  }
+
   function loadPerf(req, res) {
     let d = {};
     d.local_ips = utils.getLocalIPs();
@@ -680,12 +700,12 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     const detailed = req.query?.detailed === "true";
+    const no_files = req.query?.no_files === "true";
     const hrstart = process.hrtime();
 
     try {
       let d = await folder.getFolder({ path_to_folder, detailed });
-      const files = await file.getFiles({ path_to_folder });
-      d.$files = files;
+      if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
       let hrend = process.hrtime(hrstart);
       dev.performance(
@@ -697,7 +717,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get folder: " + message);
       res.status(404).send({
         code,
         err_infos,
@@ -716,7 +736,7 @@ module.exports = (function () {
       const { general_password } = await settings.get();
       if (d.$public !== true && general_password) {
         // only allow queries with superadmintoken
-        if (!auth.checkSuperadminToken(req.query?.sat)) {
+        if (!auth.checkSuperadminToken(req.query?.superadmintoken)) {
           const err = new Error("Folder is not public");
           err.code = "folder_not_public";
           throw err;
@@ -732,7 +752,7 @@ module.exports = (function () {
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
+      dev.error("Failed to get public folder: " + message);
       res.status(404).send({
         code,
         err_infos,
@@ -1271,6 +1291,7 @@ module.exports = (function () {
         path_to_meta,
         meta_filename,
       });
+      res.status(200).json({ status: "ok" });
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         path_to_meta: utils.convertToSlashPath(path_to_meta),
@@ -1298,6 +1319,7 @@ module.exports = (function () {
       await file.removeFile({
         path_to_folder,
         meta_filename,
+        path_to_meta,
       });
       dev.logpackets(`file ${meta_filename} was removed`);
       res.status(200).json({ status: "ok" });
@@ -1401,6 +1423,19 @@ module.exports = (function () {
     const new_path = data.new_path;
     settings.updatePath({ new_path });
     res.status(200).json({ status: "ok" });
+  }
+
+  async function _getAllUsers(req, res, next) {
+    const all_users = users.getAllUsers();
+    res.json(all_users);
+  }
+  async function _updateUser(req, res, next) {
+    const id = req.params.id;
+    const { path } = req.body;
+    const user = users.updateUser(id, { path });
+    if (!user) return res.status(404).json({ status: "user not found" });
+    res.json(user);
+    notifier.emit("userUpdated", { id, changed_data: { path } });
   }
 
   async function _loadCustomFonts() {

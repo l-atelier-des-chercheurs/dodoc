@@ -7,6 +7,8 @@
     :data-tagtype="tag_type"
     :data-tagvalue="tag_str"
     :data-mode="mode"
+    @mouseenter="is_hovered = true"
+    @mouseleave="is_hovered = false"
     @click="mode !== 'inactive' ? $emit('tagClick') : ''"
   >
     <b-icon v-if="icon_to_show" class="_picto" :icon="icon_to_show" />
@@ -16,9 +18,30 @@
     </span>
 
     <transition name="pagechange" mode="out-in">
-      <b-icon v-if="mode === 'add'" icon="plus-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'remove'" icon="x-circle" :key="mode" />
-      <b-icon v-else-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
+      <b-icon
+        v-if="mode === 'select'"
+        icon="box-arrow-in-right"
+        :aria-label="$t('select')"
+        :key="'select'"
+      />
+      <b-icon
+        v-else-if="mode === 'add'"
+        icon="plus-circle"
+        :aria-label="$t('add')"
+        :key="'add'"
+      />
+      <b-icon
+        v-else-if="mode === 'remove'"
+        :icon="!is_hovered ? 'x-circle' : 'x-circle-fill'"
+        :aria-label="$t('remove')"
+        :key="'remove'"
+      />
+      <b-icon
+        v-else-if="mode === 'disable'"
+        icon="x-circle-fill"
+        :aria-label="$t('disable')"
+        :key="'disable'"
+      />
     </transition>
   </div>
 </template>
@@ -31,7 +54,9 @@ export default {
   },
   components: {},
   data() {
-    return {};
+    return {
+      is_hovered: false,
+    };
   },
   created() {},
   mounted() {},
@@ -116,8 +141,8 @@ export default {
   }
   &[data-tagtype="accountgroup"] {
     // background-color: #edbdff;
-    background-color: var(--c-noir);
-    color: white;
+    background-color: var(--c-gris);
+    color: var(--c-noir);
   }
   &[data-tagtype="status"] {
     &[data-tagvalue="finished"] {

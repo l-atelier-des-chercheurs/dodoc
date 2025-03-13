@@ -27,7 +27,7 @@
             :resolution="1600"
           />
           <div class="_captionCredits">
-            <CaptionCreditsPage :media="media" />
+            <CaptionCreditsPage :media="media" :can_edit="false" />
           </div>
         </template>
         <span v-else>Error loading media</span>
@@ -103,7 +103,7 @@ export default {
       return decodeURIComponent(this.$route.query.path_to_media);
     },
     media_type() {
-      return this.full_media_path.split(".").pop();
+      return this.full_media_path.split(".").pop().toLowerCase();
     },
     preview_url() {
       let suffix = "";
@@ -171,7 +171,7 @@ export default {
 }
 ._qrCodeButton {
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
   margin: 1rem;
   box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.1);

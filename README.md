@@ -37,6 +37,12 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 - **next** --> code for the next major version (v11), in Electron. Use at your own risks.
 - **next-node** --> code for the next major version, without Electron. Use at your own risks.
 
+Note 1: on Ubuntu up to 24.04, you may need to install the dependency sharp 0.31.3 as the most recent version (0.33.5) is not compatible.
+
+`npm install sharp@0.31.3`
+
+Note 2: bufferutil seems to be necessary specifically for intel macOS.
+
 # Install do•doc
 
 ## Method 1 — the easy way
@@ -46,6 +52,42 @@ Download the latest release from the [release page](https://github.com/l-atelier
 ## Method 2 — the long way
 
 See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developpement/426
+
+## Method 3 — the dev way
+
+To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and run the following commands:
+
+```
+npm install
+```
+
+Available scripts:
+
+- run the app with minimal logging, as fast as possible:
+
+```
+npm run start
+```
+
+- run the app to debug locally:
+
+```
+npm run debug
+```
+
+- run the app in debug mode, with client code and vite/hot-module-replacement:
+
+```
+npm run debug-lr
+```
+
+You need to open a second terminal to run the vite/livereload server:
+
+```
+cd client
+npm i
+npm run dev
+```
 
 # How the core works
 
@@ -66,7 +108,7 @@ Default values are:
 - $preview          (String, editable)                    if set, search for a meta filename in this folder and read it when reading folder (useful for advanced cover of this folder)
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
-- $files            (Array)                               list of all the files in this folder (see Files below)
+- $files            (Array)                               list of all the files in this folder (see Files below) (bypass with no_files=true to improve performance where files are not needed)
 - $status           (String, editable)                    determines whether the folder gets listed
 - $public           (Boolean, editable)                   if true, return that folder, its files, and its source medias even when request is not auth
 - $password         (String, editable, stored as hash)    limit editing to users with password
@@ -228,7 +270,7 @@ Then the following routes will redirect to:
 - /spaces/bonjour/projects/elephant-with-plywood.zip
   --> downloads a zip file with all the content of that folder
 
-### Permission
+## Permission
 
 For an existing folder:
 

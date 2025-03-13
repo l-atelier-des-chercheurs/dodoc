@@ -5,25 +5,29 @@
       class="u-button u-button_orange"
       @click="show_modal = true"
     >
-      <b-icon :icon="'tools'" />
-      <template v-if="['video', 'audio'].includes(media.$type)">
-        {{ $t("convert_shorten") }}
-      </template>
-      <template v-else-if="media.$type === 'image'">
-        {{ $t("optimize") }}
-      </template>
+      <b-icon :icon="'file-play-fill'" />
+      {{ label }}
     </button>
+    <div v-if="instructions" class="u-instructions">
+      <small v-html="instructions" />
+    </div>
 
     <BaseModal2
       v-if="show_modal"
-      :title="$t('convert_shorten')"
+      :title="label"
       :size="modal_width"
-      @close="show_modal = false"
+      @close="closeModal"
     >
       <div class="_cont">
-        <LoaderSpinner v-if="is_optimizing" class="_loader" />
         <div v-if="!optimized_file">
-          <template v-if="['video', 'audio'].includes(media.$type)">
+          <div
+            v-if="media.$optimized === true"
+            class="u-spacingBottom u-instructions"
+          >
+            {{ $t("already_optimized") }}
+          </div>
+
+          <div v-if="['video', 'audio'].includes(media.$type)">
             <TrimMedia
               :media="media"
               :extract_selection.sync="extract_selection"
@@ -31,7 +35,17 @@
               :selection_end.sync="selection_end"
             />
             <div class="u-spacingBottom" />
-          </template>
+          </div>
+
+          <VideoAudioImageQualityPicker
+            :media_type="media.$type"
+            :media_width="media_width"
+            :media_height="media_height"
+            :image_width.sync="image_width"
+            :image_height.sync="image_height"
+            :video_bitrate.sync="video_bitrate"
+            :audio_bitrate.sync="audio_bitrate"
+          />
         </div>
         <div v-else>
           <div
@@ -47,40 +61,29 @@
               :show_fs_button="true"
             />
           </div>
-          <!-- <div class="u-spacingBottom">
-            <DLabel :str="$t('filename')" />
-            <div class="_comp">
-              <span>
-                {{ media.$media_filename }}
-              </span>
-              <b-icon icon="arrow-right-circle" />
-              <strong>
-                {{ optimized_file.$media_filename }}
-              </strong>
-            </div>
-          </div> -->
-          <div class="u-spacingBottom">
-            <DLabel :str="$t('size')" />
-            <div class="_comp">
-              <span>
-                <template v-if="media.$infos && media.$infos.size">
-                  {{ formatBytes(media.$infos.size) }}
-                </template>
-                <template v-else> ? </template>
-              </span>
-              <b-icon icon="arrow-right-circle" />
-              <strong>
-                <template
-                  v-if="optimized_file.$infos && optimized_file.$infos.size"
-                >
-                  {{ formatBytes(optimized_file.$infos.size) }}
-                </template>
-                <template v-else> ? </template>
-              </strong>
-            </div>
+
+          <div class="u-spacingBottom" />
+
+          <DLabel :str="$t('size')" />
+          <div class="_comp">
+            <span>
+              <template v-if="media.$infos && media.$infos.size">
+                {{ formatBytes(media.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              <template
+                v-if="optimized_file.$infos && optimized_file.$infos.size"
+              >
+                {{ formatBytes(optimized_file.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </strong>
           </div>
-          <div
-            class="u-spacingBottom"
+
+          <template
             v-if="
               optimized_file.$type === 'image' ||
               optimized_file.$type === 'video'
@@ -94,7 +97,7 @@
                     media.$infos && media.$infos.width && media.$infos.height
                   "
                 >
-                  {{ media.$infos.width + "×" + media.$infos.height }}
+                  {{ media.$infos.width + " × " + media.$infos.height }}
                 </template>
                 <template v-else> ? </template>
               </span>
@@ -109,88 +112,82 @@
                 >
                   {{
                     optimized_file.$infos.width +
-                    "×" +
+                    " × " +
                     optimized_file.$infos.height
                   }}
                 </template>
                 <template v-else> ? </template>
               </strong>
             </div>
+          </template>
+
+          <DLabel :str="$t('filename')" />
+          <div class="_comp">
+            <span>
+              {{ media.$media_filename }}
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              {{ optimized_file.$media_filename }}
+            </strong>
           </div>
+
+          <div class="u-spacingBottom" />
         </div>
       </div>
 
-      <div slot="footer" class="_convertBtns">
-        <template v-if="!optimized_file">
-          <div>
-            <DLabel :str="$t('quality')" />
-            <div
-              v-if="media.$optimized === true"
-              class="u-spacingBottom u-instructions"
-            >
-              {{ $t("already_optimized") }}
-            </div>
-            <div class="">
-              <SelectField2
-                :value="resolution_preset_picked"
-                :options="presets"
-                :can_edit="true"
-                :hide_validation="true"
-                @change="resolution_preset_picked = $event"
-              />
-            </div>
-          </div>
+      <!-- <DebugBtn :content="base_instructions" /> -->
 
+      <template slot="footer">
+        <div class="_spinner" v-if="is_optimizing" key="loader">
+          <AnimatedCounter :value="progress_percent" />
+        </div>
+        <template v-if="!optimized_file">
+          <div />
           <div>
-            <div>
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="optimizeMedia"
-              >
-                <b-icon icon="tools" />
-                {{ $t("preview_new") }}
-              </button>
-            </div>
+            <button
+              type="button"
+              class="u-button u-button_bleuvert"
+              @click="optimizeMedia"
+            >
+              <b-icon icon="tools" />
+              {{ $t("preview_new") }}
+            </button>
             <div class="u-instructions">
               {{ $t("wont_remove_original") }}
             </div>
           </div>
         </template>
         <template v-else>
-          <div class="_btnRow">
-            <button
-              type="button"
-              class="u-button u-button_white"
-              @click="cancel"
-            >
-              <b-icon icon="arrow-left-short" />
-              {{ $t("back") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_bleuvert"
-              @click="keepBoth"
-            >
-              <b-icon icon="file-plus" />
-              {{ $t("add_optimized_to_lib") }}
-            </button>
-            <button
-              type="button"
-              class="u-button u-button_red"
-              @click="replaceOriginal"
-            >
-              <b-icon icon="save2-fill" />
-              {{ $t("replace_original") }}
-            </button>
-          </div>
+          <button type="button" class="u-button u-button_white" @click="cancel">
+            <b-icon icon="arrow-left-short" />
+            {{ $t("back") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="keepBoth"
+          >
+            <b-icon icon="file-plus" />
+            {{ $t("save_as_new_media") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="replaceOriginal"
+          >
+            <b-icon icon="save2-fill" />
+            {{ $t("replace_original") }}
+          </button>
+          <DownloadFile :file="optimized_file" />
         </template>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>
 <script>
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
+import VideoAudioImageQualityPicker from "@/adc-core/fields/VideoAudioImageQualityPicker.vue";
 
 export default {
   props: {
@@ -198,74 +195,56 @@ export default {
   },
   components: {
     TrimMedia,
+    VideoAudioImageQualityPicker,
   },
   data() {
     return {
       show_modal: false,
       is_optimizing: false,
       optimized_file: undefined,
-      resolution_preset_picked: "source",
 
       extract_selection: false,
       selection_start: 0,
       selection_end: this.media.$infos?.duration || 0,
+
+      image_width: this.media.$infos?.width,
+      image_height: this.media.$infos?.height,
+      video_bitrate: 4000,
+      audio_bitrate: 256,
+
+      progress_percent: 0,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    show_modal() {
-      if (!this.show_modal) {
-        this.optimized_file = "";
-      }
-    },
-  },
+  watch: {},
   computed: {
+    label() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten");
+      return this.$t("optimize_resize");
+    },
+    instructions() {
+      if (["video", "audio"].includes(this.media.$type))
+        return this.$t("convert_shorten_instructions");
+      if (this.media.$type === "image")
+        return this.$t("optimize_resize_instructions");
+      return this.$t("convert_instructions");
+    },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
       return undefined;
     },
-    presets() {
-      if (this.media.$type === "audio")
-        return [
-          {
-            key: "source",
-            text: this.$t("close_to_source"),
-            instructions: "256k",
-          },
-          {
-            key: "high",
-            text: this.$t("high"),
-            instructions: "192k",
-          },
-          {
-            key: "medium",
-            text: this.$t("medium"),
-            instructions: "128k",
-          },
-        ];
-      return [
-        {
-          key: "source",
-          text: this.$t("close_to_source"),
-        },
-        {
-          key: "high",
-          text: this.$t("high"),
-        },
-        {
-          key: "medium",
-          text: this.$t("medium"),
-        },
-      ];
+    media_width() {
+      return this.media.$infos?.width;
     },
-  },
-  methods: {
-    async optimizeMedia() {
-      this.is_optimizing = true;
-
+    media_height() {
+      return this.media.$infos?.height;
+    },
+    base_instructions() {
       let suggested_file_name = "converted";
+
       if (this.media.$media_filename)
         suggested_file_name = this.getFilenameWithoutExt(
           this.media.$media_filename
@@ -274,7 +253,12 @@ export default {
       const instructions = {
         recipe: "optimize_media",
         suggested_file_name,
-        quality_preset: this.resolution_preset_picked,
+
+        image_width: this.image_width,
+        image_height: this.image_height,
+        video_bitrate: this.video_bitrate,
+        audio_bitrate: this.audio_bitrate,
+
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
@@ -290,11 +274,25 @@ export default {
         instructions.trim_end = this.selection_end;
       }
 
+      return instructions;
+    },
+  },
+  methods: {
+    async optimizeMedia() {
+      this.progress_percent = 0;
+      this.is_optimizing = true;
+
       const current_task_id = await this.$api.optimizeFile({
         path: this.media.$path,
-        instructions,
+        instructions: this.base_instructions,
       });
       this.$api.join({ room: "task_" + current_task_id });
+
+      const updateProgress = ({ task_id, progress }) => {
+        if (task_id !== current_task_id) return;
+        this.progress_percent = progress;
+      };
+      this.$eventHub.$on("task.status", updateProgress);
 
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
@@ -303,7 +301,7 @@ export default {
         this.$api.leave({ room: "task_" + current_task_id });
 
         if (message.event === "completed") {
-          message.file;
+          this.progress_percent = 100;
           this.optimized_file = message.file;
         } else if (message.event === "aborted") {
           //
@@ -315,13 +313,21 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async cancel() {
+      this.removeOptimizedFile();
+    },
+    async removeOptimizedFile() {
+      if (!this.optimized_file?.$path) return;
       await this.$api.deleteItem({
         path: this.optimized_file.$path,
       });
       this.optimized_file = undefined;
-      // this.show_modal = false;
     },
     keepBoth() {
+      this.show_modal = false;
+      this.optimized_file = undefined;
+    },
+    closeModal() {
+      this.removeOptimizedFile();
       this.show_modal = false;
     },
     async replaceOriginal() {
@@ -351,25 +357,21 @@ export default {
         path: this.optimized_file.$path,
       });
 
+      this.optimized_file = undefined;
       this.show_modal = false;
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-._btnRow {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  gap: calc(var(--spacing) / 2);
-}
-
 ._mediaPreview {
   &[data-type="image"] {
     aspect-ratio: 1/1;
   }
   &[data-type="video"] {
-    max-height: 50vh;
+    ::v-deep video {
+      max-height: 50vh;
+    }
     // aspect-ratio: 16/9;
   }
   ::v-deep {
@@ -382,7 +384,7 @@ export default {
       height: 100%;
       object-fit: scale-down;
       max-width: none;
-      background-color: var(--c-gris);
+      background-color: var(--c-gris_clair);
       border-radius: 2px;
     }
   }
@@ -398,16 +400,21 @@ export default {
   gap: calc(var(--spacing) / 1);
 }
 
-._convertBtns {
-  flex: 1 1 auto;
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: calc(var(--spacing) / 1);
-}
-
 ._loader {
   z-index: 150;
+}
+
+._spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

@@ -83,19 +83,18 @@ a:focus-visible {
 }
 
 .u-card2 {
-  border-bottom: 2px solid var(--c-gris);
+  // border-bottom: 2px solid var(--c-gris);
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  transform-origin: center top;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
-    0 0.9px 1.5px hsla(230, 13%, 9%, 0.045),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
     0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 
   &:hover,
   &:focus-visible {
-    // transform: translateY(-4px);
-
+    transform: translateY(-2px) scale(1.02);
     box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
       0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
       0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
@@ -187,6 +186,8 @@ button {
   font-size: var(--input-font-size-small);
   text-decoration: none;
   color: inherit;
+  white-space: nowrap;
+  background-color: var(--c-gris_clair);
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
@@ -212,6 +213,7 @@ button {
 
   &[disabled] {
     cursor: not-allowed;
+    filter: grayscale(50%);
     color: var(--c-gris);
   }
 
@@ -258,7 +260,6 @@ button {
     &:not([disabled]) {
       color: var(--active-color);
       background: transparent;
-      // background: rgba(255, 255, 255, 1);
     }
   }
 
@@ -420,6 +421,7 @@ input[type="datetime-local"],
 input[type="email"],
 input[type="month"],
 input[type="number"],
+input[type="checkbox"],
 input[type="password"],
 input[type="search"],
 input[type="tel"],
@@ -440,6 +442,11 @@ textarea {
 }
 input[type="number"] {
   min-width: 8ch;
+
+  &:not([step="any"])::-webkit-inner-spin-button,
+  &:not([step="any"])::-webkit-outer-spin-button {
+    opacity: 1;
+  }
 }
 
 input[type="color"],
@@ -448,12 +455,14 @@ input[type="datetime-local"],
 input[type="email"],
 input[type="month"],
 input[type="number"],
+input[type="checkbox"],
 input[type="password"],
 input[type="search"],
 input[type="tel"],
 input[type="text"],
 input[type="time"],
 input[type="url"],
+input[type="week"],
 input[type="week"],
 select,
 textarea,
@@ -469,8 +478,10 @@ textarea,
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
   // border-radius: var(--input-border-radius);
-  background-color: hsl(0, 0, 94);
-  color: black;
+  background-color: hsl(0, 0%, 94%);
+  border-radius: var(--input-border-radius);
+  background-color: var(--c-gris_clair);
+  color: inherit;
 
   // background: white;
   // height: var(--input-height);
@@ -488,7 +499,7 @@ textarea,
   transition: all 0.05s;
 
   &.is--dark {
-    background-color: hsl(0, 0, 21);
+    background-color: hsl(0, 0%, 21%);
     border-color: white;
     color: white;
 
@@ -562,6 +573,7 @@ select {
   background-position: right 0.4rem center;
   background-repeat: no-repeat;
   background-size: 0.75rem;
+  color: var(--c-noir);
   // border: none;
   padding: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
@@ -571,6 +583,10 @@ select {
   &.is--dark {
     background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23ffffff' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
   }
+
+  line-height: 1.5;
+  border-radius: var(--input-border-radius);
+  user-select: none;
 
   &:disabled {
     background-image: url("data:image/svg+xml,%3C%3Fxml version=%271.0%27 encoding=%27UTF-8%27%3F%3E%3Csvg width=%2741px%27 height=%2726px%27 viewBox=%270 0 41 26%27 version=%271.1%27 xmlns=%27http://www.w3.org/2000/svg%27 xmlns:xlink=%27http://www.w3.org/1999/xlink%27%3E%3Cdefs%3E%3C/defs%3E%3Cg id=%27Page-1%27 stroke=%27none%27 stroke-width=%271%27 fill=%27none%27 fill-rule=%27evenodd%27%3E%3Cpolygon id=%27Path-3%27 fill=%27%23CCCCCC%27 points=%270 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246%27%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
@@ -585,7 +601,7 @@ select {
   }
 
   &.is--active {
-    font-weight: 700;
+    background-color: var(--active-color);
   }
 }
 
@@ -656,6 +672,11 @@ input[type="file"] {
   font-size: var(--sl-font-size-x-small);
   font-family: var(--sl-font-mono);
 }
+.u-filename {
+  // font-weight: 500;
+  font-size: var(--sl-font-size-small);
+  font-family: var(--sl-font-mono);
+}
 
 .u-defaultValue {
   margin: calc(var(--spacing) / 8);
@@ -693,7 +714,8 @@ input[type="file"] {
 .u-switch {
   /* Switches */
   --switch-font-size: var(--input-font-size);
-  --switch-bg-color: var(--c-rouge_clair);
+  --switch-bg-color: var(--c-gris);
+  --switch-bg-color-hovered: var(--c-rouge_clair);
   --switch-bg-color-checked: var(--c-rouge);
   --switch-border-radius: var(--switch-size);
 
@@ -706,6 +728,10 @@ input[type="file"] {
   --switch-speed: 0.2s;
 
   font-size: var(--switch-font-size);
+
+  &:hover {
+    --switch-bg-color: var(--switch-bg-color-hovered);
+  }
 
   input {
     display: none !important;
@@ -820,23 +846,23 @@ input[type="file"] {
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 .u-mediaOptions {
   display: flex;
   flex-flow: row wrap;
   // justify-content: center;
-  // background: var(--c-gris);
-  border: 2px solid var(--c-gris);
+  // background: var(--c-gris_clair);
+  // border: 2px solid var(--c-gris);
 
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   max-width: 50ch;
@@ -918,64 +944,44 @@ fieldset {
 }
 
 input[type="checkbox"] {
-  --form-background: #ffffff;
-  --form-control-color: var(--active-color);
-  --form-control-disabled: var(--c-gris);
-
-  /* Add if not using autoprefixer */
-  -webkit-appearance: none;
-  /* Remove most all native input styles */
-  appearance: none;
-  /* For iOS < 15 */
-  background-color: var(--form-background);
-  /* Not removed via appearance */
-  margin: 0;
-
-  font: inherit;
-  color: currentColor;
   width: 1.15em;
   height: 1.15em;
-  border: 2px solid currentColor;
-  border-radius: var(--switch-thumb-border-radius);
-  transform: translateY(-0.075em);
+  border: 2px solid var(--c-gris);
+  padding: 0;
+  color: var(--c-noir);
 
   display: grid;
   place-content: center;
+
+  &::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    transform: scale(0);
+    transform-origin: bottom left;
+    transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: inset 1em 1em currentColor;
+    /* Windows High Contrast Mode */
+    background-color: CanvasText;
+  }
+
+  &:checked {
+    // border-color: var(--c-gris_fonce);
+
+    &::before {
+      transform: scale(1);
+    }
+
+    &:hover {
+    }
+  }
+
+  &:disabled {
+    color: var(--c-gris_fonce);
+    cursor: not-allowed;
+  }
 }
-
-input[type="checkbox"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  transform: scale(0);
-  transform-origin: bottom left;
-  transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
-  box-shadow: inset 1em 1em var(--form-control-color);
-  /* Windows High Contrast Mode */
-  background-color: CanvasText;
-}
-
-input[type="checkbox"]:checked::before {
-  transform: scale(1);
-}
-
-input[type="checkbox"]:focus-visible {
-  outline: max(2px, 0.15em) solid currentColor;
-  outline-offset: max(2px, 0.15em);
-}
-
-input[type="checkbox"]:hover {
-  color: var(--form-control-color);
-}
-
-input[type="checkbox"]:disabled {
-  --form-control-color: var(--form-control-disabled);
-
-  color: var(--form-control-disabled);
-  cursor: not-allowed;
-}
-
 .u-addBtn {
   padding: calc(var(--spacing) / 4);
   color: var(--c-noir);
@@ -1006,7 +1012,7 @@ input[type="checkbox"]:disabled {
   aspect-ratio: 1;
   border-radius: 50%;
   font-family: "Fira Code";
-  padding: calc(var(--spacing) / 8);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 4);
 
   font-weight: 500;
@@ -1015,6 +1021,10 @@ input[type="checkbox"]:disabled {
   &[data-isfilled] {
     background: var(--c-bleumarine);
     color: white;
+
+    &[data-isfilled="0"] {
+      background: var(--c-gris_fonce);
+    }
   }
 }
 .u-keywords {
@@ -1163,4 +1173,27 @@ input[type="checkbox"]:disabled {
 .flickity-prev-next-button.flickity-prev-next-button {
   height: 34px;
   width: 34px;
+}
+.u-metaField {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: calc(var(--spacing) / 16);
+
+  > *:nth-child(1) {
+    flex: 0 0 auto;
+  }
+  > *:nth-child(2) {
+    flex: 1 1 auto;
+    text-align: right;
+  }
+}
+.u-icon {
+  width: 1rem;
+  height: 1rem;
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }

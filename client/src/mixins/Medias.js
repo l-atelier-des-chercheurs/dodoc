@@ -59,7 +59,6 @@ export default {
       if (with_timestamp) {
         let timestamp = +new Date().getTime();
         if ($date_created) timestamp = +new Date($date_created);
-
         full_path += "?v=" + timestamp;
       }
 
@@ -94,7 +93,8 @@ export default {
         meta_filename = this.getFilename(source_media.path);
       }
       if (!source_path) {
-        return this.$alertify.delay(4000).error("couldnt find media");
+        this.$alertify.delay(4000).error("couldnt find media");
+        return;
       }
       return this.getMediaInFolder({ folder_path: source_path, meta_filename });
     },
@@ -107,6 +107,13 @@ export default {
         folder_path = this.getParent(path_to_source_media_meta);
         meta_filename = this.getFilename(path_to_source_media_meta);
       }
+
+      if (window.app_infos.page_is_standalone_html) {
+        return window.folder_data.$files?.find(
+          ({ $path }) => $path === folder_path + "/" + meta_filename
+        );
+      }
+
       return this.$api.store[folder_path]?.$files?.find(
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );
@@ -283,6 +290,7 @@ export default {
 
         ".jpeg",
         ".jpg",
+        ".png",
 
         ".wav",
         ".m4a",

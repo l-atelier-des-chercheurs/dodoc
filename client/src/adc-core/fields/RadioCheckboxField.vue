@@ -13,13 +13,15 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
-        <template v-if="current_option && current_option.key">
+        <template v-if="current_option && current_option.hasOwnProperty('key')">
           <img
             v-if="current_option.thumb_src"
             :src="current_option.thumb_src"
             class="_option_preview"
           />
-          {{ current_option.label }}
+          <span :class="{ _emptyOption: current_option.key === '' }">
+            {{ current_option.label }}
+          </span>
         </template>
       </slot>
       <slot
@@ -34,31 +36,27 @@
     </div>
     <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
-    <div class="_footer">
-      <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
-        <div class="u-spacingBottom u-instructions" v-if="instructions">
-          {{ instructions }}
-        </div>
+    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+      <div class="u-spacingBottom u-instructions" v-if="instructions">
+        {{ instructions }}
+      </div>
 
-        <div class="u-spacingBottom">
-          <RadioCheckboxInput
-            :value.sync="new_content"
-            :input_type="input_type"
-            :options="options"
-            :can_edit="can_edit && edit_mode"
-          />
-        </div>
-
-        <SaveCancelButtons
-          slot="footer"
-          v-if="edit_mode"
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateSelect"
-          @cancel="cancel"
+      <div class="u-spacingBottom">
+        <RadioCheckboxInput
+          :value.sync="new_content"
+          :input_type="input_type"
+          :options="options"
+          :can_edit="can_edit && edit_mode"
         />
-      </BaseModal2>
-    </div>
+      </div>
+
+      <SaveCancelButtons
+        slot="footer"
+        :is_saving="is_saving"
+        @save="updateSelect"
+        @cancel="cancel"
+      />
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -103,8 +101,10 @@ export default {
   },
   computed: {
     current_options() {
-      // return this.content.map((c) => this.options.find((o) => o.key === c));
-      return this.options.filter((o) => this.content.includes(o.key));
+      const filtered_options = this.options.filter((o) =>
+        this.content.includes(o.key)
+      );
+      return filtered_options;
     },
     current_option() {
       return this.options.find((o) => o.key === this.content);
@@ -171,20 +171,14 @@ export default {
   }
 }
 
-._footer {
-  margin-top: calc(var(--spacing) / 4);
-}
-
-._scb {
-  width: 100%;
-  text-align: center;
-  justify-content: center;
-}
 ._option_preview {
   display: inline-block;
   vertical-align: middle;
   height: 1em;
   aspect-ratio: 1;
   object-fit: cover;
+}
+._emptyOption {
+  font-size: var(--sl-font-size-small);
 }
 </style>

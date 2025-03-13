@@ -8,6 +8,7 @@
       :opened_section_meta_filename="opened_section_meta_filename"
       :can_edit="can_edit"
       @toggleSection="$emit('toggleSection', $event)"
+      @openFirstSection="openFirstSection"
     />
     <transition name="pagechange" mode="out-in">
       <OpenedSection
@@ -17,7 +18,7 @@
         :sections="sections"
         :opened_section_meta_filename="opened_section_meta_filename"
         :can_edit="can_edit"
-        @toggleSection="toggleSection"
+        @toggleSection="$emit('toggleSection', $event)"
       />
     </transition>
   </div>
@@ -79,7 +80,8 @@ export default {
     },
   },
   methods: {
-    toggleSection(section_meta_filename) {
+    openFirstSection() {
+      const section_meta_filename = this.getFilename(this.sections[0].$path);
       this.$emit("toggleSection", section_meta_filename);
     },
     unselectModule() {

@@ -11,7 +11,13 @@
       <EditBtn v-if="can_edit" @click="enableEditMode" />
     </div>
 
-    <BaseModal2 v-if="edit_mode" @close="cancel" :title="label">
+    <BaseModal2
+      v-if="edit_mode"
+      :title="label"
+      :confirm_before_closing="content_is_changed"
+      @close="cancel"
+      @save="updateTags"
+    >
       <div class="u-spacingBottom">
         <TagsList
           :tags="new_tags"
@@ -22,7 +28,7 @@
         />
       </div>
 
-      <fieldset class="u-spacingBottom _newTagPane" v-if="create_new_tag">
+      <fieldset class="_newTagPane" v-if="create_new_tag">
         <legend class="u-label">{{ $t("add_item") }}</legend>
 
         <div class="u-spacingBottom">
@@ -43,8 +49,9 @@
             :required="true"
             @toggleValidity="($event) => (allow_save_newkeyword = $event)"
             @onEnter="onEnter"
+            @onShiftEnter="onShiftEnter"
           />
-          <div class="">
+          <div>
             <button
               v-if="allow_save_newkeyword && !new_tag_name_already_exists"
               type="button"
@@ -124,6 +131,9 @@ export default {
       if (this.never_shorten_list) return false;
       return this.edit_mode ? false : true;
     },
+    content_is_changed() {
+      return JSON.stringify(this.content) !== JSON.stringify(this.new_tags);
+    },
   },
   methods: {
     enableEditMode() {
@@ -152,10 +162,20 @@ export default {
       if (this.allow_save_newkeyword && !this.new_tag_name_already_exists)
         this.newTag();
     },
+    onShiftEnter() {
+      this.updateTags();
+    },
     async updateTags() {
       this.is_saving = true;
 
       if (this.new_tag_name.length > 0) this.newTag();
+
+      this.$emit("save", this.new_tags);
+      if (!this.path) {
+        this.edit_mode = false;
+        this.is_saving = false;
+        return;
+      }
 
       try {
         const new_meta = {
@@ -221,17 +241,17 @@ export default {
   justify-content: center;
 }
 
-._submitBtn {
-  padding: calc(var(--spacing) / 8);
-}
-
 ._sameRowBtnInput {
   display: flex;
   justify-content: space-between;
-  gap: calc(var(--spacing) / 4);
 
   > ._input {
     width: 100%;
+  }
+  ._submitBtn {
+    padding: calc(var(--spacing) / 8);
+    height: 2rem;
+    width: 2rem;
   }
 }
 </style>

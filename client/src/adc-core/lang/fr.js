@@ -23,8 +23,8 @@ export default {
   cancel: "Annuler",
   select: "Sélectionner",
   select_all: "Sélectionner tout",
-  back: "retour",
-  save: "enregistrer",
+  back: "Retour",
+  save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   url_to_open: "URL de la page à ouvrir",
@@ -45,9 +45,12 @@ export default {
   add: "Ajouter",
   add_item: "Ajouter un élément",
   add_files: "Ajouter des fichiers",
-  hide_already_present_medias: "Masquer les médias déjà inclus",
+  hide_already_present_medias: `
+    Masquer le média déjà inclus dans la publication | 
+    Masquer les {count} médias déjà inclus dans la publication
+    `,
   suggestions: "Suggestions",
-  suggested_cat_kw: "Catégories et mots-clé suggérés",
+  suggested_cat_kw: "Catégories et mots-clés suggérés",
   list_of_suggestions: "Liste des suggestions",
   create_suggestion_list_for: "Créer une liste de suggestions",
 
@@ -217,15 +220,15 @@ export default {
   story_with_sections: "Récit",
   page_by_page: "Page à page",
   cartography: "Cartographie",
-  export_publi: "Exporter la publication",
+  edition: "Édition multisupport",
+  export: "Exporter",
   export_in_pdf: "Exporter en PDF",
   direct_link: "Lien direct",
   link: "Lien",
   share: "Partager",
   options: "Options",
-  exports: "Exportations",
-  export: "Exportation",
-  to_export: "Exporter",
+  exports: "Exportation | Exportations",
+  export_publi: "Exporter la publication {name}",
   export_in_progress: "Exportation en cours",
 
   story_width: "Largeur du récit",
@@ -266,6 +269,7 @@ export default {
   desktop_720: "Bureau 720p",
 
   custom: "Personnalisé",
+  custom_f: "Personnalisée",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",
@@ -336,6 +340,7 @@ export default {
   no_publications: "Aucune publication à afficher",
 
   none_f: "Aucune",
+  not_specified: "Non renseigné",
   none: "Aucun·e",
   reset_all: "Retirer tout",
   reset: "Réinitialiser",
@@ -406,12 +411,18 @@ export default {
     "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
   restart: "Fermer et redémarrer",
 
-  refresh_window_to_apply: "Rafraîchir la fenêtre pour appliquer",
+  refresh_window_to_see_changes:
+    "Rafraîchir la fenêtre pour voir les modifications",
   reveal: "Révéler",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_project: "Télécharger le projet {name}",
+  download_project_instr:
+    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11).",
+  download_space:
+    "Télécharger l’espace {name} et tous les projets qu’il contient",
   download_ready: "Le téléchargement est prêt",
   download_image: "Télécharger cette image",
   page_failed_to_load: "Cette page n’a pas pu charger.",
@@ -423,7 +434,6 @@ export default {
   no_preview_to_show: "Aucun aperçu à afficher pour le moment",
   no_media_in_project: "Aucun média dans ce projet",
   number_of_media: "Nombre de médias",
-  "displayed:": "Affichés&nbsp;:",
   media_removed: "Média supprimé",
   media_duplicated: "Média dupliqué",
   media_was_saved_to_project: "Le média a été ajouté au projet",
@@ -505,6 +515,7 @@ export default {
   copy: "Copier",
   test_and_export: "Tester et exporter",
   export_montage: "Exporter le montage",
+  export_stomotion: "Exporter l’animation",
 
   video_to_rework: "Vidéo à retrailler",
 
@@ -608,8 +619,6 @@ export default {
   more_informations: "Plus d’informations",
   images: "Images",
 
-  make_an_exhibition: "Créer une exposition",
-
   image_tracking: "Réalité augmentée",
   create_block: "Créer un groupe",
   image_tracking_summary: "",
@@ -650,6 +659,7 @@ export default {
   use_own_risk:
     "Utilisez avec précaution : les médias peuvent devenir invisible dans certains cas !",
   chroma_key: "Incrustation (fond vert)",
+  chroma_key_color: "Couleur à remplacer",
   color: "Couleur",
   flip_horizontally: "Retourner horizontalement",
   flip_vertically: "Retourner verticalement",
@@ -692,6 +702,7 @@ export default {
 
   no_authors_to_show: "Aucun compte à afficher",
   remove_account: "Supprimer ce compte",
+  remove_account_name: "Supprimer le compte {name}",
   remove_account_expl:
     "Seul le compte sera supprimé, l’ensemble des contenus qui lui sont associés (espaces, projets, médias et publications) seront conservés.",
 
@@ -751,8 +762,9 @@ export default {
   onion_skin: "Pelure d’oignon",
 
   pick_a_camera: "Sélectionnez une caméra",
-  resolutions: "Résolutions",
+  resolutions: "Résolution",
   resolution: "Résolution",
+  resolution_w_h: "Résolution : {width}x{height} pixels",
   screen_capture: "Capture d’écran",
   cant_pick_resolution_when_screen_capture:
     "La sélection de la résolution n’est pas compatible avec la capture d’écran.",
@@ -760,7 +772,6 @@ export default {
   take_picture: "Prendre une photo",
   delay: "Retardateur",
   timelapse: "time-lapse",
-  framerate: "images par seconde",
   live: "Direct",
   img_per_second: "Images par seconde",
 
@@ -780,9 +791,13 @@ export default {
   previous_image: "Image précédente",
   next: "Suivant",
   previous: "Précedent",
+  loop: "Boucle",
   next_image: "Image suivante",
   last_image: "Dernière image",
   assemble: "Assembler",
+  filter_by_fav: "Filtrer les favoris",
+  add_to_fav: "Ajouter aux favoris",
+  remove_from_fav: "Retirer des favoris",
 
   with_sound: "avec le son",
   update: "Mettre à jour",
@@ -795,12 +810,13 @@ export default {
   pdf: "PDF",
   stl: "STL",
   obj: "OBJ",
+  gif: "GIF",
   other: "Autre",
   webpage: "Page web",
-  all_keywords: "De tous les mots-clés",
-  all_medias_types: "De tous types",
-  all_origins: "De toutes origines",
-  all_accounts: "De tous les comptes",
+  all_keywords: "Tous les mots-clés",
+  all_medias_types: "Tous les types",
+  all_origins: "Toutes les origines",
+  all_accounts: "Tous les comptes",
 
   or_download_media_on_device: "ou télécharger ce média sur votre appareil",
 
@@ -808,14 +824,21 @@ export default {
   start_timelapse: "Démarrer le time-lapse",
   stop_timelapse: "Interrompre le time-lapse",
   quality: "Qualité",
+  image_quality: "Qualité de l’image",
+  audio_quality: "Qualité de l’audio",
   duration: "Durée",
   close_to_source: "Au plus proche du média original",
+
   very_high: "Très élevée",
   high: "Élevée",
   medium: "Moyenne",
   low: "Basse",
-  rough: "Ébauche",
-  optimize: "Optimiser",
+  rough: "Ébauche (le plus rapide)",
+  optimize_resize: "Optimiser/redimensionner",
+  convert_instructions: "Convertir vers un format standard",
+  optimize_resize_instructions:
+    "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
+  from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
@@ -899,7 +922,7 @@ export default {
   pick_portrait: "Choisissez une image pour ce compte",
   pick_media: "Choisissez un média",
   pick_medias: "Choisissez un ou plusieurs médias",
-  remove_image: "Retirer cette image",
+  replace_remove_image: "Remplacer ou supprimer cette image",
 
   no_accounts_to_show: "Aucun compte à afficher",
   login_no_account_matches: "Aucun compte ne correspond à ce nom",
@@ -944,7 +967,6 @@ export default {
 
   duplicate: "Dupliquer",
   duplicate_or_move: "Dupliquer ou déplacer",
-  duplicate_or_move_project: "Dupliquer ou déplacer ce projet",
   dm_instr:
     "Dans cet espace ou vers un autre où vous pouvez créer des projets. L’ensemble des propriétés et des contenus (médias, fabrications, publications) seront copiées.",
   dmm_instr:
@@ -959,7 +981,7 @@ export default {
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet dodoc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
 
@@ -968,7 +990,8 @@ export default {
   move: "Déplacer",
   unselect: "Déselectionner",
   remove: "Supprimer",
-  remove_project: "Supprimer le projet",
+  disable: "Désactiver",
+  remove_project: "Supprimer le projet {name}",
   remove_media: "Supprimer le média",
   remove_space: "Supprimer cet espace et tous ses contenus",
 
@@ -1027,6 +1050,7 @@ export default {
   help_contact: "aide/contact",
 
   translate: "Traduire",
+  edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
   hide_already_translated: "Masquer les traductions déjà réalisées",
@@ -1079,9 +1103,9 @@ export default {
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
   bw_filter: "Filtre noir et blanc",
-  failed_loading_tiles_no_internet:
-    "Échec du chargement du fond de carte, êtes-vous connecté à internet ?",
-  zoom_animation: "Animation de zoom",
+  failed_loading_tiles:
+    "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
+  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1155,8 +1179,11 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir/raccourcir",
-  select_extract: "Sélectionner un extrait",
+  convert_shorten: "Convertir",
+  convert_shorten_instructions: `
+    Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
+    `,
+
   extract_range: "Recouper le début ou la fin",
   convert_to_format: "Adapter le format pour la lecture",
 
@@ -1164,7 +1191,6 @@ export default {
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
   preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
-  add_optimized_to_lib: "Conserver l’original et la nouvelle version",
   replace_original: "Remplacer l’original",
   save_as_new_media: "Enregistrer comme nouveau média",
 
@@ -1200,7 +1226,7 @@ export default {
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
   share_link_to_file:
-    "Ce lien correspond à une page de consultation contenant le média, sa légende et ses crédits (si les champs sont remplis).",
+    "Ce lien correspond à une page de consultation du contenu.",
 
   remove_permanently: "Supprimer définitivement les contenus",
   remove_permanently_true:
@@ -1214,4 +1240,98 @@ export default {
   scan_qr_code: "Scanner un code QR",
   opening_link_in: "Ouverture du lien dans",
   qr_code_content: "Contenu du code QR",
+
+  edit_informations: "Modifier les informations",
+  edit_informations_instructions: `
+    Modifiez ici les informations de plusieurs médias en une seule opération.
+  `,
+  medias_selected: "Médias sélectionnés",
+
+  assign_a_new_caption: "Attribuer une nouvelle légende",
+  assign_a_new_credit: "Attribuer un nouveau crédit/référence",
+  add_or_replace_keywords: "Ajouter ou remplacer les mots-clés",
+  add_or_replace_authors: "Ajouter ou remplacer un ou plusieurs auteurs",
+  assign_a_new_location: "Attribuer une nouvelle localisation",
+  pick_an_option: "Choisissez  une option",
+
+  keep_existing_keywords: "Conserver les mots-clés existants",
+  add_after_existing_keywords: "Ajouter après les mots-clés existants",
+  erase_and_replace_keywords: "Effacer et remplacer les mots-clés",
+  keep_existing_authors: "Conserver les auteurs existants",
+  add_after_existing_authors: "Ajouter à la suite des auteurs existants",
+  erase_and_replace_authors: "Effacer et remplacer les auteurs",
+
+  duration_explanation:
+    "Soit {seconds_equivalent} seconde(s) à une vitesse de {frame_rate} images par seconde",
+
+  connected_currently: "Connecté actuellement",
+
+  confirm_save_changes:
+    "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
+  close_without_saving: "Fermer sans enregistrer",
+
+  start_by_uploading_images: "Commencez par importer vos images ci-dessous",
+  or: "ou",
+  live_dubbing: "Doublage en direct",
+  play_both: "Lire les deux en même temps",
+  bitrate_kbps: "Débit : {bitrate} kbps",
+  bitrate: "Débit",
+  bitrate_instructions:
+    "Quantité de données allouées par seconde. Plus la valeur est élevée, plus la vidéo sera de haute qualité mais plus elle sera lourde.",
+
+  resolution_on_largest_side:
+    "Résolution sur le plus grand côté : {resolution} pixels",
+  keep_ratio: "Conserver le rapport largeur/hauteur",
+
+  in_this_make: "Dans cette fabrication",
+  edit_volume_or_mute: "Modifier le volume ou le mettre en sourdine",
+  toolbox: "Boîte à outils",
+  video_resolution_even:
+    "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
+  no_audio_track: "Pas de piste audio (muet)",
+  keep_audio_track: "Conserver la piste audio",
+  stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
+
+  video_mp4: "Vidéo MP4",
+  video_gif: "Animation GIF",
+
+  enable_image: "Activer l’image",
+  enable_sound: "Activer le son",
+  created_by_publication: "Créé par la publication {publication_title}",
+  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
+  <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s’y trouve, vous pouvez consulter la publication depuis n’importe quel ordinateur dans un navigateur web.
+  <br /><br />Vous pouvez également la mettre en ligne pour qu’elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
+
+  all_fields_not_filled: "Tous les champs ne sont pas renseignés",
+  pixels: "pixels",
+  show_only_media_of_types: "Type de médias affiché : {types}",
+  devices_connected: "Appareils connectés actuellement",
+
+  remove_publication: "Supprimer la publication {name}",
+
+  not_logged_in: "Non connecté",
+
+  chapters: "Chapitres",
+  create_chapter: "Créer un chapitre",
+  text_top_image_down: "Texte en haut, image en bas",
+  image_top_text_down: "Image en haut, texte en bas",
+  in_flow: "À la suite",
+  next_page: "Prochaine page",
+  next_left_page: "Prochaine page de gauche",
+  next_right_page: "Prochaine page de droite",
+  no_content: "Pas de contenu",
+  book: "Livre",
+  normal: "Normal",
+  graphic_styles: "Style graphiques",
+  edit_default_styles: "Modifier le style par défaut",
+  back_to_default_styles: "Revenir au style par défaut",
+
+  millimetres: "millimètres",
+  parent_space_is_private:
+    "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
+  copy_paste_to_include_media:
+    "Copiez/collez dans le contenu pour placer le média.",
+  next_chapter: "Chapitre suivant",
+
+  show_preview: "Afficher l’aperçu",
 };

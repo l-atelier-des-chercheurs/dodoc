@@ -7,11 +7,8 @@
 
     <div class="u-spacingBottom" />
 
-    <DLabel :str="$t('extract_range')" />
-    <!-- <DLabel :str="$t('select_extract')" /> -->
     <ToggledSection
-      :label="$t('enable')"
-      :can_toggle="true"
+      :label="$t('extract_range')"
       :show_toggle.sync="show_extract_selection"
     >
       <div class="_currentTime">{{ current_time_displayed }} s</div>
@@ -114,6 +111,7 @@
           class="u-button u-button_orange"
           @click="playExtract"
         >
+          <b-icon icon="play-circle-fill" />
           {{ $t("play_extract") }}
         </button>
         <button
@@ -122,6 +120,7 @@
           class="u-button u-button_orange"
           @click="stopExtract"
         >
+          <b-icon icon="stop-circle" />
           {{ $t("stop_extract") }}
         </button>
       </div>
@@ -227,12 +226,9 @@ export default {
   --plyr-audio-controls-background: var(--c-noir);
   --plyr-audio-control-color: white;
 
-  .plyr {
-    --plyr-audio-controls-background: var(--c-noir);
-    --plyr-audio-control-color: white;
-
-    .plyr__controls {
-      border-radius: 4px;
+  ::v-deep .plyr__video-wrapper {
+    video {
+      max-height: 50vh;
     }
   }
 }
@@ -261,7 +257,7 @@ export default {
 ._currentTime {
   text-align: center;
   font-size: var(--sl-font-size-x-large);
-  margin: calc(var(--spacing) * 1) auto;
+  margin: 0 auto calc(var(--spacing) * 1);
 }
 
 ._playExtract {

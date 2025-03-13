@@ -16,8 +16,11 @@
             :can_edit="can_edit"
           />
 
-          <DropDown v-if="can_edit">
-            <RemoveMenu :remove_text="$t('remove')" @remove="removePage" />
+          <DropDown v-if="can_edit" :show_label="false">
+            <RemoveMenu
+              :modal_title="$t('remove_page_and_content')"
+              @remove="removePage"
+            />
           </DropDown>
         </div>
 
@@ -47,6 +50,7 @@ export default {
   },
   async created() {},
   async mounted() {
+    this.$api.updateSelfPath(this.page_path);
     await this.getPage();
     this.$api.join({ room: this.page_path });
 

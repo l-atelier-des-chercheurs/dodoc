@@ -1,6 +1,6 @@
 <template>
-  <BaseModal2 :title="$t('export_publi')" @close="$emit('close')">
-    <div class="">
+  <BaseModal2 :title="modal_title" @close="$emit('close')">
+    <div class="u-spacingBottom">
       <DLabel :str="$t('document_type')" />
       <RadioCheckboxInput
         :value.sync="export_mode"
@@ -9,19 +9,9 @@
       />
     </div>
 
-    <template v-if="export_mode === 'pdf'">
-      <div slot="footer">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="exportPublication('pdf')"
-        >
-          <b-icon icon="filetype-pdf" />
-          {{ $t("create") }}
-        </button>
-      </div>
-    </template>
-    <template v-else-if="export_mode === 'png'">
+    <template v-if="export_mode === 'pdf'"></template>
+
+    <template v-if="export_mode === 'png'">
       <template v-if="publication.template === 'page_by_page'">
         <div class="u-spacingBottom" />
 
@@ -36,18 +26,20 @@
           </select>
         </div>
       </template>
-
-      <div slot="footer">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="exportPublication('png')"
-        >
-          <b-icon icon="file-earmark-image" />
-          {{ $t("create") }}
-        </button>
-      </div>
     </template>
+
+    <template slot="footer">
+      <div />
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        @click="exportPublication(export_mode)"
+      >
+        <b-icon :icon="export_mode_icon" />
+        {{ $t("create") }}
+      </button>
+    </template>
+
     <ExportItemAndSaveOrDownload
       v-if="task_instructions"
       :publication_path="publication.$path"
@@ -61,8 +53,9 @@ import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAnd
 
 export default {
   props: {
+    modal_title: String,
     publication: Object,
-    page_opened_id: String,
+    pane_infos: String,
   },
   components: {
     ExportItemAndSaveOrDownload,
@@ -71,6 +64,9 @@ export default {
     return {
       task_instructions: false,
       page_to_export_as_image: 1,
+
+      page_width: this.publication.page_width || 210,
+      page_height: this.publication.page_height || 297,
 
       export_mode: "pdf",
       export_options: [
@@ -91,9 +87,11 @@ export default {
     },
   },
   created() {
-    if (this.page_opened_id) {
+    this.publication_ratio = this.page_height / this.page_width;
+
+    if (this.pane_infos && this.pane.page_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(
-        (p) => p.id === this.page_opened_id
+        (p) => p.id === this.pane.page_id
       );
       if (page_number) this.page_to_export_as_image = page_number + 1;
     }
@@ -105,18 +103,35 @@ export default {
     page_count() {
       return this.publication.pages.length;
     },
+    export_mode_icon() {
+      if (this.export_mode === "pdf") return "file-pdf";
+      if (this.export_mode === "png") return "file-earmark-image";
+      if (this.export_mode === "webpage") return "window";
+      return undefined;
+    },
+    custom_resolution_unit() {
+      if (
+        this.publication.layout_mode === "print" ||
+        this.publication.template === "edition"
+      )
+        return "mm";
+      return "px";
+    },
   },
   methods: {
     async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
+      additional_meta.$credits = this.$t("created_by_publication", {
+        publication_title: this.publication.title,
+      });
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
       let instructions = {
         recipe: export_type,
-        page_width: this.publication.page_width,
-        page_height: this.publication.page_height,
+        page_width: this.page_width,
+        page_height: this.page_height,
         layout_mode: this.publication.layout_mode || "print",
         suggested_file_name: this.publication.title,
         additional_meta,

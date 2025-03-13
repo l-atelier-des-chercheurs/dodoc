@@ -25,6 +25,7 @@
         <FilesList
           v-else-if="publimodule.module_type === 'files'"
           key="filelist"
+          :mode="'source'"
           :medias_with_linked="medias_with_linked"
           :publication_path="publication_path"
           :edit_mode="edit_mode"
@@ -44,6 +45,7 @@
           :edit_mode="edit_mode"
           :can_edit="can_edit"
           @addMedias="addMedias"
+          @reorderMedias="reorderMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
           @updateMediaOpt="updateMediaOpt"
         />

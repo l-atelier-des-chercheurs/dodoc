@@ -200,7 +200,6 @@
 
               <RemoveMenu
                 v-if="can_edit"
-                :remove_text="$t('remove')"
                 :show_button_text="true"
                 @remove="removeModule"
               />

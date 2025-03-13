@@ -9,12 +9,13 @@
         @change="setNewSection"
       />
     </div>
-    <div class="u-sameRow" slot="footer">
-      <button type="button" class="u-buttonLink" @click="$emit('close')">
+    <template slot="footer">
+      <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x-circle" />
         {{ $t("cancel") }}
       </button>
       <button
-        class="u-button u-button_red"
+        class="u-button u-button_bleuvert"
         type="button"
         autofocus
         :disabled="
@@ -25,7 +26,7 @@
       >
         {{ $t("move") }}
       </button>
-    </div>
+    </template>
   </BaseModal2>
 </template>
 <script>

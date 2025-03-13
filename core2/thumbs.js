@@ -8,7 +8,8 @@ const path = require("path"),
   { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size");
 
-const utils = require("./utils");
+const utils = require("./utils"),
+  webpreview = require("./webpreview");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -325,7 +326,6 @@ module.exports = (function () {
               await _makeLinkThumbs({
                 full_media_path,
                 full_path_to_thumb,
-                cc,
               });
           } catch (err) {
             dev.error(err);
@@ -375,6 +375,13 @@ module.exports = (function () {
       path_to_thumb_folder,
       resolutions: cover_schema.thumbs.resolutions,
     });
+
+    let _cover_name = cover_name;
+    const { mtimems } = await _readFileInfos({
+      full_media_path: full_cover_path,
+    });
+    if (mtimems) _cover_name += "?v=" + mtimems;
+    paths.original = _cover_name;
 
     return paths;
   }
@@ -640,6 +647,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }
@@ -655,6 +663,7 @@ module.exports = (function () {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
     } catch (err) {
+      dev.error(err.message);
       throw err;
     }
   }
@@ -678,63 +687,7 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    const puppeteer = require("puppeteer");
-
-    let browser;
-
-    let page_timeout = setTimeout(async () => {
-      if (browser) await browser.close();
-      try {
-        const err = new Error("Failed to capture media screenshot");
-        err.code = "failed_to_capture_media_screenshot_page-timeout";
-        throw err;
-      } catch (e) {
-        dev.error(`page timeout for ${url}`);
-      }
-    }, 10_000);
-
-    browser = await puppeteer.launch({
-      headless: true,
-      ignoreHTTPSErrors: true,
-      args: ["--no-sandbox", "--font-render-hinting=none"],
-    });
-
-    const page = await browser.newPage();
-    const x_padding = 12;
-    const y_padding = 8;
-    const width = 800;
-    const height = 800;
-
-    await page.setViewport({
-      width: width + x_padding * 2,
-      height: height + y_padding,
-      deviceScaleFactor: 2,
-    });
-
-    dev.logverbose(`Navigating to ${url}`);
-
-    await page.goto(url).catch((err) => {
-      throw err;
-    });
-
-    dev.logverbose(`Waiting for page to load`);
-
-    await new Promise((resolve) => setTimeout(resolve, 3_000));
-
-    dev.logverbose(`Taking screenshot`);
-    await page.screenshot({
-      path: full_path_to_thumb,
-      clip: {
-        x: x_padding,
-        y: y_padding,
-        width: width,
-        height: height,
-      },
-    });
-    dev.logverbose(`Screenshot taken`);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    clearTimeout(page_timeout);
-    if (browser) await browser.close();
+    await webpreview.captureScreenshot({ url, full_path_to_thumb });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -745,11 +698,27 @@ module.exports = (function () {
     if (!url) throw "no url";
 
     const { image } = await _getPageMetadata({ url });
-    if (image) await _fetchImageAndSave({ url, image, full_path_to_thumb });
-    // else {
-    // if no image, use Electron or Puppeteer to generate screenshot of webpage
-    // }
-    else throw new Error("No image to download");
+    if (image) {
+      try {
+        await _fetchImageAndSave({ url, image, full_path_to_thumb });
+        return;
+      } catch (err) {
+        dev.error(err);
+      }
+    }
+
+    try {
+      await webpreview.captureScreenshot({ url, full_path_to_thumb });
+      return;
+    } catch (err) {
+      dev.error(err);
+      throw new Error("failed to capture screenshot");
+    }
+
+    // todo fix err
+    const err = new Error("No image to download");
+    err.code = "no_image_to_download";
+    throw err;
   }
 
   async function _readVideoAudioExif({ full_media_path }) {
@@ -820,11 +789,7 @@ module.exports = (function () {
   async function _getPageMetadata({ url }) {
     dev.logfunction({ url });
 
-    function addhttp(url) {
-      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
-      return url;
-    }
-    url = addhttp(url);
+    url = utils.addhttp(url);
 
     let headers = {};
     if (url.includes("https://"))
@@ -869,6 +834,7 @@ module.exports = (function () {
   async function _fetchImageAndSave({ url, image, full_path_to_thumb }) {
     dev.logfunction({ url, image, full_path_to_thumb });
 
+    url = utils.addhttp(url);
     const full_url = new URL(image, url).href;
     dev.logfunction({ full_url });
 

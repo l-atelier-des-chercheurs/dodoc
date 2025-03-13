@@ -45,30 +45,20 @@ module.exports = (function () {
     checkSuperadminToken(t) {
       return superadmintoken === t;
     },
-    extrackAndCheckToken({ req }) {
+    extractAndCheckToken({ req }) {
       if (!req.headers || !req.headers.authorization) {
-        // const err = new Error("Headers missing");
-        // err.code = "missing_headers";
-        // throw err;
-        return false;
-      }
-
-      const { token, token_path } = JSON.parse(req.headers.authorization);
-      if (!token || !token_path) {
-        // const err = new Error("Token and/or token_path missing in headers");
-        // err.code = "no_token_submitted";
-        // throw err;
         return false;
       }
 
       try {
-        API.checkTokenValidity({ token, token_path });
+        const { token, token_path } = JSON.parse(req.headers.authorization);
+        if (token && token_path) {
+          API.checkTokenValidity({ token, token_path });
+          return token_path;
+        }
       } catch (err) {
-        err;
         return false;
       }
-
-      return token_path;
     },
 
     checkTokenValidity({ token, token_path }) {

@@ -20,8 +20,9 @@ module.exports = (function () {
     prepareImageForMontageAndWeb: async ({
       media_full_path,
       full_path_to_folder_in_cache,
-      resolution,
-      bitrate,
+      output_width,
+      output_height,
+      video_bitrate,
       image_duration = 2,
       ffmpeg_cmd,
     }) => {
@@ -39,11 +40,11 @@ module.exports = (function () {
         "_dur=" +
         image_duration +
         "_res=" +
-        resolution.width +
+        output_width +
         "x" +
-        resolution.height +
+        output_height +
         "_br=" +
-        bitrate +
+        video_bitrate +
         ".ts";
 
       const temp_video_path = path.join(
@@ -55,17 +56,21 @@ module.exports = (function () {
         await utils.convertAndCopyImage({
           source: media_full_path,
           destination: temp_image_path,
-          resolution,
+          width: output_width,
+          height: output_height,
         });
         await _makeVideoFromImage({
           ffmpeg_cmd,
           temp_image_path,
           image_duration,
           temp_video_path,
-          bitrate,
-          resolution,
+          video_bitrate,
+          output_width,
+          output_height,
         });
       }
+
+      await fs.remove(temp_image_path);
 
       return {
         video_path: temp_video_path,
@@ -75,8 +80,9 @@ module.exports = (function () {
     prepareVideoForMontageAndWeb: async ({
       media_full_path,
       full_path_to_folder_in_cache,
-      resolution,
-      bitrate,
+      output_width,
+      output_height,
+      video_bitrate,
       ffmpeg_cmd,
       reportProgress,
     }) => {
@@ -87,11 +93,11 @@ module.exports = (function () {
         "_volume=" +
         temp_video_volume +
         "_res=" +
-        resolution.width +
+        output_width +
         "x" +
-        resolution.height +
+        output_height +
         "_br=" +
-        bitrate +
+        video_bitrate +
         ".ts";
 
       const temp_video_path = path.join(
@@ -105,8 +111,9 @@ module.exports = (function () {
           source: media_full_path,
           destination: temp_video_path,
           format: "mpegts",
-          bitrate,
-          resolution,
+          image_width: output_width,
+          image_height: output_height,
+          video_bitrate,
           reportProgress,
         });
       }
@@ -124,7 +131,7 @@ module.exports = (function () {
 
     mergeAllVideos: async ({
       temp_videos_array,
-      bitrate,
+      video_bitrate,
       ffmpeg_cmd,
       full_path_to_new_video,
     }) => {
@@ -372,7 +379,7 @@ module.exports = (function () {
           }
         );
 
-        ffmpeg_cmd.withVideoBitrate(bitrate);
+        ffmpeg_cmd.withVideoBitrate(video_bitrate);
 
         // todo set https://trac.ffmpeg.org/wiki/Encode/H.264#Profile ?
         complexFilters.push(
@@ -431,8 +438,9 @@ module.exports = (function () {
     temp_image_path,
     image_duration,
     temp_video_path,
-    bitrate,
-    resolution,
+    output_width,
+    output_height,
+    video_bitrate,
   }) {
     return new Promise(async (resolve, reject) => {
       ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
@@ -443,9 +451,9 @@ module.exports = (function () {
         .inputFormat("lavfi")
         .outputFPS(30)
         .withVideoCodec("libx264")
-        .withVideoBitrate(bitrate)
+        .withVideoBitrate(video_bitrate)
         .addOptions(["-af apad", "-tune stillimage"])
-        .size(`${resolution.width}x${resolution.height}`)
+        .size(`${output_width}x${output_height}`)
         .autopad()
         .videoFilter(["setsar=1/1"])
         .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])

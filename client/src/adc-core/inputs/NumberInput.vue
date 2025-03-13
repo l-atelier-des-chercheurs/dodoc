@@ -5,7 +5,7 @@
   >
     <DLabel v-if="label" :str="label" :for="label" />
 
-    <div class="u-sameRow" :key="'value-' + value">
+    <div class="u-sameRow">
       <div class="u-inputGroup">
         <input
           ref="field"
@@ -33,6 +33,9 @@
         <b-icon style="font-size: 1.5em" icon="check" />
       </button>
     </div>
+    <div class="u-instructions" v-if="instructions">
+      <small>{{ instructions }}</small>
+    </div>
 
     <button
       type="button"
@@ -48,6 +51,7 @@
 export default {
   props: {
     label: String,
+    instructions: String,
     value: Number,
     default_value: Number,
     min: Number,
@@ -70,7 +74,12 @@ export default {
   beforeDestroy() {},
   watch: {
     value() {
-      this.local_value = this.value;
+      if (this.value !== this.local_value) {
+        this.local_value = this.value;
+      }
+    },
+    local_value() {
+      this.$emit("update:value", this.local_value);
     },
   },
   computed: {},

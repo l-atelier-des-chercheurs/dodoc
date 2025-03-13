@@ -4,6 +4,7 @@
       :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
       :path="current_project_path"
       :select_mode="select_mode"
+      :pick_from_types="pick_from_types"
       @addMedias="$emit('addMedias', $event)"
       @close="$emit('close')"
     /> -->
@@ -17,6 +18,7 @@ export default {
       type: String,
       default: "multiple",
     },
+    pick_from_types: [String, Array],
   },
   components: {},
   data() {

@@ -8,7 +8,7 @@ const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: ["fr", "en", "de", "nl", "oc"],
+    available: ["fr", "en", "it"],
     default: "en",
     current: "",
     init: function () {
@@ -44,13 +44,19 @@ const i18n = () => {
     silentFallbackWarn: true,
   });
 
+  const loadLangageFile = async (lang) => {
+    let content = null;
+    if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
+    else if (lang === "it") content = await import("@/adc-core/lang/it.js");
+    else content = await import("@/adc-core/lang/en.js");
+    return content.default;
+  };
+
   changeLocale = async (new_lang) => {
-    const messages = await import(
-      /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${new_lang}.js`
-    );
+    const messages = await loadLangageFile(new_lang);
     i18n.locale = new_lang;
     document.querySelector("html").setAttribute("lang", new_lang);
-    i18n.setLocaleMessage(new_lang, messages.default);
+    i18n.setLocaleMessage(new_lang, messages);
     localStorage.setItem("language", new_lang);
   };
   changeLocale(lang_settings.current);
@@ -59,10 +65,7 @@ const i18n = () => {
     let all_translations = {};
     for (const lang of lang_settings.available) {
       try {
-        const messages = await import(
-          /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${lang}.js`
-        );
-        all_translations[lang] = messages.default;
+        all_translations[lang] = await loadLangageFile(lang);
       } catch (e) {
         e;
       }

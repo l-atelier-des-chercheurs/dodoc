@@ -5,6 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
+    <DynamicCursor v-if="!$root.is_touch_device" />
 
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
@@ -50,7 +51,6 @@ import AuthorList from "@/adc-core/author/AuthorList.vue";
 export default {
   props: {},
   components: {
-    // TopBar,
     WelcomeModal,
     GeneralPasswordModal,
     TrackAuthorChanges,
@@ -73,6 +73,7 @@ export default {
       `app.prompt_general_password`,
       this.promptGeneralPassword
     );
+    this.$eventHub.$on(`app.notify_error`, this.notifyError);
 
     this.$eventHub.$on(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$on(`showAuthorModal`, this.showAuthorModal);
@@ -94,7 +95,12 @@ export default {
     );
     this.$eventHub.$off(`app.show_welcome_modal`, this.showWelcomeModal);
     this.$eventHub.$off(`showAuthorModal`, this.showAuthorModal);
-    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$off(`app.notify_error`, this.notifyError);
+
+    this.$eventHub.$off("socketio.connect", this.socketConnected);
+    this.$eventHub.$off("socketio.reconnect", this.socketConnected);
+    this.$eventHub.$off("socketio.disconnect", this.socketDisconnected);
+    this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
   },
   watch: {},
   computed: {},
@@ -129,6 +135,10 @@ export default {
     },
     showAuthorModal() {
       this.show_authors_modal = true;
+    },
+    notifyError(msg) {
+      if (msg === "not_allowed")
+        this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
     },
   },
 };

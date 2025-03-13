@@ -39,37 +39,20 @@
       <EditBtn
         v-if="!edit_mode"
         :label_position="'left'"
+        :is_unfolded="!cover_thumb"
+        :label="!cover_thumb ? $t('add') : undefined"
         @click="enableEditMode"
       />
-      <BaseModal2
+      <ImageSelect
         v-if="edit_mode"
-        :title="label_title"
+        :path="path"
+        :label="label_title"
+        :ratio="ratio"
+        :preview_format="preview_format"
+        :existing_preview="existing_preview"
+        :available_options="available_options"
         @close="edit_mode = false"
-      >
-        <div class="u-spacingBottom">
-          <ImageSelect
-            v-if="edit_mode"
-            :path="path"
-            :existing_preview="existing_preview"
-            :available_options="available_options"
-            :preview_format="preview_format"
-            @newPreview="
-              (value) => {
-                new_cover = value;
-              }
-            "
-          />
-        </div>
-        <div slot="footer">
-          <SaveCancelButtons
-            class="_scb"
-            :is_saving="is_saving"
-            :allow_save="allow_save"
-            @save="updateCover"
-            @cancel="cancel"
-          />
-        </div>
-      </BaseModal2>
+      />
     </div>
   </div>
 </template>
@@ -80,10 +63,10 @@ export default {
     title: String,
     path: String,
     context: String,
-    preview_format: {
+    ratio: {
       type: String,
-      default: "square",
     },
+    preview_format: String,
     placeholder: {
       type: String,
       default: "pattern",
@@ -98,11 +81,10 @@ export default {
   data() {
     return {
       selected_file: [],
-      new_cover: "",
       allow_save: true,
 
       edit_mode: false,
-      is_saving: false,
+
       show_cover_fullscreen: false,
     };
   },
@@ -145,34 +127,6 @@ export default {
         resolution: res,
       });
     },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-    },
-    async updateCover() {
-      this.is_saving = true;
-
-      try {
-        await this.$api.updateCover({
-          path: this.path,
-          new_cover_data: this.new_cover,
-          // onProgress,
-        });
-
-        this.edit_mode = false;
-        this.is_saving = false;
-      } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("couldntbesaved"));
-
-        this.$alertify.closeLogOnClick(true).error(e.response);
-      }
-    },
   },
 };
 </script>
@@ -182,9 +136,9 @@ export default {
   inset: 0;
   overflow: visible;
 
-  --color1: var(--c-gris);
-  // --color2: var(--c-gris_fonce);
+  --color1: var(--c-gris_clair);
   --color2: white;
+  // --color2: var(--c-gris_fonce);
 }
 
 ._editingPane {
@@ -204,7 +158,7 @@ export default {
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: scale-down;
   }
 }
 

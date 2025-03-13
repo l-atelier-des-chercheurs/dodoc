@@ -16,6 +16,10 @@ export default function () {
 
       rooms_joined: [],
 
+      is_tracking_users: false,
+      self_user_id: null,
+      users: new Array(),
+
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
 
@@ -27,15 +31,15 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
+        setTimeout(async () => {
+          await this.getAndTrackUsers();
+        }, 10);
       },
       async initSocketio() {
         console.log("initSocketio");
         this.socket = io({
           autoConnect: false,
         });
-
-        const sessionID = localStorage.getItem("sessionID");
-        if (sessionID) this.socket.auth = { sessionID };
 
         await this._setAuthFromStorage();
         this.setAuthorizationHeader();
@@ -44,6 +48,13 @@ export default function () {
           await this.getCurrentAuthor().catch(() => {});
           this.trackCurrentAuthor();
         }
+
+        const sessionID = localStorage.getItem("sessionID");
+        let auth = {};
+        if (sessionID) auth.sessionID = sessionID;
+        if (this.tokenpath.token_path)
+          auth.token_path = this.tokenpath.token_path;
+        if (Object.keys(auth).length > 0) this.socket.auth = auth;
 
         await this.socket.connect();
 
@@ -60,8 +71,8 @@ export default function () {
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
           this.socket.auth = { sessionID };
+          this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
-          this.socket.userID = userID;
         });
         this.socket.on("connect_error", (reason) => {
           console.log("socket connect error");
@@ -75,6 +86,7 @@ export default function () {
           this.socket.disconnect();
           this.socket.once("connect", () => {
             this.rejoinRooms();
+            if (this.is_tracking_users) this.getAndTrackUsers();
           });
         });
 
@@ -105,6 +117,10 @@ export default function () {
 
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
+
+        this.socket.on("userJoined", this.userJoined);
+        this.socket.on("userUpdated", this.userUpdated);
+        this.socket.on("userLeft", this.userLeft);
       },
       disconnectSocket() {
         this.socket.disconnect();
@@ -139,8 +155,6 @@ export default function () {
       },
 
       async rejoinRooms() {
-        console.log("rejoinRooms");
-        // refresh full content of all rooms tracked
         const paths = this.rooms_joined.filter(
           (value, index, array) => array.indexOf(value) === index
         );
@@ -220,13 +234,58 @@ export default function () {
         this.join({ room: this.tokenpath.token_path });
       },
 
+      async getAndTrackUsers() {
+        const response = await this.$axios.get("_users").catch((err) => {
+          throw this.processError(err);
+        });
+        const users = response.data;
+        this.$set(this, "users", users);
+        if (!this.is_tracking_users) {
+          this.is_tracking_users = true;
+          this.socket.emit("trackUsers");
+        }
+        return this.users;
+      },
+      userJoined(user) {
+        this.users.push(user);
+      },
+      userUpdated({ id, changed_data }) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index === -1) {
+          this.getAndTrackUsers();
+        } else {
+          Object.entries(changed_data).map(([key, value]) => {
+            this.$set(this.users[index].meta, key, value);
+          });
+        }
+      },
+      userLeft(id) {
+        const index = this.users.findIndex((u) => u.id === id);
+        if (index !== -1) this.users.splice(index, 1);
+      },
+      async unTrackUsers() {
+        this.socket.emit("leaveUsers");
+        this.users = [];
+        this.is_tracking_users = false;
+      },
+      async updateSelfPath(path) {
+        if (!this.self_user_id) return;
+        const response = await this.$axios
+          .patch(`_users/${this.self_user_id}`, {
+            path,
+          })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
+      },
+
       folderCreated({ path, meta }) {
         // only update store if content is tracked
         if (!this.rooms_joined.includes(path)) {
           // console.log("folderCreated – room isnt tracked, not adding to store");
           return;
         }
-
         if (!Object.prototype.hasOwnProperty.call(this.store, path))
           this.store[path] = new Array();
         this.store[path].push(meta);
@@ -343,26 +402,35 @@ export default function () {
         // we use the store to trigger updates to array if item is updated
         return this.store[path];
       },
-      async getFolder({ path, detailed_infos = false }) {
-        if (!detailed_infos && this.store[path]) return this.store[path];
+      async getFolder({ path, no_files = false, detailed_infos = false }) {
+        const use_store = detailed_infos === false && no_files === false;
+        if (use_store && this.store[path]) return this.store[path];
 
         let queries = [];
         if (detailed_infos) queries.push("detailed=true");
+        if (no_files) queries.push("no_files=true");
         if (queries.length > 0) path += `?${queries.join("&")}`;
 
         const response = await this.$axios.get(path).catch((err) => {
           throw this.processError(err);
         });
         const folder = response.data;
-        this.$set(this.store, folder.$path, folder);
-        return this.store[folder.$path];
+
+        if (use_store) {
+          // to get reactivity
+          this.$set(this.store, folder.$path, folder);
+          return this.store[folder.$path];
+        } else {
+          // to only get data
+          return folder;
+        }
       },
 
       async getPublicFolder({ path, superadmintoken }) {
         path += "/_public";
 
         let queries = [];
-        if (superadmintoken) queries.push("sat=" + superadmintoken);
+        if (superadmintoken) queries.push("superadmintoken=" + superadmintoken);
         if (queries.length > 0) path += `?${queries.join("&")}`;
 
         const response = await this.$axios.get(`${path}`).catch((err) => {
@@ -423,7 +491,6 @@ export default function () {
           this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
-
           return;
         } catch (err) {
           throw this.processError(err);
@@ -679,16 +746,14 @@ export default function () {
             this.$eventHub.$emit("app.prompt_general_password");
           } else if (code === "no_general_password_submitted") {
             this.$eventHub.$emit("app.prompt_general_password");
-          } else if (code === "token_not_allowed_must_be_local_admin") {
-            // this.$alertify.delay(4000).error("action_not_allowed");
-          } else if (code === "token_not_allowed_must_be_contributors") {
-            // this.$alertify.delay(4000).error("action_not_allowed");
+          } else if (code === "not_allowed") {
+            this.$eventHub.$emit("app.notify_error", code);
           } else if (code === "file_size_limit_exceeded") {
             let msg = "File size limit exceeded. Maximum file size is ";
             msg +=
               err_infos.upload_max_file_size_in_mo +
               " Mo. Please try again with a smaller file.";
-            this.$alertify.delay(4000).error(msg);
+            this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
           // this.$alertify.delay(4000).error("Message d’erreur : " + code);
           console.error("processError – " + code);
@@ -700,6 +765,16 @@ export default function () {
         // this.$alertify.delay(4000).error(err);
       },
     },
-    computed: {},
+    computed: {
+      all_devices_connected() {
+        return this.users.map((u) => {
+          if (u.id === this.self_user_id) u.is_self = true;
+          return u;
+        });
+      },
+      other_devices_connected() {
+        return this.users.filter((u) => !u.is_self);
+      },
+    },
   });
 }

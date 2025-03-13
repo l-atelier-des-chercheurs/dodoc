@@ -8,11 +8,9 @@ module.exports = (function () {
   const API = {
     get: async () => {
       dev.logfunction();
-
       let d = await folder.getFolder({
         path_to_folder: ".",
       });
-
       return d;
     },
     getFiles: async () => {

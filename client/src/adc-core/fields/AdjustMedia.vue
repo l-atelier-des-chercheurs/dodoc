@@ -143,6 +143,11 @@ export default {
       this.img_height = img.height;
 
       const ctx = canvas.getContext("2d");
+
+      // draw background
+      // ctx.fillStyle = "white";
+      // ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       let filters = [];
       filters.push(`saturate(${this.saturation}%)`);
       filters.push(`brightness(${this.brightness}%)`);
@@ -167,17 +172,26 @@ export default {
 }
 
 ._panes {
-  background-color: var(--c-bodybg);
+  background-color: var(--c-noir);
   flex: 1;
   display: flex;
   flex-flow: row nowrap;
   overflow: hidden;
+  padding: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
+
+  @media (max-width: 500px) {
+    flex-flow: column nowrap;
+    overflow: auto;
+  }
 }
 
 ._settings {
-  flex: 0 0 200px;
+  flex: 1 0 240px;
   overflow: auto;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
+  background-color: white;
+  border-radius: var(--border-radius);
 
   ::v-deep {
     ._numberField {
@@ -186,12 +200,11 @@ export default {
   }
 }
 ._preview {
-  flex: 1 1 0;
-  // background-color: var(--c-noir);
-  padding: calc(var(--spacing) / 1);
+  flex: 8 1 200px;
 
   canvas {
-    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+    // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.25));
+    // box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
     width: 100%;
     height: 100%;
     object-fit: contain;

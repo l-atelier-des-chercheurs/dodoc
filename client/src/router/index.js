@@ -25,8 +25,7 @@ const routes = [
   {
     path: "/@",
     name: "Tous les auteurs",
-    component: () =>
-      import(/* webpackChunkName: "AuthorsView" */ "@/views/AuthorsView.vue"),
+    component: () => import("@/views/AuthorsView.vue"),
   },
   {
     path: "/@:author_slug",
@@ -37,14 +36,12 @@ const routes = [
   {
     path: "/p/:page_slug",
     name: "Page",
-    component: () =>
-      import(/* webpackChunkName: "Page" */ "@/views/PageView.vue"),
+    component: () => import("@/views/PageView.vue"),
   },
   {
     path: "/_ui",
     name: "UI (dev only)",
-    component: () =>
-      import(/* webpackChunkName: "UIView" */ "@/views/UIView.vue"),
+    component: () => import("@/views/UIView.vue"),
   },
   // {
   //   path: "/=:event_slug",
@@ -60,14 +57,12 @@ const routes = [
       /* do not load full UI */
       static: true,
     },
-    component: () =>
-      import(/* webpackChunkName: "PreviewMedia" */ "@/views/PreviewMedia.vue"),
+    component: () => import("@/views/PreviewMedia.vue"),
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: () =>
-      import(/* webpackChunkName: "NotFound" */ "@/views/NotFound.vue"),
+    component: () => import("@/views/NotFound.vue"),
   },
 ];
 

@@ -2,30 +2,26 @@
   <div>
     <button type="button" class="u-buttonLink" @click="showDownloadModal">
       <b-icon icon="download" />
-      {{ $t("download") }}
+      {{ button_text || $t("download") }}
     </button>
 
     <BaseModal2
       v-if="show_download_modal"
-      :title="$t('download')"
+      :title="modal_title || button_text || $t('download')"
       @close="show_download_modal = false"
     >
-      <!-- {{ archive_name }} -->
-
-      <!-- <a
-        :download="archive_name"
-        :href="download_url"
-        target="_blank"
-        class="u-buttonLink"
-        v-text="archive_name"
-      /> -->
       <div class="_cont">
+        <div v-if="modal_instructions" class="u-spacingBottom">
+          {{ modal_instructions }}
+        </div>
         <SizeDisplay
           v-if="folder_size"
           class="u-spacingBottom"
           :size="folder_size"
         />
+      </div>
 
+      <template slot="footer">
         <button
           class="u-button u-button_red"
           type="button"
@@ -35,7 +31,6 @@
         >
           {{ $t("download") }}
         </button>
-
         <template v-else>
           <div class="_spinner" v-if="is_downloading" key="loader">
             <LoaderSpinner />
@@ -49,13 +44,16 @@
             </template>
           </template>
         </template>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>
 <script>
 export default {
   props: {
+    button_text: String,
+    modal_title: String,
+    modal_instructions: String,
     path: String,
   },
   components: {},

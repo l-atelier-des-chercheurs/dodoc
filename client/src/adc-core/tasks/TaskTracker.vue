@@ -1,9 +1,6 @@
 <template>
   <div class="_taskTracker" v-if="tasks_tracked.length > 0">
-    <DLabel
-      class=""
-      :str="tasks_tracked.length > 1 ? $t('exports') : $t('export')"
-    />
+    <DLabel class="" :str="$tc('exports', tasks_tracked.length)" />
     <transition-group name="listComplete">
       <div v-for="task in tasks_tracked" class="_task" :key="task.id">
         <div class="">
@@ -26,8 +23,8 @@
             {{ $t("open") }}
           </button>
         </div>
-        <div class="u-sameRow">
-          <button
+        <div class="u-sameRow" v-if="task.progress === 100">
+          <!-- <button
             type="button"
             v-if="task.progress < 100"
             @click="abortTask(task.id)"
@@ -35,10 +32,10 @@
           >
             <b-icon icon="x-octagon" />
             {{ $t("stop") }}
-          </button>
+          </button> -->
           <button
             type="button"
-            v-else-if="task.progress === 100"
+            v-if="task.progress === 100"
             @click="removeTask(task.id)"
             class="u-button u-button_icon"
           >
@@ -71,7 +68,7 @@ export default {
   },
   watch: {
     tasks_tracked() {
-      if (this.tasks_tracked.length > 3) {
+      if (this.tasks_tracked.length > 1) {
         this.tasks_tracked.shift();
       }
     },
@@ -169,7 +166,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
   border-left: 2px solid var(--c-gris_fonce);
   margin: calc(var(--spacing) / 2) 0;
   padding: calc(var(--spacing) / 2);

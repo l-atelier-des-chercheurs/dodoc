@@ -31,6 +31,8 @@
           :large_img="file_full_path"
           :width="img_width"
           :ratio="img_ratio"
+          @zoomingIn="$emit('zoomingIn')"
+          @zoomingOut="$emit('zoomingOut')"
         />
       </template>
     </template>
@@ -48,13 +50,7 @@
         </template>
       </template>
       <template v-else>
-        <vue-plyr
-          :key="file_full_path"
-          ref="plyr"
-          :emit="['volumechange', 'timeupdate']"
-          @volumechange="volumeChanged"
-          @timeupdate="videoTimeUpdated"
-        >
+        <vue-plyr :key="file_full_path" ref="plyr">
           <video
             v-if="file.$type === 'video'"
             :poster="thumb"
@@ -95,21 +91,35 @@
       <template v-else>
         <div class="_mediaContent--iframe">
           <div v-if="!start_iframe" class="_mediaContent--iframe--preview">
-            <img
-              :src="thumb"
-              class="_iframeStylePreview"
-              :loading="img_loading"
-            />
+            <template v-if="thumb">
+              <img
+                :src="thumb"
+                class="_iframeStylePreview"
+                :loading="img_loading"
+              />
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                v-if="!is_regenerating"
+                class="u-button u-button_small u-button_transparent"
+                @click="regenerateThumbs"
+              >
+                <b-icon icon="arrow-clockwise" />
+                {{ $t("regenerate_thumbs") }}
+              </button>
+              <LoaderSpinner v-else />
+            </template>
             <button
               type="button"
               class="plyr__control plyr__control--overlaid _playButton"
-              aria-label="Play"
+              :aria-label="$t('play')"
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
                 <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
-              <span class="plyr__sr-only">Play</span>
+              <span class="plyr__sr-only">{{ $t("play") }}</span>
             </button>
           </div>
           <div class="_mediaContent--iframe--content" v-else>
@@ -149,7 +159,7 @@
               frameborder="0"
               @load="iframeLoaded"
             />
-            <vue-plyr v-else :key="file_full_path">
+            <vue-plyr v-else :key="'plyr-' + file_full_path" ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"
@@ -237,15 +247,35 @@ export default {
       start_iframe: false,
       is_loading_iframe: false,
       failed_to_load_iframe: false,
+      player: null,
+
+      is_regenerating: false,
     };
   },
   created() {},
-  mounted() {},
-  beforeDestroy() {},
+  mounted() {
+    if (this.$refs.plyr?.player) {
+      this.player = this.$refs.plyr.player;
+      this.player.on("volumechange", this.volumeChanged);
+      this.player.on("timeupdate", this.videoTimeUpdated);
+      this.player.on("play", this.videoPlayed);
+      this.player.on("pause", this.videoPaused);
+      this.player.on("ended", this.videoEnded);
+    }
+  },
+  beforeDestroy() {
+    if (this.player) {
+      this.player.off("volumechange", this.volumeChanged);
+      this.player.off("timeupdate", this.videoTimeUpdated);
+      this.player.off("play", this.videoPlayed);
+      this.player.off("pause", this.videoPaused);
+      this.player.off("ended", this.videoEnded);
+    }
+  },
   watch: {},
   computed: {
     thumb() {
-      if (this.file.$thumbs === "no_preview") return false;
+      if (this.file.$thumbs === "no_preview" || !this.file.$path) return false;
 
       const path_to_parent = this.file.$path.substring(
         0,
@@ -259,6 +289,11 @@ export default {
       });
     },
     full_thumb() {
+      if (
+        this.file.$type === "image" &&
+        this.file.$media_filename.endsWith(".gif")
+      )
+        return this.file_full_path;
       if (this.resolution) return this.thumb;
       return this.file_full_path;
     },
@@ -288,11 +323,21 @@ export default {
   methods: {
     volumeChanged(event) {
       const vol = Math.round(Number(event.detail.plyr.volume) * 100);
-      this.$emit("media.volumeChanged", vol);
+      this.$emit("volumeChanged", vol);
     },
     videoTimeUpdated(event) {
-      this.$emit("media.videoTimeUpdated", event.detail.plyr.media.currentTime);
+      this.$emit("videoTimeUpdated", event.detail.plyr.media.currentTime);
     },
+    videoPlayed(event) {
+      this.$emit("videoPlayed", event.detail.plyr.media.currentTime);
+    },
+    videoPaused(event) {
+      this.$emit("videoPaused", event.detail.plyr.media.currentTime);
+    },
+    videoEnded(event) {
+      this.$emit("videoEnded", event.detail.plyr.media.currentTime);
+    },
+
     iframeLoaded() {
       this.is_loading_iframe = false;
       setTimeout(() => {
@@ -300,6 +345,11 @@ export default {
       }, 1000);
     },
 
+    async regenerateThumbs() {
+      this.is_regenerating = true;
+      await this.$api.regenerateThumbs({ path: this.file.$path });
+      this.is_regenerating = false;
+    },
     loadIframe() {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
@@ -310,9 +360,14 @@ export default {
 <style lang="scss" scoped>
 ._fileName {
   padding: calc(var(--spacing) / 4);
-
   display: flex;
   gap: calc(var(--spacing) / 8);
+  text-align: center;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
 }
 
 ._mediaContent {

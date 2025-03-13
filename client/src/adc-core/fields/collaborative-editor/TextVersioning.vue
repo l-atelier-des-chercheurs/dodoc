@@ -57,14 +57,14 @@
         </div>
       </transition>
     </div>
-    <div slot="footer">
-      <SaveCancelButtons
-        :allow_save="selected_archive_filename !== 'current'"
-        :save_text="$t('restore_this_version')"
-        @save="restoreVersion(archive_shown.content)"
-        @cancel="$emit('close')"
-      />
-    </div>
+
+    <SaveCancelButtons
+      slot="footer"
+      :allow_save="selected_archive_filename !== 'current'"
+      :save_text="$t('restore_this_version')"
+      @save="restoreVersion(archive_shown.content)"
+      @cancel="$emit('close')"
+    />
   </BaseModal2>
 </template>
 <script>
@@ -163,7 +163,10 @@ export default {
 }
 
 ._archiveText {
-  background: var(--c-gris);
+  background: var(--c-gris_clair);
+  border: 1px solid var(--c-gris_clair);
+  border-radius: 1px;
+
   padding: calc(var(--spacing) / 2);
   width: 100%;
   overflow-x: auto;
@@ -171,7 +174,26 @@ export default {
   // overflow: auto;
 
   ::v-deep {
-    @import "./imports/mainText.scss";
+    > * {
+      padding: 0;
+      margin: 0;
+    }
+    > img {
+      max-width: 30ch;
+    }
+
+    blockquote {
+      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+      border-radius: 5px;
+      border: none;
+      border-left: 2px solid var(--c-gris);
+      background-color: var(--c-gris_clair);
+    }
+
+    pre.ql-syntax {
+      font-family: Fira Mono;
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

@@ -34,10 +34,7 @@ export default {
       return false;
     },
     getAuthor(author_path) {
-      const folder_path = author_path.substring(
-        0,
-        author_path.lastIndexOf("/")
-      );
+      const folder_path = this.getParent(author_path);
       if (!folder_path || !this.$api.store[folder_path]) return false;
       return this.$api.store[folder_path].find((f) => f.$path === author_path);
     },

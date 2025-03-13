@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs-extra");
 const portscanner = require("portscanner");
-const v8 = require("v8");
 
 const server = require("./server"),
   dev = require("./dev-log"),
@@ -10,10 +9,10 @@ const server = require("./server"),
   paths = require("./paths"),
   auth = require("./auth");
 
-const is_electron = process.versions.hasOwnProperty("electron");
-
 module.exports = async function () {
-  console.log(`App is ${is_electron ? "electron" : "node"}`);
+  global.is_electron = process.versions.hasOwnProperty("electron");
+
+  console.log(`App is ${global.is_electron ? "electron" : "node"}`);
   console.log(`Starting = ${global.appInfos.name}`);
   console.log(`Node = ${process.versions.node}`);
 
@@ -26,9 +25,11 @@ module.exports = async function () {
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
+  const livereload =
+    process.argv.length > 0 && process.argv.includes("--livereload");
   const logToFile = false;
 
-  dev.init(debug, verbose, logToFile);
+  dev.init(debug, verbose, livereload, logToFile);
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -38,17 +39,19 @@ module.exports = async function () {
   }
 
   let win;
-  if (is_electron)
-    win = await require("./electron")
-      .init()
-      .catch((err) => {
-        dev.error(err);
-      });
+  if (global.is_electron) {
+    try {
+      win = await require("./electron").init();
+    } catch (err) {
+      dev.error(err);
+      throw err;
+    }
+  }
 
   await setupApp().catch((err) => {
     dev.error(err);
 
-    if (is_electron) {
+    if (global.is_electron) {
       const { dialog } = require("electron");
       dialog.showErrorBox(
         `Impossible de démarrer l’application`,
@@ -63,7 +66,7 @@ module.exports = async function () {
 
   if (global.settings.bonjour_domain !== false) {
     if (typeof global.settings.bonjour_domain !== "string") {
-      if (is_electron) {
+      if (global.is_electron) {
         const { dialog } = require("electron");
         dialog.showErrorBox(
           `Impossible de démarrer l’application`,
@@ -81,7 +84,7 @@ module.exports = async function () {
     }
   }
 
-  if (is_electron) {
+  if (global.is_electron) {
     dev.log(`MAIN — opening URL in electron : ${global.appInfos.homeURL}`);
     win.loadURL(global.appInfos.homeURL);
   }
@@ -100,20 +103,16 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  global.pathToCache = path.join(
-    paths.getCacheFolder(is_electron),
-    global.settings.cacheDirname
-  );
+  global.pathToCache = await createCacheFolder().catch((err) => {
+    throw err;
+  });
+
   global.ffmpeg_processes = [];
 
   if (global.settings.cache_content === true) cache.init();
 
-  await cleanCacheFolder().catch((err) => {
-    throw err;
-  });
-
   let full_default_path = path.join(`${global.appRoot}`, `content`);
-  if (is_electron)
+  if (global.is_electron)
     full_default_path = path.join(
       `${global.appRoot.replace(
         `${path.sep}app.asar`,
@@ -143,35 +142,50 @@ async function setupApp() {
       throw err;
     });
 
+  if (port === global.settings.desired_port)
+    dev.log(`Desired port ${port} available`);
+  else
+    dev.log(
+      `Desired port ${global.settings.desired_port} NOT available, using ${port}`
+    );
+
   global.appInfos.port = port;
   global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
 
-  dev.log(`main.js - Found available port: ${port}`);
   return;
 }
 
 async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
+  const user_dir_path = paths.getDocumentsFolder();
+
   let full_path_to_content;
+  const path_is_custom =
+    global.settings.contentPath.startsWith("/") ||
+    global.settings.contentPath.includes(path.sep);
 
-  // TODO
-
-  // two cases:
-  if (global.settings.contentPath.startsWith("/")) {
-    // if starts with '/' then its a path to the folder itself
-    full_path_to_content = global.settings.contentPath.replaceAll(
-      "/",
-      path.sep
-    );
+  if (path_is_custom) {
+    try {
+      // attempt to use custom path
+      const custom_path = global.settings.contentPath.replaceAll("/", path.sep);
+      await utils.testWriteFileInFolder(custom_path);
+      full_path_to_content = custom_path;
+    } catch (err) {
+      // failed to write to custom path, fallback to default path
+      // todo display error message to user
+      dev.error(`-> failed to write to custom path`, err);
+      full_path_to_content = path.join(user_dir_path, "dodoc");
+      dev.log("fallback to default path for content", full_path_to_content);
+    }
   } else {
-    // if contentPath is just a name, thats the name of the folder inside /Documents
-    const user_dir_path = paths.getDocumentsFolder(is_electron);
     full_path_to_content = path.join(
       user_dir_path,
       global.settings.contentPath
     );
   }
+
+  // attempt to write something to dest folder
 
   // if path to content exists
 
@@ -207,13 +221,19 @@ async function contentFolderIsValid(full_path) {
   return true;
 }
 
-async function cleanCacheFolder() {
-  let cachePath = utils.getPathToCache();
-  dev.log(`Emptying temp folder ${cachePath}`);
-  await fs.emptyDir(cachePath).catch((err) => {
+async function createCacheFolder() {
+  const cache_folder_path = path.join(
+    paths.getCacheFolder(),
+    utils.createUniqueName("dodoc_cache")
+  );
+  try {
+    await utils.testWriteFileInFolder(cache_folder_path);
+    dev.log(`Cache folder set to`, cache_folder_path);
+  } catch (err) {
+    dev.error(`-> failed to write to cache folder`, err);
     throw err;
-  });
-  return;
+  }
+  return cache_folder_path;
 }
 
 async function readAppMeta() {

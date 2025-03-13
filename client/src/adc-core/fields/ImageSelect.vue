@@ -1,303 +1,145 @@
 <template>
-  <div class="_imageselect">
-    <template v-if="!image">
-      <div
-        class="_imageselect--upload"
-        v-if="available_options.includes('import')"
-      >
-        <input
-          type="file"
-          accept="image/*"
-          :id="id"
-          class="inputfile-2"
-          @change="onFileChange"
-        />
-        <label :for="id" class="u-button">
-          <svg width="20" height="17" viewBox="0 0 20 17">
-            <path
-              d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-            />
-          </svg>
-          <span>
-            {{ _instructions }}
-          </span>
-        </label>
-      </div>
-
-      <div
-        class="_imageselect--fromLib"
-        v-if="available_options.includes('project')"
-      >
-        <button
-          type="button"
-          class="u-button u-button_orange"
-          @click="show_picker = true"
-        >
-          <svg
-            class="inlineSVG"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px"
-            y="0px"
-            viewBox="0 0 168 168"
-            style="enable-background: new 0 0 168 168"
-            xml:space="preserve"
-          >
-            <path
-              style="fill: var(--c-rouge)"
-              d="M84,0C37.6,0,0,37.6,0,84c0,46.4,37.6,84,84,84c46.4,0,84-37.6,84-84 C168,37.6,130.4,0,84,0z"
-            />
-            <path style="fill: var(--c-orange)" d="m42 42h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m73.2 42h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m104.4 42h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m42 73.5h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m73.2 73.5h21.6v21h-21.6z" />
-            <path
-              style="fill: var(--c-orange)"
-              d="m104.4 73.5h21.6v21h-21.6z"
-            />
-            <path style="fill: var(--c-orange)" d="m42 105h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m73.2 105h21.6v21h-21.6z" />
-            <path style="fill: var(--c-orange)" d="m104.4 105h21.6v21h-21.6z" />
-          </svg>
-          <span>
-            {{ $t("from_project") }}
-          </span>
-        </button>
-        <PickMediaFromProjects
-          v-if="show_picker"
-          :title="$t('pick_media')"
-          :path="path"
-          :select_mode="'single'"
-          :pick_from_type="'image'"
-          @addMedias="addMediaFromLib"
-          @close="show_picker = false"
-        />
-      </div>
-
-      <div
-        class="_imageselect--takePhoto"
-        v-if="available_options.includes('capture')"
-      >
-        <button
-          type="button"
-          class="u-button u-button_red"
-          v-if="!enable_capture_mode"
-          @click="enable_capture_mode = true"
-        >
-          <img
-            class="inlineSVG"
-            :src="$root.publicPath + 'images/i_record.svg'"
-          />
-          <span>
-            {{ $t("take_picture") }}
-          </span>
-        </button>
-
-        <BaseModal2
-          :title="$t('capture')"
-          :size="'full'"
-          v-if="enable_capture_mode"
-          @close="enable_capture_mode = false"
-        >
-          <CaptureView
-            :available_modes="[]"
-            :selected_mode="'photo'"
-            :return_temp_media="true"
-            :must_validate_media="false"
-            @close="enable_capture_mode = false"
-            @tempMedia="tempMedia"
-          />
-        </BaseModal2>
-
-        <!-- <div v-if="enable_capture_mode">
-          <button type="button" class="" @click="enable_capture_mode = false">
-            <span>{{ $t("cancel") }}</span>
-          </button>
-        </div> -->
-      </div>
-
-      <small class="u-instructions">{{ $t("or_paste_an_image") }}</small>
-    </template>
-
-    <div class="_imageselect--image" v-else>
-      <img
-        v-if="typeof image === 'string'"
-        :data-format="preview_format"
-        :src="image"
-        draggable="false"
+  <BaseModal2 :title="label" :size="modal_size" @close="$emit('close')">
+    <div class="_imageselect">
+      <PickImage
+        v-if="!picked_image"
+        :path="project_path || path"
+        :instructions="instructions"
+        :available_options="available_options"
+        @newPreview="setNewPreview"
       />
-      <button class="u-buttonLink" type="button" @click="removeImage">
-        {{ $t("remove_image") }}
-      </button>
+      <template v-else>
+        <div v-if="crop_mode" class="_imageselect--crop">
+          <CropMedia
+            :blob="picked_image"
+            :preview_format="preview_format"
+            :forced_ratio="ratio"
+            @updateCrop="updateCrop"
+          />
+        </div>
+        <div v-else class="_imageselect--image">
+          <img
+            :data-format="preview_format"
+            :src="picked_image"
+            draggable="false"
+          />
+          <button class="u-buttonLink" type="button" @click="removeImage">
+            {{ $t("replace_remove_image") }}
+          </button>
+        </div>
+      </template>
     </div>
-  </div>
+    <template slot="footer" v-if="!crop_mode">
+      <div />
+      <SaveCancelButtons
+        :is_saving="is_saving"
+        :allow_save="allow_save"
+        @save="updateCover"
+        @cancel="cancel"
+      />
+    </template>
+  </BaseModal2>
 </template>
 <script>
+import PickImage from "@/adc-core/fields/PickImage.vue";
+import CropMedia from "./CropMedia.vue";
+
 export default {
   props: {
     existing_preview: [Boolean, String],
+    label: String,
     path: String,
+    project_path: String,
+    ratio: String,
     instructions: String,
     preview_format: String,
-    available_options: {
-      type: Array,
-      default: () => ["import", "project", "capture"],
-    },
+    available_options: Array,
   },
   components: {
-    CaptureView: () => import("@/adc-core/capture/CaptureView.vue"),
+    CropMedia,
+    PickImage,
   },
   data() {
     return {
-      image: this.existing_preview,
-      id: `image_select_${(
-        Math.random().toString(36) + "00000000000000000"
-      ).slice(2, 3 + 2)}`,
+      picked_image: this.existing_preview,
 
-      show_picker: false,
-      show_medias_from_project: "",
-      enable_capture_mode: false,
+      crop_mode: false,
+
+      allow_save: true,
+      is_saving: false,
     };
   },
 
   created() {},
-  mounted() {
-    window.addEventListener("paste", this.handlePaste);
-  },
-  beforeDestroy() {
-    window.removeEventListener("paste", this.handlePaste);
-  },
-
-  watch: {
-    // show_medias_from_project: function () {
-    //   this.$socketio.listMedias({
-    //     type: "projects",
-    //     slugFolderName: this.show_medias_from_project,
-    //   });
-    // },
-  },
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
   computed: {
-    _instructions() {
-      return this.instructions !== undefined
-        ? this.instructions
-        : this.$t("upload_an_image");
+    modal_size() {
+      return this.crop_mode ? "x-large" : "";
     },
   },
   methods: {
-    handlePaste($event) {
-      if ($event.clipboardData.files && $event.clipboardData.files.length > 0) {
-        $event.preventDefault();
-        $event.stopPropagation();
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .log("Importation depuis presse-papier");
-
-        this.$nextTick(() => {
-          const file = $event.clipboardData.files[0];
-          this.setNewPreview(file);
-        });
-      } else {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("no_image_in_clipboard"));
+    async setNewPreview(file) {
+      if (!file) {
+        this.$emit("newPreview", "");
+        return;
       }
-    },
-    onFileChange(e) {
-      var files = e.target.files || e.dataTransfer.files;
-      if (!files.length) return;
-      const file = files[0];
-      this.setNewPreview(file);
-    },
-    setNewPreview(file) {
-      this.$emit("newPreview", file);
 
-      this.createImage(file).then((res) => {
-        setTimeout(() => {
-          this.image = res;
-        }, 20);
-      });
-    },
-    addMediaFromLib({ path_to_source_media_metas }) {
-      // mode === 'single', so we should get only one file
-      const path_to_source_media_meta = path_to_source_media_metas[0];
+      let blob = null;
+      blob = file.data;
 
-      const file = this.getMediaInFolder({
-        path_to_source_media_meta,
-      });
-      const path_to_project = this.getParent(file.$path);
-      this.image = this.makeRelativeURLFromThumbs({
-        $thumbs: file.$thumbs,
-        $type: file.$type,
-        $path: path_to_project,
-        resolution: 1600,
-      });
-      this.$emit("newPreview", path_to_source_media_meta);
+      if (this.ratio) this.crop_mode = true;
+      this.picked_image = URL.createObjectURL(blob);
     },
-    createImage(blob) {
-      return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.onerror = reject;
-        reader.onload = () => resolve(reader.result);
-        reader.readAsDataURL(blob);
-      });
+    async fetchURLToFile(url) {
+      return await fetch(url).then((r) => r.blob());
+      // .then((blobFile) => new File([blobFile], "filename"));
+    },
+    updateCrop(image) {
+      this.picked_image = image;
+      this.crop_mode = false;
     },
     removeImage: function () {
-      this.image = "";
+      this.picked_image = "";
       this.$emit("newPreview", "");
     },
+    async updateCover() {
+      this.is_saving = true;
 
-    async tempMedia($event) {
-      const file = new File([$event.rawData], "filename");
-      this.$emit("newPreview", file);
+      // dataurl to file
+      let file = "";
+      if (this.picked_image) {
+        const response = await fetch(this.picked_image);
+        file = await response.blob();
+      }
 
-      const res = await this.createImage($event.rawData).catch(() => {
+      if (!this.path) {
+        this.$emit("close");
+        return this.$emit("newPreview", file);
+      }
+
+      try {
+        await this.$api.updateCover({
+          path: this.path,
+          new_cover_data: file,
+          // onProgress,
+        });
+        this.is_saving = false;
+        this.$emit("close");
+      } catch (e) {
+        this.is_saving = false;
+
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .error("failed to load photo");
-      });
+          .error(this.$t("couldntbesaved"));
 
-      this.image = res;
-      this.enable_capture_mode = false;
-    },
-
-    mediasImagesPreviewURL({ thumbs, size }) {
-      if (!thumbs) return false;
-
-      const small_thumb = thumbs.filter((m) => m.size === size);
-      if (small_thumb.length == 0) {
-        return false;
+        this.$alertify.closeLogOnClick(true).error(e.response);
       }
-
-      let pathToSmallestThumb = small_thumb[0].path;
-
-      let url = `/${pathToSmallestThumb}`;
-      return url;
     },
-    selectThisImageForPreview({ image }) {
-      this.image = {
-        metaFileName: image.metaFileName,
-        slugFolderName: this.show_medias_from_project,
-        type: "projects",
-      };
-
-      this.image.thumb = this.getPreviewFromMedias(this.image);
-      this.$emit("newPreview", this.image);
-    },
-    getPreviewFromMedias(image) {
-      const slugFolderName = image.slugFolderName;
-      const media = this.getProjectsImages({
-        project_slug: slugFolderName,
-      }).find((m) => m.metaFileName === image.metaFileName);
-      const url = this.mediasImagesPreviewURL({
-        thumbs: media.thumbs,
-        size: 1600,
-      });
-      return url;
+    cancel() {
+      this.$emit("close");
     },
   },
 };
@@ -312,10 +154,18 @@ export default {
   gap: calc(var(--spacing) / 4);
 }
 
+._imageselect--crop {
+  min-height: 60vh;
+  height: 400px;
+}
+
 ._imageselect--image {
-  width: 200px;
+  width: 100%;
 
   img {
+    // border: 2px solid var(--c-gris);
+    border-radius: 4px;
+
     &[data-format="square"] {
       width: 100%;
       aspect-ratio: 1;
@@ -330,31 +180,6 @@ export default {
       object-fit: cover;
       object-position: center;
     }
-  }
-}
-
-._imageselect--upload {
-  ::v-deep label {
-    width: 100%;
-  }
-}
-
-._imageselect--takePhoto,
-._imageselect--fromLib {
-  > button {
-    width: 100%;
-  }
-}
-
-._close_button {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-  // background-color: white;
-
-  img {
-    width: auto;
   }
 }
 </style>

@@ -12,34 +12,36 @@
         @onEnter="createFolder"
       />
 
-      <br />
+      <div class="u-spacingBottom" />
 
-      <div class="">
-        <ToggleInput
-          :content.sync="new_folder_is_private"
-          :label="$t('private')"
-          :options="{
-            true: $t('private_status_explanations'),
-            false: $t('public_status_explanations'),
-          }"
-        />
-      </div>
+      <AuthorField
+        :label="$t('admin')"
+        :can_edit="true"
+        :authors_paths="admins"
+        :instructions="admin_instructions"
+        @save="($event) => (admins = $event)"
+      />
 
-      <br />
+      <div class="u-spacingBottom" />
 
-      <div class="u-sameRow" slot="footer">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          {{ $t("cancel") }}
-        </button>
-        <button
-          class="u-button u-button_bleuvert"
-          type="submit"
-          slot="footer"
-          :loading="is_creating_folder"
-        >
-          {{ $t("create_and_open") }}
-        </button>
-      </div>
+      <AuthorField
+        :label="$t('contributors')"
+        :can_edit="true"
+        :authors_paths="contributors"
+        :instructions="contrib_instructions"
+        @save="($event) => (contributors = $event)"
+      />
+
+      <div class="u-spacingBottom" />
+
+      <ToggleInput
+        :content.sync="new_folder_is_private"
+        :label="$t('private')"
+        :options="{
+          true: $t('private_status_explanations'),
+          false: $t('public_status_explanations'),
+        }"
+      />
 
       <template v-if="error_msg">
         <br />
@@ -47,12 +49,26 @@
         <div class="u-errorMsg" v-text="error_msg" />
       </template>
     </form>
+
+    <template slot="footer">
+      <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x-circle" />
+        {{ $t("cancel") }}
+      </button>
+      <button
+        class="u-button u-button_bleuvert"
+        :loading="is_creating_folder"
+        @click="createFolder"
+      >
+        {{ $t("create_and_open") }}
+      </button>
+    </template>
   </BaseModal2>
 </template>
 <script>
 export default {
   props: {
-    modal_name: String,
+    type_of_folder: String,
     path: String,
     default_folder_status: { type: String, default: "public" },
   },
@@ -65,18 +81,43 @@ export default {
       is_creating_folder: false,
       allow_save: false,
       error_msg: "",
+
+      admins: "noone",
+      contributors: "noone",
     };
   },
-  created() {},
+  created() {
+    this.admins = this.setDefaultContentAdmins();
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    modal_name() {
+      if (this.type_of_folder === "space") return this.$t("create_a_space");
+      else if (this.type_of_folder === "project")
+        return this.$t("create_a_project");
+      return undefined;
+    },
+    admin_instructions() {
+      if (this.type_of_folder === "space")
+        return this.$t("space_admin_instructions");
+      else if (this.type_of_folder === "project")
+        return this.$t("project_admin_instructions");
+      return undefined;
+    },
+    contrib_instructions() {
+      if (this.type_of_folder === "space")
+        return this.$t("space_contrib_instructions");
+      else if (this.type_of_folder === "project")
+        return this.$t("project_contrib_instructions");
+      return undefined;
+    },
+  },
   methods: {
     async createFolder() {
       this.is_creating_folder = true;
 
-      const $admins = this.setDefaultContentAdmins();
       this.new_folder_title = this.cleanUpString(this.new_folder_title);
 
       try {
@@ -89,7 +130,8 @@ export default {
               this.new_folder_is_private === true
                 ? "private"
                 : this.default_folder_status,
-            $admins,
+            $admins: this.admins,
+            $contributors: this.contributors,
           },
         });
         setTimeout(() => {
@@ -99,8 +141,6 @@ export default {
         if (code === "unique_field_taken") {
           this.$alertify.delay(4000).error(this.$t("title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
-        } else if (code === "token_not_allowed_must_be_contributors") {
-          this.$alertify.delay(4000).error(this.$t("action_not_allowed"));
         } else {
           this.$alertify.delay(4000).error(code);
         }

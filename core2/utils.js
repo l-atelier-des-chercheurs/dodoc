@@ -49,6 +49,11 @@ module.exports = (function () {
       await fs.ensureDir(full_path_to_folder_in_cache);
       return full_path_to_folder_in_cache;
     },
+    async createUniqueFilenameInCache(ext) {
+      let folder_name = await API.createUniqueFolderInCache();
+      let filename = ext ? `document.${ext}` : "document";
+      return path.join(folder_name, filename);
+    },
     createUniqueName(prefix = "prefix") {
       return `${prefix}_${+API.getCurrentDate()}-${(
         Math.random().toString(36) + "00000000000000000"
@@ -411,11 +416,11 @@ module.exports = (function () {
             throw err;
           });
     },
-    async convertAndCopyImage({ source, destination, resolution }) {
+    async convertAndCopyImage({ source, destination, width, height }) {
       await sharp(source)
         .rotate()
         .flatten({ background: "white" })
-        .resize(resolution.width, resolution.height, {
+        .resize(width, height, {
           fit: "contain",
           withoutEnlargement: false,
           background: "black",
@@ -573,10 +578,10 @@ module.exports = (function () {
     },
 
     getSlugFromPath(p) {
-      return p.split(path.sep).at(-1);
+      return path.basename(p);
     },
     getContainingFolder(p) {
-      return p.substring(0, p.lastIndexOf(path.sep));
+      return path.dirname(p);
     },
     getFolderParent(p) {
       if (!p) return false;
@@ -622,8 +627,10 @@ module.exports = (function () {
       source,
       destination,
       format = "mp4",
-      bitrate = "6000k",
-      resolution,
+      image_width,
+      image_height,
+      video_bitrate = "4000k",
+      audio_bitrate = "192k",
       trim_start,
       trim_end,
       reportProgress,
@@ -641,31 +648,28 @@ module.exports = (function () {
             ffmpeg_cmd,
             video_path: source,
           });
-
           if (trim_start !== undefined && trim_end !== undefined)
             ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
           else if (duration) ffmpeg_cmd.duration(duration);
 
-          // check if has audio track or not
-          if (streams?.some((s) => s.codec_type === "audio")) {
-            ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate("192k");
-          } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
+          if (audio_bitrate === "no_audio") {
+            ffmpeg_cmd.noAudio();
+          } else {
+            if (streams?.some((s) => s.codec_type === "audio")) {
+              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+            } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
 
-          if (streams) {
-            const filter = API.makeFilterToPadMatchDurationAudioVideo({
-              streams,
-            });
-            if (filter) ffmpeg_cmd.addOptions([filter]);
+            if (streams) {
+              const filter = API.makeFilterToPadMatchDurationAudioVideo({
+                streams,
+              });
+              if (filter) ffmpeg_cmd.addOptions([filter]);
+            }
           }
         } catch (err) {
           dev.error(err);
           ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
-
-        if (resolution)
-          ffmpeg_cmd.videoFilter([
-            `scale=w=${resolution.width}:h=${resolution.height}:force_original_aspect_ratio=1,pad=${resolution.width}:${resolution.height}:(ow-iw)/2:(oh-ih)/2`,
-          ]);
 
         // if (streams?.some((s) => s.codec_type === "audio"))
         // if (temp_video_volume) {
@@ -687,13 +691,24 @@ module.exports = (function () {
           ffmpeg_cmd.toFormat("mpegts");
         }
 
+        if (video_bitrate === "no_video") {
+          ffmpeg_cmd.noVideo();
+        } else {
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(["setsar=1/1"]);
+          if (image_width && image_height) {
+            ffmpeg_cmd.videoFilter([
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
+            ]);
+          }
+        }
+
         ffmpeg_cmd
           .native()
           .outputFPS(30)
-          .withVideoCodec("libx264")
-          .withVideoBitrate(bitrate)
           .addOptions(flags)
-          .videoFilter(["setsar=1/1"])
           .on("start", function (commandLine) {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
@@ -768,6 +783,22 @@ module.exports = (function () {
     },
     convertToLocalPath(p) {
       return p.replaceAll("/", path.sep);
+    },
+    async testWriteFileInFolder(folder_path) {
+      dev.logfunction({ folder_path });
+      const path_to_test_file = path.join(folder_path, "__test.txt");
+      const created_on_date = API.getCurrentDate();
+      await fs.ensureDir(folder_path);
+      await writeFileAtomic(
+        path_to_test_file,
+        `Test file created and immediately deleted by dodoc while starting, on ${created_on_date}.`
+      );
+      await fs.remove(path_to_test_file);
+      return;
+    },
+    addhttp(url) {
+      if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
+      return url;
     },
   };
 

@@ -118,14 +118,13 @@ export default {
 <style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
 <style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
-@import "@/utils/utils.scss";
-
 :root {
   --spacing: 1rem;
+  --mobile-breakpoint: 600px;
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
-  --c-bleumarine_fonce: hsl(227, 63%, 11%);
+  --c-bleumarine_fonce: hsl(227, 63%, 21%);
   --c-bleuvert: #52c5b9;
   --c-bleuvert_clair: hsl(174, 50%, 81%);
   --c-bleuvert_fonce: hsl(174, 50%, 41%);
@@ -145,9 +144,11 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
+
   --c-gris: hsl(195, 14%, 83%);
   --c-gris_clair: hsl(195, 14%, 97%);
   --c-gris_fonce: hsl(257, 3%, 47%);
+
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
@@ -189,7 +190,7 @@ export default {
   --input-height: 2em;
   --input-height-large: 3em;
   // --input-height-big: 3em;
-  --input-height-small: 1.5rem;
+  --input-height-small: 1.6rem;
 
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
@@ -224,19 +225,6 @@ export default {
   --padding: var(--spacing);
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
-
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-warning-#{$size}: hsl(36, 96%, #{90% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
-  }
 
   --sl-font-size-normal: 1rem;
 
@@ -713,7 +701,7 @@ img {
   &-enter-active,
   &-leave-active,
   &-move {
-    transition: 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1) !important;
     transition-property: opacity, transform;
     transform-origin: center top;
   }
@@ -726,6 +714,21 @@ img {
   }
   &-leave-active {
     position: absolute !important;
+  }
+}
+
+.enableMode {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: all 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transform: scale(1.5);
+    transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 
@@ -832,7 +835,7 @@ img {
   &-enter-active,
   &-leave-active {
     opacity: 1;
-    transition: all 0.08s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
   }
   &-enter {
     transform: scale(0.97);

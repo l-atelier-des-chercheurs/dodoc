@@ -59,6 +59,7 @@
         @click="validateButton(1)"
         class="u-button u-button_red _checkBtn"
         :class="{ 'is--active': selected_button === 1 }"
+        :title="$t('save')"
         @mouseover="selected_button = 1"
       >
         <svg
@@ -90,6 +91,7 @@
           />
         </svg>
         <span class="c-rouge">{{ $t("save") }}</span>
+        <span class="u-icon" v-html="dodoc_icon_collect" />
       </button>
 
       <button
@@ -98,6 +100,7 @@
         @click="validateButton(2)"
         class="u-button u-button_red _favBtn"
         :class="{ 'is--active': selected_button === 2 }"
+        :title="$t('add_to_fav')"
         @mouseover="selected_button = 2"
       >
         <b-icon :icon="selected_button === 2 ? 'star-fill' : 'star'" />
@@ -217,6 +220,8 @@ export default {
   position: relative;
   z-index: 105;
   display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
   justify-content: space-around;
   align-items: center;
   padding: calc(var(--spacing) / 2);
@@ -231,7 +236,7 @@ export default {
   background-color: var(--c-noir);
 
   > * {
-    flex: 0 1 180px;
+    flex: 0 1 200px;
     display: flex;
     align-items: center;
   }
@@ -264,7 +269,7 @@ export default {
   }
 
   button {
-    ::v-deep svg {
+    svg {
       width: 2rem;
       height: 2rem;
     }
@@ -282,6 +287,8 @@ export default {
 
 ._favBtn {
   margin-left: -5px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 ._checkBtn {

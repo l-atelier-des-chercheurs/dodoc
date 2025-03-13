@@ -2,7 +2,8 @@
   <div class="_favSwitch">
     <button
       type="button"
-      class="u-button u-button_icon"
+      class="u-button u-button_icon u-button_transparent"
+      :title="local_fav ? $t('remove_from_fav') : $t('add_to_fav')"
       :disabled="!can_edit"
       @click="toggleFav"
     >
@@ -51,9 +52,11 @@ export default {
 <style lang="scss" scoped>
 ._favSwitch {
   color: var(--c-rouge);
+  pointer-events: none;
 
   .u-button_icon {
     padding: calc(var(--spacing) / 4);
+    pointer-events: auto;
   }
 }
 </style>

@@ -13,9 +13,22 @@
         :placeholder="placeholder"
         :value="content"
         @input="$emit('update:content', $event.target.value)"
-        @keydown.enter.prevent="$emit('onEnter')"
+        @input_txt="innerText = $event.target.value"
+        @keydown.enter.exact.prevent="$emit('onEnter')"
+        @keydown.enter.shift.exact.prevent="$emit('onShiftEnter')"
       />
     </template>
+    <CollaborativeEditor3
+      v-else-if="tag === 'editor'"
+      ref="field"
+      :field_to_edit="'field_to_edit'"
+      :content="content"
+      :custom_formats="['bold', 'italic', 'link']"
+      :is_collaborative="false"
+      :mode="'always_active'"
+      :can_edit="true"
+      @input="$emit('update:content', $event)"
+    />
     <span
       v-else-if="tag === 'span'"
       ref="field"
@@ -28,7 +41,7 @@
     <!-- @keyup.enter="$emit('onEnter')" -->
 
     <div
-      class="_notices fieldCaption"
+      class="fieldCaption _notices"
       :class="{
         'u-colorRed': !validity,
       }"
@@ -37,7 +50,7 @@
       <div>
         <template v-if="minlength || maxlength">
           <template v-if="minlength">{{ minlength }} ≤ </template>
-          {{ content.length }}
+          {{ content_txt.length }}
           <template v-if="maxlength"> ≤ {{ maxlength }}</template>
         </template>
       </div>
@@ -126,12 +139,15 @@ export default {
   },
   computed: {
     tag() {
+      if (this.input_type === "editor") return "editor";
       return "input";
     },
     validity() {
-      if (this.required && this.content.length === 0) return false;
-      if (this.minlength && this.content.length < this.minlength) return false;
-      if (this.maxlength && this.content.length > this.maxlength) return false;
+      if (this.required && this.content_txt.length === 0) return false;
+      if (this.minlength && this.content_txt.length < this.minlength)
+        return false;
+      if (this.maxlength && this.content_txt.length > this.maxlength)
+        return false;
       return true;
     },
     field_input_type_prop() {
@@ -139,6 +155,12 @@ export default {
         if (this.show_password_in_clear) return "text";
         else return "password";
       return this.input_type;
+    },
+    content_txt() {
+      // Create a temporary div to parse HTML and get plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = this.content;
+      return temp.innerText;
     },
   },
   methods: {
@@ -210,8 +232,7 @@ export default {
 <style lang="scss" scoped>
 ._notices {
   flex: 0 0 auto;
-  // padding: calc(var(--spacing) / 4);
-  padding: 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
 
   display: flex;
   justify-content: space-between;

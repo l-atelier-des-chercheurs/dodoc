@@ -31,17 +31,28 @@
           </button>
 
           <div class="">
-            <button
-              v-if="!preview_playing_event"
-              type="button"
-              class="u-button u-button_black"
-              :disabled="medias.length <= 1"
-              @click="previewPlay"
-            >
-              <b-icon icon="play-fill" />
-              &nbsp;
-              {{ $t("play") }}
-            </button>
+            <template v-if="!preview_playing_event">
+              <button
+                type="button"
+                class="u-button u-button_black"
+                :disabled="medias.length <= 1"
+                @click="previewPlay"
+              >
+                <b-icon icon="play-fill" />
+                &nbsp;
+                {{ $t("play") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_black"
+                :disabled="medias.length <= 1"
+                @click="previewPlay({ loop: true })"
+              >
+                <b-icon icon="play-circle-fill" />
+                &nbsp;
+                {{ $t("loop") }}
+              </button>
+            </template>
             <button
               v-else
               type="button"
@@ -99,34 +110,97 @@
             ref="mediaPreviews"
           >
             <div
-              v-for="media in medias"
+              v-for="({ media, duration }, index) in medias"
               :key="media.$path"
               @click="
-                show_previous_photo = media;
+                previous_photo_to_show = media;
                 $emit('update:show_live_feed', false);
               "
               class="m_stopmotionpanel--medias--list--items"
               :class="{
                 'is--current_single':
-                  show_previous_photo &&
-                  show_previous_photo.$path === media.$path &&
+                  previous_photo_to_show &&
+                  previous_photo_to_show.$path === media.$path &&
                   !show_live_feed,
               }"
             >
               <MediaContent :file="media" :resolution="240" />
 
-              <button
-                type="button"
-                v-if="
-                  show_previous_photo &&
-                  show_previous_photo.$path === media.$path &&
-                  !show_live_feed
-                "
-                @click="removeMedia(show_previous_photo.$path)"
-                class="u-button u-button_icon _removeMedia"
-              >
-                <b-icon icon="trash" />
-              </button>
+              <div class="_optionBtns">
+                <button
+                  type="button"
+                  v-if="duration > 1 || photoIsActive(media.$path)"
+                  @click="show_duration_menu = !show_duration_menu"
+                  class="u-button u-button_small u-button_bleumarine"
+                  :title="$t('duration')"
+                >
+                  <b-icon icon="clock" />
+                  {{ duration }}
+                </button>
+                <ImageDurationPicker
+                  v-if="show_duration_menu && photoIsActive(media.$path)"
+                  :value="current_photo_duration"
+                  :frame_rate="stopmotion_frame_rate"
+                  @close="show_duration_menu = false"
+                  @save="
+                    updateMediaDurationForCurrentPreviousPhoto($event, index)
+                  "
+                />
+                <template v-if="photoIsActive(media.$path)">
+                  <RemoveMenu
+                    :modal_title="$t('remove_this_image')"
+                    @remove="removeMedia(media.$path)"
+                  >
+                    <button
+                      slot="trigger"
+                      type="button"
+                      class="u-button u-button_small u-button_red"
+                      :title="$t('remove_this_image')"
+                    >
+                      <b-icon icon="trash" />
+                    </button>
+                  </RemoveMenu>
+                  <button
+                    type="button"
+                    class="u-button u-button_small"
+                    @click="show_options_menu = !show_options_menu"
+                  >
+                    <b-icon icon="three-dots" />
+                  </button>
+                  <BaseModal2
+                    v-if="show_options_menu"
+                    :title="$t('options')"
+                    @close="show_options_menu = false"
+                  >
+                    <MediaContent :file="media" :resolution="1600" />
+
+                    <div class="u-spacingBottom" />
+                    <div class="u-sameRow">
+                      <div>
+                        <DownloadFile :file="media" />
+                      </div>
+                      <button
+                        type="button"
+                        class="u-button u-button_orange"
+                        @click="saveToProject(media.$path)"
+                      >
+                        <span class="u-icon" v-html="dodoc_icon_collect" />
+                        {{ $t("save_to_project") }}
+                      </button>
+                    </div>
+
+                    <div v-if="status_saving_to_project" class="_saveNotice">
+                      <div v-if="status_saving_to_project === 'saving'">
+                        <LoaderSpinner />
+                        {{ $t("saving") }}
+                      </div>
+                      <div v-else-if="status_saving_to_project === 'saved'">
+                        {{ $t("media_was_saved_to_project") }}
+                      </div>
+                    </div>
+                  </BaseModal2>
+                </template>
+              </div>
             </div>
 
             <!-- <div key="separator" class="_separator" /> -->
@@ -151,7 +225,7 @@
                 :key="'_onion_skin'"
                 v-if="show_live_feed"
               >
-                <label class="u-label">
+                <label class="">
                   <span>{{ $t("onion_skin").toLowerCase() }}</span>
                   <input
                     class="_onion_skin_range"
@@ -171,11 +245,11 @@
           </transition-group>
         </div>
       </template>
-
       <div v-else class="m_stopmotionpanel--videopreview" ref="videoPreview">
         <PreviewStopmotion
           :medias="medias"
           :frame_rate.sync="frame_rate"
+          :output_format.sync="output_format"
           :created_stopmotion="created_stopmotion"
         />
         <transition name="fade_fast" :duration="150" mode="out-in">
@@ -190,6 +264,7 @@
         :cancelButtonIsBackButton="true"
         @cancel="backToStopmotion"
         @save="exportStopmotion()"
+        @save_and_fav="exportStopmotion({ fav: true })"
       />
 
       <div class="_loader" v-if="media_is_being_sent">
@@ -201,6 +276,8 @@
 <script>
 import MediaValidationButtons from "./MediaValidationButtons.vue";
 import PreviewStopmotion from "./PreviewStopmotion.vue";
+import ImageDurationPicker from "./ImageDurationPicker.vue";
+import BaseModal2 from "../modals/BaseModal2.vue";
 
 export default {
   props: {
@@ -214,6 +291,7 @@ export default {
   components: {
     MediaValidationButtons,
     PreviewStopmotion,
+    ImageDurationPicker,
   },
   data() {
     return {
@@ -221,9 +299,12 @@ export default {
 
       fetch_stopmotion_error: undefined,
 
+      show_options_menu: false,
+
       frame_rate: this.stopmotion_frame_rate,
+      output_format: "mp4",
       validating_video_preview: false,
-      show_previous_photo: false,
+      previous_photo_to_show: false,
       media_is_being_sent: false,
       show_advanced_menu: false,
 
@@ -231,6 +312,10 @@ export default {
       created_stopmotion: false,
 
       preview_playing_event: undefined,
+
+      show_duration_menu: false,
+
+      status_saving_to_project: false,
     };
   },
 
@@ -264,7 +349,8 @@ export default {
     medias() {
       if (this.medias.length > 0) {
         if (this.show_live_feed) {
-          this.show_previous_photo = this.medias[this.medias.length - 1];
+          this.previous_photo_to_show =
+            this.medias[this.medias.length - 1].media;
           this.$nextTick(() => {
             this.$nextTick(() => {
               this.$refs.mediaPreviews.$el.scrollLeft = 1000000;
@@ -287,10 +373,8 @@ export default {
       },
       immediate: true,
     },
-    show_previous_photo() {
-      this.$emit("showPreviousImage", this.show_previous_photo);
-
-      // scroll to
+    previous_photo_to_show() {
+      this.$emit("showPreviousImage", this.previous_photo_to_show);
 
       this.$nextTick(() => {
         const active = document.querySelector(
@@ -313,25 +397,42 @@ export default {
   computed: {
     medias() {
       if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
-        const medias = this.stopmotion.images_list.reduce(
-          (acc, meta_filename) => {
-            const m = this.stopmotion.$files.find((f) =>
-              f.$path.endsWith(meta_filename)
-            );
-            if (m) acc.push(m);
-            return acc;
-          },
-          []
-        );
+        const medias = this.stopmotion.images_list.reduce((acc, il) => {
+          const meta_filename = il.m || il;
+          const duration = il.d || 1;
+
+          const media = this.stopmotion.$files.find((f) =>
+            f.$path.endsWith(meta_filename)
+          );
+          if (media)
+            acc.push({
+              media,
+              duration,
+            });
+          return acc;
+        }, []);
         return medias;
       }
       return [];
     },
+    images_list() {
+      return this.medias.map((m) => {
+        return {
+          m: this.getFilename(m.media.$path),
+          d: m.duration,
+        };
+      });
+    },
     image_index_currently_shown() {
-      if (!this.show_previous_photo) return false;
+      if (!this.previous_photo_to_show) return false;
       return this.medias.findIndex(
-        (m) => m.$path === this.show_previous_photo.$path
+        (m) => m.media.$path === this.previous_photo_to_show.$path
       );
+    },
+    current_photo_duration() {
+      return this.medias.find(
+        (m) => m.media.$path === this.previous_photo_to_show.$path
+      )?.duration;
     },
   },
   methods: {
@@ -350,10 +451,11 @@ export default {
           throw err;
         });
 
-      let images_list = this.stopmotion.images_list
-        ? this.stopmotion.images_list.slice()
-        : [];
-      images_list.push(meta_filename);
+      let images_list = this.images_list.slice();
+      images_list.push({
+        m: meta_filename,
+        d: 1,
+      });
 
       await this.$api.updateMeta({
         path: this.current_stopmotion_path,
@@ -362,26 +464,29 @@ export default {
         },
       });
     },
-    previewPlay() {
+    previewPlay({ loop = false } = {}) {
       if (
         this.show_live_feed ||
         this.image_index_currently_shown === this.medias.length - 1
       )
         this.firstImage();
 
-      this.preview_playing_event = window.setInterval(() => {
-        // change currently shown image
-        this.show_previous_photo =
-          this.medias[this.image_index_currently_shown + 1];
-
-        this.$nextTick(() => {
-          if (this.image_index_currently_shown === this.medias.length - 1)
-            this.pausePreview();
-        });
-      }, 1000 / this.frame_rate);
+      const playPreview = (index) => {
+        if (index > this.medias.length - 1) {
+          if (loop) return playPreview(0);
+          return this.pausePreview();
+        }
+        this.previous_photo_to_show = this.medias[index].media;
+        const duration = this.medias[index].duration;
+        this.preview_playing_event = window.setTimeout(
+          () => playPreview(index + 1),
+          (1000 / this.frame_rate) * duration
+        );
+      };
+      playPreview(this.image_index_currently_shown);
     },
     pausePreview() {
-      window.clearInterval(this.preview_playing_event);
+      window.clearTimeout(this.preview_playing_event);
       this.preview_playing_event = undefined;
     },
     testStopmotion() {
@@ -393,32 +498,46 @@ export default {
         });
       });
     },
+    photoIsActive(path) {
+      return (
+        this.previous_photo_to_show?.$path === path && !this.show_live_feed
+      );
+    },
     showVideoFeed() {
-      this.show_previous_photo = this.medias[this.medias.length - 1];
+      this.previous_photo_to_show = this.medias[this.medias.length - 1].media;
       this.$emit("update:show_live_feed", true);
     },
     firstImage() {
-      this.show_previous_photo = this.medias[0];
+      this.previous_photo_to_show = this.medias[0].media;
       this.$emit("update:show_live_feed", false);
     },
     prevImage() {
       if (this.show_live_feed) {
-        this.show_previous_photo = this.medias.at(-1);
+        this.previous_photo_to_show = this.medias.at(-1).media;
         this.$emit("update:show_live_feed", false);
         return;
       }
-      this.show_previous_photo =
-        this.medias[this.image_index_currently_shown - 1];
+      this.previous_photo_to_show =
+        this.medias[this.image_index_currently_shown - 1].media;
     },
     nextImage() {
       if (this.image_index_currently_shown === this.medias.length - 1)
         return this.showVideoFeed();
 
-      this.show_previous_photo =
-        this.medias[this.image_index_currently_shown + 1];
+      this.previous_photo_to_show =
+        this.medias[this.image_index_currently_shown + 1].media;
     },
     lastImage() {
       this.showVideoFeed();
+    },
+    async updateMediaDurationForCurrentPreviousPhoto(duration) {
+      const images_list = this.images_list.slice();
+      images_list[this.image_index_currently_shown].d = duration;
+      await this.$api.updateMeta({
+        path: this.current_stopmotion_path,
+        new_meta: { images_list },
+      });
+      this.show_duration_menu = false;
     },
     backToStopmotion() {
       console.log("METHODS • StopmotionPanel: backToStopmotion");
@@ -426,11 +545,13 @@ export default {
       this.created_stopmotion = false;
       this.$emit("update:show_live_feed", true);
     },
-    async exportStopmotion() {
+    async exportStopmotion({ fav = false } = {}) {
       this.compilation_in_progress = true;
 
-      const additional_meta = {};
-      additional_meta.$origin = "capture";
+      const additional_meta = {
+        fav,
+        $origin: "capture",
+      };
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
@@ -440,6 +561,7 @@ export default {
           recipe: "stopmotion",
           field: "images_list",
           frame_rate: this.frame_rate,
+          output_format: this.output_format,
           additional_meta,
         },
       });
@@ -449,40 +571,70 @@ export default {
 
       const checkIfEnded = ({ task_id, message }) => {
         if (task_id !== current_task_id) return;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+
         this.compilation_in_progress = false;
 
-        const meta_filename = this.getFilename(message.file?.$path);
-        if (meta_filename) this.$emit("insertMedia", meta_filename);
-        this.$emit("close");
-        // works, but not that useful
-        // this.created_stopmotion = this.getSourceMedia({
-        //   source_media: {
-        //     meta_filename_in_project: this.getFilename(message.path),
-        //   },
-        //   folder_path: this.current_stopmotion_path,
-        // });
-        this.$eventHub.$off("task.ended", checkIfEnded);
+        if (message.event === "completed") {
+          const meta_filename = this.getFilename(message.file?.$path);
+          if (meta_filename) this.$emit("insertMedia", meta_filename);
+          this.$emit("close");
+          // works, but not that useful
+          // this.created_stopmotion = this.getSourceMedia({
+          //   source_media: {
+          //     meta_filename_in_project: this.getFilename(message.path),
+          //   },
+          //   folder_path: this.current_stopmotion_path,
+          // });
+        } else {
+          this.$alertify.delay(4000).error(message.info);
+        }
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
 
-      // this.show_previous_photo = false;
+      // this.previous_photo_to_show = false;
       // this.validating_video_preview = false;
       // this.$nextTick(() => {
       //   this.$emit("close");
       // });
     },
+    async saveToProject(path) {
+      let { space_slug, project_slug } = this.decomposePath(path);
+      const parent_project_path = this.createPath({
+        space_slug,
+        project_slug,
+      });
+
+      this.status_saving_to_project = "saving";
+
+      const copy_file_meta = await this.$api
+        .copyFile({
+          path: path,
+          path_to_destination_folder: parent_project_path,
+          new_meta: {
+            $origin: "capture",
+          },
+        })
+        .catch((err_code) => {
+          this.$alertify.delay(4000).error(err_code);
+        });
+
+      this.status_saving_to_project = "saved";
+
+      setTimeout(() => {
+        this.status_saving_to_project = false;
+      }, 3000);
+    },
     async removeMedia(path) {
       // remove from stopmotion list
-      let images_list = this.stopmotion.images_list.slice();
-      images_list = images_list.filter((i) => !path.endsWith(i));
+      let images_list = this.images_list.slice();
+      images_list = images_list.filter((i) => !path.endsWith(i.m));
 
       this.nextImage();
 
       await this.$api.updateMeta({
         path: this.current_stopmotion_path,
-        new_meta: {
-          images_list,
-        },
+        new_meta: { images_list },
       });
 
       await this.$api.deleteItem({
@@ -660,7 +812,7 @@ export default {
 
   .m_stopmotionpanel--medias--list--items {
     position: relative;
-    overflow: hidden;
+    // overflow: hidden;
     width: auto;
     flex: 0 0 auto;
     width: var(--img-width);
@@ -675,18 +827,16 @@ export default {
       position: absolute;
       left: 0;
       bottom: 0;
-      padding: calc(var(--spacing) / 16);
-
+      padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4)
+        calc(var(--spacing) / 16);
       margin: calc(var(--spacing) / 16);
-      // .c-noir;
-      // .c-blanc;
       text-transform: uppercase;
       font-weight: 500;
       letter-spacing: 0.06em;
       font-size: var(--font-verysmall);
       // font-weight: 600;
-      background-color: var(--c-noir);
-      color: white;
+      background-color: white;
+      color: var(--c-noir);
       border-radius: 2px;
       line-height: 1;
       z-index: 1;
@@ -797,12 +947,18 @@ export default {
   }
 }
 
-._removeMedia {
+._optionBtns {
   position: absolute;
   top: 0;
-  right: 0;
+  left: 0;
+  width: 100%;
   padding: calc(var(--spacing) / 4);
-  margin: calc(var(--spacing) / 4);
+  display: flex;
+  gap: calc(var(--spacing) / 4);
+  justify-content: space-between;
+  align-items: flex-start;
+
+  color: var(--c-noir);
 }
 
 .m_stopmotionpanel--loader {
@@ -845,9 +1001,7 @@ export default {
   padding: calc(var(--spacing) / 4);
   text-align: center;
 
-  .u-label {
-    color: white;
-  }
+  font-variant: small-caps;
 
   input {
     width: 100%;
@@ -856,5 +1010,13 @@ export default {
 }
 ._onion_skin_range {
   direction: rtl;
+}
+._saveNotice {
+  position: absolute;
+  inset: -2px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

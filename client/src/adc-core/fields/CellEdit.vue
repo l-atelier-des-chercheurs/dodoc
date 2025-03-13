@@ -9,13 +9,14 @@
       @cancel="cancel"
     /> -->
 
-    <CollaborativeEditor2
-      :content="cell.content"
+    <TitleField
+      :input_type="'editor'"
       :custom_formats="['bold', 'italic', 'link']"
-      :is_collaborative="false"
+      :content="cell.content"
       :can_edit="can_edit"
       @save="save({ key: 'content', value: $event })"
     />
+
     <!-- <ColorInput
       v-if="can_edit"
       :can_toggle="false"

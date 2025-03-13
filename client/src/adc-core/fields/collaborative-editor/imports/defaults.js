@@ -69,6 +69,7 @@ export const formats = [
   "background",
   "font",
   "align",
+  "code",
   "code-block",
   "divider",
 ];
