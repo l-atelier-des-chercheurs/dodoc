@@ -21,12 +21,6 @@
         <transition name="fade" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
             <div class="_previewOverlay" />
-            <RemoveMenu
-              class="_removeBtn"
-              :remove_text="$t('remove')"
-              :show_button_text="false"
-              @remove="$emit('removeMediaFromStack', current_file_shown.$path)"
-            />
             <select
               class="_changeOrderSelect"
               size="small"
@@ -41,6 +35,12 @@
                 v-text="i + 1"
               />
             </select>
+            <RemoveMenu
+              class="_removeBtn"
+              :remove_text="$t('remove')"
+              :show_button_text="false"
+              @remove="$emit('removeMediaFromStack', current_file_shown.$path)"
+            />
           </div>
         </transition>
 
@@ -164,7 +164,7 @@ export default {
   height: var(--thumb-size);
   flex: 0 0 var(--thumb-size);
 
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--c-gris);
 
   overflow: hidden;
   border-radius: 4px;
@@ -204,10 +204,10 @@ export default {
   inset: 0;
 
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
+  flex-flow: row nowrap;
+  justify-content: space-between;
   align-content: center;
-  align-items: center;
+  align-items: flex-start;
 }
 
 ._previewOverlay {
@@ -218,9 +218,10 @@ export default {
 }
 
 ._removeBtn {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: relative;
+  // position: absolute;
+  // top: 0;
+  // right: 0;
   margin: calc(var(--spacing) / 2);
 }
 
