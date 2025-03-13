@@ -402,7 +402,7 @@ export default {
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
-          .log(this.$t("notifications.stack_was_removed"));
+          .log(this.$t("stack_was_removed"));
         this.$emit("close");
       }
     },

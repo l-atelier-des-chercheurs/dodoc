@@ -224,7 +224,7 @@ async function contentFolderIsValid(full_path) {
 async function createCacheFolder() {
   const cache_folder_path = path.join(
     paths.getCacheFolder(),
-    utils.createUniqueName("dodoc_cache")
+    utils.createUniqueName("lumadoc_cache")
   );
   try {
     await utils.testWriteFileInFolder(cache_folder_path);

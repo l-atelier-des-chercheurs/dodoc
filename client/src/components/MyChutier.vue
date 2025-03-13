@@ -351,17 +351,11 @@ export default {
           0,
           this.max_items_selected
         );
-        this.$alertify
-          .delay(4000)
-          .error(this.$t("notifications.too_many_items_selected"));
+        this.$alertify.delay(4000).error(this.$t("too_many_items_selected"));
         setTimeout(() => {
           this.$alertify
             .delay(4000)
-            .error(
-              this.$t("notifications.max_items_is") +
-                " " +
-                this.max_items_selected
-            );
+            .error(this.$t("max_items_is") + " " + this.max_items_selected);
         }, 500);
       }
     },
