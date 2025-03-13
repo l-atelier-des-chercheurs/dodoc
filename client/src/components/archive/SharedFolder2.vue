@@ -131,7 +131,7 @@
 import FilterBar from "@/components/archive/FilterBar.vue";
 import StackPreview from "@/components/archive/StackPreview.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
-import StackDisplay from "@/components/StackDisplay";
+import StackDisplay from "@/components/StackDisplay.vue";
 
 export default {
   props: {

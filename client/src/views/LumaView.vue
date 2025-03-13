@@ -316,7 +316,7 @@ export default {
 
     &:hover,
     &:focus-visible {
-      color: hsl(0, 0, 80%);
+      color: hsl(0, 0%, 80%);
     }
   }
 

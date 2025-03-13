@@ -269,7 +269,7 @@
   </div>
 </template>
 <script>
-import ImportFileZone from "@/adc-core/ui/ImportFileZone";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";

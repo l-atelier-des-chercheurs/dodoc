@@ -340,7 +340,7 @@ export default {
 ._content {
   ::v-deep {
     .ql-editor {
-      background-color: hsl(0, 0, 21);
+      background-color: hsl(0, 0%, 21%);
       border-color: white;
       color: white;
       padding: calc(var(--spacing) * 0.5);

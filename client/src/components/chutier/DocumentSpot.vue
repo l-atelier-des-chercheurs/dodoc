@@ -69,7 +69,7 @@
   </div>
 </template>
 <script>
-import StackDisplay from "@/components/StackDisplay";
+import StackDisplay from "@/components/StackDisplay.vue";
 
 export default {
   props: {
