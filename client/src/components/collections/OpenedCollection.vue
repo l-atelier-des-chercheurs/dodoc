@@ -113,9 +113,9 @@
               collection.template === 'story_with_sections'
             "
             :publication="collection"
-            :opened_section_meta_filename="opened_section_meta_filename"
+            :pane_infos="{ section: opened_section_meta_filename }"
             :can_edit="can_edit"
-            @toggleSection="toggleSection"
+            @updatePane="toggleSection"
           />
           <AgoraTemplate
             v-else-if="collection.template === 'agora'"
@@ -143,7 +143,7 @@ export default {
       is_loading: true,
       collection: undefined,
       path: "collections/" + this.opened_collection_slug,
-      opened_section_meta_filename: "",
+
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
     };
@@ -205,16 +205,21 @@ export default {
 
       return window.location.origin + route.href;
     },
+    opened_section_meta_filename() {
+      return this.$route.query?.section;
+    },
   },
   methods: {
     addToStack() {
       //
     },
-    toggleSection(section_meta_filename) {
-      this.opened_section_meta_filename = section_meta_filename;
-    },
-    async updateOpenedCollection() {
-      //
+    toggleSection({ key, value }) {
+      if (key === "section") {
+        const query = JSON.parse(JSON.stringify(this.$route.query));
+        if (query.section === value) delete query.section;
+        else query.section = value;
+        this.$router.replace({ query });
+      }
     },
     async removeCollection() {
       await this.$api.deleteItem({
@@ -227,9 +232,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._openedCollection {
-  position: absolute;
-  top: 0;
-  left: 0;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
   background: var(--body-bg);
   height: 100%;
   width: 100%;
@@ -240,7 +245,7 @@ export default {
 }
 
 ._titleBar {
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
   padding-bottom: 0;
 }
 

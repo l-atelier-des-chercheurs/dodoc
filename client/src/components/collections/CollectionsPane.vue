@@ -1,10 +1,10 @@
 <template>
   <div class="_collections">
-    <CollectionsList @open="OpenedCollection" />
+    <CollectionsList v-if="!opened_collection_slug" @open="openCollection" />
     <OpenedCollection
-      v-if="opened_collection_slug"
+      v-else
       :opened_collection_slug="opened_collection_slug"
-      @close="OpenedCollection"
+      @close="closeCollection"
     />
   </div>
 </template>
@@ -34,11 +34,14 @@ export default {
     },
   },
   methods: {
-    OpenedCollection(slug) {
+    openCollection(slug) {
       let query = Object.assign({}, this.$route.query) || {};
-      if (slug) query.collection = slug;
+      if (slug && query.collection !== slug) query.collection = slug;
       else delete query.collection;
       this.$router.push({ query });
+    },
+    closeCollection() {
+      this.openCollection();
     },
   },
 };

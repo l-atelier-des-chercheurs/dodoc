@@ -34,6 +34,7 @@ export default {
   created() {},
   mounted() {
     this.initFolders();
+    this.openFirstFolder();
   },
   beforeDestroy() {},
   watch: {},
@@ -49,9 +50,9 @@ export default {
       this.folders = await this.$api.getFolders({
         path: this.path_to_folders,
       });
+      this.openFolder(this.folders[0].$path);
     },
     openFolder(path) {
-      debugger;
       const folder_slug = this.getFilename(path);
       this.$router.push("/archives/" + folder_slug);
     },
