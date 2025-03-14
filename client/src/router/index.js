@@ -8,7 +8,35 @@ const routes = [
     path: "/",
     name: "Accueil",
     component: () =>
-      import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
+      import(/* webpackChunkName: "HomeView" */ "../views/HomeView.vue"),
+  },
+  {
+    path: "/chutier",
+    name: "Chutier",
+    component: () =>
+      import(/* webpackChunkName: "ChutierView" */ "../views/ChutierView.vue"),
+  },
+  {
+    path: "/archives",
+    name: "Archives",
+    component: () =>
+      import(
+        /* webpackChunkName: "ArchivesView" */ "../views/ArchivesView.vue"
+      ),
+    children: [
+      {
+        path: ":folder_slug",
+        name: "Archive",
+      },
+    ],
+  },
+  {
+    path: "/collections",
+    name: "Collections",
+    component: () =>
+      import(
+        /* webpackChunkName: "CollectionsView" */ "../views/CollectionsView.vue"
+      ),
   },
   {
     path: "/collections/:collection_slug",
@@ -43,12 +71,6 @@ const routes = [
     name: "UI (dev only)",
     component: () => import("@/views/UIView.vue"),
   },
-  // {
-  //   path: "/=:event_slug",
-  //   name: "Événement",
-  //   component: () =>
-  //     import(/* webpackChunkName: "AuthorView" */ "@/views/EventView.vue"),
-  // },
   {
     // internal route to generate preview for PDF and STL
     path: "/_previewmedia",

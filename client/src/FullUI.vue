@@ -5,7 +5,6 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
-    <DynamicCursor v-if="!$root.is_touch_device" />
 
     <div class="_spinner" v-if="$root.is_loading" key="loader">
       <LoaderSpinner />
@@ -26,16 +25,19 @@
           :is_closable="!!connected_as"
           @close="show_authors_modal = false"
         />
-        <transition name="pagechange" mode="out-in">
-          <router-view
-            v-if="!show_authors_modal"
-            v-slot="{ Component }"
-            :key="$route.path"
-          >
-            <component :is="Component" />
-          </router-view>
-        </transition>
-        <TaskTracker />
+        <template v-else>
+          <PageNav />
+          <transition name="pagechange" mode="out-in">
+            <router-view
+              v-if="!show_authors_modal"
+              v-slot="{ Component }"
+              :key="$route.path"
+            >
+              <component :is="Component" />
+            </router-view>
+          </transition>
+          <TaskTracker />
+        </template>
       </template>
     </template>
   </div>
@@ -47,6 +49,7 @@ import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
+import PageNav from "@/components/PageNav.vue";
 
 export default {
   props: {},
@@ -57,6 +60,7 @@ export default {
     TaskTracker,
     DisconnectModal,
     AuthorList,
+    PageNav,
   },
   data() {
     return {

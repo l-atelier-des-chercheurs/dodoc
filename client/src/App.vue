@@ -411,6 +411,12 @@ p {
   margin: 0;
 }
 
+.mainContent {
+  margin: 0 auto;
+  padding: 0 var(--spacing);
+  max-width: 1280px;
+}
+
 .card-header {
   ul {
     margin: 0;

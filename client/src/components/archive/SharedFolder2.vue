@@ -21,6 +21,15 @@
         <div class="_loader" v-if="is_loading_folder">
           <LoaderSpinner />
         </div>
+        <div v-else-if="failed_loading_folder">
+          <div class="u-instructions _error">
+            {{
+              $t("error_loading_folder") + " / " + stack_shared_folder_path
+            }}
+            :
+            {{ failed_loading_folder }}
+          </div>
+        </div>
         <div v-else>
           <FilterBar
             :group_mode.sync="group_mode"
@@ -149,6 +158,7 @@ export default {
       all_stacks: [],
 
       is_loading_folder: true,
+      failed_loading_folder: false,
       show_admin_settings: false,
 
       last_selected_stack_path: undefined,
@@ -177,9 +187,14 @@ export default {
   },
   async created() {},
   async mounted() {
-    this.all_stacks = await this.$api.getFolders({
-      path: this.stack_shared_folder_path,
-    });
+    this.all_stacks = await this.$api
+      .getFolders({
+        path: this.stack_shared_folder_path,
+      })
+      .catch((e) => {
+        console.error(e);
+        this.failed_loading_folder = e;
+      });
     this.$api.join({ room: this.stack_shared_folder_path });
     this.is_loading_folder = false;
   },
