@@ -464,7 +464,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._stackDisplay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 100;
 

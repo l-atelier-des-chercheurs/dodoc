@@ -34,7 +34,7 @@ export default {
   created() {},
   mounted() {
     this.initFolders();
-    this.openFirstFolder();
+    debugger;
   },
   beforeDestroy() {},
   watch: {},
@@ -50,7 +50,7 @@ export default {
       this.folders = await this.$api.getFolders({
         path: this.path_to_folders,
       });
-      this.openFolder(this.folders[0].$path);
+      if (!this.opened_folder_path) this.openFolder(this.folders[0].$path);
     },
     openFolder(path) {
       const folder_slug = this.getFilename(path);
