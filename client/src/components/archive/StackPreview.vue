@@ -34,7 +34,7 @@
           v-for="slide_file in stack_files"
           class="_slide"
           :class="{
-            'is--shown': slide_file.$path === slide_file_to_show.$path,
+            'is--shown': slide_file.$path === slide_file_to_show?.$path,
           }"
           :key="slide_file.$path"
         >
