@@ -142,9 +142,8 @@ export default {
           .closeLogOnClick(true)
           .delay(4000)
           .log("Importation depuis presse-papier");
-
+        const file = $event.clipboardData.files[0];
         this.$nextTick(() => {
-          const file = $event.clipboardData.files[0];
           this.$emit("newPreview", { type: "file", data: file });
         });
       } else {
