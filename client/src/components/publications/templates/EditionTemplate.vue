@@ -252,8 +252,9 @@ export default {
 }
 
 ._chapterSummary {
-  posrion: relative;
+  position: relative;
   height: 100%;
+  overflow: auto;
   background-color: var(--c-gris_clair);
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 }
