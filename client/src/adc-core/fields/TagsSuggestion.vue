@@ -28,9 +28,12 @@ export default {
     };
   },
   async created() {
+    this.suggestions = await this.loadSuggestions(this.tag_type);
+
     if (this.local_suggestions !== undefined)
-      this.suggestions = this.local_suggestions;
-    else this.suggestions = await this.loadSuggestions(this.tag_type);
+      this.suggestions = Array.from(
+        new Set([...this.suggestions, ...this.local_suggestions])
+      );
   },
   mounted() {},
   beforeDestroy() {},
