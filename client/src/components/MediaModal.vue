@@ -236,10 +236,10 @@
           :icon="'rulers'"
           class="u-spacingBottom"
         >
-          <div class="u-metaField">
+          <!-- <div class="u-metaField">
             <DLabel :str="$t('meta_filename')" />
             <div class="u-filename">{{ getFilename(file.$path) }}</div>
-          </div>
+          </div> -->
 
           <div class="u-metaField">
             <DLabel :str="$t('filename')" />
