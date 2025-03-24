@@ -15,13 +15,7 @@ const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
   "app.asar.unpacked"
 );
-const ffprobePath = require("ffprobe-static").path.replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-
 ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
@@ -731,7 +725,7 @@ module.exports = (function () {
     let extracted_metadata = {};
 
     try {
-      const metadata = await _ffprobeVideoAudio({ full_media_path });
+      const metadata = await utils.getVideoMetaData({ path: full_media_path });
 
       dev.logverbose({ metadata });
 
@@ -755,18 +749,6 @@ module.exports = (function () {
       dev.error(err);
     }
     return extracted_metadata;
-  }
-
-  function _ffprobeVideoAudio({ full_media_path }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction({ full_media_path });
-      ffmpeg.ffprobe(full_media_path, (err, metadata) => {
-        if (err || typeof metadata === "undefined") {
-          return reject(err);
-        }
-        return resolve(metadata);
-      });
-    });
   }
 
   async function _readFileInfos({ full_media_path }) {
