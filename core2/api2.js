@@ -594,8 +594,8 @@ module.exports = (function () {
     const { name_of_instance } = await settings.get();
     res.type("application/json");
     res.send({
-      name: name_of_instance || "do•doc",
-      short_name: name_of_instance || "do•doc",
+      name: name_of_instance || "lumadoc",
+      short_name: name_of_instance || "lumadoc",
       theme_color: "#ffffff",
       background_color: "#ffffff",
       display: "standalone",
