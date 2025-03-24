@@ -740,7 +740,8 @@ module.exports = (function () {
         ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
           if (err) return reject(err);
 
-          const duration = metadata.format?.duration;
+          let duration = metadata.format?.duration;
+          if (duration === "N/A") duration = undefined;
           const streams = metadata.streams;
           return resolve({ duration, streams });
         });
