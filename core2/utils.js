@@ -735,26 +735,26 @@ module.exports = (function () {
           .save(destination);
       });
     },
-    getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
+    getVideoMetaData({ path }) {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
-          if (err) return reject(err);
-
-          const duration = metadata.format?.duration;
-          const streams = metadata.streams;
-          return resolve({ duration, streams });
+        ffmpeg_cmd = ffmpeg.ffprobe(path, (err, metadata) => {
+          if (err || typeof metadata === "undefined") return reject(err);
+          return resolve(metadata);
         });
       });
     },
-    hasAudioTrack({ ffmpeg_cmd, video_path }) {
-      return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = ffmpeg.ffprobe(video_path, (err, metadata) => {
-          return resolve(
-            metadata?.streams?.filter((s) => s.codec_type === "audio").length >
-              0
-          );
-        });
-      });
+    async getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
+      const metadata = await API.getVideoMetaData({ path: video_path });
+      let duration = metadata.format?.duration;
+      if (duration === "N/A") duration = undefined;
+      const streams = metadata.streams;
+      return { duration, streams };
+    },
+    async hasAudioTrack({ ffmpeg_cmd, video_path }) {
+      const metadata = await API.getVideoMetaData({ path: video_path });
+      return resolve(
+        metadata?.streams?.filter((s) => s.codec_type === "audio").length > 0
+      );
     },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {

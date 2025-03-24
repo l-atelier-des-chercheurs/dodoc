@@ -15,13 +15,7 @@ const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
   "app.asar.unpacked"
 );
-const ffprobePath = require("ffprobe-static").path.replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-
 ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
@@ -272,13 +266,13 @@ module.exports = (function () {
 
     let thumb_paths = {};
 
-    const no_preview_path = utils.getPathToUserContent(
-      path_to_thumb_folder,
-      `${media_filename}.no_preview`
-    );
-    if (await fs.pathExists(no_preview_path)) return "no_preview";
-
     if (!settings) {
+      const no_preview_path = utils.getPathToUserContent(
+        path_to_thumb_folder,
+        `${media_filename}.no_preview`
+      );
+      if (await fs.pathExists(no_preview_path)) return "no_preview";
+
       thumb_paths = await _makeImageThumbsFor({
         full_media_path,
         media_filename,
@@ -290,6 +284,12 @@ module.exports = (function () {
         const thumb_name = `${media_filename}.${setting.suffix}.${setting.ext}`;
         const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
         const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
+
+        const no_preview_path = utils.getPathToUserContent(
+          path_to_thumb_folder,
+          `${thumb_name}.no_preview`
+        );
+        if (await fs.pathExists(no_preview_path)) continue;
 
         const thumb_folder = utils.getPathToUserContent(path_to_thumb_folder);
 
@@ -340,7 +340,7 @@ module.exports = (function () {
           dev.logverbose(`Found screenshot at`, full_path_to_thumb);
         }
 
-        if (await fs.pathExists(no_preview_path)) return "no_preview";
+        if (await fs.pathExists(no_preview_path)) continue;
 
         const thumbs = await _makeImageThumbsFor({
           full_media_path: full_path_to_thumb,
@@ -348,7 +348,6 @@ module.exports = (function () {
           path_to_thumb_folder,
           resolutions,
         });
-
         thumb_paths[setting.suffix] = thumbs;
       }
     }
@@ -726,7 +725,7 @@ module.exports = (function () {
     let extracted_metadata = {};
 
     try {
-      const metadata = await _ffprobeVideoAudio({ full_media_path });
+      const metadata = await utils.getVideoMetaData({ path: full_media_path });
 
       dev.logverbose({ metadata });
 
@@ -750,18 +749,6 @@ module.exports = (function () {
       dev.error(err);
     }
     return extracted_metadata;
-  }
-
-  function _ffprobeVideoAudio({ full_media_path }) {
-    return new Promise(function (resolve, reject) {
-      dev.logfunction({ full_media_path });
-      ffmpeg.ffprobe(full_media_path, (err, metadata) => {
-        if (err || typeof metadata === "undefined") {
-          return reject(err);
-        }
-        return resolve(metadata);
-      });
-    });
   }
 
   async function _readFileInfos({ full_media_path }) {
