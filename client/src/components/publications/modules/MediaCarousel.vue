@@ -1,6 +1,11 @@
 <template>
   <div class="_carousel" :class="{}">
-    <div ref="flickity" class="_mainCarousel" :key="slider_key">
+    <FlickityCarousel
+      :options="flickityOptions"
+      :key="slider_key"
+      class="_mainCarousel"
+      @flickity-ready="onFlickityReady"
+    >
       <div
         class="carousel-cell"
         :data-mediatype="media_with_linked._linked_media.$type"
@@ -85,32 +90,7 @@
           </button>
         </div>
       </div>
-    </div>
-    <!-- <flickity ref="nav" class="_navCarousel" :options="navOptions">
-      <div
-        class="carousel-cell"
-        v-for="(media_with_linked, index) in medias_with_linked"
-        :key="
-          (media_with_linked._linked_media &&
-            media_with_linked._linked_media.$path) ||
-          'no_media_' + index
-        "
-        :style="itemStyle({ media_with_linked })"
-      >
-        <span
-          v-if="!media_with_linked._linked_media"
-          class="_noSourceMedia u-instructions"
-          v-text="$t('source_media_missing')"
-        />
-        <MediaContent
-          v-else
-          :file="media_with_linked._linked_media"
-          :resolution="context === 'preview' ? 220 : 1600"
-          :context="context"
-          :show_fs_button="show_fs_button"
-        />
-      </div>
-    </flickity> -->
+    </FlickityCarousel>
 
     <ChangeOrderModal
       v-if="show_change_order_modal"
@@ -141,9 +121,7 @@
 <script>
 // import Flickity from "vue-flickity";
 // import "flickity-as-nav-for";
-import Flickity from "flickity";
-import "flickity-imagesloaded";
-
+import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
 import ChangeOrderModal from "@/components/publications/modules/ChangeOrderModal.vue";
@@ -161,7 +139,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    Flickity,
+    FlickityCarousel,
     MediaPicker,
     CaptionCreditsPage,
     ChangeOrderModal,
@@ -169,9 +147,7 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      observer: null,
       show_change_order_modal: false,
-
       flickity: null,
       flickityOptions: {
         initialIndex: 0,
@@ -191,34 +167,15 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.initFlickity();
-
-    let debounce_resize = undefined;
-    this.observer = new ResizeObserver(() => {
-      if (debounce_resize) clearTimeout(debounce_resize);
-      debounce_resize = setTimeout(async () => {
-        this.flkyResize();
-      }, 1000);
-    });
-    this.observer.observe(this.$el);
-  },
-  beforeDestroy() {
-    this.observer.disconnect();
-  },
+  mounted() {},
+  beforeDestroy() {},
   watch: {
-    // medias_with_linked() {
-    // if (this.$refs.flickity) this.$refs.flickity.reloadCells();
-    // },
     publi_width() {
       setTimeout(() => {
-        this.flkyResize();
+        if (this.flickity) {
+          this.flickity.resize();
+        }
       }, 250);
-    },
-    slider_key() {
-      this.$nextTick(() => {
-        this.initFlickity();
-      });
     },
   },
   computed: {
@@ -231,12 +188,8 @@ export default {
     },
   },
   methods: {
-    initFlickity() {
-      if (this.$refs.flickity)
-        this.flickity = new Flickity(this.$refs.flickity, this.flickityOptions);
-    },
-    flkyResize() {
-      if (this.flickity?.resize) this.flickity.resize();
+    onFlickityReady(flickityInstance) {
+      this.flickity = flickityInstance;
     },
     itemStyle({ media_with_linked }) {
       let props = {};
@@ -260,10 +213,8 @@ export default {
   },
 };
 </script>
-<style src="@/../node_modules/flickity/dist/flickity.min.css"></style>
 <style lang="scss" scoped>
-._mainCarousel,
-._navCarousel {
+._mainCarousel {
   position: relative;
   width: 100%;
 
@@ -292,80 +243,6 @@ export default {
 
 ._carousel {
   background: var(--c-gris_clair);
-  page-break-inside: avoid;
-  -webkit-region-break-inside: avoid;
-
-  // padding: calc(var(--spacing) / 4);
-}
-
-._mainCarousel {
-  // padding: calc(var(--spacing) / 4);
-  .carousel-cell {
-    width: 100%;
-    aspect-ratio: 3/2;
-    margin-right: calc(var(--spacing) * 1);
-
-    &[data-mediatype="text"] {
-      padding: min(calc(var(--spacing) * 3), 15%);
-    }
-  }
-
-  ::v-deep .flickity-prev-next-button {
-    // top: auto;
-    // bottom: calc(var(--spacing) * 1);
-
-    &.flickity-prev-next-button.previous {
-      left: calc(var(--spacing) / 2);
-    }
-    &.flickity-prev-next-button.next {
-      right: calc(var(--spacing) / 2);
-    }
-  }
-  ::v-deep ._mediaContent .plyr__controls {
-    padding-right: calc(var(--spacing) * 3);
-  }
-
-  ::v-deep .flickity-page-dots {
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    flex-flow: row nowrap;
-    gap: calc(var(--spacing) / 3);
-    padding: calc(var(--spacing) / 2);
-    pointer-events: none;
-
-    .dot {
-      background: rgba(255, 255, 255, 0.5);
-      border: none;
-      opacity: 1;
-      margin: 0;
-      padding: calc(var(--spacing) / 4);
-      border: 2px solid transparent;
-      pointer-events: auto;
-
-      transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-
-      &:hover,
-      &:active,
-      &:focus-visible {
-        border-color: var(--active-color);
-      }
-
-      &.is-selected {
-        background: var(--active-color);
-        border-color: var(--active-color);
-      }
-    }
-  }
-}
-._navCarousel {
-  margin-top: calc(var(--spacing) / 2);
-
-  .carousel-cell {
-    width: 160px;
-    height: 90px;
-    margin-right: calc(var(--spacing) / 2);
-  }
 }
 
 ._mediaPickerTile {
