@@ -42,16 +42,13 @@
     </div>
 
     <div class="_lineCont"><div class="_line" /></div>
-    <flickity
-      class="_flickity"
-      ref="flickity"
-      :options="flickityOptions"
+    <!-- <FlickityCarousel
       v-if="sorted_events.length > 0"
-    >
-      <!-- <div class="_slide">A</div>
-      <div class="_slide">B</div>
-      <div class="_slide">C</div>
-      <div class="_slide">D</div> -->
+      :key="slider_key"
+      :options="flickityOptions"
+      class="_eventsCarousel"
+    > -->
+    <section class="_horizontalEventsList">
       <div v-for="event in sorted_events" :key="event.$path" class="_slide">
         <div class="_eventsDate">
           <template v-if="event.start_date">
@@ -90,16 +87,17 @@
           </div>
         </div>
       </div>
-    </flickity>
+    </section>
+    <!-- </FlickityCarousel> -->
   </div>
 </template>
 <script>
-import Flickity from "vue-flickity";
+// import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 
 export default {
   props: {},
   components: {
-    Flickity,
+    // FlickityCarousel,
   },
   data() {
     return {
@@ -111,16 +109,11 @@ export default {
       flickityOptions: {
         initialIndex: 0,
         groupCells: false,
-        imagesLoaded: true,
         pageDots: false,
         resize: true,
-        // arrowShape:
-        //   "M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z",
         selectedAttraction: 0.2,
         percentPosition: false,
         friction: 0.8,
-        cellAlign: "left",
-        contain: true,
       },
     };
   },
@@ -155,6 +148,11 @@ export default {
       return _sorted_events;
       // return _sorted_events.concat(_sorted_events).concat(_sorted_events);
     },
+    slider_key() {
+      const all_paths = this.sorted_events.map((e) => e.$path);
+      if (all_paths) return JSON.stringify(all_paths);
+      return "none";
+    },
   },
   methods: {
     openNewEvent(new_folder_slug) {
@@ -163,7 +161,7 @@ export default {
       this.$router.push(url);
     },
     sliderClick(evt) {
-      if (this.$refs.flickity.$flickity.isPreventingClicks) return false;
+      // if (this.$refs.flickity.$flickity.isPreventingClicks) return false;
       this.$router.push(evt.currentTarget.getAttribute("href"));
     },
   },
@@ -181,13 +179,11 @@ export default {
   // grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   // gap: calc(var(--spacing) / 1);
 }
-._flickity {
+._eventsCarousel {
   width: 100%;
   height: 100%;
   margin: 0 auto;
   max-width: var(--max-column-width);
-  // overflow: hidden;
-  // padding: 0 calc(var(--spacing) * 1);
 
   ::v-deep {
     .flickity-button {
@@ -220,6 +216,16 @@ export default {
     }
   }
 }
+
+// ._flickity {
+//   width: 100%;
+//   height: 100%;
+//   margin: 0 auto;
+//   max-width: var(--max-column-width);
+//   // overflow: hidden;
+//   // padding: 0 calc(var(--spacing) * 1);
+
+// }
 
 ._slide {
   position: relative;
@@ -305,6 +311,19 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+  }
+}
+
+._horizontalEventsList {
+  overflow: auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: safe center;
+
+  width: 100%;
+
+  > * {
+    flex: 0 0 auto;
   }
 }
 </style>
