@@ -1,7 +1,6 @@
 <template>
   <div class="_carousel" :class="{}">
     <FlickityCarousel
-      :options="flickityOptions"
       :key="slider_key"
       class="_mainCarousel"
       @flickity-ready="onFlickityReady"
@@ -119,8 +118,6 @@
   </div>
 </template>
 <script>
-// import Flickity from "vue-flickity";
-// import "flickity-as-nav-for";
 import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
@@ -149,17 +146,6 @@ export default {
       show_media_picker: false,
       show_change_order_modal: false,
       flickity: null,
-      flickityOptions: {
-        initialIndex: 0,
-        groupCells: false,
-        imagesLoaded: true,
-        pageDots: true,
-        selectedAttraction: 0.2,
-        percentPosition: false,
-        friction: 0.8,
-        cellAlign: "left",
-        contain: true,
-      },
       // navOptions: {
       //   asNavFor: "._mainCarousel",
       //   contain: true,

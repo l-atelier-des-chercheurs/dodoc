@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     initFlickity() {
-      this.flickity = new Flickity(this.$refs.flickity, this.options);
+      this.flickity = new Flickity(this.$refs.flickity);
       this.$emit("flickity-ready", this.flickity);
     },
     resize() {
@@ -109,7 +109,7 @@ export default {
       padding: calc(var(--spacing) / 2);
       pointer-events: none;
 
-      .dot {
+      .flickity-page-dot {
         background: rgba(255, 255, 255, 0.5);
         border: none;
         opacity: 1;
