@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     initFlickity() {
-      this.flickity = new Flickity(this.$refs.flickity);
+      this.flickity = new Flickity(this.$refs.flickity, this.options);
       this.$emit("flickity-ready", this.flickity);
     },
     resize() {
