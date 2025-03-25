@@ -152,7 +152,7 @@ export default {
   --dropzone-color1: transparent;
   --dropzone-color2: var(--c-orange);
 
-  --c-bodybg: white;
+  // --c-bodybg: white;
   --c-bodybg: hsl(48, 19%, 95%);
 
   // --c-bodybg: hsl(48, 19%, 98%);
@@ -247,7 +247,8 @@ html,
 body {
   // background: white;
   // background-color: var(--c-bodybg);
-  background: linear-gradient(180deg, #fff, var(--c-bodybg));
+  // background: linear-gradient(180deg, #fff, var(--c-bodybg));
+  background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
   scroll-behavior: smooth;
 }
