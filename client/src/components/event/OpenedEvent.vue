@@ -38,6 +38,8 @@
             :can_edit="can_edit_event"
           />
 
+          <div v-if="can_edit_event" class="u-spacingBottom" />
+
           <div class="u-spacingBottom">
             <TitleField
               :field_name="'title'"
