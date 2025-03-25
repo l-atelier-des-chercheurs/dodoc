@@ -152,7 +152,7 @@
                 :key="keyword"
                 :keyword="keyword"
                 :can_remove="true"
-                @remove="filterByKeyword(keyword)"
+                @remove="removeFilter(keyword)"
               />
             </div>
             <div class="u-keywords">
@@ -162,7 +162,7 @@
                 :keyword="keyword.title"
                 :count="keyword.count"
                 :can_add="true"
-                @add="filterByKeyword(keyword.title)"
+                @add="addFilter(keyword.title)"
               />
 
               <button
@@ -328,6 +328,17 @@ export default {
         _new_kw.push(keyword);
       }
       this.$emit("update:keywords_filter", _new_kw);
+    },
+    removeFilter(kw) {
+      this.$nextTick(() => {
+        this.filterByKeyword(kw);
+      });
+    },
+    addFilter(kw) {
+      this.$nextTick(() => {
+        this.kw_search = "";
+        this.filterByKeyword(kw);
+      });
     },
   },
 };

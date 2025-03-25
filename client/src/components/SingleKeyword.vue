@@ -2,7 +2,7 @@
   <div
     class="_singleKeyword"
     :class="{
-      'is--clickable': can_add,
+      'is--clickable': can_add || can_remove,
     }"
     :style="kw_styles"
   >
@@ -26,8 +26,14 @@
     <button
       type="button"
       v-if="can_add"
-      class="_addBtn"
+      class="_clickZone"
       @click="$emit('add')"
+    />
+    <button
+      type="button"
+      v-if="can_remove"
+      class="_clickZone"
+      @click="$emit('remove')"
     />
   </div>
 </template>
@@ -92,9 +98,12 @@ export default {
 
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 
-  &.is--clickable:hover {
-    opacity: 0.7;
-    // background-color: rgba(41, 41, 41, 1);
+  &.is--clickable {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+      // background-color: rgba(41, 41, 41, 1);
+    }
   }
 }
 
@@ -106,7 +115,7 @@ export default {
   font-size: 110%;
 }
 
-._addBtn {
+._clickZone {
   position: absolute;
   top: 0;
   left: 0;
