@@ -1,10 +1,6 @@
 <template>
   <div class="_carousel" :class="{}">
-    <FlickityCarousel
-      :key="slider_key"
-      class="_mainCarousel"
-      @flickity-ready="onFlickityReady"
-    >
+    <FlickityCarousel :key="slider_key" class="_mainCarousel">
       <div
         class="carousel-cell"
         :data-mediatype="media_with_linked._linked_media.$type"
@@ -145,7 +141,6 @@ export default {
     return {
       show_media_picker: false,
       show_change_order_modal: false,
-      flickity: null,
       // navOptions: {
       //   asNavFor: "._mainCarousel",
       //   contain: true,
@@ -155,15 +150,7 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    publi_width() {
-      setTimeout(() => {
-        if (this.flickity) {
-          this.flickity.resize();
-        }
-      }, 250);
-    },
-  },
+  watch: {},
   computed: {
     slider_key() {
       const key = this.medias_with_linked.map(
@@ -174,9 +161,6 @@ export default {
     },
   },
   methods: {
-    onFlickityReady(flickityInstance) {
-      this.flickity = flickityInstance;
-    },
     itemStyle({ media_with_linked }) {
       let props = {};
       props["--object-fit"] = media_with_linked.objectFit || "cover";

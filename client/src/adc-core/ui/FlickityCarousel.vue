@@ -40,7 +40,7 @@ export default {
       if (debounce_resize) clearTimeout(debounce_resize);
       debounce_resize = setTimeout(() => {
         this.resize();
-      }, 1000);
+      }, 700);
     });
     this.observer.observe(this.$el);
   },
