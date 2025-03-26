@@ -179,6 +179,12 @@ export default {
   // grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   // gap: calc(var(--spacing) / 1);
 }
+._horizontalEventsList {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+}
+
 ._eventsCarousel {
   width: 100%;
   height: 100%;
@@ -231,7 +237,7 @@ export default {
   position: relative;
   width: 280px;
   min-height: 100px;
-  padding: 0 calc(var(--spacing) * 1);
+  padding: 0;
 
   max-width: 56ch;
   width: 100%;
@@ -268,7 +274,7 @@ export default {
     background: var(--c-bleuvert);
     position: absolute;
     top: 17px;
-    left: 5px;
+    left: -10px;
     border-radius: 50%;
     border: 4px solid white;
   }
@@ -289,9 +295,11 @@ export default {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: var(--c-gris);
-  top: 25px;
+  height: 4px;
+  background: var(--c-gris_clair);
+  // background: var(--c-gris_fonce);
+  // background: var(--c-bleuvert);
+  top: 24px;
 }
 
 ._openEvent {
