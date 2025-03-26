@@ -1,6 +1,13 @@
 <template>
   <div class="_stackCarousel">
+    <template v-if="!files || files.length === 0">
+      <div class="u-instructions">
+        {{ $t("nothing_to_show") }}
+      </div>
+    </template>
+
     <FileShown
+      v-if="current_file_shown"
       class="_stackCarousel--fileshown"
       :key="current_file_shown.$path"
       :file="current_file_shown"
