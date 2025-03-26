@@ -1334,4 +1334,6 @@ export default {
   next_chapter: "Chapitre suivant",
 
   show_preview: "Afficher l’aperçu",
+  warning_wont_be_able_to_edit:
+    "Attention ! En modifiant ce règlage, vous ne pourrez plus éditer ce contenu.",
 };

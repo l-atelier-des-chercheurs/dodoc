@@ -76,6 +76,10 @@
 
         <div class="u-spacingBottom" />
 
+        <div v-if="warning_wont_be_able_to_edit" class="u-warning">
+          {{ $t("warning_wont_be_able_to_edit") }}
+        </div>
+
         <template slot="footer">
           <SaveCancelButtons
             :is_saving="is_saving"
@@ -157,6 +161,15 @@ export default {
         JSON.stringify(this.new_authors_paths) !==
         JSON.stringify(this.authors_paths)
       );
+    },
+    warning_wont_be_able_to_edit() {
+      if (this.field === "$admins") {
+        const folder = {
+          $admins: this.new_authors_paths,
+        };
+        return this.canLoggedinEditFolder({ folder }) === false;
+      }
+      return false;
     },
     editing_options() {
       if (this.no_options)

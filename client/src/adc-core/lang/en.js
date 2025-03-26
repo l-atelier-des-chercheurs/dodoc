@@ -1252,4 +1252,6 @@ export default {
   next_chapter: "Next chapter",
 
   show_preview: "Show preview",
+  warning_wont_be_able_to_edit:
+    "Warning! By changing this setting, you will no longer be able to edit this content.",
 };
