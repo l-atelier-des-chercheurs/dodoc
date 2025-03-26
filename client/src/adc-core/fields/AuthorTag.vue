@@ -122,7 +122,7 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
-  // background-color: white;
+  background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);
@@ -131,7 +131,7 @@ export default {
     &:hover,
     &:focus-visible {
       font-weight: 800;
-      background-color: var(--c-gris_clair);
+      // background-color: var(--c-gris_clair);
     }
   }
 
