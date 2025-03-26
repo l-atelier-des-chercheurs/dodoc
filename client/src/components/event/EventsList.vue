@@ -174,17 +174,6 @@ export default {
   padding: calc(var(--spacing) * 2) 0;
 }
 
-._list {
-  // display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  // gap: calc(var(--spacing) / 1);
-}
-._horizontalEventsList {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1);
-}
-
 ._eventsCarousel {
   width: 100%;
   height: 100%;
@@ -323,7 +312,11 @@ export default {
 }
 
 ._horizontalEventsList {
-  overflow: auto;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+
+  overflow-x: auto;
   display: flex;
   flex-flow: row nowrap;
   justify-content: safe center;
