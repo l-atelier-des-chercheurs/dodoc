@@ -12,6 +12,7 @@ const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
 import "@/utils/utils.scss";
+import "@/utils/utils-luma.scss";
 
 import {
   i18n,
