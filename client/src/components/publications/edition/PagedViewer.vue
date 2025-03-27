@@ -189,7 +189,7 @@ export default {
         const btn = document.createElement("button");
         btn.classList.add("editChapterBtn");
         btn.textContent = chapter.getAttribute("data-chapter-title");
-        chapter.prepend(btn);
+        chapter.appendChild(btn);
         chapter.addEventListener("click", () => {
           this.$emit(
             "openChapter",

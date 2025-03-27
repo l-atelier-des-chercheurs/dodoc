@@ -1,4 +1,4 @@
-:root{
+:root {
   --main-color: #0040eb;
   --main-color-opacity: rgba(0, 64, 235, 0.7);
   --second-color: orange;
@@ -7,7 +7,6 @@
   --font-size: 11pt;
   --line-height: 1.4;
 }
-
 
 /****************************************************
  * 
@@ -18,117 +17,106 @@
 
 /* applies to book + web */
 .edition {
-  p, .media, h1, h2, h3 {
-    font-size: var(--font-size); 
-    font-family: var(--text-font);
-    line-height: var(--line-height);
-    color: var(--main-color);
+  font-size: var(--font-size);
+  font-family: var(--text-font);
+  line-height: var(--line-height);
+  color: var(--main-color);
+
+  p,
+  .media,
+  h1,
+  h2,
+  h3 {
+    margin-bottom: 0.5cm;
+
+    &:not(:first-child) {
+      margin-top: 0.5cm;
+    }
   }
-  h1{
-    font-size: 34px;
+
+  h1 {
+    font-size: calc(var(--font-size) * 2);
     font-family: var(--title-font);
-    margin: 0px;
-    margin-bottom: 1cm;
     font-weight: bold;
-    line-height: var(--line-height);
-	text-align: center;
-  }
-  h2{
-    font-size: calc(var(--font-size) * var(--line-height));
-    font-family: var(--title-font);
     text-align: center;
-    margin-top: calc(var(--font-size) * var(--line-height) * 2);
-    margin-bottom: 0;
+  }
+  h2 {
+    font-size: calc(var(--font-size) * 1.4);
+    font-family: var(--title-font);
     text-transform: uppercase;
-    line-height: 1.2;
-  }
-  h2:first-child{
-    margin-top: var(--font-size);
-  }
-  h2 + p{
-    margin-top: 0.2cm;
-  }
-
-  h3{
+    font-weight: bold;
     text-align: center;
+  }
+
+  h3 {
     font-family: var(--title-font);
-    margin-top: calc(var(--font-size) * var(--line-height));
-    margin-bottom: 0;
-	text-transform: uppercase;
-	font-weight: bold;
+    font-weight: bold;
   }
 
-  h3 + p{
-    margin-top: 0.2cm;
-  }
-
-  h3:first-child{
-    margin-top: 0;
-  }
-
-  ol li, ul li{
+  ol li,
+  ul li {
     color: var(--main-color);
-	  list-style: none;
+    list-style: none;
     margin-bottom: calc(var(--font-size) * var(--line-height) / 2);
   }
 
-  ol{
+  ol {
     counter-reset: item;
     margin-left: 1cm;
   }
 
-  ol li{
+  ol li {
     list-style: none;
     counter-increment: item;
   }
 
-  ol li::before{
-     content: counter(item);
-     font-family: var(--title-font);
-     font-size: 13pt;
-     margin-right: 0.2cm;
-     margin-left: -0.4cm;
+  ol li::before {
+    content: counter(item);
+    font-family: var(--title-font);
+    font-size: 13pt;
+    margin-right: 0.2cm;
+    margin-left: -0.4cm;
   }
 
-  ul{
+  ul {
     margin-left: 1cm;
   }
 
-  ul li::before{
-     content: "—";
-     font-family: var(--title-font);
-     font-size: 13pt;
-     margin-right: 0.2cm;
-     margin-left: -0.4cm;
+  ul li::before {
+    content: "—";
+    font-family: var(--title-font);
+    font-size: 13pt;
+    margin-right: 0.2cm;
+    margin-left: -0.4cm;
   }
 
-  .mediaCaption{
+  .mediaCaption {
     margin: auto;
     padding-top: 2mm;
     text-align: center;
     font-size: smaller;
   }
 
-  .mediaCaption span{
+  .mediaCaption span {
     width: 90%;
     font-size: smaller;
   }
 
-  blockquote{
+  blockquote {
     margin-left: 1cm;
   }
 
-  blockquote p{
-	font-size: 10pt;
+  blockquote p {
+    font-size: 10pt;
     font-family: var(--title-font);
   }
 
-  hr{
-	  border-color: var(--main-color);
+  hr {
+    border-color: var(--main-color);
   }
 
   /* cover design */
-  .coverTitle p{
+  .coverTitle p {
     font-family: var(--title-font);
     font-size: 40pt;
     font-weight: bold;
@@ -139,10 +127,10 @@
     box-shadow: 0px 0px 10px var(--main-color);
   }
 
-  .coverImage{
+  .coverImage {
     background: var(--main-color);
 
-    img{
+    img {
       mix-blend-mode: screen;
       filter: grayscale(100%) contrast(120%);
     }
@@ -153,75 +141,69 @@
 
 /* applies to paged book */
 .book {
-
- .media{
-	/* background: var(--main-color); */
-	img{
-		/* mix-blend-mode: screen;	
+  .media {
+    /* background: var(--main-color); */
+    img {
+      /* mix-blend-mode: screen;	
 		filter: grayscale(100%) contrast(120%);
 		vertical-align: top; */
-	}
- }
- 
- .mediaCaption{
-    background: #FFF;
- }
+    }
+  }
 
+  .mediaCaption {
+    background: #fff;
+  }
 }
 
 @page {
-  margin-top: 6mm;
-  margin-bottom: 18mm;
+  margin-top: 18mm;
+  margin-bottom: 24mm;
 }
 
-@page:left {
+@page: left {
   margin-left: 13mm;
   margin-right: 20mm;
-  @bottom-left{
+  @bottom-left {
     content: counter(page);
     font-size: 10pt;
     font-family: var(--title-font);
     text-align: left;
-	color: var(--main-color);
-  } 
-  @left-middle{
+    color: var(--main-color);
+  }
+  @left-middle {
     font-family: var(--title-font);
     font-size: 8pt;
     content: string(title);
     writing-mode: vertical-lr;
     margin-top: 3mm;
     margin-left: 4mm;
-	color: var(--main-color);
+    color: var(--main-color);
   }
 }
-@page:right {
+@page: right {
   margin-left: 20mm;
   margin-right: 13mm;
-  @right-middle{
+  @right-middle {
     font-family: var(--title-font);
     font-size: 8pt;
     content: string(title);
     writing-mode: vertical-lr;
     margin-top: 3mm;
     margin-left: 4mm;
-	color: var(--main-color);
-  } 
-  @bottom-right{
+    color: var(--main-color);
+  }
+  @bottom-right {
     content: counter(page);
     font-size: 10pt;
     font-family: var(--title-font);
     text-align: right;
-	color: var(--main-color);
-  } 
+    color: var(--main-color);
+  }
 }
 
-
 /* SHOW CHAPTER NAME ON EACH PAGE */
-
-/* 
-  Note: string-set and page should not be in a specific selector such as .book .chapter or body .chapter
-  looks like a bug in paged.js
-*/
+/* Note: string-set and page should not be in a specific selector such as .book .chapter or body .chapter
+  looks like a bug in paged.js */
 .chapter {
   string-set: title attr(data-chapter-title);
   page: chapters;
@@ -245,7 +227,6 @@
   gap: calc(var(--spacing) * 2);
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
-
   nav {
     flex: 0 0 15ch;
     ol {
@@ -259,7 +240,7 @@
       background: transparent;
       border: none;
       margin: 0;
-      padding: 0.25em .5em;
+      padding: 0.25em 0.5em;
       border-radius: 0.5em;
       cursor: pointer;
     }
@@ -275,66 +256,47 @@
     }
   }
 
-  p, li{
-	  font-size: 20px;
+  p,
+  li {
+    font-size: 20px;
   }
-  h1{
+  h1 {
     font-size: 2em;
     text-align: center;
   }
 
-  h2{
+  h2 {
     font-size: 1.4em;
     text-align: center;
     margin-top: calc((var(--font-size) * var(--line-height) * 4));
   }
 
-  h3{
+  h3 {
     font-size: 1.1em;
     text-align: center;
     margin-top: calc((var(--font-size) * var(--line-height) * 2));
   }
 
-  
-  .media{
+  .media {
     width: 100%;
-    margin: auto !important;  
+    margin: auto !important;
     margin-bottom: 100px !important;
   }
 
-  .media img{
-  	margin: auto;
+  .media img {
+    margin: auto;
   }
 
-  .mediaCaption span{
+  .mediaCaption span {
     font-size: 16px;
   }
 
-  blockquote{
-	  margin-left: 50px !important;
+  blockquote {
+    margin-left: 50px !important;
   }
 
   blockquote,
-  blockquote p{
-	  font-size: 18px;
+  blockquote p {
+    font-size: 18px;
   }
-  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

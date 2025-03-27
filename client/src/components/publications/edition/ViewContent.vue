@@ -283,6 +283,8 @@ export default {
               }
             }
 
+            console.log(html);
+
             if (alt) {
               html += `<div class="mediaCaption"><span>${alt}</span></div>`;
             }
@@ -294,7 +296,7 @@ export default {
       });
 
       const parsed = marked.parse(content);
-      return DOMPurify.sanitize(parsed);
+      return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
     },
 
     getMediaSrc(meta_src, source_medias) {
@@ -331,16 +333,17 @@ export default {
       const dataUrl = code.toDataURL({ scale: 10 });
 
       return {
-        media,
         src,
+        url,
         dataUrl,
+        media,
       };
     },
     placeLocalMedia({ _media, alt, width, height }) {
       let html = "";
       let is_qr_code = false;
 
-      const { src, dataUrl, media } = _media;
+      const { src, url, dataUrl, media } = _media;
       if (!width && !height) {
         width = media.$infos.width;
         height = media.$infos.height;
@@ -357,9 +360,9 @@ export default {
       } else {
         is_qr_code = true;
         html += `
-              <div>
-                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
-              </div>
+              <a href="${url}" target="_blank" data-url="url">
+                <img class="_qrCode" src="${dataUrl}" alt="QR code for media" />
+              </a>
             `;
 
         // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
@@ -426,7 +429,7 @@ export default {
   // width: 100%;
   z-index: 10;
   margin: 0 auto;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   pointer-events: none;
 
   display: flex;
