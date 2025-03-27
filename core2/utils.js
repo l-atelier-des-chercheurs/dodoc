@@ -741,7 +741,7 @@ module.exports = (function () {
           if (err || typeof metadata === "undefined") return reject(err);
 
           let duration;
-          if (metadata.format?.duration && typeof duration === "number")
+          if (typeof metadata.format?.duration === "number")
             duration = +metadata.format.duration.toPrecision(3);
 
           let location;
