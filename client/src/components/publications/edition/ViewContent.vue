@@ -25,6 +25,7 @@
         :viewer_type="viewer_type"
         :css_styles="css_styles"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
+        :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
       />
       <DocViewer
