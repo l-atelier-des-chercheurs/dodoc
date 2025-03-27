@@ -19,7 +19,7 @@
     </nav>
     <transition name="pagechange" mode="out-in">
       <section
-        v-if="!opened_chapter"
+        v-if="!opened_chapter && content_nodes.cover"
         class="cover"
         :data-layout-mode="content_nodes.cover.layout_mode"
       >
@@ -28,7 +28,11 @@
           <img :src="content_nodes.cover.image_url" />
         </div>
       </section>
-      <section class="chapter" v-else :key="opened_chapter?.meta_filename">
+      <section
+        class="chapter"
+        v-else-if="opened_chapter"
+        :key="opened_chapter?.meta_filename"
+      >
         <h1>{{ opened_chapter.title }}</h1>
         <div class="content" v-html="opened_chapter.content" />
       </section>

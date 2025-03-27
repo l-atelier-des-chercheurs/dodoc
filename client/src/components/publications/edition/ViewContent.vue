@@ -58,6 +58,7 @@ export default {
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    can_edit: Boolean,
   },
   components: {
     PagedViewer,
@@ -182,7 +183,7 @@ export default {
           }
         }
 
-        cover.layout_mode = this.cover_media.cover_layout_mode || "normal";
+        cover.layout_mode = this.cover_media?.cover_layout_mode || "normal";
       }
       return cover;
     },
