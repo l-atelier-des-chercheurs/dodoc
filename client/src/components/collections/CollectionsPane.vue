@@ -1,10 +1,11 @@
 <template>
   <div class="_collections">
-    <CollectionsList @open="OpenedCollection" />
+    <CollectionsList @open="openCollection" />
     <OpenedCollection
-      v-if="opened_collection_slug"
-      :opened_collection_slug="opened_collection_slug"
-      @close="OpenedCollection"
+      v-if="pane_infos?.opened_collection_slug"
+      :pane_infos="pane_infos"
+      @updatePane="updatePane"
+      @close="closeCollection"
     />
   </div>
 </template>
@@ -28,17 +29,32 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    opened_collection_slug() {
-      if (!this.$route.query?.collection) return undefined;
-      return this.$route.query.collection;
+    pane_infos() {
+      let i = {};
+      if (this.$route.query?.collection)
+        i.opened_collection_slug = this.$route.query.collection;
+      if (this.$route.query?.section) i.section = this.$route.query.section;
+      return i;
     },
   },
   methods: {
-    OpenedCollection(slug) {
-      let query = Object.assign({}, this.$route.query) || {};
-      if (slug) query.collection = slug;
-      else delete query.collection;
-      this.$router.push({ query });
+    openCollection(slug) {
+      this.updateCollectionQuery(slug);
+    },
+    closeCollection() {
+      this.updateCollectionQuery(false);
+    },
+    updatePane({ key, value }) {
+      this.updatePageQuery({
+        prop: key,
+        val: value,
+      });
+    },
+    async updateCollectionQuery(slug) {
+      this.updatePageQuery({
+        prop: "collection",
+        val: slug,
+      });
     },
   },
 };

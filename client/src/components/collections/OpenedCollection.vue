@@ -113,9 +113,9 @@
               collection.template === 'story_with_sections'
             "
             :publication="collection"
-            :opened_section_meta_filename="opened_section_meta_filename"
+            :pane_infos="pane_infos"
             :can_edit="can_edit"
-            @toggleSection="toggleSection"
+            @updatePane="$emit('updatePane', $event)"
           />
           <AgoraTemplate
             v-else-if="collection.template === 'agora'"
@@ -130,7 +130,7 @@
 <script>
 export default {
   props: {
-    opened_collection_slug: String,
+    pane_infos: Object,
   },
   components: {
     StorySectionTemplate: () =>
@@ -142,8 +142,7 @@ export default {
     return {
       is_loading: true,
       collection: undefined,
-      path: "collections/" + this.opened_collection_slug,
-      opened_section_meta_filename: "",
+      path: "collections/" + this.pane_infos.opened_collection_slug,
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
     };
@@ -208,12 +207,6 @@ export default {
   },
   methods: {
     addToStack() {
-      //
-    },
-    toggleSection(section_meta_filename) {
-      this.opened_section_meta_filename = section_meta_filename;
-    },
-    async updateOpenedCollection() {
       //
     },
     async removeCollection() {
