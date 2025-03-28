@@ -1155,10 +1155,6 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   h2,
   h3 {
     margin-bottom: 0.5cm;
-
-    &:not(:first-child) {
-      margin-top: 0.5cm;
-    }
   }
 
   h1 {
