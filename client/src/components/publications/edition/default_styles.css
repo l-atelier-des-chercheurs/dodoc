@@ -56,34 +56,25 @@
     margin-bottom: calc(var(--font-size) * var(--line-height) / 2);
   }
 
+  ul, ol {
+    margin-left: 1cm;
+  }
+  li::marker {
+    font-size: 10pt;
+    font-weight: 700;
+    font-family: var(--title-font);
+  }
+  ul li::marker {
+    content: "— ";
+  }
   ol {
     counter-reset: item;
-    margin-left: 1cm;
-  }
-
-  ol li {
-    list-style: none;
-    counter-increment: item;
-  }
-
-  ol li::before {
-    content: counter(item);
-    font-family: var(--title-font);
-    font-size: 13pt;
-    margin-right: 0.2cm;
-    margin-left: -0.4cm;
-  }
-
-  ul {
-    margin-left: 1cm;
-  }
-
-  ul li::before {
-    content: "—";
-    font-family: var(--title-font);
-    font-size: 13pt;
-    margin-right: 0.2cm;
-    margin-left: -0.4cm;
+    li {
+      counter-increment: item;
+      &::marker {
+        content: counter(item) ". ";
+      }
+    }
   }
 
   .mediaCaption {
@@ -223,7 +214,8 @@
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
   nav {
-    flex: 0 0 15ch;
+    flex: 1 0 16ch;
+
     ol {
       margin-left: calc(var(--spacing));
       li {
@@ -231,20 +223,27 @@
       }
     }
     button {
-      color: var(--main-color);
+
+      text-align: left;
+      color: currentColor;
       background: transparent;
-      border: none;
-      margin: 0;
       padding: 0.25em 0.5em;
       border-radius: 0.5em;
       cursor: pointer;
+
+      &:hover,
+      &:focus-visible {
+      }
+  
     }
     button.active {
       background: var(--main-color);
       color: white;
     }
   }
-  section {
+  .chapter {
+    flex: 10 1 0;
+
     h1 {
     }
     .content {

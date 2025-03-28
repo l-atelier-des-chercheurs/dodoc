@@ -4,13 +4,16 @@
     <nav>
       <label>{{ $t("chapters") }}</label>
       <ol>
-        <li v-for="(chapter, index) in content_nodes.chapters" :key="index">
+        <li
+          v-for="(chapter, index) in content_nodes.chapters"
+          :key="index"
+          @click="$emit('openChapter', chapter.meta_filename)"
+        >
           <button
             type="button"
             :class="{
               active: chapter.meta_filename === opened_chapter?.meta_filename,
             }"
-            @click="$emit('openChapter', chapter.meta_filename)"
           >
             {{ chapter.title || $t("untitled") + " " + (index + 1) }}
           </button>
