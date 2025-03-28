@@ -92,14 +92,11 @@
 
   .mediaCaption {
     margin: auto;
-    padding-top: 2mm;
+    padding-top: 0mm;
     text-align: center;
     font-size: smaller;
   }
-
   .mediaCaption span {
-    width: 90%;
-    font-size: smaller;
   }
 
   blockquote {
@@ -145,13 +142,12 @@
     /* background: var(--main-color); */
     img {
       /* mix-blend-mode: screen;	
-		filter: grayscale(100%) contrast(120%);
-		vertical-align: top; */
+  		filter: grayscale(100%) contrast(120%);
+	  	vertical-align: top; */
     }
   }
 
   .mediaCaption {
-    background: #fff;
   }
 }
 
@@ -160,7 +156,7 @@
   margin-bottom: 24mm;
 }
 
-@page: left {
+@page:left {
   margin-left: 13mm;
   margin-right: 20mm;
   @bottom-left {
@@ -180,7 +176,8 @@
     color: var(--main-color);
   }
 }
-@page: right {
+
+@page:right {
   margin-left: 20mm;
   margin-right: 13mm;
   @right-middle {
@@ -202,8 +199,10 @@
 }
 
 /* SHOW CHAPTER NAME ON EACH PAGE */
-/* Note: string-set and page should not be in a specific selector such as .book .chapter or body .chapter
-  looks like a bug in paged.js */
+/* 
+  Note: string-set and page should not be in a specific selector such as .book .chapter or body .chapter
+  looks like a bug in paged.js
+*/
 .chapter {
   string-set: title attr(data-chapter-title);
   page: chapters;

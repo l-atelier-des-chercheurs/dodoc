@@ -235,7 +235,7 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            let html;
+            let html = "";
 
             let custom_classes = [],
               width,
@@ -257,7 +257,7 @@ export default {
             }
 
             if (meta_src.startsWith("http")) {
-              html = `
+              html += `
                   <img src="${meta_src}"
                     alt="${alt}"
                     ${width ? ` width="${width}"` : ""}
@@ -268,7 +268,7 @@ export default {
             } else {
               const _media = this.getMediaSrc(meta_src, source_medias);
               if (!_media) {
-                html = `<i>Media not found</i>`;
+                html += `<i>Media not found</i>`;
               } else {
                 const { html: _html, is_qr_code } = this.placeLocalMedia({
                   _media,
@@ -276,18 +276,17 @@ export default {
                   width,
                   height,
                 });
-                html = _html;
+                html += _html;
                 if (is_qr_code) {
                   custom_classes.push("_isqrcode");
                 }
               }
             }
 
-            console.log(html);
-
             if (alt) {
               html += `<div class="mediaCaption"><span>${alt}</span></div>`;
             }
+
             return `<div class='media ${custom_classes.join(
               " "
             )}'>${html}</div>`;

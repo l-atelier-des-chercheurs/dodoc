@@ -1,6 +1,11 @@
+p:empty {
+  display: none;
+}
+
 .media {
   display: inline-block;
   position: relative;
+  width: 100%;
 
   &._isqrcode {
     display: flex;
@@ -8,7 +13,7 @@
     gap: 2mm;
     background-color: white;
     padding: 1mm;
-      border: 1mm solid var(--c-gris_clair);
+    border: 1mm solid var(--c-gris_clair);
 
     ._qrCode {
       flex: 0 0 auto;
@@ -18,18 +23,18 @@
       object-fit: cover;
       border-radius: 0.25em;
     }
-    
+
     .mediaInfos {
       flex: 1 1 auto;
       font-size: 10px;
-  
     }
-    .mediaSourceCredits, .mediaSourceCaption {
+    .mediaSourceCredits,
+    .mediaSourceCaption {
       p {
         margin: 0;
       }
     }
-  
+
     ._thumbnail {
       flex: 0 0 2cm;
     }
@@ -39,45 +44,46 @@
     break-before: page;
     break-after: page;
     margin: 0;
-    width: var(--pagedjs-width);
     /* complex calculation because otherwise a p is pushed onto the next page */
-    height: calc(var(--pagedjs-height) - var(--pagedjs-margin-top) - var(--pagedjs-margin-bottom) - 5mm);
+    width: var(--pagedjs-width);
+    height: calc(
+      var(--pagedjs-height) - var(--pagedjs-margin-top) -
+        var(--pagedjs-margin-bottom) - 5mm
+    );
+
     z-index: 1000;
 
-    > *:not(.mediaCaption) {
+    img {
       position: absolute;
       top: calc(var(--pagedjs-margin-top) * -1);
       left: calc(var(--pagedjs-margin-left) * -1);
       width: var(--pagedjs-width);
       height: var(--pagedjs-height);
       object-fit: contain;
-      background-color: white;
 
+      background-color: white;
     }
-    &._isFullPageCover > * {
+    &._isFullPageCover img {
       object-fit: cover;
     }
 
     .mediaCaption {
       position: absolute;
       bottom: 0;
-      left: 0;
+      left: calc(var(--pagedjs-margin-left) * -1);
+      padding-top: 0;
       width: 100%;
-      left: calc(var(--pagedjs-margin-left)* -1);
 
       span {
         display: inline;
         box-decoration-break: clone;
         background-color: white;
-        padding: .25em;
+        padding: 0.25em 0.5em;
         border-radius: 0.25em;
       }
     }
-
-
   }
 }
-
 
 /* SET CHAPTER START OPTION */
 
@@ -135,7 +141,9 @@
 }
 .cover[data-layout-mode="image_top_text_down"] .coverTitle {
   position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem);
+  top: calc(
+    var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem
+  );
   height: calc(var(--pagedjs-height) / 2);
 }
 .cover[data-layout-mode="image_top_text_down"] .coverImage {
