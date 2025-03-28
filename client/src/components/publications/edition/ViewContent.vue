@@ -383,6 +383,14 @@ export default {
                 ${height ? ` height="${height}"` : ""}
               />
             `;
+          } else if (media.$type === "audio") {
+            html = `
+              <audio src="${src}" controls
+                alt="${alt}"
+                ${width ? ` width="${width}"` : ""}
+                ${height ? ` height="${height}"` : ""}
+              />
+            `;
           }
         }
       }
