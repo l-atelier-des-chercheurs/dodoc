@@ -154,6 +154,7 @@ export default {
       ];
 
       paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
+        bookrender.innerHTML = "";
         const bookpreview = this.$refs.bookpreview;
         bookpreview.innerHTML = "";
         const pagesOutput = flow.pagesArea;
