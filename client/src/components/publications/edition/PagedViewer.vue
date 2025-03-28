@@ -6,6 +6,7 @@
       'is--editable': can_edit,
     }"
   >
+    <div ref="bookrender" />
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
       ref="vueinfiniteviewer"
@@ -126,9 +127,9 @@ export default {
 
       this.removeExistingStyles();
 
-      const bookpreview = this.$refs.bookpreview;
-      if (!bookpreview) {
-        console.log("no bookpreview div");
+      const bookrender = this.$refs.bookrender;
+      if (!bookrender) {
+        console.log("no bookrender div");
         return;
       }
 
@@ -152,7 +153,9 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
+      paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
+        bookrender.innerHTML = "";
+        const bookpreview = this.$refs.bookpreview;
         bookpreview.innerHTML = "";
         const pagesOutput = flow.pagesArea;
         bookpreview.appendChild(pagesOutput);
