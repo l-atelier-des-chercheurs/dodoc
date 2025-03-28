@@ -23,7 +23,7 @@
               <component :is="Component" />
             </router-view>
           </transition>
-          <TaskTracker />
+          <!-- <TaskTracker /> -->
         </template>
       </div>
     </transition>

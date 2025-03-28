@@ -46,8 +46,15 @@
         <RemoveMenu
           class="_removeMedia"
           :show_button_text="false"
+          :button_text="$t('remove_this_image')"
           @remove="removeMedia(image.$path)"
-        />
+        >
+          <template #trigger>
+            <button type="button" class="u-button_icon u-button_red">
+              <b-icon icon="trash" />
+            </button>
+          </template>
+        </RemoveMenu>
       </div>
     </div>
 

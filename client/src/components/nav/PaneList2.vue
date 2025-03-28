@@ -289,7 +289,7 @@ export default {
   // border-radius: var(--panel-radius);
 
   &.has--noPanes {
-    border-bottom: 1px solid var(--c-gris);
+    // border-bottom: 1px solid var(--c-gris);
   }
 }
 

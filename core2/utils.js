@@ -739,21 +739,45 @@ module.exports = (function () {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = ffmpeg.ffprobe(path, (err, metadata) => {
           if (err || typeof metadata === "undefined") return reject(err);
-          return resolve(metadata);
+
+          let duration;
+          if (typeof metadata.format?.duration === "number")
+            duration = +metadata.format.duration.toPrecision(3);
+
+          let location;
+          if (metadata.format?.tags?.location)
+            location = metadata.format.tags.location;
+          if (metadata.format?.tags?.["com.apple.quicktime.location.ISO6709"])
+            location =
+              metadata.format.tags["com.apple.quicktime.location.ISO6709"];
+
+          let width = metadata.streams[0]?.width;
+          let height = metadata.streams[0]?.height;
+          let ratio =
+            width && height
+              ? API.makeRatio({
+                  w: width,
+                  h: height,
+                })
+              : undefined;
+
+          let streams = metadata.streams;
+
+          return resolve({
+            duration,
+            location,
+            width,
+            height,
+            ratio,
+            streams,
+          });
         });
       });
     },
-    async getVideoDurationFromMetadata({ ffmpeg_cmd, video_path }) {
-      const metadata = await API.getVideoMetaData({ path: video_path });
-      let duration = metadata.format?.duration;
-      if (duration === "N/A") duration = undefined;
-      const streams = metadata.streams;
-      return { duration, streams };
-    },
     async hasAudioTrack({ ffmpeg_cmd, video_path }) {
-      const metadata = await API.getVideoMetaData({ path: video_path });
+      const { streams } = await API.getVideoMetaData({ path: video_path });
       return resolve(
-        metadata?.streams?.filter((s) => s.codec_type === "audio").length > 0
+        streams?.filter((s) => s.codec_type === "audio").length > 0
       );
     },
 

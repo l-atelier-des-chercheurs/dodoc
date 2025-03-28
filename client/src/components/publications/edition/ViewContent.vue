@@ -25,6 +25,7 @@
         :viewer_type="viewer_type"
         :css_styles="css_styles"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
+        :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
       />
       <DocViewer
@@ -58,6 +59,7 @@ export default {
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    can_edit: Boolean,
   },
   components: {
     PagedViewer,
@@ -182,7 +184,7 @@ export default {
           }
         }
 
-        cover.layout_mode = this.cover_media.cover_layout_mode || "normal";
+        cover.layout_mode = this.cover_media?.cover_layout_mode || "normal";
       }
       return cover;
     },
@@ -233,7 +235,7 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            let html;
+            let html = "";
 
             let custom_classes = [],
               width,
@@ -255,7 +257,7 @@ export default {
             }
 
             if (meta_src.startsWith("http")) {
-              html = `
+              html += `
                   <img src="${meta_src}"
                     alt="${alt}"
                     ${width ? ` width="${width}"` : ""}
@@ -266,7 +268,7 @@ export default {
             } else {
               const _media = this.getMediaSrc(meta_src, source_medias);
               if (!_media) {
-                html = `<i>Media not found</i>`;
+                html += `<i>Media not found</i>`;
               } else {
                 const { html: _html, is_qr_code } = this.placeLocalMedia({
                   _media,
@@ -274,7 +276,7 @@ export default {
                   width,
                   height,
                 });
-                html = _html;
+                html += _html;
                 if (is_qr_code) {
                   custom_classes.push("_isqrcode");
                 }
@@ -284,6 +286,7 @@ export default {
             if (alt) {
               html += `<div class="mediaCaption"><span>${alt}</span></div>`;
             }
+
             return `<div class='media ${custom_classes.join(
               " "
             )}'>${html}</div>`;
@@ -292,7 +295,7 @@ export default {
       });
 
       const parsed = marked.parse(content);
-      return DOMPurify.sanitize(parsed);
+      return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
     },
 
     getMediaSrc(meta_src, source_medias) {
@@ -329,16 +332,17 @@ export default {
       const dataUrl = code.toDataURL({ scale: 10 });
 
       return {
-        media,
         src,
+        url,
         dataUrl,
+        media,
       };
     },
     placeLocalMedia({ _media, alt, width, height }) {
       let html = "";
       let is_qr_code = false;
 
-      const { src, dataUrl, media } = _media;
+      const { src, url, dataUrl, media } = _media;
       if (!width && !height) {
         width = media.$infos.width;
         height = media.$infos.height;
@@ -355,9 +359,9 @@ export default {
       } else {
         is_qr_code = true;
         html += `
-              <div>
-                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
-              </div>
+              <a href="${url}" target="_blank" data-url="url">
+                <img class="_qrCode" src="${dataUrl}" alt="QR code for media" />
+              </a>
             `;
 
         // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
@@ -424,7 +428,7 @@ export default {
   // width: 100%;
   z-index: 10;
   margin: 0 auto;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   pointer-events: none;
 
   display: flex;
