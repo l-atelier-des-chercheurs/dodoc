@@ -23,7 +23,7 @@
           v-else
           type="button"
           class="u-button u-button_red"
-          @click="removeCustom"
+          @click="resetCustom"
         >
           {{ $t("back_to_default_styles") }}
         </button>
@@ -35,6 +35,7 @@
     </template>
     <template v-else>
       <CollaborativeEditor3
+        ref="styleEditor"
         :key="style_file.$path"
         :content="style_file.$content"
         :path="style_file.$path"
@@ -82,10 +83,8 @@ export default {
         },
       });
     },
-    removeCustom() {
-      this.$api.deleteItem({
-        path: this.style_file.$path,
-      });
+    async resetCustom() {
+      this.$refs.styleEditor.restoreVersion(default_styles);
     },
   },
 };

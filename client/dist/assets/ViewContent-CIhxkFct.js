@@ -1078,57 +1078,58 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 }
 
 /* SET COVER OPTIONS */
+.book {
+  .cover {
+    break-after: page;
+  }
+  .coverTitle {
+    position: relative;
+    z-index: 2;
+  }
+  .coverImage {
+    position: relative;
+    z-index: 1;
+  }
+  .cover:not([data-layout-mode="normal"]) .coverImage img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .cover[data-layout-mode="full_page"] .coverImage {
+    position: absolute;
+    top: calc(var(--pagedjs-margin-top) * -1);
+    left: calc(var(--pagedjs-margin-left) * -1);
+    width: var(--pagedjs-width);
+    height: var(--pagedjs-height);
+  }
 
-.cover {
-  break-after: page;
-}
-.coverTitle {
-  position: relative;
-  z-index: 2;
-}
-.coverImage {
-  position: relative;
-  z-index: 1;
-}
-.cover:not([data-layout-mode="normal"]) .coverImage img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.cover[data-layout-mode="full_page"] .coverImage {
-  position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1);
-  left: calc(var(--pagedjs-margin-left) * -1);
-  width: var(--pagedjs-width);
-  height: var(--pagedjs-height);
-}
-
-.cover[data-layout-mode="text_top_image_down"] .coverTitle {
-  height: calc(var(--pagedjs-height) / 2);
-}
-.cover[data-layout-mode="text_top_image_down"] .coverImage {
-  position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2));
-  left: calc(var(--pagedjs-margin-left) * -1);
-  width: var(--pagedjs-width);
-  height: calc(var(--pagedjs-height) / 2);
-}
-.cover[data-layout-mode="image_top_text_down"] .coverTitle {
-  position: absolute;
-  top: calc(
-    var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem
-  );
-  height: calc(var(--pagedjs-height) / 2);
-}
-.cover[data-layout-mode="image_top_text_down"] .coverImage {
-  position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1);
-  left: calc(var(--pagedjs-margin-left) * -1);
-  width: var(--pagedjs-width);
-  height: calc(var(--pagedjs-height) / 2);
+  .cover[data-layout-mode="text_top_image_down"] .coverTitle {
+    height: calc(var(--pagedjs-height) / 2);
+  }
+  .cover[data-layout-mode="text_top_image_down"] .coverImage {
+    position: absolute;
+    top: calc(var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2));
+    left: calc(var(--pagedjs-margin-left) * -1);
+    width: var(--pagedjs-width);
+    height: calc(var(--pagedjs-height) / 2);
+  }
+  .cover[data-layout-mode="image_top_text_down"] .coverTitle {
+    position: absolute;
+    top: calc(
+      var(--pagedjs-margin-top) * -1 + calc(var(--pagedjs-height) / 2) + 2rem
+    );
+    height: calc(var(--pagedjs-height) / 2);
+  }
+  .cover[data-layout-mode="image_top_text_down"] .coverImage {
+    position: absolute;
+    top: calc(var(--pagedjs-margin-top) * -1);
+    left: calc(var(--pagedjs-margin-left) * -1);
+    width: var(--pagedjs-width);
+    height: calc(var(--pagedjs-height) / 2);
+  }
 }
 `,LT=`:root {
   --main-color: #0040eb;
@@ -1337,6 +1338,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 /* applies to web pages */
 .web {
   margin: 0 auto;
+  max-width: 120ch;
 
   display: flex;
   flex-flow: row nowrap;
@@ -1346,7 +1348,10 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
 
   nav {
+    position: sticky;
+    top: 0;
     flex: 1 0 16ch;
+    margin-top: 3.5rem;
 
     ol {
       margin-left: calc(var(--spacing));
@@ -1373,7 +1378,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
     }
   }
 
-  .chapter {
+  .chapter, .cover {
     flex: 10 1 0;
 
     h1 {
