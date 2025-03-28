@@ -243,9 +243,11 @@ export default {
 
             if (title?.startsWith("=")) {
               if (title.startsWith("=full-page")) {
-                custom_classes.push("_isFullPage");
-                if (title.startsWith("=full-page-cover")) {
-                  custom_classes.push("_isFullPageCover");
+                if (this.view_mode === "book") {
+                  custom_classes.push("_isFullPage");
+                  if (title.startsWith("=full-page-cover")) {
+                    custom_classes.push("_isFullPageCover");
+                  }
                 }
               } else {
                 [width, height] = title
@@ -347,6 +349,10 @@ export default {
         width = media.$infos.width;
         height = media.$infos.height;
       }
+      const small_thumb = this.getFirstThumbURLForMedia({
+        file: media,
+        resolution: 220,
+      });
 
       if (media.$type === "image") {
         html = `
@@ -354,29 +360,55 @@ export default {
                     alt="${alt}"
                     ${width ? ` width="${width}"` : ""}
                     ${height ? ` height="${height}"` : ""}
-                  >
+                  />
                 `;
       } else {
-        is_qr_code = true;
-        html += `
+        if (this.view_mode === "book") {
+          is_qr_code = true;
+          html = this.makeQREmbedForQR({
+            url,
+            alt,
+            width,
+            height,
+            dataUrl,
+            media,
+            small_thumb,
+          });
+        } else {
+          if (media.$type === "video") {
+            html = `
+              <video src="${src}" controls
+                alt="${alt}"
+                ${width ? ` width="${width}"` : ""}
+                ${height ? ` height="${height}"` : ""}
+              />
+            `;
+          }
+        }
+      }
+
+      return { html, is_qr_code };
+    },
+    makeQREmbedForQR({ url, alt, width, height, dataUrl, media, small_thumb }) {
+      let html = `
               <a href="${url}" target="_blank" data-url="url">
                 <img class="_qrCode" src="${dataUrl}" alt="QR code for media" />
               </a>
             `;
 
-        // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
-        html += `<div class="mediaInfos">`;
+      // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
+      html += `<div class="mediaInfos">`;
 
-        if (media.$infos.duration) {
-          html += `<div class="mediaDuration">
+      if (media.$infos.duration) {
+        html += `<div class="mediaDuration">
                 ${this.$t(media.$type)}
                 ${this.formatDurationToHoursMinutesSeconds(
                   media.$infos.duration
                 )}
               </div>`;
-        }
+      }
 
-        html += `
+      html += `
               <div class="mediaSourceCaption">
                 ${media.caption || ""}
               </div>
@@ -384,26 +416,19 @@ export default {
                 ${media.$credits || ""}
               </div>`;
 
-        html += `</div>`;
+      html += `</div>`;
 
-        // get thumbs
-        const thumb = this.getFirstThumbURLForMedia({
-          file: media,
-          resolution: 220,
-        });
-        if (thumb) {
-          html += `
+      if (small_thumb) {
+        html += `
               <div class="_thumbnail">
-                <img src="${thumb}"
+                <img src="${small_thumb}"
                   alt="${alt}"
                   ${width ? ` width="${width}"` : ""}
                   ${height ? ` height="${height}"` : ""}
                 >
               </div>`;
-        }
       }
-
-      return { html, is_qr_code };
+      return html;
     },
   },
 };

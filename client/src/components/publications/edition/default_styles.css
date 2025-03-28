@@ -223,7 +223,6 @@
       }
     }
     button {
-
       text-align: left;
       color: currentColor;
       background: transparent;
@@ -252,7 +251,7 @@
 
   p,
   li {
-    font-size: 20px;
+    /* font-size: 20px; */
   }
   h1 {
     font-size: 2em;
@@ -261,32 +260,23 @@
 
   h2 {
     font-size: 1.4em;
-    text-align: center;
-    margin-top: calc((var(--font-size) * var(--line-height) * 4));
   }
 
   h3 {
     font-size: 1.1em;
-    text-align: center;
-    margin-top: calc((var(--font-size) * var(--line-height) * 2));
   }
 
   .media {
     width: 100%;
-    margin: auto !important;
-    margin-bottom: 100px !important;
   }
 
-  .media img {
-    margin: auto;
-  }
 
-  .mediaCaption span {
-    font-size: 16px;
+  .mediaCaption {
+    text-align: left;
   }
 
   blockquote {
-    margin-left: 50px !important;
+    margin-left: calc(var(--spacing) * 2);
   }
 
   blockquote,
