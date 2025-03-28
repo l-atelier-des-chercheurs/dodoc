@@ -977,7 +977,6 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
 .media {
   display: inline-block;
   position: relative;
-  width: 100%;
 
   &._isqrcode {
     display: flex;
@@ -1055,6 +1054,12 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
       }
     }
   }
+
+  audio {
+    width: 100%;
+    height: 54px;
+  }
+
 }
 
 /* SET CHAPTER START OPTION */
@@ -1395,11 +1400,6 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   }
 
   .media {
-    width: 100%;
-    audio {
-      width: 100%;
-      height: 54px;
-    }
   }
 
 
