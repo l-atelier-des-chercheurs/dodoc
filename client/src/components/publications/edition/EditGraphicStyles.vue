@@ -23,7 +23,7 @@
           v-else
           type="button"
           class="u-button u-button_red"
-          @click="removeCustom"
+          @click="resetCustom"
         >
           {{ $t("back_to_default_styles") }}
         </button>
@@ -82,9 +82,12 @@ export default {
         },
       });
     },
-    removeCustom() {
-      this.$api.deleteItem({
+    async resetCustom() {
+      await this.$api.updateMeta({
         path: this.style_file.$path,
+        new_meta: {
+          $content: default_styles,
+        },
       });
     },
   },
