@@ -16,7 +16,7 @@
       <div class="" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="_divViewer" ref="bookpreview" />
+      <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
