@@ -245,7 +245,7 @@
     }
   }
 
-  .chapter {
+  .chapter, .cover {
     flex: 10 1 0;
 
     h1 {

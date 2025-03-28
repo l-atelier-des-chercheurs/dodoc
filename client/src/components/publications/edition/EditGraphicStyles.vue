@@ -35,6 +35,7 @@
     </template>
     <template v-else>
       <CollaborativeEditor3
+        ref="styleEditor"
         :key="style_file.$path"
         :content="style_file.$content"
         :path="style_file.$path"
@@ -83,12 +84,7 @@ export default {
       });
     },
     async resetCustom() {
-      await this.$api.updateMeta({
-        path: this.style_file.$path,
-        new_meta: {
-          $content: default_styles,
-        },
-      });
+      this.$refs.styleEditor.restoreVersion(default_styles);
     },
   },
 };
