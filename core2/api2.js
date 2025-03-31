@@ -932,7 +932,6 @@ module.exports = (function () {
     });
     const task_id = task.id;
 
-    // TODO
     // 1. create a task with parameters: settings / author that started it / source folder path / destination slug path  / time created / etc.
     // 2. return ID of task to client
     // 3. using this ID, client can join a room to get progress on task
