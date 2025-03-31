@@ -168,7 +168,7 @@ Vue.component("DurationDisplay", DurationDisplay);
 
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
-import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
+import UploadFiles from "@/adc-core/modals/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
