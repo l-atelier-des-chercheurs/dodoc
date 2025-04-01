@@ -883,19 +883,18 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      const { meta: saved_meta, meta_filename } = await file.importFile({
+      const { meta_filename } = await file.importFile({
         path_to_folder,
         req,
       });
       dev.logpackets({
         status: `uploaded file`,
         path_to_folder,
-        saved_meta,
       });
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_folder, meta_filename),
       });
-      res.status(200).json({ saved_meta, meta_filename });
+      res.status(200).json({ uploaded_meta: meta, meta_filename });
       notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         meta,
