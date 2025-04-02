@@ -178,7 +178,7 @@ export default {
         );
       };
 
-      const { saved_meta, meta_filename } = await this.$api
+      const { uploaded_meta, meta_filename } = await this.$api
         .uploadFile({
           path,
           filename: this.final_image_filename,
@@ -195,15 +195,15 @@ export default {
         });
 
       this.is_saving = false;
-      return { saved_meta, meta_filename };
+      return { uploaded_meta, meta_filename };
     },
     async replaceOriginal() {
       // not very clean… Should rework with specific API route ? $api.updateContent ?
-      const { saved_meta, meta_filename } = await this.saveAsNew();
+      const { uploaded_meta, meta_filename } = await this.saveAsNew();
       const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
 
       const old_media_filename = this.media.$media_filename;
-      const new_media_filename = saved_meta.$media_filename;
+      const new_media_filename = uploaded_meta.$media_filename;
 
       // set $media_filename from temp to the new filename
       await this.$api.updateMeta({

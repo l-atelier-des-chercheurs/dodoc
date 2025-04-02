@@ -574,8 +574,8 @@ export default function () {
             throw this.processError(err);
           });
         this.$eventHub.$emit("hooks.uploadFile", { path });
-        const { saved_meta, meta_filename } = res.data;
-        return { saved_meta, meta_filename };
+        const { uploaded_meta, meta_filename } = res.data;
+        return { uploaded_meta, meta_filename };
       },
       async copyFile({ path, new_meta = {}, path_to_destination_folder = "" }) {
         const response = await this.$axios

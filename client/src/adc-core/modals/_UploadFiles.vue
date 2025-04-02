@@ -1,63 +1,69 @@
 <template>
-  <div class="_uploadFiles">
-    <div
-      v-for="f in files_to_upload"
-      :key="f.name"
-      class="_uploadFile"
-      :class="cssStatus(f)"
-      :style="`--progress-percent: ${
-        files_to_upload_meta[f.name].upload_percentages / 100
-      }`"
+  <div class="">
+    <BaseModal2
+      :title="$t('import')"
+      :confirm_before_closing="confirm_before_closing"
+      @close="$emit('close')"
     >
-      <div class="_uploadFile--progressBar"></div>
+      <div
+        v-for="f in files_to_upload"
+        :key="f.name"
+        class="_uploadFile"
+        :class="cssStatus(f)"
+        :style="`--progress-percent: ${
+          files_to_upload_meta[f.name].upload_percentages / 100
+        }`"
+      >
+        <div class="_uploadFile--progressBar"></div>
 
-      <img
-        v-if="
-          !!f.type &&
-          f.type.includes('image') &&
-          files_to_upload_meta[f.name].status === 'sending'
-        "
-        class="_uploadFile--image"
-        width="50"
-        :src="getImgPreview(f)"
-      />
-      <div v-else class="_uploadFile--image" />
+        <img
+          v-if="
+            !!f.type &&
+            f.type.includes('image') &&
+            files_to_upload_meta[f.name].status === 'sending'
+          "
+          class="_uploadFile--image"
+          width="50"
+          :src="getImgPreview(f)"
+        />
+        <div v-else class="_uploadFile--image" />
 
-      <div :title="f.name" class="_uploadFile--filename">{{ f.name }}</div>
-      <div class="_uploadFile--size">{{ formatBytes(f.size) }}</div>
-      <div class="_uploadFile--action">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="sendThisFile(f)"
-          :disabled="files_to_upload_meta[f.name].status !== 'failed'"
-        >
-          <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
-            {{ $t("import") }}
-          </template>
-          <template
-            v-else-if="files_to_upload_meta[f.name].status === 'waiting'"
+        <div :title="f.name" class="_uploadFile--filename">{{ f.name }}</div>
+        <div class="_uploadFile--size">{{ formatBytes(f.size) }}</div>
+        <div class="_uploadFile--action">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="sendThisFile(f)"
+            :disabled="files_to_upload_meta[f.name].status !== 'failed'"
           >
-            {{ $t("waiting") }}
-          </template>
-          <template
-            v-else-if="files_to_upload_meta[f.name].status === 'sending'"
-          >
-            {{ $t("sending") }}
-          </template>
-          <template
-            v-else-if="files_to_upload_meta[f.name].status === 'success'"
-          >
-            {{ $t("sent") }}
-          </template>
-          <template
-            v-else-if="files_to_upload_meta[f.name].status === 'failed'"
-          >
-            {{ $t("retry") }}
-          </template>
-        </button>
+            <template v-if="!files_to_upload_meta.hasOwnProperty(f.name)">
+              {{ $t("import") }}
+            </template>
+            <template
+              v-else-if="files_to_upload_meta[f.name].status === 'waiting'"
+            >
+              {{ $t("waiting") }}
+            </template>
+            <template
+              v-else-if="files_to_upload_meta[f.name].status === 'sending'"
+            >
+              {{ $t("sending") }}
+            </template>
+            <template
+              v-else-if="files_to_upload_meta[f.name].status === 'success'"
+            >
+              {{ $t("sent") }}
+            </template>
+            <template
+              v-else-if="files_to_upload_meta[f.name].status === 'failed'"
+            >
+              {{ $t("retry") }}
+            </template>
+          </button>
+        </div>
       </div>
-    </div>
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -84,7 +90,7 @@ export default {
     });
   },
   mounted() {
-    this.sendAllFiles();
+    // this.sendAllFiles();
   },
   beforeDestroy() {},
   computed: {},

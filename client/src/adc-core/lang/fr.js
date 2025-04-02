@@ -172,7 +172,8 @@ export default {
   audiooutput: "Sortie audio",
 
   import: "Importer",
-  waiting: "À venir",
+  send: "Envoyer",
+  waiting: "En attente",
   sending: "En cours",
   sent: "Envoyé",
   retry: "Réessayer",
