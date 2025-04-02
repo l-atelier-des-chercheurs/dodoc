@@ -5,10 +5,14 @@
         class="_uploadFile--progressBar--bar"
         :style="`--progress-percent: ${(upload_percentage || 0) / 100}`"
       />
-      <div
-        class="_uploadFile--progressBar--percent"
-        v-text="upload_percentage ? upload_percentage + '%' : $t('waiting')"
-      />
+      <div class="_uploadFile--progressBar--percent">
+        <span>
+          {{ $t(status) }}
+        </span>
+        <span>
+          {{ upload_percentage ? upload_percentage + "%" : "" }}
+        </span>
+      </div>
     </div>
     <div class="_uploadFile--row">
       <div class="_uploadFile--preview">
@@ -18,41 +22,45 @@
           width="50"
           :src="preview"
         />
+        <template v-else>
+          <b-icon icon="eye-slash" />
+        </template>
         <!-- <div v-else class="_uploadFile--image" /> -->
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
-        <div class="u-metaField">
-          <DLabel :str="$t('filename')" />
-          <div class="u-filename">{{ file.name }}</div>
+        <template v-if="!allow_caption_edition || !sent_file">
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.name }}</div>
+          </div>
+          <SizeDisplay v-if="file.size" :size="file.size" />
+        </template>
+        <div v-else class="_captionEditor">
+          <!-- <hr /> -->
+          <div class="u-spacingBottom">
+            <TitleField
+              :label="$t('caption')"
+              :field_name="'caption'"
+              :content="sent_file.caption"
+              :path="sent_file.$path"
+              :input_type="'editor'"
+              :custom_formats="['bold', 'italic', 'link']"
+              :can_edit="true"
+            />
+          </div>
+          <div class="u-spacingBottom">
+            <TitleField
+              :label="$t('credit/reference')"
+              :field_name="'$credits'"
+              :content="sent_file.$credits"
+              :path="sent_file.$path"
+              :input_type="'editor'"
+              :custom_formats="['bold', 'italic', 'link']"
+              :can_edit="true"
+            />
+          </div>
         </div>
-        <SizeDisplay v-if="file.size" :size="file.size" />
-
-        <div v-if="sent_file" class="_captionEditor">
-          <hr />
-          <TitleField
-            :label="$t('caption')"
-            :field_name="'caption'"
-            :content="sent_file.caption"
-            :path="sent_file.$path"
-            :input_type="'editor'"
-            :custom_formats="['bold', 'italic', 'link']"
-            :can_edit="true"
-          />
-          <TitleField
-            :label="$t('credit/reference')"
-            :field_name="'$credits'"
-            :content="sent_file.$credits"
-            :path="sent_file.$path"
-            :input_type="'editor'"
-            :custom_formats="['bold', 'italic', 'link']"
-            :can_edit="true"
-          />
-        </div>
-
-        <!-- <pre>
-          {{ sent_file }}
-        </pre> -->
       </div>
       <div class="_uploadFile--action">
         <button
@@ -65,7 +73,7 @@
         </button>
         <button
           type="button"
-          class="u-button u-button_icon u-button_bleuvert"
+          class="u-button u-button_icon"
           v-else-if="['waiting', 'sending'].includes(status)"
           @click="$emit('skip')"
         >
@@ -73,8 +81,8 @@
         </button>
         <button
           type="button"
-          class="u-button u-button_icon u-button_bleuvert"
-          v-else-if="status === 'success'"
+          class="u-button u-button_icon"
+          v-else-if="status === 'sent'"
           @click="$emit('hide')"
         >
           <b-icon
@@ -100,6 +108,7 @@ export default {
   props: {
     file: File,
     path: String,
+    allow_caption_edition: Boolean,
   },
   components: {},
   data() {
@@ -164,7 +173,7 @@ export default {
         });
 
       this.upload_percentage = 100;
-      this.status = "success";
+      this.status = "sent";
 
       setTimeout(() => {
         this.sent_file = this.$api.store[this.path].$files.find(
@@ -172,7 +181,7 @@ export default {
         );
       }, 500);
 
-      return meta_filename;
+      this.$emit("uploaded", meta_filename);
     },
     cancelSend() {},
     retrySend() {
@@ -188,7 +197,7 @@ export default {
   background-color: var(--c-gris_clair);
 
   color: var(--c-noir);
-  border: 1px solid var(--c-gris_clair);
+  border: 2px solid var(--c-gris_clair);
 
   border-radius: 4px;
   overflow: hidden;
@@ -232,11 +241,16 @@ export default {
     position: absolute;
     width: 100%;
     // top: -0.1rem;
-    right: 0.25rem;
+    // right: 0.25rem;
+    padding: 0 calc(var(--spacing) / 2);
     text-align: right;
     font-size: var(--sl-font-size-x-small);
     font-family: var(--sl-font-mono);
     font-weight: 700;
+
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 }
 
@@ -250,20 +264,22 @@ export default {
 
 ._uploadFile--preview {
   position: relative;
+  display: flex;
+  place-content: center;
+  place-items: center;
   flex: 0 0 auto;
-  width: 100px;
+  width: 150px;
+  max-width: 20vw;
   aspect-ratio: 1/1;
   height: auto;
-  object-fit: cover;
-  object-position: center;
-  background-color: rgba(220, 220, 220, 0.4);
+  background-color: white;
 
   img {
     position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
-    object-fit: contain;
+    object-fit: cover;
   }
 }
 
