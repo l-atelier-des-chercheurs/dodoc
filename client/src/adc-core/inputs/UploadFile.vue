@@ -29,14 +29,12 @@
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
-        <template v-if="!allow_caption_edition || !sent_file">
-          <div class="u-metaField">
-            <DLabel :str="$t('filename')" />
-            <div class="u-filename">{{ file.name }}</div>
-          </div>
-          <SizeDisplay v-if="file.size" :size="file.size" />
-        </template>
-        <div v-else class="_captionEditor">
+        <div class="u-metaField">
+          <DLabel :str="$t('filename')" />
+          <div class="u-filename">{{ file.name }}</div>
+        </div>
+        <SizeDisplay v-if="file.size" :size="file.size" />
+        <div v-if="allow_caption_edition && sent_file" class="_captionEditor">
           <!-- <hr /> -->
           <div class="u-spacingBottom">
             <TitleField
