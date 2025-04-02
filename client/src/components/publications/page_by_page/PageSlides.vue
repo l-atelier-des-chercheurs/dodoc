@@ -222,13 +222,17 @@ export default {
   props: {
     publication: Object,
     is_serversidepreview: Boolean,
+    defaut_display_mode: {
+      type: String,
+      default: "print",
+    },
   },
   components: {
     SinglePage,
   },
   data() {
     return {
-      display_mode: "print",
+      display_mode: this.defaut_display_mode,
       page_zoom: 100,
       night_mode: false,
     };
