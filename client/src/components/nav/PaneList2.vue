@@ -422,6 +422,8 @@ export default {
   .u-icon {
     width: 2rem;
     height: 2rem;
+    overflow: visible;
+
     svg {
       width: 2rem;
       height: 2rem;
