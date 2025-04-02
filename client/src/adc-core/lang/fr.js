@@ -176,6 +176,7 @@ export default {
   waiting: "En attente",
   sending: "En cours",
   sent: "Envoyé",
+  creating_thumb: "Création des miniatures",
   retry: "Réessayer",
   reload_page_to_apply:
     "Après avoir enregistré ces changements, rechargez cette page.",
@@ -943,7 +944,7 @@ export default {
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
   import_finished:
-    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les miniatures de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
   zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",

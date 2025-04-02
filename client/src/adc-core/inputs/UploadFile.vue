@@ -1,31 +1,50 @@
 <template>
-  <div class="_uploadFile" :class="['is--' + status]">
+  <div
+    class="_uploadFile"
+    :class="
+      (['is--' + status],
+      {
+        'is--mobileView': $root.is_mobile_view,
+      })
+    "
+  >
     <div class="_uploadFile--progressBar">
       <div
         class="_uploadFile--progressBar--bar"
         :style="`--progress-percent: ${(upload_percentage || 0) / 100}`"
       />
       <div class="_uploadFile--progressBar--percent">
+        <span> {{ index_indicator }}</span>
         <span>
-          {{ $t(status) }}
-        </span>
-        <span>
-          {{ upload_percentage ? upload_percentage + "%" : "" }}
+          {{ $t(status).toLowerCase() }}
+          {{
+            upload_percentage && upload_percentage < 100
+              ? " – " + upload_percentage + "%"
+              : ""
+          }}
         </span>
       </div>
     </div>
     <div class="_uploadFile--row">
       <div class="_uploadFile--preview">
-        <img
-          v-if="file_type === 'image'"
-          class="_uploadFile--image"
-          width="50"
-          :src="preview"
-        />
-        <template v-else>
-          <b-icon icon="eye-slash" />
+        <template v-if="!sent_file">
+          <img
+            v-if="file_type === 'image'"
+            class="_uploadFile--image"
+            width="50"
+            :src="preview"
+          />
+          <template v-else>
+            <b-icon icon="eye-slash" />
+          </template>
         </template>
-        <!-- <div v-else class="_uploadFile--image" /> -->
+        <template v-else>
+          <MediaContent
+            :file="sent_file"
+            :context="'full'"
+            :resolution="1600"
+          />
+        </template>
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
@@ -102,9 +121,12 @@
   </div>
 </template>
 <script>
+import MediaContent from "../fields/MediaContent.vue";
+
 export default {
   props: {
     file: File,
+    index_indicator: String,
     path: String,
     allow_caption_edition: Boolean,
   },
@@ -152,6 +174,9 @@ export default {
         this.upload_percentage = parseInt(
           Math.round((progressEvent.loaded * 100) / progressEvent.total)
         );
+
+        if (this.upload_percentage === 100 && this.status !== "sent")
+          this.status = "creating_thumb";
       };
 
       const { meta_filename, uploaded_meta } = await this.$api
@@ -207,6 +232,10 @@ export default {
   justify-content: space-between;
   align-items: stretch;
   gap: calc(var(--spacing) / 2);
+
+  .is--mobileView & {
+    flex-flow: column nowrap;
+  }
 
   > * {
     flex: 1 1 auto;
@@ -266,11 +295,18 @@ export default {
   place-content: center;
   place-items: center;
   flex: 0 0 auto;
-  width: 150px;
-  max-width: 20vw;
+  width: 200px;
+  max-width: 40vw;
   aspect-ratio: 1/1;
+  overflow: hidden;
   height: auto;
   background-color: white;
+
+  .is--mobileView & {
+    max-width: none;
+    width: 100%;
+    aspect-ratio: 2/1;
+  }
 
   img {
     position: absolute;
