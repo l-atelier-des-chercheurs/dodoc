@@ -540,6 +540,9 @@
                     },
                     "is_css_styles": {
                       "type": "string"
+                    },
+                    "css_title": {
+                      "type": "string"
                     }
                   }
                 }

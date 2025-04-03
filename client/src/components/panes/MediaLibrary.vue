@@ -1110,7 +1110,10 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
-  // background: var(--c-bleuvert);
+
+  border: 3px dotted var(--c-bleuvert);
+  border-radius: 10px;
+  padding: calc(var(--spacing) / 2);
 }
 
 ._tileMode {

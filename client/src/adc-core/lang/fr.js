@@ -176,6 +176,7 @@ export default {
   waiting: "En attente",
   sending: "En cours",
   sent: "Envoyé",
+  creating_thumb: "Création des miniatures",
   retry: "Réessayer",
   reload_page_to_apply:
     "Après avoir enregistré ces changements, rechargez cette page.",
@@ -943,7 +944,7 @@ export default {
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
   import_finished:
-    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les miniatures de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
   zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
@@ -1011,8 +1012,9 @@ export default {
   edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
+  already_translated_locally: "Déjà traduit (sur cet appareil uniquement)",
   hide_already_translated: "Masquer les traductions déjà réalisées",
-  "to_translate:": "À traduire :",
+  to_translate: "À traduire",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum de l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
@@ -1112,7 +1114,6 @@ export default {
   circle: "Cercle",
   polygon: "Polygone",
 
-  mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
   no_results: "Aucun résultat",
 
@@ -1292,6 +1293,7 @@ export default {
   graphic_styles: "Style graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
+  create_custom_stylesheet: "Créer une feuille de style personnalisée",
 
   millimetres: "millimètres",
   parent_space_is_private:

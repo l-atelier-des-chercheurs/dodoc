@@ -12,6 +12,7 @@
           :key="file.name"
           :file="file"
           :path="path"
+          :index_indicator="index + 1 + '/' + files_to_upload.length"
           :allow_caption_edition="allow_caption_edition"
           ref="filesList"
           @skip="abortFile(index)"

@@ -38,7 +38,7 @@
         </template>
 
         <template v-if="publication.template === 'page_by_page'">
-          <PageSlides
+          <PageExport
             :publication="publication"
             :is_serversidepreview="is_serversidepreview"
             @toggleFs="toggleFs"
@@ -74,8 +74,8 @@ export default {
   props: {},
   components: {
     PublicationTopbar,
-    PageSlides: () =>
-      import("@/components/publications/page_by_page/PageSlides.vue"),
+    PageExport: () =>
+      import("@/components/publications/page_by_page/PageExport.vue"),
     StoryTemplate: () =>
       import("@/components/publications/templates/StoryTemplate.vue"),
     SectionWithPrint: () =>
@@ -171,10 +171,6 @@ export default {
     async closeFs() {
       await screenfull.exit();
       this.is_fullscreen = false;
-    },
-    async toggleFs() {
-      if (this.is_fullscreen) this.closeFs();
-      else this.openFs();
     },
   },
 };

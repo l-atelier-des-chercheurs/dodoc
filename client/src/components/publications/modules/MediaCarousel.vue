@@ -207,6 +207,7 @@ export default {
       width: 100%;
       object-fit: var(--object-fit, cover);
       background-size: var(--object-fit, cover);
+      background-color: var(--c-gris_clair);
     }
   }
 }

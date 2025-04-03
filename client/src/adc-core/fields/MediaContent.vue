@@ -408,12 +408,16 @@ export default {
   height: 100%;
   width: 100%;
 
-  ._mediaContent--iframe--preview {
+  ._mediaContent--iframe--preview,
+  ._mediaContent--iframe--content {
     position: relative;
     width: 100%;
     height: 100%;
     aspect-ratio: 16/9;
+    color: black;
+  }
 
+  ._mediaContent--iframe--preview {
     ._playButton {
       display: block;
 
@@ -424,12 +428,8 @@ export default {
   }
 
   ._mediaContent--iframe--content {
-    position: relative;
     resize: vertical;
     display: flex;
-    height: 100%;
-    aspect-ratio: 16/9;
-    color: black;
 
     > * {
       flex: 1;
@@ -453,11 +453,10 @@ export default {
   ._iframeStylePreview {
     width: 100%;
     height: 100%;
-    border-radius: 4px;
+    border-radius: 8px;
     overflow: hidden;
-    border: 2px solid var(--c-gris);
     background-color: white;
-    background-color: var(--c-gris);
+    background-color: var(--set-backgroundColor, var(--c-gris_clair));
     object-fit: contain;
   }
 

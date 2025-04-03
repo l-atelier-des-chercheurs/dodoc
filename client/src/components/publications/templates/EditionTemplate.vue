@@ -36,6 +36,7 @@
             v-if="open_graphic_styles"
             :key="'edit_graphics'"
             :publication="publication"
+            :opened_style_file_meta.sync="pane_infos.opened_style_file_meta"
             @close="$emit('updatePane', { key: 'edit_graphics', value: false })"
           />
           <OpenChapter
@@ -59,6 +60,7 @@
             :publication="publication"
             :opened_chapter_meta_filename="opened_section_meta_filename"
             :view_mode="view_mode"
+            :opened_style_file_meta="pane_infos.opened_style_file_meta"
             :can_edit="can_edit"
             @openChapter="
               $emit('updatePane', { key: 'chapter', value: $event })

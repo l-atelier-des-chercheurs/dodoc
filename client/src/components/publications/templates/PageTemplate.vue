@@ -6,7 +6,7 @@
       :can_edit="can_edit"
       @togglePage="$emit('updatePane', { key: 'page_id', value: $event })"
     />
-    <PublicationSettings v-if="can_edit">
+    <PublicationSettings>
       <PageSettings :publication="publication" />
     </PublicationSettings>
   </div>
