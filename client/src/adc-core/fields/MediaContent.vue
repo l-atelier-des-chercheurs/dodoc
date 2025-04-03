@@ -458,7 +458,7 @@ export default {
     // border: 2px solid var(--c-gris);
     background-color: white;
     background-color: transparent;
-    object-fit: contain;
+    object-fit: cover;
   }
 
   iframe {
