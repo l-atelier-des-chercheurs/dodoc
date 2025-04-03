@@ -6,7 +6,7 @@
       'is--editable': can_edit,
     }"
   >
-    <div ref="bookrender" />
+    <div ref="bookrender" style="opacity: 0; pointer-events: none" />
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
       ref="vueinfiniteviewer"
