@@ -56,16 +56,15 @@ const i18n = () => {
     i18n.setLocaleMessage("en", english);
   };
 
-  // lang fr is always up to date – others, not so much. Load english as default
-  if (i18n.locale !== "fr") loadEnglishAsDefault();
-  debugger;
-
   changeLocale = async (new_lang) => {
     const messages = await loadLangageFile(new_lang);
     i18n.locale = new_lang;
     document.querySelector("html").setAttribute("lang", new_lang);
     i18n.setLocaleMessage(new_lang, messages);
     localStorage.setItem("language", new_lang);
+
+    // lang fr is always up to date – others, not so much. Load english as default
+    if (!["en", "fr"].includes(new_lang)) await loadEnglishAsDefault();
   };
   changeLocale(lang_settings.current);
 

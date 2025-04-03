@@ -1012,7 +1012,7 @@ export default {
   edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
-  already_translated: "Déjà traduit",
+  already_translated_locally: "Déjà traduit (sur cet appareil uniquement)",
   hide_already_translated: "Masquer les traductions déjà réalisées",
   to_translate: "À traduire",
   publish_on_forum_to_add_to_contribute_to_code:
