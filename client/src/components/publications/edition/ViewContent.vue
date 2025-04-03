@@ -19,10 +19,9 @@
           :key="style_file.$path"
           :value="getFilename(style_file.$path)"
         >
-          style –
-          {{ style_file.css_title || getFilename(style_file.$path) }}
+          style – {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
-        <option value="">{{ $t("default") }}</option>
+        <option value="">style – {{ $t("default_value") }}</option>
       </select>
 
       <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
@@ -121,15 +120,14 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      if (!this.style_files) return default_styles;
-      if (this.style_file_meta_selected) {
+      if (this.style_files && this.style_file_meta_selected) {
         return (
           this.style_files.find(
             (f) => this.getFilename(f.$path) === this.style_file_meta_selected
           )?.$content || ""
         );
       }
-      return this.style_files[0]?.$content || "";
+      return default_styles;
     },
     all_chapters() {
       return this.getSectionsWithProps({
