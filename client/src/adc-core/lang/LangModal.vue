@@ -90,111 +90,125 @@
           :is_open_initially="true"
           class="u-spacingBottom"
         >
-          <div class="">
-            <b>{{ missing_translations.length }}</b>
+          <div v-if="missing_translations.length === 0">
+            {{ $t("nothing_to_show") }}
           </div>
-          <div class="">
-            <span class="u-switch u-switch-xs">
-              <input
-                class="switch"
-                :id="'hide_already_translated'"
-                type="checkbox"
-                v-model="hide_already_translated"
-              />
-              <label class="u-label" :for="'hide_already_translated'">{{
-                $t("hide_already_translated")
-              }}</label>
-            </span>
-          </div>
-
-          <div class="u-spacingBottom _pagesList">
-            <button
-              v-for="p in total_pages"
-              type="button"
-              class="u-button u-button_small"
-              :class="{ 'is--active': p === page }"
-              :key="p"
-              @click="page = p"
-            >
-              {{ p }}
-            </button>
-          </div>
-          <div class="_allMissingTranslations">
-            <div class="" v-for="t in paged_missing_translations" :key="t.key">
-              <div class="">
-                <b>{{ t.key }}</b>
-                &nbsp;
-                <button
-                  type="button"
-                  class="u-buttonLink"
-                  :class="{
-                    'is--active': isAlreadyTranslated(t.key),
-                  }"
-                  @click="translateStr(t.key)"
-                >
-                  <template v-if="isAlreadyTranslated(t.key)">
-                    {{ $t("edit_translation") }}
-                  </template>
-                  <template v-else>
-                    {{ $t("translate") }}
-                  </template>
-                </button>
-              </div>
-              <div v-if="isAlreadyTranslated(t.key)">
-                <i>{{ lang_to_find_missing_str.toUpperCase() }}</i>
-                &nbsp;
-                <b-icon icon="arrow-right" />
-                &nbsp;
-                {{ isAlreadyTranslatedValue(t.key) }}
-              </div>
-              <div v-for="[lang, translation] in t.translations" :key="lang">
-                <i>{{ lang.toUpperCase() }}</i>
-                &nbsp;
-                <b-icon icon="arrow-right" />
-                &nbsp;
-                {{ translation }}
-              </div>
+          <template v-else>
+            <div class="">
+              <b>{{ missing_translations.length }}</b>
+            </div>
+            <div class="">
+              <span class="u-switch u-switch-xs">
+                <input
+                  class="switch"
+                  :id="'hide_already_translated'"
+                  type="checkbox"
+                  v-model="hide_already_translated"
+                />
+                <label class="u-label" :for="'hide_already_translated'">{{
+                  $t("hide_already_translated")
+                }}</label>
+              </span>
             </div>
 
-            <BaseModal2
-              v-if="will_translate_str"
-              :title="$t('translate')"
-              @close="will_translate_str = false"
-            >
-              <div class="u-spacingBottom">
-                <!-- {{ $t("translate") }} ({{ lang_to_find_missing_str }}) = -->
-                {{ will_translate_str }}
-              </div>
-
-              <div
-                v-for="[lang, translation] in will_translate_str_translations"
-                :key="lang"
-              >
-                <i>{{ lang.toUpperCase() }}</i>
-                &nbsp;
-                <b-icon icon="arrow-right" />
-                &nbsp;
-                {{ translation }}
-              </div>
-
-              <input
-                type="text"
-                class="u-spacingBottom"
-                v-model.trim="new_translation_text"
-                required
-                autofocus="autofocus"
-                @keydown.enter.prevent="submitTranslation"
-              />
+            <div class="u-spacingBottom _pagesList">
               <button
-                slot="footer"
+                v-for="p in total_pages"
                 type="button"
-                class="u-button u-button_bleuvert"
-                @click="submitTranslation"
+                class="u-button u-button_small"
+                :class="{ 'is--active': p - 1 === current_page }"
+                :key="'page-' + p"
+                @click="current_page = p - 1"
               >
-                {{ $t("submit") }}
+                {{ p }}
               </button>
-            </BaseModal2>
-          </div>
+            </div>
+            <div class="_allMissingTranslations">
+              <div
+                class=""
+                v-for="t in paged_missing_translations"
+                :key="t.key"
+              >
+                <div class="">
+                  <b>{{ t.key }}</b>
+                  &nbsp;
+                  <button
+                    type="button"
+                    class="u-buttonLink"
+                    :class="{
+                      'is--active': isAlreadyTranslated(t.key),
+                    }"
+                    @click="translateStr(t.key)"
+                  >
+                    <template v-if="isAlreadyTranslated(t.key)">
+                      {{ $t("edit_translation") }}
+                    </template>
+                    <template v-else>
+                      {{ $t("translate") }}
+                    </template>
+                  </button>
+                </div>
+                <div v-if="isAlreadyTranslated(t.key)">
+                  <i>{{ lang_to_find_missing_str.toUpperCase() }}</i>
+                  &nbsp;
+                  <b-icon icon="arrow-right" />
+                  &nbsp;
+                  {{ isAlreadyTranslatedValue(t.key) }}
+                </div>
+                <div v-for="[lang, translation] in t.translations" :key="lang">
+                  <i>{{ lang.toUpperCase() }}</i>
+                  &nbsp;
+                  <b-icon icon="arrow-right" />
+                  &nbsp;
+                  {{ translation }}
+                </div>
+              </div>
+
+              <BaseModal2
+                v-if="will_translate_str"
+                :title="$t('translate')"
+                @close="will_translate_str = false"
+              >
+                <div class="u-spacingBottom">
+                  <!-- {{ $t("translate") }} ({{ lang_to_find_missing_str }}) = -->
+                  {{ will_translate_str }}
+                </div>
+
+                <div
+                  v-for="[lang, translation] in will_translate_str_translations"
+                  :key="lang"
+                >
+                  <i>{{ lang.toUpperCase() }}</i>
+                  &nbsp;
+                  <b-icon icon="arrow-right" />
+                  &nbsp;
+                  {{ translation }}
+                </div>
+
+                <div class="u-spacingBottom" />
+
+                <input
+                  type="text"
+                  v-model.trim="new_translation_text"
+                  required
+                  autofocus="autofocus"
+                  @keydown.enter.prevent="submitTranslation"
+                />
+
+                <template #footer>
+                  <div />
+                  <button
+                    slot="footer"
+                    type="button"
+                    class="u-button u-button_bleuvert"
+                    @click="submitTranslation"
+                  >
+                    {{ $t("submit") }}
+                  </button>
+                </template>
+              </BaseModal2>
+            </div>
+          </template>
         </DetailsPane>
       </div>
     </div>
@@ -240,7 +254,6 @@ export default {
       translations: {},
       show_missing_translations: false,
 
-      lang_to_find_missing_str: "it",
       translations_to_share: {},
       hide_already_translated: true,
 
@@ -250,9 +263,8 @@ export default {
 
       confirm_erase_translations: false,
 
-      per_page: 10,
-      page: 1,
-      current_page: 1,
+      current_page: 0,
+      per_page: 50,
     };
   },
   created() {
@@ -285,6 +297,9 @@ export default {
     },
   },
   computed: {
+    lang_to_find_missing_str() {
+      return this.current_lang;
+    },
     missing_translations() {
       if (!this.translations) return false;
       return Object.entries(this.translations).reduce((acc, [key, val]) => {
@@ -311,8 +326,8 @@ export default {
     paged_missing_translations() {
       if (!this.missing_translations) return false;
       return this.missing_translations.slice(
-        this.page * this.per_page,
-        this.page * this.per_page + this.per_page
+        this.current_page * this.per_page,
+        this.current_page * this.per_page + this.per_page
       );
     },
     total_missing_translations() {
@@ -392,10 +407,10 @@ export default {
 ._translated {
   max-height: 40vh;
   border: 1px solid black;
-  padding: calc(var(--spacing) / 4);
+  // padding: calc(var(--spacing) / 4);
   // background: var(--c-gris_clair);
   border-radius: 4px;
-  margin: calc(var(--spacing) / 2) 0;
+  // margin: calc(var(--spacing) / 2) 0;
 
   > textarea {
     margin: 0;
