@@ -455,10 +455,9 @@ export default {
     height: 100%;
     border-radius: 8px;
     overflow: hidden;
-    // border: 2px solid var(--c-gris);
     background-color: white;
-    background-color: transparent;
-    object-fit: cover;
+    background-color: var(--set-backgroundColor, var(--c-gris_clair));
+    object-fit: contain;
   }
 
   iframe {
