@@ -1229,6 +1229,7 @@ export default {
   graphic_styles: "Graphic styles",
   edit_default_styles: "Edit default styles",
   back_to_default_styles: "Reset to default styles",
+  create_custom_stylesheet: "Create a custom stylesheet",
 
   millimetres: "millimetres",
   parent_space_is_private:

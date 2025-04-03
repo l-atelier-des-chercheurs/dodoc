@@ -1293,6 +1293,7 @@ export default {
   graphic_styles: "Style graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
+  create_custom_stylesheet: "Créer une feuille de style personnalisée",
 
   millimetres: "millimètres",
   parent_space_is_private:

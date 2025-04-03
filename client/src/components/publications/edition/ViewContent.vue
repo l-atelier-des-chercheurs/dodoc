@@ -9,6 +9,21 @@
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
       </select>
+      <select
+        size="small"
+        v-if="style_files?.length > 0"
+        v-model="style_file_meta_selected"
+      >
+        <option
+          v-for="style_file in style_files"
+          :key="style_file.$path"
+          :value="getFilename(style_file.$path)"
+        >
+          {{ style_file.css_title || getFilename(style_file.$path) }}
+        </option>
+        <option value="">{{ $t("default") }}</option>
+      </select>
+      {{ style_file_meta_selected }}
       <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
         <option value="A4">{{ $t("A4_portrait") }}</option>
         <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
@@ -68,10 +83,16 @@ export default {
   data() {
     return {
       is_loading: false,
+      style_file_meta_selected: undefined,
       // custom_styles_nested: "",
     };
   },
-  created() {},
+  created() {
+    if (this.style_files.length > 0)
+      this.style_file_meta_selected = this.getFilename(
+        this.style_files[0]?.$path
+      );
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
@@ -95,11 +116,15 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      const style_file = this.publication.$files?.find(
-        (f) => f.is_css_styles === true
-      );
-      if (!style_file) return default_styles;
-      return style_file?.$content || "";
+      if (!this.style_files) return default_styles;
+      if (this.style_file_meta_selected) {
+        return (
+          this.style_files.find(
+            (f) => this.getFilename(f.$path) === this.style_file_meta_selected
+          )?.$content || ""
+        );
+      }
+      return this.style_files[0]?.$content || "";
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -146,6 +171,16 @@ export default {
       });
 
       return nodes;
+    },
+    style_files() {
+      return this.publication.$files
+        ?.filter((f) => f.is_css_styles === true)
+        .sort((a, b) => {
+          const a_title = a.css_title || this.getFilename(a.$path);
+          const b_title = b.css_title || this.getFilename(b.$path);
+          if (a_title < b_title) return -1;
+          if (a_title > b_title) return 1;
+        });
     },
     css_styles() {
       return `
