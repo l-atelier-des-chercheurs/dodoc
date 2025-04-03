@@ -19,11 +19,12 @@
           :key="style_file.$path"
           :value="getFilename(style_file.$path)"
         >
+          style –
           {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
         <option value="">{{ $t("default") }}</option>
       </select>
-      {{ style_file_meta_selected }}
+
       <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
         <option value="A4">{{ $t("A4_portrait") }}</option>
         <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
@@ -69,6 +70,7 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
+    opened_style_file_meta: String,
     viewer_type: {
       type: String,
       default: "vue-infinite-viewer",
@@ -96,6 +98,9 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {
+    opened_style_file_meta() {
+      this.style_file_meta_selected = this.opened_style_file_meta;
+    },
     // custom_styles_unnested: {
     //   handler() {
     //     this.custom_styles_nested = this.prepareCustomStyles(

@@ -77,6 +77,7 @@ import default_styles from "@/components/publications/edition/default_styles.css
 export default {
   props: {
     publication: Object,
+    opened_style_file_meta: String,
   },
   components: {
     OpenedGraphicStyles,
@@ -84,8 +85,6 @@ export default {
   data() {
     return {
       default_styles,
-      opened_style_file_meta: undefined,
-
       show_create_css_modal: false,
       new_css_title: "",
     };
@@ -132,13 +131,13 @@ export default {
       this.new_css_title = "";
       this.show_create_css_modal = false;
 
-      this.opened_style_file_meta = meta_filename;
+      this.$emit("update:opened_style_file_meta", meta_filename);
     },
     async resetCustom() {
       this.$refs.styleEditor.restoreVersion(default_styles);
     },
     openStyleFile(path) {
-      this.opened_style_file_meta = this.getFilename(path);
+      this.$emit("update:opened_style_file_meta", this.getFilename(path));
     },
   },
 };
