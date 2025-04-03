@@ -1113,7 +1113,6 @@ export default {
   circle: "Cercle",
   polygon: "Polygone",
 
-  mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
   no_results: "Aucun résultat",
 

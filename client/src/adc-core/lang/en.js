@@ -318,6 +318,7 @@ export default {
   media_pickers_instr: "Select medias to import.",
   already_present: "Already present",
   sent: "Sent",
+  creating_thumb: "Creating thumbnails",
 
   current: "Current",
   save_on_this_device: "Save on this device",
@@ -493,6 +494,7 @@ export default {
   contributor: "Contributor",
   admin: "Administrator",
   import: "Import",
+  send: "Send",
   waiting: "Coming soon",
   sending: "In progress",
   feels: "Sent",
@@ -726,10 +728,12 @@ export default {
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
+
+  rotate: "Rotate",
   rotate_90_deg: "Rotate 90°",
   rotate_x_deg: "Rotate right of …°",
-
   both: "Both",
+
   mix_audio_and_image: "Sound on an image",
   mix_audio_and_image_summary: "Add sound to an image.",
   mix_audio_and_image_instructions:
@@ -1105,6 +1109,10 @@ export default {
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
+
+  dont_zoom: "Don’t zoom",
+  very_far: "Very far",
+  very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
   crop_adjust: "Crop/adjust",
   aspect_ratio: "Aspect ratio",
@@ -1159,6 +1167,17 @@ export default {
     "Which is {seconds_equivalent} seconds at a speed of {frame_rate} images per second",
 
   connected_currently: "Connected currently",
+
+  confirm_save_changes:
+    "Some changes have been made, do you want to save them?",
+  close_without_saving: "Close without saving",
+
+  keep_existing_keywords: "Keep existing keywords",
+  add_after_existing_keywords: "Add after existing keywords",
+  erase_and_replace_keywords: "Erase and replace keywords",
+  keep_existing_authors: "Keep existing authors",
+  add_after_existing_authors: "Add after existing authors",
+  erase_and_replace_authors: "Erase and replace authors",
 
   start_by_uploading_images: "Start by uploading images below",
   or: "or",
