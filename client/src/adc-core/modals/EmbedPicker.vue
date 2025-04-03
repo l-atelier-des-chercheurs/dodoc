@@ -156,6 +156,7 @@ export default {
 iframe {
   width: 100%;
   aspect-ratio: 4/3;
+  display: block;
 }
 
 ._examples {
