@@ -38,12 +38,6 @@ const i18n = () => {
   };
   lang_settings.init();
 
-  const i18n = new VueI18n({
-    locale: lang_settings.current, // set locale
-    fallbackLocale: "en",
-    silentFallbackWarn: true,
-  });
-
   const loadLangageFile = async (lang) => {
     let content = null;
     if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
@@ -51,6 +45,20 @@ const i18n = () => {
     else content = await import("@/adc-core/lang/en.js");
     return content.default;
   };
+
+  const i18n = new VueI18n({
+    locale: lang_settings.current, // set locale
+    fallbackLocale: "en",
+  });
+
+  const loadEnglishAsDefault = async () => {
+    const english = await loadLangageFile("en");
+    i18n.setLocaleMessage("en", english);
+  };
+
+  // lang fr is always up to date – others, not so much. Load english as default
+  if (i18n.locale !== "fr") loadEnglishAsDefault();
+  debugger;
 
   changeLocale = async (new_lang) => {
     const messages = await loadLangageFile(new_lang);

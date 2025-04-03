@@ -1012,8 +1012,9 @@ export default {
   edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
+  already_translated: "Déjà traduit",
   hide_already_translated: "Masquer les traductions déjà réalisées",
-  "to_translate:": "À traduire :",
+  to_translate: "À traduire",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum de l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",

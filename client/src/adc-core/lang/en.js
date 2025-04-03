@@ -281,8 +281,9 @@ export default {
   edit_translation: "Edit translation",
   show_missing_translations: "Show missing translations",
   missing_translations: "Missing translations for language:",
+  already_translated: "Already translated",
   hide_already_translated: "Hide translations already made",
-  "to_translate:": "To translate:",
+  to_translate: "To translate",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",

@@ -14,6 +14,8 @@
 
     <div class="">
       <div class="u-spacingBottom" />
+      <div class="u-spacingBottom" />
+      <div class="u-spacingBottom" />
       <button
         type="button"
         class="u-buttonLink"
@@ -27,6 +29,7 @@
       </button>
       <div class="_missingTranslations" v-if="show_missing_translations">
         <hr />
+
         <DLabel :str="$t('missing_translations')" />
         <SelectField2
           :value="lang_to_find_missing_str"
@@ -36,6 +39,9 @@
           @change="lang_to_find_missing_str = $event"
         />
 
+        <hr />
+
+        <DLabel :str="$t('already_translated')" />
         <div
           class="_translated"
           v-if="Object.keys(translations_to_share).length > 0"
@@ -57,8 +63,10 @@
           </button>
         </div>
 
+        <hr />
+        <DLabel :str="$t('to_translate')" />
         <div class="">
-          <b> {{ $t("to_translate:") }} {{ missing_translations.length }} </b>
+          <b>{{ missing_translations.length }} </b>
         </div>
         <div class="">
           <span class="u-switch u-switch-xs">
@@ -120,6 +128,18 @@
               <!-- {{ $t("translate") }} ({{ lang_to_find_missing_str }}) = -->
               {{ will_translate_str }}
             </div>
+
+            <div
+              v-for="[lang, translation] in will_translate_str_translations"
+              :key="lang"
+            >
+              <i>{{ lang.toUpperCase() }}</i>
+              &nbsp;
+              <b-icon icon="arrow-right" />
+              &nbsp;
+              {{ translation }}
+            </div>
+
             <input
               type="text"
               class="u-spacingBottom"
@@ -238,6 +258,12 @@ export default {
         return acc;
       }, []);
     },
+    will_translate_str_translations() {
+      const t = this.missing_translations.find(
+        (t) => t.key === this.will_translate_str
+      );
+      return t?.translations;
+    },
   },
   methods: {
     async updateLang(new_lang) {
@@ -298,6 +324,8 @@ export default {
   background: var(--c-gris_clair);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2) auto;
+  max-height: 50vh;
+  overflow: auto;
 
   > * {
     margin-bottom: calc(var(--spacing) / 1);
@@ -308,7 +336,7 @@ export default {
   max-height: 40vh;
   border: 1px solid black;
   padding: calc(var(--spacing) / 4);
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
   border-radius: 4px;
   margin: calc(var(--spacing) / 2) 0;
 
@@ -316,7 +344,8 @@ export default {
     margin: 0;
     padding: calc(var(--spacing) / 1);
     min-height: 25vh;
-    max-height: 75vh;
+    max-height: 35vh;
+    overflow: auto;
   }
 }
 </style>
