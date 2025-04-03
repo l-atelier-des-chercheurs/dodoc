@@ -14,8 +14,6 @@
 
     <div class="">
       <div class="u-spacingBottom" />
-      <div class="u-spacingBottom" />
-      <div class="u-spacingBottom" />
       <button
         type="button"
         class="u-buttonLink"
@@ -88,7 +86,7 @@
 
         <DetailsPane
           :header="$t('to_translate')"
-          :icon="'info-square'"
+          :icon="'chevron-right'"
           :is_open_initially="true"
           class="u-spacingBottom"
         >
@@ -109,8 +107,20 @@
             </span>
           </div>
 
+          <div class="u-spacingBottom _pagesList">
+            <button
+              v-for="p in total_pages"
+              type="button"
+              class="u-button u-button_small"
+              :class="{ 'is--active': p === page }"
+              :key="p"
+              @click="page = p"
+            >
+              {{ p }}
+            </button>
+          </div>
           <div class="_allMissingTranslations">
-            <div class="" v-for="t in missing_translations" :key="t.key">
+            <div class="" v-for="t in paged_missing_translations" :key="t.key">
               <div class="">
                 <b>{{ t.key }}</b>
                 &nbsp;
@@ -239,6 +249,10 @@ export default {
       new_translation_text: "",
 
       confirm_erase_translations: false,
+
+      per_page: 10,
+      page: 1,
+      current_page: 1,
     };
   },
   created() {
@@ -293,6 +307,19 @@ export default {
         (t) => t.key === this.will_translate_str
       );
       return t?.translations;
+    },
+    paged_missing_translations() {
+      if (!this.missing_translations) return false;
+      return this.missing_translations.slice(
+        this.page * this.per_page,
+        this.page * this.per_page + this.per_page
+      );
+    },
+    total_missing_translations() {
+      return this.missing_translations.length;
+    },
+    total_pages() {
+      return Math.ceil(this.total_missing_translations / this.per_page);
     },
   },
   methods: {
