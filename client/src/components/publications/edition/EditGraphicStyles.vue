@@ -150,7 +150,7 @@ export default {
   height: 100%;
   overflow: auto;
   z-index: 10;
-  background-color: var(--c-gris);
+  background-color: var(--c-noir);
 
   display: flex;
   flex-flow: column nowrap;
@@ -170,7 +170,7 @@ export default {
 
 ._openedStyleFile {
   flex: 1 1 auto;
-  background-color: var(--c-noir);
+  background-color: #303841;
 }
 
 ._defaultStyles {
