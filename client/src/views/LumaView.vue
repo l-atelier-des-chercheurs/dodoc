@@ -13,7 +13,6 @@
           <span class="_topBarIndication--item--names">
             <b-icon :icon="pane.icon" />
             {{ pane.label }}
-            <!-- {{ top_panes_width[pane.key] }} -->
           </span>
         </div>
       </div>
@@ -25,19 +24,19 @@
         @resized="resizedPane"
       >
         <pane
-          v-for="pane_type in ['chutier', 'archive', 'collection']"
+          v-for="pane_type in ['archive', 'collection']"
           :size="panes_width[pane_type]"
           :key="pane_type"
         >
-          <div v-if="pane_type === 'chutier'" class="_myContent">
+          <!-- <div v-if="pane_type === 'chutier'" class="_myContent">
             <MyChutier
               class="_myContent--chutier"
               v-show="show_chutier"
               :shared_folder_path="shared_folder_path"
               @close="show_chutier = false"
             />
-          </div>
-          <div v-else-if="pane_type === 'archive'" class="_sharedContent">
+          </div> -->
+          <div v-if="pane_type === 'archive'" class="_sharedContent">
             <SharedFolder2 :shared_folder_path="shared_folder_path" />
           </div>
           <CollectionsPane v-else-if="pane_type === 'collection'" />
@@ -48,7 +47,6 @@
 </template>
 <script>
 import { Splitpanes, Pane } from "splitpanes";
-import MyChutier from "@/components/MyChutier.vue";
 import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
 import CollectionsPane from "@/components/collections/CollectionsPane.vue";
 
@@ -57,7 +55,6 @@ export default {
   components: {
     Splitpanes,
     Pane,
-    MyChutier,
     SharedFolder2,
     CollectionsPane,
   },
@@ -68,11 +65,11 @@ export default {
       shared_folder_path: undefined,
 
       possible_panes: [
-        {
-          key: "chutier",
-          label: "CHUTIER",
-          icon: "layout-sidebar-inset",
-        },
+        // {
+        //   key: "chutier",
+        //   label: "CHUTIER",
+        //   icon: "layout-sidebar-inset",
+        // },
         {
           key: "archive",
           label: "ARCHIVE",
@@ -85,15 +82,13 @@ export default {
         },
       ],
       top_panes_width: {
-        chutier: 33,
-        archive: 33,
-        collection: 33,
+        archive: 50,
+        collection: 50,
       },
 
       panes_width: {
-        chutier: 33,
-        archive: 33,
-        collection: 33,
+        archive: 50,
+        collection: 50,
       },
 
       // show_chutier:
@@ -109,17 +104,10 @@ export default {
     if (saved_panes_width) this.panes_width = saved_panes_width;
     else {
       if (this.$root.is_mobile_view) {
-        this.panes_width.chutier = 100;
-        this.panes_width.archive = 0;
+        this.panes_width.archive = 100;
         this.panes_width.collection = 0;
       } else {
-        // max chutier width on first open is 320px
-        const chutier_width = Math.min(
-          (400 / this.$root.window.innerWidth) * 100,
-          50
-        );
-        this.panes_width.chutier = chutier_width;
-        this.panes_width.archive = 100 - chutier_width;
+        this.panes_width.archive = 100;
         this.panes_width.collection = 0;
       }
     }
@@ -131,9 +119,6 @@ export default {
   beforeDestroy() {},
   watch: {
     connected_as() {},
-    show_chutier() {
-      // localStorage.setItem("show_chutier", this.show_chutier);
-    },
     panes_width: {
       handler() {
         Object.entries(this.panes_width).map(
@@ -195,18 +180,16 @@ export default {
       // real time resize
       panes_sizes.map((ps, index) => {
         const pane_width = Number(ps.size.toFixed(1));
-        if (index === 0) this.top_panes_width.chutier = pane_width;
-        if (index === 1) this.top_panes_width.archive = pane_width;
-        if (index === 2) this.top_panes_width.collection = pane_width;
+        if (index === 0) this.top_panes_width.archive = pane_width;
+        if (index === 1) this.top_panes_width.collection = pane_width;
       });
     },
     resizedPane(panes_sizes) {
       // when resize end
       panes_sizes.map((ps, index) => {
         const pane_width = Number(ps.size.toFixed(1));
-        if (index === 0) this.panes_width.chutier = pane_width;
-        if (index === 1) this.panes_width.archive = pane_width;
-        if (index === 2) this.panes_width.collection = pane_width;
+        if (index === 0) this.panes_width.archive = pane_width;
+        if (index === 1) this.panes_width.collection = pane_width;
       });
     },
     setTopbarWidth(pane) {
@@ -247,6 +230,7 @@ export default {
         if (_panes_width) {
           const panes = JSON.parse(_panes_width);
           if (panes.format) delete panes.format;
+          if (panes.chutier) delete panes.chutier;
           return panes;
         }
       } catch (e) {
@@ -266,17 +250,17 @@ export default {
   height: 100%;
 }
 
-._myContent {
-  position: absolute;
-  z-index: 2;
+// ._myContent {
+//   position: absolute;
+//   z-index: 2;
 
-  width: 100%;
-  min-width: 100px;
-  height: 100%;
-  background: var(--chutier-bg);
-  // box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
-  overflow: hidden;
-}
+//   width: 100%;
+//   min-width: 100px;
+//   height: 100%;
+//   background: var(--chutier-bg);
+//   // box-shadow: -4px 0px 5px inset rgba(0, 0, 0, 0.52);
+//   overflow: hidden;
+// }
 ._sharedContent {
   position: relative;
   z-index: 1;
@@ -338,12 +322,13 @@ export default {
 ._topBarIndication {
   display: flex;
   flex-flow: row nowrap;
-  height: 20px;
+  height: 24px;
+  padding-left: 1px;
 }
 
 ._topBarIndication--item {
-  height: 20px;
-  padding: 2px 5px;
+  height: 24px;
+  padding: 2px 6px;
   line-height: 1;
   font-size: var(--sl-font-size-small);
   font-family: "IBM Plex Mono";
