@@ -3,8 +3,10 @@
     class="_pagedViewer edition book"
     :class="{
       'is--infiniteViewer': viewer_type === 'vue-infinite-viewer',
+      'is--editable': can_edit,
     }"
   >
+    <div ref="bookrender" style="opacity: 0; pointer-events: none" />
     <vue-infinite-viewer
       v-if="viewer_type === 'vue-infinite-viewer'"
       ref="vueinfiniteviewer"
@@ -14,7 +16,7 @@
       <div class="" ref="bookpreview" />
     </vue-infinite-viewer>
     <template v-else>
-      <div class="_divViewer" ref="bookpreview" />
+      <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
   </div>
@@ -41,6 +43,7 @@ export default {
       type: String,
       required: true,
     },
+    can_edit: Boolean,
   },
   components: {
     VueInfiniteViewer,
@@ -124,9 +127,9 @@ export default {
 
       this.removeExistingStyles();
 
-      const bookpreview = this.$refs.bookpreview;
-      if (!bookpreview) {
-        console.log("no bookpreview div");
+      const bookrender = this.$refs.bookrender;
+      if (!bookrender) {
+        console.log("no bookrender div");
         return;
       }
 
@@ -150,7 +153,9 @@ export default {
         },
       ];
 
-      paged.preview(pagedjs_html, theme_styles, undefined).then((flow) => {
+      paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
+        bookrender.innerHTML = "";
+        const bookpreview = this.$refs.bookpreview;
         bookpreview.innerHTML = "";
         const pagesOutput = flow.pagesArea;
         bookpreview.appendChild(pagesOutput);
@@ -187,7 +192,7 @@ export default {
         const btn = document.createElement("button");
         btn.classList.add("editChapterBtn");
         btn.textContent = chapter.getAttribute("data-chapter-title");
-        chapter.prepend(btn);
+        chapter.appendChild(btn);
         chapter.addEventListener("click", () => {
           this.$emit(
             "openChapter",
@@ -452,6 +457,14 @@ export default {
 ._pagedViewer {
   position: relative;
 
+  --color-pageSheet: var(--c-gris);
+  --color-pageBox: violet;
+  --color-paper: white;
+  --color-marginBox: transparent;
+  --pagedjs-crop-color: black;
+  --pagedjs-crop-shadow: white;
+  --pagedjs-crop-stroke: 1px;
+
   &.is--infiniteViewer {
     width: 100%;
     height: 100%;
@@ -468,14 +481,9 @@ export default {
     height: 100%;
   }
 
-  --color-pageSheet: #cfcfcf;
-  --color-pageBox: violet;
-  --color-paper: white;
-  --color-marginBox: transparent;
-  --color-pageContent: #ff00ff;
-  --pagedjs-crop-color: black;
-  --pagedjs-crop-shadow: white;
-  --pagedjs-crop-stroke: 1px;
+  &.is--editable {
+    --color-pageContent: #ff00ff;
+  }
 
   &:not(.is--infiniteViewer) {
     ::v-deep {

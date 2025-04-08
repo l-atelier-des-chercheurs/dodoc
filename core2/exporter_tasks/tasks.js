@@ -113,7 +113,7 @@ module.exports = (function () {
         });
       }
 
-      const { duration } = await utils.getVideoDurationFromMetadata({
+      const { duration } = await utils.getVideoMetaData({
         ffmpeg_cmd,
         video_path: temp_video_path,
       });

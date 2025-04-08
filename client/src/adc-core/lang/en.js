@@ -202,7 +202,6 @@ export default {
   no_projects: "No project to show",
   no_publications: "No publications to show",
   no_files: "No file",
-  none_m: "None",
   not_specified: "Not specified",
   none_f: "None",
   none: "None",
@@ -311,8 +310,9 @@ export default {
   edit_translation: "Edit translation",
   show_missing_translations: "Show missing translations",
   missing_translations: "Missing translations for language:",
+  already_translated_locally: "Already translated (only on this device)",
   hide_already_translated: "Hide translations already made",
-  "to_translate:": "To translate:",
+  to_translate: "To translate",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",
@@ -348,6 +348,7 @@ export default {
   media_pickers_instr: "Select medias to import.",
   already_present: "Already present",
   sent: "Sent",
+  creating_thumb: "Creating thumbnails",
 
   current: "Current",
   save_on_this_device: "Save on this device",
@@ -371,6 +372,8 @@ export default {
   make: "Make",
   publish: "Publish",
 
+  media_editing_instructions:
+    "Indicate the person(s) who can edit this content",
   projects_you_edited_last: "Projects you edited last",
 
   path_to_content: "Path to content",
@@ -522,9 +525,9 @@ export default {
   contributors: "Contributors",
   contributor: "Contributor",
   admin: "Administrator",
+  send: "Send",
   waiting: "Coming soon",
   sending: "In progress",
-  feels: "Sent",
   retry: "Retry",
   reload_page_to_apply: "After saving these changes, reload this page.",
   import_instructions: "Import from another device",
@@ -747,18 +750,18 @@ export default {
     "Attention! The audio track will be deleted (if it exists) because the desired speed is too slow. To keep and convert the sound choose a speed between 0.5 and 1.",
   speed_up: "Speed up",
   playback_speed: "Playback speed",
-  clockwise: "Clockwise",
-  counterclockwise: "Counterclockwise",
   reverse: "Reverse start and end",
   angle: "Angle",
   "error:": "Error:",
   mirror: "Mirror",
   horizontal_flip: "Horizontal flip",
   vertical_flip: "Vertical flip",
+
+  rotate: "Rotate",
   rotate_90_deg: "Rotate 90°",
   rotate_x_deg: "Rotate right of …°",
-
   both: "Both",
+
   mix_audio_and_image: "Sound on an image",
   mix_audio_and_image_summary: "Add sound to an image.",
   mix_audio_and_image_instructions:
@@ -1134,8 +1137,10 @@ export default {
   transition_fade: "Transition: fade",
 
   couldntbesaved: "Value couldn’t be saved",
-  coll_is_private:
-    "This collection is private and can only be viewed by the referrers.",
+
+  dont_zoom: "Don’t zoom",
+  very_far: "Very far",
+  very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
   crop_adjust: "Crop/adjust",
   aspect_ratio: "Aspect ratio",
@@ -1191,6 +1196,17 @@ export default {
 
   connected_currently: "Connected currently",
 
+  confirm_save_changes:
+    "Some changes have been made, do you want to save them?",
+  close_without_saving: "Close without saving",
+
+  keep_existing_keywords: "Keep existing keywords",
+  add_after_existing_keywords: "Add after existing keywords",
+  erase_and_replace_keywords: "Erase and replace keywords",
+  keep_existing_authors: "Keep existing authors",
+  add_after_existing_authors: "Add after existing authors",
+  erase_and_replace_authors: "Erase and replace authors",
+
   start_by_uploading_images: "Start by uploading images below",
   or: "or",
   live_dubbing: "Live dubbing",
@@ -1244,6 +1260,7 @@ export default {
   graphic_styles: "Graphic styles",
   edit_default_styles: "Edit default styles",
   back_to_default_styles: "Reset to default styles",
+  create_custom_stylesheet: "Create a custom stylesheet",
 
   millimetres: "millimetres",
   parent_space_is_private:
@@ -1254,4 +1271,7 @@ export default {
   show_preview: "Show preview",
   warning_wont_be_able_to_edit:
     "Warning! By changing this setting, you will no longer be able to edit this content.",
+
+  coll_is_private:
+    "This collection is private and can only be viewed by the referrers.",
 };

@@ -9,6 +9,21 @@
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
       </select>
+      <select
+        size="small"
+        v-if="style_files?.length > 0"
+        v-model="style_file_meta_selected"
+      >
+        <option
+          v-for="style_file in style_files"
+          :key="style_file.$path"
+          :value="getFilename(style_file.$path)"
+        >
+          style – {{ style_file.css_title || getFilename(style_file.$path) }}
+        </option>
+        <option value="">style – {{ $t("default_value") }}</option>
+      </select>
+
       <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
         <option value="A4">{{ $t("A4_portrait") }}</option>
         <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
@@ -25,6 +40,7 @@
         :viewer_type="viewer_type"
         :css_styles="css_styles"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
+        :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
       />
       <DocViewer
@@ -53,11 +69,13 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
+    opened_style_file_meta: String,
     viewer_type: {
       type: String,
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    can_edit: Boolean,
   },
   components: {
     PagedViewer,
@@ -66,13 +84,22 @@ export default {
   data() {
     return {
       is_loading: false,
+      style_file_meta_selected: undefined,
       // custom_styles_nested: "",
     };
   },
-  created() {},
+  created() {
+    if (this.style_files.length > 0)
+      this.style_file_meta_selected = this.getFilename(
+        this.style_files[0]?.$path
+      );
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {
+    opened_style_file_meta() {
+      this.style_file_meta_selected = this.opened_style_file_meta;
+    },
     // custom_styles_unnested: {
     //   handler() {
     //     this.custom_styles_nested = this.prepareCustomStyles(
@@ -93,11 +120,14 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      const style_file = this.publication.$files?.find(
-        (f) => f.is_css_styles === true
-      );
-      if (!style_file) return default_styles;
-      return style_file?.$content || "";
+      if (this.style_files && this.style_file_meta_selected) {
+        return (
+          this.style_files.find(
+            (f) => this.getFilename(f.$path) === this.style_file_meta_selected
+          )?.$content || ""
+        );
+      }
+      return default_styles;
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -145,6 +175,16 @@ export default {
 
       return nodes;
     },
+    style_files() {
+      return this.publication.$files
+        ?.filter((f) => f.is_css_styles === true)
+        .sort((a, b) => {
+          const a_title = a.css_title || this.getFilename(a.$path);
+          const b_title = b.css_title || this.getFilename(b.$path);
+          if (a_title < b_title) return -1;
+          if (a_title > b_title) return 1;
+        });
+    },
     css_styles() {
       return `
       ${pagedengine || ""}
@@ -182,7 +222,7 @@ export default {
           }
         }
 
-        cover.layout_mode = this.cover_media.cover_layout_mode || "normal";
+        cover.layout_mode = this.cover_media?.cover_layout_mode || "normal";
       }
       return cover;
     },
@@ -233,7 +273,7 @@ export default {
       marked.use({
         renderer: {
           image: (meta_src, title, alt) => {
-            let html;
+            let html = "";
 
             let custom_classes = [],
               width,
@@ -241,9 +281,11 @@ export default {
 
             if (title?.startsWith("=")) {
               if (title.startsWith("=full-page")) {
-                custom_classes.push("_isFullPage");
-                if (title.startsWith("=full-page-cover")) {
-                  custom_classes.push("_isFullPageCover");
+                if (this.view_mode === "book") {
+                  custom_classes.push("_isFullPage");
+                  if (title.startsWith("=full-page-cover")) {
+                    custom_classes.push("_isFullPageCover");
+                  }
                 }
               } else {
                 [width, height] = title
@@ -255,7 +297,7 @@ export default {
             }
 
             if (meta_src.startsWith("http")) {
-              html = `
+              html += `
                   <img src="${meta_src}"
                     alt="${alt}"
                     ${width ? ` width="${width}"` : ""}
@@ -266,7 +308,7 @@ export default {
             } else {
               const _media = this.getMediaSrc(meta_src, source_medias);
               if (!_media) {
-                html = `<i>Media not found</i>`;
+                html += `<i>Media not found</i>`;
               } else {
                 const { html: _html, is_qr_code } = this.placeLocalMedia({
                   _media,
@@ -274,7 +316,7 @@ export default {
                   width,
                   height,
                 });
-                html = _html;
+                html += _html;
                 if (is_qr_code) {
                   custom_classes.push("_isqrcode");
                 }
@@ -284,6 +326,7 @@ export default {
             if (alt) {
               html += `<div class="mediaCaption"><span>${alt}</span></div>`;
             }
+
             return `<div class='media ${custom_classes.join(
               " "
             )}'>${html}</div>`;
@@ -292,7 +335,7 @@ export default {
       });
 
       const parsed = marked.parse(content);
-      return DOMPurify.sanitize(parsed);
+      return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
     },
 
     getMediaSrc(meta_src, source_medias) {
@@ -329,20 +372,25 @@ export default {
       const dataUrl = code.toDataURL({ scale: 10 });
 
       return {
-        media,
         src,
+        url,
         dataUrl,
+        media,
       };
     },
     placeLocalMedia({ _media, alt, width, height }) {
       let html = "";
       let is_qr_code = false;
 
-      const { src, dataUrl, media } = _media;
+      const { src, url, dataUrl, media } = _media;
       if (!width && !height) {
         width = media.$infos.width;
         height = media.$infos.height;
       }
+      const small_thumb = this.getFirstThumbURLForMedia({
+        file: media,
+        resolution: 220,
+      });
 
       if (media.$type === "image") {
         html = `
@@ -350,29 +398,63 @@ export default {
                     alt="${alt}"
                     ${width ? ` width="${width}"` : ""}
                     ${height ? ` height="${height}"` : ""}
-                  >
+                  />
                 `;
       } else {
-        is_qr_code = true;
-        html += `
-              <div>
-                <img class="_qrCode" src="${dataUrl}" alt="qr code for media" />
-              </div>
+        if (this.view_mode === "book") {
+          is_qr_code = true;
+          html = this.makeQREmbedForQR({
+            url,
+            alt,
+            width,
+            height,
+            dataUrl,
+            media,
+            small_thumb,
+          });
+        } else {
+          if (media.$type === "video") {
+            html = `
+              <video src="${src}" controls
+                alt="${alt}"
+                ${width ? ` width="${width}"` : ""}
+                ${height ? ` height="${height}"` : ""}
+              />
+            `;
+          } else if (media.$type === "audio") {
+            html = `
+              <audio src="${src}" controls
+                alt="${alt}"
+                ${width ? ` width="${width}"` : ""}
+                ${height ? ` height="${height}"` : ""}
+              />
+            `;
+          }
+        }
+      }
+
+      return { html, is_qr_code };
+    },
+    makeQREmbedForQR({ url, alt, width, height, dataUrl, media, small_thumb }) {
+      let html = `
+              <a href="${url}" target="_blank" data-url="url">
+                <img class="_qrCode" src="${dataUrl}" alt="QR code for media" />
+              </a>
             `;
 
-        // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
-        html += `<div class="mediaInfos">`;
+      // html += `<div class="_mediaFilename">${media.$media_filename}</div> `;
+      html += `<div class="mediaInfos">`;
 
-        if (media.$infos.duration) {
-          html += `<div class="mediaDuration">
+      if (media.$infos.duration) {
+        html += `<div class="mediaDuration">
                 ${this.$t(media.$type)}
                 ${this.formatDurationToHoursMinutesSeconds(
                   media.$infos.duration
                 )}
               </div>`;
-        }
+      }
 
-        html += `
+      html += `
               <div class="mediaSourceCaption">
                 ${media.caption || ""}
               </div>
@@ -380,26 +462,19 @@ export default {
                 ${media.$credits || ""}
               </div>`;
 
-        html += `</div>`;
+      html += `</div>`;
 
-        // get thumbs
-        const thumb = this.getFirstThumbURLForMedia({
-          file: media,
-          resolution: 220,
-        });
-        if (thumb) {
-          html += `
+      if (small_thumb) {
+        html += `
               <div class="_thumbnail">
-                <img src="${thumb}"
+                <img src="${small_thumb}"
                   alt="${alt}"
                   ${width ? ` width="${width}"` : ""}
                   ${height ? ` height="${height}"` : ""}
                 >
               </div>`;
-        }
       }
-
-      return { html, is_qr_code };
+      return html;
     },
   },
 };
@@ -424,7 +499,7 @@ export default {
   // width: 100%;
   z-index: 10;
   margin: 0 auto;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   pointer-events: none;
 
   display: flex;

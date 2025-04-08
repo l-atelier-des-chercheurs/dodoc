@@ -89,7 +89,7 @@ export default {
   created() {
     this.publication_ratio = this.page_height / this.page_width;
 
-    if (this.pane_infos && this.pane.page_id && this.publication.pages) {
+    if (this.pane_infos && this.pane?.page_id && this.publication.pages) {
       const page_number = this.publication.pages.findIndex(
         (p) => p.id === this.pane.page_id
       );

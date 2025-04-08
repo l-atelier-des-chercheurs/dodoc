@@ -33,7 +33,7 @@ module.exports = (function () {
         }));
 
         // clashes with speedup and slowdown
-        // const { duration } = await utils.getVideoDurationFromMetadata({
+        // const { duration } = await utils.getVideoMetaData({
         //   ffmpeg_cmd,
         //   video_path: source,
         // });

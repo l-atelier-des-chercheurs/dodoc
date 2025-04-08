@@ -149,7 +149,7 @@ module.exports = (function () {
       if (media_type === "image")
         infos = await _readImageExif({ full_media_path });
       else if (media_type === "video" || media_type === "audio")
-        infos = await _readVideoAudioExif({ full_media_path });
+        infos = await utils.getVideoMetaData({ path: full_media_path });
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
@@ -718,37 +718,6 @@ module.exports = (function () {
     const err = new Error("No image to download");
     err.code = "no_image_to_download";
     throw err;
-  }
-
-  async function _readVideoAudioExif({ full_media_path }) {
-    dev.logfunction({ full_media_path });
-    let extracted_metadata = {};
-
-    try {
-      const metadata = await utils.getVideoMetaData({ path: full_media_path });
-
-      dev.logverbose({ metadata });
-
-      if (metadata.format?.duration)
-        extracted_metadata.duration = +metadata.format.duration.toPrecision(3);
-      if (metadata.format?.tags?.location)
-        extracted_metadata.location = metadata.format.tags.location;
-      if (metadata.format?.tags?.["com.apple.quicktime.location.ISO6709"])
-        extracted_metadata.location =
-          metadata.format.tags["com.apple.quicktime.location.ISO6709"];
-
-      if (metadata.streams[0]?.height && metadata.streams[0]?.width) {
-        extracted_metadata.width = metadata.streams[0].width;
-        extracted_metadata.height = metadata.streams[0].height;
-        extracted_metadata.ratio = utils.makeRatio({
-          w: extracted_metadata.width,
-          h: extracted_metadata.height,
-        });
-      }
-    } catch (err) {
-      dev.error(err);
-    }
-    return extracted_metadata;
   }
 
   async function _readFileInfos({ full_media_path }) {

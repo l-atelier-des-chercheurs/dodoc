@@ -9,83 +9,135 @@
         <b-icon icon="x-lg" :label="$t('close')" />
       </button>
     </div>
-    <div class="_topBtns">
-      <transition name="fade_fast" mode="out-in">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          v-if="!style_file"
-          @click="createCustom"
-        >
-          {{ $t("edit_default_styles") }}
-        </button>
-        <button
-          v-else
-          type="button"
-          class="u-button u-button_red"
-          @click="removeCustom"
-        >
-          {{ $t("back_to_default_styles") }}
-        </button>
-      </transition>
+
+    <div class="_topTabs">
+      <button
+        type="button"
+        v-for="style_file in style_files"
+        :key="style_file.$path"
+        class="u-button"
+        :class="{
+          'is--active': opened_style_file?.$path === style_file.$path,
+        }"
+        @click="openStyleFile(style_file.$path)"
+      >
+        {{ style_file.css_title || getFilename(style_file.$path) }}
+      </button>
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="show_create_css_modal = true"
+      >
+        {{ $t("create_custom_stylesheet") }}
+      </button>
+      <BaseModal2
+        v-if="show_create_css_modal"
+        :title="$t('create_custom_stylesheet')"
+        @close="show_create_css_modal = false"
+        @save="createCustomStylesheet"
+      >
+        <DLabel :str="$t('title')" />
+        <TextInput
+          :content.sync="new_css_title"
+          :maxlength="40"
+          :required="true"
+          :autofocus="true"
+          ref="titleInput"
+          @toggleValidity="($event) => (allow_save = $event)"
+          @onEnter="createCustomStylesheet"
+        />
+
+        <template #footer>
+          <div />
+          <button
+            type="button"
+            class="u-button u-button_bleuvert"
+            @click="createCustomStylesheet"
+          >
+            {{ $t("create_and_open") }}
+          </button>
+        </template>
+      </BaseModal2>
     </div>
 
-    <template v-if="!style_file">
-      <pre class="_defaultStyles" v-html="default_styles" />
-    </template>
-    <template v-else>
-      <CollaborativeEditor3
-        :key="style_file.$path"
-        :content="style_file.$content"
-        :path="style_file.$path"
-        :custom_formats="[]"
-        :save_format="'raw'"
-        :mode="'always_active'"
-        :can_edit="true"
+    <div class="_openedStyleFile">
+      <OpenedGraphicStyles
+        v-if="opened_style_file"
+        :style_file="opened_style_file"
+        :default_styles="default_styles"
       />
-      <div class="u-spacingBottom" />
-    </template>
+    </div>
   </div>
 </template>
 <script>
+import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
+import OpenedGraphicStyles from "@/components/publications/edition/OpenedGraphicStyles.vue";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
   props: {
     publication: Object,
+    opened_style_file_meta: String,
   },
-  components: {},
+  components: {
+    OpenedGraphicStyles,
+  },
   data() {
     return {
       default_styles,
+      show_create_css_modal: false,
+      new_css_title: "",
     };
   },
-  created() {},
+  created() {
+    if (this.style_files?.length > 0)
+      this.openStyleFile(this.style_files[0].$path);
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
-    style_file() {
-      return this.publication.$files?.find((f) => f.is_css_styles === true);
+    style_files() {
+      return this.publication.$files
+        ?.filter((f) => f.is_css_styles === true)
+        .sort((a, b) => {
+          const a_title = a.css_title || this.getFilename(a.$path);
+          const b_title = b.css_title || this.getFilename(b.$path);
+          if (a_title < b_title) return -1;
+          if (a_title > b_title) return 1;
+        });
+    },
+    opened_style_file() {
+      return this.style_files.find(
+        (f) => this.getFilename(f.$path) === this.opened_style_file_meta
+      );
     },
   },
   methods: {
-    async createCustom() {
-      const filename = "custom_styles.css";
+    async createCustomStylesheet() {
+      const filename = this.new_css_title + ".css";
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication.$path,
         filename,
         content: default_styles,
         additional_meta: {
           $type: "text",
+          css_title: this.new_css_title,
           is_css_styles: true,
         },
       });
+
+      this.new_css_title = "";
+      this.show_create_css_modal = false;
+
+      this.$emit("update:opened_style_file_meta", meta_filename);
     },
-    removeCustom() {
-      this.$api.deleteItem({
-        path: this.style_file.$path,
-      });
+    async resetCustom() {
+      this.$refs.styleEditor.restoreVersion(default_styles);
+    },
+    openStyleFile(path) {
+      this.$emit("update:opened_style_file_meta", this.getFilename(path));
     },
   },
 };
@@ -97,17 +149,28 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  color: white;
-  background-color: black;
   z-index: 10;
+  background-color: var(--c-noir);
 
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+._topTabs {
+  flex: 0 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
+  overflow-x: auto;
+
+  background-color: var(--c-noir);
+  border-bottom: 2px solid var(--c-gris_fonce);
   padding: calc(var(--spacing) * 1);
+}
 
-  ::v-deep {
-    ._collaborativeEditor.is--editing_is_enabled {
-      background-color: var(--c-noir);
-    }
-  }
+._openedStyleFile {
+  flex: 1 1 auto;
+  background-color: #303841;
 }
 
 ._defaultStyles {
@@ -117,19 +180,13 @@ export default {
   border-radius: 4px;
 }
 
-._topBtns {
-  display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
-  justify-content: space-between;
-  margin-bottom: calc(var(--spacing) / 1);
-}
 ._close_button {
   position: sticky;
   height: 0;
   top: 0;
   text-align: right;
   right: 0;
+  color: white;
   z-index: 100;
 }
 </style>

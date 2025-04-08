@@ -423,14 +423,14 @@ module.exports = (function () {
             label: "Recharger",
             accelerator: "Command+R",
             click: function () {
-              BrowserWindow.getFocusedWindow().reload();
+              BrowserWindow.getFocusedWindow()?.reload();
             },
           },
           {
             label: "Afficher les outils de développement",
             accelerator: "Alt+Command+I",
             click: function () {
-              BrowserWindow.getFocusedWindow().toggleDevTools();
+              BrowserWindow.getFocusedWindow()?.toggleDevTools();
             },
           },
         ],

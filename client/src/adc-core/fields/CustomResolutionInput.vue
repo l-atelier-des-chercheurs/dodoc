@@ -31,7 +31,7 @@
     </div>
     <div class="_mb" />
     <ToggleInput
-      v-if="ratio !== undefined"
+      v-if="typeof ratio === 'number' && !isNaN(ratio)"
       :label="$t('keep_ratio')"
       :content.sync="keep_ratio"
     />
@@ -42,15 +42,14 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 0,
+      default: 1280,
     },
     height: {
       type: Number,
-      default: 0,
+      default: 720,
     },
     ratio: {
       type: Number,
-      default: 0,
     },
     is_video: {
       type: Boolean,
@@ -64,7 +63,7 @@ export default {
   components: {},
   data() {
     return {
-      keep_ratio: true,
+      keep_ratio: typeof this.ratio === "number",
     };
   },
   created() {},
@@ -88,14 +87,18 @@ export default {
       const value = Math.round(Number(e.target.value));
       this.$emit("update:width", value);
       if (this.keep_ratio) {
-        this.$emit("update:height", Math.round(value * this.ratio));
+        let h = Math.round(value * this.ratio);
+        if (this.is_video) h = Math.round(h / 2) * 2;
+        this.$emit("update:height", h);
       }
     },
     adjustHeight(e) {
       const value = Math.round(Number(e.target.value));
       this.$emit("update:height", value);
       if (this.keep_ratio) {
-        this.$emit("update:width", Math.round(value / this.ratio));
+        let w = Math.round(value / this.ratio);
+        if (this.is_video) w = Math.round(w / 2) * 2;
+        this.$emit("update:width", w);
       }
     },
   },
