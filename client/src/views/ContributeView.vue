@@ -547,6 +547,10 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+
+  @media (max-width: 600px) {
+    flex-flow: column nowrap;
+  }
 }
 ._importFiles {
   flex: 1 1 0;
@@ -563,7 +567,7 @@ export default {
   flex-flow: column nowrap;
   justify-content: safe center;
   height: 100%;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
   padding-bottom: 40px;
 
