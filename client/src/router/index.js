@@ -8,7 +8,21 @@ const routes = [
     path: "/",
     name: "Accueil",
     component: () =>
-      import(/* webpackChunkName: "LumaView" */ "../views/LumaView.vue"),
+      import(/* webpackChunkName: "AccueilView" */ "../views/Accueil.vue"),
+  },
+  {
+    path: "/contribute",
+    name: "Contribuer",
+    component: () =>
+      import(
+        /* webpackChunkName: "ContributeView" */ "../views/ContributeView.vue"
+      ),
+  },
+  {
+    path: "/corpus",
+    name: "Corpus",
+    component: () =>
+      import(/* webpackChunkName: "CorpusView" */ "../views/CorpusView.vue"),
   },
   {
     path: "/collections/:collection_slug",

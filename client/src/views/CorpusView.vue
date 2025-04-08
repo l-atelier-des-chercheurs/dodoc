@@ -1,5 +1,5 @@
 <template>
-  <div class="_lumaView">
+  <div class="_contributeView">
     <LoaderSpinner v-if="!shared_folder_path" />
     <template v-else>
       <div class="_topBarIndication">
@@ -242,7 +242,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._lumaView {
+._contributeView {
   height: 100%;
   overflow: hidden;
 }

@@ -21,6 +21,8 @@
         @close="show_general_password_modal = false"
       />
       <template v-else>
+        <TopBar />
+
         <AuthorList
           v-if="show_authors_modal || !connected_as"
           :is_closable="!!connected_as"
@@ -46,6 +48,7 @@ import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import TopBar from "@/components/TopBar.vue";
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 
 export default {
@@ -56,6 +59,7 @@ export default {
     TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
+    TopBar,
     AuthorList,
   },
   data() {
