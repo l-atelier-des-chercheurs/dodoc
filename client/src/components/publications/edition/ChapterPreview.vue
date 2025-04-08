@@ -145,7 +145,11 @@ export default {
 
 ._item--content {
   font-size: var(--sl-font-size-x-small);
-  opacity: 0.75;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 ._openButton {

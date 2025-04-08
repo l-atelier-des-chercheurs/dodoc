@@ -61,13 +61,16 @@ export default {
 <style lang="scss" scoped>
 ._openedStyleFile {
   padding: calc(var(--spacing) * 1);
-  background-color: var(--c-gris_fonce);
-  background-color: var(--c-noir);
   color: white;
+
+  ::v-deep label {
+    color: inherit;
+  }
 }
 
 ._collaborativeEditor.is--editing_is_enabled {
   background-color: var(--c-noir);
+  // background-color: transparent;
 }
 
 ._topBtns {

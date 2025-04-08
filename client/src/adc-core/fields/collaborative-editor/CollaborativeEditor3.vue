@@ -852,6 +852,8 @@ export default {
   padding: calc(var(--spacing) / 4);
   margin-bottom: 0;
   border-radius: var(--input-border-radius);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
   // hides select, do not use
   // overflow: hidden;
 
