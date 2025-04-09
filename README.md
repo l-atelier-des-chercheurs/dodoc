@@ -89,6 +89,27 @@ npm i
 npm run dev
 ```
 
+## Method 4 — the docker way
+
+This method makes the installation of do•doc a bit simpler.
+You need to have `docker` installed on your machine.
+
+### The docker compose way
+
+Run `docker compose up`, wait for it to initialize completely, and visit `https://localhost:8080`.
+Your data is persistent (in ./dodoc-data directory).
+
+### Or the docker manual way
+
+If you prefer to customise the container, the basic pattern for starting a do•doc instance is:
+
+```
+$ docker run --name my-dodoc -p 8080:8080 -v ./dodoc-data:/home/node/Documents -d registry.gitlab.com/l-atelier-des-chercheurs/dodoc2-node:12.0.7-0
+```
+
+Your data is persistent (in ./dodoc-data directory).
+Then, access it via `https://localhost:8080`.
+
 # How the core works
 
 Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
