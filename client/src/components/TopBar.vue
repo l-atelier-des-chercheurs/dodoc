@@ -4,7 +4,7 @@
       <router-link to="/">LumaDoc</router-link>
     </div>
     <div class="menu">
-      <router-link to="/contribute" active-class="active">DEPOSER</router-link>
+      <router-link to="/contribute" active-class="active">DÉPOSER</router-link>
       <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
     </div>
     <div class="profile-icon">

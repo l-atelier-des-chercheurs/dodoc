@@ -34,7 +34,7 @@
                 }}
               </small>
             </div>
-            <div>
+            <div class="_infos2">
               <b-icon
                 v-if="file.caption"
                 icon="text-left"
@@ -45,7 +45,7 @@
                 icon="info-circle"
                 :aria-label="$t('credit/reference')"
               />
-              <small>{{ file.$media_filename }}</small>
+              <small class="_filename">{{ file.$media_filename }}</small>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ export default {
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
   margin-bottom: 1px;
-  overflow: hidden;
+  overflow: visible;
   border-radius: 4px;
   color: var(--h-500);
 
@@ -293,9 +293,11 @@ export default {
     display: block;
     cursor: pointer;
     // margin-right: calc(var(--spacing) / 2);
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:hover {
       opacity: 0.8;
+      transform: scale(1.05);
     }
   }
 
@@ -315,7 +317,7 @@ export default {
     border-radius: 2px;
     width: 60px;
     flex: 0 0 auto;
-    overflow: hidden;
+    overflow: visible;
     // color: white;
     // background: black;
     background: var(--sd-separator);
@@ -439,5 +441,20 @@ export default {
       }
     }
   }
+}
+
+._infos2 {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+
+._filename {
+  // max-width: 10ch;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

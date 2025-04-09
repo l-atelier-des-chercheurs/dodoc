@@ -199,27 +199,18 @@ export default {
       `;
     },
     togglePane(pane) {
-      if (this.panes_width[pane] > 0) this.panes_width[pane] = 0;
-      else this.panes_width[pane] = 25;
-      this.distributePanes();
-    },
-    distributePanes() {
-      const active_panes = Object.values(this.panes_width).filter(
-        (w) => w > 0
-      ).length;
-
-      // if no pane active, set all to active
-      if (active_panes === 0) {
-        Object.keys(this.panes_width).map(
-          (p) =>
-            (this.panes_width[p] = 100 / Object.keys(this.panes_width).length)
+      if (this.panes_width[pane] > 0) {
+        Object.entries(this.panes_width).map(([key, w]) =>
+          key === pane
+            ? (this.panes_width[key] = 0)
+            : (this.panes_width[key] = 100)
         );
       } else {
-        const new_width = 100 / active_panes;
-        Object.entries(this.panes_width).map(([p, w]) =>
-          w > 0 ? (this.panes_width[p] = new_width) : ""
+        Object.entries(this.panes_width).map(
+          ([key, w]) => (this.panes_width[key] = 50)
         );
       }
+      debugger;
     },
     savePanesWidthToStorage() {
       localStorage.setItem("panes_width", JSON.stringify(this.panes_width));

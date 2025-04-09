@@ -155,53 +155,57 @@
             {{ $t("items_to_share") }} • {{ chutier_items.length }}
           </label>
         </template>
-      </div>
 
-      <div class="_items" @click.self="selected_items_slugs = []">
-        <div
-          class="_item"
-          v-for="ci in chutier_items_grouped"
-          :key="ci.label"
-          @click.self="selected_items_slugs = []"
-        >
+        <div class="_items" @click.self="selected_items_slugs = []">
           <div
-            class="_item--label"
-            @click="
-              rangeIsSelected(ci.files.map((f) => f.$path))
-                ? deselectRange(ci.files.map((f) => f.$path))
-                : selectRange(ci.files.map((f) => f.$path))
-            "
-            :class="{
-              'is--fullySelected': rangeIsSelected(
-                ci.files.map((f) => f.$path)
-              ),
-            }"
+            class="_item"
+            v-for="ci in chutier_items_grouped"
+            :key="ci.label"
+            @click.self="selected_items_slugs = []"
           >
-            <button
-              v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
-              type="button"
-              class="u-buttonLink u-selectBtn"
+            <div
+              class="_item--label"
+              @click="
+                rangeIsSelected(ci.files.map((f) => f.$path))
+                  ? deselectRange(ci.files.map((f) => f.$path))
+                  : selectRange(ci.files.map((f) => f.$path))
+              "
+              :class="{
+                'is--fullySelected': rangeIsSelected(
+                  ci.files.map((f) => f.$path)
+                ),
+              }"
             >
-              <b-icon icon="plus-square-dotted" />
-            </button>
-            <button v-else type="button" class="u-buttonLink u-selectBtn">
-              <b-icon icon="dash-square-dotted" />
-            </button>
-            {{ ci.label }}
+              <button
+                v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
+                type="button"
+                class="u-buttonLink u-selectBtn"
+              >
+                <b-icon icon="plus-square-dotted" />
+              </button>
+              <button v-else type="button" class="u-buttonLink u-selectBtn">
+                <b-icon icon="dash-square-dotted" />
+              </button>
+              {{ ci.label }}
+            </div>
+            <transition-group
+              tag="div"
+              class="_items--list"
+              name="listComplete"
+            >
+              <ChutierItem
+                v-for="file in ci.files"
+                :key="file.$path"
+                :file="file"
+                :is_clicked="last_clicked === file.$path"
+                :is_selected="selected_items_slugs.includes(file.$path)"
+                :draggable="false"
+                @toggleSelect="toggleSelect(file.$path)"
+                @unclicked="last_clicked = false"
+                @click.stop="last_clicked = file.$path"
+              />
+            </transition-group>
           </div>
-          <transition-group tag="div" class="_items--list" name="listComplete">
-            <ChutierItem
-              v-for="file in ci.files"
-              :key="file.$path"
-              :file="file"
-              :is_clicked="last_clicked === file.$path"
-              :is_selected="selected_items_slugs.includes(file.$path)"
-              :draggable="false"
-              @toggleSelect="toggleSelect(file.$path)"
-              @unclicked="last_clicked = false"
-              @click.stop="last_clicked = file.$path"
-            />
-          </transition-group>
         </div>
       </div>
 
@@ -231,17 +235,12 @@
             </div>
           </transition>
           <div class="u-sameRow _dbleBtns">
-            <button
-              type="button"
-              class="u-button u-button_black"
-              @click="deselectAll"
-            >
-              <b-icon icon="dash-square-dotted" />
-              {{ $t("deselect_all") }}
+            <button type="button" class="u-buttonLink" @click="deselectAll">
+              <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
             </button>
             <button
               type="button"
-              class="u-button u-button_black"
+              class="u-buttonLink"
               @click="show_confirm_remove_menu = true"
             >
               <b-icon icon="trash" />
@@ -543,18 +542,26 @@ export default {
   top: 0;
   height: calc(100% - 50px);
   overflow: hidden;
-  color: var(--h-600);
+  color: var(--h-700);
 
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
 
   @media (max-width: 600px) {
+    height: auto;
     flex-flow: column nowrap;
+  }
+
+  > ._importFiles {
+    flex: 1 0 210px;
+  }
+
+  > ._filesList {
+    flex: 2 1 0;
   }
 }
 ._importFiles {
-  flex: 1 1 0;
   position: relative;
   top: 0;
   height: 100%;
@@ -562,6 +569,11 @@ export default {
   border-right: 1px solid var(--h-500);
 
   @include scrollbar(4px, 4px, 5px, transparent, white);
+
+  @media (max-width: 600px) {
+    overflow: hidden;
+    height: auto;
+  }
 }
 ._importFiles--content {
   display: flex;
@@ -582,7 +594,6 @@ export default {
 }
 
 ._filesList {
-  flex: 1 1 0;
   position: relative;
 }
 
@@ -609,7 +620,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1) 0;
-  color: var(--h-500);
+  color: currentColor;
 
   ._separator {
     flex: 1 1 auto;
@@ -620,12 +631,13 @@ export default {
 }
 
 ._middleContent {
-  margin: calc(var(--spacing) / 1);
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: calc(var(--spacing) * 2);
 }
 
 ._items {
-  flex: 1 1 auto;
-  margin: calc(var(--spacing) * 1) calc(var(--spacing) / 1);
 }
 ._item {
   margin: calc(var(--spacing) * 1) 0;
@@ -638,14 +650,14 @@ export default {
   cursor: pointer;
   font-weight: 500;
   margin-bottom: 4px;
-  color: var(--h-400);
+  color: currentColor;
 
   // opacity: 0.8;
   transition: all 0.25s ease-out;
 
   &:hover,
   &:focus-visible {
-    color: var(--h-200);
+    color: var(--h-500);
   }
 
   &.is--fullySelected {
@@ -713,8 +725,8 @@ export default {
 ._dbleBtns > * {
   flex: 1 1 120px;
   gap: calc(var(--spacing) / 4);
-  display: flex;
-  flex-flow: column nowrap;
+  // display: flex;
+  // flex-flow: column nowrap;
 }
 
 ._uploadFilesList {
@@ -773,7 +785,6 @@ export default {
 }
 
 ._items--list {
-  column-count: 2;
-  column-gap: var(--spacing);
+  columns: 18em;
 }
 </style>
