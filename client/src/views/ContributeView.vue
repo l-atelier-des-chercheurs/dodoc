@@ -90,6 +90,7 @@
               v-if="files_to_import.length > 0"
               :files_to_import="files_to_import"
               :path="author_path"
+              :allow_caption_edition="true"
               @importedMedias="mediaJustImported($event)"
               @close="files_to_import = []"
             />
@@ -188,14 +189,14 @@
             </button>
             {{ ci.label }}
           </div>
-          <transition-group tag="div" name="listComplete">
+          <transition-group tag="div" class="_items--list" name="listComplete">
             <ChutierItem
               v-for="file in ci.files"
               :key="file.$path"
               :file="file"
               :is_clicked="last_clicked === file.$path"
               :is_selected="selected_items_slugs.includes(file.$path)"
-              :draggable="true"
+              :draggable="false"
               @toggleSelect="toggleSelect(file.$path)"
               @unclicked="last_clicked = false"
               @click.stop="last_clicked = file.$path"
@@ -235,7 +236,7 @@
               class="u-button u-button_black"
               @click="deselectAll"
             >
-              <b-icon name="dash-square-dotted" />
+              <b-icon icon="dash-square-dotted" />
               {{ $t("deselect_all") }}
             </button>
             <button
@@ -582,6 +583,7 @@ export default {
 
 ._filesList {
   flex: 1 1 0;
+  position: relative;
 }
 
 ._adminBtn {
@@ -666,7 +668,8 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   // box-shadow: 0 2px 6px 0 black;
-  background: var(--c-noir);
+  background: var(--h-700);
+  color: white;
   padding: calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 2);
 }
@@ -737,7 +740,7 @@ export default {
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   --dropzone-color1: transparent;
   // --dropzone-color2: var(--h-900);
-  --dropzone-color2: var(--r-600);
+  --dropzone-color2: var(--r-200);
   color: var(--active-color);
 }
 
@@ -767,5 +770,10 @@ export default {
       height: 1rem;
     }
   }
+}
+
+._items--list {
+  column-count: 2;
+  column-gap: var(--spacing);
 }
 </style>

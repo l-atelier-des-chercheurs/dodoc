@@ -1,6 +1,8 @@
 <template>
   <div class="_topBar">
-    <div class="logo">LumaDoc</div>
+    <div class="_logo">
+      <router-link to="/">LumaDoc</router-link>
+    </div>
     <div class="menu">
       <router-link to="/contribute" active-class="active">DEPOSER</router-link>
       <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
@@ -43,13 +45,19 @@ export default {
   }
 }
 
-.logo {
+._logo {
   display: flex;
   align-items: center;
   padding: 0 1rem;
 
   font-size: 20px;
   font-weight: bold;
+
+  a {
+    text-decoration: none;
+    // color: var(--h-900);
+    font-weight: normal;
+  }
 }
 
 .menu {

@@ -34,11 +34,22 @@
                 }}
               </small>
             </div>
-            <div v-if="file.caption" v-text="file.caption" />
-            <div v-else v-text="file.$media_filename" />
+            <div>
+              <b-icon
+                v-if="file.caption"
+                icon="text-left"
+                :aria-label="$t('caption')"
+              />
+              <b-icon
+                v-if="file.$credits"
+                icon="info-circle"
+                :aria-label="$t('credit/reference')"
+              />
+              <small>{{ file.$media_filename }}</small>
+            </div>
           </div>
         </div>
-        <button type="button" class="u-button_icon _dragBtn">
+        <button type="button" class="u-button_icon _dragBtn" v-if="draggable">
           <svg
             width="24"
             height="24"
@@ -52,6 +63,7 @@
             />
           </svg>
         </button>
+        <input class="_checkbox" type="checkbox" v-model="is_selected" />
       </div>
     </div>
     <!-- <CollaborativeEditor2
@@ -375,6 +387,17 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+._checkbox {
+  // color: var(--h-500);
+  // width: 20px;
+  // height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--h-500);
+  background-color: transparent;
+  margin: 0 calc(var(--spacing) / 2);
+  cursor: pointer;
 }
 </style>
 <style lang="scss">
