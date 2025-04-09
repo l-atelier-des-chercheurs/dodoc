@@ -265,8 +265,8 @@
               {{ $t("remove_select") }}
             </button>
           </div>
-        </div></transition
-      >
+        </div>
+      </transition>
       <transition name="slideup" mode="out-in">
         <div class="_removeMenu" v-if="show_confirm_remove_menu" key="remove">
           <button
@@ -287,6 +287,11 @@
         </div>
       </transition>
     </div>
+    <CreateNewMediastackModal
+      v-if="show_new_mediastack_modal"
+      :selected_items="selected_items"
+      @close="show_new_mediastack_modal = false"
+    />
   </div>
 </template>
 <script>
@@ -296,6 +301,7 @@ import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
+import CreateNewMediastackModal from "@/components/chutier/CreateNewMediastackModal.vue";
 
 export default {
   props: {
@@ -308,6 +314,7 @@ export default {
     ChutierItem,
     AdminLumaSettings,
     LangModal,
+    CreateNewMediastackModal,
   },
   provide() {
     return {

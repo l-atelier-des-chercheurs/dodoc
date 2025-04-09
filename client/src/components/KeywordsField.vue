@@ -30,25 +30,29 @@
 
       <hr />
 
-      <div class="">
-        <DLabel :str="$t('advanced_options')" />
-        <div class="u-sameRow">
-          <input
-            type="text"
-            v-model="new_keywords_stringified"
-            ref="urlToCopy"
-            size="small"
-          />
-          <button
-            type="button"
-            class="u-button u-button_icon u-suffix _clipboardBtn"
-            @click="copyToClipboard"
-          >
-            <b-icon icon="clipboard" v-if="!is_copied" />
-            <b-icon icon="clipboard-check" v-else />
-          </button>
-        </div>
-      </div>
+      <small>
+        <details class="u-spacingBottom">
+          <summary>{{ $t("advanced_options") }}</summary>
+          <div>
+            <div class="u-sameRow">
+              <input
+                type="text"
+                v-model="new_keywords_stringified"
+                ref="urlToCopy"
+                size="small"
+              />
+              <button
+                type="button"
+                class="u-button u-button_icon u-suffix _clipboardBtn"
+                @click="copyToClipboard"
+              >
+                <b-icon icon="clipboard" v-if="!is_copied" />
+                <b-icon icon="clipboard-check" v-else />
+              </button>
+            </div>
+          </div>
+        </details>
+      </small>
 
       <div slot="footer">
         <SaveCancelButtons

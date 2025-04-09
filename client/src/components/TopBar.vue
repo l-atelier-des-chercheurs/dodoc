@@ -85,7 +85,7 @@ export default {
     }
 
     &.active {
-      background-color: white;
+      background-color: var(--h-500);
       font-weight: bold;
     }
   }
