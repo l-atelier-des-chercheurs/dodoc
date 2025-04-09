@@ -297,11 +297,11 @@ export default {
     messages: {
       fr: {
         imported_docs:
-          "Les médias importés apparaissent ici. Ils restent privés tant que vous ne les ajoutez pas à un document partagé.",
+          "Les médias importés apparaissent ici. Seul vous pouvez les voir et les modifier. Sélectionnez-en un ou plusieurs pour créer un document partagé.",
       },
       en: {
         imported_docs:
-          "Imported medias will appear here. They stay private until they are added to a shared document.",
+          "Imported medias will appear here. Only you can see and edit them. Select one or more to create a shared document.",
       },
     },
   },

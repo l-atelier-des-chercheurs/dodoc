@@ -256,6 +256,7 @@ export default {
   position: relative;
 
   width: 100%;
+  break-inside: avoid;
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
   margin-bottom: 1px;

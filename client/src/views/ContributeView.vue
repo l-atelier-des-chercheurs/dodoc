@@ -223,7 +223,7 @@
           v-if="selected_items.length > 0"
           key="selection"
         >
-          <transition name="slideupFade" mode="out-in">
+          <transition name="fade" mode="out-in">
             <div :key="selected_items.length">
               <template v-if="selected_items.length === 1">
                 {{ $t("selected_item") }}
@@ -235,6 +235,24 @@
             </div>
           </transition>
           <div class="u-sameRow _dbleBtns">
+            <button
+              type="button"
+              class="u-button"
+              @click="show_existing_mediastack_modal = true"
+            >
+              <b-icon icon="plus-square-dotted" />
+              {{ $t("add_to_existing_document") }}
+            </button>
+            <button
+              type="button"
+              class="u-button"
+              @click="show_new_mediastack_modal = true"
+            >
+              <b-icon icon="plus-square-dotted" />
+              {{ $t("create_new_document") }}
+            </button>
+          </div>
+          <div class="u-sameRow">
             <button type="button" class="u-buttonLink" @click="deselectAll">
               <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
             </button>
@@ -300,11 +318,15 @@ export default {
     messages: {
       fr: {
         imported_docs:
-          "Les médias importés apparaissent ici. Ils restent privés tant que vous ne les ajoutez pas à un document partagé.",
+          "Les médias importés apparaissent ici. Seul vous pouvez les voir et les modifier. Sélectionnez-en un ou plusieurs pour créer un document partagé.",
+        add_to_existing_document: "Ajouter à un document existant",
+        create_new_document: "Créer un nouveau document",
       },
       en: {
         imported_docs:
-          "Imported medias will appear here. They stay private until they are added to a shared document.",
+          "Imported medias will appear here. Only you can see and edit them. Select one or more to create a shared document.",
+        add_to_existing_document: "Add to existing document",
+        create_new_document: "Create a new document",
       },
     },
   },
@@ -329,6 +351,9 @@ export default {
       show_qr_code_modal: false,
       show_lang_modal: false,
       show_confirm_remove_menu: false,
+
+      show_existing_mediastack_modal: false,
+      show_new_mediastack_modal: false,
     };
   },
   created() {},
@@ -715,18 +740,19 @@ export default {
 }
 
 ._dbleBtns {
-  gap: calc(var(--spacing) / 10);
   display: flex;
   flex-flow: row wrap;
   align-content: stretch;
   align-items: stretch;
+  gap: calc(var(--spacing) / 2);
   width: 100%;
 }
 ._dbleBtns > * {
   flex: 1 1 120px;
-  gap: calc(var(--spacing) / 4);
+  // gap: calc(var(--spacing) / 4);
   // display: flex;
   // flex-flow: column nowrap;
+  padding: calc(var(--spacing) / 1);
 }
 
 ._uploadFilesList {
