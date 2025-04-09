@@ -18,6 +18,14 @@
       </div>
 
       <div class="_form" :key="current_step">
+        <div class="_form-step">
+          <div class="_form-step-title">
+            <h2>
+              {{ steps[current_step].label }}
+            </h2>
+          </div>
+        </div>
+
         <template v-if="current_step === 0">
           <div class="_form-title">
             <div class="u-spacingBottom">
@@ -45,12 +53,7 @@
         </template>
         <template v-if="current_step === 1">
           <div class="_form-tags">
-            <KeywordsField
-              :label="$t('keywords')"
-              :field_name="'keywords'"
-              :keywords="stack_tags"
-              :can_edit="true"
-            />
+            <KeywordsFieldEditor :keywords.sync="stack_tags" />
           </div>
         </template>
         <template v-if="current_step === 2">
@@ -71,12 +74,12 @@
   </div>
 </template>
 <script>
-import KeywordsField from "@/components/KeywordsField.vue";
+import KeywordsFieldEditor from "@/components/KeywordsFieldEditor.vue";
 
 export default {
   props: {},
   components: {
-    KeywordsField,
+    KeywordsFieldEditor,
   },
   data() {
     return {
@@ -86,7 +89,7 @@ export default {
           label: this.$t("title"),
         },
         {
-          label: this.$t("tags"),
+          label: this.$t("keywords"),
         },
         {
           label: this.$t("team"),
@@ -121,6 +124,7 @@ export default {
   width: 100%;
   height: 100%;
   z-index: 10000;
+  overflow-y: auto;
 
   padding: calc(var(--spacing) * 2);
   background-color: white;
@@ -150,10 +154,10 @@ export default {
   gap: calc(var(--spacing) * 2);
   width: 100%;
   // border: 1px solid var(--h-700);
-  background-color: var(--h-700);
-  box-shadow: 0 0 10px 0 var(--h-100);
+  background-color: var(--h-50);
+  // box-shadow: 0 0 10px 0 var(--h-100);
   // border-radius: 10px;
-  padding: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
 }
 
 .step {
@@ -161,6 +165,7 @@ export default {
   display: flex;
   align-items: center;
   color: var(--h-200);
+  margin-top: var(--spacing);
 
   &.active {
     color: var(--h-500);
@@ -196,14 +201,14 @@ export default {
   bottom: 100%;
   left: 0;
   font-weight: 600;
-  margin-right: 8px;
   transform: translateX(-50%);
   left: 50%;
   margin-bottom: 4px;
+  white-space: nowrap;
 }
 
 .step-line {
-  width: 40px;
+  width: 60px;
   height: 2px;
   background-color: currentColor;
   // margin-right: 8px;

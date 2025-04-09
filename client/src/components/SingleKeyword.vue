@@ -17,12 +17,7 @@
     <div v-if="count" class="_count">
       {{ count }}
     </div>
-    <b-icon
-      v-if="can_remove"
-      class="_white"
-      icon="dash-circle"
-      @click="$emit('remove')"
-    />
+    <b-icon v-if="can_remove" class="_white" icon="dash-circle" />
     <button
       type="button"
       v-if="can_add"

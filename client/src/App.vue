@@ -166,6 +166,7 @@ export default {
   // from tldraw
   --body-bg: var(--h-50);
   --panel-color: var(--body-bg);
+  --panel-color: #fff;
   --panel-borders: 1px solid var(--panel-color);
   --panel-shadows: rgba(0, 0, 0, 0.05) 0px 0px 16px -1px,
     rgba(0, 0, 0, 0.05) 0px 0px 16px -8px,

@@ -1,5 +1,17 @@
 <template>
   <div class="_keywordsFieldEditor">
+    <div class="u-spacingBottom u-keywords" v-if="keywords.length > 0">
+      <SingleKeyword
+        v-for="keyword in keywords"
+        :key="keyword"
+        :keyword="keyword"
+        :can_remove="true"
+        @remove="removeKeyword(keyword)"
+      />
+    </div>
+
+    <DLabel :str="$t('add_keyword')" />
+
     <input
       type="text"
       v-model="user_suggestion"
@@ -88,11 +100,13 @@ export default {
   i18n: {
     messages: {
       fr: {
+        add_keyword: "Ajouter un mot-clé",
         validate_with_shift_enter:
           "Validez la première suggestion avec SHIFT+ENTRÉE, ou créez un nouveau mot-clé avec ENTRÉE.",
         create_new_keyword_enter: "Créez un nouveau mot-clé avec ENTRÉE.",
       },
       en: {
+        add_keyword: "Add a keyword",
         validate_with_shift_enter:
           "Add first suggestion with SHIFT+ENTER, or create a new keyword with ENTER.",
         create_new_keyword_enter: "Create a new keyword with ENTER.",
@@ -135,6 +149,13 @@ export default {
     },
   },
   methods: {
+    removeKeyword(keyword) {
+      debugger;
+      this.$emit(
+        "update:keywords",
+        this.keywords.filter((kw) => kw !== keyword)
+      );
+    },
     matchingKeywordsWithCategory(filter_by_category) {
       return this.all_keywords.filter((kw) => {
         const category = kw.includes("/") ? kw.split("/").at(0) : false;

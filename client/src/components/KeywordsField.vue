@@ -11,25 +11,7 @@
     <EditBtn v-if="can_edit" @click="enableEditMode" />
 
     <BaseModal2 :title="label" v-if="edit_mode" @close="edit_mode = false">
-      <div class="u-keywords" v-if="new_keywords.length > 0">
-        <SingleKeyword
-          v-for="keyword in new_keywords"
-          :key="keyword"
-          :keyword="keyword"
-          :can_remove="true"
-          @remove="removeKeyword(keyword)"
-        />
-      </div>
-
-      <hr />
-
-      <KeywordsFieldEditor
-        :keywords="new_keywords"
-        @update:keywords="new_keywords = $event"
-      />
-
-      <hr />
-
+      <KeywordsFieldEditor :keywords.sync="new_keywords" />
       <small>
         <details class="u-spacingBottom">
           <summary>{{ $t("advanced_options") }}</summary>
@@ -158,10 +140,6 @@ export default {
     cancel() {
       this.new_keywords = this.keywords || [];
       this.edit_mode = false;
-    },
-
-    removeKeyword(_kw) {
-      this.new_keywords = this.new_keywords.filter((kw) => kw !== _kw);
     },
   },
 };
