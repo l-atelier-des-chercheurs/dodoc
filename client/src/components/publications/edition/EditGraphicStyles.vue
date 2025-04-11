@@ -167,7 +167,8 @@ export default {
   overflow-x: auto;
 
   background-color: #000;
-  background-color: var(--c-gris_fonce);
+  background-color: var(--c-noir);
+
   // border-bottom: 2px solid var(--c-gris_fonce);
   padding: calc(var(--spacing) * 1);
 }

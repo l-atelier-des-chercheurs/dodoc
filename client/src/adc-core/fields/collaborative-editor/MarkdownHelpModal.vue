@@ -8,89 +8,23 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Titres</td>
+        <tr v-for="item in markdownSyntax" :key="item.element">
+          <td>{{ item.element }} {{ "&nbsp;&nbsp;" }}</td>
           <td>
-            <code># H1</code><br /><code>## H2</code><br /><code>### H3</code>
+            <template v-if="Array.isArray(item.syntax)">
+              <template v-for="(syntax, index) in item.syntax">
+                <code>{{ syntax }}</code>
+                <br v-if="index < item.syntax.length - 1" />
+              </template>
+            </template>
+            <template v-else>
+              <code>{{ item.syntax }}</code>
+              <template v-if="item.warning">
+                ⚠️ <a :href="item.link">{{ item.warning }}</a>
+              </template>
+            </template>
+            {{ "\n\n" }}
           </td>
-          <br />
-        </tr>
-        <tr>
-          <td>Gras</td>
-          <td><code>**texte en gras**</code></td>
-        </tr>
-        <tr>
-          <td>Italique</td>
-          <td><code>_texte en italique_</code></td>
-        </tr>
-        <tr>
-          <td>Citation</td>
-          <td><code>&gt; blockquote</code></td>
-        </tr>
-        <tr>
-          <td>Liste ordonnée</td>
-          <td>
-            <code>1. Premier item</code><br /><code>2. Deuxième item</code
-            ><br /><code>3. Troisième item</code>
-          </td>
-        </tr>
-        <tr>
-          <td>Liste non-ordonnée</td>
-          <td>
-            <code>- Premier item</code><br /><code>- Deuxième item</code><br />
-            <code>- Troisième item</code>
-          </td>
-        </tr>
-        <tr>
-          <td>Code</td>
-          <td><code>`code`</code></td>
-        </tr>
-        <tr>
-          <td>Filet horizontal</td>
-          <td><code>---</code></td>
-        </tr>
-        <tr>
-          <td>Lien</td>
-          <td><code>[titre](https://www.example.com)</code></td>
-        </tr>
-        <tr>
-          <td>Image</td>
-          <td>
-            <code>![alternative textuelle](image.jpg)</code> ⚠️
-            <a href="../images/">cf. Images</a>
-          </td>
-        </tr>
-        <tr>
-          <td>Note de bas de page</td>
-          <td>
-            <code>Ceci est une phrase avec une note de bas de page. [^1]</code
-            ><br /><code>[^1]: Ceci est la note.</code> ⚠️
-            <a href="../notes/">cf. Notes</a>
-          </td>
-        </tr>
-        <tr>
-          <td>ID de titre</td>
-          <td><code>### Mon titre avec id {#custom-id}</code></td>
-        </tr>
-        <tr>
-          <td>Liste de définition</td>
-          <td><code>terme</code><br /><code>: définition</code></td>
-        </tr>
-        <tr>
-          <td>Barré</td>
-          <td><code>~~La terre est plate.~~</code></td>
-        </tr>
-        <tr>
-          <td>Indice</td>
-          <td><code>H~2~O</code></td>
-        </tr>
-        <tr>
-          <td>Exposant</td>
-          <td><code>X^2^</code></td>
-        </tr>
-        <tr>
-          <td>Surligné</td>
-          <td><code>Je veux surligner ces ==mots très importants==</code></td>
         </tr>
       </tbody>
     </table>
@@ -101,7 +35,85 @@ export default {
   props: {},
   components: {},
   data() {
-    return {};
+    return {
+      markdownSyntax: [
+        {
+          element: "Titres",
+          syntax: ["# H1", "## H2", "### H3"],
+        },
+        {
+          element: "Gras",
+          syntax: "**texte en gras**",
+        },
+        {
+          element: "Italique",
+          syntax: "_texte en italique_",
+        },
+        {
+          element: "Citation",
+          syntax: "> blockquote",
+        },
+        {
+          element: "Liste ordonnée",
+          syntax: ["1. Premier item", "2. Deuxième item", "3. Troisième item"],
+        },
+        {
+          element: "Liste non-ordonnée",
+          syntax: ["- Premier item", "- Deuxième item", "- Troisième item"],
+        },
+        {
+          element: "Code",
+          syntax: "`code`",
+        },
+        {
+          element: "Filet horizontal",
+          syntax: "---",
+        },
+        {
+          element: "Lien",
+          syntax: "[titre](https://www.example.com)",
+        },
+        {
+          element: "Image",
+          syntax: "![alternative textuelle](image.jpg)",
+          warning: "cf. Images",
+          link: "../images/",
+        },
+        {
+          element: "Note de bas de page",
+          syntax: [
+            "Ceci est une phrase avec une note de bas de page. [^1]",
+            "[^1]: Ceci est la note.",
+          ],
+          warning: "cf. Notes",
+          link: "../notes/",
+        },
+        {
+          element: "ID de titre",
+          syntax: "### Mon titre avec id {#custom-id}",
+        },
+        {
+          element: "Liste de définition",
+          syntax: ["terme", ": définition"],
+        },
+        {
+          element: "Barré",
+          syntax: "~~La terre est plate.~~",
+        },
+        {
+          element: "Indice",
+          syntax: "H~2~O",
+        },
+        {
+          element: "Exposant",
+          syntax: "X^2^",
+        },
+        // {
+        //   element: "Surligné",
+        //   syntax: "Je veux surligner ces ==mots très importants==",
+        // },
+      ],
+    };
   },
   created() {},
   mounted() {},

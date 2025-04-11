@@ -23,6 +23,9 @@
   color: var(--main-color);
 
   p,
+  ul,
+  ol,
+  blockquote,
   .media,
   h1,
   h2,
@@ -87,11 +90,9 @@
   }
 
   blockquote {
-    margin-left: 1cm;
-  }
-
-  blockquote p {
-    font-size: 10pt;
+    margin-left: .75cm;
+    padding-left: .25cm;
+    border-left: 2px solid var(--main-color);
     font-family: var(--title-font);
   }
 
@@ -279,12 +280,5 @@
     text-align: left;
   }
 
-  blockquote {
-    margin-left: calc(var(--spacing) * 2);
-  }
 
-  blockquote,
-  blockquote p {
-    font-size: 18px;
-  }
 }
