@@ -1,6 +1,36 @@
 <template>
   <BaseModal2 :title="$t('markdown_help')" @close="$emit('close')">
-    <table>
+    <p class="u-spacingBottom">
+      Pour renseigner le contenu du chapitre, on peut utiliser le langage de
+      balisage léger <em>markdown</em>, très largement utilisé et documenté
+      partout sur le web.
+    </p>
+    <p class="u-spacingBottom">Voici une brève documentation de son usage.</p>
+    <b>Paragraphes et sauts de ligne</b>
+    <p>
+      Pour créer un paragraphe, laisser une ligne blanche entre deux lignes de
+      texte :
+    </p>
+    <div class="u-spacingBottom" />
+    <blockquote>
+      <p>
+        <code>Un premier paragraphe.</code> <br />
+        <br />
+        <code>Un deuxième paragraphe.</code>
+      </p>
+    </blockquote>
+    <p>Pour forcer un saut de ligne, saisir deux espaces en fin de ligne :</p>
+    <blockquote>
+      <p>
+        <code>Un premier vers.&nbsp;&nbsp;</code> <br />
+        <code>Un deuxième vers.</code>
+      </p>
+    </blockquote>
+
+    <hr />
+
+    <b>Syntaxe</b>
+    <table class="u-spacingBottom">
       <thead>
         <tr>
           <th>Élement</th>
@@ -28,6 +58,12 @@
         </tr>
       </tbody>
     </table>
+
+    <b>Aller plus loin</b>
+    <p>
+      Lire la documentation sur
+      <a href="https://www.markdownguide.org/">markdownguide.org</a>.
+    </p>
   </BaseModal2>
 </template>
 <script>
@@ -76,38 +112,38 @@ export default {
         {
           element: "Image",
           syntax: "![alternative textuelle](image.jpg)",
-          warning: "cf. Images",
-          link: "../images/",
+          // warning: "cf. Images",
+          // link: "../images/",
         },
-        {
-          element: "Note de bas de page",
-          syntax: [
-            "Ceci est une phrase avec une note de bas de page. [^1]",
-            "[^1]: Ceci est la note.",
-          ],
-          warning: "cf. Notes",
-          link: "../notes/",
-        },
-        {
-          element: "ID de titre",
-          syntax: "### Mon titre avec id {#custom-id}",
-        },
-        {
-          element: "Liste de définition",
-          syntax: ["terme", ": définition"],
-        },
+        // {
+        //   element: "Note de bas de page",
+        //   syntax: [
+        //     "Ceci est une phrase avec une note de bas de page. [^1]",
+        //     "[^1]: Ceci est la note.",
+        //   ],
+        //   warning: "cf. Notes",
+        //   link: "../notes/",
+        // },
+        // {
+        //   element: "ID de titre",
+        //   syntax: "### Mon titre avec id {#custom-id}",
+        // },
+        // {
+        //   element: "Liste de définition",
+        //   syntax: ["terme", ": définition"],
+        // },
         {
           element: "Barré",
           syntax: "~~La terre est plate.~~",
         },
-        {
-          element: "Indice",
-          syntax: "H~2~O",
-        },
-        {
-          element: "Exposant",
-          syntax: "X^2^",
-        },
+        // {
+        //   element: "Indice",
+        //   syntax: "H~2~O",
+        // },
+        // {
+        //   element: "Exposant",
+        //   syntax: "X^2^",
+        // },
         // {
         //   element: "Surligné",
         //   syntax: "Je veux surligner ces ==mots très importants==",
