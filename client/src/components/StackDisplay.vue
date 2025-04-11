@@ -167,6 +167,7 @@
                 />
               </div>
             </div>
+            <!-- // todo remove -->
             <div class="_bottomBtns" v-if="context === 'chutier'">
               <transition name="pagechange" mode="out-in">
                 <button

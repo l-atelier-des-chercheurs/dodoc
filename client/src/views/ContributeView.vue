@@ -252,7 +252,7 @@
               {{ $t("create_new_document") }}
             </button>
           </div>
-          <div class="u-sameRow">
+          <div class="u-sameRow _selectionBar-btns">
             <button type="button" class="u-buttonLink" @click="deselectAll">
               <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
             </button>
@@ -290,6 +290,7 @@
     <CreateNewMediastackModal
       v-if="show_new_mediastack_modal"
       :selected_items="selected_items"
+      :shared_folder_path="shared_folder_path"
       @close="show_new_mediastack_modal = false"
     />
   </div>
@@ -670,6 +671,7 @@ export default {
 }
 
 ._items {
+  padding-bottom: calc(var(--spacing) * 6);
 }
 ._item {
   margin: calc(var(--spacing) * 1) 0;
@@ -760,6 +762,11 @@ export default {
   // display: flex;
   // flex-flow: column nowrap;
   padding: calc(var(--spacing) / 1);
+}
+
+._selectionBar-btns {
+  margin: calc(var(--spacing) / 2) 0;
+  gap: calc(var(--spacing) * 2);
 }
 
 ._uploadFilesList {

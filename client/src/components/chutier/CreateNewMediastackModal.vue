@@ -1,85 +1,195 @@
 <template>
-  <div class="_createNewMediastackModal">
-    <div class="_content">
-      <div class="_breadcrumb">
-        <div
-          v-for="(step, index) in steps"
-          :key="step.label"
-          class="step"
-          :class="current_step === index ? 'active' : ''"
-        >
-          <div class="step-line" v-if="index > 0"></div>
-          <div class="step-circle">
-            <div v-if="current_step >= index" class="step-label">
-              {{ step.label }}
+  <BaseModal2 size="" @close="$emit('close')">
+    <div class="_createNewMediastackModal">
+      <portal-target name="largemedia" multiple />
+      <div class="_content">
+        <div class="_breadcrumb">
+          <button
+            type="button"
+            v-for="(step, index) in steps"
+            :key="step.label"
+            class="step"
+            :class="
+              current_step === index
+                ? 'active'
+                : current_step > index
+                ? 'done'
+                : ''
+            "
+            @click="current_step = index"
+          >
+            <div class="step-line" v-if="index > 0"></div>
+            <div class="step-circle">
+              <div v-if="current_step >= index" class="step-label">
+                {{ step.label }}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="_form" :key="current_step">
+          <div class="_form-step" v-if="false">
+            <div class="_form-step-title">
+              <h2>
+                {{ steps[current_step].label }}
+              </h2>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="_form" :key="current_step">
-        <div class="_form-step">
-          <div class="_form-step-title">
-            <h2>
-              {{ steps[current_step].label }}
-            </h2>
+          <div class="u-spacingBottom _form-review-items">
+            <ChutierItem
+              v-for="file in selected_items"
+              :key="file.$path"
+              :file="file"
+              :is_selected="false"
+            />
           </div>
-        </div>
 
-        <template v-if="current_step === 0">
-          <div class="_form-title">
-            <div class="u-spacingBottom">
-              <h1>
+          <template v-if="current_step === 0">
+            <div class="_form-title">
+              <div class="u-spacingBottom">
+                <h1>
+                  <DLabel :str="$t('title')" />
+                  <TextInput
+                    :content.sync="stack_title"
+                    :required="true"
+                    :autofocus="true"
+                    :can_edit="true"
+                    @onEnter="nextStep"
+                  />
+                </h1>
+              </div>
+              <div class="u-spacingBottom _description">
+                <DLabel :str="$t('description')" />
                 <TextInput
-                  :content.sync="stack_title"
-                  :placeholder="$t('title')"
-                  :required="true"
-                  :autofocus="true"
+                  :content.sync="stack_description"
+                  :input_type="'editor'"
                   :can_edit="true"
                   @onEnter="nextStep"
                 />
-              </h1>
+              </div>
             </div>
-            <div class="u-spacingBottom _description">
-              <TextInput
-                :content.sync="stack_description"
-                :placeholder="$t('description')"
-                :input_type="'editor'"
+          </template>
+          <template v-if="current_step === 1">
+            <div class="u-spacingBottom _form-tags">
+              <KeywordsFieldEditor :keywords.sync="stack_tags" />
+            </div>
+          </template>
+          <template v-if="current_step === 2">
+            <div class="u-spacingBottom _form-team">
+              <AuthorField
+                :label="$t('admins')"
+                :field="'$admins'"
+                :instructions="$t('media_editing_instructions')"
+                :authors_paths="stack_authors"
                 :can_edit="true"
-                @onEnter="nextStep"
+                @save="
+                  (event) => {
+                    stack_authors = event;
+                  }
+                "
               />
             </div>
-          </div>
-        </template>
-        <template v-if="current_step === 1">
-          <div class="_form-tags">
-            <KeywordsFieldEditor :keywords.sync="stack_tags" />
-          </div>
-        </template>
-        <template v-if="current_step === 2">
-          <div class="_form-team">TEAM</div>
-        </template>
-        <template v-if="current_step === 3">
-          <div class="_form-review">REVIEW</div>
-        </template>
+          </template>
+          <template v-if="current_step === 3">
+            <div class="_form-review">
+              <div class="u-spacingBottom">
+                <DLabel :str="$t('title')" />
+                <h2>
+                  {{ stack_title }}
+                </h2>
+              </div>
+              <div class="u-spacingBottom">
+                <DLabel :str="$t('description')" />
+                <div v-html="stack_description" />
+              </div>
+              <div class="u-spacingBottom">
+                <DLabel :str="$t('keywords')" />
+                <KeywordsField :keywords="stack_tags" :can_edit="false" />
+              </div>
 
-        <div class="_form-actions">
-          <button class="u-button u-button_primary" @click="nextStep">
-            {{ $t("next") }}
-            <b-icon icon="arrow-right" />
-          </button>
+              <div class="u-spacingBottom">
+                <DLabel :str="$t('destination_corpus')" />
+                <div>
+                  <select v-model="selected_destination_folder_path">
+                    <option
+                      v-for="folder in destination_folders"
+                      :key="folder.$path"
+                      :value="folder.$path"
+                    >
+                      {{ folder.title || getFilename(folder.$path) }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <div class="_form-actions">
+            <div>
+              <button
+                class="u-button u-button_white"
+                v-if="status === 'idle'"
+                @click="backStep"
+              >
+                <b-icon icon="arrow-left" />
+                {{ $t("back") }}
+              </button>
+            </div>
+
+            <button
+              class="u-button u-button_primary"
+              v-if="current_step < steps.length - 1"
+              @click="nextStep"
+            >
+              {{ $t("next") }}
+              <b-icon icon="arrow-right" />
+            </button>
+            <button
+              class="u-button u-button_primary"
+              v-else-if="current_step === steps.length - 1 && status === 'idle'"
+              :disabled="!selected_destination_folder_path"
+              @click="publishMediastack"
+            >
+              {{ $t("publish") }}
+            </button>
+            <span v-else-if="status === 'publishing'">
+              {{ $t("publishing") }}
+            </span>
+            <span v-else-if="status === 'done'">
+              {{ $t("done") }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </BaseModal2>
 </template>
 <script>
 import KeywordsFieldEditor from "@/components/KeywordsFieldEditor.vue";
+import KeywordsField from "@/components/KeywordsField.vue";
+import ChutierItem from "@/components/chutier/ChutierItem.vue";
 
 export default {
-  props: {},
+  props: {
+    selected_items: Array,
+  },
   components: {
     KeywordsFieldEditor,
+    KeywordsField,
+    ChutierItem,
+  },
+  i18n: {
+    messages: {
+      fr: {
+        destination_corpus: "Corpus de destination",
+        create_document: "Créer un document",
+      },
+      en: {
+        destination_corpus: "Destination corpus",
+        create_document: "Create document",
+      },
+    },
   },
   data() {
     return {
@@ -102,32 +212,217 @@ export default {
       stack_title: "",
       stack_description: "",
       stack_tags: [],
+      stack_authors: [],
+
+      status: "idle",
+
+      destination_folders: [],
+      selected_destination_folder_path: null,
     };
   },
-  created() {},
-  mounted() {},
+  created() {
+    if (this.connected_as.$path)
+      this.stack_authors.push(this.connected_as.$path);
+    debugger;
+  },
+  async mounted() {
+    await this.listDestinationFolders();
+  },
   beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
+    backStep() {
+      if (this.current_step > 0) this.current_step--;
+      else this.$emit("close");
+    },
+    async listDestinationFolders() {
+      const destination_folders = await this.$api
+        .getFolders({
+          path: "folders",
+        })
+        .catch((err) => {
+          this.fetch_spaces_error = err.response;
+          // this.is_loading = false;
+          return;
+        });
+
+      if (destination_folders.length > 0) {
+        this.destination_folders = destination_folders;
+        this.selected_destination_folder_path = destination_folders[0].$path;
+      } else {
+        this.destination_folders = [];
+      }
+    },
     nextStep() {
       this.current_step++;
+    },
+    async publishMediastack() {
+      this.status = "publishing";
+
+      // CREATE STACK IN DESTINATION CORPUS
+
+      const path_to_destination =
+        this.selected_destination_folder_path + "/stacks";
+
+      let additional_meta = {
+        $status: "public",
+        requested_slug: "stack",
+        $admins: this.stack_authors,
+      };
+
+      const new_folder_slug = await this.$api.createFolder({
+        path: path_to_destination,
+        additional_meta,
+      });
+
+      const stack_path = path_to_destination + "/" + new_folder_slug;
+
+      // COPY FILES TO STAC
+
+      let stack_files_metas = [];
+      for (const file of this.selected_items) {
+        const file_meta_name = await this.$api.copyFile({
+          path: file.$path,
+          path_to_destination_folder: stack_path,
+          new_meta: {},
+        });
+        stack_files_metas.push(file_meta_name);
+        await this.$api.deleteItem({ path: file.$path });
+      }
+
+      let new_meta = {
+        stack_files_metas,
+      };
+      if (stack_files_metas.length >= 1)
+        new_meta.$preview = stack_files_metas[0];
+
+      await this.$api.updateMeta({
+        path: stack_path,
+        new_meta,
+      });
+
+      await new Promise((r) => setTimeout(r, 250));
+
+      this.status = "done";
+
+      // for (const file_path of file_paths) {
+      //   const file_meta_name = await this.$api.copyFile({
+      //     path: file_path,
+      //     path_to_destination_folder,
+      //     new_meta: {},
+      //   });
+      //   await this.$api.deleteItem({ path: file_path });
+
+      //   stack_files_metas.push(file_meta_name);
+      //   let new_meta = {
+      //     stack_files_metas,
+      //   };
+      //   if (stack_files_metas.length === 1) new_meta.$preview = file_meta_name;
+
+      //   await this.$api.updateMeta({
+      //     path: path_to_destination_folder,
+      //     new_meta,
+      //   });
+      // }
+
+      // copy files to stack
+
+      // update stack meta
+
+      // delete files from origin
+
+      // close modal
+
+      // let path_to_destination_folder;
+      // if (this.stack?.$path) {
+      //   path_to_destination_folder = this.stack?.$path;
+      // } else {
+      //   let additional_meta = {
+      //     requested_slug: "stack",
+      //     stack_spot: this.index,
+      //     $authors: [this.connected_as.$path],
+      //     $admins: [this.connected_as.$path],
+      //   };
+
+      //   const new_folder_slug = await this.$api
+      //     .createFolder({
+      //       path: this.author_stacks_path,
+      //       additional_meta,
+      //     })
+      //     .catch((err) => {
+      //       this.$alertify.delay(4000).error(err);
+      //       throw err;
+      //     });
+
+      //   path_to_destination_folder =
+      //     this.author_stacks_path + "/" + new_folder_slug;
+      // }
+
+      // copy file to folder
+
+      // let stack_files_metas = [];
+
+      // if (
+      //   this.stack &&
+      //   this.stack.stack_files_metas &&
+      //   Array.isArray(this.stack.stack_files_metas)
+      // )
+      //   stack_files_metas = this.stack.stack_files_metas.slice();
+
+      // for (const file_path of file_paths) {
+      //   const file_meta_name = await this.$api.copyFile({
+      //     path: file_path,
+      //     path_to_destination_folder,
+      //     new_meta: {},
+      //   });
+      //   await this.$api.deleteItem({ path: file_path });
+
+      //   stack_files_metas.push(file_meta_name);
+      //   let new_meta = {
+      //     stack_files_metas,
+      //   };
+      //   if (stack_files_metas.length === 1) new_meta.$preview = file_meta_name;
+
+      //   await this.$api.updateMeta({
+      //     path: path_to_destination_folder,
+      //     new_meta,
+      //   });
+      // }
+
+      // await new Promise((r) => setTimeout(r, 300));
+      // this.is_adding_to_stack = false;
+
+      ////
+
+      //       const path_to_destination_type = this.shared_folder_path + "/stacks";
+
+      // await this.$api.copyFolder({
+      //   path: this.stack.$path,
+      //   path_to_destination_type,
+      //   new_meta: {
+      //     $status: "public",
+      //     // $admins: "everyone",
+      //     // $authors: this.stack.$admins,
+      //   },
+      // });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
 ._createNewMediastackModal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
-  overflow-y: auto;
+  // position: absolute;
+  // top: 0;
+  // left: 0;
+  // width: 100%;
+  // height: 100%;
+  // z-index: 10000;
+  // overflow-y: auto;
 
   padding: calc(var(--spacing) * 2);
   background-color: white;
+  background-color: var(--h-50);
 }
 
 ._content {
@@ -148,27 +443,25 @@ export default {
   margin-bottom: var(--spacing);
 }
 
-._form {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--spacing) * 2);
-  width: 100%;
-  // border: 1px solid var(--h-700);
-  background-color: var(--h-50);
-  // box-shadow: 0 0 10px 0 var(--h-100);
-  // border-radius: 10px;
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
-}
-
 .step {
+  appearance: none;
+  background-color: transparent;
+  padding: 0;
+
   position: relative;
   display: flex;
   align-items: center;
   color: var(--h-200);
   margin-top: var(--spacing);
+  pointer-events: none;
 
   &.active {
     color: var(--h-500);
+  }
+
+  &.done {
+    color: var(--h-500);
+    pointer-events: auto;
   }
 }
 
@@ -189,7 +482,8 @@ export default {
     opacity: 0;
   }
 
-  .step.active & {
+  .step.active &,
+  .step.done & {
     &::before {
       opacity: 1;
     }
@@ -198,13 +492,18 @@ export default {
 
 .step-label {
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 0;
   font-weight: 600;
   transform: translateX(-50%);
   left: 50%;
-  margin-bottom: 4px;
+  margin-top: 4px;
   white-space: nowrap;
+
+  .step.done:not(:hover) & {
+    opacity: 0;
+    // color: var(--h-500);
+  }
 }
 
 .step-line {
@@ -214,15 +513,21 @@ export default {
   // margin-right: 8px;
 }
 
+._form {
+  width: 100%;
+  background-color: white;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+}
+
 ._form-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: calc(var(--spacing) * 2);
 }
 
 ._description {
-  border-radius: var(--input-border-radius);
-  background-color: var(--c-gris_clair);
-  overflow: hidden;
+  // border-radius: var(--input-border-radius);
+  // background-color: var(--c-gris_clair);
+  // overflow: hidden;
 }
 </style>

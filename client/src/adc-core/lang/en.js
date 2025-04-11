@@ -373,7 +373,7 @@ export default {
   publish: "Publish",
 
   media_editing_instructions:
-    "Indicate the person(s) who can edit this content",
+    "Indicate the person(s) who can edit this content.",
   projects_you_edited_last: "Projects you edited last",
 
   path_to_content: "Path to content",

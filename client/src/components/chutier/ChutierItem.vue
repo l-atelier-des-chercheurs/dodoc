@@ -2,6 +2,7 @@
   <div
     class="_chutierRow"
     :class="{
+      'can--toggleSelect': $listeners.toggleSelect,
       'is--clicked': is_clicked,
       'is--selected': is_selected,
       'is--dragged': is_dragged,
@@ -63,7 +64,12 @@
             />
           </svg>
         </button>
-        <input class="_checkbox" type="checkbox" v-model="is_selected" />
+        <input
+          v-if="$listeners.toggleSelect"
+          class="_checkbox"
+          type="checkbox"
+          v-model="is_selected"
+        />
       </div>
     </div>
     <!-- <CollaborativeEditor2
@@ -211,28 +217,6 @@ export default {
   padding: calc(var(--spacing) / 2);
 }
 
-._selectBox {
-  // height: 70px;
-  width: 20px;
-  display: flex;
-  place-content: center;
-  cursor: pointer;
-  color: var(--c-gris);
-
-  display: none;
-
-  input {
-    cursor: inherit;
-    --form-background: transparent !important;
-    --form-control-color: var(--c-jaune);
-    border-color: #555;
-  }
-
-  &:hover input {
-    border: 2px solid var(--c-orange);
-  }
-}
-
 ._infos {
   flex: 1 1 auto;
   display: flex;
@@ -263,6 +247,7 @@ export default {
   overflow: visible;
   border-radius: 4px;
   color: var(--h-500);
+  cursor: pointer;
 
   // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
   // border: 1px solid transparent;
@@ -270,10 +255,12 @@ export default {
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  @media (hover: hover) and (pointer: fine) {
-    &:not(.is--selected):hover {
-      background-color: var(--h-200);
-      color: var(--h-900);
+  &.can--toggleSelect {
+    @media (hover: hover) and (pointer: fine) {
+      &:not(.is--selected):hover {
+        background-color: var(--h-200);
+        color: var(--h-900);
+      }
     }
   }
 
@@ -307,9 +294,6 @@ export default {
     flex-flow: row nowrap;
     justify-content: space-between;
     align-items: center;
-  }
-  & {
-    cursor: pointer;
   }
 
   ._chutierRow--preview {
@@ -414,6 +398,7 @@ export default {
   overflow: auto;
 
   background-color: var(--chutier-bg);
+  color: white;
 
   display: flex;
   flex-flow: column nowrap;

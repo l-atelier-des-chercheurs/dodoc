@@ -1036,7 +1036,7 @@ export default {
   items_to_share: "Éléments à partager",
 
   media_editing_instructions:
-    "Indiquer le ou les personnes qui pourront modifier ce contenu",
+    "Indiquer le ou les personnes qui pourront modifier ce contenu.",
   projects_you_edited_last: "Liste des derniers projets que vous avez modifiés",
 
   make_list: "Liste des fabrications",
