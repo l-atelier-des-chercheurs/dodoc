@@ -50,15 +50,6 @@
           :edit_on_mounted="true"
           :can_edit="can_edit"
         /> -->
-          <div class="_pickFileButton">
-            <button
-              type="button"
-              class="u-button u-button_bleumarine"
-              @click="show_media_picker = !show_media_picker"
-            >
-              {{ $t("import") }}
-            </button>
-          </div>
 
           <CollaborativeEditor3
             :content="chapter._main_text.$content"
@@ -68,7 +59,17 @@
             :content_type="'markdown'"
             :can_edit="can_edit"
             :mode="'always_active'"
-          />
+          >
+            <template #custom_buttons>
+              <button
+                type="button"
+                class="u-button u-button_bleumarine _customBtn"
+                @click="show_media_picker = !show_media_picker"
+              >
+                {{ $t("import_medias") }}
+              </button>
+            </template>
+          </CollaborativeEditor3>
 
           <MediaPicker
             v-if="show_media_picker"
@@ -331,21 +332,6 @@ export default {
   padding-bottom: calc(var(--spacing) * 1);
 }
 
-._pickFileButton {
-  position: sticky;
-  top: 0;
-  // height: 0;
-  // width: 100%;
-  text-align: right;
-  // margin: calc(var(--spacing) * 2);
-  z-index: 10;
-  padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  > * {
-    pointer-events: auto;
-  }
-}
 ._navBtns {
   display: flex;
   align-items: center;
@@ -356,5 +342,11 @@ export default {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 1);
+}
+
+._customBtn {
+  background-color: var(--c-bleumarine) !important;
+  color: white !important;
+  border-radius: var(--input-border-radius) !important;
 }
 </style>

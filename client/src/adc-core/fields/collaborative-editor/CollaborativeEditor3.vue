@@ -45,6 +45,8 @@
         @close="show_markdown_help = false"
       />
 
+      <slot name="custom_buttons" />
+
       <div class="_archiveSaveContainer">
         <template v-if="editor_is_enabled && !is_disabling_editor">
           <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
@@ -1188,8 +1190,11 @@ select.ql-ui {
 
   ._markdownHelpBtn {
     margin-right: calc(var(--spacing) / 4);
-    background: #fff !important;
     border-radius: var(--input-border-radius) !important;
+
+    &:not(:hover) {
+      background: #fff !important;
+    }
   }
   // background-color: var(--editor-bg);
 }
