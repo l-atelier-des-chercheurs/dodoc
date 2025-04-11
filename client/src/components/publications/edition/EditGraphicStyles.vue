@@ -61,11 +61,14 @@
     </div>
 
     <div class="_openedStyleFile">
-      <OpenedGraphicStyles
-        v-if="opened_style_file"
-        :style_file="opened_style_file"
-        :default_styles="default_styles"
-      />
+      <transition name="fade" mode="out-in">
+        <OpenedGraphicStyles
+          v-if="opened_style_file"
+          :key="opened_style_file.$path"
+          :style_file="opened_style_file"
+          :default_styles="default_styles"
+        />
+      </transition>
     </div>
   </div>
 </template>
@@ -163,14 +166,17 @@ export default {
   gap: calc(var(--spacing) / 2);
   overflow-x: auto;
 
-  background-color: var(--c-noir);
-  border-bottom: 2px solid var(--c-gris_fonce);
+  background-color: #000;
+  background-color: var(--c-gris_fonce);
+  // border-bottom: 2px solid var(--c-gris_fonce);
   padding: calc(var(--spacing) * 1);
 }
 
 ._openedStyleFile {
   flex: 1 1 auto;
-  background-color: #303841;
+  // background-color: #303841;
+  background-color: var(--c-noir);
+  background-color: #000;
 }
 
 ._defaultStyles {

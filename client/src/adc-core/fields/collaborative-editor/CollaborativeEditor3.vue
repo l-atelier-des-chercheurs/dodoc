@@ -30,7 +30,22 @@
       class="_TEbtnContainer"
       v-show="can_edit && editor_is_enabled"
     >
-      <div class="">
+      <button
+        type="button"
+        class="u-button _markdownHelpBtn"
+        v-if="content_type === 'markdown'"
+        @click="show_markdown_help = !show_markdown_help"
+      >
+        <b-icon icon="patch-question" />
+        <span>{{ $t("markdown_help") }}</span>
+      </button>
+      <MarkdownHelpModal
+        v-if="show_markdown_help"
+        :title="$t('markdown_help')"
+        @close="show_markdown_help = false"
+      />
+
+      <div class="_archiveSaveContainer">
         <template v-if="editor_is_enabled && !is_disabling_editor">
           <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
@@ -102,6 +117,7 @@ import richText from "rich-text";
 ShareDB.types.register(richText.type);
 
 import TextVersioning from "./TextVersioning.vue";
+import MarkdownHelpModal from "./MarkdownHelpModal.vue";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 
 import {
@@ -180,6 +196,7 @@ export default {
       type: String,
       default: "html",
     },
+    content_type: String,
     mode: {
       type: String,
       default: "normal",
@@ -189,6 +206,7 @@ export default {
   },
   components: {
     TextVersioning,
+    MarkdownHelpModal,
   },
   data() {
     return {
@@ -203,6 +221,7 @@ export default {
       },
 
       show_archives: false,
+      show_markdown_help: false,
 
       debounce_textUpdate: undefined,
 
@@ -1151,7 +1170,7 @@ select.ql-ui {
   justify-content: center;
   align-items: center;
 
-  > * {
+  ._archiveSaveContainer {
     border: 2px solid var(--toolbar-bg);
     border-radius: var(--input-border-radius);
     overflow: hidden;
@@ -1167,6 +1186,11 @@ select.ql-ui {
     }
   }
 
+  ._markdownHelpBtn {
+    margin-right: calc(var(--spacing) / 4);
+    background: #fff !important;
+    border-radius: var(--input-border-radius) !important;
+  }
   // background-color: var(--editor-bg);
 }
 </style>

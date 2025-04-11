@@ -65,6 +65,7 @@
             :path="chapter._main_text.$path"
             :custom_formats="custom_formats"
             :save_format="save_format"
+            :content_type="'markdown'"
             :can_edit="can_edit"
             :mode="'always_active'"
           />
