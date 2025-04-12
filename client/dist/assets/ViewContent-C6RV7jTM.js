@@ -1156,6 +1156,9 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   color: var(--main-color);
 
   p,
+  ul,
+  ol,
+  blockquote,
   .media,
   h1,
   h2,
@@ -1220,11 +1223,9 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
   }
 
   blockquote {
-    margin-left: 1cm;
-  }
-
-  blockquote p {
-    font-size: 10pt;
+    margin-left: .75cm;
+    padding-left: .25cm;
+    border-left: 2px solid var(--main-color);
     font-family: var(--title-font);
   }
 
@@ -1412,14 +1413,7 @@ Please report this to https://github.com/markedjs/marked.`,e){const a="<p>An err
     text-align: left;
   }
 
-  blockquote {
-    margin-left: calc(var(--spacing) * 2);
-  }
 
-  blockquote,
-  blockquote p {
-    font-size: 18px;
-  }
 }
 `,IT={props:{publication:Object,view_mode:String,opened_style_file_meta:String,viewer_type:{type:String,default:"vue-infinite-viewer"},opened_chapter_meta_filename:String,can_edit:Boolean},components:{PagedViewer:TT,DocViewer:zT},data(){return{is_loading:!1,style_file_meta_selected:void 0}},created(){var t;this.style_files.length>0&&(this.style_file_meta_selected=this.getFilename((t=this.style_files[0])==null?void 0:t.$path))},mounted(){},beforeDestroy(){},watch:{opened_style_file_meta(){this.style_file_meta_selected=this.opened_style_file_meta}},computed:{format_mode(){return this.publication.page_width&&this.publication.page_height?`${this.publication.page_width}mm ${this.publication.page_height}mm`:"A4"},cover_media(){return this.publication.$files.find(t=>t.cover_type==="front")},custom_styles_unnested(){var t;return this.style_files&&this.style_file_meta_selected?((t=this.style_files.find(e=>this.getFilename(e.$path)===this.style_file_meta_selected))==null?void 0:t.$content)||"":LT},all_chapters(){return this.getSectionsWithProps({publication:this.publication,group:"sections_list"}).map(t=>(t.main_text_meta&&(t._main_text=this.publication.$files.find(e=>e.$path.endsWith("/"+t.main_text_meta))),t))},content_nodes(){let t={};const e=this.parseCover();return e&&(t.cover=e),t.chapters=[],this.all_chapters.map(r=>{var a,i,s;let n={};n.title=r.section_title,n.meta_filename=this.getFilename(r.$path),n.starts_on_page=r.section_starts_on_page||"in_flow",(a=r._main_text)!=null&&a.$content&&(((i=r._main_text)==null?void 0:i.content_type)==="markdown"?n.content=this.parseMarkdown(r._main_text.$content,r.source_medias):n.content=(s=r._main_text)==null?void 0:s.$content),t.chapters.push(n)}),t},style_files(){var t;return(t=this.publication.$files)==null?void 0:t.filter(e=>e.is_css_styles===!0).sort((e,r)=>{const n=e.css_title||this.getFilename(e.$path),a=r.css_title||this.getFilename(r.$path);if(n<a)return-1;if(n>a)return 1})},css_styles(){return`
       ${jT}
