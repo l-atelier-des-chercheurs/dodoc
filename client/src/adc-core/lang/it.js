@@ -1295,4 +1295,16 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "Lo spazio superiore è privato, quindi gli altri progetti presenti in quest'area non possono essere consultati.",
   copy_paste_to_include_media:
     "Copia/incolla nel contenuto per inserire il media.",
+
+  send: "Invia",
+  creating_thumb: "Crea le miniature",
+  edit_translation: "Modifica la traduzione",
+  already_translated_locally: "Già tradotto (solo in questo dispositivo)",
+  to_translate: "Da tradurre",
+  pins_color: "Colore dei marcatori",
+  create_custom_stylesheet: "Crea un foglio di stile personalizzato",
+  next_chapter: "Prossimo capitolo",
+  show_preview: "Visualizza l'anteprima",
+  warning_wont_be_able_to_edit:
+    "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
 };
