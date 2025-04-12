@@ -50,51 +50,52 @@
           :edit_on_mounted="true"
           :can_edit="can_edit"
         /> -->
-          <div class="_pickFileButton">
-            <button
-              type="button"
-              class="u-button u-button_bleumarine"
-              @click="show_media_picker = !show_media_picker"
-            >
-              {{ $t("import") }}
-            </button>
-          </div>
 
           <CollaborativeEditor3
             :content="chapter._main_text.$content"
             :path="chapter._main_text.$path"
             :custom_formats="custom_formats"
             :save_format="save_format"
+            :content_type="'markdown'"
             :can_edit="can_edit"
             :mode="'always_active'"
-          />
+          >
+            <template #custom_buttons>
+              <button
+                type="button"
+                class="u-button u-button_bleumarine _customBtn"
+                @click="show_media_picker = !show_media_picker"
+              >
+                {{ $t("import_medias") }}
+              </button>
+            </template>
+          </CollaborativeEditor3>
 
           <MediaPicker
             v-if="show_media_picker"
             :publication_path="publication_path"
-            :select_mode="'single'"
+            :select_mode="'multiple'"
             :pick_from_types="['image', 'video', 'audio']"
-            @addMedias="pickFile"
+            @addMedias="pickFiles"
             @close="show_media_picker = false"
           />
 
           <BaseModal2
-            v-if="picked_file_filename"
+            v-if="picked_file_filenames_and_captions.length > 0"
             :title="$t('add_media')"
             @close="closePickModal"
           >
             <ToggleInput
-              :content.sync="full_page_media"
+              :content.sync="set_media_as_full_page"
               :label="$t('full_page')"
             />
             <div class="u-spacingBottom" />
 
             <div class="u-spacingBottom u-inputGroup">
-              <input
-                type="text"
+              <textarea
                 ref="urlToCopy"
+                class="_textField"
                 v-model="pick_file_shortcut"
-                readonly
               />
               <button
                 type="button"
@@ -164,9 +165,8 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      picked_file_filename: null,
-      picked_file_caption: "",
-      full_page_media: false,
+      picked_file_filenames_and_captions: [],
+      set_media_as_full_page: false,
       is_copied: false,
     };
   },
@@ -197,15 +197,18 @@ export default {
     pick_file_shortcut() {
       let html = "";
 
-      if (this.picked_file_caption) html += `![${this.picked_file_caption}]`;
-      else html += "![]";
+      this.picked_file_filenames_and_captions.map(({ filename, caption }) => {
+        if (html) html += "\n";
 
-      if (!this.picked_file_filename) html += "()";
-      else {
-        if (this.full_page_media)
-          html += `(${this.picked_file_filename} "=full-page")`;
-        else html += `(${this.picked_file_filename})`;
-      }
+        // caption not implemented yet
+        if (caption) html += `![${caption}]`;
+        else html += "![]";
+
+        if (this.set_media_as_full_page) html += `(${filename} "=full-page")`;
+        else html += `(${filename})`;
+
+        if (html) html += "\n";
+      });
 
       return html;
     },
@@ -245,9 +248,13 @@ export default {
           },
         });
     },
-    pickFile({ path_to_source_media_metas }) {
-      const source_media_meta = path_to_source_media_metas[0];
-      this.picked_file_filename = this.getFilename(source_media_meta);
+    pickFiles({ path_to_source_media_metas }) {
+      this.picked_file_filenames_and_captions = path_to_source_media_metas.map(
+        (source_media_meta) => {
+          const filename = this.getFilename(source_media_meta);
+          return { filename };
+        }
+      );
     },
     copyToClipboard() {
       this.is_copied = false;
@@ -265,9 +272,8 @@ export default {
       this.is_copied = true;
     },
     closePickModal() {
-      this.picked_file_filename = null;
-      this.picked_file_caption = "";
-      this.full_page_media = false;
+      this.picked_file_filenames_and_captions = [];
+      this.set_media_as_full_page = false;
       this.is_copied = false;
     },
   },
@@ -330,21 +336,6 @@ export default {
   padding-bottom: calc(var(--spacing) * 1);
 }
 
-._pickFileButton {
-  position: sticky;
-  top: 0;
-  // height: 0;
-  // width: 100%;
-  text-align: right;
-  // margin: calc(var(--spacing) * 2);
-  z-index: 10;
-  padding: calc(var(--spacing) / 2);
-  pointer-events: none;
-
-  > * {
-    pointer-events: auto;
-  }
-}
 ._navBtns {
   display: flex;
   align-items: center;
@@ -355,5 +346,16 @@ export default {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 1);
+}
+
+._customBtn {
+  background-color: var(--c-bleumarine) !important;
+  color: white !important;
+  border-radius: var(--input-border-radius) !important;
+}
+
+._textField {
+  resize: vertical;
+  min-height: 8rem;
 }
 </style>
