@@ -63,7 +63,7 @@
           }"
           @click="toggleInputType"
         >
-          {{ $t("reveal") }}
+          {{ $t("reveal_pwd") }}
         </button>
       </div>
     </div>

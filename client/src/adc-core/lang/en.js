@@ -214,7 +214,7 @@ export default {
   restart: "Close and restart",
 
   refresh_window_to_see_changes: "Refresh the window to see the changes",
-  reveal: "Reveal",
+  reveal_pwd: "Reveal password",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
 
