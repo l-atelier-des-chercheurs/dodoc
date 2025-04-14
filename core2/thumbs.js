@@ -143,13 +143,19 @@ module.exports = (function () {
         // dev.error(err);
       }
 
+      dev.logverbose(`Creating infos file for`, full_media_path);
+
       const hrstart = process.hrtime();
 
       let infos = {};
-      if (media_type === "image")
-        infos = await _readImageExif({ full_media_path });
-      else if (media_type === "video" || media_type === "audio")
-        infos = await utils.getVideoMetaData({ path: full_media_path });
+      try {
+        if (media_type === "image")
+          infos = await _readImageExif({ full_media_path });
+        else if (media_type === "video" || media_type === "audio")
+          infos = await utils.getVideoMetaData({ path: full_media_path });
+      } catch (err) {
+        dev.error(err);
+      }
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
