@@ -252,6 +252,10 @@ button {
   padding: calc(var(--spacing) / 1);
   border-radius: 50%;
 }
+.u-button_pill {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  border-radius: 999px;
+}
 
 .u-button_nopadding {
 }

@@ -150,7 +150,6 @@ export default {
   },
   methods: {
     removeKeyword(keyword) {
-      debugger;
       this.$emit(
         "update:keywords",
         this.keywords.filter((kw) => kw !== keyword)

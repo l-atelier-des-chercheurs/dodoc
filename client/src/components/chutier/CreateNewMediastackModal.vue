@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 size="" @close="$emit('close')">
+  <BaseModal2 size="" :title="modal_name" class="" @close="$emit('close')">
     <div class="_createNewMediastackModal">
       <portal-target name="largemedia" multiple />
       <div class="_content">
@@ -13,7 +13,7 @@
               current_step === index
                 ? 'active'
                 : current_step > index
-                ? 'done'
+                ? 'completed'
                 : ''
             "
             @click="current_step = index"
@@ -27,142 +27,146 @@
           </button>
         </div>
 
-        <div class="_form" :key="current_step">
-          <div class="_form-step" v-if="false">
-            <div class="_form-step-title">
-              <h2>
-                {{ steps[current_step].label }}
-              </h2>
+        <transition name="fade" mode="out-in">
+          <div class="_form" :key="current_step">
+            <div class="_form-step" v-if="false">
+              <div class="_form-step-title">
+                <h2>
+                  {{ steps[current_step].label }}
+                </h2>
+              </div>
             </div>
-          </div>
 
-          <div class="u-spacingBottom _form-review-items">
-            <ChutierItem
-              v-for="file in selected_items"
-              :key="file.$path"
-              :file="file"
-              :is_selected="false"
-            />
-          </div>
+            <div class="u-spacingBottom _form-review-items">
+              <ChutierItem
+                v-for="file in selected_items"
+                :key="file.$path"
+                :file="file"
+                :is_selected="true"
+              />
+            </div>
 
-          <template v-if="current_step === 0">
-            <div class="_form-title">
-              <div class="u-spacingBottom">
-                <h1>
-                  <DLabel :str="$t('title')" />
+            <template v-if="current_step === 0">
+              <div class="_form-title">
+                <div class="u-spacingBottom">
+                  <h1>
+                    <DLabel :str="$t('title')" />
+                    <TextInput
+                      :content.sync="stack_title"
+                      :required="true"
+                      :autofocus="true"
+                      :can_edit="true"
+                      @onEnter="nextStep"
+                    />
+                  </h1>
+                </div>
+                <div class="u-spacingBottom _description">
+                  <DLabel :str="$t('description')" />
                   <TextInput
-                    :content.sync="stack_title"
-                    :required="true"
-                    :autofocus="true"
+                    :content.sync="stack_description"
+                    :input_type="'editor'"
                     :can_edit="true"
                     @onEnter="nextStep"
                   />
-                </h1>
-              </div>
-              <div class="u-spacingBottom _description">
-                <DLabel :str="$t('description')" />
-                <TextInput
-                  :content.sync="stack_description"
-                  :input_type="'editor'"
-                  :can_edit="true"
-                  @onEnter="nextStep"
-                />
-              </div>
-            </div>
-          </template>
-          <template v-if="current_step === 1">
-            <div class="u-spacingBottom _form-tags">
-              <KeywordsFieldEditor :keywords.sync="stack_tags" />
-            </div>
-          </template>
-          <template v-if="current_step === 2">
-            <div class="u-spacingBottom _form-team">
-              <AuthorField
-                :label="$t('admins')"
-                :field="'$admins'"
-                :instructions="$t('media_editing_instructions')"
-                :authors_paths="stack_authors"
-                :can_edit="true"
-                @save="
-                  (event) => {
-                    stack_authors = event;
-                  }
-                "
-              />
-            </div>
-          </template>
-          <template v-if="current_step === 3">
-            <div class="_form-review">
-              <div class="u-spacingBottom">
-                <DLabel :str="$t('title')" />
-                <h2>
-                  {{ stack_title }}
-                </h2>
-              </div>
-              <div class="u-spacingBottom">
-                <DLabel :str="$t('description')" />
-                <div v-html="stack_description" />
-              </div>
-              <div class="u-spacingBottom">
-                <DLabel :str="$t('keywords')" />
-                <KeywordsField :keywords="stack_tags" :can_edit="false" />
-              </div>
-
-              <div class="u-spacingBottom">
-                <DLabel :str="$t('destination_corpus')" />
-                <div>
-                  <select v-model="selected_destination_folder_path">
-                    <option
-                      v-for="folder in destination_folders"
-                      :key="folder.$path"
-                      :value="folder.$path"
-                    >
-                      {{ folder.title || getFilename(folder.$path) }}
-                    </option>
-                  </select>
                 </div>
               </div>
-            </div>
-          </template>
+            </template>
+            <template v-if="current_step === 1">
+              <div class="u-spacingBottom _form-tags">
+                <KeywordsFieldEditor :keywords.sync="stack_tags" />
+              </div>
+            </template>
+            <template v-if="current_step === 2">
+              <div class="u-spacingBottom _form-team">
+                <AuthorField
+                  :label="$t('admins')"
+                  :field="'$admins'"
+                  :instructions="$t('media_editing_instructions')"
+                  :authors_paths="stack_authors"
+                  :can_edit="true"
+                  @save="
+                    (event) => {
+                      stack_authors = event;
+                    }
+                  "
+                />
+              </div>
+            </template>
+            <template v-if="current_step === 3">
+              <div class="_form-review">
+                <div class="u-spacingBottom">
+                  <DLabel :str="$t('title')" />
+                  <h2>
+                    {{ stack_title || $t("none") }}
+                  </h2>
+                </div>
+                <div class="u-spacingBottom">
+                  <DLabel :str="$t('description')" />
+                  <div v-html="stack_description || $t('none_f')" />
+                </div>
+                <div class="u-spacingBottom">
+                  <DLabel :str="$t('keywords')" />
+                  <div v-if="stack_tags.length > 0">
+                    <KeywordsField :keywords="stack_tags" :can_edit="false" />
+                  </div>
+                  <div v-else>{{ $t("none") }}</div>
+                </div>
 
-          <div class="_form-actions">
-            <div>
-              <button
-                class="u-button u-button_white"
-                v-if="status === 'idle'"
-                @click="backStep"
-              >
-                <b-icon icon="arrow-left" />
-                {{ $t("back") }}
-              </button>
-            </div>
-
-            <button
-              class="u-button u-button_primary"
-              v-if="current_step < steps.length - 1"
-              @click="nextStep"
-            >
-              {{ $t("next") }}
-              <b-icon icon="arrow-right" />
-            </button>
-            <button
-              class="u-button u-button_primary"
-              v-else-if="current_step === steps.length - 1 && status === 'idle'"
-              :disabled="!selected_destination_folder_path"
-              @click="publishMediastack"
-            >
-              {{ $t("publish") }}
-            </button>
-            <span v-else-if="status === 'publishing'">
-              {{ $t("publishing") }}
-            </span>
-            <span v-else-if="status === 'done'">
-              {{ $t("done") }}
-            </span>
+                <div class="u-spacingBottom">
+                  <DLabel :str="$t('destination_corpus')" />
+                  <div>
+                    <select v-model="selected_destination_folder_path">
+                      <option
+                        v-for="folder in destination_folders"
+                        :key="folder.$path"
+                        :value="folder.$path"
+                      >
+                        {{ folder.title || getFilename(folder.$path) }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
-        </div>
+        </transition>
       </div>
     </div>
+    <template #footer>
+      <div>
+        <button
+          class="u-button u-button_white"
+          v-if="status === 'idle'"
+          @click="backStep"
+        >
+          <b-icon icon="arrow-left" />
+          {{ $t("back") }}
+        </button>
+      </div>
+
+      <button
+        class="u-button u-button_primary u-button_pill"
+        v-if="current_step < steps.length - 1"
+        @click="nextStep"
+      >
+        {{ $t("next") }}
+        <b-icon icon="arrow-right" />
+      </button>
+      <button
+        class="u-button u-button_primary"
+        v-else-if="current_step === steps.length - 1 && status === 'idle'"
+        :disabled="!selected_destination_folder_path"
+        @click="publishMediastack"
+      >
+        {{ $t("publish") }}
+      </button>
+      <span v-else-if="status === 'publishing'">
+        {{ $t("publishing") }}
+      </span>
+      <span v-else-if="status === 'completed'">
+        {{ $t("completed") }}
+      </span>
+    </template>
   </BaseModal2>
 </template>
 <script>
@@ -183,11 +187,11 @@ export default {
     messages: {
       fr: {
         destination_corpus: "Corpus de destination",
-        create_document: "Créer un document",
+        create_document: "Nouveau document",
       },
       en: {
         destination_corpus: "Destination corpus",
-        create_document: "Create document",
+        create_document: "New document",
       },
     },
   },
@@ -223,14 +227,24 @@ export default {
   created() {
     if (this.connected_as.$path)
       this.stack_authors.push(this.connected_as.$path);
-    debugger;
   },
   async mounted() {
     await this.listDestinationFolders();
   },
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    modal_name() {
+      return (
+        this.$t("create_document") +
+        " (" +
+        (this.current_step + 1) +
+        "/" +
+        this.steps.length +
+        ")"
+      );
+    },
+  },
   methods: {
     backStep() {
       if (this.current_step > 0) this.current_step--;
@@ -304,7 +318,7 @@ export default {
 
       await new Promise((r) => setTimeout(r, 250));
 
-      this.status = "done";
+      this.status = "completed";
 
       // for (const file_path of file_paths) {
       //   const file_meta_name = await this.$api.copyFile({
@@ -420,9 +434,9 @@ export default {
   // z-index: 10000;
   // overflow-y: auto;
 
-  padding: calc(var(--spacing) * 2);
-  background-color: white;
-  background-color: var(--h-50);
+  // padding: calc(var(--spacing) * 2);
+  // background-color: white;
+  // background-color: var(--h-50);
 }
 
 ._content {
@@ -431,7 +445,7 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);
-  max-width: 360px;
+  // max-width: 360px;
   margin: 0 auto;
 }
 
@@ -459,7 +473,7 @@ export default {
     color: var(--h-500);
   }
 
-  &.done {
+  &.completed {
     color: var(--h-500);
     pointer-events: auto;
   }
@@ -480,10 +494,11 @@ export default {
     border-radius: 50%;
     background-color: currentColor;
     opacity: 0;
+    transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
   .step.active &,
-  .step.done & {
+  .step.completed & {
     &::before {
       opacity: 1;
     }
@@ -499,8 +514,9 @@ export default {
   left: 50%;
   margin-top: 4px;
   white-space: nowrap;
+  transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
-  .step.done:not(:hover) & {
+  .step.completed:not(:hover) & {
     opacity: 0;
     // color: var(--h-500);
   }
@@ -510,24 +526,23 @@ export default {
   width: 60px;
   height: 2px;
   background-color: currentColor;
-  // margin-right: 8px;
+  transition: background-color 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 ._form {
   width: 100%;
   background-color: white;
-  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
-}
-
-._form-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 }
 
 ._description {
   // border-radius: var(--input-border-radius);
   // background-color: var(--c-gris_clair);
   // overflow: hidden;
+}
+</style>
+<style lang="scss">
+._baseModal--content:has(._createNewMediastackModal) {
+  // background-color: var(--h-50) !important;
 }
 </style>

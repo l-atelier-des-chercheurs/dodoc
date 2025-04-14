@@ -238,6 +238,7 @@
             <button
               type="button"
               class="u-button"
+              disabled
               @click="show_existing_mediastack_modal = true"
             >
               <b-icon icon="plus-square-dotted" />

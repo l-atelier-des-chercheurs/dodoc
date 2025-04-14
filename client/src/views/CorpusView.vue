@@ -210,7 +210,6 @@ export default {
           ([key, w]) => (this.panes_width[key] = 50)
         );
       }
-      debugger;
     },
     savePanesWidthToStorage() {
       localStorage.setItem("panes_width", JSON.stringify(this.panes_width));

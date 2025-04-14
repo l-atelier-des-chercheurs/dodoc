@@ -159,6 +159,7 @@ export default {
     position: absolute;
     inset: 0;
     background: rgba(231, 231, 231, 0.87);
+    background-color: var(--h-50);
     backdrop-filter: blur(3px);
     cursor: pointer;
     transition: backdrop-filter 1s ease-in-out;
@@ -227,9 +228,12 @@ export default {
 header {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
-  margin: calc(var(--spacing) * 1);
-  // border-bottom: 1px solid var(--c-gris);
+  justify-content: center;
+  margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1);
+
+  border-bottom: 1px solid var(--border-color);
+  text-transform: uppercase;
 
   // h2 {
   //   font-weight: 600;
@@ -254,6 +258,7 @@ header {
 ._content {
   position: relative;
   padding: 0 calc(var(--spacing) * 1);
+  margin: 0 calc(var(--spacing) * 1);
 
   &:first-child {
     margin-top: calc(var(--spacing) * 1);
