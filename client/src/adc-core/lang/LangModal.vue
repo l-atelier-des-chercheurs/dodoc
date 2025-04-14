@@ -88,7 +88,6 @@
           :header="$t('to_translate')"
           :icon="'chevron-right'"
           :is_open_initially="true"
-          class="u-spacingBottom"
         >
           <div v-if="missing_translations.length === 0">
             {{ $t("nothing_to_show") }}
@@ -233,6 +232,10 @@ export default {
         {
           key: "it",
           text: "Italian",
+        },
+        {
+          key: "fon",
+          text: "Fon (in progress)",
         },
         // {
         //   key: "de",
