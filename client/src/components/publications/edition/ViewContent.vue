@@ -364,22 +364,11 @@ export default {
       md.use(markdownItCsc);
 
       // default render
-      const defaultCscBodyRender =
-        md.renderer.rules.csc ||
-        function render(tokens, index, options, env, self) {
-          return self.renderToken(tokens, index, options);
-        };
-
-      // short code render
-      md.renderer.rules.csc = (tokens, index) => {
-        if (tokens[index].tag === "sample") {
-          // tag is sample
-          tokens[
-            index
-          ].content = `<div class="${tokens[index].tag}" id="${tokens[index].attrs["id"]}">${tokens[index].tag}</div>`;
-        }
-        return defaultCscBodyRender(tokens, index);
-      };
+      // const defaultCscBodyRender =
+      //   md.renderer.rules.csc ||
+      //   function render(tokens, index, options, env, self) {
+      //     return self.renderToken(tokens, index, options);
+      //   };
 
       const result = md.render(content);
       return result;
