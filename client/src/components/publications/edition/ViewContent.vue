@@ -56,6 +56,9 @@
 </template>
 <script>
 import { marked } from "marked";
+import markdownit from "markdown-it";
+import hljs from "highlight.js";
+
 import { generate } from "lean-qr";
 import DOMPurify from "dompurify";
 
@@ -161,7 +164,7 @@ export default {
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         if (chapter._main_text?.$content) {
           if (chapter._main_text?.content_type === "markdown") {
-            _chapter.content = this.parseMarkdown(
+            _chapter.content = this.parseMarkdownWithMarkedownIt(
               chapter._main_text.$content,
               chapter.source_medias
             );
@@ -203,7 +206,9 @@ export default {
         cover = {};
 
         if (this.cover_media.$content?.length > 0) {
-          cover.title = this.parseMarkdown(this.cover_media.$content);
+          cover.title = this.parseMarkdownWithMarkedownIt(
+            this.cover_media.$content
+          );
         }
 
         if (this.cover_media.source_medias?.length > 0) {
@@ -265,7 +270,7 @@ export default {
       //     });
       // });
     },
-    parseMarkdown(content, source_medias) {
+    parseMarkdownWithMarked(content, source_medias) {
       // const url_to_medias =
       //   window.location.origin + "/" + this.getParent(this.publication.$path);
       // marked.use(baseUrl(url_to_medias));
@@ -336,6 +341,27 @@ export default {
 
       const parsed = marked.parse(content);
       return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
+    },
+    parseMarkdownWithMarkedownIt(content, source_medias) {
+      const md = markdownit({
+        breaks: true,
+        linkify: true,
+        typographer: true,
+        highlight: function (str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(str, {
+                language: lang,
+                ignoreIllegals: true,
+              }).value;
+            } catch (__) {}
+          }
+
+          return ""; // use external default escaping
+        },
+      });
+      const result = md.render(content);
+      return result;
     },
 
     getMediaSrc(meta_src, source_medias) {

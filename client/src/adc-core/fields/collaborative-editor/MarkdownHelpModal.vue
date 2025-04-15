@@ -22,7 +22,11 @@
     <p>Pour forcer un saut de ligne, saisir deux espaces en fin de ligne :</p>
     <blockquote>
       <p>
-        <code>Un premier vers.&nbsp;&nbsp;</code> <br />
+        <code
+          >Un premier vers.<span class="_space">&nbsp;</span
+          ><span class="_space">&nbsp;</span>
+        </code>
+        <br />
         <code>Un deuxième vers.</code>
       </p>
     </blockquote>
@@ -179,6 +183,17 @@ td {
   &:first-child {
     font-style: italic;
     user-select: none;
+  }
+}
+._space {
+  position: relative;
+  &:after {
+    content: "•";
+    position: absolute;
+    top: -0.125rem;
+    left: 0;
+    color: var(--c-gris);
+    display: inline-block;
   }
 }
 </style>
