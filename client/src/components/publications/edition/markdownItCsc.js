@@ -1,3 +1,5 @@
+// grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
+
 "use strict";
 const markerPattern = /^\(([\w-]+):\s*([^)]+)\)/im;
 
