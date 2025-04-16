@@ -1,5 +1,11 @@
 <template>
-  <BaseModal2 size="" :title="modal_name" class="" @close="$emit('close')">
+  <BaseModal2
+    size=""
+    :title="modal_name"
+    class=""
+    :is_closable="false"
+    @close="$emit('close')"
+  >
     <div class="_createNewMediastackModal">
       <portal-target name="largemedia" multiple />
       <div class="_content">
