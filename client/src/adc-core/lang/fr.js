@@ -415,7 +415,7 @@ export default {
 
   refresh_window_to_see_changes:
     "Rafraîchir la fenêtre pour voir les modifications",
-  reveal: "Révéler",
+  reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
 
@@ -1340,4 +1340,6 @@ export default {
   show_preview: "Afficher l’aperçu",
   warning_wont_be_able_to_edit:
     "Attention ! En modifiant ce règlage, vous ne pourrez plus éditer ce contenu.",
+  markdown_help: "Aide pour le Markdown",
+  import_medias: "Importer des médias",
 };

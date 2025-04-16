@@ -244,7 +244,7 @@ export default {
   restart: "Close and restart",
 
   refresh_window_to_see_changes: "Refresh the window to see the changes",
-  reveal: "Reveal",
+  reveal_pwd: "Reveal password",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
 
@@ -1274,4 +1274,7 @@ export default {
 
   coll_is_private:
     "This collection is private and can only be viewed by the referrers.",
+
+  markdown_help: "Markdown help",
+  import_medias: "Import medias",
 };
