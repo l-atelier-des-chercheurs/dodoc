@@ -52,6 +52,8 @@
               />
             </div>
 
+            {{ stack_authors }}
+
             <template v-if="current_step === 0">
               <div class="_form-title">
                 <div class="u-spacingBottom">
@@ -62,6 +64,7 @@
                       :required="true"
                       :autofocus="true"
                       :can_edit="true"
+                      @toggleValidity="($event) => (has_valid_title = $event)"
                       @onEnter="nextStep"
                     />
                   </h1>
@@ -86,7 +89,6 @@
               <div class="u-spacingBottom _form-team">
                 <AuthorField
                   :label="$t('admins')"
-                  :field="'$admins'"
                   :instructions="$t('media_editing_instructions')"
                   :authors_paths="stack_authors"
                   :can_edit="true"
@@ -153,6 +155,7 @@
       <button
         class="u-button u-button_primary u-button_pill"
         v-if="current_step < steps.length - 1"
+        :disabled="!has_valid_title"
         @click="nextStep"
       >
         {{ $t("next") }}
@@ -220,6 +223,7 @@ export default {
       ],
 
       stack_title: "",
+      has_valid_title: false,
       stack_description: "",
       stack_tags: [],
       stack_authors: [],
@@ -538,7 +542,7 @@ export default {
 ._form {
   width: 100%;
   background-color: white;
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 1) 0;
 }
 
 ._description {

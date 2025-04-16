@@ -281,7 +281,7 @@ header {
   // margin-top: calc(var(--spacing) * 1);
   // padding: calc(var(--spacing) / 1);
   // border-top: 1px solid var(--c-gris_clair);
-  margin: calc(var(--spacing) * 1);
+  margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
 }
 
 @keyframes reveal {

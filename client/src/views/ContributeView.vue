@@ -583,12 +583,17 @@ export default {
   justify-content: center;
 
   @media (max-width: 600px) {
-    height: auto;
+    min-height: calc(100% - 50px);
     flex-flow: column nowrap;
+    overflow: auto;
   }
 
   > ._importFiles {
     flex: 1 0 210px;
+
+    @media (max-width: 600px) {
+      flex: 0 0 auto;
+    }
   }
 
   > ._filesList {
@@ -620,6 +625,10 @@ export default {
 
   ::v-deep .u-dropzone {
     padding: calc(var(--spacing) * 2);
+  }
+
+  @media (max-width: 600px) {
+    height: auto;
   }
 }
 

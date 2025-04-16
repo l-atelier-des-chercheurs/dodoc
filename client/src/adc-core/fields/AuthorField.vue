@@ -93,6 +93,8 @@
   </div>
 </template>
 <script>
+import { Handler } from "pagedjs";
+
 export default {
   props: {
     label: {
@@ -133,14 +135,15 @@ export default {
       new_editing_mode: [],
     };
   },
-  created() {
-    this.initAuthorPaths();
-  },
+  created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {
-    authors_paths() {
-      this.initAuthorPaths();
+    authors_paths: {
+      handler() {
+        this.initAuthorPaths();
+      },
+      immediate: true,
     },
   },
   computed: {
