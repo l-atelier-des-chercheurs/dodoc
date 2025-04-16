@@ -92,17 +92,20 @@
 <script>
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
+import QRModal from "@/adc-core/modals/QRModal.vue";
 
 export default {
   props: {},
   components: {
     AdminLumaSettings,
     LangModal,
+    QRModal,
   },
   data() {
     return {
       show_admin_settings: false,
       show_lang_modal: false,
+      show_qr_code_modal: false,
     };
   },
   created() {},

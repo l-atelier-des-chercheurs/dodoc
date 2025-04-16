@@ -129,6 +129,7 @@
             </transition-group>
           </div>
         </div>
+        {{ link_to_new_stack }}
       </div>
 
       <transition name="slideup" mode="out-in">
@@ -201,11 +202,21 @@
           </button>
         </div>
       </transition>
+      <transition name="slideup" mode="out-in">
+        <div v-if="link_to_new_stack" key="new_stack" class="_newStack">
+          <b-icon icon="check-circle" />
+          {{ $t("new_stack_created") }}
+          <router-link :to="link_to_new_stack" class="u-button">
+            {{ $t("go_to_new_stack") }}
+          </router-link>
+        </div>
+      </transition>
     </div>
     <CreateNewMediastackModal
       v-if="show_new_mediastack_modal"
       :selected_items="selected_items"
       :shared_folder_path="shared_folder_path"
+      @stackPosted="stackPosted"
       @close="show_new_mediastack_modal = false"
     />
   </div>
@@ -261,10 +272,11 @@ export default {
       selected_items_slugs: [],
       show_mediastack_modal: false,
 
+      link_to_new_stack: undefined,
+
       max_items_selected: 15,
 
       show_link_picker: false,
-      show_qr_code_modal: false,
       show_confirm_remove_menu: false,
 
       show_existing_mediastack_modal: false,
@@ -456,6 +468,10 @@ export default {
       }
       this.show_confirm_remove_menu = false;
     },
+    async stackPosted(new_stack_slug) {
+      this.link_to_new_stack = `/corpus?stack=${new_stack_slug}`;
+      this.show_new_mediastack_modal = false;
+    },
   },
 };
 </script>
@@ -584,7 +600,8 @@ export default {
 }
 
 ._selectionBar,
-._removeMenu {
+._removeMenu,
+._newStack {
   position: absolute;
   z-index: 10;
   bottom: 0;

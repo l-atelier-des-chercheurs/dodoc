@@ -52,8 +52,6 @@
               />
             </div>
 
-            {{ stack_authors }}
-
             <template v-if="current_step === 0">
               <div class="_form-title">
                 <div class="u-spacingBottom">
@@ -88,7 +86,7 @@
             <template v-if="current_step === 2">
               <div class="u-spacingBottom _form-team">
                 <AuthorField
-                  :label="$t('admins')"
+                  :label="$t('authors')"
                   :instructions="$t('media_editing_instructions')"
                   :authors_paths="stack_authors"
                   :can_edit="true"
@@ -155,7 +153,7 @@
       <button
         class="u-button u-button_primary u-button_pill"
         v-if="current_step < steps.length - 1"
-        :disabled="!has_valid_title"
+        :disabled="!allow_next_step"
         @click="nextStep"
       >
         {{ $t("next") }}
@@ -254,6 +252,12 @@ export default {
         ")"
       );
     },
+    allow_next_step() {
+      if (this.current_step === 0) return this.has_valid_title;
+      if (this.current_step === 1) return this.stack_tags.length > 0;
+      // if (this.current_step === 2) return this.stack_authors.length > 0;
+      return true;
+    },
   },
   methods: {
     backStep() {
@@ -298,12 +302,12 @@ export default {
         keywords: this.stack_tags,
       };
 
-      const new_folder_slug = await this.$api.createFolder({
+      const new_stack_slug = await this.$api.createFolder({
         path: path_to_destination,
         additional_meta,
       });
 
-      const stack_path = path_to_destination + "/" + new_folder_slug;
+      const stack_path = path_to_destination + "/" + new_stack_slug;
 
       // COPY FILES TO STAC
 
@@ -332,6 +336,11 @@ export default {
       await new Promise((r) => setTimeout(r, 250));
 
       this.status = "completed";
+      this.$emit("stackPosted", new_stack_slug);
+
+      await new Promise((r) => setTimeout(r, 1000));
+
+      this.$emit("close");
 
       // for (const file_path of file_paths) {
       //   const file_meta_name = await this.$api.copyFile({

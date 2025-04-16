@@ -3,6 +3,12 @@
   background-color: var(--bg-color);
 }
 
+.u-button[disabled] {
+  background-color: var(--c-gris);
+  // filter: none;
+  color: var(--c-gris_fonce);
+}
+
 ._reorderedList--item {
   background-color: transparent !important;
 }

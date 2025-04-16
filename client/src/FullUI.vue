@@ -28,7 +28,7 @@
           :is_closable="!!connected_as"
           @close="show_authors_modal = false"
         />
-        <transition name="pagechange" mode="out-in">
+        <transition v-else name="pagechange" mode="out-in">
           <router-view
             v-if="!show_authors_modal"
             v-slot="{ Component }"
@@ -88,6 +88,10 @@ export default {
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+
+    const authors = await this.$api.getFolders({
+      path: "authors",
+    });
 
     this.$root.is_loading = false;
   },
