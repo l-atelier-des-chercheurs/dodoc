@@ -293,6 +293,9 @@ export default {
         $status: "public",
         requested_slug: "stack",
         $admins: this.stack_authors,
+        title: this.stack_title,
+        description: this.stack_description,
+        keywords: this.stack_tags,
       };
 
       const new_folder_slug = await this.$api.createFolder({

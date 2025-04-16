@@ -4,123 +4,45 @@
 
     <div class="_importFiles" @click.self="selected_items_slugs = []">
       <div class="_importFiles--content">
-        <div class="_topRow">
-          <AuthorTag
-            v-if="connected_as"
-            :path="connected_as.$path"
-            :show_image_only="true"
-            @click="$eventHub.$emit('showAuthorModal')"
+        <div class="_importButton">
+          <ImportFileZone
+            :multiple="true"
+            :files_to_import.sync="files_to_import"
           />
-          <button
-            type="button"
-            class="_authorBtn"
-            v-else
-            @click="$eventHub.$emit('showAuthorModal')"
-          >
-            {{ $t("login") }}
-          </button>
-
-          <div class="_separator" />
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="show_qr_code_modal = true"
-          >
-            <div part="base" class="icon" aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-qr-code"
-                viewBox="0 0 16 16"
-              >
-                <path d="M2 2h2v2H2V2Z"></path>
-                <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
-                <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"></path>
-                <path
-                  d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
-                ></path>
-                <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
-              </svg>
-            </div>
-          </button>
-          <QRModal
-            v-if="show_qr_code_modal"
-            :url_to_access="url_to_page"
-            @close="show_qr_code_modal = false"
+          <UploadFiles
+            v-if="files_to_import.length > 0"
+            :files_to_import="files_to_import"
+            :path="author_path"
+            :allow_caption_edition="true"
+            @importedMedias="mediaJustImported($event)"
+            @close="files_to_import = []"
           />
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="$eventHub.$emit(`app.show_welcome_modal`)"
-          >
-            <b-icon icon="question-square" />
-          </button>
 
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            @click="show_lang_modal = !show_lang_modal"
-          >
-            {{ current_lang_code }}
-          </button>
-          <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+          <div class="_importBtns">
+            <button
+              type="button"
+              class="u-button u-button_outline"
+              @click="createNote"
+            >
+              <b-icon icon="file-text" />
+              &nbsp; note
+            </button>
 
-          <button
-            type="button"
-            class="u-button u-button_icon _qrBtn"
-            v-if="is_instance_admin"
-            @click="show_admin_settings = !show_admin_settings"
-          >
-            <b-icon icon="gear" :aria-label="$t('admin_settings')" />
-          </button>
-          <AdminLumaSettings
-            v-if="show_admin_settings"
-            @close="show_admin_settings = false"
-          />
-        </div>
-        <template v-if="connected_as">
-          <div class="_importButton">
-            <ImportFileZone
-              :multiple="true"
-              :files_to_import.sync="files_to_import"
+            <button
+              type="button"
+              class="u-button u-button_outline"
+              @click="show_link_picker = true"
+            >
+              <b-icon icon="link-45deg" />
+              &nbsp; url
+            </button>
+            <EmbedPicker
+              v-if="show_link_picker"
+              @embed="createEmbed"
+              @close="show_link_picker = false"
             />
-            <UploadFiles
-              v-if="files_to_import.length > 0"
-              :files_to_import="files_to_import"
-              :path="author_path"
-              :allow_caption_edition="true"
-              @importedMedias="mediaJustImported($event)"
-              @close="files_to_import = []"
-            />
-
-            <div class="_importBtns">
-              <button
-                type="button"
-                class="u-button u-button_outline _qrBtn"
-                @click="createNote"
-              >
-                <b-icon icon="file-text" />
-                &nbsp; note
-              </button>
-
-              <button
-                type="button"
-                class="u-button u-button_outline _qrBtn"
-                @click="show_link_picker = true"
-              >
-                <b-icon icon="link-45deg" />
-                &nbsp; url
-              </button>
-              <EmbedPicker
-                v-if="show_link_picker"
-                @embed="createEmbed"
-                @close="show_link_picker = false"
-              />
-            </div>
           </div>
-        </template>
+        </div>
       </div>
     </div>
 
@@ -209,14 +131,6 @@
         </div>
       </div>
 
-      <!-- <template v-if="connected_as">
-      <DocumentsCreator
-        class="_documentsCreator"
-        :author_stacks_path="author_stacks_path"
-        :selected_items="selected_items"
-      />
-    </template> -->
-
       <transition name="slideup" mode="out-in">
         <div
           class="_selectionBar"
@@ -298,11 +212,8 @@
 </template>
 <script>
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
-import DocumentsCreator from "@/components/chutier/DocumentsCreator.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
-import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
-import LangModal from "@/adc-core/lang/LangModal.vue";
 import CreateNewMediastackModal from "@/components/chutier/CreateNewMediastackModal.vue";
 
 export default {
@@ -311,11 +222,8 @@ export default {
   },
   components: {
     ImportFileZone,
-    DocumentsCreator,
     EmbedPicker,
     ChutierItem,
-    AdminLumaSettings,
-    LangModal,
     CreateNewMediastackModal,
   },
   provide() {
@@ -342,7 +250,6 @@ export default {
   data() {
     return {
       chutier: undefined,
-      show_admin_settings: false,
 
       is_dragover: false,
       files_to_import: [],
@@ -358,7 +265,6 @@ export default {
 
       show_link_picker: false,
       show_qr_code_modal: false,
-      show_lang_modal: false,
       show_confirm_remove_menu: false,
 
       show_existing_mediastack_modal: false,
@@ -411,19 +317,6 @@ export default {
   computed: {
     author_path() {
       return this.connected_as.$path;
-    },
-    author_stacks_path() {
-      return this.author_path + "/stacks";
-    },
-    current_lang_code() {
-      this.$i18n.availableLocales;
-      return this.$i18n.locale;
-    },
-
-    url_to_page() {
-      // for reactivity
-      this.$route.path;
-      return window.location.href;
     },
     selected_items() {
       return this.selected_items_slugs.map(
@@ -632,10 +525,6 @@ export default {
   }
 }
 
-._documentsCreator {
-  flex: 0 0 auto;
-}
-
 ._filesList {
   position: relative;
 }
@@ -655,22 +544,6 @@ export default {
 
   // backdrop-filter: blur(6px);
   // mask: linear-gradient(black 75%, transparent 100%);
-}
-
-._topRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1) 0;
-  color: currentColor;
-
-  ._separator {
-    flex: 1 1 auto;
-  }
-}
-
-._qrBtn {
 }
 
 ._middleContent {
