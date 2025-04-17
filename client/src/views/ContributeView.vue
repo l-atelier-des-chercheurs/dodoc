@@ -152,19 +152,19 @@
           <div class="u-sameRow _dbleBtns">
             <button
               type="button"
-              class="u-button"
+              class="u-button u-button_pill"
               disabled
               @click="show_existing_mediastack_modal = true"
             >
-              <b-icon icon="plus-square-dotted" />
+              <!-- <b-icon icon="plus-square-dotted" /> -->
               {{ $t("add_to_existing_document") }}
             </button>
             <button
               type="button"
-              class="u-button"
+              class="u-button u-button_pill"
               @click="show_new_mediastack_modal = true"
             >
-              <b-icon icon="plus-square-dotted" />
+              <!-- <b-icon icon="plus-square-dotted" /> -->
               {{ $t("create_new_document") }}
             </button>
           </div>
@@ -651,17 +651,16 @@ export default {
 ._dbleBtns {
   display: flex;
   flex-flow: row wrap;
-  align-content: stretch;
-  align-items: stretch;
+  justify-content: center;
   gap: calc(var(--spacing) / 2);
   width: 100%;
 }
 ._dbleBtns > * {
-  flex: 1 1 120px;
+  flex: 0 1 120px;
   // gap: calc(var(--spacing) / 4);
   // display: flex;
   // flex-flow: column nowrap;
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
 }
 
 ._selectionBar-btns {
