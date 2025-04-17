@@ -4,10 +4,12 @@
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
       :view_mode="view_mode"
+      :opened_style_file_meta="opened_style_file_meta"
       :viewer_type="'div'"
       :can_edit="false"
       @openChapter="toggleChapter"
       @changeView="changeView"
+      @setStyleFile="setStyleFile"
     />
   </div>
 </template>
@@ -35,6 +37,9 @@ export default {
     view_mode() {
       return this.$route.query?.view_mode || "book";
     },
+    opened_style_file_meta() {
+      return this.$route.query?.style || "";
+    },
   },
   methods: {
     toggleChapter(chapter_meta_filename) {
@@ -47,6 +52,12 @@ export default {
       this.updatePageQuery({
         prop: "view_mode",
         val: view_mode,
+      });
+    },
+    setStyleFile(style_file_meta_filename) {
+      this.updatePageQuery({
+        prop: "style",
+        val: style_file_meta_filename,
       });
     },
   },

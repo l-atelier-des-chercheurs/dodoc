@@ -12,7 +12,8 @@
       <select
         size="small"
         v-if="style_files?.length > 0"
-        v-model="style_file_meta_selected"
+        :value="opened_style_file_meta"
+        @change="$emit('setStyleFile', $event.target.value)"
       >
         <option
           v-for="style_file in style_files"
@@ -84,22 +85,17 @@ export default {
   data() {
     return {
       is_loading: false,
-      style_file_meta_selected: undefined,
       // custom_styles_nested: "",
     };
   },
   created() {
-    if (this.style_files.length > 0)
-      this.style_file_meta_selected = this.getFilename(
-        this.style_files[0]?.$path
-      );
+    // if (this.style_files.length > 0 && !this.opened_style_file_meta) {
+    //   this.$emit("setStyleFile", this.getFilename(this.style_files[0]?.$path));
+    // }
   },
   mounted() {},
   beforeDestroy() {},
   watch: {
-    opened_style_file_meta() {
-      this.style_file_meta_selected = this.opened_style_file_meta;
-    },
     // custom_styles_unnested: {
     //   handler() {
     //     this.custom_styles_nested = this.prepareCustomStyles(
@@ -120,10 +116,10 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      if (this.style_files && this.style_file_meta_selected) {
+      if (this.style_files && this.opened_style_file_meta) {
         return (
           this.style_files.find(
-            (f) => this.getFilename(f.$path) === this.style_file_meta_selected
+            (f) => this.getFilename(f.$path) === this.opened_style_file_meta
           )?.$content || ""
         );
       }
