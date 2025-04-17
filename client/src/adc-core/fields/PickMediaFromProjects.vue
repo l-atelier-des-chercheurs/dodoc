@@ -73,7 +73,7 @@
   </BaseModal2>
 </template>
 <script>
-import MediaLibrary from "@/components/panes/MediaLibrary.vue";
+// import MediaLibrary from "@/components/panes/MediaLibrary.vue";
 
 export default {
   props: {
@@ -89,7 +89,7 @@ export default {
     },
   },
   components: {
-    MediaLibrary,
+    // MediaLibrary,
   },
   inject: {
     $getMetaFilenamesAlreadyPresent: {

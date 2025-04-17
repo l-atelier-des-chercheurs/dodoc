@@ -4,21 +4,6 @@
       <router-link to="/" class="_logo">LumaDoc</router-link>
 
       <div class="_topRow">
-        <AuthorTag
-          v-if="connected_as"
-          :path="connected_as.$path"
-          :show_image_only="true"
-          @click="$eventHub.$emit('showAuthorModal')"
-        />
-        <button
-          type="button"
-          class="_authorBtn"
-          v-else
-          @click="$eventHub.$emit('showAuthorModal')"
-        >
-          {{ $t("login") }}
-        </button>
-
         <div class="_separator" />
         <button
           type="button"
@@ -85,7 +70,20 @@
       <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
     </div>
     <div class="profile-icon">
-      <b-icon icon="person-circle" />
+      <AuthorTag
+        v-if="connected_as"
+        :path="connected_as.$path"
+        :show_image_only="true"
+        @click="$eventHub.$emit('showAuthorModal')"
+      />
+      <button
+        type="button"
+        class="_authorBtn"
+        v-else
+        @click="$eventHub.$emit('showAuthorModal')"
+      >
+        {{ $t("login") }}
+      </button>
     </div>
   </div>
 </template>
@@ -170,7 +168,7 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: 18px;
+  font-size: 16px;
 
   a {
     flex: 1 1 0;

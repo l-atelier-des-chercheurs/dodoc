@@ -56,7 +56,6 @@
               :file="optimized_file"
               :resolution="1600"
               :context="'full'"
-              :resolution="1600"
               :zoom_on_click="true"
               :show_fs_button="true"
             />

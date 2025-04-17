@@ -175,7 +175,7 @@ export default {
 <style lang="scss" scoped>
 ._editBtn {
   --color1: transparent;
-  --color2: var(--c-gris);
+  --color2: var(--active-color);
 
   position: relative;
   display: inline-flex;

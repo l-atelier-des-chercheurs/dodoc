@@ -42,12 +42,12 @@
             <b-icon icon="arrow-right-short" />
           </button>
 
-          <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
+          <!-- <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
             <div class="">
               {{ $t("convert_to_format") }}
               <OptimizeMedia :media="file" @close="$emit('close')" />
             </div>
-          </div>
+          </div> -->
         </div>
         <button
           type="button"
@@ -96,32 +96,6 @@
     <transition name="pagechange" mode="out-in">
       <div class="_infos" :data-hide="!show_infos" :key="file.$path">
         <div class="_infos--content">
-          <CropAdjustMedia
-            v-if="cropadjust_possible"
-            :media="file"
-            @close="$emit('close')"
-          />
-
-          <OptimizeMedia
-            v-if="optimization_possible"
-            :media="file"
-            @close="$emit('close')"
-          />
-          <div
-            v-if="optimization_strongly_recommended"
-            class="u-spacingBottom _optimizeNotice"
-          >
-            <div class="">
-              <!-- {{ $t("convert_to_format") }} -->
-              <OptimizeMedia :media="file" @close="$emit('close')" />
-            </div>
-          </div>
-          <!-- <OptimizeMedia
-            v-if="optimization_possible"
-            :media="file"
-            @close="$emit('close')"
-          /> -->
-
           <div class="u-spacingBottom" v-if="file.$type === 'url'">
             <DLabel class="_label" :str="$t('link')" />
             <div>
@@ -157,6 +131,40 @@
             />
           </div>
 
+          <details>
+            <summary>
+              <label class="u-label _detailsP">
+                <b-icon icon="bounding-box" />
+                {{ $t("toolbox") }}
+              </label>
+            </summary>
+            <div class="_tools">
+              <button
+                v-if="cropadjust_possible"
+                type="button"
+                class="u-button"
+                @click="show_cropadjust_modal = true"
+              >
+                <b-icon icon="bounding-box" />
+                {{ $t("crop_adjust") }}
+              </button>
+
+              <CropAdjustMedia
+                v-if="show_cropadjust_modal"
+                :media="file"
+                @close="$emit('close')"
+              />
+
+              <OptimizeMedia
+                v-if="
+                  optimization_strongly_recommended || optimization_possible
+                "
+                :media="file"
+                @close="$emit('close')"
+              />
+            </div>
+          </details>
+
           <template v-if="file.$location">
             <div class="u-spacingBottom" />
 
@@ -178,13 +186,17 @@ export default {
     position: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    CropAdjustMedia: () => import("@/adc-core/fields/CropAdjustMedia.vue"),
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
+  },
   data() {
     return {
       show_infos: true,
       is_dragged: false,
       edit_mode: false,
       is_regenerating: false,
+      show_cropadjust_modal: false,
     };
   },
   i18n: {
@@ -301,7 +313,7 @@ export default {
     &:hover,
     &:focus {
       background: var(--sd-separator);
-      color: white;
+      // color: white;
     }
   }
 }
@@ -352,5 +364,18 @@ export default {
   > * {
     pointer-events: auto;
   }
+}
+
+._tools {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 2);
+}
+
+._detailsP {
+  display: inline-block;
+  pointer-events: none;
 }
 </style>
