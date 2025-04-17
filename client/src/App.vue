@@ -181,7 +181,7 @@ export default {
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
   --border-radius: 6px;
-  --border-color: var(--h-200);
+  --border-color: var(--h-500);
 
   --input-font-family: inherit;
   --input-font-size: 1rem;

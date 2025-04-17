@@ -142,17 +142,6 @@
           v-if="selected_items.length > 0"
           key="selection"
         >
-          <transition name="fade" mode="out-in">
-            <div :key="selected_items.length">
-              <template v-if="selected_items.length === 1">
-                {{ $t("selected_item") }}
-              </template>
-              <template v-else>
-                {{ $t("selected_items") }}
-              </template>
-              {{ selected_items.length }}
-            </div>
-          </transition>
           <div class="u-sameRow _dbleBtns">
             <button
               type="button"
@@ -173,6 +162,18 @@
             </button>
           </div>
           <div class="u-sameRow _selectionBar-btns">
+            <transition name="fade" mode="out-in">
+              <div :key="selected_items.length">
+                <template v-if="selected_items.length === 1">
+                  {{ $t("selected_item") }}
+                </template>
+                <template v-else>
+                  {{ $t("selected_items") }}
+                </template>
+                {{ selected_items.length }}
+              </div>
+            </transition>
+
             <button type="button" class="u-buttonLink" @click="deselectAll">
               <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
             </button>
@@ -495,7 +496,7 @@ export default {
 
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-start;
 
   @media (max-width: 600px) {
     min-height: calc(100% - 50px);
@@ -520,7 +521,7 @@ export default {
   top: 0;
   height: 100%;
   overflow: auto;
-  border-right: 1px solid var(--h-500);
+  border-right: 1px solid var(--border-color);
 
   @include scrollbar(4px, 4px, 5px, transparent, white);
 
@@ -532,10 +533,11 @@ export default {
 ._importFiles--content {
   display: flex;
   flex-flow: column nowrap;
-  justify-content: safe center;
+  justify-content: flex-start;
   height: 100%;
   max-width: 400px;
   margin: 0 auto;
+  padding: calc(var(--spacing) * 1);
   padding-bottom: 40px;
 
   ::v-deep .u-dropzone {
@@ -622,7 +624,7 @@ export default {
   // box-shadow: 0 2px 6px 0 black;
   background: var(--h-700);
   color: white;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) * 1);
   // padding-bottom: calc(var(--spacing) * 2);
 }
 ._removeMenu {
@@ -670,7 +672,7 @@ export default {
 }
 
 ._selectionBar-btns {
-  margin: calc(var(--spacing) / 2) 0;
+  // margin: calc(var(--spacing) / 2) 0;
   gap: calc(var(--spacing) * 2);
 }
 

@@ -131,13 +131,13 @@ export default {
   align-items: stretch;
   height: 50px;
   // gap: 1rem;
-  border-bottom: 1px solid var(--h-500);
+  border-bottom: 1px solid var(--border-color);
 
   > * {
     flex: 1 1 0;
 
     &:not(:last-child) {
-      border-right: 1px solid var(--h-500);
+      border-right: 1px solid var(--border-color);
     }
   }
 }
