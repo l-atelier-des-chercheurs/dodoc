@@ -29,7 +29,7 @@
             <div class="_allFields">
               <div class="_titleRow">
                 <TitleField
-                  :label="!stack.title ? $t('title') : ''"
+                  :label="$t('title')"
                   :field_name="'title'"
                   :content="stack.title"
                   :path="stack.$path"

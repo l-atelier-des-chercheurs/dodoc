@@ -313,6 +313,7 @@ a {
   &:hover,
   &:focus-visible {
     text-decoration: none;
+    color: var(--h-700);
   }
 }
 

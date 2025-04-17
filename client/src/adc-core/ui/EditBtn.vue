@@ -174,7 +174,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: transparent;
+  --color1: var(--h-50);
   --color2: var(--active-color);
 
   position: relative;
