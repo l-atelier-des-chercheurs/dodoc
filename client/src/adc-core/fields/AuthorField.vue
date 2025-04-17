@@ -93,8 +93,6 @@
   </div>
 </template>
 <script>
-import { Handler } from "pagedjs";
-
 export default {
   props: {
     label: {

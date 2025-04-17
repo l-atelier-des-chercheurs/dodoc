@@ -41,6 +41,13 @@
           >
             <b-icon icon="arrow-right-short" />
           </button>
+
+          <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
+            <div class="">
+              {{ $t("convert_to_format") }}
+              <OptimizeMedia :media="file" @close="$emit('close')" />
+            </div>
+          </div>
         </div>
         <button
           type="button"
@@ -89,6 +96,17 @@
     <transition name="pagechange" mode="out-in">
       <div class="_infos" :data-hide="!show_infos" :key="file.$path">
         <div class="_infos--content">
+          <CropAdjustMedia
+            v-if="cropadjust_possible"
+            :media="file"
+            @close="$emit('close')"
+          />
+
+          <OptimizeMedia
+            v-if="optimization_possible"
+            :media="file"
+            @close="$emit('close')"
+          />
           <div
             v-if="optimization_strongly_recommended"
             class="u-spacingBottom _optimizeNotice"
@@ -201,6 +219,12 @@ export default {
     },
     optimization_strongly_recommended() {
       return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+    },
+    cropadjust_possible() {
+      return (
+        this.file.$type === "image" &&
+        !this.file.$media_filename.endsWith(".gif")
+      );
     },
   },
   methods: {

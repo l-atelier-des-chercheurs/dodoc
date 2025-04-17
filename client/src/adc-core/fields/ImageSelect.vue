@@ -42,7 +42,6 @@
 </template>
 <script>
 import PickImage from "@/adc-core/fields/PickImage.vue";
-import CropMedia from "./CropMedia.vue";
 
 export default {
   props: {
@@ -56,7 +55,7 @@ export default {
     available_options: Array,
   },
   components: {
-    CropMedia,
+    CropMedia: () => import("./CropMedia.vue"),
     PickImage,
   },
   data() {

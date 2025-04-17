@@ -80,7 +80,7 @@
         />
       </div>
     </div>
-    <div class="menu">
+    <div class="_menu">
       <router-link to="/contribute" active-class="active">DÉPOSER</router-link>
       <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
     </div>
@@ -164,12 +164,13 @@ export default {
   }
 }
 
-.menu {
+._menu {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
   height: 100%;
+  font-size: 18px;
 
   a {
     flex: 1 1 0;
@@ -189,8 +190,9 @@ export default {
     }
 
     &.active {
-      background-color: var(--h-500);
-      font-weight: bold;
+      background-color: var(--h-700);
+      color: white;
+      // font-weight: bold;
     }
   }
 }
@@ -200,7 +202,7 @@ export default {
   align-items: center;
   padding: 0 1rem;
   flex: 0 0 auto;
-  font-size: 24px;
+  font-size: 2px;
   cursor: pointer;
 }
 
