@@ -4,6 +4,10 @@
 
     <div class="_importFiles" @click.self="selected_items_slugs = []">
       <div class="_importFiles--content">
+        <div class="_dashboard">
+          <DLabel :str="$t('dashboard')" />
+        </div>
+
         <div class="_importButton">
           <ImportFileZone
             :multiple="true"
@@ -249,12 +253,14 @@ export default {
           "Les médias importés apparaissent ici. Seul vous pouvez les voir et les modifier. Sélectionnez-en un ou plusieurs pour créer un document partagé.",
         add_to_existing_document: "Ajouter à un document existant",
         create_new_document: "Créer un nouveau document",
+        dashboard: "Dashboard",
       },
       en: {
         imported_docs:
           "Imported medias will appear here. Only you can see and edit them. Select one or more to create a shared document.",
         add_to_existing_document: "Add to existing document",
         create_new_document: "Create a new document",
+        dashboard: "Dashboard",
       },
     },
   },
@@ -683,9 +689,14 @@ export default {
   }
 }
 
-._authorBtn {
-  text-transform: none;
+._dashboard {
+  min-height: 30ch;
+  background: var(--h-100);
+
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 }
+
 ._importButton {
   // width: 100%;
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
