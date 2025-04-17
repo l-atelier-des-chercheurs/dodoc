@@ -1,19 +1,9 @@
 <template>
   <div class="_cropAdjustMedia">
-    <button
-      type="button"
-      class="u-button u-button_orange"
-      @click="show_modal = true"
-    >
-      <b-icon icon="bounding-box" />
-      {{ $t("crop_adjust") }}
-    </button>
-
     <BaseModal2
-      v-if="show_modal"
       :title="$t('crop_adjust')"
       :size="'full'"
-      @close="closeModal"
+      @close="$emit('close')"
     >
       <div class="_cont">
         <div class="_steps">
@@ -114,8 +104,6 @@ export default {
   },
   data() {
     return {
-      show_modal: false,
-
       is_saving: false,
       media_being_sent_percent: 0,
 
@@ -159,7 +147,7 @@ export default {
     },
     async buttonSaveAsNew() {
       await this.saveAsNew();
-      this.closeModal();
+      this.$emit("closeParentModal");
     },
     async saveAsNew() {
       console.log("saveAsNew");
@@ -225,11 +213,7 @@ export default {
         path: temp_path,
       });
 
-      this.closeModal();
-    },
-    closeModal() {
-      this.show_modal = false;
-      this.current_step = "crop";
+      this.$emit("closeParentModal");
     },
   },
 };

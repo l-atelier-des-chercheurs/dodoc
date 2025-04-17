@@ -159,7 +159,9 @@ export default {
   props: {
     is_first_user: Boolean,
   },
-  components: {},
+  components: {
+    ImageSelect: () => import("@/adc-core/fields/ImageSelect.vue"),
+  },
   data() {
     return {
       new_author_email: "",

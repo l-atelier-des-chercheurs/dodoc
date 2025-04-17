@@ -1,9 +1,6 @@
 <template>
-  <div class="_imageselect">
-    <div
-      class="_imageselect--upload"
-      v-if="available_options.includes('import')"
-    >
+  <div class="_pickimage">
+    <div class="_pickimage--upload" v-if="available_options.includes('import')">
       <input
         type="file"
         accept="image/*"
@@ -12,7 +9,7 @@
         @change="onFileChange"
       />
       <label :for="id" class="u-button">
-        <svg width="20" height="17" viewBox="0 0 20 17">
+        <svg class="inlineSVG" width="20" height="17" viewBox="0 0 20 17">
           <path
             d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
           />
@@ -24,7 +21,7 @@
     </div>
 
     <div
-      class="_imageselect--fromLib"
+      class="_pickimage--fromLib"
       v-if="available_options.includes('project')"
     >
       <button
@@ -32,7 +29,7 @@
         class="u-button u-button_orange"
         @click="show_picker = true"
       >
-        <span class="u-icon" v-html="dodoc_icon_collect" />
+        <span class="u-icon inlineSVG" v-html="dodoc_icon_collect" />
         <span>
           {{ $t("from_project") }}
         </span>
@@ -49,7 +46,7 @@
     </div>
 
     <div
-      class="_imageselect--takePhoto"
+      class="_pickimage--takePhoto"
       v-if="available_options.includes('capture')"
     >
       <button
@@ -191,7 +188,7 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-._imageselect {
+._pickimage {
   display: flex;
   flex-flow: column nowrap;
   flex: 1 1 auto;
@@ -200,14 +197,14 @@ export default {
   gap: calc(var(--spacing) / 4);
 }
 
-._imageselect--upload {
+._pickimage--upload {
   ::v-deep label {
     width: 100%;
   }
 }
 
-._imageselect--takePhoto,
-._imageselect--fromLib {
+._pickimage--takePhoto,
+._pickimage--fromLib {
   > button {
     width: 100%;
   }

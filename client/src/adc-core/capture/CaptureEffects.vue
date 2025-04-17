@@ -163,7 +163,9 @@ export default {
     canvasElement: HTMLCanvasElement,
     project_path: String,
   },
-  components: {},
+  components: {
+    ImageSelect: () => import("@/adc-core/fields/ImageSelect.vue"),
+  },
   data() {
     return {
       source_stream_resolution: {
