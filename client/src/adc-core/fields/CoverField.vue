@@ -77,7 +77,9 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    ImageSelect: () => import("@/adc-core/fields/ImageSelect.vue"),
+  },
   data() {
     return {
       selected_file: [],

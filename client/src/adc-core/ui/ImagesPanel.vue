@@ -209,10 +209,6 @@ export default {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
     },
-    imageSelected(key) {
-      return this.settings[key];
-      // return path of select image
-    },
     async updateImageField(new_path, key) {
       await this.$api.updateMeta({
         path: this.settings.$path,

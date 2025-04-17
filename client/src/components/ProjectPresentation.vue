@@ -445,11 +445,6 @@ export default {
   align-items: flex-end;
 }
 
-._imageSelect {
-  background: white;
-  position: relative;
-}
-
 ._projectInfos--cover {
   position: relative;
   width: 100%;

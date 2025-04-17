@@ -624,7 +624,7 @@ input[type="file"] {
     height: 1.5rem;
     flex-shrink: 0;
     fill: currentColor;
-    margin-right: calc(var(--spacing) / 1);
+    // margin-right: calc(var(--spacing) / 1);
   }
 
   &.inputfile-2 + label {

@@ -302,10 +302,20 @@
             <small class="u-instructions">{{ $t("nothing_to_show") }}</small>
           </div>
           <div class="_allModifyButtons">
-            <CropAdjustMedia
+            <button
               v-if="cropadjust_possible"
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_cropadjust_modal = true"
+            >
+              <b-icon icon="bounding-box" />
+              {{ $t("crop_adjust") }}
+            </button>
+            <CropAdjustMedia
+              v-if="show_cropadjust_modal"
               :media="file"
-              @close="$emit('close')"
+              @close="show_cropadjust_modal = false"
+              @closeParentModal="$emit('close')"
             />
 
             <OptimizeMedia
@@ -355,7 +365,6 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
-import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
 import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
@@ -367,11 +376,12 @@ export default {
   },
   components: {
     DuplicateMedia,
-    CropAdjustMedia,
+    CropAdjustMedia: () => import("@/adc-core/fields/CropAdjustMedia.vue"),
     OptimizeMedia,
   },
   data() {
     return {
+      show_cropadjust_modal: false,
       show_nav_btn: false,
       show_meta_sidebar: true,
       is_regenerating: false,
