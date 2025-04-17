@@ -67,6 +67,8 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
+// globals mainly for non-editing components
+
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
@@ -190,23 +192,12 @@ import ShareFile from "@/adc-core/fields/ShareFile.vue";
 Vue.component("ShareFile", ShareFile);
 import EmbedFile from "@/adc-core/fields/EmbedFile.vue";
 Vue.component("EmbedFile", EmbedFile);
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);
-
+import LoaderSpinner from "@/adc-core/fields/LoaderSpinner.vue";
+Vue.component("LoaderSpinner", LoaderSpinner);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
-
-import { compileToFunctions } from "vue-template-compiler";
-Vue.component(
-  "LoaderSpinner",
-  compileToFunctions(`
-    <div class="u-loader">
-      <div class="_spinner" />
-    </div>
-  `)
-);
 
 document.addEventListener(
   "dragover",
