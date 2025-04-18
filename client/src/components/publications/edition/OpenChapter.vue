@@ -1,5 +1,6 @@
 <template>
   <div class="_openChapter">
+    {{ chapter.source_medias }}
     <div class="_close_button">
       <button
         type="button"
@@ -146,7 +147,8 @@
 </template>
 <script>
 // import MarkdownEditor from "@/adc-core/fields/collaborative-editor/MarkdownEditor.vue";
-import { marked } from "marked";
+import markdownit from "markdown-it";
+import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 
@@ -217,26 +219,88 @@ export default {
     listAllEmbeddedMedias(content) {
       let source_medias = [];
 
-      marked.use({
-        renderer: {
-          image: (meta_src, title, alt) => {
-            const folder_path = this.getParent(this.chapter.$path);
-            const media = this.getSourceMedia({
-              source_media: {
-                meta_filename_in_project: meta_src,
-              },
-              folder_path,
-            });
-            if (!media) return;
+      const md = new markdownit();
+
+      // Add the CSC plugin
+      md.use(markdownItCsc, {
+        getMediaSrc: (src) => {
+          const folder_path = this.getParent(this.chapter.$path);
+          return this.getSourceMedia({
+            source_media: {
+              meta_filename_in_project: src,
+            },
+            folder_path,
+          });
+        },
+        source_medias,
+      });
+
+      // Store default renderer
+      const defaultRender =
+        md.renderer.rules.image ||
+        function (tokens, idx, options, env, self) {
+          return self.renderToken(tokens, idx, options);
+        };
+
+      // Override image renderer
+      md.renderer.rules.image = (tokens, idx, options, env, self) => {
+        const token = tokens[idx];
+        const srcIndex = token.attrIndex("src");
+        if (srcIndex >= 0) {
+          const meta_src = token.attrs[srcIndex][1];
+          const folder_path = this.getParent(this.chapter.$path);
+          const media = this.getSourceMedia({
+            source_media: {
+              meta_filename_in_project: meta_src,
+            },
+            folder_path,
+          });
+          if (media) {
             source_medias.push({
               meta_filename_in_project: meta_src,
             });
-          },
-        },
-      });
-      marked.parse(content);
+          }
+        }
+        // Pass token to default renderer
+        return defaultRender(tokens, idx, options, env, self);
+      };
+
+      // Also capture CSC format images
+      const originalCscRenderer = md.renderer.rules.csc;
+      md.renderer.rules.csc = (tokens, idx) => {
+        const token = tokens[idx];
+        if (token.tag === "image" && token.content) {
+          const meta_src = token.content;
+          const folder_path = this.getParent(this.chapter.$path);
+          const media = this.getSourceMedia({
+            source_media: {
+              meta_filename_in_project: meta_src,
+            },
+            folder_path,
+          });
+          if (media) {
+            source_medias.push({
+              meta_filename_in_project: meta_src,
+            });
+          }
+        }
+        // Call the original renderer if it exists, otherwise return empty string
+        return originalCscRenderer ? originalCscRenderer(tokens, idx) : "";
+      };
+
+      md.render(content);
 
       // update list of embedded medias if it changed
+
+      // remove duplicates
+      source_medias = source_medias.filter(
+        (media, index, self) =>
+          index ===
+          self.findIndex(
+            (t) => t.meta_filename_in_project === media.meta_filename_in_project
+          )
+      );
+
       if (
         JSON.stringify(source_medias) !==
         JSON.stringify(this.chapter.source_medias)
