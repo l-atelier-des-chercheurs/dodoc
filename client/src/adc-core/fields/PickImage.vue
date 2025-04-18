@@ -40,7 +40,7 @@
         :path="path"
         :select_mode="'single'"
         :pick_from_types="['image']"
-        @addMedias="addMediaFromLib"
+        @pickMedias="pickMediasFromLib"
         @close="show_picker = false"
       />
     </div>
@@ -156,13 +156,9 @@ export default {
       const file = files[0];
       this.$emit("newPreview", { type: "file", data: file });
     },
-    async addMediaFromLib({ path_to_source_media_metas }) {
+    async pickMediasFromLib(medias) {
       // mode === 'single', so we should get only one file
-      const path_to_source_media_meta = path_to_source_media_metas[0];
-
-      const media = this.getMediaInFolder({
-        path_to_source_media_meta,
-      });
+      const media = medias[0];
       const path_to_project = this.getParent(media.$path);
       const image_url = this.makeRelativeURLFromThumbs({
         $thumbs: media.$thumbs,

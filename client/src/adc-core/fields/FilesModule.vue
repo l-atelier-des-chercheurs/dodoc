@@ -49,7 +49,7 @@
         :title="$t('pick_medias')"
         :path="project_path"
         :select_mode="'multiple'"
-        @addMedias="addMedias"
+        @pickMedias="pickMedias"
         @close="show_picker = false"
       />
     </div>
@@ -111,11 +111,8 @@ export default {
     },
   },
   methods: {
-    async addMedias({ path_to_source_media_metas }) {
-      const new_files = path_to_source_media_metas.map(
-        (path_to_source_media_meta) =>
-          this.getFilename(path_to_source_media_meta)
-      );
+    async pickMedias(medias) {
+      const new_files = medias.map((m) => this.getFilename(m.$path));
       const files = this.content.slice() || [];
       const new_files_list = files.concat(new_files);
       this.updateFiles(new_files_list);

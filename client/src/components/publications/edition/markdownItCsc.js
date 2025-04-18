@@ -5,7 +5,7 @@
 const markerPattern =
   /\(([\w-]+):\s+([^\s]+)(?:\s+([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*)))*\)/im;
 
-const tags_list = ["image"];
+const tags_list = ["image", "video", "audio"];
 
 export default (md, o = {}) => {
   const cscRegexp = markerPattern;
@@ -54,7 +54,7 @@ export default (md, o = {}) => {
 
     for (const match of attrMatches) {
       const [_, key, value] = match;
-      if (key !== "image") {
+      if (key !== "image" && key !== "video" && key !== "audio") {
         // Skip the main image tag
         attrs[key] = value.trim();
       }
@@ -80,6 +80,8 @@ export default (md, o = {}) => {
     // Handle different types of shortcodes
     switch (token.tag) {
       case "image":
+      case "video":
+      case "audio":
         // Use getMediaSrc if available, otherwise fallback to normal behavior
         let media = null;
         if (getMediaSrc && !token.attrs.src.startsWith("http")) {
@@ -88,12 +90,11 @@ export default (md, o = {}) => {
 
         const attrs = [];
 
+        let src = "";
         if (media) {
-          // If we have a resolved media object from getMediaSrc
-          attrs.push(`src="${media.src}"`);
+          src = media.src;
         } else if (token.attrs.src.startsWith("http")) {
-          // Only add src if it starts with http (fallback to original behavior)
-          attrs.push(`src="${token.attrs.src}"`);
+          src = token.attrs.src;
         }
 
         // Add all other attributes except caption
@@ -104,7 +105,16 @@ export default (md, o = {}) => {
         }
 
         // Create the image tag with all attributes
-        const imgTag = `<figure class="media"><img ${attrs.join(" ")} />`;
+        let imgTag = `<figure class="media" ${attrs.join(" ")} >`;
+        if (token.tag === "image") {
+          imgTag += `<img src="${src}" />`;
+        } else if (token.tag === "video") {
+          imgTag += `<video src="${src}" controls>`;
+          imgTag += "</video>";
+        } else if (token.tag === "audio") {
+          imgTag += `<audio src="${src}" controls>`;
+          imgTag += "</audio>";
+        }
 
         // Add caption if it exists and is not empty
         const caption =

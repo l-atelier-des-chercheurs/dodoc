@@ -5,6 +5,7 @@ p:empty {
 .media {
   display: inline-block;
   position: relative;
+  width: 100%;
 
   &._isqrcode {
     display: flex;
@@ -83,9 +84,9 @@ p:empty {
     }
   }
 
-  audio {
+  video, audio {
     width: 100%;
-    height: 54px;
+    min-height: 54px;
   }
 
 }

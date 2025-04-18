@@ -40,7 +40,7 @@
           :path="path"
           :select_mode="'single'"
           :pick_from_types="[media_type_to_pick]"
-          @addMedias="pickMedia"
+          @pickMedias="pickMedia"
           @close="show_media_picker = false"
         />
       </div>
@@ -93,11 +93,9 @@ export default {
     },
   },
   methods: {
-    async pickMedia({ path_to_source_media_metas }) {
-      const path_to_source_media_meta = path_to_source_media_metas[0];
-      const selected_media_filename = this.getFilename(
-        path_to_source_media_meta
-      );
+    async pickMedia(medias) {
+      const media = medias[0];
+      const selected_media_filename = this.getFilename(media.$path);
       const new_meta = {
         [this.field_name]: selected_media_filename,
       };

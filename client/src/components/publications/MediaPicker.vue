@@ -5,7 +5,7 @@
       :path="current_project_path"
       :select_mode="select_mode"
       :pick_from_types="pick_from_types"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @close="$emit('close')"
     />
   </div>

@@ -76,12 +76,12 @@
             :publication_path="publication_path"
             :select_mode="'multiple'"
             :pick_from_types="['image', 'video', 'audio']"
-            @addMedias="pickFiles"
+            @pickMedias="pickMedias"
             @close="show_media_picker = false"
           />
 
           <BaseModal2
-            v-if="picked_file_filenames_and_captions.length > 0"
+            v-if="picked_medias.length > 0"
             :title="$t('add_media')"
             @close="closePickModal"
           >
@@ -166,7 +166,7 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      picked_file_filenames_and_captions: [],
+      picked_medias: [],
       set_media_as_full_page: false,
       is_copied: false,
     };
@@ -196,22 +196,35 @@ export default {
       else return "html";
     },
     pick_file_shortcut() {
-      let html = "";
+      let html = [];
 
-      this.picked_file_filenames_and_captions.map(({ filename, caption }) => {
-        if (html) html += "\n";
+      this.picked_medias.map((m) => {
+        // if (html) html += "\n";
 
-        // caption not implemented yet
-        if (caption) html += `![${caption}]`;
-        else html += "![]";
+        let media_html = "(";
 
-        if (this.set_media_as_full_page) html += `(${filename} "=full-page")`;
-        else html += `(${filename})`;
+        const meta_filename = m.$path.split("/").pop();
 
-        if (html) html += "\n";
+        let tag;
+        if (m.$type === "image") tag = "image";
+        else if (m.$type === "video") tag = "video";
+        else if (m.$type === "audio") tag = "audio";
+        else throw new Error("Unknown media type");
+
+        media_html += `${tag}: ${meta_filename}`;
+
+        if (m.caption) media_html += ` caption: ${m.caption}`;
+
+        // if (this.set_media_as_full_page)
+        //   html += `(${m.$media_filename} "=full-page")`;
+        // else html += `(${m.$media_filename})`;
+
+        media_html += ")";
+
+        html.push(media_html);
       });
 
-      return html;
+      return html.join("\n");
     },
   },
   methods: {
@@ -311,13 +324,8 @@ export default {
           },
         });
     },
-    pickFiles({ path_to_source_media_metas }) {
-      this.picked_file_filenames_and_captions = path_to_source_media_metas.map(
-        (source_media_meta) => {
-          const filename = this.getFilename(source_media_meta);
-          return { filename };
-        }
-      );
+    pickMedias(medias) {
+      this.picked_medias = medias;
     },
     copyToClipboard() {
       this.is_copied = false;
@@ -335,7 +343,7 @@ export default {
       this.is_copied = true;
     },
     closePickModal() {
-      this.picked_file_filenames_and_captions = [];
+      this.picked_medias = [];
       this.set_media_as_full_page = false;
       this.is_copied = false;
     },
