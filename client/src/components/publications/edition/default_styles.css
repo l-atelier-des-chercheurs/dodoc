@@ -29,7 +29,8 @@
   .media,
   h1,
   h2,
-  h3 {
+  h3, 
+  figure {
     margin-bottom: 0.5cm;
   }
 
@@ -78,6 +79,11 @@
         content: counter(item) ". ";
       }
     }
+  }
+
+  figure {
+    margin: 0;
+    padding: 0;
   }
 
   .mediaCaption {

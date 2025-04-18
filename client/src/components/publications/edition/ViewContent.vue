@@ -57,6 +57,10 @@
 </template>
 <script>
 import { marked } from "marked";
+import markdownit from "markdown-it";
+import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
+import hljs from "highlight.js";
+
 import { generate } from "lean-qr";
 import DOMPurify from "dompurify";
 
@@ -157,7 +161,7 @@ export default {
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         if (chapter._main_text?.$content) {
           if (chapter._main_text?.content_type === "markdown") {
-            _chapter.content = this.parseMarkdown(
+            _chapter.content = this.parseMarkdownWithMarkedownIt(
               chapter._main_text.$content,
               chapter.source_medias
             );
@@ -199,7 +203,9 @@ export default {
         cover = {};
 
         if (this.cover_media.$content?.length > 0) {
-          cover.title = this.parseMarkdown(this.cover_media.$content);
+          cover.title = this.parseMarkdownWithMarkedownIt(
+            this.cover_media.$content
+          );
         }
 
         if (this.cover_media.source_medias?.length > 0) {
@@ -261,77 +267,106 @@ export default {
       //     });
       // });
     },
-    parseMarkdown(content, source_medias) {
-      // const url_to_medias =
-      //   window.location.origin + "/" + this.getParent(this.publication.$path);
-      // marked.use(baseUrl(url_to_medias));
+    renderImage(meta_src, title, alt, source_medias) {
+      let html = "";
+      let custom_classes = [],
+        width,
+        height;
 
-      marked.use({
-        renderer: {
-          image: (meta_src, title, alt) => {
-            let html = "";
-
-            let custom_classes = [],
-              width,
-              height;
-
-            if (title?.startsWith("=")) {
-              if (title.startsWith("=full-page")) {
-                if (this.view_mode === "book") {
-                  custom_classes.push("_isFullPage");
-                  if (title.startsWith("=full-page-cover")) {
-                    custom_classes.push("_isFullPageCover");
-                  }
-                }
-              } else {
-                [width, height] = title
-                  .slice(1)
-                  .split("x")
-                  .map((v) => v.trim())
-                  .filter(Boolean);
-              }
+      if (title?.startsWith("=")) {
+        if (title.startsWith("=full-page")) {
+          if (this.view_mode === "book") {
+            custom_classes.push("_isFullPage");
+            if (title.startsWith("=full-page-cover")) {
+              custom_classes.push("_isFullPageCover");
             }
+          }
+        } else {
+          [width, height] = title
+            .slice(1)
+            .split("x")
+            .map((v) => v.trim())
+            .filter(Boolean);
+        }
+      }
 
-            if (meta_src.startsWith("http")) {
-              html += `
-                  <img src="${meta_src}"
-                    alt="${alt}"
-                    ${width ? ` width="${width}"` : ""}
-                    ${height ? ` height="${height}"` : ""}
-                  >
+      if (meta_src.startsWith("http")) {
+        html += `
+            <img src="${meta_src}"
+              alt="${alt}"
+              ${width ? ` width="${width}"` : ""}
+              ${height ? ` height="${height}"` : ""}
+            >
 
-                `;
-            } else {
-              const _media = this.getMediaSrc(meta_src, source_medias);
-              if (!_media) {
-                html += `<i>Media not found</i>`;
-              } else {
-                const { html: _html, is_qr_code } = this.placeLocalMedia({
-                  _media,
-                  alt,
-                  width,
-                  height,
-                });
-                html += _html;
-                if (is_qr_code) {
-                  custom_classes.push("_isqrcode");
-                }
-              }
-            }
+          `;
+      } else {
+        const _media = this.getMediaSrc(meta_src, source_medias);
+        if (!_media) {
+          html += `<i>Media not found</i>`;
+        } else {
+          const { html: _html, is_qr_code } = this.placeLocalMedia({
+            _media,
+            alt,
+            width,
+            height,
+          });
+          html += _html;
+          if (is_qr_code) {
+            custom_classes.push("_isqrcode");
+          }
+        }
+      }
 
-            if (alt) {
-              html += `<div class="mediaCaption"><span>${alt}</span></div>`;
-            }
+      if (alt) {
+        html += `<div class="mediaCaption"><span>${alt}</span></div>`;
+      }
 
-            return `<div class='media ${custom_classes.join(
-              " "
-            )}'>${html}</div>`;
-          },
+      return `<div class='media ${custom_classes.join(" ")}'>${html}</div>`;
+    },
+
+    parseMarkdownWithMarkedownIt(content, source_medias) {
+      const md = markdownit({
+        breaks: true,
+        linkify: true,
+        typographer: true,
+        highlight: function (str, lang) {
+          if (lang && hljs.getLanguage(lang)) {
+            try {
+              return hljs.highlight(str, {
+                language: lang,
+                ignoreIllegals: true,
+              }).value;
+            } catch (__) {}
+          }
+
+          return ""; // use external default escaping
         },
       });
 
-      const parsed = marked.parse(content);
-      return DOMPurify.sanitize(parsed, { ADD_ATTR: ["target"] });
+      // Override default image renderer to handle standard markdown image format ![alt](src)
+      const defaultImageRenderer = md.renderer.rules.image;
+      md.renderer.rules.image = (tokens, idx, options, env, self) => {
+        const token = tokens[idx];
+        const src = token.attrGet("src");
+        const title = token.attrGet("title");
+        const alt = token.content;
+
+        if (src) {
+          // Use the existing renderImage method to handle the image
+          return this.renderImage(src, title, alt, source_medias);
+        }
+
+        // Fallback to default renderer if no src
+        return defaultImageRenderer(tokens, idx, options, env, self);
+      };
+
+      md.use(markdownItCsc, {
+        getMediaSrc: this.getMediaSrc.bind(this),
+        source_medias,
+      });
+
+      const result = md.render(content);
+      return result;
     },
 
     getMediaSrc(meta_src, source_medias) {

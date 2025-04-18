@@ -178,28 +178,6 @@ export default {
   overflow-x: auto;
 }
 
-table {
-  // color: #333;
-  // background: white;
-  // border: 1px solid grey;
-  // font-size: 12pt;
-  border-collapse: collapse;
-}
-table thead th,
-table tfoot th {
-  min-width: 100px;
-  color: #777;
-  background: rgba(0, 0, 0, 0.1);
-}
-table caption {
-  padding: 0.5em;
-}
-table th,
-table td {
-  padding: 0.5em;
-  border: 1px solid lightgrey;
-}
-
 ._addMarginToClearDragHandle {
   flex: 0 0 3rem;
 }
