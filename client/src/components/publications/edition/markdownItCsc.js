@@ -117,9 +117,11 @@ export default (md, o = {}) => {
         }
 
         // Add caption if it exists and is not empty
+        const markdownCaption = token.attrs.caption;
+
         const caption =
-          token.attrs.caption !== undefined && token.attrs.caption !== ""
-            ? `\n<figcaption class="mediaCaption"><span>${token.attrs.caption}</span></figcaption>`
+          markdownCaption !== undefined && markdownCaption !== ""
+            ? `\n<figcaption class="mediaCaption"><span>${markdownCaption}</span></figcaption>`
             : "";
 
         return imgTag + caption + "</figure>\n";
