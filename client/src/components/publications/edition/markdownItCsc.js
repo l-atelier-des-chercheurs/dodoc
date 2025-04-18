@@ -94,15 +94,15 @@ export default (md, o) => {
         }
 
         // Create the image tag with all attributes
-        const imgTag = `<img ${attrs.join(" ")} />`;
+        const imgTag = `<figure class="media"><img ${attrs.join(" ")} />`;
 
         // Add caption if it exists and is not empty
         const caption =
           token.attrs.caption !== undefined && token.attrs.caption !== ""
-            ? `\n<div class="mediaCaption"><span>${token.attrs.caption}</span></div>`
+            ? `\n<figcaption class="mediaCaption"><span>${token.attrs.caption}</span></figcaption>`
             : "";
 
-        return imgTag + caption + "\n";
+        return imgTag + caption + "</figure>\n";
       default:
         return token.content + "\n";
     }

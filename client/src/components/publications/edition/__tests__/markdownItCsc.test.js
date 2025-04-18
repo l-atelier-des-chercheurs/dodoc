@@ -21,6 +21,8 @@
 //   content: "https://example.com/image.jpg",
 //   caption: ""
 // }
+// (image: https://latelier-des-chercheurs.fr/content/apercu.png caption: a width: 50%) (image: https://latelier-des-chercheurs.fr/content/apercu.png caption: a width: 50%)
+// should return two adjacent blocks
 
 import { describe, it, expect } from "vitest";
 import MarkdownIt from "markdown-it";
@@ -102,4 +104,14 @@ Some text in between
     expect(output).toContain("<strong>Bold text</strong>");
     expect(output).toContain("<em>italic text</em>");
   });
+
+  //   it("should handle multiple shortcodes in the same line", () => {
+  //     const input = `
+  // (image: https://example.com/image1.jpg caption: First image) (image: https://example.com/image2.jpg caption: Second image)
+  //     `.trim();
+
+  //     const output = md.render(input);
+  //     expect(output).toContain('<img src="https://example.com/image1.jpg" />');
+  //     expect(output).toContain('<img src="https://example.com/image2.jpg" />');
+  //   });
 });

@@ -19,13 +19,10 @@
         <code>Un deuxième paragraphe.</code>
       </p>
     </blockquote>
-    <p>Pour forcer un saut de ligne, saisir deux espaces en fin de ligne :</p>
+    <p>Pour retourner à la ligne dans un même paragraphe :</p>
     <blockquote>
       <p>
-        <code
-          >Un premier vers.<span class="_space">&nbsp;</span
-          ><span class="_space">&nbsp;</span>
-        </code>
+        <code>Un premier vers. </code>
         <br />
         <code>Un deuxième vers.</code>
       </p>
