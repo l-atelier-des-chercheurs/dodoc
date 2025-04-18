@@ -56,13 +56,11 @@
   </div>
 </template>
 <script>
-import { marked } from "marked";
 import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 import hljs from "highlight.js";
 
 import { generate } from "lean-qr";
-import DOMPurify from "dompurify";
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
