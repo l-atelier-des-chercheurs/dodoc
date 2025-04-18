@@ -91,7 +91,7 @@
       v-if="show_change_order_modal"
       :medias_with_linked="medias_with_linked"
       :publication_path="publication_path"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
       @close="show_change_order_modal = false"
@@ -106,10 +106,10 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
+      <DropZone class="_dzAfter" @mediaDropped="$emit('pickMedias', $event)" />
     </div>
   </div>
 </template>

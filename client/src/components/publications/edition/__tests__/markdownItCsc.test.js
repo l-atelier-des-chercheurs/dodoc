@@ -35,7 +35,9 @@ describe("markdown-it custom shortcode plugin", () => {
   it("should render a basic image with src", () => {
     const input = "(image: https://example.com/image.jpg)";
     const output = md.render(input);
-    expect(output).toContain('<img src="https://example.com/image.jpg" />');
+    expect(output).toContain(
+      '<figure class="media"><img src="https://example.com/image.jpg" /></figure>'
+    );
   });
 
   it("should render an image with caption", () => {
@@ -44,7 +46,7 @@ describe("markdown-it custom shortcode plugin", () => {
     const output = md.render(input);
     expect(output).toContain('<img src="https://example.com/image.jpg" />');
     expect(output).toContain(
-      '<div class="mediaCaption"><span>A beautiful image</span></div>'
+      '<figcaption class="mediaCaption"><span>A beautiful image</span></figcaption>'
     );
   });
 
@@ -57,11 +59,20 @@ describe("markdown-it custom shortcode plugin", () => {
     );
   });
 
-  it("should not render non-image shortcodes", () => {
+  it("should render video shortcodes", () => {
     const input = "(video: https://example.com/video.mp4)";
     const output = md.render(input);
-    expect(output).not.toContain("<video");
-    expect(output).toContain("(video: https://example.com/video.mp4)");
+    expect(output).toContain(
+      '<figure class="media"><video src="https://example.com/video.mp4" controls></video></figure>'
+    );
+  });
+
+  it("should render audio shortcodes", () => {
+    const input = "(audio: https://example.com/audio.mp3)";
+    const output = md.render(input);
+    expect(output).toContain(
+      '<figure class="media"><audio src="https://example.com/audio.mp3" controls></audio></figure>'
+    );
   });
 
   it("should handle malformed shortcodes gracefully", () => {
@@ -103,6 +114,15 @@ Some text in between
     expect(output).toContain('<img src="https://example.com/image.jpg" />');
     expect(output).toContain("<strong>Bold text</strong>");
     expect(output).toContain("<em>italic text</em>");
+  });
+
+  // it should handle class attribute
+  it("should handle class attribute", () => {
+    const input = "(image: https://example.com/image.jpg class: maclass)";
+    const output = md.render(input);
+    expect(output).toContain(
+      '<figure class="media maclass"><img src="https://example.com/image.jpg" /></figure>'
+    );
   });
 
   //   it("should handle multiple shortcodes in the same line", () => {

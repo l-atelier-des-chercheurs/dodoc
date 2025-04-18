@@ -60,7 +60,7 @@
           :publication_path="publication.$path"
           :select_mode="'single'"
           :pick_from_types="['image']"
-          @addMedias="pickCover"
+          @pickMedias="pickCover"
           @close="show_cover_picker = false"
         />
       </div>
@@ -149,9 +149,10 @@ export default {
       });
     },
 
-    async pickCover({ path_to_source_media_metas }) {
+    async pickCover(medias) {
+      const media = medias[0];
       const new_entry = await this.prepareMediaForPublication({
-        path_to_source_media_meta: path_to_source_media_metas[0],
+        path_to_source_media_meta: media.$path,
         publication_path: this.publication.$path,
       });
 

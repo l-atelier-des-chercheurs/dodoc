@@ -41,7 +41,7 @@
           :publication_path="publication_path"
           :select_mode="select_mode"
           :pick_from_types="pick_from_types"
-          @addMedias="createMosaic"
+          @pickMedias="pickMedias"
           @close="show_media_picker = false"
         />
 
@@ -245,6 +245,10 @@ export default {
     },
   },
   methods: {
+    pickMedias(medias) {
+      const path_to_source_media_metas = medias.map((m) => m.$path);
+      this.createMosaic({ path_to_source_media_metas });
+    },
     async mediaDropped({ path_to_source_media_metas }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
       this.createMosaic({ path_to_source_media_metas });

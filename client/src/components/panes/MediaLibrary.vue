@@ -328,7 +328,7 @@
                 <button
                   type="button"
                   class="u-button u-button_bleuvert"
-                  @click="addMedias(selected_medias_paths)"
+                  @click="pickMedias(selected_medias)"
                 >
                   {{ `${$t("add")} (${selected_medias_paths.length})` }}
                 </button>
@@ -387,7 +387,7 @@
         :position_in_list="focused_media_position_in_list"
         @remove="removeMedia(focused_media.$path)"
         @close="closeMediaFocus()"
-        @select="addMedias([focused_media.$path])"
+        @select="pickMedias([focused_media])"
         @prevMedia="prevMedia"
         @nextMedia="nextMedia"
       />
@@ -857,8 +857,8 @@ export default {
           (sm) => sm !== path
         );
     },
-    addMedias(medias) {
-      this.$emit("addMedias", medias);
+    pickMedias(medias) {
+      this.$emit("pickMedias", medias);
     },
     async removeMedia(path) {
       await this.$api.deleteItem({

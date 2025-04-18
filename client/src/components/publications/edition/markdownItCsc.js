@@ -5,7 +5,7 @@
 const markerPattern =
   /\(([\w-]+):\s+([^\s]+)(?:\s+([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*)))*\)/im;
 
-const tags_list = ["image"];
+const tags_list = ["image", "video", "audio"];
 
 export default (md, o = {}) => {
   const cscRegexp = markerPattern;
@@ -54,7 +54,7 @@ export default (md, o = {}) => {
 
     for (const match of attrMatches) {
       const [_, key, value] = match;
-      if (key !== "image") {
+      if (key !== "image" && key !== "video" && key !== "audio") {
         // Skip the main image tag
         attrs[key] = value.trim();
       }
@@ -80,6 +80,8 @@ export default (md, o = {}) => {
     // Handle different types of shortcodes
     switch (token.tag) {
       case "image":
+      case "video":
+      case "audio":
         // Use getMediaSrc if available, otherwise fallback to normal behavior
         let media = null;
         if (getMediaSrc && !token.attrs.src.startsWith("http")) {
@@ -88,28 +90,47 @@ export default (md, o = {}) => {
 
         const attrs = [];
 
+        let src = "";
         if (media) {
-          // If we have a resolved media object from getMediaSrc
-          attrs.push(`src="${media.src}"`);
+          src = media.src;
         } else if (token.attrs.src.startsWith("http")) {
-          // Only add src if it starts with http (fallback to original behavior)
-          attrs.push(`src="${token.attrs.src}"`);
+          src = token.attrs.src;
+        }
+
+        let class_attr = "";
+        if (token.attrs.class) {
+          class_attr = `${token.attrs.class}`;
         }
 
         // Add all other attributes except caption
         for (const [key, value] of Object.entries(token.attrs)) {
-          if (key !== "src" && key !== "caption") {
+          if (key !== "src" && key !== "caption" && key !== "class") {
             attrs.push(`${key}="${value}"`);
           }
         }
 
         // Create the image tag with all attributes
-        const imgTag = `<figure class="media"><img ${attrs.join(" ")} />`;
+        let imgTag = `<figure class="media${
+          class_attr ? ` ${class_attr}` : ""
+        }">`;
+
+        const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
+        if (token.tag === "image") {
+          imgTag += `<img src="${src}"${attrs_str} />`;
+        } else if (token.tag === "video") {
+          imgTag += `<video src="${src}"${attrs_str} controls>`;
+          imgTag += "</video>";
+        } else if (token.tag === "audio") {
+          imgTag += `<audio src="${src}"${attrs_str} controls>`;
+          imgTag += "</audio>";
+        }
 
         // Add caption if it exists and is not empty
+        const markdownCaption = token.attrs.caption;
+
         const caption =
-          token.attrs.caption !== undefined && token.attrs.caption !== ""
-            ? `\n<figcaption class="mediaCaption"><span>${token.attrs.caption}</span></figcaption>`
+          markdownCaption !== undefined && markdownCaption !== ""
+            ? `\n<figcaption class="mediaCaption"><span>${markdownCaption}</span></figcaption>`
             : "";
 
         return imgTag + caption + "</figure>\n";
