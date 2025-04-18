@@ -134,13 +134,13 @@ export default {
       this.new_css_title = "";
       this.show_create_css_modal = false;
 
-      this.$emit("update:opened_style_file_meta", meta_filename);
+      this.$emit("setStyleFile", meta_filename);
     },
     async resetCustom() {
       this.$refs.styleEditor.restoreVersion(default_styles);
     },
     openStyleFile(path) {
-      this.$emit("update:opened_style_file_meta", this.getFilename(path));
+      this.$emit("setStyleFile", this.getFilename(path));
     },
   },
 };
