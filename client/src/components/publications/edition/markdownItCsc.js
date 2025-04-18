@@ -7,8 +7,10 @@ const markerPattern =
 
 const tags_list = ["image"];
 
-export default (md, o) => {
+export default (md, o = {}) => {
   const cscRegexp = markerPattern;
+  const getMediaSrc = o.getMediaSrc;
+  const source_medias = o.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -21,12 +23,9 @@ export default (md, o) => {
     // Get the full match text
     const fullText = state.src.substr(pos);
 
-    console.log("Attempting to match:", fullText);
-
     // First check if it matches our basic pattern
     let match = cscRegexp.exec(fullText);
     if (!match) {
-      console.log("No match found for basic pattern");
       return false;
     }
 
@@ -81,10 +80,21 @@ export default (md, o) => {
     // Handle different types of shortcodes
     switch (token.tag) {
       case "image":
+        // Use getMediaSrc if available, otherwise fallback to normal behavior
+        let media = null;
+        if (getMediaSrc && !token.attrs.src.startsWith("http")) {
+          media = getMediaSrc(token.attrs.src, source_medias);
+        }
+
         const attrs = [];
 
-        // Add src attribute
-        attrs.push(`src="${token.attrs.src}"`);
+        if (media) {
+          // If we have a resolved media object from getMediaSrc
+          attrs.push(`src="${media.src}"`);
+        } else if (token.attrs.src.startsWith("http")) {
+          // Only add src if it starts with http (fallback to original behavior)
+          attrs.push(`src="${token.attrs.src}"`);
+        }
 
         // Add all other attributes except caption
         for (const [key, value] of Object.entries(token.attrs)) {

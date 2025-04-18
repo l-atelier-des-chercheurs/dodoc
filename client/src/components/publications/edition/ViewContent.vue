@@ -361,7 +361,10 @@ export default {
           return ""; // use external default escaping
         },
       });
-      md.use(markdownItCsc);
+      md.use(markdownItCsc, {
+        getMediaSrc: this.getMediaSrc.bind(this),
+        source_medias,
+      });
 
       // default render
       // const defaultCscBodyRender =
