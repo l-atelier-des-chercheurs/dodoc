@@ -97,22 +97,31 @@ export default (md, o = {}) => {
           src = token.attrs.src;
         }
 
+        let class_attr = "";
+        if (token.attrs.class) {
+          class_attr = `${token.attrs.class}`;
+        }
+
         // Add all other attributes except caption
         for (const [key, value] of Object.entries(token.attrs)) {
-          if (key !== "src" && key !== "caption") {
+          if (key !== "src" && key !== "caption" && key !== "class") {
             attrs.push(`${key}="${value}"`);
           }
         }
 
         // Create the image tag with all attributes
-        let imgTag = `<figure class="media" ${attrs.join(" ")} >`;
+        let imgTag = `<figure class="media${
+          class_attr ? ` ${class_attr}` : ""
+        }">`;
+
+        const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
         if (token.tag === "image") {
-          imgTag += `<img src="${src}" />`;
+          imgTag += `<img src="${src}"${attrs_str} />`;
         } else if (token.tag === "video") {
-          imgTag += `<video src="${src}" controls>`;
+          imgTag += `<video src="${src}"${attrs_str} controls>`;
           imgTag += "</video>";
         } else if (token.tag === "audio") {
-          imgTag += `<audio src="${src}" controls>`;
+          imgTag += `<audio src="${src}"${attrs_str} controls>`;
           imgTag += "</audio>";
         }
 
