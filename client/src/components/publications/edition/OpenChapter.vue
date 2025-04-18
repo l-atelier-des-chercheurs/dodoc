@@ -1,6 +1,5 @@
 <template>
   <div class="_openChapter">
-    {{ chapter.source_medias }}
     <div class="_close_button">
       <button
         type="button"
