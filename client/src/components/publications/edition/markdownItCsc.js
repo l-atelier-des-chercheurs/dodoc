@@ -1,7 +1,9 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-const markerPattern = /^\(([\w-]+):\s*([^)]+)\)/im;
+// Match the main tag and content, followed by any number of attributes
+const markerPattern =
+  /\(([\w-]+):\s+([^\s]+)(?:\s+([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*)))*\)/im;
 
 const tags_list = ["image"];
 
@@ -13,51 +15,74 @@ export default (md, o) => {
 
     let marker = state.src.charCodeAt(pos);
 
+    // trying to match
+    // (image: https://example.com/image.jpg caption: A beautiful image) should return
+    // {
+    //   tag: "image",
+    //   content: "https://example.com/image.jpg",
+    //   caption: "A beautiful image"
+    // }
+    // (image: https://example.com/image.jpg caption: A beautiful image width: 100 height: 100)
+    // or
+    // (image: https://example.com/image.jpg width: 100 height: 100 caption: A beautiful image)
+    // {
+    //   tag: "image",
+    //   content: "https://example.com/image.jpg",
+    //   caption: "A beautiful image",
+    //   width: "100",
+    //   height: "100"
+    // }
+
     // check ( marker
     if (marker !== 0x28 /* ( */) return false;
 
-    // check csc pattern
-    let match = cscRegexp.exec(state.src.substr(pos));
-    match = !match
-      ? []
-      : match.filter(function (m) {
-          return m;
-        });
-    if (match.length < 2) {
+    // Get the full match text
+    const fullText = state.src.substr(pos);
+
+    console.log("Attempting to match:", fullText);
+
+    // First check if it matches our basic pattern
+    let match = cscRegexp.exec(fullText);
+    if (!match) {
+      console.log("No match found for basic pattern");
       return false;
     }
 
-    if (silent) return true;
+    // Get the full matched text
+    const fullMatch = match[0];
 
-    state.line = startLine + 1;
-
-    // create token data
-    let tag = match[1].trim(); // e.g. 'image'
-    let content = match[2].trim(); // e.g. 'filename.jpg'
+    // Parse tag and initial content
+    const tag = match[1].trim();
+    const content = match[2].trim();
 
     if (!tags_list.includes(tag)) {
       return false;
     }
 
-    // Parse any additional attributes after the main content
+    if (silent) return true;
+
+    // Parse attributes
     let attrs = {};
-    const attrMatches = content.match(/\s+(\w+)=["']([^"']+)["']/g);
-    if (attrMatches) {
-      attrMatches.forEach((attr) => {
-        const [key, value] = attr.trim().split("=");
-        attrs[key] = value.replace(/['"]/g, "");
-      });
-      // Remove the attributes from content
-      content = content.replace(/\s+\w+=["'][^"']+["']/g, "").trim();
-    }
     attrs.src = content;
 
-    let markup = match[0];
+    // Find all attribute pairs using regex - handling multi-word values properly
+    const attrPattern = /([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*?))/g;
+    const attrMatches = fullMatch.matchAll(attrPattern);
+
+    for (const match of attrMatches) {
+      const [_, key, value] = match;
+      if (key !== "image") {
+        // Skip the main image tag
+        attrs[key] = value.trim();
+      }
+    }
+
+    state.line = startLine + 1;
 
     // set token
     let token = state.push("csc", tag, 0);
     token.map = [startLine, state.line];
-    token.markup = markup;
+    token.markup = fullMatch;
     token.attrs = attrs;
     token.content = content;
 
@@ -72,11 +97,27 @@ export default (md, o) => {
     // Handle different types of shortcodes
     switch (token.tag) {
       case "image":
-        return `<img src="${token.attrs.src}"${
-          token.attrs.alt ? ` alt="${token.attrs.alt}"` : ""
-        }${token.attrs.width ? ` width="${token.attrs.width}"` : ""}${
-          token.attrs.height ? ` height="${token.attrs.height}"` : ""
-        } />\n`;
+        const attrs = [];
+
+        // Add src attribute
+        attrs.push(`src="${token.attrs.src}"`);
+
+        // Add all other attributes except caption
+        for (const [key, value] of Object.entries(token.attrs)) {
+          if (key !== "src" && key !== "caption") {
+            attrs.push(`${key}="${value}"`);
+          }
+        }
+
+        // Create the image tag with all attributes
+        const imgTag = `<img ${attrs.join(" ")} />`;
+
+        // Add caption if it exists
+        const caption = token.attrs.caption
+          ? `\n<div class="mediaCaption"><span>${token.attrs.caption}</span></div>`
+          : "";
+
+        return imgTag + caption + "\n";
       default:
         return token.content + "\n";
     }
