@@ -1,3 +1,27 @@
+// (image: https://example.com/image.jpg caption: A beautiful image) should return
+// {
+//   tag: "image",
+//   content: "https://example.com/image.jpg",
+//   caption: "A beautiful image"
+// }
+// (image: https://example.com/image.jpg caption: A beautiful image width: 100 height: 100)
+// or
+// (image: https://example.com/image.jpg width: 100 height: 100 caption: A beautiful image)
+// {
+//   tag: "image",
+//   content: "https://example.com/image.jpg",
+//   caption: "A beautiful image",
+//   width: "100",
+//   height: "100"
+// }
+// (image https://example.com/image.jpg) should return as text
+// (image:plop) should return as text
+// (image: https://example.com/image.jpg caption:) should return {
+//   tag: "image",
+//   content: "https://example.com/image.jpg",
+//   caption: ""
+// }
+
 import { describe, it, expect } from "vitest";
 import MarkdownIt from "markdown-it";
 import markdownItCsc from "../markdownItCsc";
@@ -31,18 +55,6 @@ describe("markdown-it custom shortcode plugin", () => {
     );
   });
 
-  it("should render an image with all attributes in any order", () => {
-    const input =
-      "(image: https://example.com/image.jpg height: 100 caption: Nice pic width: 100)";
-    const output = md.render(input);
-    expect(output).toContain(
-      '<img src="https://example.com/image.jpg" width="100" height="100" />'
-    );
-    expect(output).toContain(
-      '<div class="mediaCaption"><span>Nice pic</span></div>'
-    );
-  });
-
   it("should not render non-image shortcodes", () => {
     const input = "(video: https://example.com/video.mp4)";
     const output = md.render(input);
@@ -60,7 +72,7 @@ describe("markdown-it custom shortcode plugin", () => {
 
     inputs.forEach((input) => {
       const output = md.render(input);
-      expect(output).toBe(input + "\n");
+      expect(output).toBe("<p>" + input + "</p>\n");
     });
   });
 

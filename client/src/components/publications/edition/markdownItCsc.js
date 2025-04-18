@@ -15,24 +15,6 @@ export default (md, o) => {
 
     let marker = state.src.charCodeAt(pos);
 
-    // trying to match
-    // (image: https://example.com/image.jpg caption: A beautiful image) should return
-    // {
-    //   tag: "image",
-    //   content: "https://example.com/image.jpg",
-    //   caption: "A beautiful image"
-    // }
-    // (image: https://example.com/image.jpg caption: A beautiful image width: 100 height: 100)
-    // or
-    // (image: https://example.com/image.jpg width: 100 height: 100 caption: A beautiful image)
-    // {
-    //   tag: "image",
-    //   content: "https://example.com/image.jpg",
-    //   caption: "A beautiful image",
-    //   width: "100",
-    //   height: "100"
-    // }
-
     // check ( marker
     if (marker !== 0x28 /* ( */) return false;
 
@@ -65,8 +47,10 @@ export default (md, o) => {
     let attrs = {};
     attrs.src = content;
 
-    // Find all attribute pairs using regex - handling multi-word values properly
-    const attrPattern = /([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*?))/g;
+    // Find all attribute pairs using regex - handling multi-word values and empty values properly
+    // Updated regex to properly handle empty values and not include closing parenthesis
+    const attrPattern =
+      /([\w-]+):\s+((?:[^)\s][^)]*?(?=\s+[\w-]+:|$)|[^)]*?)(?=\s+[\w-]+:|$|\)))/g;
     const attrMatches = fullMatch.matchAll(attrPattern);
 
     for (const match of attrMatches) {
@@ -112,10 +96,11 @@ export default (md, o) => {
         // Create the image tag with all attributes
         const imgTag = `<img ${attrs.join(" ")} />`;
 
-        // Add caption if it exists
-        const caption = token.attrs.caption
-          ? `\n<div class="mediaCaption"><span>${token.attrs.caption}</span></div>`
-          : "";
+        // Add caption if it exists and is not empty
+        const caption =
+          token.attrs.caption !== undefined && token.attrs.caption !== ""
+            ? `\n<div class="mediaCaption"><span>${token.attrs.caption}</span></div>`
+            : "";
 
         return imgTag + caption + "\n";
       default:
