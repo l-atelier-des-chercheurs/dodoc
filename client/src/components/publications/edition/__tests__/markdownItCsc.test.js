@@ -126,7 +126,7 @@ Some text in between
   });
 
   // (video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)
-  it("should handle video shortcodes with caption", () => {
+  it("should handle shortcodes with caption", () => {
     const input =
       "(video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)";
     const output = md.render(input);
@@ -134,7 +134,7 @@ Some text in between
       '<video src="signal-2025-04-13-114237-002.mp4.meta.txt" controls></video>'
     );
     expect(output).toContain(
-      '<figcaption class="mediaCaption"><span>Plop Plip [qqq](https://geojson.io) Hehehe</span></figcaption>'
+      '<figcaption class="mediaCaption"><span>Plop Plip <a href="https://geojson.io">qqq</a> Hehehe</span></figcaption>'
     );
   });
 
