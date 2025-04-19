@@ -71,8 +71,6 @@
             </template>
           </CollaborativeEditor3>
 
-          show_media_picker = {{ show_media_picker }}
-
           <PickMediaForMarkdown
             v-if="show_media_picker"
             :publication_path="publication_path"

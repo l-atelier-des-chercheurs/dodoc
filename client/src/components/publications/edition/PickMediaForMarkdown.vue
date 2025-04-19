@@ -85,7 +85,14 @@ export default {
 
         media_html += `${tag}: ${meta_filename}`;
 
-        if (m.caption) media_html += ` caption: ${m.caption}`;
+        if (m.caption) {
+          const md_caption = this.turnHtmlToMarkdown(m.caption);
+          media_html += ` caption: ${md_caption}`;
+        }
+
+        if (this.setMediaAsFullPage) {
+          media_html += ` size: full_page`;
+        }
 
         media_html += ")";
 
@@ -93,6 +100,40 @@ export default {
       });
 
       return html.join("\n");
+    },
+    turnHtmlToMarkdown(html) {
+      // turn <p><strong>Plop</strong></p><p><em>Plip</em></p><p><a href="https://geojson.io" rel="noopener noreferrer" target="_blank">qqq</a></p><p><strong><em>Hehehe</em></strong></p>
+      // into
+      // Plop
+      // Plip
+      // [qqq](https://geojson.io)
+      // Hehehe
+
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+
+      let md = "";
+      const paragraphs = tempDiv.querySelectorAll("p");
+
+      paragraphs.forEach((p, index) => {
+        let text = p.textContent;
+
+        // Handle links
+        const links = p.querySelectorAll("a");
+        links.forEach((link) => {
+          const linkText = link.textContent;
+          const linkHref = link.getAttribute("href");
+          if (linkHref) {
+            const mdLink = `[${linkText}](${linkHref})`;
+            text = text.replace(linkText, mdLink);
+          }
+        });
+
+        // Add line breaks between paragraphs
+        md += text + (index < paragraphs.length - 1 ? "\n" : "");
+      });
+
+      return md;
     },
     copyToClipboard() {
       this.isCopied = false;
