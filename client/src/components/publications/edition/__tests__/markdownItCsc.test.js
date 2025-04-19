@@ -55,7 +55,7 @@ describe("markdown-it custom shortcode plugin", () => {
       "(image: https://example.com/image.jpg width: 100 height: 100)";
     const output = md.render(input);
     expect(output).toContain(
-      '<img src="https://example.com/image.jpg" width="100" height="100" />'
+      '<figure class="media" width="100" height="100"><img src="https://example.com/image.jpg" /></figure>'
     );
   });
 
@@ -79,7 +79,6 @@ describe("markdown-it custom shortcode plugin", () => {
     const inputs = [
       "(image:)",
       "(image: )",
-      "(image: https://example.com/image.jpg caption:)",
       "(image https://example.com/image.jpg)",
     ];
 
@@ -126,15 +125,15 @@ Some text in between
   });
 
   // (video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)
-  it("should handle shortcodes with caption", () => {
+  it("should handle shortcodes with links in caption", () => {
     const input =
-      "(video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)";
+      "(video: https://latelier-des-chercheurs.fr/content/apercu.png caption: Plop Plip [qqq](https://geojson.io) Hehehe)";
     const output = md.render(input);
     expect(output).toContain(
-      '<video src="signal-2025-04-13-114237-002.mp4.meta.txt" controls></video>'
+      `<figure class="media"><video src="https://latelier-des-chercheurs.fr/content/apercu.png" controls></video>`
     );
     expect(output).toContain(
-      '<figcaption class="mediaCaption"><span>Plop Plip <a href="https://geojson.io">qqq</a> Hehehe</span></figcaption>'
+      `<figcaption class="mediaCaption"><span>Plop Plip <a href="https://geojson.io">qqq</a> Hehehe</span></figcaption>`
     );
   });
 

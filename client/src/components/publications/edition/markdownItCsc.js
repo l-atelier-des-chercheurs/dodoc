@@ -1,30 +1,27 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-// Match the main tag and content, followed by any number of attributes
-const markerPattern =
-  /\(([\w-]+):\s+([^\s]+)(?:\s+([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*)))*\)/im;
+// Simpler pattern to capture tag, src, and the rest (attributes)
+// It captures: 1:tag, 2:src, 3:attribute string
+const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*)\)/im;
 
 const tags_list = ["image", "video", "audio"];
 
 export default (md, o = {}) => {
-  const cscRegexp = markerPattern;
+  const cscRegexp = markerPattern; // Use the simplified pattern
   const getMediaSrc = o.getMediaSrc;
   const source_medias = o.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
-
-    let marker = state.src.charCodeAt(pos);
+    let max = state.eMarks[startLine];
+    let currentLine = state.src.slice(pos, max);
 
     // check ( marker
-    if (marker !== 0x28 /* ( */) return false;
+    if (state.src.charCodeAt(pos) !== 0x28 /* ( */) return false;
 
-    // Get the full match text
-    const fullText = state.src.substr(pos);
-
-    // First check if it matches our basic pattern
-    let match = cscRegexp.exec(fullText);
+    // Use the simplified regex to match the structure
+    const match = cscRegexp.exec(currentLine);
     if (!match) {
       return false;
     }
@@ -32,9 +29,9 @@ export default (md, o = {}) => {
     // Get the full matched text
     const fullMatch = match[0];
 
-    // Parse tag and initial content
+    // Parse tag and initial content (src)
     const tag = match[1].trim();
-    const content = match[2].trim();
+    const content = match[2].trim(); // This is the src
 
     if (!tags_list.includes(tag)) {
       return false;
@@ -46,20 +43,26 @@ export default (md, o = {}) => {
     let attrs = {};
     attrs.src = content;
 
-    // Find all attribute pairs using regex - handling multi-word values and empty values properly
-    // Updated regex to properly handle empty values and not include closing parenthesis
-    const attrPattern =
-      /([\w-]+):\s+((?:[^)\s][^)]*?(?=\s+[\w-]+:|$)|[^)]*?)(?=\s+[\w-]+:|$|\)))/g;
-    const attrMatches = fullMatch.matchAll(attrPattern);
+    // The rest of the string contains the attributes
+    const attrString = match[3].trim();
 
-    for (const match of attrMatches) {
-      const [_, key, value] = match;
-      if (key !== "image" && key !== "video" && key !== "audio") {
-        // Skip the main image tag
-        attrs[key] = value.trim();
+    debugger;
+
+    // Use a modified version of the user-provided regex (using \s instead of \h)
+    const attrPattern = /([\w-]+):\s+(.*?(?=\s*(?:\b[\w-]+: |$)))/g;
+    let attrMatch;
+
+    while ((attrMatch = attrPattern.exec(attrString)) !== null) {
+      const key = attrMatch[1].trim();
+      // Handle potential empty values captured by .*?
+      const value = attrMatch[2] ? attrMatch[2].trim() : "";
+      if (key) {
+        // Ensure key is not empty
+        attrs[key] = value;
       }
     }
 
+    // Advance the parser state
     state.line = startLine + 1;
 
     // set token
@@ -109,19 +112,22 @@ export default (md, o = {}) => {
           }
         }
 
-        // Create the image tag with all attributes
-        let imgTag = `<figure class="media${
-          class_attr ? ` ${class_attr}` : ""
-        }">`;
+        let classes = ["media"];
+        if (class_attr) {
+          classes.push(class_attr);
+        }
 
+        // Create the image tag with all attributes
         const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
+        let imgTag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
+
         if (token.tag === "image") {
-          imgTag += `<img src="${src}"${attrs_str} />`;
+          imgTag += `<img src="${src}" />`;
         } else if (token.tag === "video") {
-          imgTag += `<video src="${src}"${attrs_str} controls>`;
+          imgTag += `<video src="${src}" controls>`;
           imgTag += "</video>";
         } else if (token.tag === "audio") {
-          imgTag += `<audio src="${src}"${attrs_str} controls>`;
+          imgTag += `<audio src="${src}" controls>`;
           imgTag += "</audio>";
         }
 
@@ -130,7 +136,9 @@ export default (md, o = {}) => {
 
         const caption =
           markdownCaption !== undefined && markdownCaption !== ""
-            ? `\n<figcaption class="mediaCaption"><span>${markdownCaption}</span></figcaption>`
+            ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
+                markdownCaption
+              )}</span></figcaption>`
             : "";
 
         return imgTag + caption + "</figure>\n";
