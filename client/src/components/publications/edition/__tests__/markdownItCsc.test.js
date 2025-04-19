@@ -138,11 +138,12 @@ Some text in between
   });
 
   it("should handle multiple shortcodes on the same line", () => {
-    const input = `(image: https://example.com/image1.jpg)(image: https://example.com/image2.jpg)`;
+    const input = `(image: https://example.com/image1.jpg)(audio: https://example.com/audio1.mp3)`;
 
     const output = md.render(input);
     expect(output).toBe(
-      '<p><figure class="media"><img src="https://example.com/image1.jpg" /></figure><figure class="media"><img src="https://example.com/image2.jpg" /></figure></p>\n'
+      '<figure class="media"><img src="https://example.com/image1.jpg" /></figure>\n' +
+        '<figure class="media"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n'
     );
   });
 });

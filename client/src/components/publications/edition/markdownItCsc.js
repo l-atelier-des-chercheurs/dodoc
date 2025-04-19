@@ -1,78 +1,98 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-// Simpler pattern to capture tag, src, and the rest (attributes)
+// Pattern to capture tag, src, and the rest (attributes)
 // It captures: 1:tag, 2:src, 3:attribute string
-const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*)\)/im;
+const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*?)\)/;
 
 const tags_list = ["image", "video", "audio"];
 
 export default (md, o = {}) => {
-  const cscRegexp = markerPattern; // Use the simplified pattern
   const getMediaSrc = o.getMediaSrc;
   const source_medias = o.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
     let max = state.eMarks[startLine];
-    let currentLine = state.src.slice(pos, max);
+    let lineText = state.src.slice(pos, max);
+    let foundShortcode = false;
 
-    // check ( marker
-    if (state.src.charCodeAt(pos) !== 0x28 /* ( */) return false;
+    // Process all shortcodes on the current line
+    while (pos < max) {
+      // Find opening parenthesis
+      const openParenPos = lineText.indexOf("(");
+      if (openParenPos === -1) break;
 
-    // Use the simplified regex to match the structure
-    const match = cscRegexp.exec(currentLine);
-    if (!match) {
-      return false;
-    }
+      // Adjust position to the opening parenthesis
+      pos += openParenPos;
 
-    // Get the full matched text
-    const fullMatch = match[0];
+      // Extract text from current position to end of line
+      const remainingText = state.src.slice(pos, max);
 
-    // Parse tag and initial content (src)
-    const tag = match[1].trim();
-    const content = match[2].trim(); // This is the src
-
-    if (!tags_list.includes(tag)) {
-      return false;
-    }
-
-    if (silent) return true;
-
-    // Parse attributes
-    let attrs = {};
-    attrs.src = content;
-
-    // The rest of the string contains the attributes
-    const attrString = match[3].trim();
-
-    debugger;
-
-    // Use a modified version of the user-provided regex (using \s instead of \h)
-    const attrPattern = /([\w-]+):\s+(.*?(?=\s*(?:\b[\w-]+: |$)))/g;
-    let attrMatch;
-
-    while ((attrMatch = attrPattern.exec(attrString)) !== null) {
-      const key = attrMatch[1].trim();
-      // Handle potential empty values captured by .*?
-      const value = attrMatch[2] ? attrMatch[2].trim() : "";
-      if (key) {
-        // Ensure key is not empty
-        attrs[key] = value;
+      // Check for valid shortcode pattern
+      const match = markerPattern.exec(remainingText);
+      if (!match) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
       }
+
+      // Get the full matched text including parentheses
+      const fullMatch = match[0];
+
+      // Parse tag and initial content (src)
+      const tag = match[1].trim();
+      const content = match[2].trim(); // This is the src
+
+      if (!tags_list.includes(tag)) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
+      if (silent) return true;
+
+      // Parse attributes
+      let attrs = {};
+      attrs.src = content;
+
+      // The rest of the string contains the attributes
+      const attrString = match[3].trim();
+
+      // Use a modified version of the user-provided regex (using \s instead of \h)
+      const attrPattern = /([\w-]+):\s+(.*?(?=\s*(?:\b[\w-]+: |$)))/g;
+      let attrMatch;
+
+      while ((attrMatch = attrPattern.exec(attrString)) !== null) {
+        const key = attrMatch[1].trim();
+        // Handle potential empty values captured by .*?
+        const value = attrMatch[2] ? attrMatch[2].trim() : "";
+        if (key) {
+          // Ensure key is not empty
+          attrs[key] = value;
+        }
+      }
+
+      // Set token
+      let token = state.push("csc", tag, 0);
+      token.map = [startLine, startLine + 1];
+      token.markup = fullMatch;
+      token.attrs = attrs;
+      token.content = content;
+
+      // Move position forward by the length of the matched shortcode
+      pos += fullMatch.length;
+      lineText = state.src.slice(pos, max);
+      foundShortcode = true;
     }
 
-    // Advance the parser state
-    state.line = startLine + 1;
+    if (foundShortcode) {
+      // Advance the parser state after processing all shortcodes on the line
+      state.line = startLine + 1;
+      return true;
+    }
 
-    // set token
-    let token = state.push("csc", tag, 0);
-    token.map = [startLine, state.line];
-    token.markup = fullMatch;
-    token.attrs = attrs;
-    token.content = content;
-
-    return true;
+    return false;
   }
 
   // set render csc
