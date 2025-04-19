@@ -137,13 +137,12 @@ Some text in between
     );
   });
 
-  //   it("should handle multiple shortcodes in the same line", () => {
-  //     const input = `
-  // (image: https://example.com/image1.jpg caption: First image) (image: https://example.com/image2.jpg caption: Second image)
-  //     `.trim();
+  it("should handle multiple shortcodes on the same line", () => {
+    const input = `(image: https://example.com/image1.jpg)(image: https://example.com/image2.jpg)`;
 
-  //     const output = md.render(input);
-  //     expect(output).toContain('<img src="https://example.com/image1.jpg" />');
-  //     expect(output).toContain('<img src="https://example.com/image2.jpg" />');
-  //   });
+    const output = md.render(input);
+    expect(output).toBe(
+      '<p><figure class="media"><img src="https://example.com/image1.jpg" /></figure><figure class="media"><img src="https://example.com/image2.jpg" /></figure></p>\n'
+    );
+  });
 });
