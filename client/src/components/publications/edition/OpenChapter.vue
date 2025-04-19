@@ -71,46 +71,13 @@
             </template>
           </CollaborativeEditor3>
 
-          <MediaPicker
+          show_media_picker = {{ show_media_picker }}
+
+          <PickMediaForMarkdown
             v-if="show_media_picker"
             :publication_path="publication_path"
-            :select_mode="'multiple'"
-            :pick_from_types="['image', 'video', 'audio']"
-            @pickMedias="pickMedias"
-            @close="show_media_picker = false"
-          />
-
-          <BaseModal2
-            v-if="picked_medias.length > 0"
-            :title="$t('add_media')"
             @close="closePickModal"
-          >
-            <ToggleInput
-              :content.sync="set_media_as_full_page"
-              :label="$t('full_page')"
-            />
-            <div class="u-spacingBottom" />
-
-            <div class="u-spacingBottom u-inputGroup">
-              <textarea
-                ref="urlToCopy"
-                class="_textField"
-                v-model="pick_file_shortcut"
-              />
-              <button
-                type="button"
-                class="u-button u-button_icon u-suffix _clipboardBtn"
-                @click="copyToClipboard"
-              >
-                <b-icon icon="clipboard" v-if="!is_copied" />
-                <b-icon icon="clipboard-check" v-else />
-              </button>
-            </div>
-
-            <div class="u-instructions">
-              {{ $t("copy_paste_to_include_media") }}
-            </div>
-          </BaseModal2>
+          />
         </template>
       </div>
 
@@ -149,7 +116,7 @@
 import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 
-import MediaPicker from "@/components/publications/MediaPicker.vue";
+import PickMediaForMarkdown from "@/components/publications/edition/PickMediaForMarkdown.vue";
 
 export default {
   props: {
@@ -161,14 +128,11 @@ export default {
   },
   components: {
     // MarkdownEditor,
-    MediaPicker,
+    PickMediaForMarkdown,
   },
   data() {
     return {
       show_media_picker: false,
-      picked_medias: [],
-      set_media_as_full_page: false,
-      is_copied: false,
     };
   },
   created() {},
@@ -194,37 +158,6 @@ export default {
       if (this.content_type === "html") return "html";
       else if (this.content_type === "markdown") return "raw";
       else return "html";
-    },
-    pick_file_shortcut() {
-      let html = [];
-
-      this.picked_medias.map((m) => {
-        // if (html) html += "\n";
-
-        let media_html = "(";
-
-        const meta_filename = m.$path.split("/").pop();
-
-        let tag;
-        if (m.$type === "image") tag = "image";
-        else if (m.$type === "video") tag = "video";
-        else if (m.$type === "audio") tag = "audio";
-        else throw new Error("Unknown media type");
-
-        media_html += `${tag}: ${meta_filename}`;
-
-        if (m.caption) media_html += ` caption: ${m.caption}`;
-
-        // if (this.set_media_as_full_page)
-        //   html += `(${m.$media_filename} "=full-page")`;
-        // else html += `(${m.$media_filename})`;
-
-        media_html += ")";
-
-        html.push(media_html);
-      });
-
-      return html.join("\n");
     },
   },
   methods: {
@@ -324,28 +257,8 @@ export default {
           },
         });
     },
-    pickMedias(medias) {
-      this.picked_medias = medias;
-    },
-    copyToClipboard() {
-      this.is_copied = false;
-
-      // Get the text field
-      var copyText = this.$refs.urlToCopy;
-
-      // Select the text field
-      copyText.select();
-      copyText.setSelectionRange(0, 99999); // For mobile devices
-
-      // Copy the text inside the text field
-      navigator.clipboard.writeText(copyText.value);
-
-      this.is_copied = true;
-    },
     closePickModal() {
-      this.picked_medias = [];
-      this.set_media_as_full_page = false;
-      this.is_copied = false;
+      this.show_media_picker = false;
     },
   },
 };
