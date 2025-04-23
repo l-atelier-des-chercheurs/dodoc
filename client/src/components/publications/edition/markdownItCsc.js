@@ -1,75 +1,155 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-// Match the main tag and content, followed by any number of attributes
-const markerPattern =
-  /\(([\w-]+):\s+([^\s]+)(?:\s+([\w-]+):\s+([^)\s](?:.*?(?=\s+[\w-]+:|$)|[^)]*)))*\)/im;
+// Pattern to capture tag, src, and the rest (attributes)
+// It captures: 1:tag, 2:src, 3:attribute string
+const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*?)\)/;
+
+// Updated pattern that supports nested parentheses
+const markerPatternWithNesting =
+  /\(([-\w]+):\s*([^]+?)(?=\s+[\w-]+:|\s*\)$)\s*(.*?)\)/;
 
 const tags_list = ["image", "video", "audio"];
 
 export default (md, o = {}) => {
-  const cscRegexp = markerPattern;
   const getMediaSrc = o.getMediaSrc;
   const source_medias = o.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
+    let max = state.eMarks[startLine];
+    let lineText = state.src.slice(pos, max);
+    let foundShortcode = false;
 
-    let marker = state.src.charCodeAt(pos);
+    // Process all shortcodes on the current line
+    while (pos < max) {
+      // Find opening parenthesis
+      const openParenPos = lineText.indexOf("(");
+      if (openParenPos === -1) break;
 
-    // check ( marker
-    if (marker !== 0x28 /* ( */) return false;
+      // Adjust position to the opening parenthesis
+      pos += openParenPos;
 
-    // Get the full match text
-    const fullText = state.src.substr(pos);
+      // Extract text from current position to end of line
+      const remainingText = state.src.slice(pos, max);
 
-    // First check if it matches our basic pattern
-    let match = cscRegexp.exec(fullText);
-    if (!match) {
-      return false;
-    }
-
-    // Get the full matched text
-    const fullMatch = match[0];
-
-    // Parse tag and initial content
-    const tag = match[1].trim();
-    const content = match[2].trim();
-
-    if (!tags_list.includes(tag)) {
-      return false;
-    }
-
-    if (silent) return true;
-
-    // Parse attributes
-    let attrs = {};
-    attrs.src = content;
-
-    // Find all attribute pairs using regex - handling multi-word values and empty values properly
-    // Updated regex to properly handle empty values and not include closing parenthesis
-    const attrPattern =
-      /([\w-]+):\s+((?:[^)\s][^)]*?(?=\s+[\w-]+:|$)|[^)]*?)(?=\s+[\w-]+:|$|\)))/g;
-    const attrMatches = fullMatch.matchAll(attrPattern);
-
-    for (const match of attrMatches) {
-      const [_, key, value] = match;
-      if (key !== "image" && key !== "video" && key !== "audio") {
-        // Skip the main image tag
-        attrs[key] = value.trim();
+      // Find matching closing parenthesis accounting for nesting
+      let depth = 0;
+      let closeParenPos = -1;
+      for (let i = 0; i < remainingText.length; i++) {
+        if (remainingText[i] === "(") {
+          depth++;
+        } else if (remainingText[i] === ")") {
+          depth--;
+          if (depth === 0) {
+            closeParenPos = i;
+            break;
+          }
+        }
       }
+
+      if (closeParenPos === -1) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
+      // Extract the full shortcode including parentheses
+      const shortcodeText = remainingText.substring(0, closeParenPos + 1);
+
+      // Parse the shortcode using a simple extraction approach
+      // Format is expected to be: (tag: source attr1: val1 attr2: val2)
+      const tagMatch = /^\(([-\w]+):\s*/.exec(shortcodeText);
+
+      if (!tagMatch) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
+      const tag = tagMatch[1].trim();
+
+      if (!tags_list.includes(tag)) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
+      if (silent) return true;
+
+      // Extract content after "tag: " and before the first attribute or closing paren
+      const afterTag = shortcodeText.substring(tagMatch[0].length);
+
+      // Look for the first attribute marker (word followed by colon)
+      const firstAttrMatch = /\s+[\w-]+:\s+/.exec(afterTag);
+      let source, attrString;
+
+      if (firstAttrMatch) {
+        const firstAttrPos = firstAttrMatch.index;
+        source = afterTag.substring(0, firstAttrPos).trim();
+        attrString = afterTag
+          .substring(firstAttrPos, afterTag.length - 1)
+          .trim(); // Remove closing parenthesis
+      } else {
+        // No attributes, just source
+        source = afterTag.substring(0, afterTag.length - 1).trim();
+        attrString = "";
+      }
+
+      // Malformed shortcode: no source and no attributes -> skip parsing
+      if (!source && !attrString) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
+      // Parse attributes
+      let attrs = {};
+      attrs.src = source;
+
+      // Improved attribute parsing pattern
+      // Look for attribute keys followed by a colon, then capture everything up to the next attribute key
+      const attrPattern = /([\w-]+):\s+((?:(?!\s+[\w-]+:).)+)/g;
+      let attrMatch;
+
+      while ((attrMatch = attrPattern.exec(attrString + " "))) {
+        const key = attrMatch[1].trim();
+        const value = attrMatch[2] ? attrMatch[2].trim() : "";
+        if (key) {
+          // Ensure key is not empty
+          attrs[key] = value;
+        }
+      }
+
+      // Special handling for the last attribute - make sure no trailing ")" is included
+      const lastAttrKey = Object.keys(attrs).pop();
+      if (lastAttrKey && lastAttrKey !== "src") {
+        const lastValue = attrs[lastAttrKey];
+        if (lastValue && lastValue.endsWith(")")) {
+          attrs[lastAttrKey] = lastValue.slice(0, -1);
+        }
+      }
+
+      // Set token
+      let token = state.push("csc", tag, 0);
+      token.map = [startLine, startLine + 1];
+      token.markup = shortcodeText;
+      token.attrs = attrs;
+      token.content = source;
+
+      // Move position forward by the length of the shortcode
+      pos += shortcodeText.length;
+      lineText = state.src.slice(pos, max);
+      foundShortcode = true;
     }
 
-    state.line = startLine + 1;
+    if (foundShortcode) {
+      // Advance the parser state after processing all shortcodes on the line
+      state.line = startLine + 1;
+      return true;
+    }
 
-    // set token
-    let token = state.push("csc", tag, 0);
-    token.map = [startLine, state.line];
-    token.markup = fullMatch;
-    token.attrs = attrs;
-    token.content = content;
-
-    return true;
+    return false;
   }
 
   // set render csc
@@ -109,19 +189,22 @@ export default (md, o = {}) => {
           }
         }
 
-        // Create the image tag with all attributes
-        let imgTag = `<figure class="media${
-          class_attr ? ` ${class_attr}` : ""
-        }">`;
+        let classes = ["media"];
+        if (class_attr) {
+          classes.push(class_attr);
+        }
 
+        // Create the image tag with all attributes
         const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
+        let imgTag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
+
         if (token.tag === "image") {
-          imgTag += `<img src="${src}"${attrs_str} />`;
+          imgTag += `<img src="${src}" />`;
         } else if (token.tag === "video") {
-          imgTag += `<video src="${src}"${attrs_str} controls>`;
+          imgTag += `<video src="${src}" controls>`;
           imgTag += "</video>";
         } else if (token.tag === "audio") {
-          imgTag += `<audio src="${src}"${attrs_str} controls>`;
+          imgTag += `<audio src="${src}" controls>`;
           imgTag += "</audio>";
         }
 
@@ -130,7 +213,9 @@ export default (md, o = {}) => {
 
         const caption =
           markdownCaption !== undefined && markdownCaption !== ""
-            ? `\n<figcaption class="mediaCaption"><span>${markdownCaption}</span></figcaption>`
+            ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
+                markdownCaption
+              )}</span></figcaption>`
             : "";
 
         return imgTag + caption + "</figure>\n";

@@ -138,7 +138,15 @@ export default {
       else if (urlContains(cleaned_up_url, ["soundcloud.com"]))
         return {
           type: "soundcloud",
-          src: this.getSoundcloudEmbedURLFromURL(this.media.content),
+          src: this.getSoundcloudEmbedURLFromURL(cleaned_up_url, autoplay),
+        };
+      else if (
+        urlContains(cleaned_up_url, ["scratch.mit.edu/projects"]) &&
+        !cleaned_up_url.endsWith("/embed")
+      )
+        return {
+          type: "scratch",
+          src: this.getScratchEmbedURLFromURL(cleaned_up_url),
         };
 
       return {
@@ -179,8 +187,11 @@ export default {
       const video_id = getId(url);
       return `https://player.vimeo.com/video/${video_id}?autoplay=${autoplay_value}loop=false&byline=false&portrait=false&title=false&transparent=0&dnt=true&playsinline=true`;
     },
-    getSoundcloudEmbedURLFromURL(url) {
-      return `https://w.soundcloud.com/player/?url=${url}&color=0066cc`;
+    getSoundcloudEmbedURLFromURL(url, autoplay_value) {
+      return `https://w.soundcloud.com/player/?url=${url}&color=0066cc&auto_play=${autoplay_value}&show_artwork=true`;
+    },
+    getScratchEmbedURLFromURL(url) {
+      return url + "/embed";
     },
     groupFilesBy(files, fields, group_by) {
       const grouped = files.reduce((group, file) => {
