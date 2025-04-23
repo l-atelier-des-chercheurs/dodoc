@@ -48,8 +48,6 @@ export default (md, o = {}) => {
         }
       }
 
-      debugger;
-
       if (closeParenPos === -1) {
         pos++;
         lineText = state.src.slice(pos, max);
@@ -89,7 +87,9 @@ export default (md, o = {}) => {
       if (firstAttrMatch) {
         const firstAttrPos = firstAttrMatch.index;
         source = afterTag.substring(0, firstAttrPos).trim();
-        attrString = afterTag.substring(firstAttrPos).trim();
+        attrString = afterTag
+          .substring(firstAttrPos, afterTag.length - 1)
+          .trim(); // Remove closing parenthesis
       } else {
         // No attributes, just source
         source = afterTag.substring(0, afterTag.length - 1).trim();
@@ -111,6 +111,15 @@ export default (md, o = {}) => {
         if (key) {
           // Ensure key is not empty
           attrs[key] = value;
+        }
+      }
+
+      // Special handling for the last attribute - make sure no trailing ")" is included
+      const lastAttrKey = Object.keys(attrs).pop();
+      if (lastAttrKey && lastAttrKey !== "src") {
+        const lastValue = attrs[lastAttrKey];
+        if (lastValue && lastValue.endsWith(")")) {
+          attrs[lastAttrKey] = lastValue.slice(0, -1);
         }
       }
 
