@@ -1,6 +1,5 @@
 <template>
   <div class="_spacesList">
-    <pre>{{ settings.spaces_pinned }}</pre>
     <div class="_filterSortBar">
       <div class="_filterSortBar--leftSide">
         <button
