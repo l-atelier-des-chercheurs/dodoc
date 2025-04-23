@@ -1,5 +1,6 @@
 <template>
   <div class="_spacesList">
+    <pre>{{ settings.spaces_pinned }}</pre>
     <div class="_filterSortBar">
       <div class="_filterSortBar--leftSide">
         <button
@@ -112,7 +113,7 @@ export default {
       .catch((err) => {
         return err;
       });
-    this.$api.join({ room: "" });
+    this.$api.join({ room: "." });
 
     this.spaces = await this.$api
       .getFolders({
