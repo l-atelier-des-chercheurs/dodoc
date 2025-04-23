@@ -96,6 +96,13 @@ export default (md, o = {}) => {
         attrString = "";
       }
 
+      // Malformed shortcode: no source and no attributes -> skip parsing
+      if (!source && !attrString) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
       // Parse attributes
       let attrs = {};
       attrs.src = source;
