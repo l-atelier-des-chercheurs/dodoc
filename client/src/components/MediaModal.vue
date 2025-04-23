@@ -819,6 +819,7 @@ export default {
 ._allModifyButtons {
   display: flex;
   flex-flow: column nowrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) / 1);
 }
 </style>

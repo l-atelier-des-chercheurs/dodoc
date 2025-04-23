@@ -155,10 +155,14 @@ export default {
 
       const path = this.getParent(this.media.$path);
 
-      // todo – get original caption, credits, geolocation, etc. for new
-      const additional_meta = {
-        $origin: "collect",
-      };
+      // copy over caption, $credits, keywords, $authors, $location if exists
+      let additional_meta = { $origin: "collect" };
+      if (this.media.caption) additional_meta.caption = this.media.caption;
+      if (this.media.$credits) additional_meta.$credits = this.media.$credits;
+      if (this.media.keywords) additional_meta.keywords = this.media.keywords;
+      if (this.media.$authors) additional_meta.$authors = this.media.$authors;
+      if (this.media.$location)
+        additional_meta.$location = this.media.$location;
 
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(
