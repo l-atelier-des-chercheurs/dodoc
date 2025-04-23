@@ -453,8 +453,9 @@ export default {
   ._iframeStylePreview {
     width: 100%;
     height: 100%;
-    border-radius: 8px;
+    border-radius: 4px;
     overflow: hidden;
+    border: 2px solid var(--c-gris_clair);
     background-color: white;
     background-color: var(--set-backgroundColor, var(--c-gris_clair));
     object-fit: contain;
