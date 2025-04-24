@@ -37,6 +37,7 @@
     "ol-geocoder": "^4.3.3",
     "pagedjs": "^0.4.3",
     "portal-vue": "^2.1.7",
+    "pretty": "^2.0.0",
     "qr-scanner": "^1.4.2",
     "quill": "^2.0.3",
     "reconnectingwebsocket": "^1.0.0",

@@ -40,6 +40,7 @@
         :format_mode="format_mode"
         :viewer_type="viewer_type"
         :css_styles="css_styles"
+        :show_source_HTML="show_source_HTML"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
@@ -78,6 +79,7 @@ export default {
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    show_source_HTML: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -267,7 +269,7 @@ export default {
     },
     renderImage(meta_src, title, alt, source_medias) {
       let html = "";
-      let custom_classes = [],
+      let custom_classes = ["media"],
         width,
         height;
 
@@ -316,10 +318,10 @@ export default {
       }
 
       if (alt) {
-        html += `<div class="mediaCaption"><span>${alt}</span></div>`;
+        html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
       }
 
-      return `<div class='media ${custom_classes.join(" ")}'>${html}</div>`;
+      return `<figure class="${custom_classes.join(" ")}">${html}</figure>`;
     },
 
     parseMarkdownWithMarkedownIt(content, source_medias) {

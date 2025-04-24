@@ -13,6 +13,12 @@
     <div class="u-spacingBottom" />
 
     <div class="_topBtns">
+      <ToggleInput
+        :content="show_source_HTML"
+        :label="$t('show_source_HTML')"
+        @update:content="$emit('update:show_source_HTML', $event)"
+      />
+
       <button
         type="button"
         class="u-buttonLink u-buttonLink_red"
@@ -41,6 +47,7 @@ export default {
   props: {
     style_file: Object,
     default_styles: String,
+    show_source_HTML: Boolean,
   },
   components: {},
   data() {

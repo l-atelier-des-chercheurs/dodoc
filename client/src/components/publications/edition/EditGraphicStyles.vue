@@ -67,6 +67,8 @@
           :key="opened_style_file.$path"
           :style_file="opened_style_file"
           :default_styles="default_styles"
+          :show_source_HTML="show_source_HTML"
+          @update:show_source_HTML="$emit('update:show_source_HTML', $event)"
         />
       </transition>
     </div>
@@ -81,6 +83,7 @@ export default {
   props: {
     publication: Object,
     opened_style_file_meta: String,
+    show_source_HTML: Boolean,
   },
   components: {
     OpenedGraphicStyles,
@@ -97,7 +100,9 @@ export default {
       this.openStyleFile(this.style_files[0].$path);
   },
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$emit("update:show_source_HTML", false);
+  },
   watch: {},
   computed: {
     style_files() {
@@ -175,9 +180,9 @@ export default {
 
 ._openedStyleFile {
   flex: 1 1 auto;
-  // background-color: #303841;
-  background-color: var(--c-noir);
   background-color: #000;
+  background-color: #303841;
+  background-color: #333;
 }
 
 ._defaultStyles {

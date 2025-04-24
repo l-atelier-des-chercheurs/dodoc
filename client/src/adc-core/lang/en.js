@@ -1242,4 +1242,9 @@ export default {
     "Warning! By changing this setting, you will no longer be able to edit this content.",
   markdown_help: "Text formatting (markdown) help",
   import_medias: "Import medias",
+
+  multisupport_embed_img_instr:
+    "To add media from the internet, you can also copy and paste the following tags:",
+  attributes_for_embeds: "Attributes for the tags:",
+  show_source_HTML: "Show source HTML",
 };
