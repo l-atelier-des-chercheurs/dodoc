@@ -175,7 +175,7 @@ export default {
             folder_path,
           });
         },
-        source_medias,
+        vue_instance: this,
       });
 
       // Store default renderer

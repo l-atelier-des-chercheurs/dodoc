@@ -360,9 +360,7 @@ export default {
       };
 
       md.use(markdownItCsc, {
-        getMediaSrc: this.getMediaSrc.bind(this),
-        transformURL: this.transformURL.bind(this),
-        source_medias,
+        vue_instance: this,
       });
 
       const result = md.render(content);

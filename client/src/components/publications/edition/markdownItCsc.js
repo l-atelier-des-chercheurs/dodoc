@@ -12,9 +12,10 @@ const markerPatternWithNesting =
 const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
-  const getMediaSrc = o.getMediaSrc;
-  const transformURL = o.transformURL;
-  const source_medias = o.source_medias;
+  const vue_instance = o.vue_instance;
+  const getMediaSrc = vue_instance.getMediaSrc;
+  const transformURL = vue_instance.transformURL;
+  const source_medias = vue_instance.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -174,6 +175,12 @@ export default (md, o = {}) => {
         src = media.src;
       } else if (token.attrs.src.startsWith("http")) {
         src = token.attrs.src;
+      } else {
+        let msg = "⚠️ ";
+        msg += vue_instance.$t
+          ? vue_instance.$t("media_not_found")
+          : "Media not found";
+        return `<div class="media"><i>${msg}</i></div>`;
       }
 
       let class_attr = "";
