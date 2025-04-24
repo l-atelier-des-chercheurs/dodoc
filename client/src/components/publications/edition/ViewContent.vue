@@ -59,7 +59,7 @@
 <script>
 import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
-import hljs from "highlight.js";
+import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
 

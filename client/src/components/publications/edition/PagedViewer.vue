@@ -19,22 +19,12 @@
       <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
-    <div v-if="show_source_HTML" class="_debugMode">
-      <div class="_debugMode_content_html">
-        <h2>HTML</h2>
-        <pre v-html="pretty_content_html" />
-      </div>
-    </div>
+    <ShowSourceHTML v-if="show_source_HTML" :content_html="content_html" />
   </div>
 </template>
 <script>
 import VueInfiniteViewer from "vue-infinite-viewer";
 import { Handler, Previewer } from "pagedjs";
-import pretty from "pretty";
-
-import hljs from "highlight.js";
-import xml from "highlight.js/lib/languages/xml";
-import "highlight.js/styles/vs2015.css";
 
 export default {
   props: {
@@ -59,6 +49,8 @@ export default {
   },
   components: {
     VueInfiniteViewer,
+    ShowSourceHTML: () =>
+      import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
   data() {
     return {
@@ -112,6 +104,7 @@ export default {
       let html = "";
 
       if (nodes.cover) {
+        html = `<!-- ${this.$t("cover")} -->`;
         html += `<section class="cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
@@ -121,6 +114,8 @@ export default {
       }
 
       nodes.chapters.forEach((chapter) => {
+        html += `
+          <!-- ${this.$t("chapter")} ${chapter.title} -->`;
         html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
         if (chapter.title)
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
@@ -131,15 +126,6 @@ export default {
       html += ``;
 
       return html;
-    },
-    pretty_content_html() {
-      // return this.content_html;
-      const html = pretty(this.content_html, { ocd: true });
-      // const html = this.content_html;
-
-      hljs.registerLanguage("xml", xml);
-      const highlighted = hljs.highlight(html, { language: "xml" }).value;
-      return highlighted;
     },
   },
   methods: {
@@ -661,18 +647,5 @@ export default {
       box-shadow: 0px -1px 0px 0px var(--pagedjs-crop-shadow);
     }
   }
-}
-
-._debugMode {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  // background-color: var(--c-noir);
-  background-color: var(--c-noir);
-  color: white;
-  overflow: auto;
-  padding: calc(var(--spacing) * 2);
 }
 </style>
