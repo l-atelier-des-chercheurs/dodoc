@@ -9,11 +9,13 @@ const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*?)\)/;
 const markerPatternWithNesting =
   /\(([-\w]+):\s*([^]+?)(?=\s+[\w-]+:|\s*\)$)\s*(.*?)\)/;
 
-const tags_list = ["image", "video", "audio"];
+const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
-  const getMediaSrc = o.getMediaSrc;
-  const source_medias = o.source_medias;
+  const vue_instance = o.vue_instance;
+  const getMediaSrc = vue_instance.getMediaSrc;
+  const transformURL = vue_instance.transformURL;
+  const source_medias = vue_instance.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -158,69 +160,80 @@ export default (md, o = {}) => {
     if (!token.content) return "";
 
     // Handle different types of shortcodes
-    switch (token.tag) {
-      case "image":
-      case "video":
-      case "audio":
-        // Use getMediaSrc if available, otherwise fallback to normal behavior
-        let media = null;
-        if (getMediaSrc && !token.attrs.src.startsWith("http")) {
-          media = getMediaSrc(token.attrs.src, source_medias);
+    if (tags_list.includes(token.tag)) {
+      // Use getMediaSrc if available, otherwise fallback to normal behavior
+      // Use getMediaSrc if available, otherwise fallback to normal behavior
+      let media = null;
+      if (getMediaSrc && !token.attrs.src.startsWith("http")) {
+        media = getMediaSrc(token.attrs.src, source_medias);
+      }
+
+      const attrs = [];
+
+      let src = "";
+      if (media) {
+        src = media.src;
+      } else if (token.attrs.src.startsWith("http")) {
+        src = token.attrs.src;
+      } else {
+        let msg = "⚠️ ";
+        msg += vue_instance.$t
+          ? vue_instance.$t("media_not_found")
+          : "Media not found";
+        return `<div class="media"><i>${msg}</i></div>`;
+      }
+
+      let class_attr = "";
+      if (token.attrs.class) {
+        class_attr = `${token.attrs.class}`;
+      }
+
+      // Add all other attributes except caption
+      for (const [key, value] of Object.entries(token.attrs)) {
+        if (key !== "src" && key !== "caption" && key !== "class") {
+          attrs.push(`${key}="${value}"`);
         }
+      }
 
-        const attrs = [];
+      let classes = ["media"];
+      if (class_attr) {
+        classes.push(class_attr);
+      }
 
-        let src = "";
-        if (media) {
-          src = media.src;
-        } else if (token.attrs.src.startsWith("http")) {
-          src = token.attrs.src;
+      // Create the image tag with all attributes
+      const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
+      let media_tag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
+
+      if (token.tag === "image") {
+        media_tag += `<img src="${src}" />`;
+      } else if (token.tag === "video") {
+        media_tag += `<video src="${src}" controls>`;
+        media_tag += "</video>";
+      } else if (token.tag === "audio") {
+        media_tag += `<audio src="${src}" controls>`;
+        media_tag += "</audio>";
+      } else if (token.tag === "embed") {
+        if (transformURL) {
+          const embed = transformURL({ url: src, autoplay: false });
+          media_tag += `<iframe src="${embed.src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
+        } else {
+          media_tag += `<iframe src="${src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
         }
+      }
 
-        let class_attr = "";
-        if (token.attrs.class) {
-          class_attr = `${token.attrs.class}`;
-        }
+      // Add caption if it exists and is not empty
+      const markdownCaption = token.attrs.caption;
 
-        // Add all other attributes except caption
-        for (const [key, value] of Object.entries(token.attrs)) {
-          if (key !== "src" && key !== "caption" && key !== "class") {
-            attrs.push(`${key}="${value}"`);
-          }
-        }
+      const caption =
+        markdownCaption !== undefined && markdownCaption !== ""
+          ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
+              markdownCaption
+            )}</span></figcaption>`
+          : "";
 
-        let classes = ["media"];
-        if (class_attr) {
-          classes.push(class_attr);
-        }
-
-        // Create the image tag with all attributes
-        const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
-        let imgTag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
-
-        if (token.tag === "image") {
-          imgTag += `<img src="${src}" />`;
-        } else if (token.tag === "video") {
-          imgTag += `<video src="${src}" controls>`;
-          imgTag += "</video>";
-        } else if (token.tag === "audio") {
-          imgTag += `<audio src="${src}" controls>`;
-          imgTag += "</audio>";
-        }
-
-        // Add caption if it exists and is not empty
-        const markdownCaption = token.attrs.caption;
-
-        const caption =
-          markdownCaption !== undefined && markdownCaption !== ""
-            ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
-                markdownCaption
-              )}</span></figcaption>`
-            : "";
-
-        return imgTag + caption + "</figure>\n";
-      default:
-        return token.content + "\n";
+      return media_tag + caption + "</figure>\n";
+    } else {
+      return token.content + "\n";
     }
   };
 

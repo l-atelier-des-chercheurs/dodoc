@@ -51,6 +51,10 @@
                 url: 'https://scratch.mit.edu/projects/1061783643',
                 label: 'Scratch',
               },
+              {
+                url: 'https://www.tinkercad.com/things/2FggyQfGlI3',
+                label: 'Tinkercad',
+              },
             ]"
             type="button"
             class="u-buttonLink"

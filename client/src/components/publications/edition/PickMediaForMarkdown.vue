@@ -1,26 +1,28 @@
 <template>
   <div class="pick-media-for-markdown">
-    <MediaPicker
-      v-if="show_media_picker"
-      :publication_path="publication_path"
-      :select_mode="'multiple'"
-      :pick_from_types="['image', 'video', 'audio']"
-      @pickMedias="pickMedias"
-      @close="show_media_picker = false"
-    />
-
-    <BaseModal2
-      v-if="medias_were_picked"
-      :title="$t('add_media')"
-      @close="closePickModal"
-    >
-      <ToggleInput
-        :content.sync="setMediaAsFullPage"
-        :label="$t('full_page')"
+    <BaseModal2 :title="$t('add_media')" @close="closePickModal">
+      <div class="u-spacingBottom" v-if="!pick_medias_text">
+        {{ $t("from_project") }}
+        <b-icon icon="arrow-right" />&nbsp;
+        <button
+          type="button"
+          class="u-button u-button_orange"
+          @click="show_media_picker = true"
+        >
+          <b-icon icon="image" style="font-size: var(--icon-size)" />
+          {{ $t("import") }}
+        </button>
+      </div>
+      <MediaPicker
+        v-if="show_media_picker"
+        :publication_path="publication_path"
+        :select_mode="'multiple'"
+        :pick_from_types="['image', 'video', 'audio']"
+        @pickMedias="pickMedias"
+        @close="show_media_picker = false"
       />
-      <div class="u-spacingBottom" />
 
-      <div class="u-spacingBottom u-inputGroup">
+      <div class="u-spacingBottom u-inputGroup" v-if="pick_medias_text">
         <textarea
           ref="urlToCopy"
           class="_textField"
@@ -35,6 +37,58 @@
           <b-icon icon="clipboard-check" v-else />
         </button>
       </div>
+
+      <div class="u-spacingBottom" v-else>
+        <hr />
+        {{ $t("multisupport_embed_img_instr") }}
+
+        <ul>
+          <li>
+            <code>(image: https://www.example.com/url-vers-l-image.jpeg) </code>
+          </li>
+          <li>
+            <code>(video: https://www.example.com/url-vers-la-video.mp4) </code>
+          </li>
+          <li>
+            <code
+              >(audio: https://www.example.com/url-vers-la-musique.mp3)
+            </code>
+          </li>
+          <li>
+            <code>(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde) </code>
+          </li>
+          <li>
+            <code>(embed: https://www.youtube.com/watch?v=Bn6zdyCAwJs) </code>
+          </li>
+          <li>
+            <code>(embed: https://scratch.mit.edu/projects/1061783643) </code>
+          </li>
+        </ul>
+      </div>
+
+      <div class="u-spacingBottom">
+        {{ $t("attributes_for_embeds") }}
+
+        <ul>
+          <li>
+            <code>caption: Ma légende</code>
+          </li>
+          <li>
+            <code>class: nomDeLaClasse</code>
+          </li>
+        </ul>
+      </div>
+      <div>
+        {{ $t("for_example") }}
+        <div>
+          <code
+            >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption: Voici
+            une vidéo de PeerTube class: maClass)</code
+          >
+        </div>
+      </div>
+
+      <div class="u-spacingBottom" />
 
       <div class="u-instructions">
         {{ $t("copy_paste_to_include_media") }}
@@ -56,16 +110,14 @@ export default {
   },
   data() {
     return {
-      show_media_picker: true,
+      show_media_picker: false,
       medias_were_picked: false,
-      setMediaAsFullPage: false,
       isCopied: false,
       pick_medias_text: "",
     };
   },
   methods: {
     pickMedias(medias) {
-      debugger;
       this.medias_were_picked = true;
       this.pick_medias_text = this.makeStringFromMedias(medias);
     },
@@ -88,10 +140,6 @@ export default {
         if (m.caption) {
           const md_caption = this.turnHtmlToMarkdown(m.caption);
           media_html += ` caption: ${md_caption}`;
-        }
-
-        if (this.setMediaAsFullPage) {
-          media_html += ` size: full_page`;
         }
 
         media_html += ")";
@@ -152,7 +200,6 @@ export default {
     },
     closePickModal() {
       this.medias_were_picked = false;
-      this.setMediaAsFullPage = false;
       this.isCopied = false;
       this.$emit("close");
     },
@@ -169,5 +216,16 @@ export default {
 
 ._clipboardBtn {
   flex-shrink: 0;
+}
+
+ul {
+  margin: 0;
+  margin-top: calc(var(--spacing) / 2);
+  padding-left: var(--spacing);
+  list-style: circle;
+
+  li {
+    margin-bottom: calc(var(--spacing) / 2);
+  }
 }
 </style>

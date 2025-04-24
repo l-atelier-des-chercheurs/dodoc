@@ -148,6 +148,11 @@ export default {
           type: "scratch",
           src: this.getScratchEmbedURLFromURL(cleaned_up_url),
         };
+      else if (urlContains(cleaned_up_url, ["tinkercad.com/things/"]))
+        return {
+          type: "tinkercad",
+          src: this.getTinkercadEmbedURLFromURL(cleaned_up_url),
+        };
 
       return {
         type: "any",
@@ -192,6 +197,17 @@ export default {
     },
     getScratchEmbedURLFromURL(url) {
       return url + "/embed";
+    },
+    getTinkercadEmbedURLFromURL(url) {
+      // https://www.tinkercad.com/things/2FggyQfGlI3-cube-50 to
+      // https://www.tinkercad.com/embed/2FggyQfGlI3
+      function getId(url) {
+        const regExp = /https:\/\/www\.tinkercad\.com\/things\/(\w+)/;
+        const match = url.match(regExp);
+        return match ? match[1] : null;
+      }
+      const id = getId(url);
+      return `https://www.tinkercad.com/embed/${id}`;
     },
     groupFilesBy(files, fields, group_by) {
       const grouped = files.reduce((group, file) => {
