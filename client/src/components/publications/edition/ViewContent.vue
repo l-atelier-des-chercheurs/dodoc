@@ -327,7 +327,7 @@ export default {
         breaks: true,
         linkify: true,
         typographer: true,
-        html: true,
+        html: false,
         highlight: function (str, lang) {
           if (lang && hljs.getLanguage(lang)) {
             try {
@@ -361,6 +361,7 @@ export default {
 
       md.use(markdownItCsc, {
         getMediaSrc: this.getMediaSrc.bind(this),
+        transformURL: this.transformURL.bind(this),
         source_medias,
       });
 

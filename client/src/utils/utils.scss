@@ -670,6 +670,16 @@ input[type="file"] {
   color: var(--c-bleuvert);
 }
 
+code {
+  font-family: "Fira Code";
+  // white-space: pre;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  background-color: var(--c-gris_clair);
+  color: var(--c-noir);
+}
+
 .u-fontCode {
   font-family: "Fira Code";
 }

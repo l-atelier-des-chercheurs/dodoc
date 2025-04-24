@@ -1307,4 +1307,8 @@ export default {
     "Attention ! En modifiant ce règlage, vous ne pourrez plus éditer ce contenu.",
   markdown_help: "Aide pour l’écriture Markdown",
   import_medias: "Importer des médias",
+
+  multisupport_embed_img_instr:
+    "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
+  attributes_for_embeds: "Attributs pour les balises :",
 };
