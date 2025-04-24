@@ -951,11 +951,11 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
 
-  min-width: 18px;
-  min-height: 18px;
+  min-width: 20px;
+  min-height: 20px;
   height: auto;
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: 10px;
   font-family: "Fira Code";
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 4);
