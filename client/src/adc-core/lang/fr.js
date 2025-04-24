@@ -1312,4 +1312,5 @@ export default {
     "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
   attributes_for_embeds: "Attributs pour les balises :",
   show_source_HTML: "Afficher le code source HTML",
+  reset: "Réinitialiser",
 };

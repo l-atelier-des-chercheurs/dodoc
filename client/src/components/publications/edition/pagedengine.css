@@ -6,7 +6,10 @@ p:empty {
   display: inline-block;
   position: relative;
   width: 100%;
+  margin: 0;
+  padding: 0;
 
+  
   &._isqrcode {
     display: flex;
     align-items: center;
@@ -84,11 +87,14 @@ p:empty {
     }
   }
 
-  video, audio {
+  video, audio, iframe {
     width: 100%;
     min-height: 54px;
   }
-
+  iframe {
+    aspect-ratio: 16 / 9;
+    border: none;
+  }
 }
 
 /* SET CHAPTER START OPTION */
