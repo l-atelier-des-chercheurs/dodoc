@@ -86,6 +86,26 @@
       <option value="2">Deuxième</option>
       <option value="3">Troisième</option>
     </select>
+
+    <div class="u-spacingBottom"></div>
+
+    <AdminsAndContributorsField
+      :folder="{ $admins: 'everyone' }"
+      :can_edit="true"
+      :admin_label="$t('referent')"
+      :admin_instructions="$t('project_admin_instructions')"
+      :contrib_instructions="$t('project_contrib_instructions')"
+    />
+
+    <div class="u-spacingBottom"></div>
+
+    <AdminsAndContributorsField
+      :folder="{ $admins: 'noone' }"
+      :can_edit="true"
+      :admin_label="$t('referent')"
+      :admin_instructions="$t('project_admin_instructions')"
+      :contrib_instructions="$t('project_contrib_instructions')"
+    />
   </div>
 </template>
 <script>

@@ -379,9 +379,9 @@ export default {
 
 ._projectInfos--topContent {
   max-width: min(var(--max-column-width), 1180px);
-  // max-width: var(--max-column-width);
-
-  margin: calc(var(--spacing) * 1) auto;
+  // border: 2px solid var(--c-gris_clair);
+  margin: 0 auto;
+  padding: calc(var(--spacing) * 2) 0;
   overflow: hidden;
 
   display: flex;
@@ -448,7 +448,7 @@ export default {
 ._projectInfos--cover {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
 
   .is--list & {
     // padding: 2px;
