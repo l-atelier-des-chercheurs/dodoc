@@ -12,13 +12,11 @@
       <div v-else key="project">
         <div class="_topContent">
           <div class="u-displayAsPublic" v-if="can_contribute_to_project">
-            <div class="_sticky">
-              <div class="_content">
-                <ToggleInput
-                  :content.sync="display_as_public"
-                  :label="$t('display_as_public')"
-                />
-              </div>
+            <div class="_content">
+              <ToggleInput
+                :content.sync="display_as_public"
+                :label="$t('display_as_public')"
+              />
             </div>
           </div>
 

@@ -9,12 +9,7 @@
         :str="custom_label ? custom_label : $t('admins_and_contributors')"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <transition-group
-        tag="div"
-        class="u-listOfAvatars"
-        v-if="all_participants_path.length > 0"
-        name="listComplete"
-      >
+      <transition-group tag="div" class="u-listOfAvatars" name="listComplete">
         <AuthorTag
           v-for="atpath in subset_participants_path"
           :path="atpath"
@@ -39,21 +34,25 @@
             <b-icon v-else key="minus" icon="dash" />
           </transition>
         </button>
+        <div class="u-instructions _indicators" key="instructions">
+          <template v-if="admins_path === 'everyone'">
+            {{ $t("everyone_can_edit") }}
+          </template>
+          <template v-else-if="contributors_path === 'everyone'">
+            {{ $t("everyone_can_contribute") }}
+          </template>
+          <template
+            v-else-if="admins_path === 'noone' && contributors_path === 'noone'"
+          >
+            {{ $t("noone") }}
+          </template>
+        </div>
+        <div class="" key="more_informations">
+          <button type="button" class="u-buttonLink" @click="show_modal = true">
+            {{ $t("more_informations") }}
+          </button>
+        </div>
       </transition-group>
-
-      <div class="u-instructions">
-        <div v-if="admins_path === 'everyone'">
-          {{ $t("everyone_can_edit") }}
-        </div>
-        <div v-else-if="contributors_path === 'everyone'">
-          {{ $t("everyone_can_contribute") }}
-        </div>
-      </div>
-      <div class="">
-        <button type="button" class="u-buttonLink" @click="show_modal = true">
-          {{ $t("more_informations") }}
-        </button>
-      </div>
     </div>
 
     <EditAdminsAndContributorsField
@@ -112,11 +111,13 @@ export default {
       return this.all_participants_path;
     },
     admins_path() {
-      if (this.folder.$admins) return this.folder.$admins;
+      if (this.folder.$admins && this.folder.$admins.length > 0)
+        return this.folder.$admins;
       return "noone";
     },
     contributors_path() {
-      if (this.folder.$contributors) return this.folder.$contributors;
+      if (this.folder.$contributors && this.folder.$contributors.length > 0)
+        return this.folder.$contributors;
       return "noone";
     },
   },
@@ -150,7 +151,8 @@ export default {
 }
 
 .u-listOfAvatars {
-  gap: 0;
+  // display: inline-flex;
+  // gap: 0;
 }
 
 ._unshortenListBtn {
@@ -158,5 +160,9 @@ export default {
   height: 30px;
   border: 2px solid var(--c-gris);
   border-radius: 15px;
+}
+
+._indicators {
+  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 }
 </style>

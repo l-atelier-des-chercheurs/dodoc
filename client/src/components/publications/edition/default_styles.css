@@ -82,16 +82,9 @@
   }
 
   figure {
-    margin: 0;
-    padding: 0;
   }
 
   .media {
-    iframe {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border: none;
-    }
   }
 
   .mediaCaption {

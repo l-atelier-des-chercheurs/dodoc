@@ -32,6 +32,49 @@
           :can_edit="false"
         /> -->
       </div>
+
+      <div class="_mode">
+        <button
+          class="u-button u-button_small u-button_transparent"
+          type="button"
+          :class="{
+            'is--active': view_mode === 'list',
+          }"
+          @click="view_mode = 'list'"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            width="1em"
+            height="1em"
+            focusable="false"
+            role="img"
+            aria-label="person vcard"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi-person-vcard mx-auto b-icon bi"
+            data-v-41be6633=""
+          >
+            <g data-v-41be6633="">
+              <path
+                d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5"
+              ></path>
+              <path
+                d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z"
+              ></path>
+            </g>
+          </svg>
+        </button>
+        <button
+          class="u-button u-button_small u-button_transparent"
+          type="button"
+          :class="{
+            'is--active': view_mode === 'map',
+          }"
+          @click="view_mode = 'map'"
+        >
+          <b-icon icon="map-fill" />
+        </button>
+      </div>
     </div>
 
     <div
@@ -63,15 +106,26 @@
     </div>
 
     <transition-group
+      v-if="view_mode === 'list'"
       tag="section"
       class="_allAuthors"
       name="listComplete"
       appear
     >
       <div v-for="author in filtered_authors" :key="author.$path">
-        <AuthorCard :author="author" :links_to_author_page="true" />
+        <AuthorCard :author="author" />
       </div>
     </transition-group>
+    <div v-if="view_mode === 'map'" class="_mapContainer">
+      <DisplayOnMap
+        :pins="pins"
+        :map_baselayer_opacity="0.5"
+        :map_baselayer_bw="true"
+        :is_small="false"
+        @update:opened_pin_path="pinClicked($event)"
+      />
+    </div>
+
     <div v-if="filtered_authors.length === 0">
       {{ $t("no_accounts_to_show") }}
     </div>
@@ -84,6 +138,7 @@ export default {
   props: {},
   components: {
     AuthorCard,
+    DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
   },
   data() {
     return {
@@ -91,6 +146,8 @@ export default {
       authors: [],
       search_author_name: "",
       filter_by_group: "",
+
+      view_mode: "map",
     };
   },
   created() {},
@@ -104,6 +161,39 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    pins() {
+      // return [
+      //   {
+      //     longitude: 5.39,
+      //     latitude: 43.31,
+      //   },
+      //   {
+      //     longitude: 5.29,
+      //     latitude: 43.21,
+      //   },
+      //   {
+      //     longitude: 5.19,
+      //     latitude: 43.11,
+      //   },
+      // ];
+      const pin_color = "#142257";
+
+      return this.filtered_authors.reduce((acc, a) => {
+        if (a.$location) {
+          const { latitude, longitude } = a.$location;
+          if (latitude && longitude)
+            acc.push({
+              latitude,
+              longitude,
+              path: a.$path,
+              label: a.name,
+              color: pin_color,
+              pin_preview: "text",
+            });
+        }
+        return acc;
+      }, []);
+    },
     sorted_authors() {
       return this.authors.slice().sort((a, b) => {
         return a.name.localeCompare(b.name);
@@ -139,6 +229,10 @@ export default {
   methods: {
     toggleGroupFilter(val) {
       this.filter_by_group = val === this.filter_by_group ? "" : val;
+    },
+    pinClicked(path) {
+      const url = this.createURLFromPath(path);
+      this.$router.push(url);
     },
   },
 };
@@ -179,8 +273,21 @@ export default {
 ._topRow {
   display: flex;
   flex-flow: row wrap;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 1);
   margin-bottom: calc(var(--spacing) / 1);
+}
+
+._mode {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 4);
+}
+
+._mapContainer {
+  width: 100%;
+  aspect-ratio: 20 / 9;
+  min-height: 70dvh;
+  margin-top: calc(var(--spacing) / 1);
 }
 </style>

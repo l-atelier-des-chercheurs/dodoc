@@ -32,7 +32,11 @@
             :can_edit="can_edit"
           />
         </div>
-
+        <b-icon
+          v-if="author_has_location && context !== 'full'"
+          class="_hasLocation"
+          icon="pin-map-fill"
+        />
         <div class="_text">
           <div class="">
             <TitleField
@@ -332,5 +336,14 @@ export default {
 
   font-weight: 500;
   justify-content: center;
+}
+
+._hasLocation {
+  position: absolute;
+  top: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
+  color: var(--c-bleumarine_fonce);
+  width: 1em;
+  height: 1em;
 }
 </style>
