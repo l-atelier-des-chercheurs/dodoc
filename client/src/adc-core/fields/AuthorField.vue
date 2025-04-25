@@ -297,6 +297,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+  padding-bottom: calc(var(--spacing) / 4);
 }
 
 ._footer {

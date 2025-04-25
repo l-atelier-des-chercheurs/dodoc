@@ -36,8 +36,10 @@
             v-if="open_graphic_styles"
             :key="'edit_graphics'"
             :publication="publication"
-            :opened_style_file_meta.sync="pane_infos.opened_style_file_meta"
+            :opened_style_file_meta="opened_style_file_meta"
+            :show_source_HTML.sync="show_source_HTML"
             @close="$emit('updatePane', { key: 'edit_graphics', value: false })"
+            @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
           />
           <OpenChapter
             v-else-if="opened_chapter"
@@ -60,7 +62,8 @@
             :publication="publication"
             :opened_chapter_meta_filename="opened_section_meta_filename"
             :view_mode="view_mode"
-            :opened_style_file_meta="pane_infos.opened_style_file_meta"
+            :opened_style_file_meta="opened_style_file_meta"
+            :show_source_HTML="show_source_HTML"
             :can_edit="can_edit"
             @openChapter="
               $emit('updatePane', { key: 'chapter', value: $event })
@@ -68,6 +71,7 @@
             @changeView="
               $emit('updatePane', { key: 'view_mode', value: $event })
             "
+            @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
           />
         </div>
       </pane>
@@ -79,15 +83,18 @@
       />
     </PublicationSettings>
 
+    <!-- preview mode -->
     <ViewContent
       v-else
       :publication="publication"
       :opened_chapter_meta_filename="opened_section_meta_filename"
       :view_mode="view_mode"
+      :opened_style_file_meta="opened_style_file_meta"
       :viewer_type="'div'"
       :can_edit="false"
       @openChapter="$emit('updatePane', { key: 'chapter', value: $event })"
       @changeView="$emit('updatePane', { key: 'view_mode', value: $event })"
+      @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
     />
   </div>
 </template>
@@ -127,6 +134,7 @@ export default {
     return {
       show_edit_pane: true,
       show_preview_pane: true,
+      show_source_HTML: false,
     };
   },
   created() {},
@@ -180,6 +188,9 @@ export default {
     },
     open_graphic_styles() {
       return this.pane_infos?.edit_graphics === true;
+    },
+    opened_style_file_meta() {
+      return this.pane_infos?.style;
     },
     meta_filenames_already_present() {
       let current = [],

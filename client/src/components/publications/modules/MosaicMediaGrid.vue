@@ -14,7 +14,7 @@
         "
         :key="'dz-' + index"
         class="_dzInbetween"
-        @mediaDropped="$emit('addMedias', $event)"
+        @mediaDropped="$emit('pickMedias', $event)"
       /> -->
       <div
         class="_mediaGrid--item"
@@ -132,7 +132,7 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
       <template
@@ -141,7 +141,10 @@
           medias_with_linked.length < number_of_max_medias
         "
       >
-        <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
+        <DropZone
+          class="_dzAfter"
+          @mediaDropped="$emit('pickMedias', $event)"
+        />
       </template>
     </div>
   </div>

@@ -19,6 +19,7 @@
       <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
+    <ShowSourceHTML v-if="show_source_HTML" :content_html="content_html" />
   </div>
 </template>
 <script>
@@ -43,10 +44,13 @@ export default {
       type: String,
       required: true,
     },
+    show_source_HTML: Boolean,
     can_edit: Boolean,
   },
   components: {
     VueInfiniteViewer,
+    ShowSourceHTML: () =>
+      import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
   data() {
     return {
@@ -97,18 +101,21 @@ export default {
       //   nodes.chapters = [this.opened_chapter];
       // }
 
-      let html = "<div>";
+      let html = "";
 
       if (nodes.cover) {
+        html = `<!-- ${this.$t("cover")} -->`;
         html += `<section class="cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
           html += `<div class="coverImage"><img src="${nodes.cover.image_url}" /></div>`;
-        html += `</section>`;
+        html += `</section>\n\n`;
       }
 
       nodes.chapters.forEach((chapter) => {
+        html += `
+          <!-- ${this.$t("chapter")} ${chapter.title} -->`;
         html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
         if (chapter.title)
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
@@ -116,7 +123,7 @@ export default {
         html += `</section>`;
       });
 
-      html += `</div>`;
+      html += ``;
 
       return html;
     },

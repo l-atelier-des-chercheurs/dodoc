@@ -141,8 +141,9 @@ export default {
   }
   &[data-tagtype="accountgroup"] {
     // background-color: #edbdff;
-    background-color: var(--c-gris);
-    color: var(--c-noir);
+    // background-color: var(--c-bleumarine_fonce);
+    color: var(--c-bleumarine_fonce);
+    // color: white;
   }
   &[data-tagtype="status"] {
     &[data-tagvalue="finished"] {

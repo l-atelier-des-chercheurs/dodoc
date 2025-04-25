@@ -1123,18 +1123,18 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
+      if (feature?.get("fill_color")) {
+        fill_color = feature.get("fill_color");
+      }
       if (feature?.get("label")) {
         style.text = new olText({
-          fill: new olFill({ color: "#000" }),
+          fill: new olFill({ color: fill_color }),
           font: this.makeDefaultFontString(),
           text: "" + feature.get("label"),
           textAlign: "center",
           textBaseline: "bottom",
           offsetY: -9,
         });
-      }
-      if (feature?.get("fill_color")) {
-        fill_color = feature.get("fill_color");
       }
 
       const pin_preview = feature.get("pin_preview");
@@ -1175,7 +1175,7 @@ export default {
       return new olStyle(style);
     },
     makeDefaultFontString() {
-      return "12px/1.2 Fira Mono,sans-serif";
+      return "bold 14px/1.2 Fira Mono,sans-serif";
     },
     makeLineStyle({ feature, resolution }) {
       resolution;
@@ -1862,7 +1862,8 @@ export default {
         event.target.tagName.toLowerCase() === "input" ||
         event.target.tagName.toLowerCase() === "textarea" ||
         event.target.className.includes("ql-editor") ||
-        event.target.hasAttribute("contenteditable")
+        event.target.hasAttribute("contenteditable") ||
+        this.can_edit === false
       )
         return;
 

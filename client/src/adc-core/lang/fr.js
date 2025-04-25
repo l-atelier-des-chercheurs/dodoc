@@ -1340,6 +1340,12 @@ export default {
   show_preview: "Afficher l’aperçu",
   warning_wont_be_able_to_edit:
     "Attention ! En modifiant ce règlage, vous ne pourrez plus éditer ce contenu.",
-  markdown_help: "Aide pour le Markdown",
+  markdown_help: "Aide pour l’écriture Markdown",
   import_medias: "Importer des médias",
+
+  multisupport_embed_img_instr:
+    "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
+  attributes_for_embeds: "Attributs pour les balises :",
+  show_source_HTML: "Afficher le code source HTML",
+  reset: "Réinitialiser",
 };

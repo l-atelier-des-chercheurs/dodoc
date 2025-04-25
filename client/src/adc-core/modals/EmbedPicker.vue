@@ -43,9 +43,22 @@
                 url: 'https://observablehq.com/embed/@fil/bertin1953-glsl?cells=canvas',
                 label: 'Observable',
               },
+              {
+                url: 'https://soundcloud.com/larieooo/doidoidoi',
+                label: 'SoundCloud',
+              },
+              {
+                url: 'https://scratch.mit.edu/projects/1061783643',
+                label: 'Scratch',
+              },
+              {
+                url: 'https://www.tinkercad.com/things/2FggyQfGlI3',
+                label: 'Tinkercad',
+              },
             ]"
             type="button"
             class="u-buttonLink"
+            :class="{ 'is--active': full_url === url.url }"
             @click="full_url = url.url"
             :key="index"
             v-html="url.label"

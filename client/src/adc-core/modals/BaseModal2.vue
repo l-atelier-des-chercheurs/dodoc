@@ -177,8 +177,8 @@ export default {
 
     width: 100%;
     max-width: 480px;
-    max-height: 100vh;
-    max-height: 100dvh;
+    max-height: 95vh;
+    max-height: 95dvh;
 
     margin: 0 auto;
     padding: 0;

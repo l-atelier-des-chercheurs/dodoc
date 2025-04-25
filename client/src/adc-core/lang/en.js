@@ -1271,10 +1271,13 @@ export default {
   show_preview: "Show preview",
   warning_wont_be_able_to_edit:
     "Warning! By changing this setting, you will no longer be able to edit this content.",
-
   coll_is_private:
     "This collection is private and can only be viewed by the referrers.",
-
-  markdown_help: "Markdown help",
+  markdown_help: "Text formatting (markdown) help",
   import_medias: "Import medias",
+
+  multisupport_embed_img_instr:
+    "To add media from the internet, you can also copy and paste the following tags:",
+  attributes_for_embeds: "Attributes for the tags:",
+  show_source_HTML: "Show source HTML",
 };

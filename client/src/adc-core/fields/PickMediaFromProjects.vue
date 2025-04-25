@@ -64,7 +64,7 @@
               :meta_filenames_already_present="meta_filenames_already_present"
               :show_only_media_of_types="pick_from_types"
               @update:media_focused="media_focused = $event"
-              @addMedias="addMedias"
+              @pickMedias="pickMedias"
             />
           </transition>
         </div>
@@ -148,12 +148,10 @@ export default {
     },
   },
   methods: {
-    addMedias(path_to_source_media_metas) {
+    pickMedias(medias) {
       // TODO if path matches a media that is not in this project,
       // we need to copy this media to this project first then link that media instead
-      this.$emit("addMedias", {
-        path_to_source_media_metas,
-      });
+      this.$emit("pickMedias", medias);
       this.$emit("close");
     },
     async loadProjects() {

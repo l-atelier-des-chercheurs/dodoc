@@ -18,7 +18,7 @@
           :publication_path="publication_path"
           :edit_mode="edit_mode"
           :can_edit="can_edit"
-          @addMedias="addMedias"
+          @pickMedias="pickMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
           @updateMediaOpt="updateMediaOpt"
         />
@@ -30,7 +30,7 @@
           :publication_path="publication_path"
           :edit_mode="edit_mode"
           :can_edit="can_edit"
-          @addMedias="addMedias"
+          @pickMedias="pickMedias"
           @reorderMedias="reorderMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
         />
@@ -44,7 +44,7 @@
           :publi_width="publimodule.size"
           :edit_mode="edit_mode"
           :can_edit="can_edit"
-          @addMedias="addMedias"
+          @pickMedias="pickMedias"
           @reorderMedias="reorderMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
           @updateMediaOpt="updateMediaOpt"
@@ -105,12 +105,12 @@ export default {
     },
   },
   methods: {
-    async addMedias({ path_to_source_media_metas }) {
+    async pickMedias(medias) {
       let source_medias = this.publimodule.source_medias.slice() || [];
-      for (const path_to_source_media_meta of path_to_source_media_metas) {
+      for (const media of medias) {
         const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
-          path_to_source_media_meta,
+          path_to_source_media_meta: media.$path,
           publication_path: this.publication_path,
           import_mode,
         });

@@ -722,6 +722,16 @@ input[type="file"] {
   color: var(--c-bleuvert);
 }
 
+code {
+  font-family: "Fira Code";
+  // white-space: pre;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  background-color: var(--c-gris_clair);
+  color: var(--c-noir);
+}
+
 .u-fontCode {
   font-family: "Fira Code";
 }
@@ -1016,8 +1026,12 @@ input[type="checkbox"] {
 .u-listOfAvatars {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 4) 0;
+
+  > span {
+  }
 }
 
 .u-nut {
@@ -1026,11 +1040,11 @@ input[type="checkbox"] {
   align-items: center;
   justify-content: center;
 
-  min-width: 18px;
-  min-height: 18px;
+  min-width: 20px;
+  min-height: 20px;
   height: auto;
   aspect-ratio: 1;
-  border-radius: 50%;
+  border-radius: 10px;
   font-family: "Fira Code";
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   margin: calc(var(--spacing) / 4);
@@ -1170,6 +1184,8 @@ input[type="checkbox"] {
     position: sticky;
     top: 0;
     left: 0;
+    margin-top: calc(var(--spacing) / 4);
+    margin-right: calc(var(--spacing) / 4);
     // padding: calc(var(--spacing) / 1);
   }
 
@@ -1177,12 +1193,12 @@ input[type="checkbox"] {
     pointer-events: auto;
     background: var(--c-bleuvert);
     border: 2px solid var(--c-bleuvert_fonce);
-    // border-radius: 8px;
+    border-radius: 11px;
     color: white;
 
     > * {
       // padding: 0;
-      padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     }
 
     .u-label {
@@ -1222,4 +1238,26 @@ hr {
   border-top: 1px solid var(--c-gris);
   border-bottom: 0 solid #000;
   margin: calc(var(--spacing)) 0;
+}
+
+table {
+  // color: #333;
+  // background: white;
+  // border: 1px solid grey;
+  // font-size: 12pt;
+  border-collapse: collapse;
+}
+table thead th,
+table tfoot th {
+  min-width: 100px;
+  color: #777;
+  background: rgba(0, 0, 0, 0.1);
+}
+table caption {
+  padding: 0.5em;
+}
+table th,
+table td {
+  padding: 0.5em;
+  border: 1px solid lightgrey;
 }

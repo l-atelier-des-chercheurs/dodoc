@@ -5,7 +5,7 @@
       :medias_with_linked="medias_with_linked"
       :publication_path="publication_path"
       :edit_mode="true"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
     />
