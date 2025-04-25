@@ -14,7 +14,11 @@
         />
       </div>
       <div v-if="selected_destination_folder_path" class="_stackPickerFrame">
-        <SharedFolder2 :shared_folder_path="selected_destination_folder_path" />
+        <SharedFolder2
+          :shared_folder_path="selected_destination_folder_path"
+          :select_mode="'single_stack'"
+          @stackSelected="$emit('stackSelected', $event)"
+        />
       </div>
     </div>
   </BaseModal2>
@@ -68,5 +72,6 @@ export default {
   border: 1px solid var(--c-gris);
   // border-radius: var(--input-border-radius);
   overflow: auto;
+  height: 70dvh;
 }
 </style>

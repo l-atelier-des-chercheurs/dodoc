@@ -154,6 +154,7 @@
             <PickExistingMediastackModal
               v-if="show_pick_existing_mediastack_modal"
               @close="show_pick_existing_mediastack_modal = false"
+              @stackSelected="moveFilesToStack"
             />
             <button
               type="button"
@@ -491,6 +492,30 @@ export default {
     async stackPosted(new_stack_slug) {
       this.link_to_new_stack = `/corpus?stack=${new_stack_slug}`;
       this.show_new_mediastack_modal = false;
+    },
+    async moveFilesToStack(stack) {
+      this.show_pick_existing_mediastack_modal = false;
+      const selected_items = this.selected_items;
+      const copied_meta_filenames = [];
+      for (const item of selected_items) {
+        const copied_meta_filename = await this.$api.copyFile({
+          path: item.$path,
+          path_to_destination_folder: stack.$path,
+        });
+        copied_meta_filenames.push(copied_meta_filename);
+        await this.$api.deleteItem({ path: item.$path });
+      }
+
+      const stack_files_metas = stack.stack_files_metas || [];
+      stack_files_metas.push(...copied_meta_filenames);
+      await this.$api.updateMeta({
+        path: stack.$path,
+        new_meta: {
+          stack_files_metas,
+        },
+      });
+
+      this.selected_items_slugs = [];
     },
   },
 };

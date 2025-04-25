@@ -16,6 +16,21 @@
       />
     </transition>
 
+    <transition name="slideup" mode="out-in">
+      <div
+        v-if="opened_stack && select_mode === 'single_stack'"
+        class="_selectBar"
+      >
+        <button
+          class="u-button"
+          type="button"
+          @click="$emit('stackSelected', opened_stack)"
+        >
+          {{ $t("select_stack") }}
+        </button>
+      </div>
+    </transition>
+
     <div class="_sharedFolder--content">
       <transition name="fade_fast" mode="out-in">
         <div class="_loader" v-if="is_loading_folder">
@@ -106,6 +121,10 @@ import StackDisplay from "@/components/StackDisplay.vue";
 export default {
   props: {
     shared_folder_path: String,
+    select_mode: {
+      type: [Boolean, String],
+      default: false,
+    },
   },
   components: {
     FilterBar,
@@ -335,6 +354,19 @@ export default {
   --sd-separator: var(--h-200);
   --sd-textcolor: var(--h-900);
   --sd-bg: var(--body-bg);
+}
+
+._selectBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: var(--h-200);
+  border-top: 1px solid var(--h-50);
+
+  padding: calc(var(--spacing) * 1);
+  text-align: center;
 }
 
 ._footer {
