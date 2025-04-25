@@ -119,6 +119,8 @@
     <div v-if="view_mode === 'map'" class="_mapContainer">
       <DisplayOnMap
         :pins="pins"
+        :map_baselayer_opacity="0.5"
+        :map_baselayer_bw="true"
         :is_small="false"
         @update:opened_pin_path="pinClicked($event)"
       />
@@ -145,7 +147,7 @@ export default {
       search_author_name: "",
       filter_by_group: "",
 
-      view_mode: "list",
+      view_mode: "map",
     };
   },
   created() {},
@@ -174,6 +176,8 @@ export default {
       //     latitude: 43.11,
       //   },
       // ];
+      const pin_color = "#142257";
+
       return this.filtered_authors.reduce((acc, a) => {
         if (a.$location) {
           const { latitude, longitude } = a.$location;
@@ -182,6 +186,9 @@ export default {
               latitude,
               longitude,
               path: a.$path,
+              label: a.name,
+              color: pin_color,
+              pin_preview: "text",
             });
         }
         return acc;
