@@ -229,7 +229,7 @@ header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+  margin: calc(var(--spacing) * 1) calc(var(--spacing) * 2) 0;
   padding: calc(var(--spacing) * 1);
 
   border-bottom: 1px solid var(--border-color);
@@ -257,8 +257,8 @@ header {
 }
 ._content {
   position: relative;
-  padding: 0 calc(var(--spacing) * 1);
-  margin: 0 calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 1);
+  margin: 0 calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 
   &:first-child {
     margin-top: calc(var(--spacing) * 1);

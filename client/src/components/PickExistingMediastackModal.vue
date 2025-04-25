@@ -4,15 +4,46 @@
     :is_closable="true"
     @close="$emit('close')"
   >
-    <div>Prout</div>
+    <div class="_pickExistingMediastackModal">
+      <div class="u-spacingBottom">
+        <DLabel :str="$t('corpus')" />
+        <DestinationCorpusSelector
+          :selected_destination_folder_path.sync="
+            selected_destination_folder_path
+          "
+        />
+      </div>
+      <div v-if="selected_destination_folder_path" class="_stackPickerFrame">
+        <SharedFolder2 :shared_folder_path="selected_destination_folder_path" />
+      </div>
+    </div>
   </BaseModal2>
 </template>
 <script>
+import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vue";
+import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
 export default {
   props: {},
-  components: {},
+  components: {
+    DestinationCorpusSelector,
+    SharedFolder2,
+  },
   data() {
-    return {};
+    return {
+      selected_destination_folder_path: undefined,
+    };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        pick_existing_mediastack: "Choisir un corpus existant",
+        corpus: "Corpus",
+      },
+      en: {
+        pick_existing_mediastack: "Pick existing mediastack",
+        corpus: "Corpus",
+      },
+    },
   },
   created() {},
   mounted() {},
@@ -22,4 +53,20 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._pickExistingMediastackModal {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 1 auto;
+  }
+}
+
+._stackPickerFrame {
+  border: 1px solid var(--c-gris);
+  // border-radius: var(--input-border-radius);
+  overflow: auto;
+}
+</style>

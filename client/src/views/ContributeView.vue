@@ -212,11 +212,20 @@
       </transition>
       <transition name="slideup" mode="out-in">
         <div v-if="link_to_new_stack" key="new_stack" class="_newStack">
-          <b-icon icon="check-circle" />
-          {{ $t("new_stack_created") }}
+          <div class="">
+            <b-icon icon="check-circle" />
+            {{ $t("new_stack_created") }}
+          </div>
           <router-link :to="link_to_new_stack" class="u-button">
             {{ $t("go_to_new_stack") }}
           </router-link>
+          <button
+            type="button"
+            class="u-button_icon _closeBtn"
+            @click="link_to_new_stack = undefined"
+          >
+            <b-icon icon="x-lg" />
+          </button>
         </div>
       </transition>
     </div>
@@ -255,6 +264,8 @@ export default {
         add_to_existing_document: "Ajouter à un document existant",
         create_new_document: "Créer un nouveau document",
         dashboard: "Dashboard",
+        new_stack_created: "Nouveau document créé",
+        go_to_new_stack: "Aller au nouveau document",
       },
       en: {
         imported_docs:
@@ -262,6 +273,8 @@ export default {
         add_to_existing_document: "Add to existing document",
         create_new_document: "Create a new document",
         dashboard: "Dashboard",
+        new_stack_created: "New document created",
+        go_to_new_stack: "Go to new document",
       },
     },
   },
@@ -661,6 +674,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   gap: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 4);
   width: 100%;
 }
 ._dbleBtns > * {
@@ -747,5 +761,10 @@ export default {
     flex: 0 1 22em;
     // max-width: 22em;
   }
+}
+._closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 </style>

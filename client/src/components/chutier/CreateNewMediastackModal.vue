@@ -78,11 +78,13 @@
                 </div>
               </div>
             </template>
+
             <template v-if="current_step === 1">
               <div class="u-spacingBottom _form-tags">
                 <KeywordsFieldEditor :keywords.sync="stack_tags" />
               </div>
             </template>
+
             <template v-if="current_step === 2">
               <div class="u-spacingBottom _form-team">
                 <AuthorField
@@ -98,6 +100,7 @@
                 />
               </div>
             </template>
+
             <template v-if="current_step === 3">
               <div class="_form-review">
                 <div class="u-spacingBottom">
@@ -118,19 +121,13 @@
                   <div v-else>{{ $t("none") }}</div>
                 </div>
 
-                <div class="u-spacingBottom">
+                <div class="">
                   <DLabel :str="$t('destination_corpus')" />
-                  <div>
-                    <select v-model="selected_destination_folder_path">
-                      <option
-                        v-for="folder in destination_folders"
-                        :key="folder.$path"
-                        :value="folder.$path"
-                      >
-                        {{ folder.title || getFilename(folder.$path) }}
-                      </option>
-                    </select>
-                  </div>
+                  <DestinationCorpusSelector
+                    :selected_destination_folder_path.sync="
+                      selected_destination_folder_path
+                    "
+                  />
                 </div>
               </div>
             </template>
@@ -138,6 +135,7 @@
         </transition>
       </div>
     </div>
+
     <template #footer>
       <div>
         <button
@@ -192,6 +190,7 @@
 import KeywordsFieldEditor from "@/components/KeywordsFieldEditor.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
+import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vue";
 
 export default {
   props: {
@@ -201,6 +200,7 @@ export default {
     KeywordsFieldEditor,
     KeywordsField,
     ChutierItem,
+    DestinationCorpusSelector,
   },
   i18n: {
     messages: {
@@ -245,18 +245,14 @@ export default {
       stack_authors: [],
 
       status: "idle",
-
-      destination_folders: [],
-      selected_destination_folder_path: null,
+      selected_destination_folder_path: undefined,
     };
   },
   created() {
     if (this.connected_as.$path)
       this.stack_authors.push(this.connected_as.$path);
   },
-  async mounted() {
-    await this.listDestinationFolders();
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {
@@ -273,7 +269,6 @@ export default {
     allow_next_step() {
       if (this.current_step === 0) return this.has_valid_title;
       if (this.current_step === 1) return this.stack_tags.length > 0;
-      // if (this.current_step === 2) return this.stack_authors.length > 0;
       return true;
     },
   },
@@ -281,24 +276,6 @@ export default {
     backStep() {
       if (this.current_step > 0) this.current_step--;
       else this.$emit("close");
-    },
-    async listDestinationFolders() {
-      const destination_folders = await this.$api
-        .getFolders({
-          path: "folders",
-        })
-        .catch((err) => {
-          this.fetch_spaces_error = err.response;
-          // this.is_loading = false;
-          return;
-        });
-
-      if (destination_folders.length > 0) {
-        this.destination_folders = destination_folders;
-        this.selected_destination_folder_path = destination_folders[0].$path;
-      } else {
-        this.destination_folders = [];
-      }
     },
     nextStep() {
       this.current_step++;
@@ -359,107 +336,6 @@ export default {
       await new Promise((r) => setTimeout(r, 1000));
 
       this.$emit("close");
-
-      // for (const file_path of file_paths) {
-      //   const file_meta_name = await this.$api.copyFile({
-      //     path: file_path,
-      //     path_to_destination_folder,
-      //     new_meta: {},
-      //   });
-      //   await this.$api.deleteItem({ path: file_path });
-
-      //   stack_files_metas.push(file_meta_name);
-      //   let new_meta = {
-      //     stack_files_metas,
-      //   };
-      //   if (stack_files_metas.length === 1) new_meta.$preview = file_meta_name;
-
-      //   await this.$api.updateMeta({
-      //     path: path_to_destination_folder,
-      //     new_meta,
-      //   });
-      // }
-
-      // copy files to stack
-
-      // update stack meta
-
-      // delete files from origin
-
-      // close modal
-
-      // let path_to_destination_folder;
-      // if (this.stack?.$path) {
-      //   path_to_destination_folder = this.stack?.$path;
-      // } else {
-      //   let additional_meta = {
-      //     requested_slug: "stack",
-      //     stack_spot: this.index,
-      //     $authors: [this.connected_as.$path],
-      //     $admins: [this.connected_as.$path],
-      //   };
-
-      //   const new_folder_slug = await this.$api
-      //     .createFolder({
-      //       path: this.author_stacks_path,
-      //       additional_meta,
-      //     })
-      //     .catch((err) => {
-      //       this.$alertify.delay(4000).error(err);
-      //       throw err;
-      //     });
-
-      //   path_to_destination_folder =
-      //     this.author_stacks_path + "/" + new_folder_slug;
-      // }
-
-      // copy file to folder
-
-      // let stack_files_metas = [];
-
-      // if (
-      //   this.stack &&
-      //   this.stack.stack_files_metas &&
-      //   Array.isArray(this.stack.stack_files_metas)
-      // )
-      //   stack_files_metas = this.stack.stack_files_metas.slice();
-
-      // for (const file_path of file_paths) {
-      //   const file_meta_name = await this.$api.copyFile({
-      //     path: file_path,
-      //     path_to_destination_folder,
-      //     new_meta: {},
-      //   });
-      //   await this.$api.deleteItem({ path: file_path });
-
-      //   stack_files_metas.push(file_meta_name);
-      //   let new_meta = {
-      //     stack_files_metas,
-      //   };
-      //   if (stack_files_metas.length === 1) new_meta.$preview = file_meta_name;
-
-      //   await this.$api.updateMeta({
-      //     path: path_to_destination_folder,
-      //     new_meta,
-      //   });
-      // }
-
-      // await new Promise((r) => setTimeout(r, 300));
-      // this.is_adding_to_stack = false;
-
-      ////
-
-      //       const path_to_destination_type = this.shared_folder_path + "/stacks";
-
-      // await this.$api.copyFolder({
-      //   path: this.stack.$path,
-      //   path_to_destination_type,
-      //   new_meta: {
-      //     $status: "public",
-      //     // $admins: "everyone",
-      //     // $authors: this.stack.$admins,
-      //   },
-      // });
     },
   },
 };
