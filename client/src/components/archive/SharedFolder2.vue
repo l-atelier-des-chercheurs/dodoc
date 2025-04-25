@@ -8,27 +8,14 @@
         :stack_path="opened_stack.$path"
         :context="'archive'"
         :can_be_added_to_fav="can_be_added_to_fav"
+        :can_be_selected="select_mode"
         :is_favorite="isFavorite(opened_stack.$path)"
         @toggleFav="toggleFav(opened_stack.$path)"
         @prevMedia="navMedia(-1)"
         @nextMedia="navMedia(+1)"
+        @selectStack="$emit('selectStack', opened_stack)"
         @close="closeStack"
       />
-    </transition>
-
-    <transition name="slideup" mode="out-in">
-      <div
-        v-if="opened_stack && select_mode === 'single_stack'"
-        class="_selectBar"
-      >
-        <button
-          class="u-button"
-          type="button"
-          @click="$emit('stackSelected', opened_stack)"
-        >
-          {{ $t("select_stack") }}
-        </button>
-      </div>
     </transition>
 
     <div class="_sharedFolder--content">
@@ -158,7 +145,7 @@ export default {
     messages: {
       fr: {
         only_my_fav: "Que les favoris",
-      },
+        select_stack: "Sélectionner ce document",
       en: {
         only_my_fav: "Favourites",
       },
@@ -354,19 +341,6 @@ export default {
   --sd-separator: var(--h-200);
   --sd-textcolor: var(--h-900);
   --sd-bg: var(--body-bg);
-}
-
-._selectBar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-  background-color: var(--h-200);
-  border-top: 1px solid var(--h-50);
-
-  padding: calc(var(--spacing) * 1);
-  text-align: center;
 }
 
 ._footer {

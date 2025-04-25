@@ -17,7 +17,7 @@
         <SharedFolder2
           :shared_folder_path="selected_destination_folder_path"
           :select_mode="'single_stack'"
-          @stackSelected="$emit('stackSelected', $event)"
+          @selectStack="$emit('stackSelected', $event)"
         />
       </div>
     </div>

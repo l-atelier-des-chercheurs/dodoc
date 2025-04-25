@@ -210,6 +210,11 @@
         />
       </template>
     </div>
+    <div v-if="can_be_selected === 'single_stack'" class="_selectBar">
+      <button class="u-button" type="button" @click="$emit('selectStack')">
+        {{ $t("select_stack") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -223,6 +228,7 @@ export default {
     context: String,
     is_favorite: Boolean,
     can_be_added_to_fav: Boolean,
+    can_be_selected: String,
   },
   components: {
     // ChutierItem,
@@ -248,6 +254,7 @@ export default {
         files_missing: "Veuillez ajouter des médias à ce document",
         stack_not_public: "Ce document n'est pas public",
         error_loading_stack: "Erreur lors du chargement du document",
+        select_stack: "Sélectionner ce document",
       },
       en: {
         fill_title: "Fill in the title field",
@@ -255,6 +262,7 @@ export default {
         files_missing: "Add medias to this document",
         stack_not_public: "This document is not public",
         error_loading_stack: "Error loading document",
+        select_stack: "Select this document",
       },
     },
   },
@@ -621,5 +629,18 @@ hr {
 
 ._addToColl {
   padding: calc(var(--spacing) / 4);
+}
+
+._selectBar {
+  // position: absolute;
+  // bottom: 0;
+  // left: 0;
+  // width: 100%;
+  z-index: 100;
+  background-color: var(--h-500);
+  // border-top: 1px solid var(--h-50);
+
+  padding: calc(var(--spacing) * 1);
+  text-align: center;
 }
 </style>
