@@ -65,7 +65,7 @@
             }"
             @click="!all_items_selected ? selectAll() : deselectAll()"
           >
-            <button
+            <!-- <button
               type="button"
               class="u-buttonLink u-selectBtn"
               v-if="chutier_items.length > 0"
@@ -77,7 +77,7 @@
                     : 'dash-square-dotted'
                 "
               />
-            </button>
+            </button> -->
             {{ $t("items_to_share") }} • {{ chutier_items.length }}
           </label>
         </template>
@@ -102,7 +102,7 @@
                 ),
               }"
             >
-              <button
+              <!-- <button
                 v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
                 type="button"
                 class="u-buttonLink u-selectBtn"
@@ -111,7 +111,7 @@
               </button>
               <button v-else type="button" class="u-buttonLink u-selectBtn">
                 <b-icon icon="dash-square-dotted" />
-              </button>
+              </button> -->
               {{ ci.label }}
             </div>
             <transition-group
@@ -146,12 +146,15 @@
             <button
               type="button"
               class="u-button u-button_pill"
-              disabled
-              @click="show_existing_mediastack_modal = true"
+              @click="show_pick_existing_mediastack_modal = true"
             >
               <!-- <b-icon icon="plus-square-dotted" /> -->
               {{ $t("add_to_existing_document") }}
             </button>
+            <PickExistingMediastackModal
+              v-if="show_pick_existing_mediastack_modal"
+              @close="show_pick_existing_mediastack_modal = false"
+            />
             <button
               type="button"
               class="u-button u-button_pill"
@@ -220,7 +223,6 @@
     <CreateNewMediastackModal
       v-if="show_new_mediastack_modal"
       :selected_items="selected_items"
-      :shared_folder_path="shared_folder_path"
       @stackPosted="stackPosted"
       @close="show_new_mediastack_modal = false"
     />
@@ -231,21 +233,19 @@ import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import CreateNewMediastackModal from "@/components/chutier/CreateNewMediastackModal.vue";
+import PickExistingMediastackModal from "@/components/PickExistingMediastackModal.vue";
 
 export default {
-  props: {
-    shared_folder_path: String,
-  },
+  props: {},
   components: {
     ImportFileZone,
     EmbedPicker,
     ChutierItem,
     CreateNewMediastackModal,
+    PickExistingMediastackModal,
   },
   provide() {
-    return {
-      $sharedFolderPath: () => this.shared_folder_path,
-    };
+    return {};
   },
   i18n: {
     messages: {
@@ -286,7 +286,7 @@ export default {
       show_link_picker: false,
       show_confirm_remove_menu: false,
 
-      show_existing_mediastack_modal: false,
+      show_pick_existing_mediastack_modal: false,
       show_new_mediastack_modal: false,
     };
   },
@@ -505,7 +505,7 @@ export default {
   }
 
   > ._importFiles {
-    flex: 1 0 210px;
+    flex: 1 1 33%;
 
     @media (max-width: 600px) {
       flex: 0 0 auto;
@@ -513,7 +513,7 @@ export default {
   }
 
   > ._filesList {
-    flex: 2 1 0;
+    flex: 1 1 66%;
   }
 }
 ._importFiles {
@@ -589,7 +589,7 @@ export default {
   // text-align: center;
   display: inline-block;
   cursor: pointer;
-  font-weight: 500;
+  // font-weight: 500;
   margin-bottom: 4px;
   color: currentColor;
 
@@ -737,6 +737,15 @@ export default {
 }
 
 ._items--list {
-  columns: 18em;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 0 1 22em;
+    // max-width: 22em;
+  }
 }
 </style>

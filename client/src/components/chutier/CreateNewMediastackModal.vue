@@ -173,6 +173,18 @@
       <span v-else-if="status === 'completed'">
         {{ $t("completed") }}
       </span>
+
+      <div v-if="!allow_next_step" class="u-instructions _cantNextInstr">
+        <template v-if="current_step === 0">
+          {{ $t("add_title_to_continue") }}
+        </template>
+        <template v-if="current_step === 1">
+          {{ $t("add_keywords_to_continue") }}
+        </template>
+        <template v-if="current_step === 2">
+          {{ $t("add_authors_to_continue") }}
+        </template>
+      </div>
     </template>
   </BaseModal2>
 </template>
@@ -195,10 +207,16 @@ export default {
       fr: {
         destination_corpus: "Corpus de destination",
         create_document: "Nouveau document",
+        add_title_to_continue: "Indiquez un titre pour continuer",
+        add_keywords_to_continue: "Ajoutez des mots-clés pour continuer",
+        add_authors_to_continue: "Ajoutez des auteurs pour continuer",
       },
       en: {
         destination_corpus: "Destination corpus",
         create_document: "New document",
+        add_title_to_continue: "Add title to continue",
+        add_keywords_to_continue: "Add keywords to continue",
+        add_authors_to_continue: "Add authors to continue",
       },
     },
   },
@@ -561,6 +579,11 @@ export default {
   // border-radius: var(--input-border-radius);
   // background-color: var(--c-gris_clair);
   // overflow: hidden;
+}
+
+._cantNextInstr {
+  width: 100%;
+  text-align: right;
 }
 </style>
 <style lang="scss">

@@ -21,22 +21,19 @@
         @close="show_general_password_modal = false"
       />
       <template v-else>
-        <TopBar />
-
         <AuthorList
           v-if="show_authors_modal || !connected_as"
           :is_closable="!!connected_as"
           @close="show_authors_modal = false"
         />
-        <transition v-else name="pagechange" mode="out-in">
-          <router-view
-            v-if="!show_authors_modal"
-            v-slot="{ Component }"
-            :key="$route.path"
-          >
-            <component :is="Component" />
-          </router-view>
-        </transition>
+        <template v-else>
+          <TopBar />
+          <transition name="pagechange" mode="out-in">
+            <router-view v-slot="{ Component }" :key="$route.path">
+              <component :is="Component" />
+            </router-view>
+          </transition>
+        </template>
         <TaskTracker />
       </template>
     </template>

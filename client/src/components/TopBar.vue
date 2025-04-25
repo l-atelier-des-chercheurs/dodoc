@@ -63,27 +63,25 @@
           v-if="show_admin_settings"
           @close="show_admin_settings = false"
         />
+        <AuthorTag
+          v-if="connected_as"
+          :path="connected_as.$path"
+          :show_image_only="true"
+          @click="$eventHub.$emit('showAuthorModal')"
+        />
+        <button
+          type="button"
+          class="_authorBtn"
+          v-else
+          @click="$eventHub.$emit('showAuthorModal')"
+        >
+          {{ $t("login") }}
+        </button>
       </div>
     </div>
     <div class="_menu">
       <router-link to="/contribute" active-class="active">DÉPOSER</router-link>
       <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
-    </div>
-    <div class="profile-icon">
-      <AuthorTag
-        v-if="connected_as"
-        :path="connected_as.$path"
-        :show_image_only="true"
-        @click="$eventHub.$emit('showAuthorModal')"
-      />
-      <button
-        type="button"
-        class="_authorBtn"
-        v-else
-        @click="$eventHub.$emit('showAuthorModal')"
-      >
-        {{ $t("login") }}
-      </button>
     </div>
   </div>
 </template>
@@ -129,12 +127,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  height: 50px;
   // gap: 1rem;
   border-bottom: 1px solid var(--border-color);
 
   > * {
-    flex: 1 1 0;
+    flex: 1 1 50%;
 
     &:not(:last-child) {
       border-right: 1px solid var(--border-color);
@@ -147,7 +144,6 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-
   // font-size: 20px;
   font-weight: bold;
 
@@ -168,7 +164,8 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: 16px;
+  font-size: 1rem;
+  font-weight: bold;
 
   a {
     flex: 1 1 0;
@@ -176,6 +173,7 @@ export default {
     align-items: center;
     justify-content: center;
     height: 100%;
+    min-height: 50px;
     padding: 10px 20px;
     background-color: transparent;
     // border: 1px solid #ddd;

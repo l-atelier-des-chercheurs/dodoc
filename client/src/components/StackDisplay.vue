@@ -169,22 +169,6 @@
             </div>
             <!-- // todo remove -->
             <div class="_bottomBtns" v-if="context === 'chutier'">
-              <transition name="pagechange" mode="out-in">
-                <button
-                  type="button"
-                  :key="share_button_is_enabled"
-                  class="u-button u-button_red _btn"
-                  :disabled="!share_button_is_enabled"
-                  @click="publishStack"
-                >
-                  {{ $t("publish") }}&nbsp;
-                  <b-icon
-                    icon="arrow-right-square"
-                    style="font-size: 1rem"
-                    circle
-                  />
-                </button>
-              </transition>
               <div class="u-instructions">
                 <div v-if="!stack.title || stack.title.length === 0">
                   {{ $t("fill_title") }}
@@ -245,11 +229,7 @@ export default {
     KeywordsField,
     StackCarousel,
   },
-  inject: {
-    $sharedFolderPath: {
-      default: false,
-    },
-  },
+  inject: {},
   data() {
     return {
       stack: undefined,
@@ -345,10 +325,6 @@ export default {
         stack: this.stack,
       });
     },
-    shared_folder_path() {
-      if (this.$sharedFolderPath) return this.$sharedFolderPath();
-      return false;
-    },
     share_button_is_enabled() {
       return (
         this.stack.title?.length > 0 &&
@@ -430,21 +406,6 @@ export default {
           .log(this.$t("stack_was_removed"));
         this.$emit("close");
       }
-    },
-    async publishStack() {
-      const path_to_destination_type = this.shared_folder_path + "/stacks";
-
-      await this.$api.copyFolder({
-        path: this.stack.$path,
-        path_to_destination_type,
-        new_meta: {
-          $status: "public",
-          // $admins: "everyone",
-          // $authors: this.stack.$admins,
-        },
-      });
-      await this.$api.deleteItem({ path: this.stack.$path });
-      this.$emit("close");
     },
     handleKeyPress($event) {
       if ($event.key === "Escape") {
