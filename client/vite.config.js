@@ -3,7 +3,7 @@ import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import vue2 from "@vitejs/plugin-vue2";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
-import basicSsl from "@vitejs/plugin-basic-ssl";
+import mkcert from "vite-plugin-mkcert";
 import vueJsx from "@vitejs/plugin-vue2-jsx";
 import { visualizer } from "rollup-plugin-visualizer";
 
@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     vue2(),
     cssInjectedByJsPlugin(),
-    basicSsl(),
+    mkcert(),
     vueJsx(),
     visualizer({ open: true }),
   ],
