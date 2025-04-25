@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.2",
-    "@vitejs/plugin-basic-ssl": "^1.1.0",
     "alertify.js": "^1.0.12",
     "axios": "^0.28.1",
     "axios-debug-log": "^0.8.4",
@@ -67,6 +66,7 @@
     "sass-embedded": "^1.81.0",
     "vite": "^5.4.10",
     "vite-plugin-css-injected-by-js": "^3.5.2",
+    "vite-plugin-mkcert": "^1.17.8",
     "vite-plugin-vue-devtools": "^7.5.4",
     "vitest": "^2.1.4"
   }
