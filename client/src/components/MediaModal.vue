@@ -21,6 +21,12 @@
         </div>
       </div>
 
+      <OptimizeMedia
+        v-if="show_optimize_modal"
+        :media="file"
+        @close="show_optimize_modal = false"
+      />
+
       <div class="_preview" :data-filetype="file.$type">
         <MediaContent
           :file="file"
@@ -37,7 +43,14 @@
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
             {{ $t("convert_to_format") }}
-            <OptimizeMedia :media="file" @close="$emit('close')" />
+            <button
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              {{ $t("convert_shorten") }}
+            </button>
           </div>
         </div>
 
@@ -318,11 +331,15 @@
               @closeParentModal="$emit('close')"
             />
 
-            <OptimizeMedia
-              v-if="optimization_possible"
-              :media="file"
-              @close="$emit('close')"
-            />
+            <button
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              {{ $t("optimize_resize") }}
+            </button>
+
             <div v-for="make in available_makes" :key="make.type">
               <button
                 type="button"
@@ -365,7 +382,6 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
-import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
   props: {
@@ -377,7 +393,7 @@ export default {
   components: {
     DuplicateMedia,
     CropAdjustMedia: () => import("@/adc-core/fields/CropAdjustMedia.vue"),
-    OptimizeMedia,
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
   },
   data() {
     return {
@@ -387,6 +403,7 @@ export default {
       is_regenerating: false,
       is_zooming_in: false,
       is_playing_video: false,
+      show_optimize_modal: false,
     };
   },
 

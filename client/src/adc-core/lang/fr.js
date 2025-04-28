@@ -1149,7 +1149,7 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir",
+  convert_shorten: "Convertir/raccourcir",
   convert_shorten_instructions: `
     Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
     `,
