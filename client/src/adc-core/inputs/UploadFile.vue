@@ -48,15 +48,17 @@
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
-        <div class="u-metaField">
-          <DLabel :str="$t('filename')" />
-          <div class="u-filename">{{ file.name }}</div>
+        <div class="_infos--row">
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.name }}</div>
+          </div>
+          <SizeDisplay v-if="file.size" :size="file.size" />
         </div>
-        <SizeDisplay v-if="file.size" :size="file.size" />
 
         <template v-if="sent_file">
           <hr />
-          <div v-if="allow_caption_edition" class="_captionEditor">
+          <div v-if="allow_caption_edition" class="_infos--row _captionEditor">
             <div class="u-spacingBottom">
               <TitleField
                 :label="$t('caption')"
@@ -124,8 +126,8 @@
           @click="$emit('hide')"
         >
           <b-icon
-            icon="check"
-            style="font-size: 1.5em"
+            icon="check-circle-fill
+          "
             :aria-label="$t('hide')"
           />
         </button>
@@ -374,6 +376,18 @@ export default {
   align-items: center;
 }
 
+._infos--row {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: stretch;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 0 20ch;
+    margin-bottom: 0;
+  }
+}
 ._captionEditor {
   ::v-deep ._collaborativeEditor._collaborativeEditor {
     // background-color: white;
