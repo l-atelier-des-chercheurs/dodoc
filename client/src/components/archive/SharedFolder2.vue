@@ -146,8 +146,10 @@ export default {
       fr: {
         only_my_fav: "Que les favoris",
         select_stack: "Sélectionner ce document",
+      },
       en: {
         only_my_fav: "Favourites",
+        select_stack: "Select this document",
       },
     },
   },

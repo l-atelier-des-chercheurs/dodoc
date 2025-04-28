@@ -25,12 +25,12 @@
 </template>
 <script>
 import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vue";
-import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
+
 export default {
   props: {},
   components: {
     DestinationCorpusSelector,
-    SharedFolder2,
+    SharedFolder2: () => import("@/components/archive/SharedFolder2.vue"),
   },
   data() {
     return {
