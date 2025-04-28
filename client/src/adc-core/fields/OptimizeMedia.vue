@@ -2,11 +2,11 @@
   <BaseModal2 :title="label" :size="modal_width" @close="closeModal">
     <div class="_cont">
       <div v-if="!optimized_file">
-        <div
-          v-if="media.$optimized === true"
-          class="u-spacingBottom u-instructions"
-        >
+        <div v-if="media.$optimized === true" class="u-spacingBottom">
           {{ $t("already_optimized") }}
+        </div>
+        <div v-if="optimization_strongly_recommended" class="u-spacingBottom">
+          {{ $t("convert_to_format") }}
         </div>
 
         <div v-if="['video', 'audio'].includes(media.$type)">
@@ -131,7 +131,7 @@
             <b-icon icon="tools" />
             {{ $t("preview_new") }}
           </button>
-          <div class="u-instructions">
+          <div class="u-instructions _wontremove">
             {{ $t("wont_remove_original") }}
           </div>
         </div>
@@ -207,6 +207,11 @@ export default {
       if (this.media.$type === "image")
         return this.$t("optimize_resize_instructions");
       return this.$t("convert_instructions");
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({
+        filename: this.media.$media_filename,
+      });
     },
     modal_width() {
       if (this.optimized_file || this.extract_selection) return "large";
@@ -390,5 +395,11 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+._wontremove {
+  text-align: center;
+  text-transform: lowercase;
+  font-size: var(--sl-font-size-small);
 }
 </style>

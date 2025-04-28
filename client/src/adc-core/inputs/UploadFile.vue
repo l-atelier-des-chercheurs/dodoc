@@ -53,31 +53,52 @@
           <div class="u-filename">{{ file.name }}</div>
         </div>
         <SizeDisplay v-if="file.size" :size="file.size" />
-        <div v-if="allow_caption_edition && sent_file" class="_captionEditor">
-          <!-- <hr /> -->
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('caption')"
-              :field_name="'caption'"
-              :content="sent_file.caption"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
+
+        <template v-if="sent_file">
+          <hr />
+          <div v-if="allow_caption_edition" class="_captionEditor">
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('caption')"
+                :field_name="'caption'"
+                :content="sent_file.caption"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :can_edit="true"
+              />
+            </div>
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('credit/reference')"
+                :field_name="'$credits'"
+                :content="sent_file.$credits"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :can_edit="true"
+              />
+            </div>
           </div>
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('credit/reference')"
-              :field_name="'$credits'"
-              :content="sent_file.$credits"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
+          <div v-if="optimization_strongly_recommended" class="u-instructions">
+            <div class="u-spacingBottom">
+              {{ $t("convert_to_format") }}
+              <button
+                type="button"
+                class="u-button u-button_orange"
+                @click="show_optimize_modal = true"
+              >
+                <b-icon :icon="'file-play-fill'" />
+                {{ $t("convert_shorten") }}
+              </button>
+            </div>
           </div>
-        </div>
+          <OptimizeMedia
+            v-if="show_optimize_modal"
+            :media="sent_file"
+            @close="show_optimize_modal = false"
+          />
+        </template>
       </div>
       <div class="_uploadFile--action">
         <button
@@ -130,7 +151,9 @@ export default {
     path: String,
     allow_caption_edition: Boolean,
   },
-  components: {},
+  components: {
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
+  },
   data() {
     return {
       status: "waiting",
@@ -142,6 +165,8 @@ export default {
 
       file_caption: "",
       file_credits: "",
+
+      show_optimize_modal: false,
     };
   },
   created() {
@@ -156,6 +181,11 @@ export default {
     file_type() {
       if (this.file.type?.includes("image")) return "image";
       return undefined;
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({
+        filename: this.sent_file.$media_filename,
+      });
     },
   },
   methods: {
