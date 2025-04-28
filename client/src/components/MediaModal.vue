@@ -423,10 +423,12 @@ export default {
       );
     },
     optimization_possible() {
-      return this.fileCanBeOptimized({ path: this.file.$media_filename });
+      return this.fileCanBeOptimized({ filename: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
-      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+      return this.fileShouldBeOptimized({
+        filename: this.file.$media_filename,
+      });
     },
     author_has_location() {
       return (
