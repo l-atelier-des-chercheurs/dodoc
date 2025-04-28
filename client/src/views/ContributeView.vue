@@ -3,11 +3,10 @@
     <portal-target name="largemedia" multiple />
 
     <div class="_importFiles" @click.self="selected_items_slugs = []">
+      <div class="_dashboard">
+        <DLabel :str="$t('dashboard')" />
+      </div>
       <div class="_importFiles--content">
-        <div class="_dashboard">
-          <DLabel :str="$t('dashboard')" />
-        </div>
-
         <div class="_importButton">
           <ImportFileZone
             :multiple="true"

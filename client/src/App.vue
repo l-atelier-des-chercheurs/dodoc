@@ -399,10 +399,14 @@ strong {
 h1,
 h2,
 h3 {
-  margin: 0;
+  margin: calc(var(--spacing) / 1) 0;
   font-size: var(--sl-font-size-large);
   line-height: 1.2;
   font-weight: 500;
+
+  &:first-child {
+    margin-top: 0;
+  }
 }
 h4 {
   margin: 0;

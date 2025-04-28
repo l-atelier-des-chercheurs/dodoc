@@ -13,6 +13,10 @@
         iaculis velit. Vivamus mollis sapien vel augue rhoncus vestibulum.
         Aliquam erat volutpat. Donec ut felis ligula.
       </p>
+      <hr />
+      <p>
+        <small>{{ $t("version") }} {{ $root.app_infos.version }}</small>
+      </p>
     </div>
   </div>
 </template>
