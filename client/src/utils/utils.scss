@@ -1115,20 +1115,17 @@ input[type="checkbox"] {
   width: 34px;
 }
 .u-metaField {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: calc(var(--spacing) / 16);
+  margin-bottom: calc(var(--spacing) / 2);
 
   > *:nth-child(1) {
     flex: 0 0 auto;
   }
   > *:nth-child(2) {
     flex: 1 1 auto;
-    text-align: right;
+    // text-align: right;
   }
 }
+
 .u-icon {
   width: 1rem;
   height: 1rem;
