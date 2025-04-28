@@ -242,8 +242,6 @@
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
-import CreateNewMediastackModal from "@/components/chutier/CreateNewMediastackModal.vue";
-import PickExistingMediastackModal from "@/components/PickExistingMediastackModal.vue";
 
 export default {
   props: {},
@@ -251,8 +249,10 @@ export default {
     ImportFileZone,
     EmbedPicker,
     ChutierItem,
-    CreateNewMediastackModal,
-    PickExistingMediastackModal,
+    CreateNewMediastackModal: () =>
+      import("@/components/chutier/CreateNewMediastackModal.vue"),
+    PickExistingMediastackModal: () =>
+      import("@/components/PickExistingMediastackModal.vue"),
   },
   provide() {
     return {};
