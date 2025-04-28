@@ -896,6 +896,8 @@ export default {
   line: "Ligne",
   arrow: "Flèche",
   click_to_zoom: "Cliquez pour zoomer",
+  zoom_out: "Dézoomer",
+
   for_example: "Par exemple",
   require_signup_to_contribute:
     "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
