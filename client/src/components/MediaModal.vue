@@ -42,7 +42,9 @@
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
-            {{ $t("convert_to_format") }}
+            <div class="u-instructions">
+              {{ $t("convert_to_format") }}
+            </div>
             <button
               type="button"
               class="u-button u-button_orange"

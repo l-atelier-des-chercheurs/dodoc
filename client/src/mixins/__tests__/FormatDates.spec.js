@@ -28,9 +28,9 @@ describe("FormatDates mixin", () => {
     });
 
     it("should format hours, minutes and seconds correctly", () => {
-      expect(vm.formatDurationToHuman(3691)).toBe("1h 1m 31\u202fs");
-      expect(vm.formatDurationToHuman(3661)).toBe("1h 1m 1\u202fs");
-      expect(vm.formatDurationToHuman(3600)).toBe("1h 0m 0\u202fs");
+      expect(vm.formatDurationToHuman(3691)).toBe("1\u202fh 1 min 31\u202fs");
+      expect(vm.formatDurationToHuman(3661)).toBe("1\u202fh 1 min 1\u202fs");
+      expect(vm.formatDurationToHuman(3600)).toBe("1\u202fh 0 min 0\u202fs");
     });
 
     it("should handle zero duration", () => {

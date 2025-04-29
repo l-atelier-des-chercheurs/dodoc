@@ -1091,6 +1091,7 @@ export default {
   justify-content: stretch;
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
+  padding-bottom: 0;
 
   > * {
     // flex: 1 1 0;
