@@ -896,6 +896,8 @@ export default {
   line: "Ligne",
   arrow: "Flèche",
   click_to_zoom: "Cliquez pour zoomer",
+  zoom_out: "Dézoomer",
+
   for_example: "Par exemple",
   require_signup_to_contribute:
     "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
@@ -1149,7 +1151,7 @@ export default {
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir",
+  convert_shorten: "Convertir/raccourcir",
   convert_shorten_instructions: `
     Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
     `,

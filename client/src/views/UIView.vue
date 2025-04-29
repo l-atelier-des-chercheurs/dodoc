@@ -8,6 +8,14 @@
       />
     </div>
     <hr />
+    <div class="_darkBG _authors">
+      <AuthorTag
+        v-for="{ $path } in authors_sublist"
+        :key="$path"
+        :path="$path"
+      />
+    </div>
+    <hr />
     <div class="_authors">
       <AuthorTag
         v-for="{ $path } in authors_sublist"
@@ -66,21 +74,29 @@
       />
     </div>
     <hr />
-    <div class="u-listOfAvatars" key="list">
-      <AuthorTag
-        v-for="{ $path } in authors_sublist"
-        :key="$path"
-        :path="$path"
-        :show_image_only="true"
-        :mode="'link'"
-      />
+    <div class="_darkBG">
+      <div>u-listOfAvatars</div>
+      <div class="u-listOfAvatars" key="list">
+        <AuthorTag
+          v-for="{ $path } in authors_sublist"
+          :key="$path"
+          :path="$path"
+          :show_image_only="true"
+          :mode="'link'"
+        />
+      </div>
     </div>
+
+    <hr />
 
     <select class="u-spacingBottom">
       <option value="1">Premier</option>
       <option value="2">Deuxième</option>
       <option value="3">Troisième</option>
     </select>
+
+    <hr />
+
     <select class="u-spacingBottom" size="small">
       <option value="1">Premier</option>
       <option value="2">Deuxième</option>
@@ -145,5 +161,11 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+}
+
+._darkBG {
+  background: var(--c-noir);
+  color: white;
+  padding: calc(var(--spacing) / 2);
 }
 </style>

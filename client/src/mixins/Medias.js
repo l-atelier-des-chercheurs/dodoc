@@ -267,8 +267,8 @@ export default {
         else return "•:••";
       return false;
     },
-    fileShouldBeOptimized({ path }) {
-      if (!path) return false;
+    fileShouldBeOptimized({ filename }) {
+      if (!filename) return false;
       const ext = [
         ".heic",
 
@@ -295,11 +295,11 @@ export default {
         ".mov",
         ".avi",
       ];
-      return ext.some((e) => path.toLowerCase().endsWith(e));
+      return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
-    fileCanBeOptimized({ path }) {
-      if (!path) return false;
-      if (this.fileShouldBeOptimized({ path })) return true;
+    fileCanBeOptimized({ filename }) {
+      if (!filename) return false;
+      if (this.fileShouldBeOptimized({ filename })) return true;
       const ext = [
         ".webm",
         ".mp4",
@@ -314,7 +314,7 @@ export default {
         ".mp3",
         ".aac",
       ];
-      return ext.some((e) => path.toLowerCase().endsWith(e));
+      return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
     dataURLtoBlob(dataurl) {
       var arr = dataurl.split(","),

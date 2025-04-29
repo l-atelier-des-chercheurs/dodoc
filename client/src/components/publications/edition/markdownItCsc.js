@@ -13,9 +13,6 @@ const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
   const vue_instance = o.vue_instance;
-  const getMediaSrc = vue_instance.getMediaSrc;
-  const transformURL = vue_instance.transformURL;
-  const source_medias = vue_instance.source_medias;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -162,10 +159,16 @@ export default (md, o = {}) => {
     // Handle different types of shortcodes
     if (tags_list.includes(token.tag)) {
       // Use getMediaSrc if available, otherwise fallback to normal behavior
-      // Use getMediaSrc if available, otherwise fallback to normal behavior
       let media = null;
-      if (getMediaSrc && !token.attrs.src.startsWith("http")) {
-        media = getMediaSrc(token.attrs.src, source_medias);
+      if (
+        vue_instance &&
+        vue_instance.getMediaSrc &&
+        !token.attrs.src.startsWith("http")
+      ) {
+        media = vue_instance.getMediaSrc(
+          token.attrs.src,
+          vue_instance.source_medias
+        );
       }
 
       const attrs = [];
@@ -213,8 +216,11 @@ export default (md, o = {}) => {
         media_tag += `<audio src="${src}" controls>`;
         media_tag += "</audio>";
       } else if (token.tag === "embed") {
-        if (transformURL) {
-          const embed = transformURL({ url: src, autoplay: false });
+        if (vue_instance && vue_instance.transformURL) {
+          const embed = vue_instance.transformURL({
+            url: src,
+            autoplay: false,
+          });
           media_tag += `<iframe src="${embed.src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
         } else {
           media_tag += `<iframe src="${src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
