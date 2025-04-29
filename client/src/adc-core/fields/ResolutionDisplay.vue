@@ -2,15 +2,7 @@
   <div class="u-metaField">
     <DLabel :str="$t('resolution')" />
     <div>
-      <template v-if="width">
-        {{ width }}
-      </template>
-      <template v-else> – </template>
-      ×
-      <template v-if="height">
-        {{ height }}
-      </template>
-      <template v-else> – </template>
+      {{ formattedResolution }}
     </div>
   </div>
 </template>
@@ -28,7 +20,13 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    formattedResolution() {
+      const widthStr = this.width ? this.width : "–";
+      const heightStr = this.height ? this.height : "–";
+      return `${widthStr}×${heightStr} ${this.$t("pixels")}`;
+    },
+  },
   methods: {},
 };
 </script>

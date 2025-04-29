@@ -211,6 +211,8 @@ export default {
   sort: "Sort",
 
   click_to_zoom: "Click to zoom",
+  zoom_out: "Zoom out",
+
   close_to_source: "Similar to source media",
   very_high: "Very high",
   high: "High",

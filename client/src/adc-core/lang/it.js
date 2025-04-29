@@ -1144,7 +1144,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   full_page: "Pagina intera",
 
   convert: "Converti",
-  convert_shorten: "Converti",
+  convert_shorten: "Converti/taglia",
   convert_shorten_instructions: `
     Converti in un formato standard, tagliare l'inizio o il finale, cambia il volume o elimina la traccia sonora e modifica la qualità per alleggerire il file..
     `,

@@ -63,11 +63,44 @@ export default {
         .filter(Boolean)
         .join(":");
     },
+    formatDurationToHuman(duration) {
+      const hours = Math.floor(duration / 3600);
+      const minutes = Math.floor((duration % 3600) / 60);
+      const seconds = Math.floor(duration % 60);
+
+      const parts = [];
+      if (hours > 0) {
+        parts.push(
+          new Intl.NumberFormat(undefined, {
+            style: "unit",
+            unit: "hour",
+            unitDisplay: "short",
+          }).format(hours)
+        );
+      }
+      if (minutes > 0 || hours > 0) {
+        parts.push(
+          new Intl.NumberFormat(undefined, {
+            style: "unit",
+            unit: "minute",
+            unitDisplay: "short",
+          }).format(minutes)
+        );
+      }
+      if (seconds > 0 || (hours === 0 && minutes === 0)) {
+        parts.push(
+          new Intl.NumberFormat(undefined, {
+            style: "unit",
+            unit: "second",
+            unitDisplay: "short",
+          }).format(seconds)
+        );
+      }
+
+      return parts.join(" ");
+    },
     formatDurationToHoursMinutesSecondsDeciseconds(seconds) {
       const ds = (seconds % 1).toFixed(1).substring(1);
-      // const ds = (
-      //   +(seconds % 1).toFixed(1).toLocaleString(this.$i18n.locale) + ""
-      // ).substring(1);
       return this.formatDurationToHoursMinutesSeconds(seconds, false) + ds;
     },
     datetimeLocal(datetime) {

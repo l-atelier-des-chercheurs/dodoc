@@ -48,36 +48,59 @@
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
-        <div class="u-metaField">
-          <DLabel :str="$t('filename')" />
-          <div class="u-filename">{{ file.name }}</div>
-        </div>
-        <SizeDisplay v-if="file.size" :size="file.size" />
-        <div v-if="allow_caption_edition && sent_file" class="_captionEditor">
-          <!-- <hr /> -->
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('caption')"
-              :field_name="'caption'"
-              :content="sent_file.caption"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
+        <div class="_infos--row">
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.name }}</div>
           </div>
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('credit/reference')"
-              :field_name="'$credits'"
-              :content="sent_file.$credits"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
-          </div>
+          <SizeDisplay v-if="file.size" :size="file.size" />
         </div>
+
+        <template v-if="sent_file">
+          <hr />
+          <div v-if="allow_caption_edition" class="_infos--row _captionEditor">
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('caption')"
+                :field_name="'caption'"
+                :content="sent_file.caption"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :can_edit="true"
+              />
+            </div>
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('credit/reference')"
+                :field_name="'$credits'"
+                :content="sent_file.$credits"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link']"
+                :can_edit="true"
+              />
+            </div>
+          </div>
+          <div v-if="optimization_strongly_recommended" class="u-instructions">
+            <div class="u-spacingBottom">
+              {{ $t("convert_to_format") }}
+              <button
+                type="button"
+                class="u-button u-button_orange"
+                @click="show_optimize_modal = true"
+              >
+                <b-icon :icon="'file-play-fill'" />
+                {{ $t("convert_shorten") }}
+              </button>
+            </div>
+          </div>
+          <OptimizeMedia
+            v-if="show_optimize_modal"
+            :media="sent_file"
+            @close="show_optimize_modal = false"
+          />
+        </template>
       </div>
       <div class="_uploadFile--action">
         <button
@@ -103,8 +126,8 @@
           @click="$emit('hide')"
         >
           <b-icon
-            icon="check"
-            style="font-size: 1.5em"
+            icon="check-circle-fill
+          "
             :aria-label="$t('hide')"
           />
         </button>
@@ -130,7 +153,9 @@ export default {
     path: String,
     allow_caption_edition: Boolean,
   },
-  components: {},
+  components: {
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
+  },
   data() {
     return {
       status: "waiting",
@@ -142,6 +167,8 @@ export default {
 
       file_caption: "",
       file_credits: "",
+
+      show_optimize_modal: false,
     };
   },
   created() {
@@ -156,6 +183,11 @@ export default {
     file_type() {
       if (this.file.type?.includes("image")) return "image";
       return undefined;
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({
+        filename: this.sent_file.$media_filename,
+      });
     },
   },
   methods: {
@@ -217,13 +249,16 @@ export default {
 ._uploadFile {
   position: relative;
 
-  background-color: var(--c-gris_clair);
-
   color: var(--c-noir);
-  border: 2px solid var(--c-gris_clair);
+  // border: 2px solid var(--c-gris_clair);
 
-  border-radius: 4px;
+  // border-radius: 4px;
   overflow: hidden;
+
+  &:not(:last-child) {
+    // border-bottom: 4px solid var(--c-gris_clair);
+    // margin-bottom: calc(var(--spacing));
+  }
 }
 
 ._uploadFile--row {
@@ -247,7 +282,8 @@ export default {
 ._uploadFile--progressBar {
   position: relative;
   width: 100%;
-  height: 1rem;
+  height: 1.5rem;
+  margin-bottom: 2px;
 
   background: white;
   // border-radius: 4px;
@@ -267,17 +303,19 @@ export default {
   ._uploadFile--progressBar--percent {
     position: absolute;
     width: 100%;
+    height: 100%;
     // top: -0.1rem;
     // right: 0.25rem;
     padding: 0 calc(var(--spacing) / 2);
     text-align: right;
     font-size: var(--sl-font-size-x-small);
     font-family: var(--sl-font-mono);
-    font-weight: 700;
+    font-weight: 500;
 
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -300,7 +338,7 @@ export default {
   aspect-ratio: 1/1;
   overflow: hidden;
   height: auto;
-  background-color: white;
+  background-color: var(--c-gris_clair);
 
   .is--mobileView & {
     max-width: none;
@@ -338,6 +376,18 @@ export default {
   align-items: center;
 }
 
+._infos--row {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: stretch;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 0 20ch;
+    margin-bottom: 0;
+  }
+}
 ._captionEditor {
   ::v-deep ._collaborativeEditor._collaborativeEditor {
     // background-color: white;
