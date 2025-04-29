@@ -122,7 +122,6 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
-  background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);
@@ -155,6 +154,10 @@ export default {
   //     color: var(--c-bleumarine);
   //   }
   // }
+
+  &:not([data-imageonly]) {
+    background-color: white;
+  }
 
   &[data-isself]:not([data-imageonly]) {
     border-color: var(--c-bleumarine);
