@@ -10,7 +10,9 @@ const path = require("path"),
   md5File = require("md5-file"),
   exifr = require("exifr"),
   crypto = require("crypto"),
-  archiver = require("archiver");
+  archiver = require("archiver"),
+  { promisify } = require("util"),
+  fastFolderSize = require("fast-folder-size");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -449,6 +451,15 @@ module.exports = (function () {
 
       const schema = global.settings.schema;
 
+      if (
+        relative_path.includes(path.sep + global.settings.deletedFolderName)
+      ) {
+        relative_path = relative_path.slice(
+          0,
+          relative_path.indexOf(path.sep + global.settings.deletedFolderName)
+        );
+      }
+
       let items_in_path =
         relative_path.length === 0 ? [] : relative_path.split(path.sep);
       // items_in_path = items_in_path.filter((i) => i !== "_upload");
@@ -514,6 +525,7 @@ module.exports = (function () {
         sub_folder_slug,
         subsub_folder_type,
         subsub_folder_slug,
+        bin_folder_slug,
         meta_filename,
       } = req.params;
 
@@ -554,6 +566,13 @@ module.exports = (function () {
         obj.path_to_meta = path.join(obj.path_to_folder, meta_filename);
       }
 
+      if (bin_folder_slug) {
+        obj.path_to_folder_in_bin = path.join(
+          obj.path_to_type,
+          global.settings.deletedFolderName,
+          bin_folder_slug
+        );
+      }
       if (req.body) obj.data = req.body;
 
       return obj;
@@ -823,6 +842,18 @@ module.exports = (function () {
     addhttp(url) {
       if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
       return url;
+    },
+
+    async getFolderSize(...paths) {
+      const full_folder_path = API.getPathToUserContent(...paths);
+      const fastFolderSizeAsync = promisify(fastFolderSize);
+      try {
+        const bin_size = await fastFolderSizeAsync(full_folder_path);
+        return bin_size;
+      } catch (err) {
+        dev.error(err);
+        return 0;
+      }
     },
   };
 

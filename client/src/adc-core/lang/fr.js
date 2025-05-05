@@ -1317,4 +1317,10 @@ export default {
   reset: "Réinitialiser",
 
   accounts_displayed: "Comptes affichés : {count} / {total}",
+  restore_projects: "Restaurer des projets supprimés",
+  bin: "Corbeille",
+  restore: "Restaurer",
+  remove_for_good: "Supprimer définitivement",
+  bin_is_empty: "La corbeille est vide",
+  date_removed: "Date de suppression",
 };

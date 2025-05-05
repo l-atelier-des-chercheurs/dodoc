@@ -152,6 +152,7 @@ import {
   BIconFilePlayFill,
   BIconGripVertical,
   BIconHouse,
+  BIconRecycle,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -303,3 +304,4 @@ Vue.component("BIconThreeDots", BIconThreeDots);
 Vue.component("BIconFilePlayFill", BIconFilePlayFill);
 Vue.component("BIconGripVertical", BIconGripVertical);
 Vue.component("BIconHouse", BIconHouse);
+Vue.component("BIconRecycle", BIconRecycle);

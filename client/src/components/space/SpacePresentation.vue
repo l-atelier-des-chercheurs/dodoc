@@ -44,6 +44,23 @@
             :modal_title="$t('download_space', { name: space.title })"
             :path="space.$path"
           />
+
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_bin_modal = true"
+          >
+            <b-icon icon="recycle" />
+            {{ $t("bin") }}
+          </button>
+          <BinFolder
+            v-if="show_bin_modal"
+            :modal_title="$t('restore_projects')"
+            :path="space.$path"
+            :subfolders_type="'projects'"
+            @close="show_bin_modal = false"
+          />
+
           <RemoveMenu
             :modal_title="$t('remove_space', { name: space.title })"
             @remove="removeSpace"
@@ -111,6 +128,8 @@
   </div>
 </template>
 <script>
+import BinFolder from "@/adc-core/fields/BinFolder.vue";
+
 export default {
   props: {
     space: Object,
@@ -118,9 +137,13 @@ export default {
     position_in_list: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    BinFolder,
+  },
   data() {
-    return {};
+    return {
+      show_bin_modal: false,
+    };
   },
   created() {},
   mounted() {},

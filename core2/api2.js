@@ -165,6 +165,37 @@ module.exports = (function () {
       _restrictToContributors,
       _importFolder
     );
+    app.get(
+      [
+        "/_api2/:folder_type/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _getBin
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/_bin/:bin_folder_slug/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug/_restore",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _restoreFromBin
+    );
+    // app.delete(
+    //   [
+    //     "/_api2/:folder_type/_bin/:bin_folder_slug",
+    //     "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug",
+    //     "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug",
+    //   ],
+    //   _generalPasswordCheck,
+    //   _restrictToLocalAdmins,
+    //   _removeBinFolder
+    // );
+
     app.post(
       [
         "/_api2/:folder_type/:folder_slug/_export",
@@ -1070,6 +1101,73 @@ module.exports = (function () {
         err_infos,
       });
     }
+  }
+
+  /************************************************************************************ BIN ***********/
+
+  async function _getBin(req, res, next) {
+    const { path_to_type } = utils.makePathFromReq(req);
+
+    try {
+      const bin_content = await folder.getBinContent({
+        path_to_type,
+      });
+      res.json(bin_content);
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to get bin folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+  async function _restoreFromBin(req, res, next) {
+    const { path_to_type, path_to_folder_in_bin } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type, path_to_folder_in_bin });
+
+    try {
+      const restored_folder_path = await folder.restoreFromBin({
+        path_to_folder_in_bin,
+        path_to_type,
+      });
+      dev.logpackets({
+        status: `restored folder from bin`,
+        restored_folder_path,
+      });
+      res.status(200).json({ restored_folder_path });
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: restored_folder_path,
+      });
+
+      notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_type),
+        meta: new_folder_meta,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to restore from bin: " + message);
+    }
+  }
+  async function _removeBinFolder(req, res, next) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type, path_to_folder, data });
+
+    // try {
+    //   await folder.removeBinFolder({
+    //     path_to_type,
+    //     path_to_folder,
+    //   });
+    //   res.status(200).json({ status: "ok" });
+    // } catch (err) {
+    //   const { message, code, err_infos } = err;
+    //   dev.error("Failed to remove bin folder: " + message);
+    //   res.status(500).send({
+    //     code,
+    //     err_infos,
+    //   });
+    // }
   }
 
   async function _remixFolder(req, res, next) {
