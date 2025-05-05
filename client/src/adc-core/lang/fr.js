@@ -1315,4 +1315,6 @@ export default {
   attributes_for_embeds: "Attributs pour les balises :",
   show_source_HTML: "Afficher le code source HTML",
   reset: "Réinitialiser",
+
+  accounts_displayed: "Comptes affichés : {count} / {total}",
 };
