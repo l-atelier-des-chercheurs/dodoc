@@ -124,6 +124,16 @@ Some text in between
     );
   });
 
+  // it should handle class attribute
+  it("should handle multiple class attributes", () => {
+    const input =
+      "(image: https://example.com/image.jpg class: maclass maclass2)";
+    const output = md.render(input);
+    expect(output).toContain(
+      '<figure class="media maclass maclass2"><img src="https://example.com/image.jpg" /></figure>'
+    );
+  });
+
   // (video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)
   it("should handle shortcodes with links in caption", () => {
     const input =

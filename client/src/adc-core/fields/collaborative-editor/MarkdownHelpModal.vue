@@ -6,31 +6,26 @@
       partout sur le web.
     </p>
     <p class="u-spacingBottom">Voici une brève documentation de son usage.</p>
-    <b>Paragraphes et sauts de ligne</b>
+
+    <h3>Paragraphes et sauts de ligne</h3>
     <p>
       Pour créer un paragraphe, laisser une ligne blanche entre deux lignes de
       texte :
     </p>
     <div class="u-spacingBottom" />
     <blockquote>
-      <p>
-        <code>Un premier paragraphe.</code> <br />
-        <br />
-        <code>Un deuxième paragraphe.</code>
-      </p>
+      <code>Un premier paragraphe.</code> <br />
+      <br />
+      <code>Un deuxième paragraphe.</code>
     </blockquote>
     <p>Pour retourner à la ligne dans un même paragraphe :</p>
     <blockquote>
-      <p>
-        <code>Un premier vers. </code>
-        <br />
-        <code>Un deuxième vers.</code>
-      </p>
+      <code>Un premier vers. </code>
+      <br />
+      <code>Un deuxième vers.</code>
     </blockquote>
 
-    <hr />
-
-    <b>Syntaxe</b>
+    <h3>Syntaxe</h3>
     <table class="u-spacingBottom">
       <thead>
         <tr>
@@ -60,7 +55,49 @@
       </tbody>
     </table>
 
-    <b>Aller plus loin</b>
+    <h3>Médias</h3>
+    <p>Pour insérer des médias, vous pouvez utiliser la balise&nbsp;:</p>
+    <blockquote>
+      <code>(image: url.jpg)</code> <br />
+      <code>(video: url.mp4)</code> <br />
+      <code>(audio: url.mp3)</code> <br />
+      <code>(embed: url.com)</code>
+    </blockquote>
+    <p>
+      Pour plus d’informations, fermez cette fenêtre et cliquez sur le bouton
+      <b>Importer des médias</b>.
+    </p>
+
+    <h3>Mettre en forme du texte</h3>
+    <p>
+      Pour mettre en forme une ligne complète, vous pouvez utiliser les balises
+      suivantes&nbsp;:
+    </p>
+    <blockquote>
+      <code>Grand texte rouge {style="color: red; font-size: 200%;"}</code>
+    </blockquote>
+    <p>
+      Pour mettre en forme seulement un mot, vous pouvez utiliser la balise
+      suivante&nbsp;:
+    </p>
+    <blockquote>
+      <code>Grand [mot]{style="color: red; font-size: 200%;"} en rouge</code>
+    </blockquote>
+    <p>
+      Vous pouvez également attribuer une classe ou un identifiant à un mot, une
+      ligne ou un média en le renseignant entre accolades&nbsp;:
+    </p>
+    <blockquote>
+      <code>
+        <code>Grand texte rouge {class="titre rouge"}</code>
+      </code>
+    </blockquote>
+    <p>
+      Vous pouvez ensuite lui attribuer des propriétés CSS en ouvrant l’éditeur
+      de styles graphiques, depuis le sommaire de la publication.
+    </p>
+
+    <h3>Aller plus loin</h3>
     <p>
       Lire la documentation sur
       <a href="https://www.markdownguide.org/">markdownguide.org</a>.
@@ -182,6 +219,12 @@ td {
     user-select: none;
   }
 }
+
+h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
 ._space {
   position: relative;
   &:after {

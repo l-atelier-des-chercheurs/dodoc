@@ -59,6 +59,8 @@
 <script>
 import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
+import markdownItAttrs from "markdown-it-attrs";
+import markdownItBracketedSpans from "markdown-it-bracketed-spans";
 import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
@@ -363,6 +365,13 @@ export default {
 
       md.use(markdownItCsc, {
         vue_instance: this,
+      });
+      md.use(markdownItBracketedSpans);
+      md.use(markdownItAttrs, {
+        // optional, these are default options
+        leftDelimiter: "{",
+        rightDelimiter: "}",
+        allowedAttributes: [], // empty array = all attributes are allowed
       });
 
       const result = md.render(content);

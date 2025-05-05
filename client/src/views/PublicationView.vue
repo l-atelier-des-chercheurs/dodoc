@@ -41,7 +41,6 @@
           <PageExport
             :publication="publication"
             :is_serversidepreview="is_serversidepreview"
-            @toggleFs="toggleFs"
           />
         </template>
         <div v-else-if="publication.template === 'story'">
@@ -160,19 +159,7 @@ export default {
       `;
     },
   },
-  methods: {
-    async openFs() {
-      await screenfull.request(this.$refs.fsContainer);
-      this.is_fullscreen = true;
-      screenfull.onchange(() => {
-        if (!screenfull.isFullscreen) this.is_fullscreen = false;
-      });
-    },
-    async closeFs() {
-      await screenfull.exit();
-      this.is_fullscreen = false;
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
