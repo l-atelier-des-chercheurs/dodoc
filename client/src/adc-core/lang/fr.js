@@ -1323,4 +1323,5 @@ export default {
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
   date_removed: "Date de suppression",
+  current_resolution: "Résolution actuelle",
 };
