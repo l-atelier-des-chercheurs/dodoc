@@ -657,15 +657,11 @@ module.exports = (function () {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
-        // https://stackoverflow.com/a/70899710
-        let totalTime;
-
         ffmpeg_cmd.input(source);
 
         try {
-          const { duration, streams } = await API.getVideoDurationFromMetadata({
-            ffmpeg_cmd,
-            video_path: source,
+          const { duration, streams } = await API.getVideoMetaData({
+            path: source,
           });
           if (trim_start !== undefined && trim_end !== undefined)
             ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
@@ -724,6 +720,8 @@ module.exports = (function () {
           }
         }
 
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
         ffmpeg_cmd
           .native()
           .outputFPS(30)
@@ -732,10 +730,13 @@ module.exports = (function () {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("codecData", (data) => {
-            totalTime = parseInt(data.duration.replace(/:/g, ""));
+            if (data.duration && data.duration !== "N/A")
+              totalTime = parseInt(data.duration.replace(/:/g, ""));
           })
           .on("progress", (progress) => {
             if (reportProgress) {
+              if (!totalTime) return reportProgress(20);
+
               const time = parseInt(progress.timemark.replace(/:/g, ""));
               if (time < 0 || time > totalTime) return;
               const percent = (time / totalTime) * 100;
