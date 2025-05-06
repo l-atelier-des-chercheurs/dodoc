@@ -1315,4 +1315,13 @@ export default {
   attributes_for_embeds: "Attributs pour les balises :",
   show_source_HTML: "Afficher le code source HTML",
   reset: "Réinitialiser",
+
+  accounts_displayed: "Comptes affichés : {count} / {total}",
+  restore_projects: "Restaurer des projets supprimés",
+  bin: "Corbeille",
+  restore: "Restaurer",
+  remove_for_good: "Supprimer définitivement",
+  bin_is_empty: "La corbeille est vide",
+  date_removed: "Date de suppression",
+  current_resolution: "Résolution actuelle",
 };

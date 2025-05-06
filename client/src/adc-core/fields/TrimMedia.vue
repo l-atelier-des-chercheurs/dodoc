@@ -226,7 +226,7 @@ export default {
   --plyr-audio-controls-background: var(--c-noir);
   --plyr-audio-control-color: white;
 
-  ::v-deep .plyr__video-wrapper {
+  ::v-deep .plyr:not(.plyr--fullscreen-enabled) .plyr__video-wrapper {
     video {
       max-height: 50vh;
     }

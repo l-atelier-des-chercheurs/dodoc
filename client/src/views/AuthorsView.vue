@@ -9,6 +9,15 @@
 
     <h1 class="_title" v-text="$t('list_of_accounts')" />
 
+    <div class="u-spacingBottom">
+      {{
+        $t("accounts_displayed", {
+          count: filtered_authors.length,
+          total: authors.length,
+        })
+      }}
+    </div>
+
     <div class="_topRow">
       <div class="_searchField">
         <SearchInput
@@ -105,30 +114,32 @@
       </DetailsPane>
     </div>
 
-    <transition-group
-      v-if="view_mode === 'list'"
-      tag="section"
-      class="_allAuthors"
-      name="listComplete"
-      appear
-    >
-      <div v-for="author in filtered_authors" :key="author.$path">
-        <AuthorCard :author="author" />
-      </div>
-    </transition-group>
-    <div v-if="view_mode === 'map'" class="_mapContainer">
-      <DisplayOnMap
-        :pins="pins"
-        :map_baselayer_opacity="0.5"
-        :map_baselayer_bw="true"
-        :is_small="false"
-        @update:opened_pin_path="pinClicked($event)"
-      />
-    </div>
-
-    <div v-if="filtered_authors.length === 0">
+    <div v-if="filtered_authors.length === 0" class="u-instructions">
       {{ $t("no_accounts_to_show") }}
     </div>
+
+    <template v-else>
+      <transition-group
+        v-if="view_mode === 'list'"
+        tag="section"
+        class="_allAuthors"
+        name="listComplete"
+        appear
+      >
+        <div v-for="author in filtered_authors" :key="author.$path">
+          <AuthorCard :author="author" />
+        </div>
+      </transition-group>
+      <div v-if="view_mode === 'map'" class="_mapContainer">
+        <DisplayOnMap
+          :pins="pins"
+          :map_baselayer_opacity="0.5"
+          :map_baselayer_bw="true"
+          :is_small="false"
+          @update:opened_pin_path="pinClicked($event)"
+        />
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -147,7 +158,7 @@ export default {
       search_author_name: "",
       filter_by_group: "",
 
-      view_mode: "map",
+      view_mode: "list",
     };
   },
   created() {},
@@ -207,6 +218,8 @@ export default {
 
         if (this.filter_by_group)
           if (!a.group?.includes(this.filter_by_group)) return false;
+
+        if (this.view_mode === "map") if (!a.$location) return false;
 
         return true;
       });

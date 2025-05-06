@@ -440,6 +440,26 @@ export default function () {
         this.$set(this.store, folder.$path, folder);
         return this.store[folder.$path];
       },
+      async getBin({ path }) {
+        const response = await this.$axios.get(`${path}/_bin`).catch((err) => {
+          throw this.processError(err);
+        });
+        return response.data;
+      },
+      async restoreFromBin({ path }) {
+        const response = await this.$axios
+          .post(`${path}/_restore`)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
+      },
+      async removeFromBin({ path }) {
+        const response = await this.$axios.delete(path).catch((err) => {
+          throw this.processError(err);
+        });
+        return response.data;
+      },
 
       async getFile({ path }) {
         const response = await this.$axios.get(path);

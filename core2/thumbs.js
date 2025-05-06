@@ -4,9 +4,7 @@ const path = require("path"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
   https = require("https"),
-  writeFileAtomic = require("write-file-atomic"),
-  { promisify } = require("util"),
-  fastFolderSize = require("fast-folder-size");
+  writeFileAtomic = require("write-file-atomic");
 
 const utils = require("./utils"),
   webpreview = require("./webpreview");
@@ -182,11 +180,7 @@ module.exports = (function () {
       });
 
       let infos = {};
-      const full_folder_path = utils.getPathToUserContent(path_to_folder);
-
-      const fastFolderSizeAsync = promisify(fastFolderSize);
-      const size = await fastFolderSizeAsync(full_folder_path);
-      if (size) infos.size = size;
+      infos.size = await utils.getFolderSize(path_to_folder);
 
       // TODO also get quantity of medias
 

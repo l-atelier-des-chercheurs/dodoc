@@ -25,7 +25,10 @@
       {{ unit_i18n }}
     </div>
     <div v-if="is_video">
-      <small class="u-instructions">
+      <small
+        class="u-instructions"
+        :class="{ 'is--invalid': width % 2 !== 0 || height % 2 !== 0 }"
+      >
         {{ $t("video_resolution_even") }}
       </small>
     </div>
@@ -84,7 +87,7 @@ export default {
   },
   methods: {
     adjustWidth(e) {
-      const value = Math.round(Number(e.target.value));
+      let value = Math.round(Number(e.target.value));
       this.$emit("update:width", value);
       if (this.keep_ratio) {
         let h = Math.round(value * this.ratio);
@@ -93,7 +96,7 @@ export default {
       }
     },
     adjustHeight(e) {
-      const value = Math.round(Number(e.target.value));
+      let value = Math.round(Number(e.target.value));
       this.$emit("update:height", value);
       if (this.keep_ratio) {
         let w = Math.round(value / this.ratio);
@@ -127,5 +130,10 @@ export default {
 
 ._mb {
   margin-bottom: calc(var(--spacing) / 2);
+}
+
+.is--invalid {
+  color: var(--c-rouge);
+  font-weight: bold;
 }
 </style>
