@@ -489,6 +489,9 @@ module.exports = (function () {
 
       return restored_folder_path;
     },
+    removeBinFolder: async ({ path_to_folder_in_bin }) => {
+      await _removeFolderForGood({ path_to_folder: path_to_folder_in_bin });
+    },
   };
 
   async function _getFolderSlugs({ path_to_type }) {

@@ -20,7 +20,7 @@
         <div v-for="bin_folder in bin_folders" :key="bin_folder.slug">
           <!-- {{ bin_folder.title }} – {{ bin_folder.$path }} -->
 
-          <div class="u-card2 _projectThumb">
+          <div class="_projectThumb">
             <div class="_projectThumb--infos">
               <div class="_projectThumb--infos--preview">
                 <ProjectPresentation
@@ -107,12 +107,18 @@ export default {
       this.bin_folders = bin_content.folders;
     },
     async restoreFolder(path) {
+      this.is_loading = true;
       await this.$api.restoreFromBin({ path });
+      await new Promise((resolve) => setTimeout(resolve, 200));
       this.getBinContent();
+      this.is_loading = false;
     },
     async removeForGood(path) {
+      this.is_loading = true;
       await this.$api.removeFromBin({ path });
+      await new Promise((resolve) => setTimeout(resolve, 200));
       this.getBinContent();
+      this.is_loading = false;
     },
 
     // async emptyBin(path) {
@@ -140,6 +146,10 @@ export default {
   // background-color: var(--c-gris_clair);
   // border-radius: var(--border-radius);
   padding: calc(var(--spacing) / 2);
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
 }
 
 ._projectThumb--infos {

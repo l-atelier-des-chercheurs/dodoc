@@ -51,6 +51,38 @@ module.exports = (function () {
       _getPublicFolder
     );
 
+    /* BIN */
+    app.get(
+      [
+        "/_api2/:folder_type/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _getBin
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/_bin/:bin_folder_slug/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug/_restore",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _restoreFromBin
+    );
+    app.delete(
+      [
+        "/_api2/:folder_type/_bin/:bin_folder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _removeBinFolder
+    );
+
     /* FILES */
     app.get(
       [
@@ -165,36 +197,6 @@ module.exports = (function () {
       _restrictToContributors,
       _importFolder
     );
-    app.get(
-      [
-        "/_api2/:folder_type/_bin",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin",
-      ],
-      _generalPasswordCheck,
-      _restrictToLocalAdmins,
-      _getBin
-    );
-    app.post(
-      [
-        "/_api2/:folder_type/_bin/:bin_folder_slug/_restore",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug/_restore",
-        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug/_restore",
-      ],
-      _generalPasswordCheck,
-      _restrictToLocalAdmins,
-      _restoreFromBin
-    );
-    // app.delete(
-    //   [
-    //     "/_api2/:folder_type/_bin/:bin_folder_slug",
-    //     "/_api2/:folder_type/:folder_slug/:sub_folder_type/_bin/:bin_folder_slug",
-    //     "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_bin/:bin_folder_slug",
-    //   ],
-    //   _generalPasswordCheck,
-    //   _restrictToLocalAdmins,
-    //   _removeBinFolder
-    // );
 
     app.post(
       [
@@ -1151,23 +1153,23 @@ module.exports = (function () {
     }
   }
   async function _removeBinFolder(req, res, next) {
-    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_type, path_to_folder, data });
+    const { path_to_folder_in_bin } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder_in_bin });
 
-    // try {
-    //   await folder.removeBinFolder({
-    //     path_to_type,
-    //     path_to_folder,
-    //   });
-    //   res.status(200).json({ status: "ok" });
-    // } catch (err) {
-    //   const { message, code, err_infos } = err;
-    //   dev.error("Failed to remove bin folder: " + message);
-    //   res.status(500).send({
-    //     code,
-    //     err_infos,
-    //   });
-    // }
+    try {
+      await folder.removeBinFolder({
+        path_to_folder_in_bin,
+      });
+      dev.logpackets({ status: "folder was removed from bin" });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to remove bin folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
   }
 
   async function _remixFolder(req, res, next) {
