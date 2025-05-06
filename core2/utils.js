@@ -735,9 +735,8 @@ module.exports = (function () {
           })
           .on("progress", (progress) => {
             if (reportProgress) {
-              if (!totalTime) return reportProgress(20);
-
               const time = parseInt(progress.timemark.replace(/:/g, ""));
+              if (!totalTime) return reportProgress(time);
               if (time < 0 || time > totalTime) return;
               const percent = (time / totalTime) * 100;
               reportProgress(percent);
