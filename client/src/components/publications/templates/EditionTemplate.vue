@@ -37,7 +37,7 @@
             :key="'edit_graphics'"
             :publication="publication"
             :opened_style_file_meta="opened_style_file_meta"
-            :show_source_HTML.sync="show_source_HTML"
+            :show_source_html.sync="show_source_html"
             @close="$emit('updatePane', { key: 'edit_graphics', value: false })"
             @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
           />
@@ -63,7 +63,7 @@
             :opened_chapter_meta_filename="opened_section_meta_filename"
             :view_mode="view_mode"
             :opened_style_file_meta="opened_style_file_meta"
-            :show_source_HTML="show_source_HTML"
+            :show_source_html.sync="show_source_html"
             :can_edit="can_edit"
             @openChapter="
               $emit('updatePane', { key: 'chapter', value: $event })
@@ -134,7 +134,7 @@ export default {
     return {
       show_edit_pane: true,
       show_preview_pane: true,
-      show_source_HTML: false,
+      show_source_html: false,
     };
   },
   created() {},

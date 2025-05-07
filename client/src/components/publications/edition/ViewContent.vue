@@ -25,12 +25,16 @@
         <option value="">style – {{ $t("default_value") }}</option>
       </select>
 
-      <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
-        <option value="A4">{{ $t("A4_portrait") }}</option>
-        <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
-        <option value="A5">{{ $t("A5_portrait") }}</option>
-        <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
-      </select> -->
+      <div
+        v-if="$listeners['update:show_source_html'] && view_mode === 'book'"
+        class="_toggleHTML"
+      >
+        <ToggleInput
+          :content="show_source_html"
+          :label="$t('show_source_html')"
+          @update:content="$emit('update:show_source_html', $event)"
+        />
+      </div>
     </div>
 
     <div class="_viewContent--content">
@@ -40,7 +44,7 @@
         :format_mode="format_mode"
         :viewer_type="viewer_type"
         :css_styles="css_styles"
-        :show_source_HTML="show_source_HTML"
+        :show_source_html="show_source_html"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
@@ -81,7 +85,7 @@ export default {
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
-    show_source_HTML: Boolean,
+    show_source_html: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -550,11 +554,20 @@ export default {
 
   select {
     width: 18ch;
+  }
+
+  * {
     pointer-events: all;
   }
 
   @media print {
     display: none;
   }
+}
+
+._toggleHTML {
+  background-color: var(--c-gris_clair);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  border-radius: var(--border-radius);
 }
 </style>

@@ -19,7 +19,7 @@
       <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
-    <ShowSourceHTML v-if="show_source_HTML" :content_html="content_html" />
+    <ShowSourceHTML v-if="show_source_html" :content_html="content_html" />
   </div>
 </template>
 <script>
@@ -44,7 +44,7 @@ export default {
       type: String,
       required: true,
     },
-    show_source_HTML: Boolean,
+    show_source_html: Boolean,
     can_edit: Boolean,
   },
   components: {

@@ -14,9 +14,9 @@
 
     <div class="_topBtns">
       <ToggleInput
-        :content="show_source_HTML"
-        :label="$t('show_source_HTML')"
-        @update:content="$emit('update:show_source_HTML', $event)"
+        :content="show_source_html"
+        :label="$t('show_source_html')"
+        @update:content="$emit('update:show_source_html', $event)"
       />
 
       <button
@@ -69,7 +69,7 @@ export default {
   props: {
     style_file: Object,
     default_styles: String,
-    show_source_HTML: Boolean,
+    show_source_html: Boolean,
   },
   components: {},
   data() {
