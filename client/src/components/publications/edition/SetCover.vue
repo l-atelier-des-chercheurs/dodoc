@@ -74,6 +74,8 @@
         :can_edit="can_edit"
         :options="cover_layout_mode_options"
       />
+
+      <RemoveMenu @remove="removeCover" />
     </template>
   </div>
 </template>

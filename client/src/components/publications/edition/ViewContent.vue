@@ -165,15 +165,20 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
-        if (chapter._main_text?.$content) {
-          if (chapter._main_text?.content_type === "markdown") {
-            _chapter.content = this.parseMarkdownWithMarkedownIt(
-              chapter._main_text.$content,
-              chapter.source_medias
-            );
-          } else {
-            _chapter.content = chapter._main_text?.$content;
+        _chapter.section_type = chapter.section_type;
+        if (chapter.section_type === "text") {
+          if (chapter._main_text?.$content) {
+            if (chapter._main_text?.content_type === "markdown") {
+              _chapter.content = this.parseMarkdownWithMarkedownIt(
+                chapter._main_text.$content,
+                chapter.source_medias
+              );
+            } else {
+              _chapter.content = chapter._main_text?.$content;
+            }
           }
+        } else if (chapter.section_type === "gallery") {
+          _chapter.content = this.parseGallery(chapter.source_medias);
         }
 
         nodes.chapters.push(_chapter);
@@ -381,6 +386,31 @@ export default {
       const result = md.render(content);
       return result;
     },
+    parseGallery(source_medias) {
+      const medias = source_medias
+        .map((media) => {
+          return this.getSourceMedia({
+            source_media: media,
+            folder_path: this.publication.$path,
+          });
+        })
+        .filter(Boolean);
+
+      let html = `<div class="gallery" data-number-of-medias="${medias.length}" >`;
+
+      medias.forEach((media) => {
+        html += `<figure class="media gallery--item">
+          <img src="${this.makeMediaFileURL({
+            $path: media.$path,
+            $media_filename: media.$media_filename,
+          })}" />
+        </figure>`;
+      });
+
+      html += "</div>";
+
+      return html;
+    },
 
     getMediaSrc(meta_src, source_medias) {
       if (!meta_src) return;
@@ -558,6 +588,16 @@ export default {
 
   * {
     pointer-events: all;
+  }
+
+  ::v-deep {
+    ._toggleHTML {
+      background-color: var(--c-gris_fonce);
+
+      ._label {
+        color: white;
+      }
+    }
   }
 
   @media print {

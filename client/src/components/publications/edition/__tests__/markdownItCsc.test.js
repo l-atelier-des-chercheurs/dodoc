@@ -153,13 +153,30 @@ Some text in between
     );
   });
 
-  it("should handle multiple shortcodes on the same line and put them in a container", () => {
-    const input = `(image: https://example.com/image1.jpg)(audio: https://example.com/audio1.mp3)`;
+  it("should handle 2 shortcodes on the same line and put them in a container", () => {
+    const input = `(image: https://example.com/image1.jpg) (audio: https://example.com/audio1.mp3)`;
 
     const output = md.render(input);
     expect(output).toBe(
-      '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n' +
-        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n'
+      '<div class="media-container">\n' +
+        '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n' +
+        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n' +
+        "</div>\n"
+    );
+  });
+  it("should handle 3 shortcodes on the same line and put them in a container", () => {
+    const input = `(image: https://example.com/image1.jpg caption: image1) (audio: https://example.com/audio1.mp3 caption: audio1) (video: https://example.com/video1.mp4 caption: video1)`;
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<div class="media-container">\n' +
+        '<figure class="media media-image"><img src="https://example.com/image1.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>image1</span></figcaption></figure>\n' +
+        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio>\n' +
+        '<figcaption class="mediaCaption"><span>audio1</span></figcaption></figure>\n' +
+        '<figure class="media media-video"><video src="https://example.com/video1.mp4" controls></video>\n' +
+        '<figcaption class="mediaCaption"><span>video1</span></figcaption></figure>\n' +
+        "</div>\n"
     );
   });
 

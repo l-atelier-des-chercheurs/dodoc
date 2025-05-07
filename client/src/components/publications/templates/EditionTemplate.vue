@@ -15,6 +15,7 @@
             :sections="all_chapters"
             :opened_section_meta_filename="opened_section_meta_filename"
             :can_edit="can_edit"
+            @removeChapter="removeChapter"
             @toggleSection="
               $emit('updatePane', { key: 'chapter', value: $event })
             "
@@ -158,6 +159,10 @@ export default {
             f.$path.endsWith("/" + chapter.main_text_meta)
           );
         }
+        if (!chapter.section_type) {
+          chapter.section_type = "text";
+        }
+
         return chapter;
       });
     },
