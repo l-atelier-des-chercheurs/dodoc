@@ -19,6 +19,7 @@ export default (md, o = {}) => {
     let max = state.eMarks[startLine];
     let lineText = state.src.slice(pos, max);
     let foundShortcode = false;
+    let shortcodeCount = 0;
 
     // Process all shortcodes on the current line
     while (pos < max) {
@@ -129,17 +130,38 @@ export default (md, o = {}) => {
         }
       }
 
+      // If this is the first shortcode on the line and there might be more, add a container start token
+      if (shortcodeCount === 0) {
+        // Store the position to check for more shortcodes
+        const checkPos = pos + shortcodeText.length;
+        const remainingLine = state.src.slice(checkPos, max).trim();
+
+        // Check if there are more shortcodes on this line
+        if (remainingLine.startsWith("(") && /^\([-\w]+:/.test(remainingLine)) {
+          // Add a container opening token
+          let containerToken = state.push("container_open", "div", 1);
+          containerToken.attrSet("class", "media-container");
+          containerToken.map = [startLine, startLine + 1];
+        }
+      }
+
       // Set token
       let token = state.push("csc", tag, 0);
       token.map = [startLine, startLine + 1];
       token.markup = shortcodeText;
       token.attrs = attrs;
       token.content = source;
+      shortcodeCount++;
 
       // Move position forward by the length of the shortcode
       pos += shortcodeText.length;
       lineText = state.src.slice(pos, max);
       foundShortcode = true;
+    }
+
+    // If we found multiple shortcodes, add a container closing token
+    if (shortcodeCount > 1) {
+      state.push("container_close", "div", -1);
     }
 
     if (foundShortcode) {
@@ -150,6 +172,15 @@ export default (md, o = {}) => {
 
     return false;
   }
+
+  // Register custom container renderer
+  md.renderer.rules.container_open = function (tokens, idx) {
+    return `<div class="${tokens[idx].attrGet("class")}">\n`;
+  };
+
+  md.renderer.rules.container_close = function () {
+    return "</div>\n";
+  };
 
   // set render csc
   md.renderer.rules.csc = function (tokens, index, type) {
@@ -183,7 +214,7 @@ export default (md, o = {}) => {
         msg += vue_instance.$t
           ? vue_instance.$t("media_not_found")
           : "Media not found";
-        return `<div class="media"><i>${msg}</i></div>`;
+        return `<div class="media media-error"><i>${msg}</i></div>`;
       }
 
       let class_attr = "";
@@ -198,7 +229,7 @@ export default (md, o = {}) => {
         }
       }
 
-      let classes = ["media"];
+      let classes = ["media", "media-" + token.tag];
       if (class_attr) {
         classes.push(class_attr);
       }

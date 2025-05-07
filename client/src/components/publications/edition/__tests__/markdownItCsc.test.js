@@ -35,8 +35,8 @@ describe("markdown-it custom shortcode plugin", () => {
   it("should render a basic image with src", () => {
     const input = "(image: https://example.com/image.jpg)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media"><img src="https://example.com/image.jpg" /></figure>'
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image.jpg" /></figure>\n'
     );
   });
 
@@ -44,9 +44,9 @@ describe("markdown-it custom shortcode plugin", () => {
     const input =
       "(image: https://example.com/image.jpg caption: A beautiful image)";
     const output = md.render(input);
-    expect(output).toContain('<img src="https://example.com/image.jpg" />');
-    expect(output).toContain(
-      '<figcaption class="mediaCaption"><span>A beautiful image</span></figcaption>'
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>A beautiful image</span></figcaption></figure>\n'
     );
   });
 
@@ -54,24 +54,24 @@ describe("markdown-it custom shortcode plugin", () => {
     const input =
       "(image: https://example.com/image.jpg width: 100 height: 100)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media" width="100" height="100"><img src="https://example.com/image.jpg" /></figure>'
+    expect(output).toBe(
+      '<figure class="media media-image" width="100" height="100"><img src="https://example.com/image.jpg" /></figure>\n'
     );
   });
 
   it("should render video shortcodes", () => {
     const input = "(video: https://example.com/video.mp4)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media"><video src="https://example.com/video.mp4" controls></video></figure>'
+    expect(output).toBe(
+      '<figure class="media media-video"><video src="https://example.com/video.mp4" controls></video></figure>\n'
     );
   });
 
   it("should render audio shortcodes", () => {
     const input = "(audio: https://example.com/audio.mp3)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media"><audio src="https://example.com/audio.mp3" controls></audio></figure>'
+    expect(output).toBe(
+      '<figure class="media media-audio"><audio src="https://example.com/audio.mp3" controls></audio></figure>\n'
     );
   });
 
@@ -88,17 +88,23 @@ describe("markdown-it custom shortcode plugin", () => {
     });
   });
 
-  it("should handle multiple shortcodes in the same text", () => {
+  it("should handle multiple shortcodes on different lines", () => {
     const input = `
 (image: https://example.com/image1.jpg caption: First image)
+
 Some text in between
+
 (image: https://example.com/image2.jpg caption: Second image)
     `.trim();
 
     const output = md.render(input);
-    expect(output).toContain("First image");
-    expect(output).toContain("Second image");
-    expect(output).toContain("Some text in between");
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image1.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>First image</span></figcaption></figure>\n' +
+        "<p>Some text in between</p>\n" +
+        '<figure class="media media-image"><img src="https://example.com/image2.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>Second image</span></figcaption></figure>\n'
+    );
   });
 
   it("should preserve other markdown syntax around shortcodes", () => {
@@ -109,18 +115,20 @@ Some text in between
     `.trim();
 
     const output = md.render(input);
-    expect(output).toContain("<h1>Title</h1>");
-    expect(output).toContain('<img src="https://example.com/image.jpg" />');
-    expect(output).toContain("<strong>Bold text</strong>");
-    expect(output).toContain("<em>italic text</em>");
+    expect(output).toBe(
+      "<h1>Title</h1>\n" +
+        '<figure class="media media-image"><img src="https://example.com/image.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>An image</span></figcaption></figure>\n' +
+        "<p><strong>Bold text</strong> and <em>italic text</em></p>\n"
+    );
   });
 
   // it should handle class attribute
   it("should handle class attribute", () => {
     const input = "(image: https://example.com/image.jpg class: maclass)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media maclass"><img src="https://example.com/image.jpg" /></figure>'
+    expect(output).toBe(
+      '<figure class="media media-image maclass"><img src="https://example.com/image.jpg" /></figure>\n'
     );
   });
 
@@ -129,8 +137,8 @@ Some text in between
     const input =
       "(image: https://example.com/image.jpg class: maclass maclass2)";
     const output = md.render(input);
-    expect(output).toContain(
-      '<figure class="media maclass maclass2"><img src="https://example.com/image.jpg" /></figure>'
+    expect(output).toBe(
+      '<figure class="media media-image maclass maclass2"><img src="https://example.com/image.jpg" /></figure>\n'
     );
   });
 
@@ -139,21 +147,45 @@ Some text in between
     const input =
       "(video: https://latelier-des-chercheurs.fr/content/apercu.png caption: Plop Plip [qqq](https://geojson.io) Hehehe)";
     const output = md.render(input);
-    expect(output).toContain(
-      `<figure class="media"><video src="https://latelier-des-chercheurs.fr/content/apercu.png" controls></video>`
-    );
-    expect(output).toContain(
-      `<figcaption class="mediaCaption"><span>Plop Plip <a href="https://geojson.io">qqq</a> Hehehe</span></figcaption>`
+    expect(output).toBe(
+      `<figure class="media media-video"><video src="https://latelier-des-chercheurs.fr/content/apercu.png" controls></video>\n` +
+        `<figcaption class="mediaCaption"><span>Plop Plip <a href="https://geojson.io">qqq</a> Hehehe</span></figcaption></figure>\n`
     );
   });
 
-  it("should handle multiple shortcodes on the same line", () => {
-    const input = `(image: https://example.com/image1.jpg)(audio: https://example.com/audio1.mp3)`;
+  it("should handle 2 shortcodes on the same line and put them in a container", () => {
+    const input = `(image: https://example.com/image1.jpg) (audio: https://example.com/audio1.mp3)`;
 
     const output = md.render(input);
     expect(output).toBe(
-      '<figure class="media"><img src="https://example.com/image1.jpg" /></figure>\n' +
-        '<figure class="media"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n'
+      '<div class="media-container">\n' +
+        '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n' +
+        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n' +
+        "</div>\n"
+    );
+  });
+  it("should handle 3 shortcodes on the same line and put them in a container", () => {
+    const input = `(image: https://example.com/image1.jpg caption: image1) (audio: https://example.com/audio1.mp3 caption: audio1) (video: https://example.com/video1.mp4 caption: video1)`;
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<div class="media-container">\n' +
+        '<figure class="media media-image"><img src="https://example.com/image1.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>image1</span></figcaption></figure>\n' +
+        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio>\n' +
+        '<figcaption class="mediaCaption"><span>audio1</span></figcaption></figure>\n' +
+        '<figure class="media media-video"><video src="https://example.com/video1.mp4" controls></video>\n' +
+        '<figcaption class="mediaCaption"><span>video1</span></figcaption></figure>\n' +
+        "</div>\n"
+    );
+  });
+
+  it("should not wrap a single shortcode in a container", () => {
+    const input = `(image: https://example.com/image1.jpg)`;
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n'
     );
   });
 });

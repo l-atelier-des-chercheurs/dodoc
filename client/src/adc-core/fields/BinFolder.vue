@@ -4,69 +4,68 @@
     @close="$emit('close')"
   >
     <div class="_cont">
-      <div v-if="modal_instructions" class="u-spacingBottom">
-        {{ modal_instructions }}
-      </div>
-      <SizeDisplay
-        v-if="bin_folder_size"
-        class="u-spacingBottom"
-        :size="bin_folder_size"
-      />
-
       <div v-if="bin_folders.length === 0">
         <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
       </div>
-      <div v-else class="_projects">
-        <div v-for="bin_folder in bin_folders" :key="bin_folder.slug">
-          <!-- {{ bin_folder.title }} – {{ bin_folder.$path }} -->
+      <template v-else>
+        <SizeDisplay
+          v-if="bin_folder_size"
+          class="u-spacingBottom"
+          :size="bin_folder_size"
+        />
 
-          <div class="_projectThumb">
-            <div class="_projectThumb--infos">
-              <div class="_projectThumb--infos--preview">
-                <ProjectPresentation
-                  :project="bin_folder"
+        <div class="_projects">
+          <div v-for="bin_folder in bin_folders" :key="bin_folder.slug">
+            <!-- {{ bin_folder.title }} – {{ bin_folder.$path }} -->
+
+            <div class="_projectThumb">
+              <div class="_projectThumb--infos">
+                <div class="_projectThumb--infos--preview">
+                  <ProjectPresentation
+                    :project="bin_folder"
+                    :context="'tiny'"
+                    :display_original_space="false"
+                    :can_edit="false"
+                  />
+                </div>
+                <SizeDisplay
+                  v-if="bin_folder.$infos.size"
+                  class="u-spacingBottom"
+                  :size="bin_folder.$infos.size"
+                />
+                <DateDisplay
+                  :title="$t('date_created')"
+                  :date="bin_folder.$date_created"
                   :context="'tiny'"
-                  :display_original_space="false"
-                  :can_edit="false"
+                  class="u-spacingBottom"
+                />
+                <DateDisplay
+                  :title="$t('date_removed')"
+                  :date="bin_folder.$date_modified"
+                  :context="'tiny'"
+                  class="u-spacingBottom"
                 />
               </div>
-              <SizeDisplay
-                v-if="bin_folder.$infos.size"
-                class="u-spacingBottom"
-                :size="bin_folder.$infos.size"
-              />
-              <DateDisplay
-                :title="$t('date_created')"
-                :date="bin_folder.$date_created"
-                :context="'tiny'"
-                class="u-spacingBottom"
-              />
-              <DateDisplay
-                :title="$t('date_removed')"
-                :date="bin_folder.$date_modified"
-                :context="'tiny'"
-                class="u-spacingBottom"
-              />
-            </div>
-            <div class="u-sameRow _btns">
-              <button
-                type="button"
-                class="u-button u-button_small u-button_red"
-                @click="removeForGood(bin_folder.$path)"
-              >
-                {{ $t("remove_for_good") }}
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_small u-button_bleuvert"
-                @click="restoreFolder(bin_folder.$path)"
-              >
-                {{ $t("restore") }}
-              </button>
+              <div class="u-sameRow _btns">
+                <button
+                  type="button"
+                  class="u-button u-button_small u-button_red"
+                  @click="removeForGood(bin_folder.$path)"
+                >
+                  {{ $t("remove_for_good") }}
+                </button>
+                <button
+                  type="button"
+                  class="u-button u-button_small u-button_bleuvert"
+                  @click="restoreFolder(bin_folder.$path)"
+                >
+                  {{ $t("restore") }}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
   </BaseModal2>
 </template>
@@ -77,7 +76,6 @@ export default {
   props: {
     button_text: String,
     modal_title: String,
-    modal_instructions: String,
     path: String,
     subfolders_type: String,
   },
