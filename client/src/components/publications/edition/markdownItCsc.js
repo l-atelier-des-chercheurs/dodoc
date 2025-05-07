@@ -183,7 +183,7 @@ export default (md, o = {}) => {
         msg += vue_instance.$t
           ? vue_instance.$t("media_not_found")
           : "Media not found";
-        return `<div class="media"><i>${msg}</i></div>`;
+        return `<div class="media media-error"><i>${msg}</i></div>`;
       }
 
       let class_attr = "";
@@ -198,7 +198,7 @@ export default (md, o = {}) => {
         }
       }
 
-      let classes = ["media"];
+      let classes = ["media", "media-" + token.tag];
       if (class_attr) {
         classes.push(class_attr);
       }
