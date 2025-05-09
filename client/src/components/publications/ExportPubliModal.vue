@@ -9,7 +9,23 @@
       />
     </div>
 
-    <template v-if="export_mode === 'pdf'"> </template>
+    <template v-if="export_mode === 'pdf'">
+      <DLabel :str="$t('pages_to_export')" />
+      <select v-model="pdf_pages_to_export_mode">
+        <option value="all">{{ $t("all_pages") }}</option>
+        <option value="current">{{ $t("current_f") }}</option>
+        <option value="custom">{{ $t("custom") }}</option>
+      </select>
+
+      <div class="u-spacingBottom" />
+
+      <input
+        v-if="pdf_pages_to_export_mode === 'custom'"
+        type="text"
+        v-model="specific_pdf_page_to_export"
+        :placeholder="$t('page_number_or_interval')"
+      />
+    </template>
 
     <template v-if="export_mode === 'png'">
       <template v-if="publication.template === 'page_by_page'">
@@ -65,6 +81,8 @@ export default {
     return {
       task_instructions: false,
       page_to_export_as_image: 1,
+      pdf_pages_to_export_mode: "all",
+      specific_pdf_page_to_export: "",
 
       page_width: this.publication.page_width || 210,
       page_height: this.publication.page_height || 297,
@@ -157,6 +175,14 @@ export default {
         this.export_mode === "png"
       )
         instructions.page = this.page_to_export_as_image;
+
+      if (this.export_mode === "pdf") {
+        if (this.pdf_pages_to_export_mode === "current")
+          instructions.page = this.current_page_number;
+        else if (this.pdf_pages_to_export_mode === "custom")
+          instructions.page = this.specific_pdf_page_to_export;
+      }
+
       if (this.publication.page_spreads === true) instructions.page_width *= 2;
       this.task_instructions = instructions;
     },
