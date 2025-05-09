@@ -1329,5 +1329,8 @@ export default {
   removed_successfully: "Supprimé avec succès",
   all_pages: "Toutes les pages",
   page_number_or_interval: "Par exemple 2-6, 9, 12-16",
-  pages_to_export: "Pages à exporter",
+  pages_to_export: "Page(s) à exporter",
+  spreads_to_export: "Planche(s) à exporter",
+  all_spreads: "Toutes les planches",
+  spread_number_or_interval: "Par exemple 2-6, 9, 12-16",
 };

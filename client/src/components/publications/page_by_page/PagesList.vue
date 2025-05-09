@@ -467,6 +467,7 @@ export default {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 0;
   // background: rgba(0, 0, 0, 0.6) !important;
   color: black;
   opacity: 0;

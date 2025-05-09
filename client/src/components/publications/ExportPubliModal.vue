@@ -10,11 +10,23 @@
     </div>
 
     <template v-if="export_mode === 'pdf'">
-      <DLabel :str="$t('pages_to_export')" />
+      <DLabel
+        :str="!is_spread ? $t('pages_to_export') : $t('spreads_to_export')"
+      />
       <div class="u-inputGroup">
         <select v-model="pdf_pages_to_export_mode">
-          <option value="all">{{ $t("all_pages") }}</option>
-          <option value="current">{{ $t("current_f") }}</option>
+          <option value="all">
+            {{ !is_spread ? $t("all_pages") : $t("all_spreads") }}
+          </option>
+          <option
+            v-if="
+              (!is_spread && current_page_number !== false) ||
+              (is_spread && current_spread_number !== false)
+            "
+            value="current"
+          >
+            {{ current_info }}
+          </option>
           <option value="custom">{{ $t("custom") }}</option>
         </select>
 
@@ -22,8 +34,12 @@
           v-if="pdf_pages_to_export_mode === 'custom'"
           size="large"
           type="text"
-          v-model="specific_pdf_page_to_export"
-          :placeholder="$t('page_number_or_interval')"
+          v-model="specific_pdf_page_or_spread_to_export"
+          :placeholder="
+            !is_spread
+              ? $t('page_number_or_interval')
+              : $t('spread_number_or_interval')
+          "
         />
       </div>
     </template>
@@ -83,7 +99,7 @@ export default {
       task_instructions: false,
       page_to_export_as_image: 1,
       pdf_pages_to_export_mode: "all",
-      specific_pdf_page_to_export: "",
+      specific_pdf_page_or_spread_to_export: "",
 
       page_width: this.publication.page_width || 210,
       page_height: this.publication.page_height || 297,
@@ -116,6 +132,9 @@ export default {
     page_count() {
       return this.publication.pages.length;
     },
+    is_spread() {
+      return this.publication.page_spreads === true;
+    },
     export_mode_icon() {
       if (this.export_mode === "pdf") return "file-pdf";
       if (this.export_mode === "png") return "file-earmark-image";
@@ -124,11 +143,26 @@ export default {
     },
     current_page_number() {
       if (this.pane_infos?.page_id && this.publication.pages) {
-        debugger;
         const page_number = this.publication.pages.findIndex(
           (p) => p.id === this.pane_infos.page_id
         );
         return page_number + 1;
+      }
+      return false;
+    },
+    current_spread_number() {
+      if (this.pane_infos?.page_id && this.publication.page_spreads) {
+        const page_number = this.publication.pages.findIndex(
+          (p) => p.id === this.pane_infos.page_id
+        );
+        // page 0 = spread = 1
+        // page 1 = spread = 2
+        // page 2 = spread = 2
+        // page 3 = spread = 3
+        // page 4 = spread = 3
+        // page 5 = spread = 4
+        // page 6 = spread = 4
+        return Math.floor((page_number + 1) / 2) + 1;
       }
       return false;
     },
@@ -145,6 +179,19 @@ export default {
         path: this.createURLFromPath(this.publication.$path),
       });
       return window.location.origin + route.href;
+    },
+    current_info() {
+      let html = this.$t("current_f") + " (";
+      html += this.is_spread
+        ? this.$t("spread").toLowerCase()
+        : this.$t("page").toLowerCase();
+      html +=
+        " " +
+        (this.is_spread
+          ? this.current_spread_number
+          : this.current_page_number) +
+        ")";
+      return html;
     },
   },
   methods: {
@@ -179,12 +226,14 @@ export default {
 
       if (this.export_mode === "pdf") {
         if (this.pdf_pages_to_export_mode === "current")
-          instructions.page = this.current_page_number;
+          instructions.page = !this.is_spread
+            ? this.current_page_number
+            : this.current_spread_number;
         else if (this.pdf_pages_to_export_mode === "custom")
-          instructions.page = this.specific_pdf_page_to_export;
+          instructions.page = this.specific_pdf_page_or_spread_to_export;
       }
 
-      if (this.publication.page_spreads === true) instructions.page_width *= 2;
+      if (this.is_spread) instructions.page_width *= 2;
       this.task_instructions = instructions;
     },
   },

@@ -11,7 +11,7 @@
       <template v-if="!is_spread">
         <template v-if="display_mode !== 'slides'">
           <div
-            v-for="(page, page_number) in pages_to_show"
+            v-for="page in pages_to_show"
             class="_page"
             :key="'page-' + page.id"
           >
@@ -55,6 +55,7 @@
       </template>
       <template v-else>
         <template v-if="display_mode !== 'slides'">
+          <!-- print mode with ?display=print -->
           <div
             class="_spread"
             :key="s_index"
@@ -84,6 +85,7 @@
           </div>
         </template>
         <template v-else>
+          <!-- presentation mode with ?display=slides -->
           <transition name="fade_fast" mode="out-in">
             <div
               class="_spread"
@@ -299,18 +301,11 @@ export default {
     },
     pages_to_show() {
       const pages_to_display = this.$route.query?.page;
-
-      if (this.$route.query?.page && this.$route.query?.page.includes("-")) {
-        const [start, end] = this.$route.query?.page.split("-");
+      if (pages_to_display && pages_to_display.includes("-")) {
+        const [start, end] = pages_to_display.split("-");
         return this.pages.slice(start - 1, end);
-      } else if (
-        this.$route.query?.page &&
-        !this.$route.query?.page.includes("-")
-      ) {
-        return this.pages.slice(
-          +this.$route.query.page - 1,
-          +this.$route.query.page
-        );
+      } else if (pages_to_display && !pages_to_display.includes("-")) {
+        return this.pages.slice(+pages_to_display - 1, +pages_to_display);
       }
 
       return this.pages;
@@ -336,9 +331,13 @@ export default {
       });
     },
     spreads_to_show() {
-      const spread_to_display = +this.$route.query?.page;
-      if (spread_to_display)
-        return this.spreads.slice(spread_to_display - 1, spread_to_display);
+      const spreads_to_display = this.$route.query?.page;
+      if (spreads_to_display && spreads_to_display.includes("-")) {
+        const [start, end] = spreads_to_display.split("-");
+        return this.spreads.slice(start - 1, end);
+      } else if (spreads_to_display) {
+        return this.spreads.slice(+spreads_to_display - 1, +spreads_to_display);
+      }
       return this.spreads;
     },
   },
