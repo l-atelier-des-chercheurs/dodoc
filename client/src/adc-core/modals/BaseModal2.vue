@@ -150,7 +150,7 @@ export default {
   align-items: center;
 
   border: none;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);

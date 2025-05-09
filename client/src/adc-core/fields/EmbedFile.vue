@@ -7,9 +7,9 @@
     >
       <slot />
     </button>
-
     <QRModal
       v-if="show_qr_code_modal"
+      :modal_title="$t('embed_link')"
       :url_to_access="preview_url"
       @close="show_qr_code_modal = false"
     >
