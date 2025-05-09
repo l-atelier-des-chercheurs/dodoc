@@ -24,6 +24,7 @@
         <b-icon icon="trash" />
         {{ $t("confirm_removal") }}
       </button>
+      <LoaderSpinner v-if="is_removing" />
     </template>
   </BaseModal2>
 </template>
