@@ -973,6 +973,7 @@ export default {
   already_present: "Déjà présent",
 
   current: "Actuel",
+  current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
@@ -1324,4 +1325,16 @@ export default {
   bin_is_empty: "La corbeille est vide",
   date_removed: "Date de suppression",
   current_resolution: "Résolution actuelle",
+  gallery: "Galerie",
+  removed_successfully: "Supprimé avec succès",
+  all_pages: "Toutes les pages",
+  page_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  pages_to_export: "Page(s) à exporter",
+  spreads_to_export: "Planche(s) à exporter",
+  all_spreads: "Toutes les planches",
+  spread_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Nombre total de planches dans la publication : {total}",
+  total_number_of_pages_in_publication:
+    "Nombre total de pages dans la publication : {total}",
 };

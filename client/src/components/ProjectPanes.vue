@@ -19,38 +19,6 @@
             <br />
             <br />
             <br />
-            <div class="u-spacingBottom">
-              <DateDisplay
-                :title="$t('date_created')"
-                :date="project.$date_created"
-              />
-              <DateDisplay
-                :title="$t('date_modified')"
-                :date="project.$date_modified"
-              />
-            </div>
-
-            <div
-              class=""
-              v-if="$root.app_infos.is_electron && is_instance_admin"
-            >
-              <div class="u-spacingBottom" />
-              <DLabel :str="$t('open_in_finder')" />
-              <button
-                type="button"
-                class="u-button u-button_bleumarine u-button_small"
-                @click="openInFinder({ path: project.$path })"
-                v-html="project_path_wrappable"
-              />
-            </div>
-
-            <br />
-            <DLabel :str="$t('latest_changes_to_project')" />
-            <div class="u-instructions">
-              <small>
-                {{ $t("waiting") }}
-              </small>
-            </div>
 
             <!-- <div class="_devNotes">
               <div class="u-wips" />
@@ -142,11 +110,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    project_path_wrappable() {
-      return this.project.$path.replaceAll("/", "/<wbr>");
-    },
-  },
+  computed: {},
   methods: {
     scrollToPanes() {
       if (this.$route.name === "Projet" && this.can_edit_project)
@@ -207,6 +171,7 @@ export default {
   margin: 0 auto;
 
   padding: calc(var(--spacing) * 2);
+  margin-bottom: 20vh;
 
   ::v-deep ._labelLine {
     justify-content: center;

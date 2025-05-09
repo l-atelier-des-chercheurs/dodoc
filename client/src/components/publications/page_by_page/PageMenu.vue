@@ -24,12 +24,15 @@
             </div>
           </transition>
           <transition name="slideupFade" mode="out-in">
-            <span v-if="active_spread_index" :key="active_spread_index">
-              <template v-if="active_page_number === 0">
+            <span
+              v-if="active_spread_index !== false"
+              :key="active_spread_index"
+            >
+              <template v-if="active_spread_index === 0">
                 ({{ $t("cover") }})
               </template>
               <template v-else>
-                ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
+                ({{ $t("spread").toLowerCase() }} {{ active_spread_index + 1 }})
               </template>
             </span>
           </transition>

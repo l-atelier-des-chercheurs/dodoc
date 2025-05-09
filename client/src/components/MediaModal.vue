@@ -336,6 +336,7 @@
             <button
               type="button"
               class="u-button u-button_orange"
+              v-if="optimization_possible"
               @click="show_optimize_modal = true"
             >
               <b-icon :icon="'file-play-fill'" />
