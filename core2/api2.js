@@ -893,6 +893,8 @@ module.exports = (function () {
       dev.logpackets({ status: "folder was removed" });
       res.status(200).json({ status: "ok" });
 
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       await auth.removeAllTokensForFolder({ token_path: path_to_folder });
 
       notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {

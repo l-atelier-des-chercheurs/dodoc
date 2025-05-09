@@ -79,9 +79,23 @@
                 @close="show_dup_modal = false"
               />
             </div>
-            <RemoveMenu
+
+            <button
+              type="button"
+              class="u-buttonLink u-buttonLink_red"
+              @click="show_remove_modal = true"
+            >
+              <b-icon icon="trash" />
+              {{ $t("remove") }}
+            </button>
+
+            <RemoveMenu2
+              v-if="show_remove_modal"
               :modal_title="$t('remove_project', { name: project.title })"
-              @remove="removeProject"
+              :success_notification="$t('project_was_removed')"
+              :path="project.$path"
+              @removedSuccessfully="show_remove_modal = false"
+              @close="show_remove_modal = false"
             />
           </DropDown>
         </div>
@@ -221,13 +235,10 @@ export default {
   },
   data() {
     return {
-      fetch_status: null,
-      fetch_error: null,
-      response: null,
-
       show_meta: true,
       show_dup_modal: false,
       short_project_view: true,
+      show_remove_modal: false,
     };
   },
   created() {},
@@ -285,22 +296,6 @@ export default {
       return this.project[type] && Array.isArray(this.project[type])
         ? this.project[type]
         : [];
-    },
-    async removeProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$api.deleteItem({
-          path: this.project.$path,
-        });
-        this.response = response.data;
-        this.fetch_status = "success";
-        // this.$router.push("/projects");
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
     },
     toggleCompacted() {
       this.short_project_view = !this.short_project_view;

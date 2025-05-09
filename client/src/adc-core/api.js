@@ -454,12 +454,6 @@ export default function () {
           });
         return response.data;
       },
-      async removeFromBin({ path }) {
-        const response = await this.$axios.delete(path).catch((err) => {
-          throw this.processError(err);
-        });
-        return response.data;
-      },
 
       async getFile({ path }) {
         const response = await this.$axios.get(path);

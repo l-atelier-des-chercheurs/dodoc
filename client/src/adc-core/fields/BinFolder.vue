@@ -49,18 +49,22 @@
               <div class="u-sameRow _btns">
                 <button
                   type="button"
+                  class="u-button u-button u-button_bleuvert"
+                  @click="restoreFolder(bin_folder.$path)"
+                >
+                  {{ $t("restore") }}
+                </button>
+                <button
+                  type="button"
                   class="u-button u-button_small u-button_red"
                   @click="removeForGood(bin_folder.$path)"
                 >
                   {{ $t("remove_for_good") }}
                 </button>
-                <button
-                  type="button"
-                  class="u-button u-button_small u-button_bleuvert"
-                  @click="restoreFolder(bin_folder.$path)"
-                >
-                  {{ $t("restore") }}
-                </button>
+              </div>
+
+              <div v-if="is_loading">
+                <LoaderSpinner />
               </div>
             </div>
           </div>
@@ -113,7 +117,7 @@ export default {
     },
     async removeForGood(path) {
       this.is_loading = true;
-      await this.$api.removeFromBin({ path });
+      await this.$api.deleteItem({ path });
       await new Promise((resolve) => setTimeout(resolve, 200));
       this.getBinContent();
       this.is_loading = false;
@@ -143,7 +147,7 @@ export default {
   // border: 2px solid var(--c-gris);
   // background-color: var(--c-gris_clair);
   // border-radius: var(--border-radius);
-  padding: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 2);
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
@@ -165,7 +169,7 @@ export default {
 ._restoreProjectBtn {
 }
 ._btns {
-  justify-content: space-between;
-  margin-top: calc(var(--spacing) / 2);
+  justify-content: space-around;
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
 }
 </style>

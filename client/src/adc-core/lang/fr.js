@@ -1325,4 +1325,5 @@ export default {
   date_removed: "Date de suppression",
   current_resolution: "Résolution actuelle",
   gallery: "Galerie",
+  removed_successfully: "Supprimé avec succès",
 };
