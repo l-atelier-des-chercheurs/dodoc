@@ -11,20 +11,21 @@
 
     <template v-if="export_mode === 'pdf'">
       <DLabel :str="$t('pages_to_export')" />
-      <select v-model="pdf_pages_to_export_mode">
-        <option value="all">{{ $t("all_pages") }}</option>
-        <option value="current">{{ $t("current_f") }}</option>
-        <option value="custom">{{ $t("custom") }}</option>
-      </select>
+      <div class="u-inputGroup">
+        <select v-model="pdf_pages_to_export_mode">
+          <option value="all">{{ $t("all_pages") }}</option>
+          <option value="current">{{ $t("current_f") }}</option>
+          <option value="custom">{{ $t("custom") }}</option>
+        </select>
 
-      <div class="u-spacingBottom" />
-
-      <input
-        v-if="pdf_pages_to_export_mode === 'custom'"
-        type="text"
-        v-model="specific_pdf_page_to_export"
-        :placeholder="$t('page_number_or_interval')"
-      />
+        <input
+          v-if="pdf_pages_to_export_mode === 'custom'"
+          size="large"
+          type="text"
+          v-model="specific_pdf_page_to_export"
+          :placeholder="$t('page_number_or_interval')"
+        />
+      </div>
     </template>
 
     <template v-if="export_mode === 'png'">

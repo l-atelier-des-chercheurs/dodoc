@@ -298,9 +298,21 @@ export default {
       return this.spreads[this.slides_current_page_or_spread_index - 1];
     },
     pages_to_show() {
-      const page_to_display = +this.$route.query?.page;
-      if (page_to_display)
-        return this.pages.slice(page_to_display - 1, page_to_display);
+      const pages_to_display = this.$route.query?.page;
+
+      if (this.$route.query?.page && this.$route.query?.page.includes("-")) {
+        const [start, end] = this.$route.query?.page.split("-");
+        return this.pages.slice(start - 1, end);
+      } else if (
+        this.$route.query?.page &&
+        !this.$route.query?.page.includes("-")
+      ) {
+        return this.pages.slice(
+          +this.$route.query.page - 1,
+          +this.$route.query.page
+        );
+      }
+
       return this.pages;
     },
     has_multiple_pages() {
