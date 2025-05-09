@@ -88,7 +88,7 @@
 
     <button
       type="button"
-      class="js--showCursor _openButton"
+      class="_openButton"
       :title="$t('open')"
       @click="$emit('open')"
     />

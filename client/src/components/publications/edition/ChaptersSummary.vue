@@ -80,16 +80,18 @@ export default {
     is_associated_to_map() {
       return this.$getMapOptions;
     },
-    new_section_title() {
+    new_section_index() {
       let idx = this.sections.length + 1;
-      const makeTitle = (i) => this.$t("section") + " " + i;
+      const makeTitle = (i) => " " + i;
 
-      let new_section_title = makeTitle(idx);
-      while (this.sections.some((s) => s.section_title === new_section_title)) {
+      let new_section_index = makeTitle(idx);
+      while (
+        this.sections.some((s) => s.section_title.endsWith(new_section_index))
+      ) {
         idx++;
-        new_section_title = makeTitle(idx);
+        new_section_index = makeTitle(idx);
       }
-      return new_section_title;
+      return new_section_index;
     },
     opened_section() {
       return this.sections.find(
@@ -108,7 +110,6 @@ export default {
     // },
     async createSection({ type = "text" } = {}) {
       let additional_meta = {
-        section_title: this.new_section_title,
         section_starts_on_page: "right",
       };
 
@@ -122,9 +123,13 @@ export default {
             content_type: "markdown",
           },
         });
+        additional_meta.section_title =
+          this.$t("section") + " " + this.new_section_index;
         additional_meta.section_type = "text";
         additional_meta.main_text_meta = meta_filename;
       } else if (type === "gallery") {
+        additional_meta.section_title =
+          this.$t("gallery") + " " + this.new_section_index;
         additional_meta.section_type = "gallery";
       }
 

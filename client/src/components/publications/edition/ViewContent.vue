@@ -387,6 +387,8 @@ export default {
       return result;
     },
     parseGallery(source_medias) {
+      if (!source_medias || source_medias.length === 0) return "";
+
       const medias = source_medias
         .map((media) => {
           return this.getSourceMedia({
