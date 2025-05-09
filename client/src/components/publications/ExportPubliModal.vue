@@ -9,16 +9,7 @@
       />
     </div>
 
-    <template v-if="export_mode === 'pdf'">
-      <!-- <div class="u-spacingBottom" /> -->
-
-      <!-- <CustomResolutionInput
-        :width.sync="page_width"
-        :height.sync="page_height"
-        :ratio="publication_ratio"
-        :unit="custom_resolution_unit"
-      /> -->
-    </template>
+    <template v-if="export_mode === 'pdf'"> </template>
 
     <template v-if="export_mode === 'png'">
       <template v-if="publication.template === 'page_by_page'">
@@ -30,7 +21,8 @@
             <option
               v-for="(a, i) in new Array(page_count)"
               :key="i + 1"
-              v-text="i + 1"
+              :value="i + 1"
+              v-text="makePageNumber(i + 1)"
             />
           </select>
         </div>
@@ -64,7 +56,7 @@ export default {
   props: {
     modal_title: String,
     publication: Object,
-    pane_infos: String,
+    pane_infos: Object,
   },
   components: {
     ExportItemAndSaveOrDownload,
@@ -96,13 +88,7 @@ export default {
   },
   created() {
     this.publication_ratio = this.page_height / this.page_width;
-
-    if (this.pane_infos && this.pane?.page_id && this.publication.pages) {
-      const page_number = this.publication.pages.findIndex(
-        (p) => p.id === this.pane.page_id
-      );
-      if (page_number) this.page_to_export_as_image = page_number + 1;
-    }
+    this.page_to_export_as_image = this.current_page_number || 1;
   },
   mounted() {},
   beforeDestroy() {},
@@ -117,6 +103,16 @@ export default {
       if (this.export_mode === "webpage") return "window";
       return undefined;
     },
+    current_page_number() {
+      if (this.pane_infos?.page_id && this.publication.pages) {
+        debugger;
+        const page_number = this.publication.pages.findIndex(
+          (p) => p.id === this.pane_infos.page_id
+        );
+        return page_number + 1;
+      }
+      return false;
+    },
     custom_resolution_unit() {
       if (
         this.publication.layout_mode === "print" ||
@@ -125,8 +121,18 @@ export default {
         return "mm";
       return "px";
     },
+    url_to_print_from() {
+      const route = this.$router.resolve({
+        path: this.createURLFromPath(this.publication.$path),
+      });
+      return window.location.origin + route.href;
+    },
   },
   methods: {
+    makePageNumber(i) {
+      if (this.current_page_number === i) return `• ${i}`;
+      return i;
+    },
     async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
