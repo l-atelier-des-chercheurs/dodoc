@@ -173,6 +173,7 @@
         :can_edit="can_edit"
       />
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
+      <CardInformations class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
@@ -193,6 +194,7 @@ import CardMachinesMaterials from "@/components/project_cards/CardMachinesMateri
 // import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
+import CardInformations from "@/components/project_cards/CardInformations.vue";
 
 import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 
@@ -215,6 +217,7 @@ export default {
     // CardStatus,
     CardLicense,
     CardFiles,
+    CardInformations,
   },
   data() {
     return {
