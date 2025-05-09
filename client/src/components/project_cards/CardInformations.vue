@@ -1,13 +1,9 @@
 <template>
-  <DetailsPane
-    v-if="can_edit"
-    :header="$t('metadatas')"
-    :icon="'rulers'"
-    :has_items="false"
-  >
+  <DetailsPane :header="$t('metadatas')" :icon="'rulers'" :has_items="false">
     <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
     <DateDisplay :title="$t('date_modified')" :date="project.$date_modified" />
-    <ShowFolderSize :path="project.$path" />
+
+    <ShowFolderSize v-if="can_edit" :path="project.$path" />
 
     <div class="" v-if="$root.app_infos.is_electron && is_instance_admin">
       <DLabel :str="$t('open_in_finder')" />

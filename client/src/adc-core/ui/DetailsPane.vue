@@ -28,15 +28,13 @@
         <template v-else>–</template>
       </div>
 
-      <transition name="fade_fast" mode="out-in">
-        <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
-          <b-icon
-            :icon="
-              !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
-            "
-          />
-        </div>
-      </transition>
+      <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
+        <b-icon
+          :icon="
+            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+          "
+        />
+      </div>
     </summary>
     <div class="">
       <transition name="fade_fast" mode="out-in">
@@ -85,6 +83,7 @@ export default {
     animateDetails(start, end) {
       // Start a WAAPI animation
 
+      this.$refs.content.style.overflow = "hidden";
       const animation = this.$refs.content.animate(
         {
           height: [start, end],
@@ -96,9 +95,11 @@ export default {
       );
 
       animation.onfinish = () => {
+        this.$refs.content.style.overflow = "auto";
         if (this.$refs.content) this.$refs.content.style.height = "";
       };
       animation.oncancel = () => {
+        this.$refs.content.style.overflow = "auto";
         if (this.$refs.content) this.$refs.content.style.height = "";
       };
     },
@@ -192,6 +193,7 @@ export default {
 
     ._content {
       padding: calc(var(--spacing) / 2);
+      padding-top: 0;
       // border: 2px solid var(--c-gris);
       border-top: none;
 
