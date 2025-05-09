@@ -1333,4 +1333,8 @@ export default {
   spreads_to_export: "Planche(s) à exporter",
   all_spreads: "Toutes les planches",
   spread_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Nombre total de planches dans la publication : {total}",
+  total_number_of_pages_in_publication:
+    "Nombre total de pages dans la publication : {total}",
 };

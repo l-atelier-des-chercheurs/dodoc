@@ -42,6 +42,23 @@
           "
         />
       </div>
+
+      <div class="u-instructions" v-if="pdf_pages_to_export_mode === 'custom'">
+        <template v-if="is_spread">
+          {{
+            $t("total_number_of_spreads_in_publication", {
+              total: total_number_of_spreads,
+            })
+          }}
+        </template>
+        <template v-else>
+          {{
+            $t("total_number_of_pages_in_publication", {
+              total: total_number_of_pages,
+            })
+          }}
+        </template>
+      </div>
     </template>
 
     <template v-if="export_mode === 'png'">
@@ -149,6 +166,12 @@ export default {
         return page_number + 1;
       }
       return false;
+    },
+    total_number_of_pages() {
+      return this.publication.pages.length;
+    },
+    total_number_of_spreads() {
+      return Math.floor(this.total_number_of_pages / 2) + 1;
     },
     current_spread_number() {
       if (this.pane_infos?.page_id && this.publication.page_spreads) {
