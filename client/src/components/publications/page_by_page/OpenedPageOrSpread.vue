@@ -104,7 +104,7 @@
                         :grid_z_index="page_settings.grid_z_index"
                         :gridstep_in_mm="page_settings.gridstep_in_mm"
                         :margins="margins"
-                        :page_number="active_spread_index * 2 + index"
+                        :page_number="getCorrectPageNumber(page.id)"
                         :pagination="pagination"
                         :hide_pagination="current_page.hide_pagination === true"
                         :active_module="active_module"
@@ -329,6 +329,10 @@ export default {
       const next_spread = this.spreads[this.active_spread_index + 1];
       const next_spread_first_page = next_spread[0].id;
       this.setPageActive(next_spread_first_page);
+    },
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
     },
   },
 };

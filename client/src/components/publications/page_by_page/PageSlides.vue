@@ -21,7 +21,7 @@
               :page_color="page.page_color"
               :layout_mode="publication.layout_mode"
               :hide_pagination="page.hide_pagination === true"
-              :page_number="page_number"
+              :page_number="getCorrectPageNumber(page.id)"
               :pagination="pagination"
               :can_edit="false"
             />
@@ -45,7 +45,7 @@
                 :page_color="slide_current_page.page_color"
                 :layout_mode="publication.layout_mode"
                 :hide_pagination="slide_current_page.hide_pagination === true"
-                :page_number="slides_current_page_or_spread_index - 1"
+                :page_number="getCorrectPageNumber(page.id)"
                 :pagination="pagination"
                 :can_edit="false"
               />
@@ -74,7 +74,7 @@
                   :page_color="page.page_color"
                   :layout_mode="publication.layout_mode"
                   :hide_pagination="page.hide_pagination === true"
-                  :page_number="s_index * 2 + index"
+                  :page_number="getCorrectPageNumber(page.id)"
                   :pagination="pagination"
                   :can_edit="false"
                 />
@@ -104,9 +104,7 @@
                     :page_color="page.page_color"
                     :layout_mode="publication.layout_mode"
                     :hide_pagination="page.hide_pagination === true"
-                    :page_number="
-                      (slides_current_page_or_spread_index - 1) * 2 + index
-                    "
+                    :page_number="getCorrectPageNumber(page.id)"
                     :pagination="pagination"
                     :can_edit="false"
                   />
@@ -222,17 +220,13 @@ export default {
   props: {
     publication: Object,
     is_serversidepreview: Boolean,
-    defaut_display_mode: {
-      type: String,
-      default: "print",
-    },
   },
   components: {
     SinglePage,
   },
   data() {
     return {
-      display_mode: this.defaut_display_mode,
+      display_mode: "print",
       page_zoom: 100,
       night_mode: false,
     };
@@ -412,6 +406,10 @@ export default {
       } else {
         this.$alertify.error(this.$t("page_not_found"));
       }
+    },
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
     },
   },
 };

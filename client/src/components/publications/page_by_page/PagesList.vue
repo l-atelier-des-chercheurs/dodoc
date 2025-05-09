@@ -59,7 +59,7 @@
                   :page_height="publication.page_height"
                   :layout_mode="publication.layout_mode"
                   :page_color="page.page_color"
-                  :page_number="index"
+                  :page_number="getCorrectPageNumber(page.id)"
                   :pagination="pagination"
                   :hide_pagination="page.hide_pagination === true"
                   :can_edit="false"
@@ -119,7 +119,7 @@
                       :page_height="publication.page_height"
                       :layout_mode="publication.layout_mode"
                       :page_color="page.page_color"
-                      :page_number="index * 2 + iindex"
+                      :page_number="getCorrectPageNumber(page.id)"
                       :pagination="pagination"
                       :hide_pagination="page.hide_pagination === true"
                       :page_is_left="iindex === 0"
@@ -307,6 +307,10 @@ export default {
     },
   },
   methods: {
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
+    },
     async createPage(index) {
       this.is_creating_page = true;
 
