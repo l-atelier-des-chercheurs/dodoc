@@ -62,7 +62,8 @@
                 key="'name'"
                 v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view"
               >
-                {{ index + 1 }} • {{ $t(pane.type) }}
+                <!-- {{ index + 1 }} •  -->
+                {{ $t(pane.type) }}
               </span>
 
               <transition name="fade" mode="out-in">
