@@ -5,6 +5,7 @@ const portscanner = require("portscanner");
 const server = require("./server"),
   dev = require("./dev-log"),
   cache = require("./cache"),
+  cacheManager = require("./cache-manager"),
   utils = require("./utils"),
   paths = require("./paths"),
   auth = require("./auth");
@@ -54,7 +55,7 @@ module.exports = async function () {
     if (global.is_electron) {
       const { dialog } = require("electron");
       dialog.showErrorBox(
-        `Impossible de démarrer l’application`,
+        `Impossible de démarrer l'application`,
         `Code erreur: ${err}`
       );
     }
@@ -69,7 +70,7 @@ module.exports = async function () {
       if (global.is_electron) {
         const { dialog } = require("electron");
         dialog.showErrorBox(
-          `Impossible de démarrer l’application`,
+          `Impossible de démarrer l'application`,
           `Le domaine Bonjour doit être une chaîne de caractères.`
         );
       }
@@ -103,9 +104,7 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  global.pathToCache = await createCacheFolder().catch((err) => {
-    throw err;
-  });
+  await cacheManager.init();
 
   global.ffmpeg_processes = [];
 
@@ -128,8 +127,6 @@ async function setupApp() {
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
 
-  // global.session_options = {};
-  // await readsession_metaFile();
   auth.createSuperadminToken();
 
   const port = await portscanner
@@ -185,10 +182,6 @@ async function copyAndRenameUserFolder(full_default_path) {
     );
   }
 
-  // attempt to write something to dest folder
-
-  // if path to content exists
-
   if (await contentFolderIsValid(full_path_to_content)) {
     dev.log(`-> content folder is valid: ${full_path_to_content}`);
   } else {
@@ -220,62 +213,3 @@ async function contentFolderIsValid(full_path) {
 
   return true;
 }
-
-async function createCacheFolder() {
-  const cache_folder_path = path.join(
-    paths.getCacheFolder(),
-    utils.createUniqueName("dodoc_cache")
-  );
-  try {
-    await utils.testWriteFileInFolder(cache_folder_path);
-    dev.log(`Cache folder set to`, cache_folder_path);
-  } catch (err) {
-    dev.error(`-> failed to write to cache folder`, err);
-    throw err;
-  }
-  return cache_folder_path;
-}
-
-async function readAppMeta() {
-  // utils.readMetaFile();
-}
-
-// function readsession_metaFile() {
-//   return new Promise(function (resolve, reject) {
-//     var pathTosession_meta = api.getFolderPath("meta.txt");
-//     try {
-//       const metaFileContent = fs.readFileSync(
-//         pathTosession_meta,
-//         global.settings.textEncoding
-//       );
-//       const parsed_meta = api.parseData(metaFileContent);
-//       _parseSessionMeta(parsed_meta);
-//       return resolve();
-//     } catch (err) {
-//       return resolve();
-//     }
-//   });
-// }
-
-// function _parseSessionMeta(session_meta) {
-//   const { session_password, new_account_default_role } = session_meta;
-
-//   if (session_password) {
-//     const pass = session_password.trim();
-//     dev.log("Found session password in meta.txt set to", pass);
-//     // global.session_password = auth.hashCode(pass);
-//   }
-
-//   if (new_account_default_role) {
-//     dev.log("Found new_account_default_role, set to", new_account_default_role);
-//     global.settings.structure.authors.fields.role.default =
-//       new_account_default_role;
-//   }
-
-//   ["force_login", "simple_login", "require_email", "force_author_password"].map(
-//     (rule) => {
-//       if (session_meta[rule] === "true") global.session_options[rule] = true;
-//       else global.session_options[rule] = false;
-//     }
-//   );
-// }

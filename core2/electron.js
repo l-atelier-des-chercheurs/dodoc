@@ -11,6 +11,7 @@ const writeFileAtomic = require("write-file-atomic");
 
 const utils = require("./utils");
 const notifier = require("./notifier");
+const cacheManager = require("./cache-manager");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
 app.commandLine.appendSwitch("allow-insecure-localhost", "true");
@@ -107,6 +108,16 @@ module.exports = (function () {
             callback(true);
           }
         );
+
+        // Add cleanup on app quit
+        app.on("before-quit", async () => {
+          try {
+            cacheManager.stopCleanupInterval();
+            await cacheManager.cleanup();
+          } catch (err) {
+            dev.error("Error during cache cleanup on quit:", err);
+          }
+        });
       });
     },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
