@@ -184,7 +184,18 @@ module.exports = (function () {
       };
       fields = Object.assign({}, fields, predefined_fields);
 
-      if (fields)
+      // Check for fields in new_meta that don't exist in schema
+      for (const field_name in new_meta) {
+        if (!fields.hasOwnProperty(field_name)) {
+          const err = new Error(
+            `Field "${field_name}" is not defined in schema`
+          );
+          err.code = "undefined_field";
+          throw err;
+        }
+      }
+
+      if (fields) {
         Object.entries(fields).map(([field_name, opt]) => {
           if (
             new_meta.hasOwnProperty(field_name) &&
@@ -195,6 +206,7 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+            // todo if has options, check that the value is in the options
           } else if (
             new_meta.hasOwnProperty(field_name) &&
             opt.type === "array" &&
@@ -237,6 +249,7 @@ module.exports = (function () {
             }
           }
         });
+      }
       // see cleanNewMeta
 
       return meta;
