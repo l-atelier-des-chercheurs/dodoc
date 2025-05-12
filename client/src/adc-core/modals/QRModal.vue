@@ -1,26 +1,25 @@
 <template>
-  <BaseModal2 :title="$t('share_link_to_page')" @close="$emit('close')">
+  <BaseModal2
+    :title="modal_title || $t('share_link_to_page')"
+    @close="$emit('close')"
+  >
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
     <div class="_txt" v-else>
       <slot />
 
-      <p>{{ $t("share_link_to_file") }}</p>
-
       <DetailsPane
         :header="$t('advanced_options')"
         :icon="'link'"
         :is_open_initially="false"
-        class="u-spacingBottom"
+        v-if="!urls_to_page.domain"
       >
-        <template v-if="!urls_to_page.domain">
-          <RadioCheckboxInput
-            :value.sync="current_opt"
-            :options="network_options"
-            :can_edit="true"
-          />
-        </template>
+        <RadioCheckboxInput
+          :value.sync="current_opt"
+          :options="network_options"
+          :can_edit="true"
+        />
       </DetailsPane>
 
       <!-- <hr class="_hr" /> -->
@@ -51,6 +50,7 @@
 export default {
   props: {
     url_to_access: String,
+    modal_title: String,
   },
   components: {
     QRCodeWithLink: () => import("@/adc-core/ui/QRCodeWithLink.vue"),

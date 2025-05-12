@@ -160,10 +160,16 @@
         "$can_be_created_by": "everyone",
         "fields": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "unique": true
           },
           "template": {
-            "type": "string"
+            "type": "string",
+            "options": ["story_with_sections", "cartography", "edition"],
+            "default": "story_with_sections"
+          },
+          "sections_list": {
+            "type": "array"
           },
           "modules_list": {
             "type": "array"
@@ -174,8 +180,11 @@
           "autoscroll": {
             "type": "boolean"
           },
-          "sections_list": {
-            "type": "array"
+          "page_width": {
+            "type": "number"
+          },
+          "page_height": {
+            "type": "number"
           }
         },
         "$files": {
@@ -186,19 +195,67 @@
             "module_type": {
               "type": "string"
             },
-            "section_type": {
+            "content_type": {
               "type": "string"
             },
             "section_color": {
               "type": "string"
             },
+            "link_pins": {
+              "type": "boolean"
+            },
+            "all_pins_icon": {
+              "type": "boolean"
+            },
+            "zoom_animation": {
+              "type": "number"
+            },
+            "map_baselayer": {
+              "type": "string"
+            },
+            "map_base_media_filename": {
+              "type": "string"
+            },
+            "map_baselayer_color": {
+              "type": "string"
+            },
+            "map_baselayer_opacity": {
+              "type": "boolean"
+            },
+            "map_baselayer_bw": {
+              "type": "boolean"
+            },
+            "map_geom_features": {
+              "type": "array"
+            },
             "section_title": {
+              "type": "string"
+            },
+            "section_title_is_visible": {
+              "type": "boolean"
+            },
+            "section_type": {
+              "type": "string"
+            },
+            "section_starts_on_page": {
+              "type": "string"
+            },
+            "main_text_meta": {
+              "type": "string"
+            },
+            "section_description": {
+              "type": "string"
+            },
+            "pin_name": {
               "type": "string"
             },
             "caption": {
               "type": "string"
             },
-            "date_created_corrected": {
+            "on_click": {
+              "type": "object"
+            },
+            "pin_icon": {
               "type": "string"
             },
             "modules_list": {
@@ -210,11 +267,80 @@
             "size": {
               "type": "number"
             },
+            "page_id": {
+              "type": "string"
+            },
+            "align": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "width": {
+              "type": "number"
+            },
+            "height": {
+              "type": "number"
+            },
+            "rotation": {
+              "type": "number"
+            },
+            "text_size": {
+              "type": "number"
+            },
+            "opacity": {
+              "type": "number"
+            },
+            "margins": {
+              "type": "number"
+            },
+            "background_color": {
+              "type": "string"
+            },
+            "outline_color": {
+              "type": "string"
+            },
+            "outline_width": {
+              "type": "number"
+            },
+            "border_radius": {
+              "type": "number"
+            },
+            "drop_shadow": {
+              "type": "number"
+            },
+            "locked": {
+              "type": "boolean"
+            },
+            "z_index": {
+              "type": "number"
+            },
+            "show_fs_button": {
+              "type": "boolean"
+            },
+            "location": {
+              "type": "object"
+            },
+            "zoom_level": {
+              "type": "number"
+            },
+            "cover_type": {
+              "type": "string"
+            },
+            "cover_layout_mode": {
+              "type": "string"
+            },
+            "is_css_styles": {
+              "type": "string"
+            },
+            "css_title": {
+              "type": "string"
+            },
             "keywords": {
               "type": "array"
-            },
-            "duration": {
-              "type": "number"
             }
           }
         }

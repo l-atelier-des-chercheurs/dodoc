@@ -291,6 +291,10 @@ export default {
       ._cover {
         flex: 0 0 auto;
       }
+
+      ._text {
+        gap: calc(var(--spacing) / 1);
+      }
     }
   }
 }
@@ -312,7 +316,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
 
   ::v-deep {
     a {

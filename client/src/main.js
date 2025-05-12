@@ -112,6 +112,8 @@ import DownloadFolder from "@/adc-core/fields/DownloadFolder.vue";
 Vue.component("DownloadFolder", DownloadFolder);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
+import RemoveMenu2 from "@/adc-core/fields/RemoveMenu2.vue";
+Vue.component("RemoveMenu2", RemoveMenu2);
 import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";

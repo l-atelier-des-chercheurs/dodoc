@@ -111,11 +111,6 @@ export default {
           label: this.$t("create_page"),
           icon: "plus-lg",
         };
-      else if (this.btn_type === "create_chapter")
-        return {
-          label: this.$t("create_chapter"),
-          icon: "plus-lg",
-        };
       else if (this.btn_type === "regenerate_thumbs")
         return {
           label: this.$t("regenerate_thumbs"),

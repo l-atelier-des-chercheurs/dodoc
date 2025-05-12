@@ -515,7 +515,7 @@ textarea,
   vertical-align: middle;
 
   // padding: calc(var(--spacing) * 0.5);
-  padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
   margin: 0;
 
   border-bottom: 1px solid transparent;
@@ -698,7 +698,7 @@ input[type="file"] {
 }
 .u-filename {
   // font-weight: 500;
-  font-size: var(--sl-font-size-small);
+  // font-size: var(--sl-font-size-small);
   font-family: var(--sl-font-mono);
 }
 
@@ -908,15 +908,16 @@ code {
 
 fieldset {
   border: 2px solid var(--c-gris);
-  // background: #f9f9f9;
   margin: 0;
+  border-radius: 4px;
 
   legend {
-    color: var(--c-noir);
+    color: var(--c-gris_fonce) !important;
     background: white;
     border-radius: 4px;
     text-align: center;
     padding: 0 calc(var(--spacing) / 2);
+    font-weight: 500;
 
     &.u-label {
       margin-bottom: 0;

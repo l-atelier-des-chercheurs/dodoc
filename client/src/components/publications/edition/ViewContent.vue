@@ -25,12 +25,16 @@
         <option value="">style – {{ $t("default_value") }}</option>
       </select>
 
-      <!-- <select v-if="view_mode === 'book'" v-model="format_mode" size="small">
-        <option value="A4">{{ $t("A4_portrait") }}</option>
-        <option value="A4 landscape">{{ $t("A4_landscape") }}</option>
-        <option value="A5">{{ $t("A5_portrait") }}</option>
-        <option value="A5 landscape">{{ $t("A5_landscape") }}</option>
-      </select> -->
+      <div
+        v-if="$listeners['update:show_source_html'] && view_mode === 'book'"
+        class="_toggleHTML"
+      >
+        <ToggleInput
+          :content="show_source_html"
+          :label="$t('show_source_html')"
+          @update:content="$emit('update:show_source_html', $event)"
+        />
+      </div>
     </div>
 
     <div class="_viewContent--content">
@@ -40,7 +44,7 @@
         :format_mode="format_mode"
         :viewer_type="viewer_type"
         :css_styles="css_styles"
-        :show_source_HTML="show_source_HTML"
+        :show_source_html="show_source_html"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
@@ -59,6 +63,8 @@
 <script>
 import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
+import markdownItAttrs from "markdown-it-attrs";
+import markdownItBracketedSpans from "markdown-it-bracketed-spans";
 import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
@@ -79,7 +85,7 @@ export default {
       default: "vue-infinite-viewer",
     },
     opened_chapter_meta_filename: String,
-    show_source_HTML: Boolean,
+    show_source_html: Boolean,
     can_edit: Boolean,
   },
   components: {
@@ -159,15 +165,20 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
-        if (chapter._main_text?.$content) {
-          if (chapter._main_text?.content_type === "markdown") {
-            _chapter.content = this.parseMarkdownWithMarkedownIt(
-              chapter._main_text.$content,
-              chapter.source_medias
-            );
-          } else {
-            _chapter.content = chapter._main_text?.$content;
+        _chapter.section_type = chapter.section_type;
+        if (chapter.section_type === "text") {
+          if (chapter._main_text?.$content) {
+            if (chapter._main_text?.content_type === "markdown") {
+              _chapter.content = this.parseMarkdownWithMarkedownIt(
+                chapter._main_text.$content,
+                chapter.source_medias
+              );
+            } else {
+              _chapter.content = chapter._main_text?.$content;
+            }
           }
+        } else if (chapter.section_type === "gallery") {
+          _chapter.content = this.parseGallery(chapter.source_medias);
         }
 
         nodes.chapters.push(_chapter);
@@ -364,9 +375,43 @@ export default {
       md.use(markdownItCsc, {
         vue_instance: this,
       });
+      md.use(markdownItBracketedSpans);
+      md.use(markdownItAttrs, {
+        // optional, these are default options
+        leftDelimiter: "{",
+        rightDelimiter: "}",
+        allowedAttributes: [], // empty array = all attributes are allowed
+      });
 
       const result = md.render(content);
       return result;
+    },
+    parseGallery(source_medias) {
+      if (!source_medias || source_medias.length === 0) return "";
+
+      const medias = source_medias
+        .map((media) => {
+          return this.getSourceMedia({
+            source_media: media,
+            folder_path: this.publication.$path,
+          });
+        })
+        .filter(Boolean);
+
+      let html = `<div class="gallery" data-number-of-medias="${medias.length}" >`;
+
+      medias.forEach((media) => {
+        html += `<figure class="media gallery--item">
+          <img src="${this.makeMediaFileURL({
+            $path: media.$path,
+            $media_filename: media.$media_filename,
+          })}" />
+        </figure>`;
+      });
+
+      html += "</div>";
+
+      return html;
     },
 
     getMediaSrc(meta_src, source_medias) {
@@ -541,11 +586,30 @@ export default {
 
   select {
     width: 18ch;
+  }
+
+  * {
     pointer-events: all;
+  }
+
+  ::v-deep {
+    ._toggleHTML {
+      background-color: var(--c-gris_fonce);
+
+      ._label {
+        color: white;
+      }
+    }
   }
 
   @media print {
     display: none;
   }
+}
+
+._toggleHTML {
+  background-color: var(--c-gris_clair);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  border-radius: var(--border-radius);
 }
 </style>

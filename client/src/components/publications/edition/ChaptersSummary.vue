@@ -23,15 +23,28 @@
           :can_edit="can_edit"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
+          @remove="$emit('removeChapter', section)"
         />
 
         <div key="'add'" class="_addSection">
-          <EditBtn
+          <button
             v-if="can_edit"
-            :btn_type="'create_chapter'"
-            :is_unfolded="true"
-            @click="createSection"
-          />
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'text' })"
+          >
+            <b-icon icon="plus-lg" />
+            {{ $t("text") }}
+          </button>
+          <button
+            v-if="can_edit"
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'gallery' })"
+          >
+            <b-icon icon="plus-lg" />
+            {{ $t("gallery") }}
+          </button>
         </div>
       </transition-group>
     </div>
@@ -54,7 +67,8 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.can_edit && this.sections.length === 0) this.createSection();
+    if (this.can_edit && this.sections.length === 0)
+      this.createSection({ type: "text" });
   },
   beforeDestroy() {},
   watch: {
@@ -66,16 +80,18 @@ export default {
     is_associated_to_map() {
       return this.$getMapOptions;
     },
-    new_section_title() {
+    new_section_index() {
       let idx = this.sections.length + 1;
-      const makeTitle = (i) => this.$t("section") + " " + i;
+      const makeTitle = (i) => " " + i;
 
-      let new_section_title = makeTitle(idx);
-      while (this.sections.some((s) => s.section_title === new_section_title)) {
+      let new_section_index = makeTitle(idx);
+      while (
+        this.sections.some((s) => s.section_title.endsWith(new_section_index))
+      ) {
         idx++;
-        new_section_title = makeTitle(idx);
+        new_section_index = makeTitle(idx);
       }
-      return new_section_title;
+      return new_section_index;
     },
     opened_section() {
       return this.sections.find(
@@ -92,24 +108,34 @@ export default {
     //     this.$emit("openFirstSection");
     //   }
     // },
-    async createSection() {
-      const filename = this.new_section_title + " text.txt";
-      const { meta_filename } = await this.$api.uploadText({
-        path: this.publication.$path,
-        filename,
-        content: "",
-        additional_meta: {
-          content_type: "markdown",
-        },
-      });
+    async createSection({ type = "text" } = {}) {
+      let additional_meta = {
+        section_starts_on_page: "right",
+      };
+
+      if (type === "text") {
+        const filename = this.new_section_title + " text.txt";
+        const { meta_filename } = await this.$api.uploadText({
+          path: this.publication.$path,
+          filename,
+          content: "",
+          additional_meta: {
+            content_type: "markdown",
+          },
+        });
+        additional_meta.section_title =
+          this.$t("section") + " " + this.new_section_index;
+        additional_meta.section_type = "text";
+        additional_meta.main_text_meta = meta_filename;
+      } else if (type === "gallery") {
+        additional_meta.section_title =
+          this.$t("gallery") + " " + this.new_section_index;
+        additional_meta.section_type = "gallery";
+      }
 
       const new_section_meta = await this.createSection2({
         publication: this.publication,
-        additional_meta: {
-          section_title: this.new_section_title,
-          main_text_meta: meta_filename,
-          section_starts_on_page: "right",
-        },
+        additional_meta,
       });
       // this.$emit("toggleSection", new_section_meta);
     },
@@ -163,10 +189,21 @@ export default {
 
 ._addSection {
   display: flex;
-  // justify-content: center;
+  flex-flow: column nowrap;
+  justify-content: center;
   align-items: center;
+  background-color: white;
+  gap: calc(var(--spacing) / 2);
+  // justify-content: center;
+  // align-items: center;
   // background-color: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-  padding: 0;
+  // padding: 0;
+
+  // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+  //   0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+  //   0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+  //   0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  border-radius: var(--border-radius);
 }
 </style>

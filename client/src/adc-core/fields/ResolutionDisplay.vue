@@ -1,6 +1,6 @@
 <template>
   <div class="u-metaField">
-    <DLabel :str="$t('resolution')" />
+    <DLabel :str="label || $t('resolution')" />
     <div>
       {{ formattedResolution }}
     </div>
@@ -11,6 +11,7 @@ export default {
   props: {
     width: Number,
     height: Number,
+    label: String,
   },
   components: {},
   data() {

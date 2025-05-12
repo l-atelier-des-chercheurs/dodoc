@@ -1010,6 +1010,7 @@ export default {
     "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord :és dans le projet actuel.",
 
   current: "Actuel",
+  current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
   fold: "replier",
@@ -1348,6 +1349,28 @@ export default {
   multisupport_embed_img_instr:
     "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
   attributes_for_embeds: "Attributs pour les balises :",
-  show_source_HTML: "Afficher le code source HTML",
+  show_source_html: "Afficher le code source HTML",
   reset: "Réinitialiser",
+
+  accounts_displayed: "Comptes affichés : {count} / {total}",
+  restore_projects: "Restaurer des projets supprimés",
+  bin: "Corbeille",
+  restore: "Restaurer",
+  remove_for_good: "Supprimer définitivement",
+  bin_is_empty: "La corbeille est vide",
+  date_removed: "Date de suppression",
+  current_resolution: "Résolution actuelle",
+  gallery: "Galerie",
+  removed_successfully: "Supprimé avec succès",
+  all_pages: "Toutes les pages",
+  page_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  pages_to_export: "Page(s) à exporter",
+  spreads_to_export: "Planche(s) à exporter",
+  all_spreads: "Toutes les planches",
+  spread_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Nombre total de planches dans la publication : {total}",
+  total_number_of_pages_in_publication:
+    "Nombre total de pages dans la publication : {total}",
+  "type:": "Type : {type}",
 };

@@ -1281,5 +1281,5 @@ export default {
   multisupport_embed_img_instr:
     "To add media from the internet, you can also copy and paste the following tags:",
   attributes_for_embeds: "Attributes for the tags:",
-  show_source_HTML: "Show source HTML",
+  show_source_html: "Show source HTML",
 };

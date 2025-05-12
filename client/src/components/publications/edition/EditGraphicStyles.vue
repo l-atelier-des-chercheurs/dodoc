@@ -36,7 +36,7 @@
         @close="show_create_css_modal = false"
         @save="createCustomStylesheet"
       >
-        <DLabel :str="$t('title')" />
+        <DLabel :str="$t('name')" />
         <TextInput
           :content.sync="new_css_title"
           :maxlength="40"
@@ -46,7 +46,6 @@
           @toggleValidity="($event) => (allow_save = $event)"
           @onEnter="createCustomStylesheet"
         />
-
         <template #footer>
           <div />
           <button
@@ -67,8 +66,8 @@
           :key="opened_style_file.$path"
           :style_file="opened_style_file"
           :default_styles="default_styles"
-          :show_source_HTML="show_source_HTML"
-          @update:show_source_HTML="$emit('update:show_source_HTML', $event)"
+          :show_source_html="show_source_html"
+          @update:show_source_html="$emit('update:show_source_html', $event)"
         />
       </transition>
     </div>
@@ -83,7 +82,7 @@ export default {
   props: {
     publication: Object,
     opened_style_file_meta: String,
-    show_source_HTML: Boolean,
+    show_source_html: Boolean,
   },
   components: {
     OpenedGraphicStyles,
@@ -101,7 +100,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
-    this.$emit("update:show_source_HTML", false);
+    this.$emit("update:show_source_html", false);
   },
   watch: {},
   computed: {

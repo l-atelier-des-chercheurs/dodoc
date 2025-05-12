@@ -9,7 +9,7 @@ const utils = require("./utils"),
 
 module.exports = (function () {
   const API = {
-    getFolders: async ({ path_to_type }) => {
+    getFolders: async ({ path_to_type, detailed = false }) => {
       dev.logfunction({ path_to_type });
       // TODO cache get all folders
 
@@ -26,6 +26,7 @@ module.exports = (function () {
         const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
           path_to_folder,
+          detailed,
         }).catch((err) => {
           if (err.code === "ENOENT")
             dev.error(`Failed to get folder`, err.message);
@@ -454,6 +455,42 @@ module.exports = (function () {
         throw err;
       }
       return;
+    },
+
+    getBinContent: async ({ path_to_type }) => {
+      dev.logfunction({ path_to_type });
+
+      // get _bin folder size
+      const bin_folder_path = path.join(
+        path_to_type,
+        global.settings.deletedFolderName
+      );
+      const bin_size = await utils.getFolderSize(bin_folder_path);
+
+      const bin_folders = await API.getFolders({
+        path_to_type: bin_folder_path,
+        detailed: true,
+      });
+
+      return {
+        size: bin_size,
+        folders: bin_folders,
+      };
+    },
+    restoreFromBin: async ({ path_to_folder_in_bin, path_to_type }) => {
+      const restored_folder_path = await API.copyFolder({
+        path_to_type,
+        path_to_source_folder: path_to_folder_in_bin,
+        path_to_destination_type: path_to_type,
+        new_meta: {},
+      });
+
+      await _removeFolderForGood({ path_to_folder: path_to_folder_in_bin });
+
+      return restored_folder_path;
+    },
+    removeBinFolder: async ({ path_to_folder_in_bin }) => {
+      await _removeFolderForGood({ path_to_folder: path_to_folder_in_bin });
     },
   };
 
