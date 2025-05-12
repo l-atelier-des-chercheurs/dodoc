@@ -61,8 +61,14 @@
       <template v-else>
         <i>{{ $t("untitled") }}</i>
       </template>
+      <small class="_item--title--icon">
+        <b-icon v-if="section.section_type === 'text'" icon="markdown" />
+        <b-icon v-else-if="section.section_type === 'gallery'" icon="image" />
+      </small>
     </h2>
-    <div class="_item--type">{{ $t("type") }} : {{ section.section_type }}</div>
+    <!-- <div class="_item--type">
+      {{ $t("type") }} : {{ section.section_type }}
+    </div> -->
     <div class="_item--content">
       <div
         class="_item--content--text"
@@ -186,6 +192,8 @@ export default {
 ._item--type {
   font-size: var(--sl-font-size-x-small);
   color: var(--c-gris_fonce);
+}
+._item--title--icon {
 }
 
 ._item--content {

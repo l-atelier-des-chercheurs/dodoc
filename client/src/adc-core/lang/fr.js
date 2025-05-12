@@ -1337,4 +1337,5 @@ export default {
     "Nombre total de planches dans la publication : {total}",
   total_number_of_pages_in_publication:
     "Nombre total de pages dans la publication : {total}",
+  "type:": "Type : {type}",
 };

@@ -42,7 +42,14 @@
       /> -->
       </div>
       <div class="_content--type">
-        {{ $t("type") }} : {{ chapter.section_type }}
+        <template v-if="chapter.section_type === 'text'">
+          {{ $t("type:", { type: $t("text") }) }}
+          <b-icon icon="markdown" />
+        </template>
+        <template v-else-if="chapter.section_type === 'gallery'">
+          {{ $t("type:", { type: $t("gallery") }) }}
+          <b-icon icon="image" />
+        </template>
       </div>
       <div class="_content">
         <template v-if="chapter.section_type === 'text'">
@@ -122,7 +129,7 @@
             v-if="show_media_picker"
             :publication_path="publication_path"
             :select_mode="'multiple'"
-            :pick_from_types="['image', 'video', 'audio']"
+            :pick_from_types="['image']"
             @pickMedias="pickMediasForGallery"
             @close="show_media_picker = false"
           />
