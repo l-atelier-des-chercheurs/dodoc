@@ -195,6 +195,7 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+            // todo if has options, check that the value is in the options
           } else if (
             new_meta.hasOwnProperty(field_name) &&
             opt.type === "array" &&
