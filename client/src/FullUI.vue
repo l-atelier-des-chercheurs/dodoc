@@ -86,11 +86,11 @@ export default {
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
     this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
 
+    this.$root.is_loading = false;
+
     const authors = await this.$api.getFolders({
       path: "authors",
     });
-
-    this.$root.is_loading = false;
   },
   mounted() {},
   beforeDestroy() {
