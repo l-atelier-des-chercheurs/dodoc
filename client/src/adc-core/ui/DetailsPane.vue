@@ -95,12 +95,16 @@ export default {
       );
 
       animation.onfinish = () => {
-        this.$refs.content.style.overflow = "auto";
-        if (this.$refs.content) this.$refs.content.style.height = "";
+        if (this.$refs.content) {
+          this.$refs.content.style.overflow = "auto";
+          this.$refs.content.style.height = "";
+        }
       };
       animation.oncancel = () => {
-        this.$refs.content.style.overflow = "auto";
-        if (this.$refs.content) this.$refs.content.style.height = "";
+        if (this.$refs.content) {
+          this.$refs.content.style.overflow = "auto";
+          this.$refs.content.style.height = "";
+        }
       };
     },
   },
