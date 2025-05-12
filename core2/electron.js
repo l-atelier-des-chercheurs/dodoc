@@ -112,8 +112,7 @@ module.exports = (function () {
         // Add cleanup on app quit
         app.on("before-quit", async () => {
           try {
-            cacheManager.stopCleanupInterval();
-            await cacheManager.cleanup();
+            cacheManager.handleExit();
           } catch (err) {
             dev.error("Error during cache cleanup on quit:", err);
           }
