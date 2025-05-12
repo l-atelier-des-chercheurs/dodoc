@@ -36,17 +36,20 @@
               </small>
             </div>
             <div class="_infos2">
-              <b-icon
-                v-if="file.caption"
-                icon="text-left"
-                :aria-label="$t('caption')"
-              />
-              <b-icon
-                v-if="file.$credits"
-                icon="info-circle"
-                :aria-label="$t('credit/reference')"
-              />
-              <small class="_filename">{{ file.$media_filename }}</small>
+              <div v-if="file.caption">
+                <b-icon icon="text-left" :aria-label="$t('caption')" />
+                <CollaborativeEditor3 :content="file.caption" />
+              </div>
+              <div v-if="file.$credits">
+                <b-icon
+                  icon="info-circle"
+                  :aria-label="$t('credit/reference')"
+                />
+                <CollaborativeEditor3 :content="file.$credits" />
+              </div>
+              <small v-if="!file.caption && !file.$credits" class="_filename">
+                {{ file.$media_filename }}
+              </small>
             </div>
           </div>
         </div>
@@ -209,14 +212,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._fields {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: calc(var(--spacing) / 1);
-  justify-content: center;
-  padding: calc(var(--spacing) / 2);
-}
-
 ._infos {
   flex: 1 1 auto;
   display: flex;
@@ -238,20 +233,15 @@ export default {
 
 ._chutierRow {
   position: relative;
-
-  width: 100%;
+  // width: 100%;
   break-inside: avoid;
   // padding: 2px;
   padding: calc(var(--spacing) / 4) 0;
-  margin-bottom: 1px;
-  overflow: visible;
+  overflow: hidden;
   border-radius: 4px;
   color: var(--h-500);
   cursor: pointer;
-
-  // box-shadow: 0 0px 5px rgba(255 255 255 / 6%);
-  // border: 1px solid transparent;
-  transform-origin: right center;
+  transform-origin: center center;
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -272,6 +262,7 @@ export default {
   &.is--selected {
     background-color: var(--h-500);
     color: var(--h-900);
+    // transform: scale(0.98);
 
     &:hover {
     }
@@ -285,7 +276,7 @@ export default {
 
     &:hover {
       opacity: 0.8;
-      transform: scale(1.05);
+      // transform: scale(1.05);
     }
   }
 
@@ -431,14 +422,44 @@ export default {
 
 ._infos2 {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   justify-content: flex-start;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
+  align-items: flex-start;
+  // gap: calc(var(--spacing) / 2);
+
+  > * {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+
+    ._collaborativeEditor {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      // word-break: keep-all;
+      height: 1.4em;
+    }
+
+    ::v-deep {
+      // ._collaborativeEditor {
+      //   overflow: hidden;
+      //   text-overflow: ellipsis;
+      //   white-space: nowrap;
+      //   height: 1em;
+      // }
+    }
+  }
 }
 
-._filename {
-  // max-width: 10ch;
+._filename,
+._caption {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
