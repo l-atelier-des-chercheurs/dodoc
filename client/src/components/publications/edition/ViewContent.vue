@@ -374,7 +374,8 @@ export default {
       };
 
       md.use(markdownItCsc, {
-        vue_instance: this,
+        getMediaSrc: (meta_src) => this.getMediaSrc(meta_src, source_medias),
+        transformURL: (url) => this.transformURL(url),
       });
       md.use(markdownItBracketedSpans);
       md.use(markdownItAttrs, {

@@ -239,12 +239,12 @@ export default {
       if (this.pages_to_show.start && this.pages_to_show.end) {
         pages.forEach((page, index) => {
           if (
-            page.id >= this.pages_to_show.start &&
-            page.id <= this.pages_to_show.end
+            index + 1 >= this.pages_to_show.start &&
+            index + 1 <= this.pages_to_show.end
           ) {
-            page.style.display = "block";
+            page.style.visibility = "visible";
           } else {
-            page.style.display = "none";
+            page.style.visibility = "hidden";
           }
         });
       } else {

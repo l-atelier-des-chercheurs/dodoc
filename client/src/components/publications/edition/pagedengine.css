@@ -93,6 +93,7 @@ p:empty {
   iframe {
     aspect-ratio: 16 / 9;
     border: none;
+    background-color: var(--c-gris_clair);
   }
 }
 
