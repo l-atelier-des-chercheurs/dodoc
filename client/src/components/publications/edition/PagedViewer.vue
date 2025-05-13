@@ -173,8 +173,6 @@ export default {
         },
       ];
 
-      debugger;
-
       paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
         bookrender.innerHTML = "";
         const bookpreview = this.$refs.bookpreview;

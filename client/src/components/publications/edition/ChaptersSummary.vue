@@ -173,7 +173,7 @@ export default {
 }
 
 ._content {
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 4);
 }
 
 ._createSection {
@@ -182,14 +182,14 @@ export default {
 
 ._allChapters {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
 
 ._addSection {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   justify-content: center;
   align-items: center;
   background-color: white;

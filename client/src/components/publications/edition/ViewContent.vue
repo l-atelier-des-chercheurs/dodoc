@@ -178,7 +178,6 @@ export default {
             }
           }
         } else if (chapter.section_type === "gallery") {
-          debugger;
           _chapter.content = this.parseGallery(chapter.source_medias);
         }
 
@@ -403,7 +402,6 @@ export default {
       let html = `<div class="gallery" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
-        debugger;
         html += `<figure class="media gallery--item">
           <img src="${this.makeMediaFileURL({
             $path: media.$path,

@@ -19,6 +19,7 @@
           :path="chapter.$path"
           :can_edit="can_edit"
         />
+
         <DropDown :right="true" :show_label="false">
           <RemoveMenu @remove="$emit('remove')" />
         </DropDown>
@@ -41,6 +42,7 @@
         :hide_validation="true"
       /> -->
       </div>
+
       <div class="_content--type">
         <template v-if="chapter.section_type === 'text'">
           {{ $t("type:", { type: $t("text") }) }}
@@ -51,6 +53,36 @@
           <b-icon icon="image" />
         </template>
       </div>
+
+      <div class="_selects--starts_on_page">
+        <SelectField2
+          :field_name="'section_starts_on_page'"
+          :value="chapter.section_starts_on_page || ''"
+          :path="chapter.$path"
+          size="small"
+          :hide_validation="true"
+          :can_edit="can_edit"
+          :options="[
+            {
+              key: '',
+              text: $t('in_flow'),
+            },
+            {
+              key: 'page',
+              text: $t('next_page'),
+            },
+            {
+              key: 'left',
+              text: $t('next_left_page'),
+            },
+            {
+              key: 'right',
+              text: $t('next_right_page'),
+            },
+          ]"
+        />
+      </div>
+
       <div class="_content">
         <template v-if="chapter.section_type === 'text'">
           <template v-if="chapter._main_text">
@@ -193,7 +225,10 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    // eventhub scroll to first page
+    this.$eventHub.$emit("scrollToChapter", this.chapter.$path);
+  },
   beforeDestroy() {},
   watch: {
     main_text_content: {
@@ -431,6 +466,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: calc(var(--spacing) * 4);
   padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
@@ -503,5 +539,14 @@ export default {
   top: 0;
   right: 0;
   margin: var(--spacing);
+}
+
+._selects--starts_on_page {
+  width: 25ch;
+  // width: auto;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>
