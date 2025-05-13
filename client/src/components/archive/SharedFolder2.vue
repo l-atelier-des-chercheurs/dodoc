@@ -3,7 +3,7 @@
     <div class="_topBar">
       <button
         type="button"
-        class="u-button u-button_white u-button_icon"
+        class="u-button u-button_white u-button_icon u-button_small"
         @click="$router.push('/share')"
       >
         <b-icon icon="arrow-left-short" />
