@@ -80,8 +80,9 @@
       </div>
     </div>
     <div class="_menu">
-      <router-link to="/contribute" active-class="active">DÉPOSER</router-link>
-      <router-link to="/corpus" active-class="active">FAÇONNER</router-link>
+      <router-link to="/contribute" active-class="active">IMPORTER</router-link>
+      <router-link to="/share" active-class="active">CONSULTER</router-link>
+      <router-link to="/documents" active-class="active">PARTAGER</router-link>
     </div>
   </div>
 </template>

@@ -1,14 +1,15 @@
 <template>
   <div>
-    <SharedFolder2 :shared_folder_path="shared_folder_path" />
+    <CollectionsPane />
   </div>
 </template>
 <script>
-import SharedFolder2 from "@/components/archive/SharedFolder2.vue";
+import CollectionsPane from "@/components/collections/CollectionsPane.vue";
+
 export default {
   props: {},
   components: {
-    SharedFolder2,
+    CollectionsPane,
   },
   data() {
     return {};
@@ -17,11 +18,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    shared_folder_path() {
-      return "folders/" + this.$route.params.folder_slug;
-    },
-  },
+  computed: {},
   methods: {},
 };
 </script>

@@ -1,5 +1,26 @@
 <template>
   <div class="_sharedFolder">
+    <div class="_topBar">
+      <button
+        type="button"
+        class="u-button u-button_white u-button_icon"
+        @click="$router.push('/share')"
+      >
+        <b-icon icon="arrow-left-short" />
+        <!-- {{ $t("previous") }} -->
+      </button>
+      <TitleField
+        :field_name="'title'"
+        :label="$t('title')"
+        :show_label="false"
+        :tag="'b'"
+        :content="folder.title || $t('untitled')"
+        :path="folder.$path"
+        :required="true"
+        :can_edit="can_edit"
+      />
+    </div>
+
     <transition name="slideup" mode="out-in">
       <StackDisplay
         v-if="opened_stack"
@@ -122,6 +143,7 @@ export default {
   },
   data() {
     return {
+      folder: undefined,
       all_stacks: [],
 
       is_loading_folder: true,
@@ -155,6 +177,10 @@ export default {
   },
   async created() {},
   async mounted() {
+    this.folder = await this.$api.getFolder({
+      path: this.shared_folder_path,
+    });
+
     this.all_stacks = await this.$api.getFolders({
       path: this.stack_shared_folder_path,
     });
@@ -175,6 +201,9 @@ export default {
     },
   },
   computed: {
+    can_edit() {
+      return this.canLoggedinEditFolder({ folder: this.folder });
+    },
     stack_shared_folder_path() {
       return this.shared_folder_path + "/stacks";
     },
@@ -361,5 +390,14 @@ export default {
 
 ._noContent {
   margin: calc(var(--spacing) / 1);
+}
+._topBar {
+  background: var(--h-100);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
+  border-bottom: 1px solid var(--h-200);
 }
 </style>

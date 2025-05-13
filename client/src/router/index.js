@@ -19,10 +19,24 @@ const routes = [
       ),
   },
   {
-    path: "/corpus",
+    path: "/share",
+    name: "Partager",
+    component: () =>
+      import(/* webpackChunkName: "ShareView" */ "../views/ShareView.vue"),
+  },
+  {
+    path: "/share/:folder_slug",
     name: "Corpus",
     component: () =>
       import(/* webpackChunkName: "CorpusView" */ "../views/CorpusView.vue"),
+  },
+  {
+    path: "/documents",
+    name: "Documents",
+    component: () =>
+      import(
+        /* webpackChunkName: "DocumentsView" */ "../views/DocumentsView.vue"
+      ),
   },
   {
     path: "/collections/:collection_slug",
