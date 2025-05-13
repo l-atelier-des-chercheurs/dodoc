@@ -127,6 +127,19 @@ export default {
 
       return html;
     },
+    pages_to_show() {
+      const pages_to_display = this.$route.query?.page;
+      if (pages_to_display && pages_to_display.includes("-")) {
+        const [start, end] = pages_to_display.split("-");
+        return {
+          start: +start,
+          end: +end,
+        };
+      } else if (pages_to_display && !pages_to_display.includes("-")) {
+        return +pages_to_display;
+      }
+      return false;
+    },
   },
   methods: {
     async generateBook() {
@@ -160,6 +173,8 @@ export default {
         },
       ];
 
+      debugger;
+
       paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
         bookrender.innerHTML = "";
         const bookpreview = this.$refs.bookpreview;
@@ -183,6 +198,7 @@ export default {
 
         this.$nextTick(() => {
           this.addChapterShortcuts();
+          this.showOnlyPages();
           setTimeout(() => {
             this.is_loading = false;
           }, 100);
@@ -214,6 +230,32 @@ export default {
         .forEach((styleElement) => {
           styleElement.parentNode.removeChild(styleElement);
         });
+    },
+    showOnlyPages() {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview || !this.pages_to_show) return;
+      const pages = bookpreview.querySelectorAll(".pagedjs_page");
+
+      if (this.pages_to_show.start && this.pages_to_show.end) {
+        pages.forEach((page, index) => {
+          if (
+            page.id >= this.pages_to_show.start &&
+            page.id <= this.pages_to_show.end
+          ) {
+            page.style.display = "block";
+          } else {
+            page.style.display = "none";
+          }
+        });
+      } else {
+        pages.forEach((page, index) => {
+          if (index + 1 === this.pages_to_show) {
+            page.style.display = "block";
+          } else {
+            page.style.display = "none";
+          }
+        });
+      }
     },
     beforePrint() {
       // this.impositionPage();
@@ -477,7 +519,6 @@ export default {
     height: 100%;
     overflow: auto;
     height: 100%;
-    cursor: move;
     background-color: var(--c-gris_fonce);
   }
   ._infiniteViewer {
@@ -486,6 +527,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    cursor: move;
   }
 
   &.is--editable {
