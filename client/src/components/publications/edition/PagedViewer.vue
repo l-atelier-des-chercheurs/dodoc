@@ -60,8 +60,9 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.generateBook();
+  async mounted() {
+    await this.generateBook();
+
     if (this.$refs.infiniteviewer) {
       this.infiniteviewer = new InfiniteViewer(
         this.$refs.infiniteviewer,
@@ -78,6 +79,12 @@ export default {
           displayHorizontalScroll: true,
         }
       );
+
+      if (this.opened_chapter_meta_filename)
+        this.$nextTick(() => {
+          debugger;
+          this.zoomToPage(this.opened_chapter_meta_filename);
+        });
     }
     window.addEventListener("beforeprint", this.beforePrint);
   },
@@ -86,14 +93,14 @@ export default {
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
-    content_html() {
-      this.generateBook();
+    async content_html() {
+      await this.generateBook();
     },
-    format_mode() {
-      this.generateBook();
+    async format_mode() {
+      await this.generateBook();
     },
-    css_styles() {
-      this.generateBook();
+    async css_styles() {
+      await this.generateBook();
     },
     opened_chapter_meta_filename() {
       this.zoomToPage(this.opened_chapter_meta_filename);

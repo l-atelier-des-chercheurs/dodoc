@@ -3,23 +3,25 @@
     <splitpanes v-if="can_edit" class="_splitpanes">
       <pane v-if="show_edit_pane">
         <div class="_chapterSummary">
-          <div class="_showPreviewBtn">
-            <ToggleInput
-              :content.sync="show_preview_pane"
-              :label="$t('show_preview') + ' ➵'"
+          <div class="_chapterSummary--content">
+            <div class="_showPreviewBtn">
+              <ToggleInput
+                :content.sync="show_preview_pane"
+                :label="$t('show_preview') + ' ➵'"
+              />
+            </div>
+
+            <ChaptersSummary
+              :publication="publication"
+              :sections="all_chapters"
+              :opened_section_meta_filename="opened_section_meta_filename"
+              :can_edit="can_edit"
+              @removeChapter="removeChapter"
+              @toggleSection="
+                $emit('updatePane', { key: 'chapter', value: $event })
+              "
             />
           </div>
-
-          <ChaptersSummary
-            :publication="publication"
-            :sections="all_chapters"
-            :opened_section_meta_filename="opened_section_meta_filename"
-            :can_edit="can_edit"
-            @removeChapter="removeChapter"
-            @toggleSection="
-              $emit('updatePane', { key: 'chapter', value: $event })
-            "
-          />
         </div>
 
         <div class="_editGraphics">
@@ -275,6 +277,10 @@ export default {
   overflow: auto;
   background-color: var(--c-gris_clair);
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+}
+._chapterSummary--content {
+  margin: 0 auto;
+  max-width: 640px;
 }
 ._showPreviewBtn {
   display: flex;
