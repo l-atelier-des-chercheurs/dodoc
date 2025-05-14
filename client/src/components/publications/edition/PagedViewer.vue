@@ -234,15 +234,20 @@ export default {
       if (!bookpreview || !this.pages_to_show) return;
       const pages = bookpreview.querySelectorAll(".pagedjs_page");
 
+      /* Reset page counter */
+      let reset = parseInt(this.pages_to_show.start) - 1;
+      let containerPages = document.querySelector(".pagedjs_pages");
+      containerPages.style.counterReset = "page " + reset;
+
       if (this.pages_to_show.start && this.pages_to_show.end) {
         pages.forEach((page, index) => {
           if (
             index + 1 >= this.pages_to_show.start &&
             index + 1 <= this.pages_to_show.end
           ) {
-            page.style.visibility = "visible";
+            page.style.display = "block";
           } else {
-            page.style.visibility = "hidden";
+            page.style.display = "none";
           }
         });
       } else {
@@ -496,6 +501,14 @@ export default {
         folio = folio;
         document.querySelector(`#page-${folio}`).style.order = i;
       });
+    },
+    zoomToPage(meta_filename) {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
+      const page = bookpreview.querySelector(
+        `[data-chapter-meta-filename="${meta_filename}"]`
+      );
+      debugger;
     },
   },
 };
