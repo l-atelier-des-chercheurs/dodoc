@@ -32,6 +32,12 @@ describe("markdown-it custom shortcode plugin", () => {
   const md = new MarkdownIt();
   md.use(markdownItCsc);
 
+  it("should render a basic paragraph", () => {
+    const input = "Plop test paragraph";
+    const output = md.render(input);
+    expect(output).toBe("<p>Plop test paragraph</p>\n");
+  });
+
   it("should render a basic image with src", () => {
     const input = "(image: https://example.com/image.jpg)";
     const output = md.render(input);
@@ -142,6 +148,17 @@ Some text in between
     );
   });
 
+  it("should handle text before tag and close paragraph", () => {
+    const input =
+      "Plop(image: https://example.com/image.jpg class: maclass maclass2)";
+    const output = md.render(input);
+    expect(output).toBe(
+      "<p>\n" +
+        "Plop</p>\n" +
+        '<figure class="media media-image maclass maclass2"><img src="https://example.com/image.jpg" /></figure>\n'
+    );
+  });
+
   // (video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)
   it("should handle shortcodes with links in caption", () => {
     const input =
@@ -154,6 +171,17 @@ Some text in between
   });
 
   it("should handle 2 shortcodes on the same line and put them in a container", () => {
+    const input = `(image: https://example.com/image1.jpg)(audio: https://example.com/audio1.mp3)`;
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<div class="media-container">\n' +
+        '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n' +
+        '<figure class="media media-audio"><audio src="https://example.com/audio1.mp3" controls></audio></figure>\n' +
+        "</div>\n"
+    );
+  });
+  it("should handle 2 shortcodes on the same line with a space inbetween and put them in a container", () => {
     const input = `(image: https://example.com/image1.jpg) (audio: https://example.com/audio1.mp3)`;
 
     const output = md.render(input);
@@ -165,7 +193,7 @@ Some text in between
     );
   });
   it("should handle 3 shortcodes on the same line and put them in a container", () => {
-    const input = `(image: https://example.com/image1.jpg caption: image1) (audio: https://example.com/audio1.mp3 caption: audio1) (video: https://example.com/video1.mp4 caption: video1)`;
+    const input = `(image: https://example.com/image1.jpg caption: image1)(audio: https://example.com/audio1.mp3 caption: audio1)(video: https://example.com/video1.mp4 caption: video1)`;
 
     const output = md.render(input);
     expect(output).toBe(

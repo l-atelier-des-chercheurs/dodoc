@@ -1,14 +1,6 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-// Pattern to capture tag, src, and the rest (attributes)
-// It captures: 1:tag, 2:src, 3:attribute string
-const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*?)\)/;
-
-// Updated pattern that supports nested parentheses
-const markerPatternWithNesting =
-  /\(([-\w]+):\s*([^]+?)(?=\s+[\w-]+:|\s*\)$)\s*(.*?)\)/;
-
 const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
@@ -27,6 +19,20 @@ export default (md, o = {}) => {
       // Find opening parenthesis
       const openParenPos = lineText.indexOf("(");
       if (openParenPos === -1) break;
+
+      // If there's text before the opening parenthesis, add it as a paragraph
+      if (openParenPos > 0) {
+        const textBefore = lineText.substring(0, openParenPos).trim();
+        if (textBefore) {
+          let token = state.push("paragraph_open", "p", 1);
+          token.map = [startLine, startLine + 1];
+          token = state.push("text", "", 0);
+          token.content = textBefore;
+          token.map = [startLine, startLine + 1];
+          token = state.push("paragraph_close", "p", -1);
+          token.map = [startLine, startLine + 1];
+        }
+      }
 
       // Adjust position to the opening parenthesis
       pos += openParenPos;
