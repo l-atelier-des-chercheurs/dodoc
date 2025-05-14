@@ -11,7 +11,6 @@
       v-if="viewer_type === 'infinite-viewer'"
       ref="infiniteviewer"
       class="_infiniteViewer"
-      :style="make_style_for_pages_preview"
     >
       <div class="" ref="bookpreview" />
     </div>
@@ -152,14 +151,6 @@ export default {
         return +pages_to_display;
       }
       return false;
-    },
-    make_style_for_pages_preview() {
-      if (!this.opened_chapter_meta_filename) return {};
-      return `
-      [data-chapter-meta-filename="${this.opened_chapter_meta_filename}"] {
-        background-color: red;
-      }
-      `;
     },
   },
   methods: {
