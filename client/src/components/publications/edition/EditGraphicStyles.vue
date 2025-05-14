@@ -61,6 +61,11 @@
 
     <div class="_openedStyleFile">
       <transition name="fade" mode="out-in">
+        <div v-if="!opened_style_file" class="defaultCode" :key="'default'">
+          <DLabel :str="$t('default_styles')" />
+          <div class="u-spacingBottom" />
+          <pre v-html="pretty_default_styles" />
+        </div>
         <OpenedGraphicStyles
           v-if="opened_style_file"
           :key="opened_style_file.$path"
@@ -77,6 +82,8 @@
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 import OpenedGraphicStyles from "@/components/publications/edition/OpenedGraphicStyles.vue";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
+import hljs from "highlight.js/lib/common";
+import "highlight.js/styles/vs2015.css";
 
 export default {
   props: {
@@ -104,6 +111,9 @@ export default {
   },
   watch: {},
   computed: {
+    pretty_default_styles() {
+      return hljs.highlight(this.default_styles, { language: "css" }).value;
+    },
     style_files() {
       return this.publication.$files
         ?.filter((f) => f.is_css_styles === true)
@@ -199,5 +209,17 @@ export default {
   right: 0;
   color: white;
   z-index: 100;
+}
+</style>
+<style lang="scss">
+.defaultCode {
+  background-color: var(--c-noir);
+  color: white;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  border-radius: 4px;
+
+  pre {
+    margin: 0;
+  }
 }
 </style>

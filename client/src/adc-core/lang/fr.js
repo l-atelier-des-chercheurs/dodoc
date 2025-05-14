@@ -1340,4 +1340,5 @@ export default {
   "type:": "Type : {type}",
 
   failed_to_export: "Échec de l’exportation",
+  default_styles: "Styles par défaut",
 };
