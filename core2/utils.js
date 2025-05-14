@@ -187,11 +187,12 @@ module.exports = (function () {
       // Check for fields in new_meta that don't exist in schema
       for (const field_name in new_meta) {
         if (!fields.hasOwnProperty(field_name)) {
-          const err = new Error(
-            `Field "${field_name}" is not defined in schema`
-          );
-          err.code = "undefined_field";
-          throw err;
+          dev.error(`Field "${field_name}" is not defined in schema`);
+          // const err = new Error(
+          //   `Field "${field_name}" is not defined in schema`
+          // );
+          // err.code = "undefined_field";
+          // throw err;
         }
       }
 

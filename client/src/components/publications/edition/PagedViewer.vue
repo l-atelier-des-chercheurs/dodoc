@@ -2,19 +2,19 @@
   <div
     class="_pagedViewer edition book"
     :class="{
-      'is--infiniteViewer': viewer_type === 'vue-infinite-viewer',
+      'is--infiniteViewer': viewer_type === 'infinite-viewer',
       'is--editable': can_edit,
     }"
   >
     <div ref="bookrender" style="opacity: 0; pointer-events: none" />
-    <vue-infinite-viewer
-      v-if="viewer_type === 'vue-infinite-viewer'"
-      ref="vueinfiniteviewer"
+    <div
+      v-if="viewer_type === 'infinite-viewer'"
+      ref="infiniteviewer"
       class="_infiniteViewer"
-      v-bind="viewerOptions"
+      :style="make_style_for_pages_preview"
     >
       <div class="" ref="bookpreview" />
-    </vue-infinite-viewer>
+    </div>
     <template v-else>
       <div ref="bookpreview" />
     </template>
@@ -23,7 +23,7 @@
   </div>
 </template>
 <script>
-import VueInfiniteViewer from "vue-infinite-viewer";
+import InfiniteViewer from "infinite-viewer";
 import { Handler, Previewer } from "pagedjs";
 
 export default {
@@ -49,7 +49,7 @@ export default {
     opened_chapter_meta_filename: String,
   },
   components: {
-    VueInfiniteViewer,
+    InfiniteViewer,
     ShowSourceHTML: () =>
       import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
@@ -57,25 +57,29 @@ export default {
     return {
       is_loading: true,
 
-      viewerOptions: {
-        useMouseDrag: true,
-        useWheelScroll: true,
-        useAutoZoom: true,
-
-        margin: 0,
-        zoomRange: [0.4, 10],
-        maxPinchWheel: 10,
-        displayVerticalScroll: true,
-        displayHorizontalScroll: true,
-        rangeX: [-100, 2000],
-        rangeY: [0, Infinity],
-      },
+      infiniteviewer: null,
     };
   },
   created() {},
   mounted() {
     this.generateBook();
-    if (this.$refs.vueinfiniteviewer) this.$refs.vueinfiniteviewer.setZoom(0.6);
+    if (this.$refs.infiniteviewer) {
+      this.infiniteviewer = new InfiniteViewer(
+        this.$refs.infiniteviewer,
+        this.$refs.bookpreview,
+        {
+          useMouseDrag: true,
+          useWheelScroll: true,
+          useAutoZoom: true,
+
+          margin: 0,
+          zoomRange: [0.4, 10],
+          maxPinchWheel: 10,
+          displayVerticalScroll: true,
+          displayHorizontalScroll: true,
+        }
+      );
+    }
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
@@ -119,8 +123,13 @@ export default {
 
       nodes.chapters.forEach((chapter) => {
         html += `
-          <!-- ${this.$t("chapter")} ${chapter.title} -->`;
-        html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" data-chapter-type="${chapter.section_type}" >`;
+          <!-- ${chapter.title} -->`;
+        html += `<section class="chapter"
+          data-starts-on-page="${chapter.starts_on_page}"
+          data-chapter-meta-filename="${chapter.meta_filename}"
+          data-chapter-title="${chapter.title}"
+          data-chapter-type="${chapter.section_type}"
+        >`;
         if (chapter.title)
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
@@ -143,6 +152,14 @@ export default {
         return +pages_to_display;
       }
       return false;
+    },
+    make_style_for_pages_preview() {
+      if (!this.opened_chapter_meta_filename) return {};
+      return `
+      [data-chapter-meta-filename="${this.opened_chapter_meta_filename}"] {
+        background-color: red;
+      }
+      `;
     },
   },
   methods: {
@@ -512,7 +529,35 @@ export default {
       const page = bookpreview.querySelector(
         `[data-chapter-meta-filename="${meta_filename}"]`
       );
-      debugger;
+      if (!page) return;
+      // const scrollLeft = page.getBoundingClientRect().left;
+      // const scrollTop = page.getBoundingClientRect().top;
+      // this.infiniteviewer.setZoom(1);
+
+      const pages_container = this.$refs.bookpreview;
+      const container_scrollLeft = pages_container.getBoundingClientRect().left;
+      const container_scrollTop = pages_container.getBoundingClientRect().top;
+
+      const page_scrollLeft = page.getBoundingClientRect().left;
+      const page_scrollTop = page.getBoundingClientRect().top;
+      console.log("-");
+      console.log(container_scrollLeft, container_scrollTop);
+      console.log(page_scrollLeft, page_scrollTop);
+
+      const padding = 200;
+      // debugger;
+      this.infiniteviewer.scrollTo(
+        page_scrollLeft - container_scrollLeft - padding,
+        page_scrollTop - container_scrollTop - padding,
+        {
+          duration: 1000,
+          absolute: true,
+        }
+      );
+      // this.infiniteviewer.scrollTo(100, 100, {
+      //   duration: 1000,
+      //   absolute: true,
+      // });
     },
   },
 };

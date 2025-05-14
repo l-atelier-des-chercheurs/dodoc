@@ -82,7 +82,7 @@ export default {
     opened_style_file_meta: String,
     viewer_type: {
       type: String,
-      default: "vue-infinite-viewer",
+      default: "infinite-viewer",
     },
     opened_chapter_meta_filename: String,
     show_source_html: Boolean,
