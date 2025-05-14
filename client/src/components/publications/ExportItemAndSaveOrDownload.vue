@@ -13,6 +13,11 @@
       </div>
     </template>
     <template v-else>
+      <template v-if="fail_message">
+        <div class="u-instructions u-spacingBottom">
+          {{ fail_message }}
+        </div>
+      </template>
       <template v-if="created_doc">
         <div
           v-if="instructions.recipe === 'webpage'"
@@ -70,6 +75,7 @@ export default {
       is_exporting: false,
       created_doc: undefined,
       task_progress: 0,
+      fail_message: undefined,
     };
   },
   created() {},
@@ -113,9 +119,12 @@ export default {
         if (message.event === "completed") {
           this.created_doc = message.file;
         } else if (message.event === "aborted") {
+          this.fail_message = this.$t("failed_to_export");
           //
         } else if (message.event === "failed") {
-          message.info;
+          debugger;
+          this.fail_message =
+            this.$t("failed_to_export") + " : " + message.info;
         }
         this.is_exporting = false;
       };

@@ -74,6 +74,7 @@
             :src="url_to_site.src"
             frameborder="0"
             @load="iframeLoaded"
+            @error="iframeError"
           />
         </template>
         <vue-plyr v-else>
@@ -147,7 +148,8 @@ export default {
       this.$emit("embed", this.full_url);
       this.is_inserting_embed = true;
     },
-    iframeLoaded() {},
+    iframeLoaded(arg) {},
+    iframeError(arg) {},
   },
 };
 </script>

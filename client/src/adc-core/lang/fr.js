@@ -1338,4 +1338,6 @@ export default {
   total_number_of_pages_in_publication:
     "Nombre total de pages dans la publication : {total}",
   "type:": "Type : {type}",
+
+  failed_to_export: "Échec de l’exportation",
 };
