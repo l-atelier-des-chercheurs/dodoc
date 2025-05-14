@@ -46,6 +46,7 @@ export default {
     },
     show_source_html: Boolean,
     can_edit: Boolean,
+    opened_chapter_meta_filename: String,
   },
   components: {
     VueInfiniteViewer,
@@ -90,6 +91,9 @@ export default {
     },
     css_styles() {
       this.generateBook();
+    },
+    opened_chapter_meta_filename() {
+      this.zoomToPage(this.opened_chapter_meta_filename);
     },
   },
   computed: {
