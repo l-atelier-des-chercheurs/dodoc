@@ -82,7 +82,7 @@ export default {
     opened_style_file_meta: String,
     viewer_type: {
       type: String,
-      default: "vue-infinite-viewer",
+      default: "infinite-viewer",
     },
     opened_chapter_meta_filename: String,
     show_source_html: Boolean,
@@ -166,7 +166,7 @@ export default {
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         _chapter.section_type = chapter.section_type;
-        if (chapter.section_type === "text") {
+        if (!chapter.section_type || chapter.section_type === "text") {
           if (chapter._main_text?.$content) {
             if (chapter._main_text?.content_type === "markdown") {
               _chapter.content = this.parseMarkdownWithMarkedownIt(
@@ -373,7 +373,8 @@ export default {
       };
 
       md.use(markdownItCsc, {
-        vue_instance: this,
+        getMediaSrc: (meta_src) => this.getMediaSrc(meta_src, source_medias),
+        transformURL: (url) => this.transformURL(url),
       });
       md.use(markdownItBracketedSpans);
       md.use(markdownItAttrs, {

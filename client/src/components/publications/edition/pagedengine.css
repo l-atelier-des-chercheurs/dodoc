@@ -93,6 +93,7 @@ p:empty {
   iframe {
     aspect-ratio: 16 / 9;
     border: none;
+    background-color: var(--c-gris_clair);
   }
 }
 
@@ -112,7 +113,9 @@ p:empty {
     grid-template-columns: 1fr;
   }
   &[data-number-of-medias="2"] {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+ 
   }
   &[data-number-of-medias="3"] {
     grid-template-columns: 1fr 1fr;

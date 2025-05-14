@@ -12,7 +12,8 @@ const markerPatternWithNesting =
 const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
-  const vue_instance = o.vue_instance;
+  const getMediaSrc = o.getMediaSrc;
+  const transformURL = o.transformURL;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -191,15 +192,8 @@ export default (md, o = {}) => {
     if (tags_list.includes(token.tag)) {
       // Use getMediaSrc if available, otherwise fallback to normal behavior
       let media = null;
-      if (
-        vue_instance &&
-        vue_instance.getMediaSrc &&
-        !token.attrs.src.startsWith("http")
-      ) {
-        media = vue_instance.getMediaSrc(
-          token.attrs.src,
-          vue_instance.source_medias
-        );
+      if (getMediaSrc && !token.attrs.src.startsWith("http")) {
+        media = getMediaSrc(token.attrs.src);
       }
 
       const attrs = [];
@@ -210,10 +204,7 @@ export default (md, o = {}) => {
       } else if (token.attrs.src.startsWith("http")) {
         src = token.attrs.src;
       } else {
-        let msg = "⚠️ ";
-        msg += vue_instance.$t
-          ? vue_instance.$t("media_not_found")
-          : "Media not found";
+        let msg = "⚠️ Media not found";
         return `<div class="media media-error"><i>${msg}</i></div>`;
       }
 
@@ -247,8 +238,8 @@ export default (md, o = {}) => {
         media_tag += `<audio src="${src}" controls>`;
         media_tag += "</audio>";
       } else if (token.tag === "embed") {
-        if (vue_instance && vue_instance.transformURL) {
-          const embed = vue_instance.transformURL({
+        if (transformURL) {
+          const embed = transformURL({
             url: src,
             autoplay: false,
           });

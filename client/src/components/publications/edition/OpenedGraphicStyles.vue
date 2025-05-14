@@ -33,7 +33,7 @@
         @close="show_reset_modal = false"
         @save="resetCustom"
       >
-        <div class="_code">
+        <div class="defaultCode">
           <pre v-html="pretty_default_styles" />
         </div>
 
@@ -117,16 +117,5 @@ export default {
   margin-bottom: calc(var(--spacing) / 1);
 
   --label-color: white;
-}
-
-._code {
-  background-color: var(--c-noir);
-  color: white;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-  border-radius: 4px;
-
-  pre {
-    margin: 0;
-  }
 }
 </style>

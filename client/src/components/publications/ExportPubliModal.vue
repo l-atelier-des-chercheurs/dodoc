@@ -9,7 +9,12 @@
       />
     </div>
 
-    <template v-if="export_mode === 'pdf'">
+    <template
+      v-if="
+        export_mode === 'pdf' &&
+        ['page_by_page', 'edition'].includes(publication.template)
+      "
+    >
       <DLabel
         :str="!is_spread ? $t('pages_to_export') : $t('spreads_to_export')"
       />
@@ -43,7 +48,10 @@
         />
       </div>
 
-      <div class="u-instructions" v-if="pdf_pages_to_export_mode === 'custom'">
+      <div
+        class="u-instructions"
+        v-if="pdf_pages_to_export_mode === 'custom' && total_number_of_pages"
+      >
         <template v-if="is_spread">
           {{
             $t("total_number_of_spreads_in_publication", {
@@ -168,9 +176,11 @@ export default {
       return false;
     },
     total_number_of_pages() {
+      if (!this.publication.pages) return false;
       return this.publication.pages.length;
     },
     total_number_of_spreads() {
+      if (!this.total_number_of_pages) return false;
       return Math.floor(this.total_number_of_pages / 2) + 1;
     },
     current_spread_number() {

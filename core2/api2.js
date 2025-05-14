@@ -773,13 +773,19 @@ module.exports = (function () {
         }
       }
 
-      const files = await file.getFiles({ path_to_folder, embed_source: true });
-
-      d.$files = files;
-
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      dev.logpackets({ d });
-      res.json(d);
+      try {
+        const files = await file.getFiles({
+          path_to_folder,
+          embed_source: true,
+        });
+        d.$files = files;
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        dev.logpackets({ d });
+        res.json(d);
+      } catch (err) {
+        dev.error("Failed to get files: " + err);
+        res.json({});
+      }
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to get public folder: " + message);
