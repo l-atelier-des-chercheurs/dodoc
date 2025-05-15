@@ -329,11 +329,6 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 
-._recentlyEdited {
-  max-width: var(--max-column-width);
-  margin: calc(var(--spacing) * 2) auto;
-}
-
 ._editAdminText {
   position: absolute;
   top: calc(var(--spacing) / 2);

@@ -62,6 +62,6 @@ export default {
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 1);
   align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 </style>
