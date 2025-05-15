@@ -136,7 +136,7 @@ export default {
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
         >`;
-        if (chapter.title)
+        if (chapter.title && chapter.section_type !== "gallery")
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content) html += `${chapter.content}`;
         html += `</section>`;
@@ -162,63 +162,66 @@ export default {
   },
   methods: {
     async generateBook() {
-      console.log("generateBook");
+      await new Promise((resolve) => {
+        console.log("generateBook");
 
-      this.removeExistingStyles();
+        this.removeExistingStyles();
 
-      const bookrender = this.$refs.bookrender;
-      if (!bookrender) {
-        console.log("no bookrender div");
-        return;
-      }
+        const bookrender = this.$refs.bookrender;
+        if (!bookrender) {
+          console.log("no bookrender div");
+          return;
+        }
 
-      let paged = new Previewer();
+        let paged = new Previewer();
 
-      let pagedjs_html = this.content_html;
-      if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
+        let pagedjs_html = this.content_html;
+        if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
 
-      let pagedjs_styles = `
+        let pagedjs_styles = `
         @page {
           size: ${this.format_mode};
         }
       `;
-      // --paged-layout: booklet;
-      pagedjs_styles += this.css_styles;
-      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+        // --paged-layout: booklet;
+        pagedjs_styles += this.css_styles;
+        pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
-      const theme_styles = [
-        {
-          pagedjs_styles,
-        },
-      ];
+        const theme_styles = [
+          {
+            pagedjs_styles,
+          },
+        ];
 
-      paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
-        bookrender.innerHTML = "";
-        const bookpreview = this.$refs.bookpreview;
-        bookpreview.innerHTML = "";
-        const pagesOutput = flow.pagesArea;
-        bookpreview.appendChild(pagesOutput);
+        paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
+          bookrender.innerHTML = "";
+          const bookpreview = this.$refs.bookpreview;
+          bookpreview.innerHTML = "";
+          const pagesOutput = flow.pagesArea;
+          bookpreview.appendChild(pagesOutput);
 
-        // const custom_styles_el = document.querySelectorAll(
-        //   "[data-pagedjs-inserted-styles]"
-        // )[1];
-        // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
-        //   ".makertoidentfyendofcustomcss{}"
-        // );
+          // const custom_styles_el = document.querySelectorAll(
+          //   "[data-pagedjs-inserted-styles]"
+          // )[1];
+          // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
+          //   ".makertoidentfyendofcustomcss{}"
+          // );
 
-        // const wrap_custom_styles = `
-        //   ._pagedViewer {
-        //     ${custom_css}
-        //   }
-        // `;
-        // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
+          // const wrap_custom_styles = `
+          //   ._pagedViewer {
+          //     ${custom_css}
+          //   }
+          // `;
+          // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
-        this.$nextTick(() => {
-          this.addChapterShortcuts();
-          this.showOnlyPages();
-          setTimeout(() => {
-            this.is_loading = false;
-          }, 100);
+          this.$nextTick(() => {
+            this.addChapterShortcuts();
+            this.showOnlyPages();
+            setTimeout(() => {
+              this.is_loading = false;
+              resolve();
+            }, 100);
+          });
         });
       });
     },

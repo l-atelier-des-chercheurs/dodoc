@@ -399,7 +399,7 @@ export default {
         })
         .filter(Boolean);
 
-      let html = `<div class="gallery" data-number-of-medias="${medias.length}" >`;
+      let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
         html += `<figure class="media gallery--item">
@@ -410,7 +410,7 @@ export default {
         </figure>`;
       });
 
-      html += "</div>";
+      html += "</div></div>";
 
       return html;
     },

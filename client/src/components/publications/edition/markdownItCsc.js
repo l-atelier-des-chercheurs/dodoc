@@ -221,7 +221,12 @@ export default (md, o = {}) => {
 
       // Add all other attributes except caption
       for (const [key, value] of Object.entries(token.attrs)) {
-        if (key !== "src" && key !== "caption" && key !== "class") {
+        if (
+          key !== "src" &&
+          key !== "caption" &&
+          key !== "class" &&
+          key !== "float"
+        ) {
           attrs.push(`${key}="${value}"`);
         }
       }
@@ -229,6 +234,9 @@ export default (md, o = {}) => {
       let classes = ["media", "media-" + token.tag];
       if (class_attr) {
         classes.push(class_attr);
+      }
+      if (token.attrs.float) {
+        classes.push(`float-${token.attrs.float}`);
       }
 
       // Create the image tag with all attributes
