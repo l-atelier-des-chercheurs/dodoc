@@ -67,7 +67,7 @@
     <button
       type="button"
       class="u-buttonLink"
-      v-if="is_instance_admin || is_instance_contributor"
+      v-if="is_instance_admin"
       @click="show_bin_modal = true"
     >
       <b-icon icon="recycle" />
