@@ -137,7 +137,11 @@ export default {
         publication: this.publication,
         additional_meta,
       });
-      // this.$emit("toggleSection", new_section_meta);
+      setTimeout(() => {
+        this.$emit("toggleSection", new_section_meta);
+      }, 100);
+
+      // this.openSection(new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
       let sections_meta = this.sections.map((s) => ({
