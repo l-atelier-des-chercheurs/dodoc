@@ -18,7 +18,11 @@
       <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
-    <ShowSourceHTML v-if="show_source_html" :content_html="content_html" />
+    <ShowSourceHTML
+      v-if="show_source_html"
+      :content_html="content_html"
+      :opened_chapter_meta_filename="opened_chapter_meta_filename"
+    />
   </div>
 </template>
 <script>
@@ -82,7 +86,6 @@ export default {
 
       if (this.opened_chapter_meta_filename)
         this.$nextTick(() => {
-          debugger;
           this.zoomToPage(this.opened_chapter_meta_filename);
         });
     }
@@ -546,7 +549,6 @@ export default {
       console.log(page_scrollLeft, page_scrollTop);
 
       const padding = 200;
-      // debugger;
       this.infiniteviewer.scrollTo(
         page_scrollLeft - container_scrollLeft - padding,
         page_scrollTop - container_scrollTop - padding,
@@ -624,6 +626,10 @@ export default {
         background-color: var(--color-pageContent);
         font-size: 0.8rem;
         color: white;
+
+        &:hover {
+          background-color: var(--c-noir);
+        }
       }
 
       .pagedjs_pages {
