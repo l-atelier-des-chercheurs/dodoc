@@ -22,7 +22,7 @@
         >
           style – {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
-        <option value="">style – {{ $t("default_value") }}</option>
+        <option value="default">style – {{ $t("default_value") }}</option>
       </select>
 
       <div
@@ -79,7 +79,10 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
-    opened_style_file_meta: String,
+    opened_style_file_meta: {
+      type: String,
+      default: "default",
+    },
     viewer_type: {
       type: String,
       default: "infinite-viewer",
@@ -126,7 +129,11 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      if (this.style_files && this.opened_style_file_meta) {
+      if (
+        this.style_files &&
+        this.opened_style_file_meta &&
+        this.opened_style_file_meta !== "default"
+      ) {
         return (
           this.style_files.find(
             (f) => this.getFilename(f.$path) === this.opened_style_file_meta

@@ -35,7 +35,7 @@
         </div>
 
         <transition name="scaleInFade_fast" mode="in-out">
-          <EditGraphicStyles
+          <GraphicStyles
             v-if="open_graphic_styles"
             :key="'edit_graphics'"
             :publication="publication"
@@ -107,7 +107,7 @@ import { Splitpanes, Pane } from "splitpanes";
 import ChaptersSummary from "@/components/publications/edition/ChaptersSummary.vue";
 import OpenChapter from "@/components/publications/edition/OpenChapter.vue";
 import ViewContent from "@/components/publications/edition/ViewContent.vue";
-import EditGraphicStyles from "@/components/publications/edition/EditGraphicStyles.vue";
+import GraphicStyles from "@/components/publications/edition/GraphicStyles.vue";
 import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 
@@ -123,7 +123,7 @@ export default {
     ChaptersSummary,
     OpenChapter,
     ViewContent,
-    EditGraphicStyles,
+    GraphicStyles,
     PublicationSettings,
     WidthHeightField,
   },
@@ -197,7 +197,7 @@ export default {
       return this.pane_infos?.edit_graphics === true;
     },
     opened_style_file_meta() {
-      return this.pane_infos?.style;
+      return this.pane_infos?.style || "default";
     },
     meta_filenames_already_present() {
       let current = [],

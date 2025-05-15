@@ -248,7 +248,7 @@ export default {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
-    if (this.mode === "always_active") this.enableEditor();
+    if (this.can_edit && this.mode === "always_active") this.enableEditor();
   },
   beforeDestroy() {
     this.disableEditor();

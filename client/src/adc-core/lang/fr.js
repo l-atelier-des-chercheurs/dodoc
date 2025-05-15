@@ -1341,4 +1341,5 @@ export default {
 
   failed_to_export: "Échec de l’exportation",
   default_styles: "Styles par défaut",
+  remove_css_file: "Supprimer la feuille de style",
 };
