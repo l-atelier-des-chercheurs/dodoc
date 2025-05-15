@@ -24,7 +24,6 @@
                 <div class="u-instructions _content">
                   <small v-html="$t('spaces_instr')" />
                 </div>
-
                 <SpacesList />
               </template>
               <template v-else-if="current_mode === 'projects'">
