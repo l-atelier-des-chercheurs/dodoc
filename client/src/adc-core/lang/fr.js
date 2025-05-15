@@ -1145,7 +1145,7 @@ export default {
   <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Code source de do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau, et de nombreux autres personnes dans le cadre d’ateliers, de projets, de forums et de résidences à travers le monde.`,
 
   write: "Écrire",
   real_size: "Taille réelle",
