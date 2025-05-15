@@ -63,17 +63,36 @@
         :can_edit="false"
       />
     </PinnedNonpinnedFolder>
+
+    <button
+      type="button"
+      class="u-buttonLink"
+      v-if="is_instance_admin || is_instance_contributor"
+      @click="show_bin_modal = true"
+    >
+      <b-icon icon="recycle" />
+      {{ $t("bin") }}
+    </button>
+    <BinFolder
+      v-if="show_bin_modal"
+      :modal_title="$t('restore_spaces')"
+      :path="'.'"
+      :subfolders_type="'spaces'"
+      @close="show_bin_modal = false"
+    />
   </div>
 </template>
 <script>
 import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
+import BinFolder from "@/adc-core/fields/BinFolder.vue";
 
 export default {
   props: {},
   components: {
     PinnedNonpinnedFolder,
     SpacePresentation,
+    BinFolder,
   },
   data() {
     return {
@@ -101,6 +120,7 @@ export default {
       ],
 
       search_space: "",
+      show_bin_modal: false,
     };
   },
   created() {},
