@@ -1,5 +1,5 @@
 <template>
-  <div class="_debugMode">
+  <div class="_debugMode" ref="debugMode">
     <h2>HTML</h2>
     <code ref="chapter" v-html="pretty_content_html" />
   </div>
@@ -19,14 +19,17 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.scrollToChapter();
+    });
+  },
   beforeDestroy() {},
   watch: {
     opened_chapter_meta_filename: {
       handler() {
         this.scrollToChapter();
       },
-      immediate: true,
     },
   },
   computed: {
@@ -54,7 +57,7 @@ export default {
             chapter_filename.length - 1
           );
           if (chapter_filename === this.opened_chapter_meta_filename) {
-            el.scrollIntoView({ behavior: "smooth" });
+            this.$el.scrollTo(0, el.offsetTop - 80);
           }
         });
       }
@@ -74,7 +77,7 @@ export default {
   color: white;
   overflow: auto;
   padding: calc(var(--spacing) * 2);
-  scroll-margin-top: 50px;
+  scroll-behavior: smooth;
 
   code {
     background-color: var(--c-noir);

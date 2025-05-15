@@ -116,8 +116,6 @@ p:empty {
   height: var(--pagedjs-height);
 }
 .edition .gallery-content {
-  opacity: 0.2;
-
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
