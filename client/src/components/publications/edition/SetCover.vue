@@ -1,6 +1,6 @@
 <template>
   <div class="_cover">
-    <div class="u-spacingBottom" v-if="!cover_media">
+    <div class="" v-if="!cover_media">
       <DLabel :str="$t('cover')" />
       <button
         type="button"

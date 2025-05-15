@@ -25,6 +25,16 @@
       </button>
       <button
         type="button"
+        class="u-button"
+        :class="{
+          'is--active': opened_style_file.$path === 'default',
+        }"
+        @click="openDefaultStyles"
+      >
+        {{ $t("default_styles") }}
+      </button>
+      <button
+        type="button"
         class="u-button u-button_bleumarine"
         @click="show_create_css_modal = true"
       >
@@ -61,11 +71,11 @@
 
     <div class="_openedStyleFile">
       <transition name="fade" mode="out-in">
-        <div v-if="!opened_style_file" class="defaultCode" :key="'default'">
+        <!-- <div v-if="!opened_style_file" class="defaultCode" :key="'default'">
           <DLabel :str="$t('default_styles')" />
           <div class="u-spacingBottom" />
           <pre v-html="pretty_default_styles" />
-        </div>
+        </div> -->
         <OpenedGraphicStyles
           v-if="opened_style_file"
           :key="opened_style_file.$path"
@@ -73,6 +83,7 @@
           :default_styles="default_styles"
           :show_source_html="show_source_html"
           @update:show_source_html="$emit('update:show_source_html', $event)"
+          @close="openDefaultStyles"
         />
       </transition>
     </div>
@@ -102,8 +113,8 @@ export default {
     };
   },
   created() {
-    if (this.style_files?.length > 0)
-      this.openStyleFile(this.style_files[0].$path);
+    // if (this.style_files?.length > 0)
+    //   this.openStyleFile(this.style_files[0].$path);
   },
   mounted() {},
   beforeDestroy() {
@@ -125,6 +136,15 @@ export default {
         });
     },
     opened_style_file() {
+      if (this.opened_style_file_meta === "default") {
+        return {
+          $path: "default",
+          css_title: this.$t("default_styles"),
+          $content: default_styles,
+          is_default: true,
+        };
+      }
+
       return this.style_files.find(
         (f) => this.getFilename(f.$path) === this.opened_style_file_meta
       );
@@ -155,6 +175,9 @@ export default {
     },
     openStyleFile(path) {
       this.$emit("setStyleFile", this.getFilename(path));
+    },
+    openDefaultStyles() {
+      this.$emit("setStyleFile", "default");
     },
   },
 };

@@ -122,7 +122,6 @@ export default {
           this.fail_message = this.$t("failed_to_export");
           //
         } else if (message.event === "failed") {
-          debugger;
           this.fail_message =
             this.$t("failed_to_export") + " : " + message.info;
         }

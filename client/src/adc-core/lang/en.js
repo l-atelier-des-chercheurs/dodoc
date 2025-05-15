@@ -1083,7 +1083,7 @@ export default {
   <li>The source code can be found here: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Source code of do•doc on Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+  about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau, and many other participants in workshops, projects, forums and residencies around the world.`,
 
   write: "Write",
   real_size: "Real size",

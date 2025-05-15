@@ -1137,8 +1137,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   <li>Il codice sorgente è disponibile qui: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Codice sorgente di do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Contributori principali: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
-
+  about_dodoc_contributors: `Contributori principali: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau e molti altri partecipanti a workshop, progetti, forum e residenze in tutto il mondo.`,
   write: "Scrivi",
   real_size: "Dimensioni reali",
   full_page: "Pagina intera",

@@ -3,23 +3,25 @@
     <splitpanes v-if="can_edit" class="_splitpanes">
       <pane v-if="show_edit_pane">
         <div class="_chapterSummary">
-          <div class="_showPreviewBtn">
-            <ToggleInput
-              :content.sync="show_preview_pane"
-              :label="$t('show_preview') + ' ➵'"
+          <div class="_chapterSummary--content">
+            <div class="_showPreviewBtn">
+              <ToggleInput
+                :content.sync="show_preview_pane"
+                :label="$t('show_preview') + ' ➵'"
+              />
+            </div>
+
+            <ChaptersSummary
+              :publication="publication"
+              :sections="all_chapters"
+              :opened_section_meta_filename="opened_section_meta_filename"
+              :can_edit="can_edit"
+              @removeChapter="removeChapter"
+              @toggleSection="
+                $emit('updatePane', { key: 'chapter', value: $event })
+              "
             />
           </div>
-
-          <ChaptersSummary
-            :publication="publication"
-            :sections="all_chapters"
-            :opened_section_meta_filename="opened_section_meta_filename"
-            :can_edit="can_edit"
-            @removeChapter="removeChapter"
-            @toggleSection="
-              $emit('updatePane', { key: 'chapter', value: $event })
-            "
-          />
         </div>
 
         <div class="_editGraphics">
@@ -33,7 +35,7 @@
         </div>
 
         <transition name="scaleInFade_fast" mode="in-out">
-          <EditGraphicStyles
+          <GraphicStyles
             v-if="open_graphic_styles"
             :key="'edit_graphics'"
             :publication="publication"
@@ -105,7 +107,7 @@ import { Splitpanes, Pane } from "splitpanes";
 import ChaptersSummary from "@/components/publications/edition/ChaptersSummary.vue";
 import OpenChapter from "@/components/publications/edition/OpenChapter.vue";
 import ViewContent from "@/components/publications/edition/ViewContent.vue";
-import EditGraphicStyles from "@/components/publications/edition/EditGraphicStyles.vue";
+import GraphicStyles from "@/components/publications/edition/GraphicStyles.vue";
 import PublicationSettings from "@/components/publications/PublicationSettings.vue";
 import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 
@@ -121,7 +123,7 @@ export default {
     ChaptersSummary,
     OpenChapter,
     ViewContent,
-    EditGraphicStyles,
+    GraphicStyles,
     PublicationSettings,
     WidthHeightField,
   },
@@ -195,7 +197,7 @@ export default {
       return this.pane_infos?.edit_graphics === true;
     },
     opened_style_file_meta() {
-      return this.pane_infos?.style;
+      return this.pane_infos?.style || "default";
     },
     meta_filenames_already_present() {
       let current = [],
@@ -275,6 +277,10 @@ export default {
   overflow: auto;
   background-color: var(--c-gris_clair);
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+}
+._chapterSummary--content {
+  margin: 0 auto;
+  max-width: 640px;
 }
 ._showPreviewBtn {
   display: flex;

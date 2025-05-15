@@ -1,71 +1,77 @@
 <template>
-  <div class="u-card2 _chapterPreview">
-    <div class="_topRow">
-      <h2 class="_item--title">
-        <template v-if="section.section_title">
-          {{ section.section_title }}
-        </template>
-        <template v-else>
-          <i>{{ $t("untitled") }}</i>
-        </template>
-        <small class="_item--title--icon">
-          <b-icon v-if="section.section_type === 'text'" icon="markdown" />
-          <b-icon v-else-if="section.section_type === 'gallery'" icon="image" />
-        </small>
-      </h2>
-      <div class="_selects" v-if="can_edit">
-        <select
-          :value="index"
-          size="small"
-          class="_selects--order"
-          @change="
-            $emit('moveSection', {
-              old_position: index,
-              new_position: +$event.target.value,
-            })
-          "
-        >
-          <option
-            v-for="p in number_of_sections"
-            :key="p - 1"
-            :value="p - 1"
-            v-text="p"
-          />
-        </select>
-      </div>
-    </div>
-    <!-- <div class="_item--type">
-      {{ $t("type") }} : {{ section.section_type }}
-    </div> -->
-    <div class="_item--content">
-      <div
-        class="_item--content--text"
-        v-if="section.section_type === 'text' && previewContent(section)"
-      >
-        <CollaborativeEditor3 :content="previewContent(section)" />
-      </div>
-      <div
-        v-else-if="
-          section.section_type === 'gallery' && gallery_medias.length > 0
+  <div class="_chapterPreview">
+    <div class="_selects" v-if="can_edit">
+      <select
+        :value="index"
+        size="small"
+        class="_selects--order"
+        @change="
+          $emit('moveSection', {
+            old_position: index,
+            new_position: +$event.target.value,
+          })
         "
-        class="_item--content--gallery"
       >
-        <div
-          v-for="media in gallery_medias"
-          :key="media.meta_filename_in_project"
-        >
-          <MediaContent :file="media" />
-        </div>
-      </div>
-      <div v-else class="u-instructions">{{ $t("no_content") }}</div>
+        <option
+          v-for="p in number_of_sections"
+          :key="p - 1"
+          :value="p - 1"
+          v-text="p"
+        />
+      </select>
     </div>
 
-    <button
-      type="button"
-      class="_openButton"
-      :title="$t('open')"
-      @click="$emit('open')"
-    />
+    <div class="_chapterPreview--card">
+      <div class="_topRow">
+        <h2 class="_item--title">
+          <template v-if="section.section_title">
+            {{ section.section_title }}
+          </template>
+          <template v-else>
+            <i>{{ $t("untitled") }}</i>
+          </template>
+          <small class="_item--title--icon">
+            <b-icon v-if="section.section_type === 'text'" icon="markdown" />
+            <b-icon
+              v-else-if="section.section_type === 'gallery'"
+              icon="image"
+            />
+          </small>
+        </h2>
+      </div>
+      <!-- <div class="_item--type">
+      {{ $t("type") }} : {{ section.section_type }}
+    </div> -->
+      <div class="_item--content">
+        <div
+          class="_item--content--text"
+          v-if="section.section_type === 'text' && previewContent(section)"
+        >
+          <CollaborativeEditor3 :content="previewContent(section)" />
+        </div>
+        <div
+          v-else-if="
+            section.section_type === 'gallery' && gallery_medias.length > 0
+          "
+          class="_item--content--gallery"
+        >
+          <div
+            v-for="media in gallery_medias"
+            :key="media.meta_filename_in_project"
+          >
+            <MediaContent :file="media" />
+          </div>
+        </div>
+        <div v-else class="u-instructions">{{ $t("no_content") }}</div>
+      </div>
+
+      <button
+        type="button"
+        class="_openButton"
+        :title="$t('open')"
+        @click="$emit('open')"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -115,6 +121,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._chapterPreview {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+
+  ._selects {
+    flex: 0 0 0;
+  }
+  ._chapterPreview--card {
+    flex: 1 1 auto;
+  }
+}
+
+._chapterPreview--card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -123,6 +143,9 @@ export default {
   background-color: var(--editor-bg);
   padding: calc(var(--spacing) / 1);
   background-color: white;
+  height: 8rem;
+  overflow: hidden;
+  // border: 1px solid var(--c-gris);
   border-radius: var(--border-radius);
 }
 

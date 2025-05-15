@@ -76,6 +76,12 @@
           <li>
             <code>class: nomDeLaClasse</code>
           </li>
+          <li>
+            <code>float: left</code>
+          </li>
+          <li>
+            <code>float: right</code>
+          </li>
         </ul>
       </div>
       <div>

@@ -1,16 +1,16 @@
 <template>
-  <div>
-    <ToggledSection
-      :label="$t('projects_you_edited_last')"
-      :show_toggle.sync="show_toggle"
+  <div class="_recentlyEdited" v-if="show_recently_edited">
+    <DLabel :str="$t('projects_you_edited_last')" />
+    <button
+      type="button"
+      class="u-button u-button_icon _closeBtn"
+      @click="show_recently_edited = false"
     >
-      <div class="" v-if="paths">
-        <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
-      </div>
-      <div v-else>
-        {{ $t("nothing_to_show") }}
-      </div>
-    </ToggledSection>
+      <b-icon icon="x-lg" />
+    </button>
+    <div v-if="paths.length > 0">
+      <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
+    </div>
   </div>
 </template>
 <script>
@@ -23,10 +23,12 @@ export default {
   },
   data() {
     return {
-      show_toggle: false,
+      show_recently_edited: false,
     };
   },
-  created() {},
+  created() {
+    this.show_recently_edited = this.paths.length > 0;
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
@@ -39,4 +41,31 @@ export default {
   methods: {},
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._recentlyEdited {
+  position: fixed;
+  bottom: 0;
+  right: calc(var(--spacing) * 2);
+  max-width: 280px;
+  width: 100%;
+  max-height: 300px;
+  z-index: 1000;
+  padding: var(--spacing);
+  background: white;
+  border-radius: var(--border-radius) var(--border-radius);
+  box-shadow: var(--panel-shadows);
+
+  overflow: auto;
+
+  > * {
+    max-height: 30vh;
+  }
+}
+
+._closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+</style>
