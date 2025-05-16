@@ -106,7 +106,8 @@
           <!-- </DropDown> -->
         </div>
 
-        <div class="_cont">
+        {{ pane_infos }}
+        <div class="_cont" :data-template="collection.template">
           <StorySectionTemplate
             v-if="
               !collection.template ||
@@ -125,7 +126,9 @@
           <EditionTemplate
             v-else-if="collection.template === 'edition'"
             :publication="collection"
+            :pane_infos="pane_infos"
             :can_edit="can_edit"
+            @updatePane="$emit('updatePane', $event)"
           />
         </div>
       </div>
@@ -256,6 +259,10 @@ export default {
 
 ._cont {
   margin: calc(var(--spacing) / 2) 0;
+
+  &[data-template="edition"] {
+    height: calc(100vh - 120px);
+  }
 }
 
 ._items {

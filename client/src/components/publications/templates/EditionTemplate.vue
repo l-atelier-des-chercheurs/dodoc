@@ -1,6 +1,5 @@
 <template>
   <div class="_editionTemplate">
-    {{ opened_section_meta_filename }}
     <splitpanes v-if="can_edit" class="_splitpanes">
       <pane v-if="show_edit_pane">
         <div class="_chapterSummary">
@@ -35,7 +34,6 @@
             {{ $t("graphic_styles") }}
           </button>
         </div>
-
         <transition name="scaleInFade_fast" mode="in-out">
           <GraphicStyles
             v-if="open_graphic_styles"

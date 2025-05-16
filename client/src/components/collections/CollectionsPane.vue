@@ -34,6 +34,7 @@ export default {
       if (this.$route.query?.collection)
         i.opened_collection_slug = this.$route.query.collection;
       if (this.$route.query?.section) i.section = this.$route.query.section;
+      if (this.$route.query?.chapter) i.chapter = this.$route.query.chapter;
       return i;
     },
   },

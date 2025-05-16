@@ -13,14 +13,14 @@
           {{ $t("import") }}
         </button>
       </div>
-      <MediaPicker
+      <!-- <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
         :select_mode="'multiple'"
         :pick_from_types="['image', 'video', 'audio']"
         @pickMedias="pickMedias"
         @close="show_media_picker = false"
-      />
+      /> -->
 
       <div class="u-spacingBottom u-inputGroup" v-if="pick_medias_text">
         <textarea
