@@ -113,27 +113,12 @@ p:empty {
 .edition .gallery {
   position: relative;
   break-after: page;
-  height: var(--pagedjs-height);
 }
 .edition .gallery-content {
-  position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1);
-  left: calc(var(--pagedjs-margin-left) * -1);
-  width: var(--pagedjs-width);
-  height: var(--pagedjs-height);
-
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   gap: 1px;
-
-  &:after {
-    content: "";
-    display: block;
-    clear: both;
-    break-after: page;
-
-  }
 
   &[data-number-of-medias="1"] {
     grid-template-columns: 1fr;
@@ -173,6 +158,28 @@ p:empty {
       object-fit: cover;
     }
   }
+}
+
+.book .gallery {
+  height: var(--pagedjs-height);
+}
+.book .gallery-content {
+  position: absolute;
+  top: calc(var(--pagedjs-margin-top) * -1);
+  left: calc(var(--pagedjs-margin-left) * -1);
+  width: var(--pagedjs-width);
+  height: var(--pagedjs-height);
+
+  &:after {
+    content: "";
+    display: block;
+    clear: both;
+    break-after: page;
+  }
+}
+
+.web .gallery-content {
+  height: 80vh;
 }
 
 .media-container {
