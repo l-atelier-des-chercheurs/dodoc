@@ -6,6 +6,7 @@
       'is--editable': can_edit,
     }"
   >
+    <component :is="'style'" v-html="highlight_opened_pages" />
     <div ref="bookrender" style="opacity: 0; pointer-events: none" />
     <div
       v-if="viewer_type === 'infinite-viewer'"
@@ -59,7 +60,6 @@ export default {
   data() {
     return {
       is_loading: true,
-
       infiniteviewer: null,
     };
   },
@@ -86,13 +86,15 @@ export default {
 
       if (this.opened_chapter_meta_filename)
         this.$nextTick(() => {
-          this.zoomToPage(this.opened_chapter_meta_filename);
+          this.zoomToSection(this.opened_chapter_meta_filename);
         });
     }
+    this.$eventHub.$on("edition.zoomToSection", this.zoomToSection);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
     this.removeExistingStyles();
+    this.$eventHub.$off("edition.zoomToSection", this.zoomToSection);
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
@@ -106,7 +108,7 @@ export default {
       await this.generateBook();
     },
     opened_chapter_meta_filename() {
-      this.zoomToPage(this.opened_chapter_meta_filename);
+      this.zoomToSection(this.opened_chapter_meta_filename);
     },
   },
   computed: {
@@ -161,6 +163,17 @@ export default {
         return +pages_to_display;
       }
       return false;
+    },
+    highlight_opened_pages() {
+      if (this.opened_chapter_meta_filename) {
+        return `
+        .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"])) 
+        {
+          opacity: .5 !important;
+        }
+      `;
+      }
+      return "";
     },
   },
   methods: {
@@ -220,6 +233,7 @@ export default {
           this.$nextTick(() => {
             this.addChapterShortcuts();
             this.showOnlyPages();
+            this.reportChapterPositions();
             setTimeout(() => {
               this.is_loading = false;
               resolve();
@@ -284,6 +298,47 @@ export default {
           }
         });
       }
+    },
+    reportChapterPositions() {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
+
+      const total_number_of_pages =
+        bookpreview.querySelectorAll(".pagedjs_page").length;
+      const pages_with_chapters = bookpreview.querySelectorAll(
+        ".chapter[data-chapter-meta-filename]"
+      );
+
+      // list for each page the chapter it belongs to
+      const pages_with_chapters_list = [];
+      pages_with_chapters.forEach((page) => {
+        const chapter_meta_filename = page.getAttribute(
+          "data-chapter-meta-filename"
+        );
+        const number = +page
+          .closest(".pagedjs_page")
+          .getAttribute("data-page-number");
+        pages_with_chapters_list.push({
+          number,
+          chapter_meta_filename,
+        });
+      });
+
+      // transform this list to a list of chapters with the start and end page
+      const chapters_positions = {};
+      pages_with_chapters_list.map((page) => {
+        if (!chapters_positions[page.chapter_meta_filename]) {
+          chapters_positions[page.chapter_meta_filename] = {
+            first_page: page.number,
+            last_page: page.number,
+          };
+        } else {
+          chapters_positions[page.chapter_meta_filename].last_page =
+            page.number;
+        }
+      });
+
+      this.$emit("updateChaptersPositions", chapters_positions);
     },
     beforePrint() {
       // this.impositionPage();
@@ -386,7 +441,6 @@ export default {
         max-height: 100%;
         min-height: 100%;
         height: 100% !important;
-
       }
 
       .pagedjs_sheet {
@@ -527,7 +581,9 @@ export default {
         document.querySelector(`#page-${folio}`).style.order = i;
       });
     },
-    zoomToPage(meta_filename) {
+    zoomToSection(meta_filename) {
+      if (!meta_filename) return;
+
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
       const page = bookpreview.querySelector(
@@ -632,6 +688,10 @@ export default {
         }
       }
 
+      .chapter {
+        cursor: pointer;
+      }
+
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);
@@ -666,6 +726,7 @@ export default {
         flex-shrink: 0;
         flex-grow: 0;
         margin-top: 10mm;
+        transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
       }
       .pagedjs_page_content {
         box-shadow: 0 0 0 1px var(--color-pageContent);

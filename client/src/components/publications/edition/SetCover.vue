@@ -28,7 +28,7 @@
           :path="cover_media.$path"
           :custom_formats="[]"
           :save_format="'raw'"
-          :can_edit="can_edit"
+          :can_edit="true"
         />
       </div>
 
@@ -71,7 +71,7 @@
         :value="cover_media.cover_layout_mode"
         :path="cover_media.$path"
         :hide_validation="true"
-        :can_edit="can_edit"
+        :can_edit="true"
         :options="cover_layout_mode_options"
       />
 
@@ -87,7 +87,6 @@ export default {
       type: Object,
       required: true,
     },
-    can_edit: Boolean,
   },
   components: { MediaPicker },
   data() {

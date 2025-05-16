@@ -1,6 +1,6 @@
 <template>
   <div class="_chapterPreview">
-    <div class="_selects" v-if="can_edit">
+    <div class="_selects">
       <select
         :value="index"
         size="small"
@@ -19,6 +19,22 @@
           v-text="p"
         />
       </select>
+      <transition name="fade" mode="out-in">
+        <div
+          class="_selects--pageRange"
+          v-if="view_mode === 'book' && pages_positions?.first_page"
+          :key="pages_positions.first_page"
+        >
+          p.{{ pages_positions.first_page }}
+          <template
+            v-if="pages_positions.first_page !== pages_positions.last_page"
+          >
+            <b-icon icon="arrow-right-short" /> p.{{
+              pages_positions.last_page
+            }}
+          </template>
+        </div>
+      </transition>
     </div>
 
     <div class="_chapterPreview--card">
@@ -83,7 +99,9 @@ export default {
     },
     index: Number,
     number_of_sections: Number,
-    can_edit: Boolean,
+    view_mode: String,
+    chapters_positions: Array,
+    pages_positions: Object,
   },
   components: {},
   data() {
@@ -123,7 +141,7 @@ export default {
 ._chapterPreview {
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
   align-items: center;
 
   ._selects {
@@ -163,23 +181,28 @@ export default {
 
 ._selects {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
+  align-items: center;
   justify-content: flex-end;
   width: 100%;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 
 ._selects--order {
-  // width: 5ch;
   width: auto;
+  width: 7ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
+  background-color: white;
 }
-._selects--options {
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
+._selects--pageRange {
+  font-size: var(--sl-font-size-x-small);
+  color: var(--c-gris_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  // gap: calc(var(--spacing) / 2);
 }
 
 ._item--type {

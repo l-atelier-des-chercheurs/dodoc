@@ -48,6 +48,7 @@
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
+        @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
       />
       <DocViewer
         v-else
@@ -395,7 +396,10 @@ export default {
       return result;
     },
     parseGallery(source_medias) {
-      if (!source_medias || source_medias.length === 0) return "";
+      if (!source_medias || source_medias.length === 0)
+        return `<div class="gallery"><i>${this.$t(
+          "no_media_selected"
+        )}</i></div>`;
 
       const medias = source_medias
         .map((media) => {
