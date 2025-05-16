@@ -725,6 +725,7 @@ export default {
         margin: 0;
         flex-shrink: 0;
         flex-grow: 0;
+
         margin-top: 10mm;
         transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
       }

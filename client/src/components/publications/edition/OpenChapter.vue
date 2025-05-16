@@ -46,11 +46,11 @@
       <div class="_infos">
         <div class="_content--type">
           <template v-if="chapter.section_type === 'text'">
-            {{ $t("type:", { type: $t("text") }) }}
+            {{ $t("text") }}
             <b-icon icon="markdown" />
           </template>
           <template v-else-if="chapter.section_type === 'gallery'">
-            {{ $t("type:", { type: $t("gallery") }) }}
+            {{ $t("gallery") }}
             <b-icon icon="image" />
           </template>
         </div>
