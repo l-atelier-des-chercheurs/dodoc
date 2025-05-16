@@ -144,6 +144,9 @@ export default {
       // this.openSection(new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
+      const section_meta_filename = this.getFilename(
+        this.sections[old_position].$path
+      );
       let sections_meta = this.sections.map((s) => ({
         meta_filename: this.getFilename(s.$path),
       }));
@@ -161,12 +164,16 @@ export default {
 
       array_move(sections_meta, old_position, new_position);
 
-      return await this.$api.updateMeta({
+      await this.$api.updateMeta({
         path: this.publication.$path,
         new_meta: {
           sections_list: sections_meta,
         },
       });
+
+      setTimeout(() => {
+        this.$eventHub.$emit("zoomToSection", section_meta_filename);
+      }, 500);
     },
   },
 };

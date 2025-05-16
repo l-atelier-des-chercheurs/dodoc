@@ -86,13 +86,15 @@ export default {
 
       if (this.opened_chapter_meta_filename)
         this.$nextTick(() => {
-          this.zoomToPage(this.opened_chapter_meta_filename);
+          this.zoomToSection(this.opened_chapter_meta_filename);
         });
     }
+    this.$eventHub.$on("zoomToSection", this.zoomToSection);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
     this.removeExistingStyles();
+    this.$eventHub.$off("zoomToSection", this.zoomToSection);
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
@@ -106,7 +108,7 @@ export default {
       await this.generateBook();
     },
     opened_chapter_meta_filename() {
-      this.zoomToPage(this.opened_chapter_meta_filename);
+      this.zoomToSection(this.opened_chapter_meta_filename);
     },
   },
   computed: {
@@ -527,7 +529,7 @@ export default {
         document.querySelector(`#page-${folio}`).style.order = i;
       });
     },
-    zoomToPage(meta_filename) {
+    zoomToSection(meta_filename) {
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
       const page = bookpreview.querySelector(

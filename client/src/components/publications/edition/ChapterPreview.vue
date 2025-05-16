@@ -123,7 +123,7 @@ export default {
 ._chapterPreview {
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
   align-items: center;
 
   ._selects {
@@ -175,6 +175,7 @@ export default {
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
+  background-color: white;
 }
 ._selects--options {
   flex: 0 0 auto;
