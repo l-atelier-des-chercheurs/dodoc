@@ -17,7 +17,7 @@
           :maxlength="40"
           :tag="'h1'"
           :path="chapter.$path"
-          :can_edit="can_edit"
+          :can_edit="true"
         />
 
         <DropDown :right="true" :show_label="false">
@@ -61,7 +61,7 @@
           :path="chapter.$path"
           size="small"
           :hide_validation="true"
-          :can_edit="can_edit"
+          :can_edit="true"
           :options="[
             {
               key: '',
@@ -99,7 +99,7 @@
               :custom_formats="custom_formats"
               :save_format="save_format"
               :content_type="'markdown'"
-              :can_edit="can_edit"
+              :can_edit="true"
               :mode="'always_active'"
             >
               <template #custom_buttons>
@@ -212,7 +212,6 @@ export default {
     prev_section: Object,
     next_section: Object,
     publication_path: String,
-    can_edit: Boolean,
   },
   components: {
     // MarkdownEditor,

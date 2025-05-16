@@ -15,7 +15,7 @@
               :publication="publication"
               :sections="all_chapters"
               :opened_section_meta_filename="opened_section_meta_filename"
-              :can_edit="can_edit"
+              :view_mode="view_mode"
               @removeChapter="removeChapter"
               @toggleSection="
                 $emit('updatePane', { key: 'chapter', value: $event })
@@ -50,7 +50,6 @@
             :chapter="opened_chapter"
             :prev_section="prev_section"
             :next_section="next_section"
-            :can_edit="can_edit"
             :publication_path="publication.$path"
             @remove="removeChapter(opened_chapter)"
             @close="$emit('updatePane', { key: 'chapter', value: false })"

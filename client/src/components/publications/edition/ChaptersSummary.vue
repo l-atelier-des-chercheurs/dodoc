@@ -9,18 +9,15 @@
         appear
         key="allpages"
       >
-        <SetCover
-          :key="'cover'"
-          :publication="publication"
-          :can_edit="can_edit"
-        />
+        <SetCover :key="'cover'" :publication="publication" />
         <ChapterPreview
           v-for="(section, index) in sections"
           :key="section.$path"
           :section="section"
           :index="index"
           :number_of_sections="sections.length"
-          :can_edit="can_edit"
+          :view_mode="view_mode"
+          :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
           @remove="$emit('removeChapter', section)"
@@ -28,7 +25,6 @@
 
         <div key="'add'" class="_addSection">
           <button
-            v-if="can_edit"
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'text' })"
@@ -37,7 +33,6 @@
             {{ $t("text") }}
           </button>
           <button
-            v-if="can_edit"
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'gallery' })"
@@ -59,18 +54,28 @@ export default {
     publication: Object,
     sections: Array,
     opened_section_meta_filename: String,
-    can_edit: Boolean,
+    view_mode: String,
   },
   components: { ChapterPreview, SetCover },
   data() {
-    return {};
+    return {
+      chapters_positions: {},
+    };
   },
   created() {},
   mounted() {
-    if (this.can_edit && this.sections.length === 0)
-      this.createSection({ type: "text" });
+    if (this.sections.length === 0) this.createSection({ type: "text" });
+    this.$eventHub.$on(
+      "edition.chaptersPositions",
+      this.updateChaptersPositions
+    );
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "edition.chaptersPositions",
+      this.updateChaptersPositions
+    );
+  },
   watch: {
     opened_section_meta_filename() {
       // this.openFirstSectionIfNoneOpened();
@@ -172,8 +177,15 @@ export default {
       });
 
       setTimeout(() => {
-        this.$eventHub.$emit("zoomToSection", section_meta_filename);
+        this.$eventHub.$emit("edition.zoomToSection", section_meta_filename);
       }, 500);
+    },
+    updateChaptersPositions(chapters_positions) {
+      this.chapters_positions = chapters_positions;
+    },
+    getPagesPositions(path) {
+      const section_meta_filename = this.getFilename(path);
+      return this.chapters_positions[section_meta_filename];
     },
   },
 };

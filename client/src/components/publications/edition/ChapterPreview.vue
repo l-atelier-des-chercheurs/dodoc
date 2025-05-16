@@ -1,6 +1,6 @@
 <template>
   <div class="_chapterPreview">
-    <div class="_selects" v-if="can_edit">
+    <div class="_selects">
       <select
         :value="index"
         size="small"
@@ -19,6 +19,22 @@
           v-text="p"
         />
       </select>
+      <transition name="fade" mode="out-in">
+        <div
+          class="_selects--pageRange"
+          v-if="view_mode === 'book' && chapter_position"
+          :key="chapter_position.first_page"
+        >
+          p.{{ chapter_position.first_page }}
+          <template
+            v-if="chapter_position.first_page !== chapter_position.last_page"
+          >
+            <b-icon icon="arrow-right-short" /> p.{{
+              chapter_position.last_page
+            }}
+          </template>
+        </div>
+      </transition>
     </div>
 
     <div class="_chapterPreview--card">
@@ -83,7 +99,9 @@ export default {
     },
     index: Number,
     number_of_sections: Number,
-    can_edit: Boolean,
+    view_mode: String,
+    chapters_positions: Array,
+    pages_positions: Object,
   },
   components: {},
   data() {
@@ -106,6 +124,12 @@ export default {
           folder_path: this.getParent(this.section.$path),
         });
       });
+    },
+    chapter_position() {
+      if (!this.pages_positions) return false;
+      const first_page = this.pages_positions?.first_page;
+      const last_page = this.pages_positions?.last_page;
+      return { first_page, last_page };
     },
   },
   methods: {
@@ -163,24 +187,28 @@ export default {
 
 ._selects {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
+  align-items: center;
   justify-content: flex-end;
   width: 100%;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 
 ._selects--order {
-  // width: 5ch;
   width: auto;
+  width: 7ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
   background-color: white;
 }
-._selects--options {
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
+._selects--pageRange {
+  font-size: var(--sl-font-size-x-small);
+  color: var(--c-gris_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  // gap: calc(var(--spacing) / 2);
 }
 
 ._item--type {

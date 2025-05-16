@@ -59,7 +59,6 @@ export default {
   data() {
     return {
       is_loading: true,
-
       infiniteviewer: null,
     };
   },
@@ -89,12 +88,12 @@ export default {
           this.zoomToSection(this.opened_chapter_meta_filename);
         });
     }
-    this.$eventHub.$on("zoomToSection", this.zoomToSection);
+    this.$eventHub.$on("edition.zoomToSection", this.zoomToSection);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
     this.removeExistingStyles();
-    this.$eventHub.$off("zoomToSection", this.zoomToSection);
+    this.$eventHub.$off("edition.zoomToSection", this.zoomToSection);
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
@@ -222,6 +221,7 @@ export default {
           this.$nextTick(() => {
             this.addChapterShortcuts();
             this.showOnlyPages();
+            this.reportChapterPositions();
             setTimeout(() => {
               this.is_loading = false;
               resolve();
@@ -286,6 +286,47 @@ export default {
           }
         });
       }
+    },
+    reportChapterPositions() {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
+
+      const total_number_of_pages =
+        bookpreview.querySelectorAll(".pagedjs_page").length;
+      const pages_with_chapters = bookpreview.querySelectorAll(
+        ".chapter[data-chapter-meta-filename]"
+      );
+
+      // list for each page the chapter it belongs to
+      const pages_with_chapters_list = [];
+      pages_with_chapters.forEach((page) => {
+        const chapter_meta_filename = page.getAttribute(
+          "data-chapter-meta-filename"
+        );
+        const number = +page
+          .closest(".pagedjs_page")
+          .getAttribute("data-page-number");
+        pages_with_chapters_list.push({
+          number,
+          chapter_meta_filename,
+        });
+      });
+
+      // transform this list to a list of chapters with the start and end page
+      const chapters_positions = {};
+      pages_with_chapters_list.map((page) => {
+        if (!chapters_positions[page.chapter_meta_filename]) {
+          chapters_positions[page.chapter_meta_filename] = {
+            first_page: page.number,
+            last_page: page.number,
+          };
+        } else {
+          chapters_positions[page.chapter_meta_filename].last_page =
+            page.number;
+        }
+      });
+
+      this.$eventHub.$emit("edition.chaptersPositions", chapters_positions);
     },
     beforePrint() {
       // this.impositionPage();
