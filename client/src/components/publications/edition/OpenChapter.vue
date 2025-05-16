@@ -80,24 +80,7 @@
             size="small"
             :hide_validation="true"
             :can_edit="true"
-            :options="[
-              {
-                key: '',
-                text: $t('in_flow'),
-              },
-              {
-                key: 'page',
-                text: $t('next_page'),
-              },
-              {
-                key: 'left',
-                text: $t('next_left_page'),
-              },
-              {
-                key: 'right',
-                text: $t('next_right_page'),
-              },
-            ]"
+            :options="starts_on_page_options"
           />
         </div>
       </div>
@@ -290,6 +273,42 @@ export default {
         if (media) medias.push(media);
       }
       return medias;
+    },
+    starts_on_page_options() {
+      if (this.chapter.section_type === "gallery")
+        return [
+          {
+            key: "page",
+            text: this.$t("next_page"),
+          },
+          {
+            key: "left",
+            text: this.$t("next_left_page"),
+          },
+          {
+            key: "right",
+            text: this.$t("next_right_page"),
+          },
+        ];
+      else
+        return [
+          {
+            key: "",
+            text: this.$t("in_flow"),
+          },
+          {
+            key: "page",
+            text: this.$t("next_page"),
+          },
+          {
+            key: "left",
+            text: this.$t("next_left_page"),
+          },
+          {
+            key: "right",
+            text: this.$t("next_right_page"),
+          },
+        ];
     },
   },
   methods: {
@@ -570,7 +589,7 @@ export default {
 }
 
 ._selects--starts_on_page {
-  width: 25ch;
+  width: 30ch;
   // width: auto;
   flex: 0 0 auto;
   position: relative;
