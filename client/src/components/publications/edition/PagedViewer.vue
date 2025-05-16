@@ -6,6 +6,7 @@
       'is--editable': can_edit,
     }"
   >
+    <component :is="'style'" v-html="highlight_opened_pages" />
     <div ref="bookrender" style="opacity: 0; pointer-events: none" />
     <div
       v-if="viewer_type === 'infinite-viewer'"
@@ -162,6 +163,17 @@ export default {
         return +pages_to_display;
       }
       return false;
+    },
+    highlight_opened_pages() {
+      if (this.opened_chapter_meta_filename) {
+        return `
+        .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"])) 
+        {
+          opacity: .5 !important;
+        }
+      `;
+      }
+      return "";
     },
   },
   methods: {
@@ -429,7 +441,6 @@ export default {
         max-height: 100%;
         min-height: 100%;
         height: 100% !important;
-
       }
 
       .pagedjs_sheet {
@@ -675,6 +686,10 @@ export default {
         }
       }
 
+      .chapter {
+        cursor: pointer;
+      }
+
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);
@@ -709,6 +724,7 @@ export default {
         flex-shrink: 0;
         flex-grow: 0;
         margin-top: 10mm;
+        transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
       }
       .pagedjs_page_content {
         box-shadow: 0 0 0 1px var(--color-pageContent);
