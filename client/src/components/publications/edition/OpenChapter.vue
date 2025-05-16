@@ -228,10 +228,7 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    // eventhub scroll to first page
-    this.$eventHub.$emit("scrollToChapter", this.chapter.$path);
-  },
+  mounted() {},
   beforeDestroy() {},
   watch: {
     main_text_content: {

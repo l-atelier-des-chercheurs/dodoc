@@ -1,5 +1,6 @@
 <template>
   <div class="_editionTemplate">
+    {{ opened_section_meta_filename }}
     <splitpanes v-if="can_edit" class="_splitpanes">
       <pane v-if="show_edit_pane">
         <div class="_chapterSummary">
@@ -243,9 +244,12 @@ export default {
       );
       const new_idx = idx + dir;
       if (new_idx >= 0 && new_idx <= this.all_chapters.length - 1) {
+        const new_chapter_filename = this.getFilename(
+          this.all_chapters[new_idx].$path
+        );
         this.$emit("updatePane", {
           key: "chapter",
-          value: this.all_chapters[new_idx].$path,
+          value: new_chapter_filename,
         });
       }
     },

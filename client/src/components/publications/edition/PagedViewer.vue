@@ -582,6 +582,8 @@ export default {
       });
     },
     zoomToSection(meta_filename) {
+      if (!meta_filename) return;
+
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
       const page = bookpreview.querySelector(
