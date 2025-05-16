@@ -87,6 +87,10 @@ export default {
           value: "agora",
           label: this.$t("agora"),
         },
+        {
+          value: "edition",
+          label: this.$t("edition"),
+        },
       ],
 
       is_creating_folder: false,

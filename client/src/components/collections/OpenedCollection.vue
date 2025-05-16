@@ -122,6 +122,11 @@
             :publication="collection"
             :can_edit="can_edit"
           />
+          <EditionTemplate
+            v-else-if="collection.template === 'edition'"
+            :publication="collection"
+            :can_edit="can_edit"
+          />
         </div>
       </div>
     </transition>
@@ -137,6 +142,8 @@ export default {
       import("@/components/publications/templates/StorySectionTemplate.vue"),
     AgoraTemplate: () =>
       import("@/components/publications/templates/AgoraTemplate.vue"),
+    EditionTemplate: () =>
+      import("@/components/publications/templates/EditionTemplate.vue"),
   },
   data() {
     return {
