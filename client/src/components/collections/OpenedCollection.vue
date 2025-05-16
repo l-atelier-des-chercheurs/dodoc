@@ -106,7 +106,6 @@
           <!-- </DropDown> -->
         </div>
 
-        {{ pane_infos }}
         <div class="_cont" :data-template="collection.template">
           <StorySectionTemplate
             v-if="
