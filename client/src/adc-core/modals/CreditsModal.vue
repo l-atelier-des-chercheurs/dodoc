@@ -25,7 +25,9 @@
       <br />
       <p v-html="$t('about_dodoc_links')" />
       <br />
-      <p v-html="$t('about_dodoc_contributors')" />
+      <p>
+        <small v-html="$t('about_dodoc_contributors')" />
+      </p>
     </div>
   </BaseModal2>
 </template>

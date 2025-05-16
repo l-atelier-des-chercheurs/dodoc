@@ -233,6 +233,8 @@
       }
     }
     button {
+      display: inline-block;
+      vertical-align: top;
       text-align: left;
       color: currentColor;
       background: transparent;

@@ -208,6 +208,7 @@ button {
   color: inherit;
   white-space: nowrap;
   background-color: var(--c-gris_clair);
+  white-space: break-spaces;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);

@@ -1040,7 +1040,7 @@ export default {
 
   media_editing_instructions:
     "Indiquer le ou les personnes qui pourront modifier ce contenu.",
-  projects_you_edited_last: "Liste des derniers projets que vous avez modifiés",
+  projects_you_edited_last: "Derniers projets que vous avez modifiés",
 
   make_list: "Liste des fabrications",
   latitude: "Latitude",
@@ -1178,7 +1178,7 @@ export default {
   <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Code source de do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau, et de nombreux autres personnes dans le cadre d’ateliers, de projets, de forums et de résidences à travers le monde.`,
 
   write: "Écrire",
   real_size: "Taille réelle",
@@ -1373,4 +1373,11 @@ export default {
   total_number_of_pages_in_publication:
     "Nombre total de pages dans la publication : {total}",
   "type:": "Type : {type}",
+
+  failed_to_export: "Échec de l’exportation",
+  default_styles: "Styles par défaut",
+  remove_css_file: "Supprimer la feuille de style",
+  restored_success: "Restauré avec succès",
+  restore_spaces: "Restaurer des espaces supprimés",
+  no_media_selected: "Aucun média sélectionné",
 };

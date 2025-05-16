@@ -74,6 +74,11 @@ export default {
       this.is_loading = true;
       await this.$api.restoreFromBin({ path: this.folder.$path });
       this.$emit("restoredSuccessfully");
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .success(this.$t("restored_success"));
+
       this.is_loading = false;
     },
     async removeForGood() {

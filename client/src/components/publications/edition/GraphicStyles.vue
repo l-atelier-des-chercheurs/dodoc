@@ -25,6 +25,16 @@
       </button>
       <button
         type="button"
+        class="u-button"
+        :class="{
+          'is--active': opened_style_file.$path === 'default',
+        }"
+        @click="openDefaultStyles"
+      >
+        {{ $t("default_styles") }}
+      </button>
+      <button
+        type="button"
         class="u-button u-button_bleumarine"
         @click="show_create_css_modal = true"
       >
@@ -61,6 +71,11 @@
 
     <div class="_openedStyleFile">
       <transition name="fade" mode="out-in">
+        <!-- <div v-if="!opened_style_file" class="defaultCode" :key="'default'">
+          <DLabel :str="$t('default_styles')" />
+          <div class="u-spacingBottom" />
+          <pre v-html="pretty_default_styles" />
+        </div> -->
         <OpenedGraphicStyles
           v-if="opened_style_file"
           :key="opened_style_file.$path"
@@ -68,6 +83,7 @@
           :default_styles="default_styles"
           :show_source_html="show_source_html"
           @update:show_source_html="$emit('update:show_source_html', $event)"
+          @close="openDefaultStyles"
         />
       </transition>
     </div>
@@ -77,6 +93,8 @@
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 import OpenedGraphicStyles from "@/components/publications/edition/OpenedGraphicStyles.vue";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
+import hljs from "highlight.js/lib/common";
+import "highlight.js/styles/vs2015.css";
 
 export default {
   props: {
@@ -95,8 +113,8 @@ export default {
     };
   },
   created() {
-    if (this.style_files?.length > 0)
-      this.openStyleFile(this.style_files[0].$path);
+    // if (this.style_files?.length > 0)
+    //   this.openStyleFile(this.style_files[0].$path);
   },
   mounted() {},
   beforeDestroy() {
@@ -104,6 +122,9 @@ export default {
   },
   watch: {},
   computed: {
+    pretty_default_styles() {
+      return hljs.highlight(this.default_styles, { language: "css" }).value;
+    },
     style_files() {
       return this.publication.$files
         ?.filter((f) => f.is_css_styles === true)
@@ -115,6 +136,15 @@ export default {
         });
     },
     opened_style_file() {
+      if (this.opened_style_file_meta === "default") {
+        return {
+          $path: "default",
+          css_title: this.$t("default_styles"),
+          $content: default_styles,
+          is_default: true,
+        };
+      }
+
       return this.style_files.find(
         (f) => this.getFilename(f.$path) === this.opened_style_file_meta
       );
@@ -145,6 +175,9 @@ export default {
     },
     openStyleFile(path) {
       this.$emit("setStyleFile", this.getFilename(path));
+    },
+    openDefaultStyles() {
+      this.$emit("setStyleFile", "default");
     },
   },
 };
@@ -199,5 +232,17 @@ export default {
   right: 0;
   color: white;
   z-index: 100;
+}
+</style>
+<style lang="scss">
+.defaultCode {
+  background-color: var(--c-noir);
+  color: white;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  border-radius: 4px;
+
+  pre {
+    margin: 0;
+  }
 }
 </style>

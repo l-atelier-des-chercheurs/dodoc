@@ -102,16 +102,25 @@ module.exports = (function () {
         return;
       }
     },
+    removeFolderArchives: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+      const archive_folder_path = _getArchiveFolderPath(path_to_folder);
+      try {
+        const full_archived_folder_path =
+          utils.getPathToUserContent(archive_folder_path);
+        await fs.remove(full_archived_folder_path);
+      } catch (err) {
+        dev.logverbose("No archives to remove");
+        return;
+      }
+    },
   };
 
   function _getArchiveFolderPath(path_to_folder, media_filename) {
+    if (!media_filename) return path.join("archives", path_to_folder);
+
     const file_name = path.parse(media_filename).name;
-    const relative_path_to_archive_folder = path.join(
-      "archives",
-      path_to_folder,
-      file_name
-    );
-    return relative_path_to_archive_folder;
+    return path.join("archives", path_to_folder, file_name);
   }
 
   return API;

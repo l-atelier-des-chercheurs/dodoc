@@ -9,18 +9,15 @@
         appear
         key="allpages"
       >
-        <SetCover
-          :key="'cover'"
-          :publication="publication"
-          :can_edit="can_edit"
-        />
+        <SetCover :key="'cover'" :publication="publication" />
         <ChapterPreview
           v-for="(section, index) in sections"
           :key="section.$path"
           :section="section"
           :index="index"
           :number_of_sections="sections.length"
-          :can_edit="can_edit"
+          :view_mode="view_mode"
+          :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
           @remove="$emit('removeChapter', section)"
@@ -28,7 +25,6 @@
 
         <div key="'add'" class="_addSection">
           <button
-            v-if="can_edit"
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'text' })"
@@ -37,7 +33,6 @@
             {{ $t("text") }}
           </button>
           <button
-            v-if="can_edit"
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'gallery' })"
@@ -59,7 +54,8 @@ export default {
     publication: Object,
     sections: Array,
     opened_section_meta_filename: String,
-    can_edit: Boolean,
+    view_mode: String,
+    chapters_positions: Object,
   },
   components: { ChapterPreview, SetCover },
   data() {
@@ -67,8 +63,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.can_edit && this.sections.length === 0)
-      this.createSection({ type: "text" });
+    if (this.sections.length === 0) this.createSection({ type: "text" });
   },
   beforeDestroy() {},
   watch: {
@@ -137,9 +132,16 @@ export default {
         publication: this.publication,
         additional_meta,
       });
-      // this.$emit("toggleSection", new_section_meta);
+      setTimeout(() => {
+        this.$emit("toggleSection", new_section_meta);
+      }, 100);
+
+      // this.openSection(new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
+      const section_meta_filename = this.getFilename(
+        this.sections[old_position].$path
+      );
       let sections_meta = this.sections.map((s) => ({
         meta_filename: this.getFilename(s.$path),
       }));
@@ -157,12 +159,20 @@ export default {
 
       array_move(sections_meta, old_position, new_position);
 
-      return await this.$api.updateMeta({
+      await this.$api.updateMeta({
         path: this.publication.$path,
         new_meta: {
           sections_list: sections_meta,
         },
       });
+
+      setTimeout(() => {
+        this.$eventHub.$emit("edition.zoomToSection", section_meta_filename);
+      }, 500);
+    },
+    getPagesPositions(path) {
+      const section_meta_filename = this.getFilename(path);
+      return this.chapters_positions[section_meta_filename];
     },
   },
 };
@@ -173,7 +183,7 @@ export default {
 }
 
 ._content {
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 4);
 }
 
 ._createSection {
@@ -182,14 +192,14 @@ export default {
 
 ._allChapters {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
 
 ._addSection {
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row wrap;
   justify-content: center;
   align-items: center;
   background-color: white;

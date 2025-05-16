@@ -1,6 +1,6 @@
 <template>
-  <div class="u-card2 _chapterPreview">
-    <div class="_selects" v-if="can_edit">
+  <div class="_chapterPreview">
+    <div class="_selects">
       <select
         :value="index"
         size="small"
@@ -19,90 +19,78 @@
           v-text="p"
         />
       </select>
-      <div class="_selects--starts_on_page">
-        <SelectField2
-          :field_name="'section_starts_on_page'"
-          :value="section.section_starts_on_page || ''"
-          :path="section.$path"
-          size="small"
-          :hide_validation="true"
-          :can_edit="can_edit"
-          :options="[
-            {
-              key: '',
-              text: $t('in_flow'),
-            },
-            {
-              key: 'page',
-              text: $t('next_page'),
-            },
-            {
-              key: 'left',
-              text: $t('next_left_page'),
-            },
-            {
-              key: 'right',
-              text: $t('next_right_page'),
-            },
-          ]"
-        />
-      </div>
-      <!-- <div class="_selects--options">
-        <DropDown :right="true" :show_label="false">
-          <RemoveMenu @remove="$emit('remove')" />
-        </DropDown>
-      </div> -->
+      <transition name="fade" mode="out-in">
+        <div
+          class="_selects--pageRange"
+          v-if="view_mode === 'book' && pages_positions?.first_page"
+          :key="pages_positions.first_page"
+        >
+          p.{{ pages_positions.first_page }}
+          <template
+            v-if="pages_positions.first_page !== pages_positions.last_page"
+          >
+            <b-icon icon="arrow-right-short" /> p.{{
+              pages_positions.last_page
+            }}
+          </template>
+        </div>
+      </transition>
     </div>
 
-    <h2 class="_item--title">
-      <template v-if="section.section_title">
-        {{ section.section_title }}
-      </template>
-      <template v-else>
-        <i>{{ $t("untitled") }}</i>
-      </template>
-      <small class="_item--title--icon">
-        <b-icon v-if="section.section_type === 'text'" icon="markdown" />
-        <b-icon v-else-if="section.section_type === 'gallery'" icon="image" />
-      </small>
-    </h2>
-    <!-- <div class="_item--type">
+    <div class="_chapterPreview--card">
+      <div class="_topRow">
+        <h2 class="_item--title">
+          <template v-if="section.section_title">
+            {{ section.section_title }}
+          </template>
+          <template v-else>
+            <i>{{ $t("untitled") }}</i>
+          </template>
+          <small class="_item--title--icon">
+            <b-icon v-if="section.section_type === 'text'" icon="markdown" />
+            <b-icon
+              v-else-if="section.section_type === 'gallery'"
+              icon="image"
+            />
+          </small>
+        </h2>
+      </div>
+      <!-- <div class="_item--type">
       {{ $t("type") }} : {{ section.section_type }}
     </div> -->
-    <div class="_item--content">
-      <div
-        class="_item--content--text"
-        v-if="section.section_type === 'text' && previewContent(section)"
-      >
-        <CollaborativeEditor3 :content="previewContent(section)" />
-      </div>
-      <div
-        v-else-if="
-          section.section_type === 'gallery' && gallery_medias.length > 0
-        "
-        class="_item--content--gallery"
-      >
+      <div class="_item--content">
         <div
-          v-for="media in gallery_medias"
-          :key="media.meta_filename_in_project"
+          class="_item--content--text"
+          v-if="section.section_type === 'text' && previewContent(section)"
         >
-          <MediaContent :file="media" />
+          <CollaborativeEditor3 :content="previewContent(section)" />
         </div>
+        <div
+          v-else-if="
+            section.section_type === 'gallery' && gallery_medias.length > 0
+          "
+          class="_item--content--gallery"
+        >
+          <div
+            v-for="media in gallery_medias"
+            :key="media.meta_filename_in_project"
+          >
+            <MediaContent :file="media" />
+          </div>
+        </div>
+        <div v-else class="u-instructions">{{ $t("no_content") }}</div>
       </div>
-      <div v-else class="u-instructions">{{ $t("no_content") }}</div>
-    </div>
 
-    <button
-      type="button"
-      class="_openButton"
-      :title="$t('open')"
-      @click="$emit('open')"
-    />
+      <button
+        type="button"
+        class="_openButton"
+        :title="$t('open')"
+        @click="$emit('open')"
+      />
+    </div>
   </div>
 </template>
 <script>
-import SelectField2 from "@/adc-core/fields/SelectField2.vue";
-
 export default {
   props: {
     section: {
@@ -111,7 +99,9 @@ export default {
     },
     index: Number,
     number_of_sections: Number,
-    can_edit: Boolean,
+    view_mode: String,
+    chapters_positions: Array,
+    pages_positions: Object,
   },
   components: {},
   data() {
@@ -149,6 +139,20 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._chapterPreview {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 1);
+  align-items: center;
+
+  ._selects {
+    flex: 0 0 0;
+  }
+  ._chapterPreview--card {
+    flex: 1 1 auto;
+  }
+}
+
+._chapterPreview--card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -157,36 +161,48 @@ export default {
   background-color: var(--editor-bg);
   padding: calc(var(--spacing) / 1);
   background-color: white;
+  height: 8rem;
+  overflow: hidden;
+  // border: 1px solid var(--c-gris);
   border-radius: var(--border-radius);
+}
+
+._topRow {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  ._selects {
+    flex: 0 0 0;
+  }
 }
 
 ._selects {
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: flex-end;
   width: 100%;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
 }
 
 ._selects--order {
-  // width: 5ch;
   width: auto;
+  width: 7ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
+  background-color: white;
 }
-
-._selects--starts_on_page {
-  // width: 15ch;
-  width: auto;
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
-}
-._selects--options {
-  flex: 0 0 auto;
-  position: relative;
-  z-index: 2;
+._selects--pageRange {
+  font-size: var(--sl-font-size-x-small);
+  color: var(--c-gris_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  // gap: calc(var(--spacing) / 2);
 }
 
 ._item--type {
@@ -198,6 +214,7 @@ export default {
 
 ._item--content {
   width: 100%;
+  max-height: 5rem;
 }
 
 ._openButton {

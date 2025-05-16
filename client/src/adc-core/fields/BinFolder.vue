@@ -1,8 +1,5 @@
 <template>
-  <BaseModal2
-    :title="modal_title || button_text || $t('download')"
-    @close="$emit('close')"
-  >
+  <BaseModal2 :title="modal_title || button_text" @close="$emit('close')">
     <div class="_cont">
       <div v-if="bin_folders.length === 0">
         <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
@@ -14,7 +11,7 @@
           :size="bin_folder_size"
         />
 
-        <div class="_projects">
+        <div class="_items">
           <BinFolderItem
             v-for="bin_folder in bin_folders"
             :key="bin_folder.slug"
@@ -74,7 +71,7 @@ export default {
 ._cont {
   position: relative;
 }
-._projects {
+._items {
   display: flex;
   flex-flow: column nowrap;
   justify-content: stretch;

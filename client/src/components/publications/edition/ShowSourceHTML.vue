@@ -1,7 +1,7 @@
 <template>
-  <div class="_debugMode">
+  <div class="_debugMode" ref="debugMode">
     <h2>HTML</h2>
-    <code v-html="pretty_content_html" />
+    <code ref="chapter" v-html="pretty_content_html" />
   </div>
 </template>
 <script>
@@ -12,15 +12,26 @@ import "highlight.js/styles/vs2015.css";
 export default {
   props: {
     content_html: String,
+    opened_chapter_meta_filename: String,
   },
   components: {},
   data() {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.scrollToChapter();
+    });
+  },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_chapter_meta_filename: {
+      handler() {
+        this.scrollToChapter();
+      },
+    },
+  },
   computed: {
     pretty_content_html() {
       // return this.content_html;
@@ -29,7 +40,29 @@ export default {
       return highlighted;
     },
   },
-  methods: {},
+  methods: {
+    scrollToChapter() {
+      const chapter = this.$refs.chapter;
+      if (chapter && this.opened_chapter_meta_filename) {
+        // find hljs-attr = data-chapter-meta-filename and hljs-string = this.opened_chapter_meta_filename
+        const attrs = chapter.querySelectorAll(`.hljs-tag .hljs-attr`);
+        const all_chapters = Array.from(attrs).filter(
+          (el) => el.textContent === "data-chapter-meta-filename"
+        );
+
+        all_chapters.map((el) => {
+          let chapter_filename = el.nextSibling.nextSibling.textContent;
+          chapter_filename = chapter_filename.substring(
+            1,
+            chapter_filename.length - 1
+          );
+          if (chapter_filename === this.opened_chapter_meta_filename) {
+            this.$el.scrollTo(0, el.offsetTop - 80);
+          }
+        });
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -44,6 +77,7 @@ export default {
   color: white;
   overflow: auto;
   padding: calc(var(--spacing) * 2);
+  scroll-behavior: smooth;
 
   code {
     background-color: var(--c-noir);

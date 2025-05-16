@@ -22,7 +22,7 @@
         >
           style – {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
-        <option value="">style – {{ $t("default_value") }}</option>
+        <option value="default">style – {{ $t("default_value") }}</option>
       </select>
 
       <div
@@ -48,6 +48,7 @@
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
+        @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
       />
       <DocViewer
         v-else
@@ -79,10 +80,13 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
-    opened_style_file_meta: String,
+    opened_style_file_meta: {
+      type: String,
+      default: "default",
+    },
     viewer_type: {
       type: String,
-      default: "vue-infinite-viewer",
+      default: "infinite-viewer",
     },
     opened_chapter_meta_filename: String,
     show_source_html: Boolean,
@@ -126,7 +130,11 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      if (this.style_files && this.opened_style_file_meta) {
+      if (
+        this.style_files &&
+        this.opened_style_file_meta &&
+        this.opened_style_file_meta !== "default"
+      ) {
         return (
           this.style_files.find(
             (f) => this.getFilename(f.$path) === this.opened_style_file_meta
@@ -166,7 +174,7 @@ export default {
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
         _chapter.section_type = chapter.section_type;
-        if (chapter.section_type === "text") {
+        if (!chapter.section_type || chapter.section_type === "text") {
           if (chapter._main_text?.$content) {
             if (chapter._main_text?.content_type === "markdown") {
               _chapter.content = this.parseMarkdownWithMarkedownIt(
@@ -373,7 +381,8 @@ export default {
       };
 
       md.use(markdownItCsc, {
-        vue_instance: this,
+        getMediaSrc: (meta_src) => this.getMediaSrc(meta_src, source_medias),
+        transformURL: (url) => this.transformURL(url),
       });
       md.use(markdownItBracketedSpans);
       md.use(markdownItAttrs, {
@@ -387,7 +396,10 @@ export default {
       return result;
     },
     parseGallery(source_medias) {
-      if (!source_medias || source_medias.length === 0) return "";
+      if (!source_medias || source_medias.length === 0)
+        return `<div class="gallery"><i>${this.$t(
+          "no_media_selected"
+        )}</i></div>`;
 
       const medias = source_medias
         .map((media) => {
@@ -398,7 +410,7 @@ export default {
         })
         .filter(Boolean);
 
-      let html = `<div class="gallery" data-number-of-medias="${medias.length}" >`;
+      let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
         html += `<figure class="media gallery--item">
@@ -409,7 +421,7 @@ export default {
         </figure>`;
       });
 
-      html += "</div>";
+      html += "</div></div>";
 
       return html;
     },

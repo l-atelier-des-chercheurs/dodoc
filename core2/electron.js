@@ -312,17 +312,23 @@ module.exports = (function () {
     });
     win.webContents.setAudioMuted(true);
 
-    await new Promise((resolve, reject) => {
-      win.webContents.once("did-finish-load", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        return resolve();
+    try {
+      await new Promise((resolve, reject) => {
+        win.webContents.once("did-finish-load", async () => {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          return resolve();
+        });
+        win.webContents.on("did-fail-load", (event, error) => {
+          // Instead of rejecting, we'll resolve with the window
+          // This allows the process to continue even if the iframe fails to load
+          dev.log(`Failed to load iframe content: ${error}`);
+          return resolve();
+        });
       });
-      win.webContents.on("did-fail-load", (event, error) => {
-        return reject(error);
-      });
-    }).catch((error) => {
-      throw error;
-    });
+    } catch (error) {
+      dev.error(`Error loading webpage: ${error}`);
+      // Don't throw the error, just return the window
+    }
 
     return win;
   }

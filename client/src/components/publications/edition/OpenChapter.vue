@@ -17,8 +17,9 @@
           :maxlength="40"
           :tag="'h1'"
           :path="chapter.$path"
-          :can_edit="can_edit"
+          :can_edit="true"
         />
+
         <DropDown :right="true" :show_label="false">
           <RemoveMenu @remove="$emit('remove')" />
         </DropDown>
@@ -41,16 +42,49 @@
         :hide_validation="true"
       /> -->
       </div>
-      <div class="_content--type">
-        <template v-if="chapter.section_type === 'text'">
-          {{ $t("type:", { type: $t("text") }) }}
-          <b-icon icon="markdown" />
-        </template>
-        <template v-else-if="chapter.section_type === 'gallery'">
-          {{ $t("type:", { type: $t("gallery") }) }}
-          <b-icon icon="image" />
-        </template>
+
+      <div class="_infos">
+        <div class="_content--type">
+          <template v-if="chapter.section_type === 'text'">
+            {{ $t("type:", { type: $t("text") }) }}
+            <b-icon icon="markdown" />
+          </template>
+          <template v-else-if="chapter.section_type === 'gallery'">
+            {{ $t("type:", { type: $t("gallery") }) }}
+            <b-icon icon="image" />
+          </template>
+        </div>
+
+        <transition name="fade" mode="out-in">
+          <div v-if="view_mode === 'book' && chapter_position?.first_page">
+            <div class="_selects--pageRange" :key="chapter_position.first_page">
+              p.{{ chapter_position.first_page }}
+              <template
+                v-if="
+                  chapter_position.first_page !== chapter_position.last_page
+                "
+              >
+                <b-icon icon="arrow-right-short" /> p.{{
+                  chapter_position.last_page
+                }}
+              </template>
+            </div>
+          </div>
+        </transition>
+
+        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
+          <SelectField2
+            :field_name="'section_starts_on_page'"
+            :value="chapter.section_starts_on_page || ''"
+            :path="chapter.$path"
+            size="small"
+            :hide_validation="true"
+            :can_edit="true"
+            :options="starts_on_page_options"
+          />
+        </div>
       </div>
+
       <div class="_content">
         <template v-if="chapter.section_type === 'text'">
           <template v-if="chapter._main_text">
@@ -67,7 +101,7 @@
               :custom_formats="custom_formats"
               :save_format="save_format"
               :content_type="'markdown'"
-              :can_edit="can_edit"
+              :can_edit="true"
               :mode="'always_active'"
             >
               <template #custom_buttons>
@@ -180,7 +214,8 @@ export default {
     prev_section: Object,
     next_section: Object,
     publication_path: String,
-    can_edit: Boolean,
+    chapter_position: Object,
+    view_mode: String,
   },
   components: {
     // MarkdownEditor,
@@ -235,6 +270,42 @@ export default {
         if (media) medias.push(media);
       }
       return medias;
+    },
+    starts_on_page_options() {
+      if (this.chapter.section_type === "gallery")
+        return [
+          {
+            key: "page",
+            text: this.$t("next_page"),
+          },
+          {
+            key: "left",
+            text: this.$t("next_left_page"),
+          },
+          {
+            key: "right",
+            text: this.$t("next_right_page"),
+          },
+        ];
+      else
+        return [
+          {
+            key: "",
+            text: this.$t("in_flow"),
+          },
+          {
+            key: "page",
+            text: this.$t("next_page"),
+          },
+          {
+            key: "left",
+            text: this.$t("next_left_page"),
+          },
+          {
+            key: "right",
+            text: this.$t("next_right_page"),
+          },
+        ];
     },
   },
   methods: {
@@ -431,6 +502,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: calc(var(--spacing) * 4);
   padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
@@ -450,8 +522,16 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
+}
+
+._infos {
   margin-bottom: calc(var(--spacing) * 1);
   font-size: var(--sl-font-size-small);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: calc(var(--spacing) * 1);
 }
 
 ._gallery {
@@ -503,5 +583,23 @@ export default {
   top: 0;
   right: 0;
   margin: var(--spacing);
+}
+
+._selects--starts_on_page {
+  width: 30ch;
+  // width: auto;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 2;
+  // margin-bottom: calc(var(--spacing) * 1);
+}
+
+._selects--pageRange {
+  // font-size: var(--sl-font-size);
+  color: var(--c-gris_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  // gap: calc(var(--spacing) / 2);
 }
 </style>

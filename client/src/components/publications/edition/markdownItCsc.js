@@ -1,18 +1,11 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-// Pattern to capture tag, src, and the rest (attributes)
-// It captures: 1:tag, 2:src, 3:attribute string
-const markerPattern = /\(([-\w]+):\s*([^\s)]+)\s*(.*?)\)/;
-
-// Updated pattern that supports nested parentheses
-const markerPatternWithNesting =
-  /\(([-\w]+):\s*([^]+?)(?=\s+[\w-]+:|\s*\)$)\s*(.*?)\)/;
-
 const tags_list = ["image", "video", "audio", "embed"];
 
 export default (md, o = {}) => {
-  const vue_instance = o.vue_instance;
+  const getMediaSrc = o.getMediaSrc;
+  const transformURL = o.transformURL;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -26,6 +19,20 @@ export default (md, o = {}) => {
       // Find opening parenthesis
       const openParenPos = lineText.indexOf("(");
       if (openParenPos === -1) break;
+
+      // If there's text before the opening parenthesis, add it as a paragraph
+      if (openParenPos > 0) {
+        const textBefore = lineText.substring(0, openParenPos).trim();
+        if (textBefore) {
+          let token = state.push("paragraph_open", "p", 1);
+          token.map = [startLine, startLine + 1];
+          token = state.push("text", "", 0);
+          token.content = textBefore;
+          token.map = [startLine, startLine + 1];
+          token = state.push("paragraph_close", "p", -1);
+          token.map = [startLine, startLine + 1];
+        }
+      }
 
       // Adjust position to the opening parenthesis
       pos += openParenPos;
@@ -191,15 +198,8 @@ export default (md, o = {}) => {
     if (tags_list.includes(token.tag)) {
       // Use getMediaSrc if available, otherwise fallback to normal behavior
       let media = null;
-      if (
-        vue_instance &&
-        vue_instance.getMediaSrc &&
-        !token.attrs.src.startsWith("http")
-      ) {
-        media = vue_instance.getMediaSrc(
-          token.attrs.src,
-          vue_instance.source_medias
-        );
+      if (getMediaSrc && !token.attrs.src.startsWith("http")) {
+        media = getMediaSrc(token.attrs.src);
       }
 
       const attrs = [];
@@ -210,10 +210,7 @@ export default (md, o = {}) => {
       } else if (token.attrs.src.startsWith("http")) {
         src = token.attrs.src;
       } else {
-        let msg = "⚠️ ";
-        msg += vue_instance.$t
-          ? vue_instance.$t("media_not_found")
-          : "Media not found";
+        let msg = "⚠️ Media not found";
         return `<div class="media media-error"><i>${msg}</i></div>`;
       }
 
@@ -224,7 +221,12 @@ export default (md, o = {}) => {
 
       // Add all other attributes except caption
       for (const [key, value] of Object.entries(token.attrs)) {
-        if (key !== "src" && key !== "caption" && key !== "class") {
+        if (
+          key !== "src" &&
+          key !== "caption" &&
+          key !== "class" &&
+          key !== "float"
+        ) {
           attrs.push(`${key}="${value}"`);
         }
       }
@@ -232,6 +234,9 @@ export default (md, o = {}) => {
       let classes = ["media", "media-" + token.tag];
       if (class_attr) {
         classes.push(class_attr);
+      }
+      if (token.attrs.float) {
+        classes.push(`float-${token.attrs.float}`);
       }
 
       // Create the image tag with all attributes
@@ -247,8 +252,8 @@ export default (md, o = {}) => {
         media_tag += `<audio src="${src}" controls>`;
         media_tag += "</audio>";
       } else if (token.tag === "embed") {
-        if (vue_instance && vue_instance.transformURL) {
-          const embed = vue_instance.transformURL({
+        if (transformURL) {
+          const embed = transformURL({
             url: src,
             autoplay: false,
           });

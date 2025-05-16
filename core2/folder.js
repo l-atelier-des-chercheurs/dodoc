@@ -5,8 +5,8 @@ const path = require("path"),
 const utils = require("./utils"),
   thumbs = require("./thumbs"),
   file = require("./file"),
-  cache = require("./cache");
-
+  cache = require("./cache"),
+  archives = require("./archives");
 module.exports = (function () {
   const API = {
     getFolders: async ({ path_to_type, detailed = false }) => {
@@ -414,6 +414,7 @@ module.exports = (function () {
         else await _moveFolderToBin({ path_to_folder });
 
         await thumbs.removeFolderThumbs({ path_to_folder });
+        await archives.removeFolderArchives({ path_to_folder });
 
         cache.delete({
           key: _getCacheKey({ path_to_folder }),
