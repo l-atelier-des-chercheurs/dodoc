@@ -1344,4 +1344,5 @@ export default {
   remove_css_file: "Supprimer la feuille de style",
   restored_success: "Restauré avec succès",
   restore_spaces: "Restaurer des espaces supprimés",
+  no_media_selected: "Aucun média sélectionné",
 };
