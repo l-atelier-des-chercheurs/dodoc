@@ -43,44 +43,63 @@
       /> -->
       </div>
 
-      <div class="_content--type">
-        <template v-if="chapter.section_type === 'text'">
-          {{ $t("type:", { type: $t("text") }) }}
-          <b-icon icon="markdown" />
-        </template>
-        <template v-else-if="chapter.section_type === 'gallery'">
-          {{ $t("type:", { type: $t("gallery") }) }}
-          <b-icon icon="image" />
-        </template>
-      </div>
+      <div class="_infos">
+        <div class="_content--type">
+          <template v-if="chapter.section_type === 'text'">
+            {{ $t("type:", { type: $t("text") }) }}
+            <b-icon icon="markdown" />
+          </template>
+          <template v-else-if="chapter.section_type === 'gallery'">
+            {{ $t("type:", { type: $t("gallery") }) }}
+            <b-icon icon="image" />
+          </template>
+        </div>
 
-      <div class="_selects--starts_on_page">
-        <SelectField2
-          :field_name="'section_starts_on_page'"
-          :value="chapter.section_starts_on_page || ''"
-          :path="chapter.$path"
-          size="small"
-          :hide_validation="true"
-          :can_edit="true"
-          :options="[
-            {
-              key: '',
-              text: $t('in_flow'),
-            },
-            {
-              key: 'page',
-              text: $t('next_page'),
-            },
-            {
-              key: 'left',
-              text: $t('next_left_page'),
-            },
-            {
-              key: 'right',
-              text: $t('next_right_page'),
-            },
-          ]"
-        />
+        <transition name="fade" mode="out-in">
+          <div v-if="view_mode === 'book' && chapter_position?.first_page">
+            <div class="_selects--pageRange" :key="chapter_position.first_page">
+              p.{{ chapter_position.first_page }}
+              <template
+                v-if="
+                  chapter_position.first_page !== chapter_position.last_page
+                "
+              >
+                <b-icon icon="arrow-right-short" /> p.{{
+                  chapter_position.last_page
+                }}
+              </template>
+            </div>
+          </div>
+        </transition>
+
+        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
+          <SelectField2
+            :field_name="'section_starts_on_page'"
+            :value="chapter.section_starts_on_page || ''"
+            :path="chapter.$path"
+            size="small"
+            :hide_validation="true"
+            :can_edit="true"
+            :options="[
+              {
+                key: '',
+                text: $t('in_flow'),
+              },
+              {
+                key: 'page',
+                text: $t('next_page'),
+              },
+              {
+                key: 'left',
+                text: $t('next_left_page'),
+              },
+              {
+                key: 'right',
+                text: $t('next_right_page'),
+              },
+            ]"
+          />
+        </div>
       </div>
 
       <div class="_content">
@@ -212,6 +231,8 @@ export default {
     prev_section: Object,
     next_section: Object,
     publication_path: String,
+    chapter_position: Object,
+    view_mode: String,
   },
   components: {
     // MarkdownEditor,
@@ -485,8 +506,16 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
+}
+
+._infos {
   margin-bottom: calc(var(--spacing) * 1);
   font-size: var(--sl-font-size-small);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: calc(var(--spacing) * 1);
 }
 
 ._gallery {
@@ -546,6 +575,15 @@ export default {
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
-  margin-bottom: calc(var(--spacing) * 1);
+  // margin-bottom: calc(var(--spacing) * 1);
+}
+
+._selects--pageRange {
+  // font-size: var(--sl-font-size);
+  color: var(--c-gris_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  // gap: calc(var(--spacing) / 2);
 }
 </style>

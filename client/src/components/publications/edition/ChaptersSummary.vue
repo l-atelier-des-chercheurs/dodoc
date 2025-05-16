@@ -55,27 +55,17 @@ export default {
     sections: Array,
     opened_section_meta_filename: String,
     view_mode: String,
+    chapters_positions: Object,
   },
   components: { ChapterPreview, SetCover },
   data() {
-    return {
-      chapters_positions: {},
-    };
+    return {};
   },
   created() {},
   mounted() {
     if (this.sections.length === 0) this.createSection({ type: "text" });
-    this.$eventHub.$on(
-      "edition.chaptersPositions",
-      this.updateChaptersPositions
-    );
   },
-  beforeDestroy() {
-    this.$eventHub.$off(
-      "edition.chaptersPositions",
-      this.updateChaptersPositions
-    );
-  },
+  beforeDestroy() {},
   watch: {
     opened_section_meta_filename() {
       // this.openFirstSectionIfNoneOpened();
@@ -179,9 +169,6 @@ export default {
       setTimeout(() => {
         this.$eventHub.$emit("edition.zoomToSection", section_meta_filename);
       }, 500);
-    },
-    updateChaptersPositions(chapters_positions) {
-      this.chapters_positions = chapters_positions;
     },
     getPagesPositions(path) {
       const section_meta_filename = this.getFilename(path);

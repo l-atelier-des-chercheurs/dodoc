@@ -48,6 +48,7 @@
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
+        @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
       />
       <DocViewer
         v-else

@@ -326,7 +326,7 @@ export default {
         }
       });
 
-      this.$eventHub.$emit("edition.chaptersPositions", chapters_positions);
+      this.$emit("updateChaptersPositions", chapters_positions);
     },
     beforePrint() {
       // this.impositionPage();

@@ -16,6 +16,7 @@
               :sections="all_chapters"
               :opened_section_meta_filename="opened_section_meta_filename"
               :view_mode="view_mode"
+              :chapters_positions="chapters_positions"
               @removeChapter="removeChapter"
               @toggleSection="
                 $emit('updatePane', { key: 'chapter', value: $event })
@@ -51,6 +52,8 @@
             :prev_section="prev_section"
             :next_section="next_section"
             :publication_path="publication.$path"
+            :chapter_position="getChapterPosition(opened_chapter.$path)"
+            :view_mode="view_mode"
             @remove="removeChapter(opened_chapter)"
             @close="$emit('updatePane', { key: 'chapter', value: false })"
             @prev="openChapter(-1)"
@@ -74,6 +77,7 @@
               $emit('updatePane', { key: 'view_mode', value: $event })
             "
             @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
+            @updateChaptersPositions="chapters_positions = $event"
           />
         </div>
       </pane>
@@ -137,6 +141,7 @@ export default {
       show_edit_pane: true,
       show_preview_pane: true,
       show_source_html: false,
+      chapters_positions: {},
     };
   },
   created() {},
@@ -253,6 +258,10 @@ export default {
       await this.$api.deleteItem({
         path: chapter.$path,
       });
+    },
+    getChapterPosition(chapter_path) {
+      const chapter_meta_filename = this.getFilename(chapter_path);
+      return this.chapters_positions[chapter_meta_filename];
     },
   },
 };

@@ -22,15 +22,15 @@
       <transition name="fade" mode="out-in">
         <div
           class="_selects--pageRange"
-          v-if="view_mode === 'book' && chapter_position"
-          :key="chapter_position.first_page"
+          v-if="view_mode === 'book' && pages_positions?.first_page"
+          :key="pages_positions.first_page"
         >
-          p.{{ chapter_position.first_page }}
+          p.{{ pages_positions.first_page }}
           <template
-            v-if="chapter_position.first_page !== chapter_position.last_page"
+            v-if="pages_positions.first_page !== pages_positions.last_page"
           >
             <b-icon icon="arrow-right-short" /> p.{{
-              chapter_position.last_page
+              pages_positions.last_page
             }}
           </template>
         </div>
@@ -124,12 +124,6 @@ export default {
           folder_path: this.getParent(this.section.$path),
         });
       });
-    },
-    chapter_position() {
-      if (!this.pages_positions) return false;
-      const first_page = this.pages_positions?.first_page;
-      const last_page = this.pages_positions?.last_page;
-      return { first_page, last_page };
     },
   },
   methods: {
