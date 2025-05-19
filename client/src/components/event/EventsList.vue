@@ -177,8 +177,8 @@ export default {
 ._eventsCarousel {
   width: 100%;
   height: 100%;
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
-  max-width: var(--max-column-width);
 
   ::v-deep {
     .flickity-button {

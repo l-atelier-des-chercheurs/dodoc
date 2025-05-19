@@ -130,13 +130,16 @@ export default {
 }
 
 ._backButton {
+  background: var(--c-gris_clair);
+  // border-radius: 10px;
+  // padding: 4px;
 }
 
 ._name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 ._logo {

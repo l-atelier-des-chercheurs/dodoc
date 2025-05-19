@@ -186,7 +186,7 @@ export default {
   // width: 100%;
   // max-width: 120ch;
 
-  padding: calc(var(--spacing) / 4);
+  padding: 0;
   border-radius: 6px;
 
   // border-bottom: 2px solid var(--c-gris);
