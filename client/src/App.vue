@@ -153,7 +153,8 @@ export default {
   --dropzone-color2: var(--c-orange);
 
   // --c-bodybg: white;
-  --c-bodybg: hsl(51, 33%, 100%);
+  --c-bodybg: hsl(51, 33%, 98%);
+  --c-bodybg: white;
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);

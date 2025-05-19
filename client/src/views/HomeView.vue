@@ -312,7 +312,7 @@ export default {
   z-index: 1;
   flex: 1;
 
-  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 2) auto;
 
   min-height: 80vh;

@@ -309,7 +309,7 @@ export default {
 
   width: 100%;
 
-  background: white;
+  // background: white;
 
   // width: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
