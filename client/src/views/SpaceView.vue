@@ -174,17 +174,16 @@ export default {
 }
 
 ._spaceView {
-  // max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
 }
 
 ._topSpace {
-  max-width: min(var(--max-column-width), 1080px);
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 1) auto 0;
 }
 
 ._projectsList {
-  max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 1) auto 0;
   // padding: calc(var(--spacing) * 1);
 }

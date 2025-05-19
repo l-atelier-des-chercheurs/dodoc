@@ -153,7 +153,8 @@ export default {
   --dropzone-color2: var(--c-orange);
 
   // --c-bodybg: white;
-  --c-bodybg: hsl(48, 19%, 95%);
+  --c-bodybg: hsl(51, 33%, 98%);
+  --c-bodybg: white;
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);
@@ -231,6 +232,7 @@ export default {
   --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
+  --max-column-width-px: 1280px;
   --switch-thumb-border-radius: 4px;
 
   accent-color: var(--c-orange);
@@ -246,9 +248,8 @@ export default {
 html,
 body {
   // background: white;
-  // background-color: var(--c-bodybg);
-  // background: linear-gradient(180deg, #fff, var(--c-bodybg));
-  background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
+  background-color: var(--c-bodybg);
+  // background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
   scroll-behavior: smooth;
 }

@@ -1,6 +1,6 @@
 <template>
-  <section class="_homeView--container">
-    <div class="_homeView--content" :data-layout="text_image_layout">
+  <section class="_hero--container">
+    <div class="_hero--content" :data-layout="text_image_layout">
       <template v-for="layout in custom_layout">
         <div v-if="layout === 'text'" :key="layout" class="_textBlock">
           <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
@@ -111,9 +111,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-._homeView--container {
+._hero--container {
   width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
+  background: var(--hero-bg, transparent);
 
   ._homeCover {
     background: white;
@@ -124,7 +124,7 @@ export default {
   }
 }
 
-._homeView--content {
+._hero--content {
   position: relative;
   width: 100%;
   margin: 0 auto;
@@ -166,9 +166,10 @@ export default {
     flex: 4 1 620px;
     width: 100%;
 
+    overflow: hidden;
+
     img {
       width: auto;
-      max-height: 90vh;
     }
   }
   &[data-layout="image_text_overlay"] ._imageBlock {

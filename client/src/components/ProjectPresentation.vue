@@ -309,7 +309,7 @@ export default {
 
   width: 100%;
 
-  background: white;
+  // background: white;
 
   // width: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -376,7 +376,7 @@ export default {
 }
 
 ._projectInfos--topContent {
-  max-width: min(var(--max-column-width), 1180px);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   // border: 2px solid var(--c-gris_clair);
   margin: 0 auto;
   padding: calc(var(--spacing) * 2) 0;

@@ -226,22 +226,9 @@ export default {
 ._homeView {
   position: relative;
   min-height: calc(100vh - 60px);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
   max-height: -webkit-fill-available;
-}
-
-._homeView--container {
-  // position: sticky;
-  // top: 60px;
-  width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
-
-  ._homeCover {
-    background: white;
-
-    ::v-deep img {
-      object-fit: scale-down !important;
-    }
-  }
 }
 
 ._content {
@@ -325,7 +312,7 @@ export default {
   z-index: 1;
   flex: 1;
 
-  max-width: var(--max-column-width);
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 2) auto;
 
   min-height: 80vh;
