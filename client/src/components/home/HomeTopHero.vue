@@ -134,7 +134,7 @@ export default {
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-bottom: 1px solid var(--c-gris);
+  // border-bottom: 1px solid var(--c-gris);
 
   > * {
     flex: 1 1 320px;
