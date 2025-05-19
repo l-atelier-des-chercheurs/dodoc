@@ -24,6 +24,17 @@
       </component>
     </div>
 
+    <!-- <transition name="fade" mode="out-in">
+      <router-link
+        v-if="$route.path !== '/'"
+        :to="'/'"
+        :title="$t('home')"
+        class="u-buttonLink"
+      >
+        {{ $t("home") }}
+      </router-link>
+    </transition> -->
+
     <transition name="fade" mode="out-in">
       <div v-if="show_space_name">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />

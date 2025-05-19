@@ -62,30 +62,32 @@
           >
             <b-icon icon="gear" :aria-label="$t('admin_settings')" />
           </button>
+
           <AdminSettings
             v-if="show_settings_modal"
             @close="show_settings_modal = false"
           />
         </template>
 
-        <div class="_subscribeBtn">
-          <AuthorTag
-            v-if="connected_as"
-            :path="connected_as.$path"
-            :show_image_only="true"
-            @click="showAuthorModal"
-          />
-          <button
-            type="button"
-            class="_authorBtn"
-            v-else
-            @click="showAuthorModal"
-          >
-            {{ $t("login") }}
-          </button>
-        </div>
+        <AuthorTag
+          v-if="connected_as"
+          :path="connected_as.$path"
+          :show_image_only="true"
+          @click="showAuthorModal"
+        />
+        <button
+          type="button"
+          class="u-button u-button_bleumarine _authorBtn"
+          v-else
+          @click="showAuthorModal"
+        >
+          {{ $t("login") }}
+          <sup class="_badge">
+            {{ $api.other_devices_connected.length }}
+          </sup>
+        </button>
 
-        <div
+        <!-- <div
           class="_currentUsers"
           v-if="$api.other_devices_connected.length > 0"
         >
@@ -95,7 +97,7 @@
               {{ $api.other_devices_connected.length }}
             </sup>
           </router-link>
-        </div>
+        </div> -->
       </div>
 
       <AuthorList
@@ -227,26 +229,26 @@ export default {
 }
 
 ._subscribeBtn {
+  position: relative;
   // margin-left: calc(var(--spacing) / 2);
   // .is--mobileView & {
   //   margin-left: 0;
   // }
-
-  ._authorBtn {
-    position: relative;
-    background: var(--c-bleumarine_clair);
-    padding: calc(var(--spacing) / 2);
-    border-radius: 4px;
-    font-weight: 500;
-    font-size: var(--sl-font-size-normal);
-    color: inherit;
-  }
+}
+._authorBtn {
+  position: relative;
+  // background: var(--c-bleumarine_clair);
+  // padding: calc(var(--spacing) / 2);
+  border-radius: 24px;
+  // font-weight: 500;
+  // font-size: var(--sl-font-size-normal);
+  // color: inherit;
 }
 
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 2);
   padding: 0 calc(var(--spacing) / 2);
   align-items: center;
   // crispy crisp icons
@@ -258,8 +260,8 @@ export default {
 
   button {
     // width: 3rem;
-    font-size: inherit;
-    height: 3rem;
+    // font-size: inherit;
+    // height: 3rem;
 
     .is--mobileView & {
       padding: calc(var(--spacing) / 2);
@@ -288,8 +290,8 @@ export default {
 }
 ._badge {
   position: absolute;
-  right: -0.3rem;
-  top: -0.3rem;
+  right: -0.4rem;
+  top: -0.4rem;
   color: white;
   background: var(--c-bleumarine);
   border-radius: 0.75em;

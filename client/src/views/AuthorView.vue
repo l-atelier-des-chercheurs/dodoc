@@ -87,8 +87,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._authorView {
-  padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 6);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: calc(var(--spacing) * 1) auto;
 }
 
 ._card {
