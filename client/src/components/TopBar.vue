@@ -171,7 +171,7 @@ export default {
   z-index: 100;
   max-width: calc(
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
-      8
+      3
   );
   margin: var(--spacing) auto;
   // border: 1px solid var(--c-gris);
