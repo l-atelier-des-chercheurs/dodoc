@@ -256,8 +256,8 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 ._authorsView {
-  padding: calc(var(--spacing) * 1);
-  max-width: calc(var(--max-column-width));
+  // padding: calc(var(--spacing) * 1);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
 }
 
@@ -276,6 +276,7 @@ export default {
   }
 }
 ._title {
+  margin-top: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 1);
 }
 

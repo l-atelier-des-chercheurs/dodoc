@@ -9,6 +9,9 @@
     >
       <b-icon icon="chevron-left" />
     </button>
+    <template v-else>
+      <div class="_emptySpace" />
+    </template>
 
     <div class="_logo">
       <component
@@ -20,6 +23,17 @@
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
+
+    <!-- <transition name="fade" mode="out-in">
+      <router-link
+        v-if="$route.path !== '/'"
+        :to="'/'"
+        :title="$t('home')"
+        class="u-buttonLink"
+      >
+        {{ $t("home") }}
+      </router-link>
+    </transition> -->
 
     <transition name="fade" mode="out-in">
       <div v-if="show_space_name">
@@ -118,8 +132,8 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  padding: 0 calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  padding: 0 calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
   line-height: 1.1;
 
   > * {
@@ -127,6 +141,10 @@ export default {
     align-items: center;
     overflow: hidden;
   }
+}
+
+._emptySpace {
+  width: 5px;
 }
 
 ._backButton {
@@ -146,7 +164,7 @@ export default {
   flex: 0 0 auto;
 
   svg {
-    width: 120px;
+    width: 105px;
   }
 
   img {
@@ -156,7 +174,7 @@ export default {
 
   svg,
   img {
-    height: 40px;
+    height: 35px;
     object-fit: scale-down;
     object-position: 0 0;
   }

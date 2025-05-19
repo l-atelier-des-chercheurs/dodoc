@@ -25,7 +25,7 @@
         <option value="default">style – {{ $t("default_value") }}</option>
       </select>
 
-      <div
+      <!-- <div
         v-if="$listeners['update:show_source_html'] && view_mode === 'book'"
         class="_toggleHTML"
       >
@@ -34,7 +34,7 @@
           :label="$t('show_source_html')"
           @update:content="$emit('update:show_source_html', $event)"
         />
-      </div>
+      </div> -->
     </div>
 
     <div class="_viewContent--content">
