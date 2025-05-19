@@ -130,7 +130,7 @@ export default {
 }
 
 ._backButton {
-  background: var(--c-gris_clair);
+  // background: var(--c-gris_clair);
   // border-radius: 10px;
   // padding: 4px;
 }

@@ -166,8 +166,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: sticky;
-  top: 0;
+  position: relative;
+
   z-index: 100;
   max-width: calc(
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
