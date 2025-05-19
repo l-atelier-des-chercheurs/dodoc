@@ -160,7 +160,7 @@ export default {
   // background: var(--c-gris_clair);
 
   margin: 0 auto;
-  max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   overflow: hidden;
 
   ._openedEvent--cont {

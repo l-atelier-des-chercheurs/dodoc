@@ -26,7 +26,7 @@ export default {
   },
   created() {},
   async mounted() {
-    await this.loadAllProjects();
+    this.all_projects = (await this.loadAllFolders("spaces", "projects")) || [];
     this.is_loading = false;
   },
   beforeDestroy() {},
@@ -54,33 +54,7 @@ export default {
       return _projects;
     },
   },
-  methods: {
-    async loadAllProjects() {
-      let spaces = await this.$api
-        .getFolders({
-          path: "spaces",
-        })
-        .catch((err) => {
-          return err;
-        });
-
-      spaces = spaces.filter((s) =>
-        this.canLoggedinSeeFolder({
-          folder: s,
-        })
-      );
-      if (spaces.length === 0) return;
-
-      for (const space of spaces) {
-        const projects = await this.$api.getFolders({
-          path: space.$path + "/projects",
-        });
-        if (projects.length > 0)
-          this.all_projects = this.all_projects.concat(projects);
-      }
-      return;
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>

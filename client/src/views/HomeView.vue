@@ -5,6 +5,9 @@
     <template v-if="load_whole_page === true">
       <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
 
+      <!-- <AllContent /> -->
+      <!-- <AllPublications /> -->
+
       <section v-if="$root.app_infos.instance_meta.enable_events">
         <EventsSection />
       </section>
@@ -106,6 +109,8 @@ import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
+// import AllPublications from "@/components/home/AllPublications.vue";
+// import AllContent from "@/components/home/AllContent.vue";
 
 export default {
   props: {},
@@ -116,6 +121,7 @@ export default {
     AllProjects,
     DodocLogo,
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
+    // AllContent,
   },
   data() {
     return {
@@ -220,22 +226,9 @@ export default {
 ._homeView {
   position: relative;
   min-height: calc(100vh - 60px);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
   max-height: -webkit-fill-available;
-}
-
-._homeView--container {
-  // position: sticky;
-  // top: 60px;
-  width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
-
-  ._homeCover {
-    background: white;
-
-    ::v-deep img {
-      object-fit: scale-down !important;
-    }
-  }
 }
 
 ._content {
@@ -319,7 +312,7 @@ export default {
   z-index: 1;
   flex: 1;
 
-  max-width: var(--max-column-width);
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 2) auto;
 
   min-height: 80vh;

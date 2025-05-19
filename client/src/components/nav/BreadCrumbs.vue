@@ -31,9 +31,9 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <div class="u-label">
+          <!-- <div class="u-label">
             {{ $t("space") }}
-          </div>
+          </div> -->
           <div class="_name">{{ (space && space.title) || "–" }}</div>
         </component>
       </div>
@@ -49,9 +49,9 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <div class="u-label">
+          <!-- <div class="u-label">
             {{ $t("project") }}
-          </div>
+          </div> -->
           <div class="_name">{{ (project && project.title) || "–" }}</div>
         </component>
       </div>
@@ -130,12 +130,16 @@ export default {
 }
 
 ._backButton {
+  // background: var(--c-gris_clair);
+  // border-radius: 10px;
+  // padding: 4px;
 }
 
 ._name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  font-weight: 400;
 }
 
 ._logo {
