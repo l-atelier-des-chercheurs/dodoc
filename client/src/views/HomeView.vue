@@ -5,6 +5,9 @@
     <template v-if="load_whole_page === true">
       <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
 
+      <!-- <AllContent /> -->
+      <!-- <AllPublications /> -->
+
       <section v-if="$root.app_infos.instance_meta.enable_events">
         <EventsSection />
       </section>
@@ -106,6 +109,8 @@ import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
+// import AllPublications from "@/components/home/AllPublications.vue";
+// import AllContent from "@/components/home/AllContent.vue";
 
 export default {
   props: {},
@@ -116,6 +121,7 @@ export default {
     AllProjects,
     DodocLogo,
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
+    // AllContent,
   },
   data() {
     return {
