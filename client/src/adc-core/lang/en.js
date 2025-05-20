@@ -115,7 +115,7 @@ export default {
   show_projects: "Show projects",
   all_projects: "All projects",
   all_projects_instr:
-    "This list shows all the projects documented, amongst all public spaces.",
+    "This list shows all the projects documented, regardless of the spaces they are in.",
   event_projects_instr:
     "This list show all projects documented during a specific event.",
   create: "Create",

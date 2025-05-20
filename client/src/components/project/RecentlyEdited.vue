@@ -51,7 +51,8 @@ export default {
   max-height: 300px;
   z-index: 1000;
   padding: var(--spacing);
-  background: white;
+  background: var(--c-bleumarine);
+  // color: white;
   border-radius: var(--border-radius) var(--border-radius);
   box-shadow: var(--panel-shadows);
 
