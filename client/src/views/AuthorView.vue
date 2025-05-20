@@ -1,16 +1,5 @@
 <template>
   <div class="_authorView">
-    <div class="_backBtn">
-      <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="house" />
-        {{ $t("home") }}
-      </router-link>
-      <router-link :to="'/@'" class="u-buttonLink">
-        <b-icon icon="slash" />
-        {{ $t("list_of_accounts") }}
-      </router-link>
-    </div>
-
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
@@ -81,6 +70,7 @@ export default {
 
       this.is_loading = false;
       this.author = author;
+      this.$eventHub.$emit("received.author", this.author);
     },
   },
 };

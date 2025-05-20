@@ -1,12 +1,5 @@
 <template>
   <div class="_authorsView">
-    <div class="_backBtn">
-      <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="house" />
-        {{ $t("home") }}
-      </router-link>
-    </div>
-
     <h1 class="_title" v-text="$t('list_of_accounts')" />
 
     <div class="u-spacingBottom">
