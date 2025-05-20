@@ -49,10 +49,12 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <!-- <div class="u-label">
+          <div class="u-label">
             {{ $t("space") }}
-          </div> -->
-          {{ (space && space.title) || "–" }}
+          </div>
+          <div class="">
+            {{ (space && space.title) || "–" }}
+          </div>
         </component>
       </div>
     </transition>
@@ -62,10 +64,12 @@
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <span class="_spaceName">
-          <!-- <div class="u-label">
+          <div class="u-label">
             {{ $t("project") }}
-          </div> -->
-          {{ (project && project.title) || "–" }}
+          </div>
+          <div class="">
+            {{ (project && project.title) || "–" }}
+          </div>
         </span>
       </div>
     </transition>
@@ -195,11 +199,15 @@ export default {
 
   // font-weight: 500;
 
-  display: flex;
-  align-items: center;
-  overflow: hidden;
+  // display: flex;
+  // align-items: center;
+  // overflow: hidden;
+}
 
-  :is(a) {
+a._spaceName {
+  text-decoration: none;
+
+  > *:not(.u-label) {
     text-decoration: underline;
 
     &:hover {

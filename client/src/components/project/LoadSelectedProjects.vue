@@ -60,7 +60,7 @@ export default {
 
   display: grid;
   grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
+  grid-gap: calc(var(--spacing) / 2);
   align-items: stretch;
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
