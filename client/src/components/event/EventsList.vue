@@ -170,57 +170,10 @@ export default {
 <style lang="scss" scoped>
 ._eventsList {
   margin: 0 auto;
+
   // max-width: var(--max-column-width);
   padding: calc(var(--spacing) * 2) 0;
 }
-
-._eventsCarousel {
-  width: 100%;
-  height: 100%;
-  max-width: min(var(--max-column-width), var(--max-column-width-px));
-  margin: 0 auto;
-
-  ::v-deep {
-    .flickity-button {
-      background: transparent;
-      background: rgba(255, 255, 255, 1);
-    }
-    .flickity-button:hover {
-      background: var(--c-gris);
-    }
-
-    .flickity-prev-next-button {
-      overflow: hidden;
-    }
-    .flickity-button:disabled {
-      display: none;
-    }
-
-    .flickity-prev-next-button .flickity-button-icon {
-      // left: -68%;
-      // top: -75%;
-      // width: 150%;
-      // height: 150%;
-    }
-
-    .flickity-prev-next-button.previous {
-      left: -10px;
-    }
-    .flickity-prev-next-button.next {
-      right: -10px;
-    }
-  }
-}
-
-// ._flickity {
-//   width: 100%;
-//   height: 100%;
-//   margin: 0 auto;
-//   max-width: var(--max-column-width);
-//   // overflow: hidden;
-//   // padding: 0 calc(var(--spacing) * 1);
-
-// }
 
 ._slide {
   position: relative;

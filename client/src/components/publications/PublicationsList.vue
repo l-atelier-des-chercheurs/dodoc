@@ -219,22 +219,12 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationsList {
-  --item-width: 140px;
+  --item-width: 220px;
 
   width: 100%;
-  max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
   padding-top: calc(var(--spacing) * 1);
-}
-
-._publications--list {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) * 1);
-  align-items: end;
-  // not working for unknown reasons…
-  // align-items: baseline;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
 
 ._topBtn {

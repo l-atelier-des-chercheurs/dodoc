@@ -19,7 +19,11 @@
         :to="`/`"
         :title="$t('home')"
       >
-        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
+        <DodocLogo
+          class="_dodocLogo"
+          v-if="instance_logo === 'dodoc'"
+          :can_animate="$route.name !== 'Accueil'"
+        />
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
@@ -45,10 +49,12 @@
           :to="{ path: '/+' + $route.params.space_slug }"
           :disabled="$route.name === 'Espace'"
         >
-          <!-- <div class="u-label">
+          <div class="u-label">
             {{ $t("space") }}
-          </div> -->
-          <div class="_name">{{ (space && space.title) || "–" }}</div>
+          </div>
+          <div class="">
+            {{ (space && space.title) || "–" }}
+          </div>
         </component>
       </div>
     </transition>
@@ -57,17 +63,14 @@
       <div v-if="show_project_name">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
-        <component
-          :is="false ? 'router-link' : 'span'"
-          class="_spaceName"
-          :to="{ path: '/+' + $route.params.space_slug }"
-          :disabled="$route.name === 'Espace'"
-        >
-          <!-- <div class="u-label">
+        <span class="_spaceName">
+          <div class="u-label">
             {{ $t("project") }}
-          </div> -->
-          <div class="_name">{{ (project && project.title) || "–" }}</div>
-        </component>
+          </div>
+          <div class="">
+            {{ (project && project.title) || "–" }}
+          </div>
+        </span>
       </div>
     </transition>
   </nav>
@@ -131,14 +134,15 @@ export default {
 ._breadcrumb {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: stretch;
   padding: 0 calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
   line-height: 1.1;
 
   > * {
+    flex: 0 0 auto;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     overflow: hidden;
   }
 }
@@ -151,13 +155,6 @@ export default {
   // background: var(--c-gris_clair);
   // border-radius: 10px;
   // padding: 4px;
-}
-
-._name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: 400;
 }
 
 ._logo {
@@ -197,12 +194,25 @@ export default {
   }
 }
 
-a._spaceName {
+._spaceName {
   color: inherit;
-  // text-decoration: none;
 
-  &:hover {
-    font-weight: 500;
+  // font-weight: 500;
+
+  // display: flex;
+  // align-items: center;
+  // overflow: hidden;
+}
+
+a._spaceName {
+  text-decoration: none;
+
+  > *:not(.u-label) {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 

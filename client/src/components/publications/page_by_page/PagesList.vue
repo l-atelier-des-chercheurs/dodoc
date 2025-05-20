@@ -1,6 +1,6 @@
 <template>
   <transition name="slideup">
-    <div v-if="!page_opened_id">
+    <div v-if="!page_opened_id" class="_pagesList">
       <div class="_setPreviewSize">
         <h2>
           <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
@@ -417,6 +417,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._pagesList {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
+}
+
 ._allPages {
   display: flex;
   flex-flow: row wrap;

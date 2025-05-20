@@ -7,7 +7,7 @@
     <TrackAuthorChanges />
     <DynamicCursor v-if="!$root.is_touch_device" />
 
-    <transition name="fade_fast" mode="out-in">
+    <transition name="pagetransition" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>

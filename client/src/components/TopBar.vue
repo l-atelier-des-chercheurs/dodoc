@@ -4,6 +4,7 @@
     :class="{
       'is--homepage': $route.path === '/',
       'is--mobileView': $root.is_mobile_view,
+      'is--folded': isScrolledDown,
     }"
   >
     <div class="_topbar--inner">
@@ -127,6 +128,9 @@ export default {
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
+      isScrolledDown: false,
+      lastScrollTop: 0,
+      scrollDelta: 0,
     };
   },
   created() {},
@@ -137,11 +141,17 @@ export default {
     this.$api.join({ room: "authors" });
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
+
+    // Add scroll event listener
+    window.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
     this.$api.leave({ room: "authors" });
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
+
+    // Remove scroll event listener
+    window.removeEventListener("scroll", this.handleScroll);
   },
   watch: {
     $route: {
@@ -157,6 +167,31 @@ export default {
     },
   },
   methods: {
+    handleScroll() {
+      const currentScrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+      const scrollDifference = currentScrollTop - this.lastScrollTop;
+
+      // Accumulate scroll delta when scrolling up
+      if (scrollDifference < 0) {
+        this.scrollDelta -= scrollDifference;
+      } else {
+        // Reset delta when scrolling down
+        this.scrollDelta = 0;
+      }
+
+      // Fold when scrolling down past threshold
+      if (scrollDifference > 0 && currentScrollTop > 50) {
+        this.isScrolledDown = true;
+      }
+      // Unfold only after scrolling up 50px
+      else if (this.scrollDelta > 50) {
+        this.isScrolledDown = false;
+        this.scrollDelta = 0;
+      }
+
+      this.lastScrollTop = currentScrollTop;
+    },
     showAuthorModal() {
       this.show_authors_modal = true;
     },
@@ -168,20 +203,28 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: relative;
+  position: sticky;
+  top: 0;
 
-  z-index: 100;
+  z-index: 5;
+
   max-width: calc(
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
       3
   );
   margin: var(--spacing) auto;
   // border: 1px solid var(--c-gris);
-  filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
   // border-style: ridge;
   border-radius: 30px;
   overflow: hidden;
+
+  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &.is--folded {
+    transform: translateY(-100%);
+  }
 
   &.is--homepage {
   }

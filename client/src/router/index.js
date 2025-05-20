@@ -77,6 +77,20 @@ const router = new VueRouter({
   mode: "history",
   base: "/",
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return new Promise((resolve, reject) => {
+      // only if changing page and not just query or hash
+      if (to.path !== from.path) {
+        setTimeout(() => {
+          if (savedPosition) {
+            resolve(savedPosition);
+          } else {
+            resolve({ top: 0 });
+          }
+        }, 250);
+      }
+    });
+  },
 });
 
 export default router;

@@ -1,17 +1,19 @@
 <template>
-  <div class="u-card2 _publicationPreview">
+  <div class="_publicationPreview">
     <div class="_publicationPreview--cover">
-      <div v-if="cover_thumb">
+      <template v-if="cover_thumb">
         <img :src="cover_thumb" />
         <span
           v-if="template_icon && false"
           class="_iconPreview"
           v-html="template_icon"
         />
-      </div>
-      <div v-else class="_noPreview">
-        <span v-if="template_icon" v-html="template_icon" />
-      </div>
+      </template>
+      <template v-else>
+        <div class="_noPreview">
+          <span v-if="template_icon" v-html="template_icon" />
+        </div>
+      </template>
       <transition name="toggleLock" mode="out-in">
         <StatusTag
           v-if="
@@ -157,7 +159,7 @@ export default {
   position: relative;
   // overflow: hidden;
   background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 ._header {

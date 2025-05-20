@@ -200,7 +200,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._spacesList {
-  --item-width: 300px;
+  --item-width: 400px;
 
   width: 100%;
   min-height: 60vh;

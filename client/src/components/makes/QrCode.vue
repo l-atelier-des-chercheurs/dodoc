@@ -108,7 +108,9 @@ export default {
   position: relative;
 
   background-color: white;
+  border-radius: var(--border-radius);
   max-width: 500px;
+  padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 1) auto;
 }
 

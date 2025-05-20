@@ -30,6 +30,7 @@
           <EditBtn
             v-if="is_instance_admin"
             class="_editAdminText"
+            :label_position="'left'"
             @click="editPresentationText"
           />
         </div>
@@ -113,6 +114,8 @@ export default {
 <style lang="scss" scoped>
 ._hero--container {
   width: 100%;
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
   background: var(--hero-bg, transparent);
 
   ._homeCover {
@@ -133,11 +136,12 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+  gap: var(--spacing);
   overflow: hidden;
   // border-bottom: 1px solid var(--c-gris);
 
   > * {
-    flex: 1 1 320px;
+    flex: 1 1 220px;
   }
 
   &[data-layout="image_text_overlay"] {
@@ -148,14 +152,14 @@ export default {
   ._textBlock {
     position: relative;
     z-index: 1;
-    flex: 1 1 250px;
-    max-width: 350px;
+    flex: 1 1 220px;
+    // max-width: 350px;
     margin: 0 auto;
 
     border-radius: var(--panel-radius);
-    box-shadow: var(--panel-shadows);
+    // box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    margin: 5%;
+    // margin: 2%;
 
     background: var(--text-bg, white);
   }
@@ -163,8 +167,9 @@ export default {
   }
   ._imageBlock {
     position: relative;
-    flex: 4 1 620px;
+    flex: 4 1 420px;
     width: 100%;
+    border-radius: 12px;
 
     overflow: hidden;
 

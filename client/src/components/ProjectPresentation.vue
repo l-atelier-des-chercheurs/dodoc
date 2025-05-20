@@ -10,14 +10,15 @@
   >
     <div class="_projectInfos--topContent">
       <div class="_projectInfos--cover">
-        <CoverField
-          class="_cover"
-          :context="context"
-          :ratio="'3 / 2'"
-          :cover="project.$cover"
-          :path="project.$path"
-          :can_edit="can_edit"
-        />
+        <div class="_cover">
+          <CoverField
+            :context="context"
+            :ratio="'3 / 2'"
+            :cover="project.$cover"
+            :path="project.$path"
+            :can_edit="can_edit"
+          />
+        </div>
 
         <transition name="toggleLock" mode="out-in">
           <StatusTag
@@ -56,7 +57,6 @@
             :path="project.$path"
             :can_edit="can_edit"
           />
-
           <DropDown v-if="can_edit" :show_label="false" :right="true">
             <DownloadFolder
               :modal_title="$t('download_project', { name: project.title })"
@@ -102,7 +102,8 @@
 
         <TitleField
           :field_name="'title'"
-          :label="context === 'full' ? $t('title') : ''"
+          :label="$t('title')"
+          :show_label="false"
           class="_title"
           :content="project.title"
           :path="project.$path"
@@ -121,7 +122,8 @@
             (context === 'full' && (project.description || can_edit))
           "
           :field_name="'description'"
-          :label="context === 'full' ? $t('description') : ''"
+          :label="$t('description')"
+          :show_label="context === 'full'"
           :input_type="'editor'"
           :custom_formats="['bold', 'italic', 'link']"
           :content="project.description"
@@ -138,6 +140,18 @@
           :admin_instructions="$t('project_admin_instructions')"
           :contrib_instructions="$t('project_contrib_instructions')"
         />
+
+        <div v-if="context === 'full'">
+          <div class="u-displayAsPublic">
+            <ToggleInput
+              :content="display_as_public"
+              :label="$t('display_as_public')"
+              @update:content="
+                $emit('update:display_as_public', !display_as_public)
+              "
+            />
+          </div>
+        </div>
 
         <div
           class="_allTags"
@@ -218,6 +232,7 @@ export default {
     context: String,
     can_edit: Boolean,
     display_original_space: Boolean,
+    display_as_public: Boolean,
     // show_more_informations: Boolean,
   },
   components: {

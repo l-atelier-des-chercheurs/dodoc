@@ -72,6 +72,7 @@
         <TitleField
           :field_name="'title'"
           :label="context === 'full' ? $t('title') : ''"
+          :show_label="false"
           class="_title"
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
@@ -188,19 +189,22 @@ export default {
 
   padding: 0;
   border-radius: 6px;
-
-  // border-bottom: 2px solid var(--c-gris);
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
+  // padding: calc(var(--spacing) * 1);
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
+    max-width: 1000px;
     margin: calc(var(--spacing) * 2) auto;
   }
   &[data-context="list"] {
     flex-flow: row nowrap;
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+    ._spaceCover {
+      max-width: 100px;
+    }
   }
 }
 
@@ -222,15 +226,27 @@ export default {
   // border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
+
+  > * {
+  }
 }
 ._textBloc {
   // padding: calc(var(--spacing) / 2);
-  flex: 3 1 240px;
+  flex: 1 1 240px;
   overflow: hidden;
 
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
+}
+._title {
+  ::v-deep {
+    h1,
+    h2 {
+      font-weight: 400;
+      font-style: italic;
+    }
+  }
 }
 ._subtitle {
   color: var(--c-gris_fonce);

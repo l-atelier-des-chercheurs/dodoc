@@ -63,7 +63,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.sections.length === 0) this.createSection({ type: "text" });
+    // if (this.sections.length === 0) this.createSection({ type: "text" });
   },
   beforeDestroy() {},
   watch: {

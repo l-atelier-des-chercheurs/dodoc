@@ -44,14 +44,16 @@ export default {
 <style lang="scss" scoped>
 ._recentlyEdited {
   position: fixed;
-  bottom: 0;
+  bottom: -5px;
   right: calc(var(--spacing) * 2);
   max-width: 280px;
   width: 100%;
   max-height: 300px;
   z-index: 1000;
   padding: var(--spacing);
-  background: white;
+  padding-top: calc(var(--spacing) / 2);
+  background: var(--c-bleumarine);
+  // color: white;
   border-radius: var(--border-radius) var(--border-radius);
   box-shadow: var(--panel-shadows);
 
@@ -59,6 +61,10 @@ export default {
 
   > * {
     max-height: 30vh;
+  }
+
+  ::v-deep label {
+    color: white;
   }
 }
 
