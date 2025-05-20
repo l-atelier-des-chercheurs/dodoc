@@ -114,6 +114,8 @@ export default {
 <style lang="scss" scoped>
 ._hero--container {
   width: 100%;
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
   background: var(--hero-bg, transparent);
 
   ._homeCover {
