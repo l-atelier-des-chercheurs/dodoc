@@ -40,6 +40,14 @@
             <b-icon icon="plus-lg" />
             {{ $t("gallery") }}
           </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'story' })"
+          >
+            <b-icon icon="plus-lg" />
+            {{ $t("story") }}
+          </button>
         </div>
       </transition-group>
     </div>
@@ -126,6 +134,10 @@ export default {
         additional_meta.section_title =
           this.$t("gallery") + " " + this.new_section_index;
         additional_meta.section_type = "gallery";
+      } else if (type === "story") {
+        additional_meta.section_title =
+          this.$t("story") + " " + this.new_section_index;
+        additional_meta.section_type = "story";
       }
 
       const new_section_meta = await this.createSection2({
