@@ -61,12 +61,12 @@
       <div v-if="show_project_name">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
-        <component :is="false ? 'router-link' : 'span'" class="_spaceName">
+        <span class="_spaceName">
           <!-- <div class="u-label">
             {{ $t("project") }}
           </div> -->
           {{ (project && project.title) || "–" }}
-        </component>
+        </span>
       </div>
     </transition>
   </nav>
@@ -130,7 +130,7 @@ export default {
 ._breadcrumb {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: stretch;
   padding: 0 calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 4);
   line-height: 1.1;
@@ -138,7 +138,7 @@ export default {
   > * {
     flex: 0 0 auto;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     overflow: hidden;
   }
 }
@@ -190,13 +190,21 @@ export default {
   }
 }
 
-a._spaceName {
+._spaceName {
   color: inherit;
-  text-decoration: underline;
+
   // font-weight: 500;
 
-  &:hover {
-    text-decoration: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  :is(a) {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
