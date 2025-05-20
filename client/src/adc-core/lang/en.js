@@ -223,7 +223,7 @@ export default {
   download: "Download",
   download_project: "Download project {name}",
   download_project_instr:
-    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11).",
+    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11 or 12).",
   download_space: "Download space {name} and all the projects it contains",
   download_ready: "The download is ready",
   download_image: "Download image",

@@ -164,6 +164,7 @@ export default {
     background: var(--text-bg, white);
   }
   &[data-layout="image_text_overlay"] ._textBlock {
+    max-width: 400px;
   }
   ._imageBlock {
     position: relative;

@@ -89,12 +89,6 @@
         <template v-if="chapter.section_type === 'text'">
           <template v-if="chapter._main_text">
             <DLabel :str="$t('content')" />
-            <!-- <MarkdownEditor
-          :content="main_text_content"
-          :path="chapter._main_text.$path"
-          :edit_on_mounted="true"
-          :can_edit="can_edit"
-        /> -->
             <CollaborativeEditor3
               :content="main_text_content"
               :path="chapter._main_text.$path"
@@ -117,7 +111,7 @@
 
             <PickMediaForMarkdown
               v-if="show_media_picker"
-              :publication_path="publication_path"
+              :publication_path="publication.$path"
               @close="closePickModal"
             />
           </template>
@@ -161,11 +155,18 @@
 
           <MediaPicker
             v-if="show_media_picker"
-            :publication_path="publication_path"
+            :publication_path="publication.$path"
             :select_mode="'multiple'"
             :pick_from_types="['image']"
             @pickMedias="pickMediasForGallery"
             @close="show_media_picker = false"
+          />
+        </template>
+        <template v-if="chapter.section_type === 'story'">
+          <SingleSection
+            :publication="publication"
+            :section="chapter"
+            :can_edit="true"
           />
         </template>
       </div>
@@ -211,9 +212,10 @@ import MediaPicker from "@/components/publications/MediaPicker.vue";
 export default {
   props: {
     chapter: Object,
+    chapters: Array,
     prev_section: Object,
     next_section: Object,
-    publication_path: String,
+    publication: Object,
     chapter_position: Object,
     view_mode: String,
   },
@@ -221,6 +223,8 @@ export default {
     // MarkdownEditor,
     PickMediaForMarkdown,
     MediaPicker,
+    SingleSection: () =>
+      import("@/components/publications/story/SingleSection.vue"),
   },
   data() {
     return {
@@ -414,7 +418,7 @@ export default {
       for (const media of medias) {
         const new_entry = await this.prepareMediaForPublication({
           path_to_source_media_meta: media.$path,
-          publication_path: this.publication_path,
+          publication_path: this.publication.$path,
         });
         new_entries.push(new_entry);
       }
