@@ -203,7 +203,7 @@ export default {
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     ._spaceCover {
-      max-width: 120px;
+      max-width: 100px;
     }
   }
 }

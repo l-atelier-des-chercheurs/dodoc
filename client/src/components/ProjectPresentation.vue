@@ -141,7 +141,7 @@
           :contrib_instructions="$t('project_contrib_instructions')"
         />
 
-        <div>
+        <div v-if="context === 'full'">
           <div class="u-displayAsPublic">
             <ToggleInput
               :content="display_as_public"

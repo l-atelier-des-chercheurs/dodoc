@@ -16,7 +16,9 @@
         }"
         @click="scrollToTop"
       >
-        <b-icon icon="arrow-right-short" rotate="-90" style="font-size: 2em" />
+        <span style="font-size: 2em">
+          <b-icon icon="arrow-up-short" />
+        </span>
         <img v-if="cover_thumb" :src="cover_thumb" />
         <span>
           {{ project.title }}
@@ -468,7 +470,7 @@ export default {
     overflow: hidden;
     display: flex;
     align-items: center;
-    background: var(--c-gris);
+    // background: var(--c-gris);
   }
 }
 </style>
