@@ -29,7 +29,7 @@
         class="u-button u-button_orange"
         @click="show_picker = true"
       >
-        <span class="u-icon inlineSVG" v-html="dodoc_icon_collect" />
+        <span class="u-icon" v-html="dodoc_icon_collect" />
         <span>
           {{ $t("from_project") }}
         </span>
