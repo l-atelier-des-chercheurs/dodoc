@@ -11,18 +11,10 @@
       </div>
       <div v-else key="project">
         <div class="_topContent">
-          <div class="u-displayAsPublic" v-if="can_contribute_to_project">
-            <div class="_content">
-              <ToggleInput
-                :content.sync="display_as_public"
-                :label="$t('display_as_public')"
-              />
-            </div>
-          </div>
-
           <ProjectPresentation
             :project="project"
             context="full"
+            :display_as_public.sync="display_as_public"
             :can_edit="can_edit_project && !display_as_public"
           />
         </div>
@@ -240,6 +232,11 @@ export default {
 }
 ._topContent {
   position: relative;
+}
+
+._publicView {
+  text-align: right;
+  margin: 0 auto;
 }
 
 ._tabButton {

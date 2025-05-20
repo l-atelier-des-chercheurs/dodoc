@@ -243,7 +243,7 @@ export default {
   ::v-deep {
     h1,
     h2 {
-      font-weight: 300;
+      font-weight: 400;
       font-style: italic;
     }
   }
