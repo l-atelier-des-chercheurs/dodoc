@@ -19,7 +19,11 @@
         :to="`/`"
         :title="$t('home')"
       >
-        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
+        <DodocLogo
+          class="_dodocLogo"
+          v-if="instance_logo === 'dodoc'"
+          :can_animate="$route.name !== 'Accueil'"
+        />
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
@@ -48,7 +52,7 @@
           <!-- <div class="u-label">
             {{ $t("space") }}
           </div> -->
-          <div class="_name">{{ (space && space.title) || "–" }}</div>
+          {{ (space && space.title) || "–" }}
         </component>
       </div>
     </transition>
@@ -57,16 +61,11 @@
       <div v-if="show_project_name">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
-        <component
-          :is="false ? 'router-link' : 'span'"
-          class="_spaceName"
-          :to="{ path: '/+' + $route.params.space_slug }"
-          :disabled="$route.name === 'Espace'"
-        >
+        <component :is="false ? 'router-link' : 'span'" class="_spaceName">
           <!-- <div class="u-label">
             {{ $t("project") }}
           </div> -->
-          <div class="_name">{{ (project && project.title) || "–" }}</div>
+          {{ (project && project.title) || "–" }}
         </component>
       </div>
     </transition>
@@ -137,6 +136,7 @@ export default {
   line-height: 1.1;
 
   > * {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -151,13 +151,6 @@ export default {
   // background: var(--c-gris_clair);
   // border-radius: 10px;
   // padding: 4px;
-}
-
-._name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  font-weight: 400;
 }
 
 ._logo {
@@ -199,10 +192,11 @@ export default {
 
 a._spaceName {
   color: inherit;
-  // text-decoration: none;
+  text-decoration: underline;
+  // font-weight: 500;
 
   &:hover {
-    font-weight: 500;
+    text-decoration: none;
   }
 }
 

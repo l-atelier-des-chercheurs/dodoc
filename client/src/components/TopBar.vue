@@ -168,16 +168,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topbar {
-  position: relative;
+  position: sticky;
+  top: 0;
 
-  z-index: 100;
+  z-index: 5;
+
   max-width: calc(
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
       3
   );
   margin: var(--spacing) auto;
   // border: 1px solid var(--c-gris);
-  filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
   // border-style: ridge;
   border-radius: 30px;
