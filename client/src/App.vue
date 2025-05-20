@@ -504,6 +504,18 @@ img {
     transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
+.pagetransition {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
 .fade_fast {
   &-enter-active,
   &-leave-active {
