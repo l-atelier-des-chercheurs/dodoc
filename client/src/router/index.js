@@ -83,11 +83,11 @@ const router = new VueRouter({
       if (to.path !== from.path) {
         setTimeout(() => {
           if (savedPosition) {
-            resolve(savedPosition);
+            return resolve(savedPosition);
           } else {
-            resolve({ top: 0 });
+            return resolve({ x: 0, y: 0 });
           }
-        }, 250);
+        }, 150);
       }
     });
   },

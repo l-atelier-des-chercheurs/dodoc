@@ -18,7 +18,7 @@
         />
         <template v-else>
           <TopBar />
-          <transition name="pagechange" mode="out-in">
+          <transition name="pagetransition" mode="out-in">
             <router-view v-slot="{ Component }" :key="$route.path">
               <component :is="Component" />
             </router-view>
