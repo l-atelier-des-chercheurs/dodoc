@@ -238,7 +238,6 @@ export default {
     // -webkit-overflow-scrolling: touch;
   }
 }
-
 ._topContent {
   position: relative;
 }

@@ -222,10 +222,13 @@ export default {
   // border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
+
+  > * {
+  }
 }
 ._textBloc {
   // padding: calc(var(--spacing) / 2);
-  flex: 3 1 240px;
+  flex: 1 1 240px;
   overflow: hidden;
 
   display: flex;

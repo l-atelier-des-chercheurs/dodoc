@@ -165,6 +165,7 @@ export default {
     position: relative;
     flex: 4 1 620px;
     width: 100%;
+    border-radius: 12px;
 
     overflow: hidden;
 
