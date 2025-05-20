@@ -130,7 +130,9 @@ export default {
       if (this.style_type === "black")
         return `
           --color1: var(--c-noir);
-          --color2: white;        `;
+          --color2: white;
+          --color-text: white;
+        `;
 
       if (
         this.btn_type === "fullscreen" ||

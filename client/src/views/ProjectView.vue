@@ -35,7 +35,7 @@
             :project="project"
             :panes.sync="projectpanes"
           />
-          <hr v-else class="_separator" />
+          <!-- <hr v-else class="_separator" /> -->
           <div class="_panes">
             <ProjectPanes
               :projectpanes="projectpanes"
