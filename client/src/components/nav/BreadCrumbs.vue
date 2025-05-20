@@ -1,5 +1,5 @@
 <template>
-  <nav aria-label="Fil d’ariane" class="_breadcrumb">
+  <nav aria-label="Fil d'ariane" class="_breadcrumb">
     <button
       type="button"
       class="u-button u-button_icon _backButton"
@@ -28,78 +28,24 @@
       </component>
     </div>
 
-    <!-- <transition name="fade" mode="out-in">
-      <router-link
-        v-if="$route.path !== '/'"
-        :to="'/'"
-        :title="$t('home')"
-        class="u-buttonLink"
-      >
-        {{ $t("home") }}
-      </router-link>
-    </transition> -->
-
-    <transition name="fade" mode="out-in">
-      <div v-if="show_space_name">
+    <template v-for="(item, index) in breadcrumbItems">
+      <div :key="index">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
-          :is="$route.name === 'Projet' ? 'router-link' : 'span'"
+          :is="item.isLink ? 'router-link' : 'span'"
           class="_spaceName"
-          :to="{ path: '/+' + $route.params.space_slug }"
-          :disabled="$route.name === 'Espace'"
+          :to="item.to"
         >
-          <div class="u-label">
-            {{ $t("space") }}
+          <div class="u-label" v-if="item.label">
+            {{ item.label }}
           </div>
           <div class="">
-            {{ (space && space.title) || "–" }}
+            {{ item.title }}
           </div>
         </component>
       </div>
-    </transition>
-
-    <transition name="fade" mode="out-in">
-      <div v-if="show_project_name">
-        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
-        &nbsp;
-        <span class="_spaceName">
-          <div class="u-label">
-            {{ $t("project") }}
-          </div>
-          <div class="">
-            {{ (project && project.title) || "–" }}
-          </div>
-        </span>
-      </div>
-    </transition>
-
-    <transition name="fade" mode="out-in">
-      <div v-if="show_authors_page">
-        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
-        &nbsp;
-        <component
-          :is="$route.name === 'Auteur' ? 'router-link' : 'span'"
-          class="_spaceName"
-          :to="{ path: '/@' }"
-          :disabled="$route.name === 'Tous les auteurs'"
-        >
-          <div class="">
-            {{ $t("list_of_accounts") }}
-          </div>
-        </component>
-      </div>
-    </transition>
-
-    <transition name="fade" mode="out-in">
-      <div v-if="show_author_page">
-        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
-        &nbsp;
-        <component :is="'span'" class="_spaceName">
-          <div class="">{{ author.name }}</div>
-        </component>
-      </div>
-    </transition>
+    </template>
   </nav>
 </template>
 <script>
@@ -154,6 +100,43 @@ export default {
     },
     show_author_page() {
       return this.$route.name === "Auteur";
+    },
+    breadcrumbItems() {
+      const items = [];
+
+      if (this.show_space_name) {
+        items.push({
+          label: this.$t("space"),
+          title: (this.space && this.space.title) || "–",
+          isLink: this.$route.name === "Projet",
+          to: { path: "/+" + this.$route.params.space_slug },
+        });
+      }
+
+      if (this.show_project_name) {
+        items.push({
+          label: this.$t("project"),
+          title: (this.project && this.project.title) || "–",
+          isLink: false,
+        });
+      }
+
+      if (this.show_authors_page) {
+        items.push({
+          title: this.$t("list_of_accounts"),
+          isLink: this.$route.name === "Auteur",
+          to: { path: "/@" },
+        });
+      }
+
+      if (this.show_author_page && this.author) {
+        items.push({
+          title: this.author.name,
+          isLink: false,
+        });
+      }
+
+      return items;
     },
   },
   methods: {

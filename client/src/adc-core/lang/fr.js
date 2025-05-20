@@ -391,7 +391,7 @@ export default {
   download: "Télécharger",
   download_project: "Télécharger le projet {name}",
   download_project_instr:
-    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11).",
+    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11 ou 12).",
   download_space:
     "Télécharger l’espace {name} et tous les projets qu’il contient",
   download_ready: "Le téléchargement est prêt",
