@@ -391,7 +391,9 @@ export default {
 }
 
 ._projectInfos--topContent {
-  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
+  max-width: 1000px;
+
   // border: 2px solid var(--c-gris_clair);
   margin: 0 auto;
   padding: calc(var(--spacing) * 2) 0;
@@ -461,7 +463,7 @@ export default {
 ._projectInfos--cover {
   position: relative;
   width: 100%;
-  max-width: 520px;
+  // max-width: 520px;
   overflow: hidden;
   max-height: 100%;
 
