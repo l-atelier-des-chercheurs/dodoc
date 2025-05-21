@@ -10,6 +10,7 @@
         <!-- {{ $t("previous") }} -->
       </button>
       <TitleField
+        v-if="folder?.title"
         :field_name="'title'"
         :label="$t('title')"
         :show_label="false"
