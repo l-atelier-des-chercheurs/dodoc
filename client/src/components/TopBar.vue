@@ -216,8 +216,9 @@ export default {
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
       3
   );
-  margin: var(--spacing) auto;
-  margin: 0 auto;
+  // margin: var(--spacing) auto;
+  // margin: 0 auto;
+  margin: 0 auto var(--spacing);
   // border: 1px solid var(--c-gris);
 
   // border-style: ridge;

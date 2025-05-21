@@ -404,7 +404,7 @@ export default {
   // max-width: 1000px;
 
   // border: 2px solid var(--c-gris_clair);
-  margin: 0 auto;
+  margin: var(--spacing) auto;
   padding: 0;
   overflow: hidden;
 
