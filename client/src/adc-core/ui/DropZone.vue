@@ -92,9 +92,8 @@ export default {
     },
     droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
-      const path_to_source_media_metas = [file.$path];
       this.$eventHub.$emit("dragfile.success");
-      this.$emit("mediaDropped", { path_to_source_media_metas });
+      this.$emit("mediaDropped", file);
     },
   },
 };

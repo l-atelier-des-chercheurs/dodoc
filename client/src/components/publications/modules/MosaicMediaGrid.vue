@@ -143,7 +143,7 @@
       >
         <DropZone
           class="_dzAfter"
-          @mediaDropped="$emit('pickMedias', $event)"
+          @mediaDropped="$emit('pickMedias', [$event])"
         />
       </template>
     </div>

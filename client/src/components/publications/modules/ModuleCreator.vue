@@ -249,9 +249,9 @@ export default {
       const path_to_source_media_metas = medias.map((m) => m.$path);
       this.createMosaic({ path_to_source_media_metas });
     },
-    async mediaDropped({ path_to_source_media_metas }) {
+    async mediaDropped({ $path }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
-      this.createMosaic({ path_to_source_media_metas });
+      this.createMosaic({ path_to_source_media_metas: [$path] });
     },
     async mediaJustImported(list_of_added_metas) {
       const path_to_source_media_metas = list_of_added_metas.map(
