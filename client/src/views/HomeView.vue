@@ -126,7 +126,7 @@ export default {
   data() {
     return {
       load_whole_page: false,
-      current_mode: "spaces",
+      current_mode: "projects",
     };
   },
   created() {

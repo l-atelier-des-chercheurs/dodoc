@@ -462,11 +462,16 @@ export default {
   position: relative;
   width: 100%;
   max-width: 520px;
+  overflow: hidden;
+  max-height: 100%;
 
   .is--list & {
     // padding: 2px;
-    width: 100%;
-    height: auto;
+    // width: 100%;
+    // height: auto;
+
+    // temporary fix for firefox, which hides project titles in list when an aspect ratio is set on _cover
+    opacity: 0.95;
   }
 
   .is--mobileView & {

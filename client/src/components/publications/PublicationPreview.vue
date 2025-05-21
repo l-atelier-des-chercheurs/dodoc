@@ -212,7 +212,7 @@ export default {
   // border: 2px solid white;
   padding: calc(var(--spacing) / 1);
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 21/29.7;
   min-height: 50px;
 }
 
