@@ -187,6 +187,8 @@ export default {
           }
         } else if (chapter.section_type === "gallery") {
           _chapter.content = this.parseGallery(chapter.source_medias);
+        } else if (chapter.section_type === "story") {
+          _chapter.content = this.parseStory(chapter);
         }
 
         nodes.chapters.push(_chapter);
@@ -422,6 +424,20 @@ export default {
       });
 
       html += "</div></div>";
+
+      return html;
+    },
+    parseStory(chapter) {
+      const modules = this.getModulesForSection({
+        publication: this.publication,
+        section: chapter,
+      }).map(({ _module }) => _module);
+
+      let html = "";
+
+      modules.forEach((module) => {
+        html += `<div class="module">${JSON.stringify(module, null, 4)}</div>`;
+      });
 
       return html;
     },

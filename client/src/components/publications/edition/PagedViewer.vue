@@ -61,6 +61,7 @@ export default {
     return {
       is_loading: true,
       infiniteviewer: null,
+      is_generating_book: false,
     };
   },
   created() {},
@@ -181,6 +182,8 @@ export default {
       await new Promise((resolve) => {
         console.log("generateBook");
 
+        this.is_generating_book = true;
+
         this.removeExistingStyles();
 
         const bookrender = this.$refs.bookrender;
@@ -236,6 +239,7 @@ export default {
             this.reportChapterPositions();
             setTimeout(() => {
               this.is_loading = false;
+              this.is_generating_book = false;
               resolve();
             }, 100);
           });
@@ -581,8 +585,17 @@ export default {
         document.querySelector(`#page-${folio}`).style.order = i;
       });
     },
-    zoomToSection(meta_filename) {
+    async waitForBookGeneration() {
+      while (this.is_generating_book) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    },
+    async zoomToSection(meta_filename) {
       if (!meta_filename) return;
+
+      if (this.is_generating_book) {
+        await this.waitForBookGeneration();
+      }
 
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
