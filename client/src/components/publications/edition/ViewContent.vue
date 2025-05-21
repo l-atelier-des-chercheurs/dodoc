@@ -433,10 +433,15 @@ export default {
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "";
+      let html = "// TODO";
 
       modules.forEach((module) => {
-        html += `<div class="module">${JSON.stringify(module, null, 4)}</div>`;
+        html += `<div class="module">
+          <div class="module-type">${
+            this.$t("type") + " " + module.module_type
+          }</div>
+          <div class="module-content">${JSON.stringify(module, null, 4)}</div>
+        </div>`;
       });
 
       return html;
