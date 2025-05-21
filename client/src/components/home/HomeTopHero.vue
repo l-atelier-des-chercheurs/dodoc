@@ -1,6 +1,6 @@
 <template>
-  <section class="_homeView--container">
-    <div class="_homeView--content" :data-layout="text_image_layout">
+  <section class="_hero--container">
+    <div class="_hero--content" :data-layout="text_image_layout">
       <template v-for="layout in custom_layout">
         <div v-if="layout === 'text'" :key="layout" class="_textBlock">
           <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
@@ -30,6 +30,7 @@
           <EditBtn
             v-if="is_instance_admin"
             class="_editAdminText"
+            :label_position="'left'"
             @click="editPresentationText"
           />
         </div>
@@ -111,9 +112,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-._homeView--container {
+._hero--container {
   width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
+  background: var(--hero-bg, transparent);
+  border-radius: 12px;
 
   ._homeCover {
     background: white;
@@ -124,7 +128,7 @@ export default {
   }
 }
 
-._homeView--content {
+._hero--content {
   position: relative;
   width: 100%;
   margin: 0 auto;
@@ -133,53 +137,63 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
+  gap: var(--spacing);
   overflow: hidden;
-  border-bottom: 1px solid var(--c-gris);
+  // border-bottom: 1px solid var(--c-gris);
 
   > * {
-    flex: 1 1 320px;
+    flex: 1 1 220px;
   }
 
-  &[data-layout="image_text_overlay"] {
+  &[data-layout="image_text_overlay"],
+  &[data-layout="text_image_overlay"] {
     min-height: 50vh;
+    ._textBlock {
+      max-width: 400px;
+    }
+    ._imageBlock {
+      position: absolute;
+      height: 100%;
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-height: none;
+      }
+    }
+  }
+  &[data-layout="text_image_overlay"] {
     justify-content: flex-start;
+  }
+  &[data-layout="image_text_overlay"] {
+    justify-content: flex-end;
   }
 
   ._textBlock {
     position: relative;
     z-index: 1;
-    flex: 1 1 250px;
-    max-width: 350px;
+    flex: 1 1 220px;
+    // max-width: 350px;
     margin: 0 auto;
 
     border-radius: var(--panel-radius);
-    box-shadow: var(--panel-shadows);
+    // box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    margin: 5%;
+    margin: 1%;
 
     background: var(--text-bg, white);
   }
-  &[data-layout="image_text_overlay"] ._textBlock {
-  }
   ._imageBlock {
     position: relative;
-    flex: 4 1 620px;
+    flex: 4 1 420px;
     width: 100%;
+    border-radius: 12px;
+
+    overflow: hidden;
 
     img {
       width: auto;
-      max-height: 90vh;
-    }
-  }
-  &[data-layout="image_text_overlay"] ._imageBlock {
-    position: absolute;
-    height: 100%;
-    img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      max-height: none;
     }
   }
 }

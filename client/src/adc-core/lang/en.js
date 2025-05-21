@@ -115,7 +115,7 @@ export default {
   show_projects: "Show projects",
   all_projects: "All projects",
   all_projects_instr:
-    "This list shows all the projects documented, amongst all public spaces.",
+    "This list shows all the projects documented, regardless of the spaces they are in.",
   event_projects_instr:
     "This list show all projects documented during a specific event.",
   create: "Create",
@@ -253,7 +253,7 @@ export default {
   download: "Download",
   download_project: "Download project {name}",
   download_project_instr:
-    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11).",
+    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11 or 12).",
   download_space: "Download space {name} and all the projects it contains",
   download_ready: "The download is ready",
   download_image: "Download image",

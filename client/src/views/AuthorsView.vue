@@ -1,12 +1,5 @@
 <template>
   <div class="_authorsView">
-    <div class="_backBtn">
-      <router-link :to="'/'" class="u-buttonLink">
-        <b-icon icon="house" />
-        {{ $t("home") }}
-      </router-link>
-    </div>
-
     <h1 class="_title" v-text="$t('list_of_accounts')" />
 
     <div class="u-spacingBottom">
@@ -256,8 +249,8 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 ._authorsView {
-  padding: calc(var(--spacing) * 1);
-  max-width: calc(var(--max-column-width));
+  // padding: calc(var(--spacing) * 1);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
 }
 
@@ -276,6 +269,7 @@ export default {
   }
 }
 ._title {
+  margin-top: calc(var(--spacing) * 2);
   margin-bottom: calc(var(--spacing) * 1);
 }
 

@@ -388,7 +388,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   download: "Scarica",
   download_project: "Scarica il progetto {name}",
   download_project_instr:
-    "È possibile importarlo in qualsiasi altro do•doc (offline o online, purché sia la versione 11).",
+    "È possibile importarlo in qualsiasi altro do•doc (offline o online, purché sia la versione 11 o 12).",
   download_space: "Scarica lo spazio {name} e tutti i progetti che contiene",
   download_ready: "Il download è pronto",
   download_image: "Scarica questa immagine",

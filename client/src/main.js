@@ -248,6 +248,8 @@ import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
 import DodocIcon from "@/mixins/DodocIcon";
 Vue.mixin(DodocIcon);
+import FoldersMixin from "@/mixins/Folders.js";
+Vue.mixin(FoldersMixin);
 
 import Stacks from "@/mixins/Stacks";
 Vue.mixin(Stacks);

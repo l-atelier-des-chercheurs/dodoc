@@ -130,7 +130,9 @@ export default {
       if (this.style_type === "black")
         return `
           --color1: var(--c-noir);
-          --color2: white;        `;
+          --color2: white;
+          --color-text: white;
+        `;
 
       if (
         this.btn_type === "fullscreen" ||
@@ -171,6 +173,7 @@ export default {
 ._editBtn {
   --color1: var(--h-50);
   --color2: var(--active-color);
+  --color-text: white;
 
   position: relative;
   display: inline-flex;
@@ -207,7 +210,7 @@ export default {
     height: calc(100% + 2px);
 
     background: var(--color2);
-    color: var(--color1);
+    color: var(--color-text);
 
     margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
@@ -253,7 +256,7 @@ export default {
   &:focus-visible,
   &.is--unfolded {
     background: var(--color2);
-    color: var(--color1);
+    color: var(--color-text);
 
     ._label {
       transform: none;

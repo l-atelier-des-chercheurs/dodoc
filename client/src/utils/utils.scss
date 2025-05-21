@@ -104,19 +104,18 @@ a:focus-visible {
 .u-card2 {
   // border-bottom: 2px solid var(--c-gris);
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+
   transform-origin: center top;
-  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
-    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
-    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
-    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
-      0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
-      0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
+    transform: translateY(-2px) scale(1.03) rotate(-0deg);
+    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.1));
+    // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    //   0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
+    //   0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
     // box-shadow: 0 3px 6px rgba(51, 51, 51, 0.16);
   }
 }
@@ -427,6 +426,7 @@ button {
 .u-button_verysmall {
   font-size: var(--input-font-size-x-small);
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
+  font-size: var(--sl-font-size-x-small);
 }
 .u-button_big {
   font-size: var(--input-font-size-big);
@@ -1171,43 +1171,23 @@ input[type="checkbox"] {
 }
 
 .u-displayAsPublic {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 1000;
+  display: inline-block;
+  pointer-events: auto;
+  background: var(--c-bleuvert);
+  border: 2px solid var(--c-bleuvert_fonce);
+  border-radius: 4px;
+  color: white;
 
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-
-  pointer-events: none;
-
-  ._sticky {
-    position: sticky;
-    top: 0;
-    left: 0;
-    margin-top: calc(var(--spacing) / 4);
-    margin-right: calc(var(--spacing) / 4);
-    // padding: calc(var(--spacing) / 1);
+  > * {
+    // padding: 0;
+    // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   }
 
-  ._content {
-    pointer-events: auto;
-    background: var(--c-bleuvert);
-    border: 2px solid var(--c-bleuvert_fonce);
-    border-radius: 11px;
+  .u-label {
     color: white;
-
-    > * {
-      // padding: 0;
-      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-    }
-
-    .u-label {
-      color: white;
-    }
   }
 }
+
 .flickity-prev-next-button.flickity-prev-next-button {
   height: 34px;
   width: 34px;
@@ -1225,9 +1205,13 @@ input[type="checkbox"] {
 }
 
 .u-icon {
+  position: relative;
   width: 1rem;
   height: 1rem;
   svg {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
   }

@@ -1,5 +1,10 @@
 <template>
-  <DetailsPane :header="$t('metadatas')" :icon="'rulers'" :has_items="false">
+  <DetailsPane
+    v-if="can_edit"
+    :header="$t('metadatas')"
+    :icon="'rulers'"
+    :has_items="false"
+  >
     <DateDisplay :title="$t('date_created')" :date="project.$date_created" />
     <DateDisplay :title="$t('date_modified')" :date="project.$date_modified" />
 
