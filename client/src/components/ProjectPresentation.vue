@@ -388,15 +388,24 @@ export default {
       }
     }
   }
+
+  &:not(.is--list) {
+    // ._projectInfos--cover {
+    //   order: 1;
+    // }
+    // ._projectInfos--infos {
+    //   order: 0;
+    // }
+  }
 }
 
 ._projectInfos--topContent {
-  // max-width: min(var(--max-column-width), var(--max-column-width-px));
-  max-width: 1000px;
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: 1000px;
 
   // border: 2px solid var(--c-gris_clair);
   margin: 0 auto;
-  padding: calc(var(--spacing) * 2) 0;
+  padding: 0;
   overflow: hidden;
 
   display: flex;
