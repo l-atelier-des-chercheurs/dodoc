@@ -154,8 +154,12 @@ export default {
           label: "Texte + image",
         },
         {
+          key: "text_image_overlay",
+          label: "Texte et image superposés",
+        },
+        {
           key: "image_text_overlay",
-          label: "Image et texte superposés",
+          label: "Image et texte superposés",
         },
       ],
     };

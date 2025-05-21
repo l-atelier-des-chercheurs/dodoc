@@ -117,6 +117,7 @@ export default {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
   background: var(--hero-bg, transparent);
+  border-radius: 12px;
 
   ._homeCover {
     background: white;
@@ -144,9 +145,29 @@ export default {
     flex: 1 1 220px;
   }
 
-  &[data-layout="image_text_overlay"] {
+  &[data-layout="image_text_overlay"],
+  &[data-layout="text_image_overlay"] {
     min-height: 50vh;
+    ._textBlock {
+      max-width: 400px;
+    }
+    ._imageBlock {
+      position: absolute;
+      height: 100%;
+      img {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        max-height: none;
+      }
+    }
+  }
+  &[data-layout="text_image_overlay"] {
     justify-content: flex-start;
+  }
+  &[data-layout="image_text_overlay"] {
+    justify-content: flex-end;
   }
 
   ._textBlock {
@@ -159,12 +180,9 @@ export default {
     border-radius: var(--panel-radius);
     // box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    // margin: 2%;
+    margin: 1%;
 
     background: var(--text-bg, white);
-  }
-  &[data-layout="image_text_overlay"] ._textBlock {
-    max-width: 400px;
   }
   ._imageBlock {
     position: relative;
@@ -176,17 +194,6 @@ export default {
 
     img {
       width: auto;
-    }
-  }
-  &[data-layout="image_text_overlay"] ._imageBlock {
-    position: absolute;
-    height: 100%;
-    img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      max-height: none;
     }
   }
 }
