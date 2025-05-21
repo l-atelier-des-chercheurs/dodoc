@@ -80,10 +80,10 @@ module.exports = (function () {
       }
     },
 
-    async handleExit() {
+    handleExit: async () => {
       dev.log("Handling process exit...");
-      this.stopCleanupInterval();
-      await this.cleanup();
+      API.stopCleanupInterval();
+      await API.cleanup();
       process.exit(0);
     },
   };
