@@ -143,6 +143,7 @@
       >
         <DropZone
           class="_dzAfter"
+          :rotate="-90"
           @mediaDropped="$emit('pickMedias', [$event])"
         />
       </template>

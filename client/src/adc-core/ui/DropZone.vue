@@ -10,6 +10,9 @@
       @dragenter="onDragEnter"
       @dragleave="onDragLeave"
       @drop="onDrop"
+      :style="{
+        '--rotate-angle': `${rotate}deg`,
+      }"
     >
       <div
         class="u-dropzone is--active _dzBg"
@@ -27,6 +30,10 @@
 export default {
   props: {
     media_types_allowed: Array,
+    rotate: {
+      type: Number,
+      default: 0,
+    },
   },
   components: {},
   data() {
@@ -109,6 +116,7 @@ export default {
   right: 0;
   bottom: 0;
   padding: 0;
+  min-width: 20px;
 
   display: flex;
   flex-flow: row wrap;
@@ -124,8 +132,8 @@ export default {
 }
 
 ._dzBg {
-  --dropzone-color1: white;
-  --dropzone-color2: var(--active-color);
+  --dropzone-color2: white;
+  --dropzone-color1: var(--active-color);
 
   position: absolute;
   z-index: 0;
@@ -134,8 +142,14 @@ export default {
 }
 
 ._dropNotice {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(var(--rotate-angle));
   pointer-events: none;
   white-space: nowrap;
+
+  color: var(--c-noir);
+  font-weight: 600;
 }
 </style>
