@@ -388,13 +388,24 @@ export default {
       }
     }
   }
+
+  &:not(.is--list) {
+    // ._projectInfos--cover {
+    //   order: 1;
+    // }
+    // ._projectInfos--infos {
+    //   order: 0;
+    // }
+  }
 }
 
 ._projectInfos--topContent {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: 1000px;
+
   // border: 2px solid var(--c-gris_clair);
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 2) 0;
+  margin: var(--spacing) auto;
+  padding: 0;
   overflow: hidden;
 
   display: flex;
@@ -461,12 +472,17 @@ export default {
 ._projectInfos--cover {
   position: relative;
   width: 100%;
-  max-width: 520px;
+  // max-width: 520px;
+  overflow: hidden;
+  max-height: 100%;
 
   .is--list & {
     // padding: 2px;
-    width: 100%;
-    height: auto;
+    // width: 100%;
+    // height: auto;
+
+    // temporary fix for firefox, which hides project titles in list when an aspect ratio is set on _cover
+    opacity: 0.95;
   }
 
   .is--mobileView & {

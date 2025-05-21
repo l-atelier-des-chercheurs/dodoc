@@ -267,7 +267,7 @@ export default {
 ._horizontalEventsList {
   width: 100%;
   margin: 0 auto;
-  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1) 10vw;
 
   overflow-x: auto;
   display: flex;

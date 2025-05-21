@@ -5,6 +5,7 @@
       'is--homepage': $route.path === '/',
       'is--mobileView': $root.is_mobile_view,
       'is--folded': isScrolledDown,
+      'is--uptop': scroll_top === 0,
     }"
   >
     <div class="_topbar--inner">
@@ -130,6 +131,7 @@ export default {
       show_settings_modal: false,
       isScrolledDown: false,
       lastScrollTop: 0,
+      scroll_top: 0,
       scrollDelta: 0,
     };
   },
@@ -170,6 +172,8 @@ export default {
     handleScroll() {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
+      this.scroll_top = currentScrollTop;
+
       const scrollDifference = currentScrollTop - this.lastScrollTop;
 
       // Accumulate scroll delta when scrolling up
@@ -212,15 +216,21 @@ export default {
     min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
       3
   );
-  margin: var(--spacing) auto;
+  // margin: var(--spacing) auto;
+  // margin: 0 auto;
+  margin: 0 auto var(--spacing);
   // border: 1px solid var(--c-gris);
-  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
   // border-style: ridge;
-  border-radius: 30px;
+  border-radius: 0 0 24px 24px;
   overflow: hidden;
 
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:not(.is--uptop) {
+    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+    // padding-top: var(--spacing);
+  }
 
   &.is--folded {
     transform: translateY(-100%);

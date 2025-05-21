@@ -40,7 +40,7 @@
           :path="path"
           :select_mode="'single'"
           :pick_from_types="[media_type_to_pick]"
-          @pickMedias="pickMedia"
+          @pickMedias="pickMedias"
           @close="show_media_picker = false"
         />
       </div>
@@ -49,7 +49,7 @@
         :media_types_allowed="
           media_type_to_pick ? [media_type_to_pick] : undefined
         "
-        @mediaDropped="pickMedia"
+        @mediaDropped="pickMedias([$event])"
       />
     </div>
   </div>
@@ -93,7 +93,7 @@ export default {
     },
   },
   methods: {
-    async pickMedia(medias) {
+    async pickMedias(medias) {
       const media = medias[0];
       const selected_media_filename = this.getFilename(media.$path);
       const new_meta = {

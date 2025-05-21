@@ -55,6 +55,15 @@
       :starting_tab="settings_modal_starting_tab"
       @close="closeAdminSettings"
     />
+
+    <svg class="_hidden">
+      <clipPath id="clipPathSquircle" clipPathUnits="objectBoundingBox">
+        <path
+          transform="scale(1 1.835)"
+          d="M 0.114 0.045 h 0.773 c 0.055 0 0.068 0.013 0.068 0.068 v 0.318 c 0 0.055 -0.013 0.068 -0.068 0.068 h -0.773 c -0.055 0 -0.068 -0.013 -0.068 -0.068 v -0.318 c 0 -0.055 0.013 -0.068 0.068 -0.068"
+        />
+      </clipPath>
+    </svg>
   </section>
 </template>
 
@@ -188,9 +197,14 @@ export default {
     position: relative;
     flex: 4 1 420px;
     width: 100%;
-    border-radius: 12px;
 
+    // https://codepen.io/herrstrietzel/pen/jOQEjEm?editors=0010
+    // clip-path: url(#clipPathSquircle);
+    border-radius: 36px;
     overflow: hidden;
+
+    // overflow: hidden;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 
     img {
       width: auto;
@@ -214,5 +228,11 @@ export default {
   position: absolute;
   bottom: calc(var(--spacing) / 2);
   right: calc(var(--spacing) / 2);
+}
+
+._hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
 }
 </style>

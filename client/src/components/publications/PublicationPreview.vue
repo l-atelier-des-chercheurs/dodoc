@@ -159,7 +159,7 @@ export default {
   position: relative;
   // overflow: hidden;
   background: white;
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 ._header {
@@ -212,7 +212,7 @@ export default {
   // border: 2px solid white;
   padding: calc(var(--spacing) / 1);
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 21/29.7;
   min-height: 50px;
 }
 

@@ -140,9 +140,43 @@ export default {
           key: "edition",
           label: this.$t("edition"),
           icon: `
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="100px" viewBox="0 0 100 100" style="overflow:visible;enable-background:new 0 0 100 100;" xml:space="preserve">
-            <rect x="30.68" y="30" width="40" height="40" style="fill: #fff"/>
-          </svg>
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="201px" height="201px" viewBox="0 0 201 201" style="overflow:visible;enable-background:new 0 0 201 201;" xml:space="preserve">
+          <!-- Top Left Page -->
+          <rect x="15" y="8.83" width="80" height="90" style="fill: #fff"/>
+          <rect x="20" y="20" width="25" height="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="20" y="40" width="70" height="25" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="25" y="70" width="60" height="3" style="fill: #353535"/>
+          <rect x="25" y="77" width="60" height="3" style="fill: #353535"/>
+          <rect x="25" y="84" width="60" height="3" style="fill: #353535"/>
+          <line x1="20" y1="15" x2="90" y2="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8px"/>
+
+          <!-- Top Right Page -->
+          <rect x="105" y="8.83" width="80" height="90" style="fill: #fff"/>
+          <rect x="110" y="20" width="25" height="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="110" y="40" width="70" height="25" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="115" y="70" width="60" height="3" style="fill: #353535"/>
+          <rect x="115" y="77" width="60" height="3" style="fill: #353535"/>
+          <rect x="115" y="84" width="60" height="3" style="fill: #353535"/>
+          <line x1="110" y1="15" x2="180" y2="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8px"/>
+
+          <!-- Bottom Left Page -->
+          <rect x="15" y="108.83" width="80" height="90" style="fill: #fff"/>
+          <rect x="20" y="120" width="25" height="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="20" y="140" width="70" height="25" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="25" y="170" width="60" height="3" style="fill: #353535"/>
+          <rect x="25" y="177" width="60" height="3" style="fill: #353535"/>
+          <rect x="25" y="184" width="60" height="3" style="fill: #353535"/>
+          <line x1="20" y1="115" x2="90" y2="115" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8px"/>
+
+          <!-- Bottom Right Page -->
+          <rect x="105" y="108.83" width="80" height="90" style="fill: #fff"/>
+          <rect x="110" y="120" width="25" height="15" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="110" y="140" width="70" height="25" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 2px"/>
+          <rect x="115" y="170" width="60" height="3" style="fill: #353535"/>
+          <rect x="115" y="177" width="60" height="3" style="fill: #353535"/>
+          <rect x="115" y="184" width="60" height="3" style="fill: #353535"/>
+          <line x1="110" y1="115" x2="180" y2="115" style="fill: none;stroke: #353535;stroke-miterlimit: 10;stroke-width: 1.8px"/>
+        </svg>
           `,
         },
         // {
@@ -219,7 +253,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationsList {
-  --item-width: 220px;
+  --item-width: 180px;
 
   width: 100%;
   max-width: min(var(--max-column-width), var(--max-column-width-px));

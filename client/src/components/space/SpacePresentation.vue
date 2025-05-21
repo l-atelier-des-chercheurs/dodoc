@@ -195,7 +195,7 @@ export default {
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
-    max-width: 1000px;
+    max-width: 800px;
     margin: calc(var(--spacing) * 2) auto;
   }
   &[data-context="list"] {
