@@ -1345,4 +1345,5 @@ export default {
   restored_success: "Restauré avec succès",
   restore_spaces: "Restaurer des espaces supprimés",
   no_media_selected: "Aucun média sélectionné",
+  forgot_password: "Mot de passe oublié ?",
 };

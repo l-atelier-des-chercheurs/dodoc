@@ -58,6 +58,9 @@ export default {
     setTimeout(() => {
       this.router_is_loading = false;
     }, 200);
+
+    this.$alertify.delay(40000).error(this.$t("submitted_password_is_wrong"));
+    this.$alertify.delay(40000).success(this.$t("submitted_password_is_wrong"));
   },
   beforeDestroy() {},
   watch: {},

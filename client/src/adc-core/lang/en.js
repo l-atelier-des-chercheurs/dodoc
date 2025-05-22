@@ -1250,4 +1250,5 @@ export default {
     "To add media from the internet, you can also copy and paste the following tags:",
   attributes_for_embeds: "Attributes for the tags:",
   show_source_html: "Show source HTML",
+  forgot_password: "Forgot password?",
 };

@@ -1306,4 +1306,5 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_preview: "Visualizza l'anteprima",
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
+  forgot_password: "Hai dimenticato la password?",
 };

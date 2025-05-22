@@ -218,7 +218,7 @@ export default {
   );
   // margin: var(--spacing) auto;
   // margin: 0 auto;
-  margin: 0 auto var(--spacing);
+  margin: 0 auto;
   // border: 1px solid var(--c-gris);
 
   // border-style: ridge;
