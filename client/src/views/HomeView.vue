@@ -3,7 +3,7 @@
     <HomeTopHero />
 
     <template v-if="load_whole_page === true">
-      <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
+      <RecentlyEdited v-if="connected_as" />
 
       <!-- <AllContent /> -->
       <!-- <AllPublications /> -->
