@@ -938,7 +938,7 @@ input[type="checkbox"] {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) 0;
 
   > span {

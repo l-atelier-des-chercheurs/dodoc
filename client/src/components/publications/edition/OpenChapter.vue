@@ -1,6 +1,6 @@
 <template>
   <div class="_openChapter">
-    <div class="_close_button">
+    <!-- <div class="_close_button">
       <button
         type="button"
         class="u-button u-button_icon"
@@ -8,6 +8,42 @@
       >
         <b-icon icon="x-lg" :label="$t('close')" />
       </button>
+    </div> -->
+    <div class="_navBtns">
+      <div class="_navBtns--content">
+        <div>
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="prev_section"
+            @click="$emit('prev')"
+          >
+            <b-icon icon="arrow-left-square" />
+            <span>
+              {{ prev_section.section_title }}
+            </span>
+          </button>
+        </div>
+        <div>
+          <button type="button" class="u-linkList" @click="$emit('close')">
+            <b-icon icon="x-circle" :label="$t('close')" />
+            {{ $t("close") }}
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="next_section"
+            @click="$emit('next')"
+          >
+            <span>
+              {{ next_section.section_title }}
+            </span>
+            <b-icon icon="arrow-right-square" />
+          </button>
+        </div>
+      </div>
     </div>
     <div class="_openChapter--content">
       <div class="_topButtons">
@@ -171,34 +207,6 @@
             :can_edit="true"
           />
         </template>
-      </div>
-
-      <div class="_navBtns">
-        <div class="_navBtns--content">
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="prev_section"
-            @click="$emit('prev')"
-          >
-            <b-icon icon="arrow-left-square" />
-            <span>
-              {{ prev_section.section_title }}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="next_section"
-            @click="$emit('next')"
-          >
-            <span>
-              {{ next_section.section_title }}
-            </span>
-            <b-icon icon="arrow-right-square" />
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -485,7 +493,7 @@ export default {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 
-  margin: calc(var(--spacing) * 1);
+  margin: 0;
   margin-bottom: 0;
   padding: calc(var(--spacing) * 1);
 }
@@ -513,16 +521,30 @@ export default {
 }
 
 ._navBtns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: calc(var(--spacing) * 4);
-  padding-bottom: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) * 4);
+  // padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 1);
+
+  > * {
+    flex: 1 1 0;
+
+    &:nth-child(2) {
+      .u-linkList {
+        justify-content: center;
+      }
+    }
+    &:last-child {
+      .u-linkList {
+        justify-content: flex-end;
+      }
+    }
+  }
 }
 
 ._customBtn {
