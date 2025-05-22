@@ -169,6 +169,8 @@ export default {
       index,
       additional_meta = {},
     }) {
+      debugger;
+
       const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
@@ -200,14 +202,17 @@ export default {
         group: "sections_list",
       }).findIndex((s) => s.meta_filename === this.getFilename(section.$path));
 
-      const new_title = this.$t("copy_of") + " " + section.section_title;
       const new_section_meta = await this.createSection2({
         publication: this.publication,
         type: "section",
         group: "sections_list",
-        title: new_title,
+        additional_meta: {
+          section_title: this.$t("copy_of") + " " + section.section_title,
+        },
         index: section_index + 1,
       });
+
+      debugger;
 
       const new_modules_meta = [];
       for (const og_module of og_modules) {

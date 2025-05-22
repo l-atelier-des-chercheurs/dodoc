@@ -107,7 +107,7 @@
         @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone @mediaDropped="$emit('pickMedias', $event)" />
+      <DropZone @mediaDropped="$emit('pickMedias', [$event])" />
     </div>
   </div>
 </template>
