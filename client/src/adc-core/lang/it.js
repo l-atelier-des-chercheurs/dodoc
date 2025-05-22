@@ -1292,8 +1292,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   millimetres: "millimetri",
   parent_space_is_private:
     "Lo spazio superiore è privato, quindi gli altri progetti presenti in quest'area non possono essere consultati.",
-  copy_paste_to_include_media:
-    "Copia/incolla nel contenuto per inserire il media.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copia/incolla nel contenuto per inserire il media, o clicca per aggiungerlo al cursore.",
 
   send: "Invia",
   creating_thumb: "Crea le miniature",

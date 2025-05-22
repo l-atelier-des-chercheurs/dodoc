@@ -97,6 +97,7 @@
               :content_type="'markdown'"
               :can_edit="true"
               :mode="'always_active'"
+              ref="collaborativeEditor"
             >
               <template #custom_buttons>
                 <button
@@ -112,6 +113,7 @@
             <PickMediaForMarkdown
               v-if="show_media_picker"
               :publication_path="publication.$path"
+              @insertToText="insertToText"
               @close="closePickModal"
             />
           </template>
@@ -366,7 +368,7 @@ export default {
       const originalCscRenderer = md.renderer.rules.csc;
       md.renderer.rules.csc = (tokens, idx) => {
         const token = tokens[idx];
-        if (token.tag === "image" && token.content) {
+        if (["image", "video", "audio"].includes(token.tag) && token.content) {
           const meta_src = token.content;
           const folder_path = this.getParent(this.chapter.$path);
           const media = this.getSourceMedia({
@@ -411,6 +413,14 @@ export default {
     },
     closePickModal() {
       this.show_media_picker = false;
+    },
+
+    insertToText(text) {
+      // Find the collaborative editor instance and insert the text
+      const editor = this.$refs.collaborativeEditor;
+      if (editor) {
+        editor.insertAtCursor(text);
+      }
     },
 
     async pickMediasForGallery(medias) {

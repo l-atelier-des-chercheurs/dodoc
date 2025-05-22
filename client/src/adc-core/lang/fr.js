@@ -1301,8 +1301,8 @@ export default {
   millimetres: "millimètres",
   parent_space_is_private:
     "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
-  copy_paste_to_include_media:
-    "Copiez/collez dans le contenu pour placer le média.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copiez/collez dans le contenu pour placer le média dans le bloc texte, ou cliquez sur le bouton ci-dessous pour l’ajouter à l’emplacement du curseur.",
   next_chapter: "Chapitre suivant",
 
   show_preview: "Afficher l’aperçu",

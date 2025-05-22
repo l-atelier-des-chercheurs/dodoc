@@ -96,9 +96,19 @@
 
       <div class="u-spacingBottom" />
 
-      <div class="u-instructions">
-        {{ $t("copy_paste_to_include_media") }}
+      <div class="u-instructions" v-if="medias_were_picked">
+        {{ $t("copy_paste_to_include_media_or_click_to_add_at_cursor") }}
       </div>
+
+      <template #footer v-if="medias_were_picked">
+        <button
+          type="button"
+          class="u-button u-button_orange"
+          @click="insertToText"
+        >
+          {{ $t("add") }}
+        </button>
+      </template>
     </BaseModal2>
   </div>
 </template>
@@ -208,6 +218,10 @@ export default {
       this.medias_were_picked = false;
       this.isCopied = false;
       this.$emit("close");
+    },
+    insertToText() {
+      this.$emit("insertToText", this.pick_medias_text);
+      this.closePickModal();
     },
   },
 };

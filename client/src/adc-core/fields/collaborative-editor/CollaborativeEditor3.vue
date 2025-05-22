@@ -457,6 +457,12 @@ export default {
         .forEach((el) => el.classList && el.classList.remove("is--selected"));
       return t.innerHTML;
     },
+    insertAtCursor(text) {
+      var range = this.editor.getSelection(true);
+      if (range?.index !== undefined) {
+        this.editor.insertText(range.index, text, Quill.sources.USER);
+      }
+    },
 
     setStatusButton() {
       if (this.$refs.editBtn)
