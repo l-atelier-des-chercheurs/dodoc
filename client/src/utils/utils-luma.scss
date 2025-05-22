@@ -4,9 +4,9 @@
 }
 
 .u-button[disabled] {
-  background-color: var(--c-gris);
+  // background-color: var(--c-gris);
   // filter: none;
-  color: var(--c-gris_fonce);
+  color: var(--c-gris);
 }
 
 ._reorderedList--item {
@@ -20,4 +20,20 @@
 label,
 .u-label {
   // font-weight: 500;
+}
+
+.u-displayAsPublic {
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-items: center;
+
+  > * {
+    padding: calc(var(--spacing) / 4);
+    background-color: var(--h-500);
+    margin-left: calc(var(--spacing) / 2);
+  }
 }

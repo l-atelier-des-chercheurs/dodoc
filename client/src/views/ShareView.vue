@@ -116,7 +116,14 @@ export default {
       }
     }
 
-    await this.loadFolder();
+    await this.loadFolders();
+
+    const last_opened_folder_slug = localStorage.getItem(
+      "last_opened_folder_slug"
+    );
+    if (last_opened_folder_slug) {
+      this.$router.push(`/share/${last_opened_folder_slug}`);
+    }
     // check if necerray to login or create account :
   },
   async mounted() {},
@@ -141,7 +148,7 @@ export default {
     },
   },
   methods: {
-    async loadFolder() {
+    async loadFolders() {
       this.folders = await this.$api
         .getFolders({
           path: this.path,
@@ -155,6 +162,7 @@ export default {
     },
     openFolder() {
       const folder_slug = this.shared_folder_path.split("/").pop();
+      localStorage.setItem("last_opened_folder_slug", folder_slug);
       this.$router.push(`/share/${folder_slug}`);
     },
     async createCorpus() {

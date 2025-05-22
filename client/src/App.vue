@@ -469,22 +469,6 @@ img {
   }
 }
 
-.u-displayAsPublic {
-  height: auto;
-  padding: calc(var(--spacing) * 1);
-  top: 0;
-
-  ._content {
-    background-color: var(--h-500);
-    color: var(--h-50);
-    border-radius: 4px;
-    border: none;
-    > * {
-      padding: calc(var(--spacing) / 2);
-    }
-  }
-}
-
 .splitpanes__pane {
   // box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   // border-radius: 4px;

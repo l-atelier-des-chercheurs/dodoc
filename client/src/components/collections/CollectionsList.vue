@@ -22,7 +22,7 @@
       />
     </div>
 
-    <div class="u-spacingBottom">
+    <div class="u-spacingBottom _searchinput">
       <SearchInput2
         v-model="search_coll_name"
         :search_placeholder="$t('search_in_titles')"
@@ -140,6 +140,10 @@ export default {
 ._collectionsList {
   > * {
   }
+}
+
+._searchinput {
+  max-width: 30ch;
 }
 
 table,

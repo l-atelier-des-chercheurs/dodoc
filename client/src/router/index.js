@@ -39,6 +39,14 @@ const routes = [
       ),
   },
   {
+    path: "/documents/:document_slug",
+    name: "Document",
+    component: () =>
+      import(
+        /* webpackChunkName: "DocumentView" */ "../views/DocumentView.vue"
+      ),
+  },
+  {
     path: "/collections/:collection_slug",
     name: "Collections",
     meta: {

@@ -27,12 +27,18 @@
           @close="show_authors_modal = false"
         />
         <template v-else>
-          <TopBar />
-          <transition name="pagechange" mode="out-in">
-            <router-view v-slot="{ Component }" :key="$route.path">
-              <component :is="Component" />
-            </router-view>
-          </transition>
+          <div class="_fullUI--content">
+            <TopBar class="_fullUI--content--topBar" />
+            <transition name="pagechange" mode="out-in">
+              <router-view
+                class="_fullUI--content--view"
+                v-slot="{ Component }"
+                :key="$route.path"
+              >
+                <component :is="Component" />
+              </router-view>
+            </transition>
+          </div>
         </template>
         <TaskTracker />
       </template>
@@ -151,5 +157,23 @@ export default {
 <style lang="scss" scoped>
 ._fullUI {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+._fullUI--content {
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+
+  ._fullUI--content--topBar {
+    flex: 0 0 auto;
+  }
+
+  ._fullUI--content--view {
+    position: relative;
+    flex: 1;
+    overflow-y: hidden;
+  }
 }
 </style>

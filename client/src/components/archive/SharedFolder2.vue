@@ -4,7 +4,7 @@
       <button
         type="button"
         class="u-button u-button_white u-button_icon u-button_small"
-        @click="$router.push('/share')"
+        @click="closeCorpus"
       >
         <b-icon icon="arrow-left-short" />
         <!-- {{ $t("previous") }} -->
@@ -300,6 +300,10 @@ export default {
       query.stack = stack_slug;
       this.$router.push({ query });
     },
+    closeCorpus() {
+      localStorage.removeItem("last_opened_folder_slug");
+      this.$router.push("/share");
+    },
     isFavorite(stack_path) {
       if (
         !this.connected_as?.favorites ||
@@ -342,11 +346,23 @@ export default {
 ._sharedFolder {
   position: relative;
   height: 100%;
+  overflow: hidden;
+
+  display: flex;
+  flex-flow: column nowrap;
+
+  > ._topBar {
+    flex: 0 0 auto;
+  }
+
+  > ._sharedFolder--content {
+    flex: 1 1 0;
+    overflow: auto;
+  }
 }
 
 ._sharedFolder--content {
   position: relative;
-  height: 100%;
   overflow: auto;
   // padding: 2px;
 

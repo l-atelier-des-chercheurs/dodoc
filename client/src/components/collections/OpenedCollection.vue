@@ -16,23 +16,25 @@
         </div>
       </div>
       <div v-else :key="collection.$path">
-        <div class="_titleBar">
-          <TitleField
-            :field_name="'title'"
-            :content="collection.title"
-            :path="collection.$path"
-            :tag="'h1'"
-            :required="true"
-            :can_edit="can_edit"
-          />
-        </div>
-
         <div class="_topbar">
-          <div class="">
-            <button type="button" class="u-buttonLink" @click="$emit('close')">
+          <div class="u-sameRow">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_white"
+              :title="$t('back')"
+              @click="$emit('close')"
+            >
               <b-icon icon="arrow-left" />
-              {{ $t("back") }}
+              <!-- {{ $t("back") }} -->
             </button>
+            <TitleField
+              :field_name="'title'"
+              :content="collection.title"
+              :path="collection.$path"
+              :tag="'h1'"
+              :required="true"
+              :can_edit="can_edit"
+            />
           </div>
 
           <AuthorField
@@ -137,6 +139,7 @@
 <script>
 export default {
   props: {
+    opened_collection_slug: String,
     pane_infos: Object,
   },
   components: {
@@ -151,7 +154,7 @@ export default {
     return {
       is_loading: true,
       collection: undefined,
-      path: "collections/" + this.pane_infos.opened_collection_slug,
+      path: "collections/" + this.opened_collection_slug,
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
     };
@@ -252,7 +255,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   border-bottom: 1px solid var(--c-gris);
 }
 
