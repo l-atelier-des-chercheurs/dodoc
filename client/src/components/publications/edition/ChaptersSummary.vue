@@ -29,7 +29,7 @@
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'text' })"
           >
-            <b-icon icon="plus-lg" />
+            <b-icon icon="plus" />
             {{ $t("text") }}
           </button>
           <button
@@ -37,7 +37,7 @@
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'gallery' })"
           >
-            <b-icon icon="plus-lg" />
+            <b-icon icon="plus" />
             {{ $t("gallery") }}
           </button>
           <button
@@ -45,7 +45,7 @@
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'story' })"
           >
-            <b-icon icon="plus-lg" />
+            <b-icon icon="plus" />
             {{ $t("story") }}
           </button>
         </div>
@@ -214,7 +214,7 @@ export default {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  background-color: white;
+  // background-color: white;
   gap: calc(var(--spacing) / 2);
   // justify-content: center;
   // align-items: center;
