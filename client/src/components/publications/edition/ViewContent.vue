@@ -173,7 +173,7 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
-        _chapter.section_type = chapter.section_type;
+        _chapter.section_type = chapter.section_type || "text";
         if (!chapter.section_type || chapter.section_type === "text") {
           if (chapter._main_text?.$content) {
             if (chapter._main_text?.content_type === "markdown") {
