@@ -72,7 +72,7 @@
         <TitleField
           :field_name="'title'"
           :label="context === 'full' ? $t('title') : ''"
-          :show_label="false"
+          :show_label="context === 'full' && can_edit"
           class="_title"
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
@@ -203,7 +203,7 @@ export default {
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     ._spaceCover {
-      max-width: 100px;
+      max-width: 120px;
     }
   }
 }
