@@ -66,39 +66,56 @@
         </ul>
       </div>
 
-      <div class="u-spacingBottom">
-        {{ $t("attributes_for_embeds") }}
+      <DetailsPane
+        :header="$t('advanced_options')"
+        :icon="'rulers'"
+        :has_items="false"
+      >
+        <div class="u-spacingBottom">
+          {{ $t("attributes_for_embeds") }}
 
-        <ul>
-          <li>
-            <code>caption: Ma légende</code>
-          </li>
-          <li>
-            <code>class: nomDeLaClasse</code>
-          </li>
-          <li>
-            <code>float: left</code>
-          </li>
-          <li>
-            <code>float: right</code>
-          </li>
-        </ul>
-      </div>
-      <div>
-        {{ $t("for_example") }}
-        <div>
-          <code
-            >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption: Voici
-            une vidéo de PeerTube class: maClass)</code
-          >
+          <ul>
+            <li>
+              <code>caption: Ma légende</code>
+            </li>
+            <li>
+              <code>class: nomDeLaClasse</code>
+            </li>
+            <li>
+              <code>float: left</code>
+            </li>
+            <li>
+              <code>float: right</code>
+            </li>
+          </ul>
         </div>
-      </div>
+        <div>
+          {{ $t("for_example") }}
+          <div>
+            <code
+              >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption:
+              Voici une vidéo de PeerTube class: maClass)</code
+            >
+          </div>
+        </div>
+      </DetailsPane>
 
       <div class="u-spacingBottom" />
 
-      <div class="u-instructions">
-        {{ $t("copy_paste_to_include_media") }}
+      <div class="u-instructions" v-if="medias_were_picked">
+        {{ $t("copy_paste_to_include_media_or_click_to_add_at_cursor") }}
       </div>
+
+      <template #footer v-if="medias_were_picked">
+        <div />
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
+          @click="insertToText"
+        >
+          {{ $t("add") }}
+        </button>
+      </template>
     </BaseModal2>
   </div>
 </template>
@@ -208,6 +225,10 @@ export default {
       this.medias_were_picked = false;
       this.isCopied = false;
       this.$emit("close");
+    },
+    insertToText() {
+      this.$emit("insertToText", this.pick_medias_text);
+      this.closePickModal();
     },
   },
 };

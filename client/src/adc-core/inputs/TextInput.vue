@@ -2,21 +2,36 @@
   <div>
     <DLabel v-if="label_str" :str="$t(label_str)" :for_input="label_str" />
     <template v-if="tag === 'input'">
-      <input
-        ref="field"
-        :id="label_str"
-        :type="field_input_type_prop"
-        :name="label_str"
-        :autocomplete="autocomplete"
-        :size="size"
-        :required="required"
-        :placeholder="placeholder"
-        :value="content"
-        @input="$emit('update:content', $event.target.value)"
-        @input_txt="innerText = $event.target.value"
-        @keydown.enter.exact.prevent="$emit('onEnter')"
-        @keydown.enter.shift.exact.prevent="$emit('onShiftEnter')"
-      />
+      <div class="u-inputGroup">
+        <input
+          ref="field"
+          :id="label_str"
+          :type="field_input_type_prop"
+          :name="label_str"
+          :autocomplete="autocomplete"
+          :size="size"
+          :required="required"
+          :placeholder="placeholder"
+          :value="content"
+          @input="$emit('update:content', $event.target.value)"
+          @input_txt="innerText = $event.target.value"
+          @keydown.enter.exact.prevent="$emit('onEnter')"
+          @keydown.enter.shift.exact.prevent="$emit('onShiftEnter')"
+        />
+        <button
+          v-if="input_type === 'password'"
+          type="button"
+          class="u-button u-suffix"
+          :class="{
+            'is--active': show_password_in_clear,
+          }"
+          @click="toggleInputType"
+          :title="$t('reveal_pwd')"
+        >
+          <b-icon v-if="!show_password_in_clear" icon="eye-fill" />
+          <b-icon v-else icon="eye-slash-fill" />
+        </button>
+      </div>
     </template>
     <CollaborativeEditor3
       v-else-if="tag === 'editor'"
@@ -53,18 +68,6 @@
           {{ content_txt.length }}
           <template v-if="maxlength"> ≤ {{ maxlength }}</template>
         </template>
-      </div>
-      <div v-if="input_type === 'password'">
-        <button
-          type="button"
-          class="u-buttonLink _revealBtn"
-          :class="{
-            'is--active': show_password_in_clear,
-          }"
-          @click="toggleInputType"
-        >
-          {{ $t("reveal_pwd") }}
-        </button>
       </div>
     </div>
 

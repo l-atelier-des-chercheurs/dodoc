@@ -253,7 +253,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationsList {
-  --item-width: 180px;
+  --item-width: 140px;
+  --item-gap: calc(var(--spacing) * 2);
 
   width: 100%;
   max-width: min(var(--max-column-width), var(--max-column-width-px));

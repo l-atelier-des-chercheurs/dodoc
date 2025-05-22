@@ -101,11 +101,10 @@ export default function () {
           //   _args[0].changed_data.$content =
           //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
-          if (this.debug_mode)
-            this.$alertify.delay(4000).log(
-              `⤓ ` + eventName
-              // + JSON.stringify(_args)
-            );
+          // if (this.debug_mode)
+          //   this.$alertify.delay(4000).log(
+          //     `⤓ ` + eventName
+          //   );
         });
         this.socket.on("folderCreated", this.folderCreated);
         this.socket.on("folderUpdated", this.folderUpdated);

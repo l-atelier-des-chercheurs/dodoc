@@ -3,7 +3,24 @@
     <HomeTopHero />
 
     <template v-if="load_whole_page === true">
-      <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
+      <RecentlyEdited v-if="connected_as" />
+
+      <!-- <div class="_slashProject_content">
+        <p>
+          Praesent consectetur dolor non massa laoreet, sit amet condimentum
+          ligula fringilla. Praesent in vulputate neque. Lorem ipsum dolor sit
+          amet, consectetur adipiscing elit. Nulla erat metus, ultrices in
+          ultrices non, placerat in tortor. Praesent tempor consectetur
+          lobortis. Sed id massa eget diam bibendum accumsan. Aliquam dictum
+          ornare scelerisque. Vestibulum id pellentesque ligula. Vestibulum
+          semper lectus ante, eget luctus risus laoreet ut. Nulla cursus massa
+          quis ex commodo, ornare varius turpis fringilla. Fusce quis dolor a
+          ipsum fermentum pulvinar. Suspendisse tincidunt posuere ex. Nulla
+          lobortis ex congue mauris vulputate placerat. Nulla felis turpis,
+          fringilla eu interdum eget, ultricies vitae elit. Nam nec lorem ut
+          ante euismod pharetra a eget purus. Duis at quam turpis.
+        </p>
+      </div> -->
 
       <!-- <AllContent /> -->
       <!-- <AllPublications /> -->
@@ -109,7 +126,7 @@ import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
-// import AllPublications from "@/components/home/AllPublications.vue";
+import AllPublications from "@/components/home/AllPublications.vue";
 // import AllContent from "@/components/home/AllContent.vue";
 
 export default {
@@ -121,6 +138,7 @@ export default {
     AllProjects,
     DodocLogo,
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
+    AllPublications,
     // AllContent,
   },
   data() {
@@ -329,5 +347,11 @@ export default {
   position: absolute;
   bottom: calc(var(--spacing) / 2);
   right: calc(var(--spacing) / 2);
+}
+
+._slashProject_content {
+  max-width: 86ch;
+  width: 100%;
+  margin: calc(var(--spacing) * 1) auto;
 }
 </style>

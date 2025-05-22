@@ -141,7 +141,7 @@
           :contrib_instructions="$t('project_contrib_instructions')"
         />
 
-        <div v-if="context === 'full' && can_edit">
+        <div v-if="context === 'full' && can_contribute_to_project">
           <div class="u-displayAsPublic">
             <ToggleInput
               :content="display_as_public"
@@ -231,6 +231,7 @@ export default {
     project: Object,
     context: String,
     can_edit: Boolean,
+    can_contribute_to_project: Boolean,
     display_original_space: Boolean,
     display_as_public: Boolean,
     // show_more_informations: Boolean,

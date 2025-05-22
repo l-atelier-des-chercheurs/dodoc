@@ -1236,7 +1236,8 @@ export default {
   millimetres: "millimetres",
   parent_space_is_private:
     "The parent space is private, so other projects in this space cannot be viewed.",
-  copy_paste_to_include_media: "Copy and paste to include this media.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copy and paste to include this media, or click to add it at the cursor position.",
   next_chapter: "Next chapter",
 
   show_preview: "Show preview",
@@ -1249,4 +1250,5 @@ export default {
     "To add media from the internet, you can also copy and paste the following tags:",
   attributes_for_embeds: "Attributes for the tags:",
   show_source_html: "Show source HTML",
+  forgot_password: "Forgot password?",
 };

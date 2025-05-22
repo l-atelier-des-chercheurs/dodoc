@@ -15,6 +15,7 @@
             :project="project"
             context="full"
             :display_as_public.sync="display_as_public"
+            :can_contribute_to_project="can_contribute_to_project"
             :can_edit="can_edit_project && !display_as_public"
           />
         </div>

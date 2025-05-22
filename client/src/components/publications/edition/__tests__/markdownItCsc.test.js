@@ -158,6 +158,16 @@ Some text in between
         '<figure class="media media-image maclass maclass2"><img src="https://example.com/image.jpg" /></figure>\n'
     );
   });
+  it("should handle text on line before and close paragraph", () => {
+    const input =
+      "Plop\n(image: https://example.com/image.jpg class: maclass maclass2)";
+    const output = md.render(input);
+    expect(output).toBe(
+      "<p>\n" +
+        "Plop</p>\n" +
+        '<figure class="media media-image maclass maclass2"><img src="https://example.com/image.jpg" /></figure>\n'
+    );
+  });
 
   // (video: signal-2025-04-13-114237-002.mp4.meta.txt caption: Plop Plip [qqq](https://geojson.io) Hehehe)
   it("should handle shortcodes with links in caption", () => {
@@ -192,6 +202,7 @@ Some text in between
         "</div>\n"
     );
   });
+
   it("should handle 3 shortcodes on the same line and put them in a container", () => {
     const input = `(image: https://example.com/image1.jpg caption: image1)(audio: https://example.com/audio1.mp3 caption: audio1)(video: https://example.com/video1.mp4 caption: video1)`;
 

@@ -108,9 +108,21 @@
                 </a>
               </div>
             </div>
-            <button type="submit" class="u-button u-button_bleuvert">
-              {{ $t("login") }}
-            </button>
+
+            <transition name="fade" mode="out-in">
+              <div
+                class="u-spacingBottom u-warning"
+                key="wrong_password"
+                v-if="msg_password_is_wrong"
+              >
+                {{ msg_password_is_wrong || "test" }}
+              </div>
+              <div key="login_button" v-else class="_loginAs_button">
+                <button type="submit" class="u-button u-button_bleuvert">
+                  {{ $t("login") }}
+                </button>
+              </div>
+            </transition>
           </div>
         </transition>
       </fieldset>
@@ -136,6 +148,8 @@ export default {
       input_password: "",
       show_recover_instr: false,
       connection_status: undefined,
+
+      msg_password_is_wrong: undefined,
     };
   },
   created() {},
@@ -193,11 +207,14 @@ export default {
         })
         .catch((err) => {
           this.connection_status = "failed";
+          debugger;
           if (err.code === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
-            this.$alertify
-              .delay(40000)
-              .error(this.$t("submitted_password_is_wrong"));
+            this.msg_password_is_wrong = this.$t("submitted_password_is_wrong");
+
+            setTimeout(() => {
+              this.msg_password_is_wrong = undefined;
+            }, 3500);
           }
           return;
         });
@@ -217,5 +234,12 @@ export default {
 
 ._noAuthorNotice {
   padding: calc(var(--spacing) / 4) 0;
+}
+
+._loginAs_button {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

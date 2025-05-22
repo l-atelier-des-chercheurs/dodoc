@@ -1,6 +1,8 @@
 <template>
   <div class="_recentlyEdited" v-if="show_recently_edited">
-    <DLabel :str="$t('projects_you_edited_last')" />
+    <div class="_title">
+      <DLabel :str="$t('projects_you_edited_last')" />
+    </div>
     <button
       type="button"
       class="u-button u-button_icon _closeBtn"
@@ -8,7 +10,7 @@
     >
       <b-icon icon="x-lg" />
     </button>
-    <div v-if="paths.length > 0">
+    <div v-if="paths.length > 0" class="_content">
       <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
     </div>
   </div>
@@ -44,18 +46,19 @@ export default {
 <style lang="scss" scoped>
 ._recentlyEdited {
   position: fixed;
-  bottom: -5px;
-  right: calc(var(--spacing) * 2);
-  max-width: 280px;
-  width: 100%;
+  right: 0;
+  top: 55px;
+  width: 140px;
   max-height: 300px;
   z-index: 1000;
-  padding: var(--spacing);
-  padding-top: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) / 2);
   background: var(--c-bleumarine);
   // color: white;
-  border-radius: var(--border-radius) var(--border-radius);
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
   box-shadow: var(--panel-shadows);
+  display: flex;
+  flex-direction: row;
 
   overflow: auto;
 
@@ -73,5 +76,17 @@ export default {
   top: 0;
   right: 0;
   z-index: 1;
+}
+
+._title {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  margin-right: calc(var(--spacing) / 2);
+  white-space: nowrap;
+}
+
+._content {
+  overflow: auto;
 }
 </style>
