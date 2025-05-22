@@ -113,7 +113,7 @@ a:focus-visible {
   &:hover,
   &:focus-visible {
     transform: translateY(-2px) scale(1.03) rotate(-0deg);
-    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.1));
     // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     //   0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
     //   0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);

@@ -251,7 +251,7 @@ export default {
   width: 100%;
   // max-width: calc(var(--max-column-width));
   margin: 0 auto;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
   // padding-bottom: calc(var(--spacing) * 1);
   background: white;
   // border-bottom: 1px solid var(--c-gris);
