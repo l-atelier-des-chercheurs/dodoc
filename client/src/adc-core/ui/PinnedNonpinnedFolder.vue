@@ -213,7 +213,7 @@ export default {
 ._list {
   display: grid;
   grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
+  grid-gap: var(--item-gap, calc(var(--spacing) / 1));
   align-items: stretch;
   grid-template-columns: repeat(
     auto-fill,

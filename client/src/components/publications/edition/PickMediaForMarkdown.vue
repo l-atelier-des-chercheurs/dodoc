@@ -66,33 +66,39 @@
         </ul>
       </div>
 
-      <div class="u-spacingBottom">
-        {{ $t("attributes_for_embeds") }}
+      <DetailsPane
+        :header="$t('advanced_options')"
+        :icon="'rulers'"
+        :has_items="false"
+      >
+        <div class="u-spacingBottom">
+          {{ $t("attributes_for_embeds") }}
 
-        <ul>
-          <li>
-            <code>caption: Ma légende</code>
-          </li>
-          <li>
-            <code>class: nomDeLaClasse</code>
-          </li>
-          <li>
-            <code>float: left</code>
-          </li>
-          <li>
-            <code>float: right</code>
-          </li>
-        </ul>
-      </div>
-      <div>
-        {{ $t("for_example") }}
-        <div>
-          <code
-            >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption: Voici
-            une vidéo de PeerTube class: maClass)</code
-          >
+          <ul>
+            <li>
+              <code>caption: Ma légende</code>
+            </li>
+            <li>
+              <code>class: nomDeLaClasse</code>
+            </li>
+            <li>
+              <code>float: left</code>
+            </li>
+            <li>
+              <code>float: right</code>
+            </li>
+          </ul>
         </div>
-      </div>
+        <div>
+          {{ $t("for_example") }}
+          <div>
+            <code
+              >(embed: https://peertube.fr/w/wB6M6CHdfpWXpozVnqjbde caption:
+              Voici une vidéo de PeerTube class: maClass)</code
+            >
+          </div>
+        </div>
+      </DetailsPane>
 
       <div class="u-spacingBottom" />
 
@@ -101,9 +107,10 @@
       </div>
 
       <template #footer v-if="medias_were_picked">
+        <div />
         <button
           type="button"
-          class="u-button u-button_orange"
+          class="u-button u-button_bleuvert"
           @click="insertToText"
         >
           {{ $t("add") }}
