@@ -258,7 +258,7 @@ Some text in between
     const output = md.render(input);
     expect(output).toBe("<p>This is not a test (thought: it could be).</p>\n");
   });
-  it("should not interpret words that are not actual tags", () => {
+  it("should not interpret words with : as a tag", () => {
     const input = `(image: https://example.com/image1.jpg caption: For example: this and that)`;
 
     const output = md.render(input);

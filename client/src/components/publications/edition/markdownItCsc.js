@@ -23,7 +23,8 @@ export default (md, o = {}) => {
       // Check if this looks like a shortcode by checking for "tag:" pattern
       const potentialShortcode = lineText.substring(openParenPos);
       const shortcodePattern = /^\(([-\w]+):\s/;
-      const isShortcode = shortcodePattern.test(potentialShortcode);
+      const tagMatch = shortcodePattern.exec(potentialShortcode);
+      const isShortcode = tagMatch && tags_list.includes(tagMatch[1]);
 
       if (!isShortcode) {
         pos++;
@@ -75,23 +76,8 @@ export default (md, o = {}) => {
       // Extract the full shortcode including parentheses
       const shortcodeText = remainingText.substring(0, closeParenPos + 1);
 
-      // Parse the shortcode using a simple extraction approach
-      // Format is expected to be: (tag: source attr1: val1 attr2: val2)
-      const tagMatch = /^\(([-\w]+):\s*/.exec(shortcodeText);
-
-      if (!tagMatch) {
-        pos++;
-        lineText = state.src.slice(pos, max);
-        continue;
-      }
-
+      // We already have the tag from earlier tagMatch
       const tag = tagMatch[1].trim();
-
-      if (!tags_list.includes(tag)) {
-        pos++;
-        lineText = state.src.slice(pos, max);
-        continue;
-      }
 
       if (silent) return true;
 
