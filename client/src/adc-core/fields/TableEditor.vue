@@ -5,6 +5,10 @@
         <thead>
           <tr v-if="isReorderingColumns" class="column-controls-row">
             <th
+              v-if="can_edit && isReorderingRows"
+              class="row-controls-empty-header"
+            />
+            <th
               v-for="(header, index) in table_header"
               :key="'controls-' + index"
             >
@@ -29,6 +33,10 @@
             </th>
           </tr>
           <tr>
+            <th
+              v-if="can_edit && isReorderingRows"
+              class="row-controls-empty-header"
+            />
             <th v-for="(header, index) in table_header" :key="index">
               <div class="column-header">
                 <CellEdit
@@ -42,19 +50,6 @@
         </thead>
         <tbody>
           <tr v-for="(row, rowIndex) in table_body" :key="rowIndex">
-            <td v-for="(cell, cellIndex) in row" :key="cellIndex">
-              <CellEdit
-                :cell="cell"
-                :can_edit="can_edit"
-                @update="
-                  updateCell({
-                    row: rowIndex + 1,
-                    column: cellIndex,
-                    value: $event,
-                  })
-                "
-              />
-            </td>
             <td
               class="row-controls"
               v-if="can_edit && isReorderingRows"
@@ -78,6 +73,19 @@
                   <b-icon icon="arrow-down-short" />
                 </button>
               </div>
+            </td>
+            <td v-for="(cell, cellIndex) in row" :key="cellIndex">
+              <CellEdit
+                :cell="cell"
+                :can_edit="can_edit"
+                @update="
+                  updateCell({
+                    row: rowIndex + 1,
+                    column: cellIndex,
+                    value: $event,
+                  })
+                "
+              />
             </td>
           </tr>
         </tbody>
@@ -293,6 +301,7 @@ export default {
 .column-controls-row {
   th {
     padding: 0;
+    min-width: 2rem;
   }
 }
 .column-controls {
@@ -308,10 +317,15 @@ export default {
 }
 
 .row-controls {
+  // position: absolute;
+  // left: -2.5rem;
   position: relative;
-  width: 1rem;
+  width: 2rem;
   padding: 0;
   height: 100%;
+}
+.row-controls-empty-header {
+  min-width: 2rem;
 }
 
 .row-buttons {
@@ -321,7 +335,12 @@ export default {
   flex-flow: column nowrap;
   height: 100%;
   overflow: hidden;
-  justify-content: space-between;
+  justify-content: center;
+
+  button {
+    padding: calc(var(--spacing) / 8);
+  }
+  // gap: 0.25rem;
 }
 
 ._tableEditor--content {
