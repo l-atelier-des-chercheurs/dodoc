@@ -14,11 +14,7 @@
       <span class="_name">
         {{ header }}
       </span>
-      <div
-        class="u-nut"
-        v-if="has_items !== undefined"
-        :data-isfilled="has_items"
-      >
+      <div class="u-nut" v-if="has_items" :data-isfilled="has_items">
         <template v-if="typeof has_items === 'number'">
           {{ has_items }}
         </template>
