@@ -20,6 +20,17 @@ export default (md, o = {}) => {
       const openParenPos = lineText.indexOf("(");
       if (openParenPos === -1) break;
 
+      // Check if this looks like a shortcode by checking for "tag:" pattern
+      const potentialShortcode = lineText.substring(openParenPos);
+      const shortcodePattern = /^\(([-\w]+):\s/;
+      const isShortcode = shortcodePattern.test(potentialShortcode);
+
+      if (!isShortcode) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
+
       // If there's text before the opening parenthesis, add it as a paragraph
       if (openParenPos > 0) {
         const textBefore = lineText.substring(0, openParenPos).trim();

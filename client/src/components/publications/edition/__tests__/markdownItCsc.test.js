@@ -227,4 +227,44 @@ Some text in between
       '<figure class="media media-image"><img src="https://example.com/image1.jpg" /></figure>\n'
     );
   });
+
+  it("should handle normal parentheses normally", () => {
+    const inputs = [
+      "This is a test (plop).",
+      "Multiple (parentheses) in (one) line.",
+      "Nested ((parentheses)) here.",
+      "(Not a shortcode because no colon)",
+      "Math equation: (2 + 2) = 4",
+      "Text with (spaces in parentheses) here.",
+    ];
+
+    inputs.forEach((input) => {
+      const output = md.render(input);
+      expect(output).toBe(`<p>${input}</p>\n`);
+    });
+  });
+  it("should handle parentheses that start with word that is not a tag as", () => {
+    const inputs = ["(hello: this is a test)"];
+
+    inputs.forEach((input) => {
+      const output = md.render(input);
+      expect(output).toBe(`<p>${input}</p>\n`);
+    });
+  });
+
+  it("should not interpret words that are not actual tags 1", () => {
+    const input = `This is not a test (thought: it could be).`;
+
+    const output = md.render(input);
+    expect(output).toBe("<p>This is not a test (thought: it could be).</p>\n");
+  });
+  it("should not interpret words that are not actual tags", () => {
+    const input = `(image: https://example.com/image1.jpg caption: For example: this and that)`;
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image1.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>For example: this and that</span></figcaption></figure>\n'
+    );
+  });
 });
