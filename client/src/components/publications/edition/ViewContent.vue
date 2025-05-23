@@ -66,6 +66,7 @@ import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 import markdownItAttrs from "markdown-it-attrs";
 import markdownItBracketedSpans from "markdown-it-bracketed-spans";
+import LinkAttributes from "markdown-it-link-attributes";
 import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
@@ -381,7 +382,15 @@ export default {
         // Fallback to default renderer if no src
         return defaultImageRenderer(tokens, idx, options, env, self);
       };
-
+      // not working :(
+      md.use(LinkAttributes, {
+        matcher: (link) => /^https?:\/\//.test(link),
+        attrs: {
+          target: "_blank",
+          rel: "noopener",
+          class: "link-external",
+        },
+      });
       md.use(markdownItCsc, {
         getMediaSrc: (meta_src) => this.getMediaSrc(meta_src, source_medias),
         transformURL: (url) => this.transformURL(url),
