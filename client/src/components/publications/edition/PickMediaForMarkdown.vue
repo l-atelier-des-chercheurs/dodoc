@@ -170,7 +170,7 @@ export default {
         html.push(media_html);
       });
 
-      return html.join("\n");
+      return html.join(" ");
     },
     turnHtmlToMarkdown(html) {
       // turn <p><strong>Plop</strong></p><p><em>Plip</em></p><p><a href="https://geojson.io" rel="noopener noreferrer" target="_blank">qqq</a></p><p><strong><em>Hehehe</em></strong></p>

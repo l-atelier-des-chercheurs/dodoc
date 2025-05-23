@@ -471,6 +471,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  scroll-behavior: smooth;
+  scroll-padding: 10vh;
   background: var(--c-gris_clair);
   z-index: 10;
 

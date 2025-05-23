@@ -458,9 +458,13 @@ export default {
       return t.innerHTML;
     },
     insertAtCursor(text) {
-      var range = this.editor.getSelection(true);
-      if (range?.index !== undefined) {
-        this.editor.insertText(range.index, text, Quill.sources.USER);
+      var index = this.editor.getSelection(true)?.index;
+      if (index !== undefined) {
+        this.editor.insertText(index, text, Quill.sources.USER);
+        this.editor.scrollSelectionIntoView();
+        setTimeout(() => {
+          this.editor.setSelection(index + text.length, Quill.sources.SILENT);
+        }, 100);
       }
     },
 
