@@ -496,7 +496,7 @@ export default {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 
-  margin: 0 calc(var(--spacing) / 2);
+  margin: 0 calc(var(--spacing) / 1);
   margin-bottom: 0;
   padding: calc(var(--spacing) * 1);
 }
@@ -564,7 +564,7 @@ export default {
 }
 ._content--type {
   .b-icon {
-    vertical-align: text-bottom;
+    vertical-align: middle;
   }
 }
 

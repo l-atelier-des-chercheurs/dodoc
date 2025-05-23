@@ -24,17 +24,14 @@
         </option>
         <option value="default">style – {{ $t("default_value") }}</option>
       </select>
+    </div>
 
-      <!-- <div
-        v-if="$listeners['update:show_source_html'] && view_mode === 'book'"
-        class="_toggleHTML"
-      >
-        <ToggleInput
-          :content="show_source_html"
-          :label="$t('show_source_html')"
-          @update:content="$emit('update:show_source_html', $event)"
-        />
-      </div> -->
+    <div v-if="show_source_html_toggle" class="_toggleHTML">
+      <ToggleInput
+        :content="show_source_html"
+        :label="$t('show_source_html')"
+        @update:content="$emit('update:show_source_html', $event)"
+      />
     </div>
 
     <div class="_viewContent--content">
@@ -90,6 +87,7 @@ export default {
       default: "infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    show_source_html_toggle: Boolean,
     show_source_html: Boolean,
     can_edit: Boolean,
   },
@@ -636,8 +634,6 @@ export default {
 
   ::v-deep {
     ._toggleHTML {
-      background-color: var(--c-gris_fonce);
-
       ._label {
         color: white;
       }
@@ -650,8 +646,24 @@ export default {
 }
 
 ._toggleHTML {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
   background-color: var(--c-gris_clair);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1);
   border-radius: var(--border-radius);
+
+  ::v-deep {
+    > * {
+      padding: calc(var(--spacing) / 2);
+      background-color: var(--c-gris_fonce);
+      border: 2px solid white;
+      border-radius: var(--border-radius);
+    }
+    ._label {
+      color: white;
+    }
+  }
 }
 </style>

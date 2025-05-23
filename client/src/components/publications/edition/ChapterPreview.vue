@@ -37,7 +37,7 @@
       </transition>
     </div>
 
-    <div class="_chapterPreview--card">
+    <div class="u-card2 _chapterPreview--card">
       <div class="_topRow">
         <h2 class="_item--title">
           <template v-if="section.section_title">
@@ -190,7 +190,7 @@ export default {
 
 ._selects--order {
   width: auto;
-  width: 7ch;
+  min-width: 5ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;

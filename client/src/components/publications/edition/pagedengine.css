@@ -119,6 +119,7 @@ p:empty {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   gap: 1px;
+  padding: calc(var(--spacing) * 2);
 
   &[data-number-of-medias="1"] {
     grid-template-columns: 1fr;

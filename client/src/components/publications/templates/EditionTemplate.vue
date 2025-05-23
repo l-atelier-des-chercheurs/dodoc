@@ -37,7 +37,7 @@
 
         <transition name="scaleInFade_fast" mode="in-out">
           <GraphicStyles
-            v-if="open_graphic_styles"
+            v-if="show_graphic_styles"
             :key="'edit_graphics'"
             :publication="publication"
             :opened_style_file_meta="opened_style_file_meta"
@@ -70,6 +70,7 @@
             :view_mode="view_mode"
             :opened_style_file_meta="opened_style_file_meta"
             :show_source_html.sync="show_source_html"
+            :show_source_html_toggle="can_edit && view_mode === 'book'"
             :can_edit="can_edit"
             @openChapter="
               $emit('updatePane', { key: 'chapter', value: $event })
@@ -200,7 +201,7 @@ export default {
       );
       return this.all_chapters[idx + 1];
     },
-    open_graphic_styles() {
+    show_graphic_styles() {
       return this.pane_infos?.edit_graphics === true;
     },
     opened_style_file_meta() {
