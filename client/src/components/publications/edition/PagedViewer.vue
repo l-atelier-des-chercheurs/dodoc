@@ -166,7 +166,7 @@ export default {
       return false;
     },
     highlight_opened_pages() {
-      if (this.opened_chapter_meta_filename) {
+      if (this.can_edit && this.opened_chapter_meta_filename) {
         return `
         .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"])) 
         {
@@ -234,9 +234,11 @@ export default {
           // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
           this.$nextTick(() => {
-            this.addChapterShortcuts();
             this.showOnlyPages();
-            this.reportChapterPositions();
+            if (this.can_edit) {
+              this.addChapterShortcuts();
+              this.reportChapterPositions();
+            }
             setTimeout(() => {
               this.is_loading = false;
               this.is_generating_book = false;
@@ -257,6 +259,7 @@ export default {
         btn.classList.add("editChapterBtn");
         btn.textContent = chapter.getAttribute("data-chapter-title");
         chapter.appendChild(btn);
+        chapter.classList.add("clickable");
         chapter.addEventListener("click", () => {
           this.$emit(
             "openChapter",
@@ -701,8 +704,14 @@ export default {
         }
       }
 
-      .chapter {
+      .chapter.clickable {
         cursor: pointer;
+
+        &:hover {
+          .editChapterBtn {
+            background-color: var(--c-noir);
+          }
+        }
       }
 
       .pagedjs_pages {
