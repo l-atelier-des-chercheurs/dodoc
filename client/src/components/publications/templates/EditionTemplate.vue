@@ -147,7 +147,9 @@ export default {
   },
   created() {},
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$emit("updatePane", { key: "chapter", value: false });
+  },
   watch: {},
   computed: {
     view_mode() {
