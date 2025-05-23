@@ -869,6 +869,18 @@ module.exports = (function () {
         return 0;
       }
     },
+    getZipFolderFilename({ path_to_folder, path_to_type }) {
+      try {
+        const folder_slug = API.getFilename(path_to_folder);
+        const type_slug = API.getFilename(path_to_type);
+        const appname = global.appInfos.name;
+        const version_number = global.appInfos.version.split(".")[0];
+        return `${appname}_v${version_number}_${type_slug}_${folder_slug}.zip`;
+      } catch (err) {
+        dev.error(err);
+        return "download.zip";
+      }
+    },
   };
 
   return API;
