@@ -222,7 +222,8 @@ export default (md, o = {}) => {
           key !== "src" &&
           key !== "caption" &&
           key !== "class" &&
-          key !== "float"
+          key !== "float" &&
+          key !== "width"
         ) {
           attrs.push(`${key}="${value}"`);
         }
@@ -236,9 +237,16 @@ export default (md, o = {}) => {
         classes.push(`float-${token.attrs.float}`);
       }
 
+      let style_attr = "";
+      if (token.attrs.width && token.attrs.width.includes("%")) {
+        style_attr = `style="width: ${token.attrs.width};"`;
+      }
+
       // Create the image tag with all attributes
       const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
-      let media_tag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
+      let media_tag = `<figure class="${classes.join(
+        " "
+      )}"${attrs_str} ${style_attr}>`;
 
       if (token.tag === "image") {
         media_tag += `<img src="${src}" />`;

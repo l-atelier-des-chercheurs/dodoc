@@ -18,7 +18,7 @@
             v-if="prev_section"
             @click="$emit('prev')"
           >
-            <b-icon icon="arrow-left-square" />
+            <b-icon icon="arrow-left-short" />
             <span>
               {{ prev_section.section_title }}
             </span>
@@ -40,7 +40,7 @@
             <span>
               {{ next_section.section_title }}
             </span>
-            <b-icon icon="arrow-right-square" />
+            <b-icon icon="arrow-right-short" />
           </button>
         </div>
       </div>
@@ -82,12 +82,12 @@
       <div class="_infos">
         <div class="_content--type">
           <template v-if="chapter.section_type === 'text'">
-            {{ $t("text") }}
             <b-icon icon="markdown" />
+            {{ $t("text") }}
           </template>
           <template v-else-if="chapter.section_type === 'gallery'">
-            {{ $t("gallery") }}
             <b-icon icon="image" />
+            {{ $t("gallery") }}
           </template>
         </div>
 
@@ -471,6 +471,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  scroll-behavior: smooth;
+  scroll-padding: 10vh;
   background: var(--c-gris_clair);
   z-index: 10;
 
@@ -485,15 +487,16 @@ export default {
   position: relative;
   min-height: calc(100% - calc(var(--spacing) * 1));
   background-color: white;
-  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
-    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
-    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
-    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+  //   0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+  //   0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+  //   0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 
-  margin: 0;
+  margin: 0 calc(var(--spacing) / 1);
   margin-bottom: 0;
   padding: calc(var(--spacing) * 1);
 }
@@ -530,9 +533,11 @@ export default {
   align-items: center;
   justify-content: space-between;
   gap: calc(var(--spacing) / 1);
+  height: 20px;
 
   > * {
     flex: 1 1 0;
+    overflow: hidden;
 
     &:nth-child(2) {
       .u-linkList {
@@ -558,6 +563,9 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
+  .b-icon {
+    vertical-align: middle;
+  }
 }
 
 ._infos {

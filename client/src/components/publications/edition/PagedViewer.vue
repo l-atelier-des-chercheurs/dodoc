@@ -170,7 +170,7 @@ export default {
         return `
         .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"])) 
         {
-          opacity: .5 !important;
+          opacity: .7 !important;
         }
       `;
       }
