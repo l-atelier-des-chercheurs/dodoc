@@ -238,7 +238,10 @@ export default (md, o = {}) => {
       }
 
       let style_attr = "";
-      if (token.attrs.width && token.attrs.width.includes("%")) {
+      if (
+        token.attrs.width &&
+        (token.attrs.width.includes("%") || token.attrs.width.includes("cm"))
+      ) {
         style_attr = `style="width: ${token.attrs.width};"`;
       }
 
