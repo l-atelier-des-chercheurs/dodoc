@@ -110,6 +110,11 @@ p:empty {
   }
 }
 
+.edition hr {
+  clear: both;
+  width: 100%;
+}
+
 .edition .gallery {
   position: relative;
   break-after: page;
