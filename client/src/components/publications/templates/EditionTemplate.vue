@@ -35,7 +35,7 @@
           </button>
         </div>
 
-        <transition name="scaleInFade_fast" mode="in-out">
+        <transition name="pagechange" mode="in-out">
           <GraphicStyles
             v-if="show_graphic_styles"
             :key="'edit_graphics'"
