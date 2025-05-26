@@ -3,7 +3,7 @@
     <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
-      :current_view_mode="current_view_mode"
+      :view_mode="view_mode"
       :opened_style_file_meta="opened_style_file_meta"
       :viewer_type="'div'"
       :can_edit="false"
@@ -34,7 +34,7 @@ export default {
     opened_chapter_meta_filename() {
       return this.$route.query?.chapter || "";
     },
-    current_view_mode() {
+    view_mode() {
       return this.$route.query?.view_mode || "book";
     },
     opened_style_file_meta() {
