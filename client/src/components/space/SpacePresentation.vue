@@ -250,8 +250,16 @@ export default {
 }
 ._subtitle {
   color: var(--c-gris_fonce);
-  font-size: var(--sl-font-size-medium);
+
+  ._spacePresentation[data-context="list"] & {
+    font-size: var(--sl-font-size-x-small);
+  }
   // font-weight: 400;
+
+  ::v-deep {
+    ._content {
+    }
+  }
 }
 ._description {
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
