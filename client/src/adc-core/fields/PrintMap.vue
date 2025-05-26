@@ -24,15 +24,22 @@
       <canvas v-show="false" ref="mapCanvas" class="" />
       <canvas ref="pageCanvas" class="" />
     </fieldset>
-    <button
-      type="button"
-      class="u-button u-button_bleuvert"
-      :disabled="is_making_print"
-      @click="printMap()"
+    <template #footer>
+      <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x-circle" />
+        {{ $t("cancel") }}
+      </button>
+
+      <button
+        type="button"
+        class="u-button u-button_bleuvert"
+        :disabled="is_making_print"
+        @click="printMap()"
+      >
+        <b-icon class="inlineSVG" icon="printer" />
+        {{ $t("export_in_pdf") }}
+      </button></template
     >
-      <b-icon class="inlineSVG" icon="printer" />
-      {{ $t("export_in_pdf") }}
-    </button>
   </BaseModal2>
 </template>
 <script>
