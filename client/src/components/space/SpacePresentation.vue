@@ -252,7 +252,7 @@ export default {
   color: var(--c-gris_fonce);
 
   ._spacePresentation[data-context="list"] & {
-    font-size: var(--sl-font-size-x-small);
+    font-size: var(--sl-font-size-small);
   }
   // font-weight: 400;
 
