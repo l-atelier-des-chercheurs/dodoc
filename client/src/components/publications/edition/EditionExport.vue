@@ -3,7 +3,7 @@
     <ViewContent
       :publication="publication"
       :opened_chapter_meta_filename="opened_chapter_meta_filename"
-      :view_mode="view_mode"
+      :current_view_mode="current_view_mode"
       :opened_style_file_meta="opened_style_file_meta"
       :viewer_type="'div'"
       :can_edit="false"
@@ -34,7 +34,7 @@ export default {
     opened_chapter_meta_filename() {
       return this.$route.query?.chapter || "";
     },
-    view_mode() {
+    current_view_mode() {
       return this.$route.query?.view_mode || "book";
     },
     opened_style_file_meta() {
@@ -65,9 +65,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editionExport {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  @media screen {
+    padding: 0 calc(var(--spacing) * 2);
+  }
+  @media print {
+    // helps prevent empty page at the end of the publication in export PDF
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -1,14 +1,27 @@
 <template>
   <div class="_viewContent">
     <div class="_viewMode">
-      <select
+      <div class="_viewMode--buttons">
+        <div v-for="view_mode in view_modes" :key="view_mode.value">
+          <button
+            class="u-button u-button_white u-button_icon"
+            :class="{ 'is--active': current_view_mode === view_mode.value }"
+            @click="$emit('changeView', view_mode.value)"
+          >
+            <b-icon :icon="view_mode.icon" />
+            <!-- {{ view_mode.label }} -->
+          </button>
+        </div>
+      </div>
+      <!-- <select
         :value="view_mode"
         size="small"
         @change="$emit('changeView', $event.target.value)"
       >
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
-      </select>
+      </select> -->
+
       <select
         size="small"
         v-if="style_files?.length > 0"
@@ -36,7 +49,7 @@
 
     <div class="_viewContent--content">
       <PagedViewer
-        v-if="view_mode === 'book'"
+        v-if="current_view_mode === 'book'"
         :content_nodes="content_nodes"
         :format_mode="format_mode"
         :viewer_type="viewer_type"
@@ -77,7 +90,7 @@ import default_styles from "@/components/publications/edition/default_styles.css
 export default {
   props: {
     publication: Object,
-    view_mode: String,
+    current_view_mode: String,
     opened_style_file_meta: {
       type: String,
       default: "default",
@@ -98,6 +111,18 @@ export default {
   data() {
     return {
       is_loading: false,
+      view_modes: [
+        {
+          label: this.$t("book"),
+          value: "book",
+          icon: "book",
+        },
+        {
+          label: this.$t("webpage"),
+          value: "html",
+          icon: "window-sidebar",
+        },
+      ],
       // custom_styles_nested: "",
     };
   },
@@ -295,7 +320,7 @@ export default {
 
       if (title?.startsWith("=")) {
         if (title.startsWith("=full-page")) {
-          if (this.view_mode === "book") {
+          if (this.current_view_mode === "book") {
             custom_classes.push("_isFullPage");
             if (title.startsWith("=full-page-cover")) {
               custom_classes.push("_isFullPageCover");
@@ -440,15 +465,15 @@ export default {
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "// TODO";
+      let html = "<p>// TODO</p>";
 
       modules.forEach((module) => {
-        html += `<div class="module">
+        html += `<p class="module">
           <div class="module-type">${
             this.$t("type") + " " + module.module_type
           }</div>
-          <div class="module-content">${JSON.stringify(module, null, 4)}</div>
-        </div>`;
+        </p>`;
+        //           <div class="module-content">${JSON.stringify(module, null, 4)}</div>
       });
 
       return html;
@@ -517,7 +542,7 @@ export default {
                   />
                 `;
       } else {
-        if (this.view_mode === "book") {
+        if (this.current_view_mode === "book") {
           is_qr_code = true;
           html = this.makeQREmbedForQR({
             url,
@@ -622,7 +647,15 @@ export default {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
+
+  ._viewMode--buttons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+  }
 
   select {
     width: 18ch;

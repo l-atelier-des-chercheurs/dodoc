@@ -1346,4 +1346,6 @@ export default {
   restore_spaces: "Restaurer des espaces supprimés",
   no_media_selected: "Aucun média sélectionné",
   forgot_password: "Mot de passe oublié ?",
+  folder_not_public:
+    "Ce contenu n’est pas public, pour y accéder son auteur doit le rendre public.",
 };

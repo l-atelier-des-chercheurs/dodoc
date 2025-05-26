@@ -54,7 +54,7 @@
             :next_section="next_section"
             :publication="publication"
             :chapter_position="getChapterPosition(opened_chapter.$path)"
-            :view_mode="view_mode"
+            :current_view_mode="view_mode"
             @remove="removeChapter(opened_chapter)"
             @close="$emit('updatePane', { key: 'chapter', value: false })"
             @prev="openChapter(-1)"
@@ -67,7 +67,7 @@
           <ViewContent
             :publication="publication"
             :opened_chapter_meta_filename="opened_section_meta_filename"
-            :view_mode="view_mode"
+            :current_view_mode="view_mode"
             :opened_style_file_meta="opened_style_file_meta"
             :show_source_html.sync="show_source_html"
             :show_source_html_toggle="can_edit && view_mode === 'book'"
@@ -96,7 +96,7 @@
       v-else
       :publication="publication"
       :opened_chapter_meta_filename="opened_section_meta_filename"
-      :view_mode="view_mode"
+      :current_view_mode="view_mode"
       :opened_style_file_meta="opened_style_file_meta"
       :viewer_type="'div'"
       :can_edit="false"
