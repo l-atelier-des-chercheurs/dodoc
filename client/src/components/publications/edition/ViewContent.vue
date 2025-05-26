@@ -2,13 +2,16 @@
   <div class="_viewContent">
     <div class="_viewMode">
       <div class="_viewMode--buttons">
-        <div v-for="view_mode in view_modes" :key="view_mode.value">
+        <div
+          v-for="available_view_mode in available_view_modes"
+          :key="available_view_mode.value"
+        >
           <button
             class="u-button u-button_white u-button_icon"
-            :class="{ 'is--active': current_view_mode === view_mode.value }"
-            @click="$emit('changeView', view_mode.value)"
+            :class="{ 'is--active': view_mode === available_view_mode.value }"
+            @click="$emit('changeView', available_view_mode.value)"
           >
-            <b-icon :icon="view_mode.icon" />
+            <b-icon :icon="available_view_mode.icon" />
             <!-- {{ view_mode.label }} -->
           </button>
         </div>
@@ -49,7 +52,7 @@
 
     <div class="_viewContent--content">
       <PagedViewer
-        v-if="current_view_mode === 'book'"
+        v-if="view_mode === 'book'"
         :content_nodes="content_nodes"
         :format_mode="format_mode"
         :viewer_type="viewer_type"
@@ -90,7 +93,7 @@ import default_styles from "@/components/publications/edition/default_styles.css
 export default {
   props: {
     publication: Object,
-    current_view_mode: String,
+    view_mode: String,
     opened_style_file_meta: {
       type: String,
       default: "default",
@@ -111,7 +114,7 @@ export default {
   data() {
     return {
       is_loading: false,
-      view_modes: [
+      available_view_modes: [
         {
           label: this.$t("book"),
           value: "book",
@@ -320,7 +323,7 @@ export default {
 
       if (title?.startsWith("=")) {
         if (title.startsWith("=full-page")) {
-          if (this.current_view_mode === "book") {
+          if (this.view_mode === "book") {
             custom_classes.push("_isFullPage");
             if (title.startsWith("=full-page-cover")) {
               custom_classes.push("_isFullPageCover");
@@ -542,7 +545,7 @@ export default {
                   />
                 `;
       } else {
-        if (this.current_view_mode === "book") {
+        if (this.view_mode === "book") {
           is_qr_code = true;
           html = this.makeQREmbedForQR({
             url,
