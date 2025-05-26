@@ -31,6 +31,7 @@
             class="u-button u-button_bleumarine"
             @click="$emit('updatePane', { key: 'edit_graphics', value: true })"
           >
+            <b-icon icon="file-code" />
             {{ $t("graphic_styles") }}
           </button>
         </div>
