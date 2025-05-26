@@ -123,8 +123,8 @@ p:empty {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: 1px;
-  padding: calc(var(--spacing) * 2);
+  gap: var(--spacing);
+  padding: calc(var(--spacing) * 1);
 
   &[data-number-of-medias="1"] {
     grid-template-columns: 1fr;

@@ -631,7 +631,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin: var(--spacing);
+  margin: calc(var(--spacing) / 2);
 }
 
 ._selects--starts_on_page {
