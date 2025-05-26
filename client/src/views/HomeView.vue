@@ -29,6 +29,8 @@
         <EventsSection />
       </section>
 
+      <SlashHomeInfos />
+
       <transition name="pagechange" mode="out-in">
         <div class="_bottomCont" :key="opened_event">
           <RadioSwitch
@@ -127,6 +129,7 @@ import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
 import AllPublications from "@/components/home/AllPublications.vue";
+import SlashHomeInfos from "@/components/home/SlashHomeInfos.vue";
 // import AllContent from "@/components/home/AllContent.vue";
 
 export default {
@@ -139,6 +142,7 @@ export default {
     DodocLogo,
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
     AllPublications,
+    SlashHomeInfos,
     // AllContent,
   },
   data() {

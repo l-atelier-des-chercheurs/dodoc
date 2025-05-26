@@ -126,7 +126,7 @@ export default {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
   background: var(--hero-bg, transparent);
-  border-radius: 12px;
+  border-radius: calc(var(--panel-radius) * 1.5);
 
   ._homeCover {
     background: white;
@@ -189,7 +189,7 @@ export default {
     border-radius: var(--panel-radius);
     // box-shadow: var(--panel-shadows);
     padding: calc(var(--spacing) / 1);
-    margin: 1%;
+    margin: calc(var(--spacing) / 2);
 
     background: var(--text-bg, white);
   }
