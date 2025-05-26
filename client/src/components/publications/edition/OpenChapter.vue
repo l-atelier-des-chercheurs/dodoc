@@ -89,6 +89,10 @@
             <b-icon icon="image" />
             {{ $t("gallery") }}
           </template>
+          <template v-else-if="chapter.section_type === 'story'">
+            <b-icon icon="list" />
+            {{ $t("story") }}
+          </template>
         </div>
 
         <transition name="fade" mode="out-in">
@@ -202,6 +206,7 @@
         </template>
         <template v-if="chapter.section_type === 'story'">
           <SingleSection
+            class="_singleSection"
             :publication="publication"
             :section="chapter"
             :can_edit="true"
@@ -645,5 +650,13 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   // gap: calc(var(--spacing) / 2);
+}
+
+._singleSection {
+  ::v-deep {
+    ._topbar {
+      display: none;
+    }
+  }
 }
 </style>

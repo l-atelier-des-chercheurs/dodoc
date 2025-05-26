@@ -155,6 +155,7 @@ import {
   BIconRecycle,
   BIconMarkdown,
   BIconWindowSidebar,
+  BIconList,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -310,3 +311,4 @@ Vue.component("BIconRecycle", BIconRecycle);
 Vue.component("BIconMarkdown", BIconMarkdown);
 Vue.component("BIconWindowSidebar", BIconWindowSidebar);
 Vue.component("BIconBook", BIconBook);
+Vue.component("BIconList", BIconList);

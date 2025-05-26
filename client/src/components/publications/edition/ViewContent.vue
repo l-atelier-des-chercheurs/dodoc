@@ -4,7 +4,7 @@
       <div class="_viewMode--buttons">
         <div v-for="view_mode in view_modes" :key="view_mode.value">
           <button
-            class="u-button u-button_black u-button_icon"
+            class="u-button u-button_white u-button_icon"
             :class="{ 'is--active': current_view_mode === view_mode.value }"
             @click="$emit('changeView', view_mode.value)"
           >
