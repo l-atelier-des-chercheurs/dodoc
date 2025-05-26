@@ -107,7 +107,6 @@ export default {
   methods: {
     async pickMedias(medias) {
       let source_medias = this.publimodule.source_medias.slice() || [];
-      debugger;
       for (const media of medias) {
         const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
