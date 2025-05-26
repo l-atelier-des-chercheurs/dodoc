@@ -36,9 +36,9 @@
           :key="style_file.$path"
           :value="getFilename(style_file.$path)"
         >
-          style – {{ style_file.css_title || getFilename(style_file.$path) }}
+          {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
-        <option value="default">style – {{ $t("default_value") }}</option>
+        <option value="default">{{ $t("default_styles") }}</option>
       </select>
     </div>
 
@@ -94,10 +94,7 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
-    opened_style_file_meta: {
-      type: String,
-      default: "default",
-    },
+    opened_style_file_meta: String,
     viewer_type: {
       type: String,
       default: "infinite-viewer",
@@ -130,9 +127,12 @@ export default {
     };
   },
   created() {
-    // if (this.style_files.length > 0 && !this.opened_style_file_meta) {
-    //   this.$emit("setStyleFile", this.getFilename(this.style_files[0]?.$path));
-    // }
+    if (
+      this.style_files.length > 0 &&
+      this.opened_style_file_meta === "first"
+    ) {
+      this.$emit("setStyleFile", this.getFilename(this.style_files[0]?.$path));
+    }
   },
   mounted() {},
   beforeDestroy() {},
@@ -158,17 +158,19 @@ export default {
     },
     custom_styles_unnested() {
       if (
-        this.style_files &&
-        this.opened_style_file_meta &&
-        this.opened_style_file_meta !== "default"
+        this.opened_style_file_meta === "default" ||
+        this.style_files?.length === 0
       ) {
+        return default_styles;
+      } else if (!this.opened_style_file_meta) {
+        return this.style_files[0];
+      } else {
         return (
           this.style_files.find(
             (f) => this.getFilename(f.$path) === this.opened_style_file_meta
           )?.$content || ""
         );
       }
-      return default_styles;
     },
     all_chapters() {
       return this.getSectionsWithProps({
