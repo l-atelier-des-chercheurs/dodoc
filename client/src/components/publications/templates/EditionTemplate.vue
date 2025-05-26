@@ -92,18 +92,19 @@
     </PublicationSettings>
 
     <!-- preview mode -->
-    <ViewContent
-      v-else
-      :publication="publication"
-      :opened_chapter_meta_filename="opened_section_meta_filename"
-      :current_view_mode="view_mode"
-      :opened_style_file_meta="opened_style_file_meta"
-      :viewer_type="'div'"
-      :can_edit="false"
-      @openChapter="$emit('updatePane', { key: 'chapter', value: $event })"
-      @changeView="$emit('updatePane', { key: 'view_mode', value: $event })"
-      @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
-    />
+    <div class="_previewMode" v-else>
+      <ViewContent
+        :publication="publication"
+        :opened_chapter_meta_filename="opened_section_meta_filename"
+        :current_view_mode="view_mode"
+        :opened_style_file_meta="opened_style_file_meta"
+        :viewer_type="'div'"
+        :can_edit="false"
+        @openChapter="$emit('updatePane', { key: 'chapter', value: $event })"
+        @changeView="$emit('updatePane', { key: 'view_mode', value: $event })"
+        @setStyleFile="$emit('updatePane', { key: 'style', value: $event })"
+      />
+    </div>
   </div>
 </template>
 <script>
@@ -284,6 +285,11 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
+}
+
+._previewMode {
+  overflow: auto;
+  padding: var(--spacing);
 }
 
 ._chapterSummary {
