@@ -17,6 +17,7 @@
               :pages="pages"
               :active_page_number="active_page_number"
               :active_spread_index="active_spread_index"
+              :is_spread="is_spread"
               :page_width="page_width"
               :page_height="page_height"
               :scale="scale"
