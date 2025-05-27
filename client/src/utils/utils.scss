@@ -64,10 +64,13 @@ a:focus-visible {
   // font-weight: bold;
   border: 1px solid var(--c-rouge);
   border-bottom-width: 4px;
-  background-color: white;
+  // background-color: var(--c-rouge_fonce);
+  // color: white;
   // color: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
-  border-radius: 8px;
+  border-radius: var(--input-border-radius);
+
+  font-weight: 400;
 
   &::before {
     content: "⚠";
