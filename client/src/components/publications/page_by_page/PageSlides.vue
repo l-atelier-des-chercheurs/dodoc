@@ -45,7 +45,7 @@
                 :page_color="slide_current_page.page_color"
                 :layout_mode="publication.layout_mode"
                 :hide_pagination="slide_current_page.hide_pagination === true"
-                :page_number="getCorrectPageNumber(page.id)"
+                :page_number="getCorrectPageNumber(slide_current_page.id)"
                 :pagination="pagination"
                 :can_edit="false"
               />
