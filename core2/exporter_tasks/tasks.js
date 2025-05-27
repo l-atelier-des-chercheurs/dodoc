@@ -146,7 +146,7 @@ module.exports = (function () {
         let complexFilters = [];
         let all_video_outputs = [];
         let all_audio_outputs = [];
-        const transition_duration = 0.08;
+        const transition_duration = 0.2;
 
         temp_videos_array.map(
           ({ duration, transition_in, transition_out }, index) => {
