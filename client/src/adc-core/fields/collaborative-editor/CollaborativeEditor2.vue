@@ -213,9 +213,15 @@ export default {
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
     if (this.edit_on_mounted === true) this.enableEditor();
+
+    this.$eventHub.$on("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$on("media.disableEditor." + this.path, this.disableEditor);
   },
   beforeDestroy() {
     this.disableEditor();
+
+    this.$eventHub.$off("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$off("media.disableEditor." + this.path, this.disableEditor);
   },
   watch: {
     content() {

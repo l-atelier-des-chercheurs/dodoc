@@ -813,6 +813,10 @@ export default {
       });
       const path = this.project.$path + "/" + meta_filename;
       this.toggleMediaFocus(path);
+
+      setTimeout(() => {
+        this.$eventHub.$emit("media.enableEditor." + path);
+      }, 500);
     },
     mediaJustImported(list_of_added_metas) {
       if (!this.select_mode || this.select_mode === "single") return false;
