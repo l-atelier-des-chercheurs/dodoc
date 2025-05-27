@@ -586,6 +586,7 @@ export default {
 
     ._mediasModule {
       height: 100%;
+      overflow: hidden;
     }
 
     ._mediaGrid,
