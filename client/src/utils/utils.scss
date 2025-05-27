@@ -231,7 +231,7 @@ button,
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris);
+    color: var(--c-gris_fonce);
   }
 
   &:hover,
@@ -314,7 +314,8 @@ button,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
-      background-color: var(--c-gris);
+      background-color: var(--active-color);
+      color: white;
     }
   }
 }
@@ -1108,8 +1109,8 @@ input[type="checkbox"] {
 
 .u-icon {
   position: relative;
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   svg {
     position: absolute;
     top: 0;

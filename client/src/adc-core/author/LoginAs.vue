@@ -207,7 +207,6 @@ export default {
         })
         .catch((err) => {
           this.connection_status = "failed";
-          debugger;
           if (err.code === "submitted_password_is_wrong") {
             this.$refs.passwordField.$el.querySelector("input").select();
             this.msg_password_is_wrong = this.$t("submitted_password_is_wrong");
