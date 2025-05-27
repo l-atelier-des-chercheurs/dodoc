@@ -1081,6 +1081,7 @@ input[type="checkbox"] {
   pointer-events: auto;
   background: var(--c-bleuvert);
   border: 2px solid var(--c-bleuvert_fonce);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   border-radius: 4px;
   color: white;
 
