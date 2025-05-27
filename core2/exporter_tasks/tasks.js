@@ -113,10 +113,16 @@ module.exports = (function () {
         });
       }
 
-      const { duration } = await utils.getVideoMetaData({
-        ffmpeg_cmd,
-        video_path: temp_video_path,
-      });
+      let duration;
+      try {
+        const infos = await utils.getVideoMetaData({
+          ffmpeg_cmd,
+          path: temp_video_path,
+        });
+        if (infos.duration) duration = infos.duration;
+      } catch (err) {
+        dev.error(err);
+      }
 
       return {
         video_path: temp_video_path,
