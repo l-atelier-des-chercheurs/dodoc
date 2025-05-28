@@ -1,6 +1,7 @@
 <template>
   <div class="_mediaPicker">
     <PickExistingMediastackModal
+      :modal_title="$t('pick_medias')"
       :select_mode="select_mode"
       @close="$emit('close')"
       @mediasSelected="$emit('mediasSelected', $event)"

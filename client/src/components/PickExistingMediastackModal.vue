@@ -1,6 +1,6 @@
 <template>
   <BaseModal2
-    :title="$t('pick_existing_mediastack')"
+    :title="modal_title || $t('pick_existing_mediastack')"
     :is_closable="true"
     :size="'large'"
     @close="$emit('close')"
@@ -14,6 +14,7 @@
           "
         />
       </div>
+
       <transition name="pagechange" mode="out-in">
         <div
           v-if="selected_destination_folder_path"
@@ -23,6 +24,7 @@
           <SharedFolder2
             :shared_folder_path="selected_destination_folder_path"
             :select_mode="select_mode"
+            @selectMedias="$emit('mediasSelected', $event)"
             @selectStack="$emit('stackSelected', $event)"
           />
         </div>
@@ -35,6 +37,7 @@ import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vu
 
 export default {
   props: {
+    modal_title: String,
     select_mode: {
       type: String,
       default: "single_stack",

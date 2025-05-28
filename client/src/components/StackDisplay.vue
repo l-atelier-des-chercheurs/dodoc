@@ -215,6 +215,11 @@
         {{ $t("select_stack") }}
       </button>
     </div>
+    <div v-if="can_be_selected === 'multiple_medias'" class="_selectBar">
+      <button class="u-button" type="button" @click="selectAllStackMedias">
+        {{ $t("select_all_stack_medias") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -348,6 +353,12 @@ export default {
   methods: {
     updatePaneWidth() {
       this.pane_width = this.$el.offsetWidth;
+    },
+    selectAllStackMedias() {
+      this.$emit(
+        "selectMedias",
+        this.stack_files_in_order.map((f) => f.$path)
+      );
     },
 
     async changeMediaOrder(old_position, new_position) {

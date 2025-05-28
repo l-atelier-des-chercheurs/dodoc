@@ -36,6 +36,7 @@
         @prevMedia="navMedia(-1)"
         @nextMedia="navMedia(+1)"
         @selectStack="$emit('selectStack', opened_stack)"
+        @selectMedias="selectMedias"
         @close="closeStack"
       />
     </transition>
@@ -162,6 +163,8 @@ export default {
       group_mode: "year",
 
       fav_filter: false,
+
+      selected_medias_paths: [],
     };
   },
   i18n: {
@@ -338,6 +341,10 @@ export default {
       let query = Object.assign({}, this.$route.query) || {};
       delete query.stack;
       this.$router.push({ query });
+    },
+    selectMedias(medias_paths) {
+      this.selected_medias_paths =
+        this.selected_medias_paths.concat(medias_paths);
     },
   },
 };
