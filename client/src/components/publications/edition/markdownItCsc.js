@@ -1,7 +1,7 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-const tags_list = ["image", "video", "audio", "embed"];
+const tags_list = ["image", "video", "audio", "embed", "break"];
 
 export default (md, o = {}) => {
   const getMediaSrc = o.getMediaSrc;
@@ -195,6 +195,11 @@ export default (md, o = {}) => {
     if (tags_list.includes(token.tag)) {
       // Use getMediaSrc if available, otherwise fallback to normal behavior
       let media = null;
+
+      if (token.tag === "break") {
+        return `<div class="break break-${token.attrs.src}"></div>\n`;
+      }
+
       if (getMediaSrc && !token.attrs.src.startsWith("http")) {
         media = getMediaSrc(token.attrs.src);
       }
@@ -237,19 +242,16 @@ export default (md, o = {}) => {
         classes.push(`float-${token.attrs.float}`);
       }
 
-      let style_attr = "";
       if (
         token.attrs.width &&
         (token.attrs.width.includes("%") || token.attrs.width.includes("cm"))
       ) {
-        style_attr = `style="width: ${token.attrs.width};"`;
+        attrs.push(`style="width: ${token.attrs.width};"`);
       }
 
       // Create the image tag with all attributes
       const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
-      let media_tag = `<figure class="${classes.join(
-        " "
-      )}"${attrs_str} ${style_attr}>`;
+      let media_tag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
 
       if (token.tag === "image") {
         media_tag += `<img src="${src}" />`;
@@ -282,6 +284,8 @@ export default (md, o = {}) => {
           : "";
 
       return media_tag + caption + "</figure>\n";
+    } else if (token.tag === "break") {
+      return `<div class="break break-${token.attrs.type}"></div>\n`;
     } else {
       return token.content + "\n";
     }

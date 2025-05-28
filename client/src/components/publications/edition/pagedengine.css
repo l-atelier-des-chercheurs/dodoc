@@ -110,9 +110,27 @@ p:empty {
   }
 }
 
-.edition hr {
+hr {
   clear: both;
   width: 100%;
+}
+
+.break {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: var(--c-gris_clair);
+  margin: 0;
+  padding: 0;
+}
+.break-page {
+  page-break-before: page;
+}
+.break-left {
+  page-break-before: left;
+}
+.break-right {
+  page-break-before: right;
 }
 
 .edition .gallery {
