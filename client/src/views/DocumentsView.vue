@@ -30,7 +30,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._documentsView {
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
   height: 100%;
   overflow: auto;
 }

@@ -133,7 +133,7 @@ export default {
     },
     getURLToFolder(path) {
       const publication_slug = path.split("/").at(-1);
-      this.$emit("open", publication_slug);
+      return `/publish/${publication_slug}`;
     },
   },
 };
@@ -168,6 +168,7 @@ export default {
   align-items: center;
   padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
+  text-decoration: none;
 
   h3 {
     margin: 0;

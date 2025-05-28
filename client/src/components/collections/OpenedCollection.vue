@@ -7,10 +7,10 @@
         </div>
       </div>
       <div v-else-if="fetch_coll_error_message" class="_error" key="err">
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <a href="/publish">
           <b-icon icon="arrow-left" />
           {{ $t("back") }}
-        </button>
+        </a>
         <div class="">
           {{ fetch_coll_error_message }}
         </div>
@@ -18,15 +18,13 @@
       <div v-else :key="collection.$path">
         <div class="_topbar">
           <div class="u-sameRow">
-            <button
-              type="button"
+            <router-link
+              to="/publish"
               class="u-button u-button_icon u-button_white"
               :title="$t('back')"
-              @click="$emit('close')"
             >
               <b-icon icon="arrow-left" />
-              <!-- {{ $t("back") }} -->
-            </button>
+            </router-link>
             <TitleField
               :field_name="'title'"
               :content="collection.title"
