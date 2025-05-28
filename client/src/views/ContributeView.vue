@@ -786,7 +786,7 @@ export default {
   flex-flow: row wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
 
   > * {
     flex: 0 1 28em;

@@ -294,7 +294,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 85%;
+  font-size: 90%;
   line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;

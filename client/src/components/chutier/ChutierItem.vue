@@ -23,17 +23,15 @@
         </div>
         <div class="_titleDateField">
           <div>
-            <div class="">
-              <small>
-                {{
-                  context === "stack"
-                    ? formatDateTimeToPrecise(date_created_corrected)
-                    : formatTime(date_created_corrected, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                }}
-              </small>
+            <div class="_time">
+              {{
+                context === "stack"
+                  ? formatDateTimeToPrecise(date_created_corrected)
+                  : formatTime(date_created_corrected, {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+              }}
             </div>
             <div class="_infos2">
               <div v-if="file.caption">
@@ -47,9 +45,9 @@
                 />
                 <CollaborativeEditor3 :content="file.$credits" />
               </div>
-              <small v-if="!file.caption && !file.$credits" class="_filename">
+              <span v-if="!file.caption && !file.$credits" class="_filename">
                 {{ file.$media_filename }}
-              </small>
+              </span>
             </div>
           </div>
         </div>
@@ -235,11 +233,11 @@ export default {
   position: relative;
   // width: 100%;
   break-inside: avoid;
-  // padding: 2px;
+  padding: 2px;
   // padding: calc(var(--spacing) / 4) 0;
   overflow: hidden;
-  // border-radius: 4px;
-  color: var(--h-500);
+  border-radius: 3px;
+  color: var(--h-300);
   cursor: pointer;
   transform-origin: center center;
 
@@ -425,6 +423,7 @@ export default {
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: flex-start;
+  // font-size: 110%;
   // gap: calc(var(--spacing) / 2);
 
   > * {
@@ -463,5 +462,9 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+._time {
+  opacity: 0.5;
 }
 </style>
