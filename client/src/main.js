@@ -195,8 +195,6 @@ import ShareFile from "@/adc-core/fields/ShareFile.vue";
 Vue.component("ShareFile", ShareFile);
 import EmbedFile from "@/adc-core/fields/EmbedFile.vue";
 Vue.component("EmbedFile", EmbedFile);
-import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
-Vue.component("PickMediaFromProjects", PickMediaFromProjects);
 import LoaderSpinner from "@/adc-core/fields/LoaderSpinner.vue";
 Vue.component("LoaderSpinner", LoaderSpinner);
 

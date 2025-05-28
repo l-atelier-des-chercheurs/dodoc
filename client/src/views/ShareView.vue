@@ -117,6 +117,7 @@ export default {
     }
 
     await this.loadFolders();
+    this.$api.join({ room: this.path });
 
     const last_opened_folder_slug = localStorage.getItem(
       "last_opened_folder_slug"
@@ -127,7 +128,9 @@ export default {
     // check if necerray to login or create account :
   },
   async mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {
     connected_as() {},
     panes_width: {
@@ -158,7 +161,6 @@ export default {
           // this.is_loading = false;
           return;
         });
-      this.$api.join({ room: this.path });
     },
     openFolder() {
       const folder_slug = this.shared_folder_path.split("/").pop();

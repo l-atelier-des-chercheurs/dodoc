@@ -44,6 +44,9 @@
         :to="getURLToFolder(collection.$path)"
       >
         <h3>{{ collection.title }}</h3>
+        <div class="_collection_type">
+          {{ $t(collection.template) }}
+        </div>
         <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
           <AuthorTag
             v-for="(atpath, index) in collection.$admins"

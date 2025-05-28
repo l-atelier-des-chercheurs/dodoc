@@ -2,6 +2,7 @@
   <BaseModal2
     :title="$t('pick_existing_mediastack')"
     :is_closable="true"
+    :size="'large'"
     @close="$emit('close')"
   >
     <div class="_pickExistingMediastackModal">
@@ -13,13 +14,19 @@
           "
         />
       </div>
-      <div v-if="selected_destination_folder_path" class="_stackPickerFrame">
-        <SharedFolder2
-          :shared_folder_path="selected_destination_folder_path"
-          :select_mode="'single_stack'"
-          @selectStack="$emit('stackSelected', $event)"
-        />
-      </div>
+      <transition name="pagechange" mode="out-in">
+        <div
+          v-if="selected_destination_folder_path"
+          :key="selected_destination_folder_path"
+          class="_stackPickerFrame"
+        >
+          <SharedFolder2
+            :shared_folder_path="selected_destination_folder_path"
+            :select_mode="select_mode"
+            @selectStack="$emit('stackSelected', $event)"
+          />
+        </div>
+      </transition>
     </div>
   </BaseModal2>
 </template>
@@ -27,7 +34,12 @@
 import DestinationCorpusSelector from "@/components/DestinationCorpusSelector.vue";
 
 export default {
-  props: {},
+  props: {
+    select_mode: {
+      type: String,
+      default: "single_stack",
+    },
+  },
   components: {
     DestinationCorpusSelector,
     SharedFolder2: () => import("@/components/archive/SharedFolder2.vue"),

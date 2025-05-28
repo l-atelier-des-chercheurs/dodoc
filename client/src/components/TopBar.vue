@@ -185,7 +185,6 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: var(--sl-font-size-large);
   font-weight: 300;
   text-transform: uppercase;
 
@@ -200,6 +199,7 @@ export default {
     background-color: transparent;
     // border: 1px solid #ddd;
     border-radius: 0;
+    font-size: 20px;
     cursor: pointer;
     text-decoration: none;
 
