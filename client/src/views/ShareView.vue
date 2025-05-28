@@ -122,7 +122,7 @@ export default {
       "last_opened_folder_slug"
     );
     if (last_opened_folder_slug) {
-      this.$router.push(`/share/${last_opened_folder_slug}`);
+      this.$router.push(`/consult/${last_opened_folder_slug}`);
     }
     // check if necerray to login or create account :
   },
@@ -163,7 +163,7 @@ export default {
     openFolder() {
       const folder_slug = this.shared_folder_path.split("/").pop();
       localStorage.setItem("last_opened_folder_slug", folder_slug);
-      this.$router.push(`/share/${folder_slug}`);
+      this.$router.push(`/consult/${folder_slug}`);
     },
     async createCorpus() {
       this.is_creating_corpus = true;

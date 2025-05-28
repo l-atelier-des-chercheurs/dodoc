@@ -11,51 +11,51 @@ const routes = [
       import(/* webpackChunkName: "AccueilView" */ "../views/Accueil.vue"),
   },
   {
-    path: "/contribute",
-    name: "Contribuer",
+    path: "/import",
+    name: "Importer",
     component: () =>
       import(
         /* webpackChunkName: "ContributeView" */ "../views/ContributeView.vue"
       ),
   },
   {
-    path: "/share",
-    name: "Partager",
+    path: "/consult",
+    name: "Consulter",
     component: () =>
       import(/* webpackChunkName: "ShareView" */ "../views/ShareView.vue"),
   },
   {
-    path: "/share/:folder_slug",
-    name: "Corpus",
+    path: "/consult/:folder_slug",
+    name: "Consulter",
     component: () =>
       import(/* webpackChunkName: "CorpusView" */ "../views/CorpusView.vue"),
   },
   {
-    path: "/documents",
-    name: "Documents",
+    path: "/publish",
+    name: "Publications",
     component: () =>
       import(
         /* webpackChunkName: "DocumentsView" */ "../views/DocumentsView.vue"
       ),
   },
   {
-    path: "/documents/:document_slug",
-    name: "Document",
+    path: "/publish/:document_slug",
+    name: "Publication",
     component: () =>
       import(
         /* webpackChunkName: "DocumentView" */ "../views/DocumentView.vue"
       ),
   },
   {
-    path: "/collections/:collection_slug",
-    name: "Collections",
+    path: "/publication/:document_slug",
+    name: "Publication",
     meta: {
       /* do not load full UI */
       static: true,
     },
     component: () =>
       import(
-        /* webpackChunkName: "CollectionView" */ "../views/CollectionView.vue"
+        /* webpackChunkName: "StaticPublicationView.vue" */ "../views/StaticPublicationView.vue"
       ),
   },
   {

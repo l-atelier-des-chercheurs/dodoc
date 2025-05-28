@@ -29,34 +29,32 @@
       />
     </div>
 
-    <table class="u-spacingBottom _list">
-      <transition-group tag="tbody" name="projectsList" appear>
-        <tr
-          v-for="collection in filtered_collections"
-          :key="collection.$path"
-          @click="$emit('open', getFilename(collection.$path))"
-        >
-          <td>
-            <strong>{{ collection.title }}</strong> –
-            <i>{{
-              $t(collection.template || "story_with_sections").toLowerCase()
-            }}</i>
-          </td>
-          <td>
-            <div class="u-sameRow">
-              <AuthorTag
-                v-for="(atpath, index) in collection.$admins"
-                :key="atpath + '_' + index"
-                :path="atpath"
-                :show_image_only="true"
-              />
-            </div>
-          </td>
-        </tr>
-      </transition-group>
-    </table>
+    <div class="_collections">
+      <div
+        v-if="filtered_collections.length === 0"
+        class="u-instructions"
+        :key="'nopublis'"
+      >
+        {{ $t("no_collections") }}
+      </div>
+      <router-link
+        v-for="collection in filtered_collections"
+        :key="collection.$path"
+        class="_collection"
+        :to="getURLToFolder(collection.$path)"
+      >
+        <h3>{{ collection.title }}</h3>
+        <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
+          <AuthorTag
+            v-for="(atpath, index) in collection.$admins"
+            :key="atpath + '_' + index"
+            :path="atpath"
+            :show_image_only="true"
+          />
+        </div>
+      </router-link>
+    </div>
   </div>
-  <!-- </BaseModal2> -->
 </template>
 <script>
 import CreateCollection from "@/components/collections/CreateCollection.vue";
@@ -129,9 +127,13 @@ export default {
     },
   },
   methods: {
-    openNewCollection(new_folder_slug) {
+    openNewCollection(new_publication_slug) {
       this.show_create_collection = false;
-      this.$emit("open", new_folder_slug);
+      this.$emit("open", new_publication_slug);
+    },
+    getURLToFolder(path) {
+      const publication_slug = path.split("/").at(-1);
+      this.$emit("open", publication_slug);
     },
   },
 };
@@ -146,44 +148,29 @@ export default {
   max-width: 30ch;
 }
 
-table,
-th,
-td {
-  border: 2px solid var(--h-100);
-  border-collapse: collapse;
+._collections {
+  width: 100%;
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-gap: calc(var(--spacing) / 1);
+  align-items: stretch;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--item-width, 320px), 1fr)
+  );
 }
 
-._list {
-  width: 100%;
-  // background: var(--c-gris);
-  // padding: 1px;
+._collection {
+  border: 1px solid var(--h-100);
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 2);
 
-  tr {
-    padding: calc(var(--spacing) / 2);
-    cursor: pointer;
-
-    &:hover,
-    &:focus-visible {
-      background-color: var(--h-100);
-    }
-
-    // background: white;
-  }
-
-  tr:nth-child(2n) {
-    // background-color: var(--c-gris);
-  }
-  tr:nth-child(2n + 1) {
-    // background-color: var(--c-gris_clair);
-  }
-  tr > td:last-child {
-    width: 100px;
-    padding: 0;
-  }
-
-  td {
-    padding: calc(var(--spacing) / 2);
-    // pointer-events: none;
+  h3 {
+    margin: 0;
   }
 }
 </style>

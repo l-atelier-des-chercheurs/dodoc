@@ -22,7 +22,7 @@ export default {
   methods: {
     openCollection(slug) {
       this.$router.push({
-        path: "/documents/" + slug,
+        path: "/publish/" + slug,
       });
     },
   },

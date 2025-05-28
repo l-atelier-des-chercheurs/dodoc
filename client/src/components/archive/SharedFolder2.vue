@@ -302,7 +302,7 @@ export default {
     },
     closeCorpus() {
       localStorage.removeItem("last_opened_folder_slug");
-      this.$router.push("/share");
+      this.$router.push("/consult");
     },
     isFavorite(stack_path) {
       if (

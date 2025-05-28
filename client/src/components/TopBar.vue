@@ -80,9 +80,15 @@
       </div>
     </div>
     <div class="_menu">
-      <router-link to="/contribute" active-class="active">IMPORTER</router-link>
-      <router-link to="/share" active-class="active">CONSULTER</router-link>
-      <router-link to="/documents" active-class="active">PARTAGER</router-link>
+      <router-link to="/import" active-class="is--active">{{
+        $t("import")
+      }}</router-link>
+      <router-link to="/consult" active-class="is--active">
+        {{ $t("consult") }}
+      </router-link>
+      <router-link to="/publish" active-class="is--active">
+        {{ $t("publish") }}
+      </router-link>
     </div>
   </div>
 </template>
@@ -104,6 +110,20 @@ export default {
       show_lang_modal: false,
       show_qr_code_modal: false,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        import: "Déposer",
+        consult: "Consulter",
+        publish: "Publier",
+      },
+      en: {
+        import: "Import",
+        consult: "Consult",
+        publish: "Publish",
+      },
+    },
   },
   created() {},
   mounted() {},
@@ -165,8 +185,9 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  font-size: 1rem;
-  font-weight: bold;
+  font-size: var(--sl-font-size-large);
+  font-weight: 300;
+  text-transform: uppercase;
 
   a {
     flex: 1 1 0;
@@ -175,19 +196,15 @@ export default {
     justify-content: center;
     height: 100%;
     min-height: 50px;
-    padding: 10px 20px;
+    padding: 10px;
     background-color: transparent;
     // border: 1px solid #ddd;
     border-radius: 0;
     cursor: pointer;
     text-decoration: none;
 
-    &:hover {
-      background-color: var(--h-200);
-    }
-
-    &.active {
-      background-color: var(--h-700);
+    &.is--active {
+      background-color: var(--h-600);
       color: white;
       // font-weight: bold;
     }

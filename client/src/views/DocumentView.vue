@@ -42,7 +42,7 @@ export default {
     },
     closeCollection() {
       this.$router.push({
-        path: "/documents",
+        path: "/publish",
       });
     },
   },

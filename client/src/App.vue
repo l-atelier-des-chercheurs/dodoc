@@ -164,7 +164,7 @@ export default {
   // --sharedfolder-bg: ;
 
   // from tldraw
-  --body-bg: var(--h-50);
+  --body-bg: white;
   --panel-color: var(--body-bg);
   --panel-color: #fff;
   --panel-borders: 1px solid var(--panel-color);
@@ -181,7 +181,7 @@ export default {
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
   --border-radius: 6px;
-  --border-color: var(--h-500);
+  --border-color: var(--h-100);
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
@@ -230,7 +230,7 @@ export default {
 
   --sl-font-size-normal: 1rem;
 
-  --sl-font-size-large: 1.5rem;
+  --sl-font-size-large: 1.4rem;
   --sl-font-size-x-large: 1.66rem;
   --sl-font-size-xx-large: 2.8rem;
 
@@ -310,10 +310,12 @@ a {
   color: var(--h-900);
   text-underline-offset: 0.1em;
 
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
   &:hover,
   &:focus-visible {
     text-decoration: none;
-    color: var(--h-700);
+    color: var(--h-600);
   }
 }
 

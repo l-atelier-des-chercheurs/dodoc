@@ -27,7 +27,9 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    this.$router.push("/import");
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},

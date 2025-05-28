@@ -1,10 +1,19 @@
 <template>
-  <div class="_myChutier" @click="last_clicked = false">
+  <div
+    class="_myChutier"
+    :class="{ 'is--mobile': $root.is_mobile_view }"
+    @click="last_clicked = false"
+  >
     <portal-target name="largemedia" multiple />
 
     <div class="_importFiles" @click.self="selected_items_slugs = []">
       <div class="_dashboard">
         <DLabel :str="$t('dashboard')" />
+        <div class="u-spacingBottom" />
+        <div class="u-instructions u-spacingBottom">
+          <b-icon icon="info-circle" />
+          {{ $t("imported_docs") }}
+        </div>
       </div>
       <div class="_importFiles--content">
         <div class="_importButton">
@@ -51,12 +60,9 @@
 
     <div class="_filesList">
       <div class="_middleContent">
-        <div class="u-instructions u-spacingBottom">
-          <b-icon icon="info-circle" />
-          {{ $t("imported_docs") }}
-        </div>
         <template v-if="chutier_items && chutier_items.length > 0">
           <label
+            v-if="false"
             for=""
             class="_item--label"
             :class="{
@@ -489,7 +495,8 @@ export default {
       this.show_confirm_remove_menu = false;
     },
     async stackPosted(new_stack_slug) {
-      this.link_to_new_stack = `/corpus?stack=${new_stack_slug}`;
+      debugger;
+      // this.link_to_new_stack = `/consult/${new_stack_slug}`;
       this.show_new_mediastack_modal = false;
     },
     async moveFilesToStack(stack) {
@@ -535,14 +542,14 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-start;
 
-  @media (max-width: 600px) {
+  &.is--mobile {
     min-height: calc(100% - 50px);
     flex-flow: column nowrap;
     overflow: auto;
   }
 
   > ._importFiles {
-    flex: 1 1 33%;
+    flex: 1 0 320px;
 
     @media (max-width: 600px) {
       flex: 0 0 auto;
@@ -550,7 +557,7 @@ export default {
   }
 
   > ._filesList {
-    flex: 1 1 66%;
+    flex: 5 1 0;
   }
 }
 ._importFiles {
@@ -558,7 +565,7 @@ export default {
   top: 0;
   height: 100%;
   overflow: auto;
-  border-right: 1px solid var(--border-color);
+  // border-right: 1px solid var(--border-color);
 
   @include scrollbar(4px, 4px, 5px, transparent, white);
 
@@ -571,11 +578,11 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  height: 100%;
+  // height: 100%;
   max-width: 400px;
   margin: 0 auto;
-  padding: calc(var(--spacing) * 1);
-  padding-bottom: 40px;
+  // padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 4);
 
   ::v-deep .u-dropzone {
     padding: calc(var(--spacing) * 2);
@@ -609,8 +616,8 @@ export default {
 
 ._middleContent {
   height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  width: 100%;
+  overflow: auto;
   padding: calc(var(--spacing) * 2);
 }
 
@@ -731,10 +738,10 @@ export default {
 
 ._dashboard {
   min-height: 30ch;
-  background: var(--h-100);
+  background: var(--h-50);
 
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 1);
 }
 
 ._importButton {
@@ -782,7 +789,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   > * {
-    flex: 0 1 22em;
+    flex: 0 1 28em;
     // max-width: 22em;
   }
 }

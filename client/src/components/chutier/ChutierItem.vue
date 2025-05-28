@@ -220,7 +220,7 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
-  padding: 0 calc(var(--spacing) / 4);
+  // padding: 0 calc(var(--spacing) / 4);
   width: 100%;
 
   ._titleDateField {
@@ -236,9 +236,9 @@ export default {
   // width: 100%;
   break-inside: avoid;
   // padding: 2px;
-  padding: calc(var(--spacing) / 4) 0;
+  // padding: calc(var(--spacing) / 4) 0;
   overflow: hidden;
-  border-radius: 4px;
+  // border-radius: 4px;
   color: var(--h-500);
   cursor: pointer;
   transform-origin: center center;
@@ -289,14 +289,14 @@ export default {
 
   ._chutierRow--preview {
     position: relative;
-    height: 60px;
+    height: 80px;
     border-radius: 2px;
-    width: 60px;
+    width: 80px;
     flex: 0 0 auto;
-    overflow: visible;
+    overflow: hidden;
     // color: white;
     // background: black;
-    background: var(--sd-separator);
+    background: var(--h-200);
     color: var(--h-200);
 
     display: block !important;

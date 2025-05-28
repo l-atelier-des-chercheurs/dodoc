@@ -209,8 +209,11 @@ export default {
       )
         query = { scroll: "auto" };
 
+      const collection_slug = this.collection.$path.split("/").at(-1);
+      const path = `/publication/${collection_slug}`;
+
       const route = this.$router.resolve({
-        path: this.createURLFromPath(this.collection.$path),
+        path,
         query,
       });
 
@@ -256,7 +259,7 @@ export default {
   align-items: center;
 
   padding: calc(var(--spacing) / 2);
-  border-bottom: 1px solid var(--c-gris);
+  border-bottom: 1px solid var(--border-color);
 }
 
 ._cont {
