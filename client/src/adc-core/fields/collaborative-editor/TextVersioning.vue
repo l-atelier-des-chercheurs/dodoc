@@ -15,20 +15,22 @@
           {{ $t("recent") }}
         </button>
 
-        <select v-model="selected_archive_filename">
-          <option
-            v-for="(archive, index) in archives"
-            :value="archive.filename"
-            :key="archive.filename"
-            v-text="
-              archive.filename === 'current'
-                ? $t('current')
-                : formatDateTimeToPrecise(archive.date) +
-                  ' - version ' +
-                  (archives.length - index)
-            "
-          />
-        </select>
+        <div>
+          <select v-model="selected_archive_filename">
+            <option
+              v-for="(archive, index) in archives"
+              :value="archive.filename"
+              :key="archive.filename"
+              v-text="
+                archive.filename === 'current'
+                  ? $t('current')
+                  : formatDateTimeToPrecise(archive.date) +
+                    ' - version ' +
+                    (archives.length - index)
+              "
+            />
+          </select>
+        </div>
 
         <button
           class="u-button u-button_small"

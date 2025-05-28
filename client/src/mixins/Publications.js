@@ -53,8 +53,8 @@ export default {
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;
       return {
-        right: publication.pagn_right || 2,
-        bottom: publication.pagn_bottom || 2,
+        right: publication.pagn_right || 10,
+        bottom: publication.pagn_bottom || 10,
         pagination_start_on_page: publication.pagn_starts_on_page - 1 || 0,
       };
     },

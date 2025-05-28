@@ -122,6 +122,20 @@
       :admin_instructions="$t('project_admin_instructions')"
       :contrib_instructions="$t('project_contrib_instructions')"
     />
+
+    <div class="u-spacingBottom"></div>
+
+    <div class="u-warning u-spacingBottom">Test warning</div>
+    <div class="u-warning">
+      Test warning on multiple lines Test warning on multiple lines Test warning
+      on multiple lines Test warning on multiple lines Test warning on multiple
+      lines Test warning on multiple lines Test warning on multiple lines Test
+      warning on multiple lines Test warning on multiple lines Test warning on
+      multiple lines Test warning on multiple lines Test warning on multiple
+      lines
+    </div>
+
+    <div class="u-spacingBottom"></div>
   </div>
 </template>
 <script>
@@ -153,6 +167,7 @@ export default {
 ._uiView {
   max-width: 600px;
   margin: calc(var(--spacing) / 1) auto;
+  padding-bottom: 30vh;
   width: 100%;
 }
 
