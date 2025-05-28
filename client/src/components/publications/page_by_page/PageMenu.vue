@@ -3,9 +3,7 @@
     <div class="_pageMenu--pane">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
         <b-icon icon="grid-fill" />
-        <template v-if="!active_spread_index">{{
-          $t("list_of_pages")
-        }}</template>
+        <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
         <template v-else>{{ $t("list_of_spreads") }}</template>
       </button>
       <div class="_titleRow">
@@ -63,7 +61,7 @@
         />
       </div>
 
-      <div class="" v-if="can_edit">
+      <div class="u-displayAsPublic" v-if="can_edit">
         <ToggleInput
           :content="display_as_public"
           @update:content="$emit('update:display_as_public', $event)"
@@ -690,6 +688,7 @@ export default {
     pages: Array,
     active_page_number: Number,
     active_spread_index: [Boolean, Number],
+    is_spread: Boolean,
     page_width: Number,
     page_height: Number,
     scale: Number,

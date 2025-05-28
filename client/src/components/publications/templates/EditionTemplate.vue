@@ -31,6 +31,7 @@
             class="u-button u-button_bleumarine"
             @click="$emit('updatePane', { key: 'edit_graphics', value: true })"
           >
+            <b-icon icon="file-code" />
             {{ $t("graphic_styles") }}
           </button>
         </div>
@@ -206,7 +207,7 @@ export default {
       return this.pane_infos?.edit_graphics === true;
     },
     opened_style_file_meta() {
-      return this.pane_infos?.style || "default";
+      return this.pane_infos?.style || "first";
     },
     meta_filenames_already_present() {
       let current = [],

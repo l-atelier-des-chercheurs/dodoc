@@ -9,13 +9,22 @@
         >
       </div>
 
-      <div class="u-sameRow">
-        <ToggleInput
-          :content.sync="enable_pagination"
-          :label="$t('enable')"
-          :disabled="!edit_mode"
-        />
-      </div>
+      <br />
+
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :is_unfolded="true"
+        @click="enableEditMode"
+      />
+
+      <br />
+      <br />
+
+      <ToggleInput
+        :content.sync="enable_pagination"
+        :label="$t('enable')"
+        :disabled="!edit_mode"
+      />
       <br />
 
       <div class="">
@@ -57,9 +66,6 @@
         </div>
       </div>
 
-      <br />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
-
       <div class="_footer" v-if="edit_mode">
         <SaveCancelButtons
           class="_scb"
@@ -86,8 +92,8 @@ export default {
 
       enable_pagination: this.publication.enable_pagination || false,
       pagn_starts_on_page: this.publication.pagn_starts_on_page || 1,
-      right: this.publication.pagn_right || 2,
-      bottom: this.publication.pagn_bottom || 2,
+      right: this.publication.pagn_right || 10,
+      bottom: this.publication.pagn_bottom || 10,
     };
   },
   created() {},
@@ -109,8 +115,8 @@ export default {
       this.is_saving = false;
       this.enable_pagination = this.publication.enable_pagination;
       this.pagn_starts_on_page = this.publication.pagn_starts_on_page;
-      this.right = this.publication.pagn_right || 2;
-      this.bottom = this.publication.pagn_bottom || 2;
+      this.right = this.publication.pagn_right || 10;
+      this.bottom = this.publication.pagn_bottom || 10;
     },
     async updatePagination() {
       this.is_saving = true;

@@ -64,10 +64,13 @@ a:focus-visible {
   // font-weight: bold;
   border: 1px solid var(--c-rouge);
   border-bottom-width: 4px;
-  background-color: white;
+  // background-color: var(--c-rouge_fonce);
+  // color: white;
   // color: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
-  border-radius: 8px;
+  border-radius: var(--input-border-radius);
+
+  font-weight: 400;
 
   &::before {
     content: "⚠";
@@ -231,7 +234,7 @@ button,
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris);
+    color: var(--c-gris_fonce);
   }
 
   &:hover,
@@ -314,7 +317,8 @@ button,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
-      background-color: var(--c-gris);
+      background-color: var(--active-color);
+      color: white;
     }
   }
 }
@@ -1077,6 +1081,7 @@ input[type="checkbox"] {
   pointer-events: auto;
   background: var(--c-bleuvert);
   border: 2px solid var(--c-bleuvert_fonce);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   border-radius: 4px;
   color: white;
 
@@ -1108,8 +1113,8 @@ input[type="checkbox"] {
 
 .u-icon {
   position: relative;
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   svg {
     position: absolute;
     top: 0;

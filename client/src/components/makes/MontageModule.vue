@@ -34,9 +34,7 @@
               >/ {{ first_media_duration }}</template
             >
           </template>
-          <button type="button" class="u-buttonLink" @click="removeModule">
-            <b-icon icon="trash" />
-          </button>
+          <RemoveMenu @remove="removeModule" />
         </div>
         <div class="">
           <span class="u-switch u-switch-xs">
@@ -104,6 +102,8 @@
   </div>
 </template>
 <script>
+import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
+
 export default {
   props: {
     makemodule: Object,

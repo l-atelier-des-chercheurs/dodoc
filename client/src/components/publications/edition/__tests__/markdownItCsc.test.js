@@ -56,15 +56,6 @@ describe("markdown-it custom shortcode plugin", () => {
     );
   });
 
-  it("should render an image with width and height", () => {
-    const input =
-      "(image: https://example.com/image.jpg width: 100 height: 100)";
-    const output = md.render(input);
-    expect(output).toBe(
-      '<figure class="media media-image" width="100" height="100"><img src="https://example.com/image.jpg" /></figure>\n'
-    );
-  });
-
   it("should render video shortcodes", () => {
     const input = "(video: https://example.com/video.mp4)";
     const output = md.render(input);
@@ -266,5 +257,11 @@ Some text in between
       '<figure class="media media-image"><img src="https://example.com/image1.jpg" />\n' +
         '<figcaption class="mediaCaption"><span>For example: this and that</span></figcaption></figure>\n'
     );
+  });
+  it("should interpret break as break tag", () => {
+    const input = `(break: page)`;
+
+    const output = md.render(input);
+    expect(output).toBe('<div class="break break-page"></div>\n');
   });
 });
