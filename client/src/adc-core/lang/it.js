@@ -1010,7 +1010,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_missing_translations: "Mostra le traduzioni mancanti",
   missing_translations: "Traduzioni mancanti per lingua:",
   hide_already_translated: "Nascondi le traduzioni già fatte",
-  "to_translate:": "Da tradurre:",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copia/incolla il contenuto del blocco qui sopra in un nuovo argomento del forum per integrarlo nel codice sorgente : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum dell’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Cancella tutte le traduzioni proposte",

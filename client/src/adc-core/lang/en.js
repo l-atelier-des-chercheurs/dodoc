@@ -336,6 +336,8 @@ export default {
   create_a_module: "Create a module",
   list_of_versions: "List of versions",
   restore_this_version: "Restore this version",
+  restored_success: "Restored successfully",
+  restore_spaces: "Restore spaces",
   version: "Version",
 
   panes: "Panes",
@@ -1277,4 +1279,8 @@ export default {
   current_resolution: "Current resolution",
   gallery: "Gallery",
   removed_successfully: "Removed successfully",
+  remove_css_file: "Remove stylesheet",
+  no_media_selected: "No media selected",
+  folder_not_public:
+    "This content is not public, to access it its author must make it public.",
 };
