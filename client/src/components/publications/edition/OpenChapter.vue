@@ -439,9 +439,11 @@ export default {
     async pickMediasForGallery(medias) {
       const new_entries = [];
       for (const media of medias) {
+        const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
           path_to_source_media_meta: media.$path,
           publication_path: this.publication.$path,
+          import_mode,
         });
         new_entries.push(new_entry);
       }
