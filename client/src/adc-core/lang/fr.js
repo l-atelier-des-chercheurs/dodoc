@@ -1351,4 +1351,9 @@ export default {
     "Ce contenu n’est pas publique, pour y accéder son auteur doit le rendre publique.",
   width_alignment_grid_only_non_mobile:
     "La largeur du module et son alignement (au milieu ou à droite) ne s’appliquent que si la largeur de l’écran le permet (plus de 767 pixels).",
+
+  add_column: "Ajouter une colonne",
+  add_row: "Ajouter une ligne",
+  remove_column: "Supprimer la dernière colonne",
+  remove_row: "Supprimer la dernière ligne",
 };
