@@ -83,7 +83,7 @@ var z8=Object.defineProperty;var H8=(e,t,n)=>t in e?z8(e,t,{enumerable:!0,config
 
           @font-face {
             }
-          `}),t),"")}},methods:{}};var y7=function(){var t=this,n=t._self._c;return n("div",{attrs:{id:"app"}},[t._v(" "+t._s(t.$api.rooms_joined)+" "),n("style",{tag:"component"},[t._v(" "+t._s(t.custom_fonts_css)+" ")]),t.router_is_loading?n("LoaderSpinner"):[t.page_is_standalone_html?n("PublicationView"):t.$route.meta&&t.$route.meta.static===!0?n("router-view",{key:t.$route.path,scopedSlots:t._u([{key:"default",fn:function({Component:r}){return[n(r,{tag:"component"})]}}])}):n("FullUI")],n("portal-target",{attrs:{name:"destination",multiple:""}})],2)},b7=[],w7=U(v7,y7,b7,!1,null,null);const E7=w7.exports;/*!
+          `}),t),"")}},methods:{}};var y7=function(){var t=this,n=t._self._c;return n("div",{attrs:{id:"app"}},[n("style",{tag:"component"},[t._v(" "+t._s(t.custom_fonts_css)+" ")]),t.router_is_loading?n("LoaderSpinner"):[t.page_is_standalone_html?n("PublicationView"):t.$route.meta&&t.$route.meta.static===!0?n("router-view",{key:t.$route.path,scopedSlots:t._u([{key:"default",fn:function({Component:r}){return[n(r,{tag:"component"})]}}])}):n("FullUI")],n("portal-target",{attrs:{name:"destination",multiple:""}})],2)},b7=[],w7=U(v7,y7,b7,!1,null,null);const E7=w7.exports;/*!
   * vue-router v3.6.5
   * (c) 2022 Evan You
   * @license MIT
