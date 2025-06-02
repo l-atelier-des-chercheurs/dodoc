@@ -13,7 +13,7 @@
       />
 
       <div class="u-spacingBottom" />
-
+      <!-- 
       <AuthorField
         :label="$t('admin')"
         :can_edit="true"
@@ -32,7 +32,7 @@
         @save="($event) => (contributors = $event)"
       />
 
-      <div class="u-spacingBottom" />
+      <div class="u-spacingBottom" /> -->
 
       <ToggleInput
         :content.sync="new_folder_is_private"

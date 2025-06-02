@@ -64,7 +64,9 @@ export default {
 
     this.is_loading_page = false;
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.page_path });
+  },
   watch: {},
   computed: {
     page_path() {

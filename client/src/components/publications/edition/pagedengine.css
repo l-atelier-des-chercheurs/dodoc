@@ -110,6 +110,29 @@ p:empty {
   }
 }
 
+hr {
+  clear: both;
+  width: 100%;
+}
+
+.break {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background-color: var(--c-gris_clair);
+  margin: 0;
+  padding: 0;
+}
+.break-page {
+  page-break-before: page;
+}
+.break-left {
+  page-break-before: left;
+}
+.break-right {
+  page-break-before: right;
+}
+
 .edition .gallery {
   position: relative;
   break-after: page;
@@ -118,7 +141,8 @@ p:empty {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: 1px;
+  gap: var(--spacing);
+  padding: calc(var(--spacing) * 1);
 
   &[data-number-of-medias="1"] {
     grid-template-columns: 1fr;

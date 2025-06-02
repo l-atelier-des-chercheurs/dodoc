@@ -249,8 +249,13 @@ export default {
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
     if (this.can_edit && this.mode === "always_active") this.enableEditor();
+
+    this.$eventHub.$on("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$on("media.disableEditor." + this.path, this.disableEditor);
   },
   beforeDestroy() {
+    this.$eventHub.$off("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$off("media.disableEditor." + this.path, this.disableEditor);
     this.disableEditor();
   },
   watch: {
@@ -456,6 +461,16 @@ export default {
         .querySelectorAll(".is--selected")
         .forEach((el) => el.classList && el.classList.remove("is--selected"));
       return t.innerHTML;
+    },
+    insertAtCursor(text) {
+      var index = this.editor.getSelection(true)?.index;
+      if (index !== undefined) {
+        this.editor.insertText(index, text, Quill.sources.USER);
+        this.editor.scrollSelectionIntoView();
+        setTimeout(() => {
+          this.editor.setSelection(index + text.length, Quill.sources.SILENT);
+        }, 100);
+      }
     },
 
     setStatusButton() {

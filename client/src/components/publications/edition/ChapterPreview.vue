@@ -37,7 +37,7 @@
       </transition>
     </div>
 
-    <div class="_chapterPreview--card">
+    <div class="u-card2 _chapterPreview--card">
       <div class="_topRow">
         <h2 class="_item--title">
           <template v-if="section.section_title">
@@ -130,7 +130,7 @@ export default {
     previewContent(section) {
       const sub_content = section._main_text?.$content;
       if (sub_content) {
-        return sub_content.substring(0, 100) + "...";
+        return sub_content.substring(0, 200) + "...";
       }
       return false;
     },
@@ -161,10 +161,24 @@ export default {
   background-color: var(--editor-bg);
   padding: calc(var(--spacing) / 1);
   background-color: white;
-  height: 8rem;
+  height: 8.5rem;
   overflow: hidden;
   // border: 1px solid var(--c-gris);
   border-radius: var(--border-radius);
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1rem;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  }
 }
 
 ._topRow {
@@ -190,7 +204,7 @@ export default {
 
 ._selects--order {
   width: auto;
-  width: 7ch;
+  min-width: 5ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
@@ -214,7 +228,12 @@ export default {
 
 ._item--content {
   width: 100%;
-  max-height: 5rem;
+  max-height: 5.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 ._openButton {

@@ -366,6 +366,8 @@ export default {
   create_a_module: "Create a module",
   list_of_versions: "List of versions",
   restore_this_version: "Restore this version",
+  restored_success: "Restored successfully",
+  restore_spaces: "Restore spaces",
   version: "Version",
 
   panes: "Panes",
@@ -1267,7 +1269,8 @@ export default {
   millimetres: "millimetres",
   parent_space_is_private:
     "The parent space is private, so other projects in this space cannot be viewed.",
-  copy_paste_to_include_media: "Copy and paste to include this media.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copy and paste to include this media, or click to add it at the cursor position.",
   next_chapter: "Next chapter",
 
   show_preview: "Show preview",
@@ -1282,4 +1285,35 @@ export default {
     "To add media from the internet, you can also copy and paste the following tags:",
   attributes_for_embeds: "Attributes for the tags:",
   show_source_html: "Show source HTML",
+  forgot_password: "Forgot password?",
+  current_f: "Current",
+  reset: "Reset",
+  accounts_displayed: "Accounts displayed",
+  restore_projects: "Restore projects",
+  bin: "Trash",
+  items_in_bin: "Items in the trash",
+  all_pages: "All pages",
+  all_spreads: "All spreads",
+  spreads_to_export: "Spreads to export",
+  page_number_or_interval: "For example 2-6, 9, 12-16",
+  pages_to_export: "Pages to export",
+  spread_number_or_interval: "For example 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Total number of spreads in publication: {total}",
+  total_number_of_pages_in_publication:
+    "Total number of pages in publication: {total}",
+  "type:": "Type: {type}",
+  failed_to_export: "Failed to export",
+  default_styles: "Default styles",
+  restore: "Restore",
+  remove_for_good: "Remove for good",
+  bin_is_empty: "The trash is empty",
+  date_removed: "Date removed",
+  current_resolution: "Current resolution",
+  gallery: "Gallery",
+  removed_successfully: "Removed successfully",
+  remove_css_file: "Remove stylesheet",
+  no_media_selected: "No media selected",
+  folder_not_public:
+    "This content is not public, to access it its author must make it public.",
 };

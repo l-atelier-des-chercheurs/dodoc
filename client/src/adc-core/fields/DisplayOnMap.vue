@@ -121,7 +121,7 @@
             class="inlineSVG"
             :icon="draw_mode.icon"
           />
-          <span v-else v-html="draw_mode.svg" />
+          <span class="u-icon" v-else v-html="draw_mode.svg" />
           <template v-if="draw_mode.key === current_draw_mode">
             {{ draw_mode.label }}
           </template>
@@ -422,7 +422,7 @@ export default {
           svg: `
           <svg
             viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
-            style="stroke-width: 1px; stroke: currentColor; width: 1.35em; height: 1.35em;"
+            style="stroke-width: 1px; stroke: currentColor; width: 1.5em; height: 1.5em;"
           >
             <line
               x1="0"
@@ -2158,6 +2158,11 @@ export default {
     &:last-child {
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
+    }
+
+    > span {
+      width: 1.35em;
+      height: 1.35em;
     }
   }
 }

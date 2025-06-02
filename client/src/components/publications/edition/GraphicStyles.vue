@@ -27,7 +27,7 @@
         type="button"
         class="u-button"
         :class="{
-          'is--active': opened_style_file.$path === 'default',
+          'is--active': opened_style_file?.$path === 'default',
         }"
         @click="openDefaultStyles"
       >
@@ -136,7 +136,10 @@ export default {
         });
     },
     opened_style_file() {
-      if (this.opened_style_file_meta === "default") {
+      if (
+        this.opened_style_file_meta === "default" ||
+        this.style_files.length === 0
+      ) {
         return {
           $path: "default",
           css_title: this.$t("default_styles"),
@@ -144,7 +147,6 @@ export default {
           is_default: true,
         };
       }
-
       return this.style_files.find(
         (f) => this.getFilename(f.$path) === this.opened_style_file_meta
       );

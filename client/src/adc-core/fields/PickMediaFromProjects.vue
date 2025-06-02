@@ -128,10 +128,14 @@ export default {
       return [];
     },
     has_already_present_medias() {
-      return this.meta_filenames_already_present?.reduce((acc, m) => {
-        if (m.medias?.length > 0) acc += m.medias.length;
-        return acc;
-      }, 0);
+      const list_of_all_medias_present =
+        this.meta_filenames_already_present?.reduce((acc, m) => {
+          if (m.medias?.length > 0) acc = acc.concat(m.medias);
+          return acc;
+        }, []);
+      // remove duplicates
+      const uniques = [...new Set(list_of_all_medias_present)];
+      return uniques.length;
     },
     sorted_projects() {
       if (!this.projects) return [];

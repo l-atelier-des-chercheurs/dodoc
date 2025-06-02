@@ -101,11 +101,10 @@ export default function () {
           //   _args[0].changed_data.$content =
           //     _args[0].changed_data?.$content.slice(0, 15) +
           //     "[…] (truncated content)";
-          if (this.debug_mode)
-            this.$alertify.delay(4000).log(
-              `⤓ ` + eventName
-              // + JSON.stringify(_args)
-            );
+          // if (this.debug_mode)
+          //   this.$alertify.delay(4000).log(
+          //     `⤓ ` + eventName
+          //   );
         });
         this.socket.on("folderCreated", this.folderCreated);
         this.socket.on("folderUpdated", this.folderUpdated);
@@ -609,7 +608,7 @@ export default function () {
         this.$eventHub.$emit("hooks.copyFolder", { path });
         return response.data.copy_folder_path;
       },
-      async downloadFolder({ path, filename }) {
+      async downloadFolder({ path }) {
         const response = await this.$axios({
           url: `${path}.zip`,
           method: "GET",
@@ -618,6 +617,15 @@ export default function () {
           throw this.processError(err);
         });
         this.$eventHub.$emit("hooks.downloadFolder", { path });
+        let filename = "download.zip";
+        try {
+          const contentDispositionHeader =
+            response.headers["content-disposition"];
+          const regExpFilename = /filename="(?<filename>.*)"/;
+          filename =
+            regExpFilename.exec(contentDispositionHeader)?.groups?.filename ??
+            "download.zip";
+        } catch (err) {}
         saveAs(response.data, filename);
       },
       async importFolder({

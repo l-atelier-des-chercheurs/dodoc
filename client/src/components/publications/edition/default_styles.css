@@ -2,9 +2,9 @@
   --main-color: #0040eb;
   --main-color-opacity: rgba(0, 64, 235, 0.7);
   --second-color: orange;
-  --text-font: "Helvetica", sans-serif;
+  --text-font: "Source Sans Pro", sans-serif;
   --title-font: "Karla", sans-serif;
-  --font-size: 11pt;
+  --font-size: 12pt;
   --line-height: 1.4;
 }
 
@@ -241,6 +241,7 @@
       padding: 0.25em 0.5em;
       border-radius: 0.5em;
       cursor: pointer;
+      font-size: inherit;
 
       &:hover,
       &:focus-visible {

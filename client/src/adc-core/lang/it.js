@@ -1010,7 +1010,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_missing_translations: "Mostra le traduzioni mancanti",
   missing_translations: "Traduzioni mancanti per lingua:",
   hide_already_translated: "Nascondi le traduzioni già fatte",
-  "to_translate:": "Da tradurre:",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copia/incolla il contenuto del blocco qui sopra in un nuovo argomento del forum per integrarlo nel codice sorgente : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum dell’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Cancella tutte le traduzioni proposte",
@@ -1292,8 +1291,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   millimetres: "millimetri",
   parent_space_is_private:
     "Lo spazio superiore è privato, quindi gli altri progetti presenti in quest'area non possono essere consultati.",
-  copy_paste_to_include_media:
-    "Copia/incolla nel contenuto per inserire il media.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copia/incolla nel contenuto per inserire il media, o clicca per aggiungerlo al cursore.",
 
   send: "Invia",
   creating_thumb: "Crea le miniature",
@@ -1306,4 +1305,5 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_preview: "Visualizza l'anteprima",
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
+  forgot_password: "Hai dimenticato la password?",
 };

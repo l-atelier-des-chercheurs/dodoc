@@ -1,7 +1,7 @@
 // grabbed from https://github.com/furutsubaki/markdown-it-custom-short-codes
 
 "use strict";
-const tags_list = ["image", "video", "audio", "embed"];
+const tags_list = ["image", "video", "audio", "embed", "break"];
 
 export default (md, o = {}) => {
   const getMediaSrc = o.getMediaSrc;
@@ -19,6 +19,18 @@ export default (md, o = {}) => {
       // Find opening parenthesis
       const openParenPos = lineText.indexOf("(");
       if (openParenPos === -1) break;
+
+      // Check if this looks like a shortcode by checking for "tag:" pattern
+      const potentialShortcode = lineText.substring(openParenPos);
+      const shortcodePattern = /^\(([-\w]+):\s/;
+      const tagMatch = shortcodePattern.exec(potentialShortcode);
+      const isShortcode = tagMatch && tags_list.includes(tagMatch[1]);
+
+      if (!isShortcode) {
+        pos++;
+        lineText = state.src.slice(pos, max);
+        continue;
+      }
 
       // If there's text before the opening parenthesis, add it as a paragraph
       if (openParenPos > 0) {
@@ -64,23 +76,8 @@ export default (md, o = {}) => {
       // Extract the full shortcode including parentheses
       const shortcodeText = remainingText.substring(0, closeParenPos + 1);
 
-      // Parse the shortcode using a simple extraction approach
-      // Format is expected to be: (tag: source attr1: val1 attr2: val2)
-      const tagMatch = /^\(([-\w]+):\s*/.exec(shortcodeText);
-
-      if (!tagMatch) {
-        pos++;
-        lineText = state.src.slice(pos, max);
-        continue;
-      }
-
+      // We already have the tag from earlier tagMatch
       const tag = tagMatch[1].trim();
-
-      if (!tags_list.includes(tag)) {
-        pos++;
-        lineText = state.src.slice(pos, max);
-        continue;
-      }
 
       if (silent) return true;
 
@@ -198,6 +195,11 @@ export default (md, o = {}) => {
     if (tags_list.includes(token.tag)) {
       // Use getMediaSrc if available, otherwise fallback to normal behavior
       let media = null;
+
+      if (token.tag === "break") {
+        return `<div class="break break-${token.attrs.src}"></div>\n`;
+      }
+
       if (getMediaSrc && !token.attrs.src.startsWith("http")) {
         media = getMediaSrc(token.attrs.src);
       }
@@ -225,7 +227,8 @@ export default (md, o = {}) => {
           key !== "src" &&
           key !== "caption" &&
           key !== "class" &&
-          key !== "float"
+          key !== "float" &&
+          key !== "width"
         ) {
           attrs.push(`${key}="${value}"`);
         }
@@ -237,6 +240,13 @@ export default (md, o = {}) => {
       }
       if (token.attrs.float) {
         classes.push(`float-${token.attrs.float}`);
+      }
+
+      if (
+        token.attrs.width &&
+        (token.attrs.width.includes("%") || token.attrs.width.includes("cm"))
+      ) {
+        attrs.push(`style="width: ${token.attrs.width};"`);
       }
 
       // Create the image tag with all attributes
@@ -274,6 +284,8 @@ export default (md, o = {}) => {
           : "";
 
       return media_tag + caption + "</figure>\n";
+    } else if (token.tag === "break") {
+      return `<div class="break break-${token.attrs.type}"></div>\n`;
     } else {
       return token.content + "\n";
     }

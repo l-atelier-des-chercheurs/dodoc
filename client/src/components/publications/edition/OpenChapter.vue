@@ -1,6 +1,6 @@
 <template>
   <div class="_openChapter">
-    <div class="_close_button">
+    <!-- <div class="_close_button">
       <button
         type="button"
         class="u-button u-button_icon"
@@ -8,6 +8,42 @@
       >
         <b-icon icon="x-lg" :label="$t('close')" />
       </button>
+    </div> -->
+    <div class="_navBtns">
+      <div class="_navBtns--content">
+        <div>
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="prev_section"
+            @click="$emit('prev')"
+          >
+            <b-icon icon="arrow-left-short" />
+            <span>
+              {{ prev_section.section_title }}
+            </span>
+          </button>
+        </div>
+        <div>
+          <button type="button" class="u-linkList" @click="$emit('close')">
+            <b-icon icon="x-circle" :label="$t('close')" />
+            {{ $t("close") }}
+          </button>
+        </div>
+        <div>
+          <button
+            type="button"
+            class="u-linkList"
+            v-if="next_section"
+            @click="$emit('next')"
+          >
+            <span>
+              {{ next_section.section_title }}
+            </span>
+            <b-icon icon="arrow-right-short" />
+          </button>
+        </div>
+      </div>
     </div>
     <div class="_openChapter--content">
       <div class="_topButtons">
@@ -46,12 +82,16 @@
       <div class="_infos">
         <div class="_content--type">
           <template v-if="chapter.section_type === 'text'">
-            {{ $t("text") }}
             <b-icon icon="markdown" />
+            {{ $t("text") }}
           </template>
           <template v-else-if="chapter.section_type === 'gallery'">
-            {{ $t("gallery") }}
             <b-icon icon="image" />
+            {{ $t("gallery") }}
+          </template>
+          <template v-else-if="chapter.section_type === 'story'">
+            <b-icon icon="list" />
+            {{ $t("story") }}
           </template>
         </div>
 
@@ -97,6 +137,7 @@
               :content_type="'markdown'"
               :can_edit="true"
               :mode="'always_active'"
+              ref="collaborativeEditor"
             >
               <template #custom_buttons>
                 <button
@@ -112,6 +153,7 @@
             <PickMediaForMarkdown
               v-if="show_media_picker"
               :publication_path="publication.$path"
+              @insertToText="insertToText"
               @close="closePickModal"
             />
           </template>
@@ -164,39 +206,12 @@
         </template>
         <template v-if="chapter.section_type === 'story'">
           <SingleSection
+            class="_singleSection"
             :publication="publication"
             :section="chapter"
             :can_edit="true"
           />
         </template>
-      </div>
-
-      <div class="_navBtns">
-        <div class="_navBtns--content">
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="prev_section"
-            @click="$emit('prev')"
-          >
-            <b-icon icon="arrow-left-square" />
-            <span>
-              {{ prev_section.section_title }}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="next_section"
-            @click="$emit('next')"
-          >
-            <span>
-              {{ next_section.section_title }}
-            </span>
-            <b-icon icon="arrow-right-square" />
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -366,7 +381,7 @@ export default {
       const originalCscRenderer = md.renderer.rules.csc;
       md.renderer.rules.csc = (tokens, idx) => {
         const token = tokens[idx];
-        if (token.tag === "image" && token.content) {
+        if (["image", "video", "audio"].includes(token.tag) && token.content) {
           const meta_src = token.content;
           const folder_path = this.getParent(this.chapter.$path);
           const media = this.getSourceMedia({
@@ -413,6 +428,14 @@ export default {
       this.show_media_picker = false;
     },
 
+    insertToText(text) {
+      // Find the collaborative editor instance and insert the text
+      const editor = this.$refs.collaborativeEditor;
+      if (editor) {
+        editor.insertAtCursor(text);
+      }
+    },
+
     async pickMediasForGallery(medias) {
       const new_entries = [];
       for (const media of medias) {
@@ -453,6 +476,8 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
+  scroll-behavior: smooth;
+  scroll-padding: 10vh;
   background: var(--c-gris_clair);
   z-index: 10;
 
@@ -467,15 +492,16 @@ export default {
   position: relative;
   min-height: calc(100% - calc(var(--spacing) * 1));
   background-color: white;
-  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
-    0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
-    0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
-    0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+  //   0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+  //   0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+  //   0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 
-  margin: calc(var(--spacing) * 1);
+  margin: 0 calc(var(--spacing) / 1);
   margin-bottom: 0;
   padding: calc(var(--spacing) * 1);
 }
@@ -503,16 +529,32 @@ export default {
 }
 
 ._navBtns {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: calc(var(--spacing) * 4);
-  padding-bottom: calc(var(--spacing) * 4);
+  padding: calc(var(--spacing) / 2);
+  // padding-top: calc(var(--spacing) * 4);
+  // padding-bottom: calc(var(--spacing) * 4);
 }
 ._navBtns--content {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 1);
+  height: 20px;
+
+  > * {
+    flex: 1 1 0;
+    overflow: hidden;
+
+    &:nth-child(2) {
+      .u-linkList {
+        justify-content: center;
+      }
+    }
+    &:last-child {
+      .u-linkList {
+        justify-content: flex-end;
+      }
+    }
+  }
 }
 
 ._customBtn {
@@ -526,6 +568,9 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
+  .b-icon {
+    vertical-align: middle;
+  }
 }
 
 ._infos {
@@ -586,7 +631,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin: var(--spacing);
+  margin: calc(var(--spacing) / 2);
 }
 
 ._selects--starts_on_page {
@@ -605,5 +650,13 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   // gap: calc(var(--spacing) / 2);
+}
+
+._singleSection {
+  ::v-deep {
+    ._topbar {
+      display: none;
+    }
+  }
 }
 </style>

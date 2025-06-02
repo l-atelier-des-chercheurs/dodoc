@@ -38,7 +38,7 @@ export default {
       return this.$route.query?.view_mode || "book";
     },
     opened_style_file_meta() {
-      return this.$route.query?.style || "default";
+      return this.$route.query?.style || "first";
     },
   },
   methods: {
@@ -65,9 +65,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editionExport {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  @media screen {
+    padding: 0 calc(var(--spacing) * 2);
+  }
+  @media print {
+    // helps prevent empty page at the end of the publication in export PDF
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

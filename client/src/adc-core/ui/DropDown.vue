@@ -11,7 +11,7 @@
   >
     <button
       type="button"
-      class="u-button _toggleDropdown"
+      class="u-button u-button_transparent _toggleDropdown"
       :class="{ 'is--active': show_dropdown, 'u-button_icon': !show_label }"
     >
       <template v-if="$slots.hasOwnProperty('trigger')">

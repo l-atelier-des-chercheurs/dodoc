@@ -18,8 +18,9 @@
       </div>
 
       <template slot="footer">
+        <div />
         <button
-          class="u-button u-button_red"
+          class="u-button u-button_bleuvert"
           type="button"
           autofocus
           v-if="!download_started"
@@ -70,11 +71,7 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    archive_name() {
-      return this.getFilename(this.path) + ".zip";
-    },
-  },
+  computed: {},
   methods: {
     showDownloadModal() {
       this.show_download_modal = true;
@@ -89,7 +86,6 @@ export default {
       await this.$api
         .downloadFolder({
           path: this.path,
-          filename: this.archive_name,
         })
         .catch((err) => {
           err;

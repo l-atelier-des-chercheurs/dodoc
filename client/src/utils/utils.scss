@@ -63,16 +63,20 @@ a:focus-visible {
 .u-warning {
   display: flex;
   gap: calc(var(--spacing) / 1);
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   color: var(--c-rouge);
   // font-weight: bold;
-  border: 1px solid var(--c-rouge);
-  border-bottom-width: 4px;
-  background-color: white;
+  border: 1px solid var(--c-rouge_clair);
+  border-top-width: 4px;
+  max-width: 50ch;
+  // background-color: var(--c-rouge_clair);
+  // color: white;
   // color: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
-  border-radius: 8px;
+  border-radius: var(--input-border-radius);
+
+  // font-weight: 400;
 
   &::before {
     content: "⚠";
@@ -107,12 +111,12 @@ a:focus-visible {
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 
   transform-origin: center top;
-  transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-2px) scale(1.03) rotate(-0deg);
-    filter: drop-shadow(0 0 25px rgba(0, 0, 0, 0.1));
+    transform: translateY(-2px) scale(1.02) rotate(-0deg);
+    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.1));
     // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     //   0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
     //   0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);
@@ -234,7 +238,7 @@ button {
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris);
+    color: var(--c-gris_fonce);
   }
 
   &:hover,
@@ -339,7 +343,8 @@ button {
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
-      background-color: var(--c-gris);
+      background-color: var(--active-color);
+      color: white;
     }
   }
 
@@ -1029,7 +1034,7 @@ input[type="checkbox"] {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 4) 0;
 
   > span {
@@ -1175,6 +1180,7 @@ input[type="checkbox"] {
   pointer-events: auto;
   background: var(--c-bleuvert);
   border: 2px solid var(--c-bleuvert_fonce);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   border-radius: 4px;
   color: white;
 
@@ -1206,8 +1212,8 @@ input[type="checkbox"] {
 
 .u-icon {
   position: relative;
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
+  height: 1.5rem;
   svg {
     position: absolute;
     top: 0;

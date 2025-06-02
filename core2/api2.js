@@ -897,6 +897,7 @@ module.exports = (function () {
 
     try {
       await folder.removeFolder({
+        path_to_type,
         path_to_folder,
       });
       dev.logpackets({ status: "folder was removed" });
@@ -1072,16 +1073,16 @@ module.exports = (function () {
     }
   }
   async function _downloadFolder(req, res, next) {
-    const { path_to_folder } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+    const { path_to_folder, path_to_type } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, path_to_type });
 
     try {
-      const folder_slug = utils.getFilename(path_to_folder);
+      const filename = utils.getZipFolderFilename({
+        path_to_folder,
+        path_to_type,
+      });
       res.header("Content-Type", "application/zip");
-      res.header(
-        "Content-Disposition",
-        `attachment; filename="${folder_slug}.zip"`
-      );
+      res.header("Content-Disposition", `attachment; filename="${filename}"`);
       // const { size } = await thumbs.getInfosForFolder({
       //   path_to_folder,
       // });
@@ -1099,6 +1100,7 @@ module.exports = (function () {
       archive.pipe(res);
 
       const full_folder_path = utils.getPathToUserContent(path_to_folder);
+      const folder_slug = utils.getFilename(path_to_folder);
       archive.directory(full_folder_path, folder_slug);
 
       archive.finalize();

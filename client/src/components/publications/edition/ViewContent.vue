@@ -1,14 +1,30 @@
 <template>
   <div class="_viewContent">
     <div class="_viewMode">
-      <select
+      <div class="_viewMode--buttons">
+        <div
+          v-for="available_view_mode in available_view_modes"
+          :key="available_view_mode.value"
+        >
+          <button
+            class="u-button u-button_white u-button_icon"
+            :class="{ 'is--active': view_mode === available_view_mode.value }"
+            @click="$emit('changeView', available_view_mode.value)"
+          >
+            <b-icon :icon="available_view_mode.icon" />
+            <!-- {{ view_mode.label }} -->
+          </button>
+        </div>
+      </div>
+      <!-- <select
         :value="view_mode"
         size="small"
         @change="$emit('changeView', $event.target.value)"
       >
         <option value="book">{{ $t("book") }}</option>
         <option value="html">{{ $t("webpage") }}</option>
-      </select>
+      </select> -->
+
       <select
         size="small"
         v-if="style_files?.length > 0"
@@ -20,21 +36,18 @@
           :key="style_file.$path"
           :value="getFilename(style_file.$path)"
         >
-          style – {{ style_file.css_title || getFilename(style_file.$path) }}
+          {{ style_file.css_title || getFilename(style_file.$path) }}
         </option>
-        <option value="default">style – {{ $t("default_value") }}</option>
+        <option value="default">{{ $t("default_styles") }}</option>
       </select>
+    </div>
 
-      <!-- <div
-        v-if="$listeners['update:show_source_html'] && view_mode === 'book'"
-        class="_toggleHTML"
-      >
-        <ToggleInput
-          :content="show_source_html"
-          :label="$t('show_source_html')"
-          @update:content="$emit('update:show_source_html', $event)"
-        />
-      </div> -->
+    <div v-if="show_source_html_toggle" class="_toggleHTML">
+      <ToggleInput
+        :content="show_source_html"
+        :label="$t('show_source_html')"
+        @update:content="$emit('update:show_source_html', $event)"
+      />
     </div>
 
     <div class="_viewContent--content">
@@ -66,6 +79,7 @@ import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 import markdownItAttrs from "markdown-it-attrs";
 import markdownItBracketedSpans from "markdown-it-bracketed-spans";
+import LinkAttributes from "markdown-it-link-attributes";
 import hljs from "highlight.js/lib/common";
 
 import { generate } from "lean-qr";
@@ -80,15 +94,13 @@ export default {
   props: {
     publication: Object,
     view_mode: String,
-    opened_style_file_meta: {
-      type: String,
-      default: "default",
-    },
+    opened_style_file_meta: String,
     viewer_type: {
       type: String,
       default: "infinite-viewer",
     },
     opened_chapter_meta_filename: String,
+    show_source_html_toggle: Boolean,
     show_source_html: Boolean,
     can_edit: Boolean,
   },
@@ -99,13 +111,28 @@ export default {
   data() {
     return {
       is_loading: false,
+      available_view_modes: [
+        {
+          label: this.$t("book"),
+          value: "book",
+          icon: "book",
+        },
+        {
+          label: this.$t("webpage"),
+          value: "html",
+          icon: "window-sidebar",
+        },
+      ],
       // custom_styles_nested: "",
     };
   },
   created() {
-    // if (this.style_files.length > 0 && !this.opened_style_file_meta) {
-    //   this.$emit("setStyleFile", this.getFilename(this.style_files[0]?.$path));
-    // }
+    if (
+      this.style_files.length > 0 &&
+      this.opened_style_file_meta === "first"
+    ) {
+      this.$emit("setStyleFile", this.getFilename(this.style_files[0]?.$path));
+    }
   },
   mounted() {},
   beforeDestroy() {},
@@ -131,17 +158,19 @@ export default {
     },
     custom_styles_unnested() {
       if (
-        this.style_files &&
-        this.opened_style_file_meta &&
-        this.opened_style_file_meta !== "default"
+        this.opened_style_file_meta === "default" ||
+        this.style_files?.length === 0
       ) {
+        return default_styles;
+      } else if (!this.opened_style_file_meta) {
+        return this.style_files[0];
+      } else {
         return (
           this.style_files.find(
             (f) => this.getFilename(f.$path) === this.opened_style_file_meta
           )?.$content || ""
         );
       }
-      return default_styles;
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -173,7 +202,7 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
-        _chapter.section_type = chapter.section_type;
+        _chapter.section_type = chapter.section_type || "text";
         if (!chapter.section_type || chapter.section_type === "text") {
           if (chapter._main_text?.$content) {
             if (chapter._main_text?.content_type === "markdown") {
@@ -381,7 +410,15 @@ export default {
         // Fallback to default renderer if no src
         return defaultImageRenderer(tokens, idx, options, env, self);
       };
-
+      // not working :(
+      md.use(LinkAttributes, {
+        matcher: (link) => /^https?:\/\//.test(link),
+        attrs: {
+          target: "_blank",
+          rel: "noopener",
+          class: "link-external",
+        },
+      });
       md.use(markdownItCsc, {
         getMediaSrc: (meta_src) => this.getMediaSrc(meta_src, source_medias),
         transformURL: (url) => this.transformURL(url),
@@ -433,15 +470,15 @@ export default {
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "// TODO";
+      let html = "<p>// TODO</p>";
 
       modules.forEach((module) => {
-        html += `<div class="module">
+        html += `<p class="module">
           <div class="module-type">${
             this.$t("type") + " " + module.module_type
           }</div>
-          <div class="module-content">${JSON.stringify(module, null, 4)}</div>
-        </div>`;
+        </p>`;
+        //           <div class="module-content">${JSON.stringify(module, null, 4)}</div>
       });
 
       return html;
@@ -615,7 +652,15 @@ export default {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
+
+  ._viewMode--buttons {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+  }
 
   select {
     width: 18ch;
@@ -627,8 +672,6 @@ export default {
 
   ::v-deep {
     ._toggleHTML {
-      background-color: var(--c-gris_fonce);
-
       ._label {
         color: white;
       }
@@ -641,8 +684,24 @@ export default {
 }
 
 ._toggleHTML {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
   background-color: var(--c-gris_clair);
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1);
   border-radius: var(--border-radius);
+
+  ::v-deep {
+    > * {
+      padding: calc(var(--spacing) / 2);
+      background-color: var(--c-gris_fonce);
+      border: 2px solid white;
+      border-radius: var(--border-radius);
+    }
+    ._label {
+      color: white;
+    }
+  }
 }
 </style>

@@ -38,12 +38,13 @@
 
       <button
         type="submit"
+        v-if="!password_submit_error"
         :disabled="!allow_send"
         class="u-button u-button_bleuvert"
       >
         {{ $t("access") }}
       </button>
-      <div v-if="password_submit_error">
+      <div v-else>
         {{ password_submit_error }}
       </div>
     </form>

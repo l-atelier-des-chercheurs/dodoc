@@ -266,12 +266,12 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((request) => {
-  if (debug_mode)
-    alertify.delay(4000).log(
-      `⤒ — ${request.method} + ${request.url}
-      ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
-      `
-    );
+  // if (debug_mode)
+  //   alertify.delay(4000).log(
+  //     `⤒ — ${request.method} + ${request.url}
+  //     ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
+  //     `
+  //   );
   return request;
 });
 Vue.prototype.$axios = instance;

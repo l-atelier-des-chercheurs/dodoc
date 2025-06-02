@@ -204,7 +204,7 @@ export default {
     overflow: hidden;
 
     // overflow: hidden;
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+    // filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 
     img {
       width: auto;

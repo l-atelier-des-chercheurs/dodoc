@@ -131,7 +131,7 @@ export default {
         return `
           --color1: var(--c-noir);
           --color2: white;
-          --color-text: white;
+          --color-text: var(--c-noir);
         `;
 
       if (

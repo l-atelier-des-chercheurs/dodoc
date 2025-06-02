@@ -3,9 +3,18 @@
     <fieldset>
       <legend class="u-label">{{ $t("format") }}</legend>
 
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :is_unfolded="true"
+        @click="enableEditMode"
+      />
+
+      <br />
+      <br />
+
       <template v-if="!force_layout_mode">
-        <DLabel class="_label" :str="$t('document_type')" :tag="'h3'" />
-        <br />
+        <DLabel class="_label" :str="$t('document_type')" :tag="'H3'" />
+
         <div
           v-for="lmode in [
             {
@@ -35,9 +44,10 @@
               <small v-html="lmode.instructions" />
             </label>
           </div>
-          <br />
         </div>
       </template>
+
+      <br />
 
       <transition name="fade" mode="out-in">
         <div :key="new_layout_mode">
@@ -47,7 +57,7 @@
             :tag="'h3'"
             :instructions="$t('format_instructions')"
           />
-          <br />
+
           <template>
             <select
               :value="predefined_format_from_width"
@@ -61,7 +71,6 @@
                 v-text="option.text"
               />
             </select>
-            <br />
           </template>
 
           <div class="u-sameRow">
@@ -90,10 +99,6 @@
           </div>
         </div>
       </transition>
-
-      <br />
-
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
       <div class="_footer" v-if="edit_mode">
         <SaveCancelButtons
