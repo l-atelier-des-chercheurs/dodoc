@@ -61,7 +61,7 @@
         >
           <b-icon icon="grid3x3" />
         </button>
-        <button
+        <!-- <button
           class="u-button u-button_icon"
           type="button"
           :class="{
@@ -70,7 +70,7 @@
           @click="$emit('update:view_mode', 'timeline')"
         >
           <b-icon icon="calendar-week" />
-        </button>
+        </button> -->
         <button
           class="u-button u-button_icon"
           type="button"

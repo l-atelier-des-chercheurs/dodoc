@@ -41,7 +41,12 @@
           <MediaContent :file="slide_file" class="_mediaPreview" />
         </div>
         <transition-group name="projectsList" class="_count">
-          <template v-if="index_of_slide_file_to_show !== undefined">
+          <template
+            v-if="
+              index_of_slide_file_to_show !== undefined &&
+              number_of_medias_in_stack > 0
+            "
+          >
             <div key="slide">
               {{ index_of_slide_file_to_show + 1 }}
             </div>

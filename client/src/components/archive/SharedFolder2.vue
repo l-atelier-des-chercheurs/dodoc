@@ -104,6 +104,11 @@
                     </transition-group>
                   </div>
                 </template>
+                <div v-else-if="view_mode === 'timeline'" key="timeline">
+                  <pre>
+                  {{ timeline_stacks }}
+                  </pre>
+                </div>
                 <div
                   v-else-if="view_mode === 'map'"
                   key="mediaMap"
@@ -268,6 +273,14 @@ export default {
         order_props,
         this.group_mode
       );
+    },
+    timeline_stacks() {
+      let order_props = [
+        "date_created_corrected",
+        "$date_created",
+        "$date_uploaded",
+      ];
+      return this.groupFilesBy(this.filtered_stacks, order_props, "day");
     },
     available_keywords() {
       const all_kw = this.filtered_stacks.reduce((acc, f) => {

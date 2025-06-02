@@ -1,7 +1,7 @@
 <template>
   <div class="_stackCarousel">
     <template v-if="!files || files.length === 0">
-      <div class="u-instructions">
+      <div class="u-instructions _nothingToShow">
         {{ $t("nothing_to_show") }}
       </div>
     </template>
@@ -154,6 +154,9 @@ export default {
   > ._list {
     flex: 0 0 auto;
   }
+}
+._nothingToShow {
+  padding: calc(var(--spacing) / 2);
 }
 
 ._list {

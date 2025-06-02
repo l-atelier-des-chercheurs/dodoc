@@ -610,7 +610,7 @@ hr {
   z-index: 10;
   height: 100%;
   background: var(--sd-bg);
-
+  width: 32px;
   > button {
     height: 100%;
     justify-content: flex-start;
