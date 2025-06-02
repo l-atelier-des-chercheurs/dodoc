@@ -215,7 +215,7 @@
         {{ $t("select_stack") }}
       </button>
     </div>
-    <div v-if="can_be_selected === 'multiple_medias'" class="_selectBar">
+    <div v-if="can_be_selected === 'multiple'" class="_selectBar">
       <button class="u-button" type="button" @click="selectAllStackMedias">
         {{ $t("add_all_stack_medias") }}
       </button>

@@ -16,7 +16,7 @@ export default {
     publication_path: String,
     select_mode: {
       type: String,
-      default: "multiple_medias",
+      default: "multiple",
     },
     pick_from_types: [String, Array],
   },
