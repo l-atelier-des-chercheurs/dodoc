@@ -169,8 +169,6 @@ export default {
       index,
       additional_meta = {},
     }) {
-      debugger;
-
       const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
@@ -211,9 +209,6 @@ export default {
         },
         index: section_index + 1,
       });
-
-      debugger;
-
       const new_modules_meta = [];
       for (const og_module of og_modules) {
         const new_module_meta = await this.duplicateModuleWithSourceMedias({

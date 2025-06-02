@@ -4,7 +4,7 @@
       :modal_title="$t('pick_medias')"
       :select_mode="select_mode"
       @close="$emit('close')"
-      @mediasSelected="$emit('pickMedias', $event)"
+      @mediasSelected="mediasSelected"
     />
   </div>
 </template>
@@ -30,7 +30,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    mediasSelected(medias) {
+      this.$emit("pickMedias", medias);
+      this.$emit("close");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

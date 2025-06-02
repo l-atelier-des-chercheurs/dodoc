@@ -15,7 +15,7 @@
           {{ fetch_coll_error_message }}
         </div>
       </div>
-      <div v-else :key="collection.$path">
+      <div class="_coll" v-else :key="collection.$path">
         <div class="_topbar">
           <div class="u-sameRow">
             <router-link
@@ -250,6 +250,25 @@ export default {
   padding-bottom: 0;
 }
 
+._coll {
+  display: flex;
+  flex-flow: column nowrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+  > * {
+    &._topbar {
+    }
+    &._cont[data-template="edition"] {
+      flex: 1 1 auto;
+    }
+  }
+}
+
 ._topbar {
   display: flex;
   flex-flow: row wrap;
@@ -261,10 +280,9 @@ export default {
 }
 
 ._cont {
-  margin: calc(var(--spacing) / 2) 0;
+  // margin: calc(var(--spacing) / 2) 0;
 
   &[data-template="edition"] {
-    height: calc(100vh - 120px);
   }
 }
 
