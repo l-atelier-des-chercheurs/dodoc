@@ -5,6 +5,7 @@
       'is--list': ['list', 'tiny'].includes(context),
       'is--own': is_own_project,
       'u-card2': context !== 'full',
+      'is--mobileView': $root.is_mobile_view,
     }"
     :data-context="context"
   >
@@ -420,10 +421,18 @@ export default {
   overflow: hidden;
 
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);
+
+  .is--mobileView & {
+    display: block;
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
 
   > * {
     flex: 1 1 320px;

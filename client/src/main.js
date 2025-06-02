@@ -344,7 +344,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < this.mobile_breakpoint;
+      return this.window.innerWidth <= this.mobile_breakpoint;
     },
     is_touch_device() {
       return window.matchMedia("(pointer: coarse)").matches;
