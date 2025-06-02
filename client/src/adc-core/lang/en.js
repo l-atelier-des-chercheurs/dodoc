@@ -336,6 +336,8 @@ export default {
   create_a_module: "Create a module",
   list_of_versions: "List of versions",
   restore_this_version: "Restore this version",
+  restored_success: "Restored successfully",
+  restore_spaces: "Restore spaces",
   version: "Version",
 
   panes: "Panes",
@@ -1256,6 +1258,7 @@ export default {
   accounts_displayed: "Accounts displayed",
   restore_projects: "Restore projects",
   bin: "Trash",
+  items_in_bin: "Items in the trash",
   all_pages: "All pages",
   all_spreads: "All spreads",
   spreads_to_export: "Spreads to export",
@@ -1276,4 +1279,8 @@ export default {
   current_resolution: "Current resolution",
   gallery: "Gallery",
   removed_successfully: "Removed successfully",
+  remove_css_file: "Remove stylesheet",
+  no_media_selected: "No media selected",
+  folder_not_public:
+    "This content is not public, to access it its author must make it public.",
 };

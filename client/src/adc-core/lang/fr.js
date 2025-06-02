@@ -1320,6 +1320,7 @@ export default {
   accounts_displayed: "Comptes affichés : {count} / {total}",
   restore_projects: "Restaurer des projets supprimés",
   bin: "Corbeille",
+  items_in_bin: "Éléments dans la corbeille",
   restore: "Restaurer",
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
@@ -1347,5 +1348,5 @@ export default {
   no_media_selected: "Aucun média sélectionné",
   forgot_password: "Mot de passe oublié ?",
   folder_not_public:
-    "Ce contenu n’est pas public, pour y accéder son auteur doit le rendre public.",
+    "Ce contenu n’est pas publique, pour y accéder son auteur doit le rendre publique.",
 };
