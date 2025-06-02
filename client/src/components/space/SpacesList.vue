@@ -147,6 +147,7 @@ export default {
     this.is_loading = false;
   },
   beforeDestroy() {
+    this.$api.leave({ room: "." });
     this.$api.leave({ room: this.path });
   },
   watch: {},
