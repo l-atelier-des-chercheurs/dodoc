@@ -36,7 +36,7 @@
         @prevMedia="navMedia(-1)"
         @nextMedia="navMedia(+1)"
         @selectStack="$emit('selectStack', opened_stack)"
-        @selectMedias="selectMedias"
+        @selectMedias="$emit('selectMedias', $event)"
         @close="closeStack"
       />
     </transition>
@@ -341,10 +341,6 @@ export default {
       let query = Object.assign({}, this.$route.query) || {};
       delete query.stack;
       this.$router.push({ query });
-    },
-    selectMedias(medias_paths) {
-      this.selected_medias_paths =
-        this.selected_medias_paths.concat(medias_paths);
     },
   },
 };

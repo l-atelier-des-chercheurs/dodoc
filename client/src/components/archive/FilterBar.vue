@@ -65,6 +65,16 @@
           class="u-button u-button_icon"
           type="button"
           :class="{
+            'is--active': view_mode === 'timeline',
+          }"
+          @click="$emit('update:view_mode', 'timeline')"
+        >
+          <b-icon icon="calendar-week" />
+        </button>
+        <button
+          class="u-button u-button_icon"
+          type="button"
+          :class="{
             'is--active': view_mode === 'map',
           }"
           @click="$emit('update:view_mode', 'map')"

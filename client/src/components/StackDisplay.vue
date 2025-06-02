@@ -217,7 +217,7 @@
     </div>
     <div v-if="can_be_selected === 'multiple_medias'" class="_selectBar">
       <button class="u-button" type="button" @click="selectAllStackMedias">
-        {{ $t("select_all_stack_medias") }}
+        {{ $t("add_all_stack_medias") }}
       </button>
     </div>
   </div>
@@ -260,6 +260,7 @@ export default {
         stack_not_public: "Ce document n'est pas public",
         error_loading_stack: "Erreur lors du chargement du document",
         select_stack: "Sélectionner ce document",
+        add_all_stack_medias: "Ajouter tous les médias de ce document",
       },
       en: {
         fill_title: "Fill in the title field",
@@ -268,6 +269,7 @@ export default {
         stack_not_public: "This document is not public",
         error_loading_stack: "Error loading document",
         select_stack: "Select this document",
+        add_all_stack_medias: "Add all medias of this document",
       },
     },
   },
@@ -355,12 +357,8 @@ export default {
       this.pane_width = this.$el.offsetWidth;
     },
     selectAllStackMedias() {
-      this.$emit(
-        "selectMedias",
-        this.stack_files_in_order.map((f) => f.$path)
-      );
+      this.$emit("selectMedias", this.stack_files_in_order);
     },
-
     async changeMediaOrder(old_position, new_position) {
       let meta_filenames = this.stack_files_in_order.map((f) =>
         this.getFilename(f.$path)
@@ -488,6 +486,7 @@ export default {
   height: 100%;
   width: 100%;
   max-width: 360px;
+  background: var(--sd-bg);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 
@@ -496,7 +495,6 @@ export default {
   > ._allFields {
     flex: 1 1 0;
     padding: calc(var(--spacing) * 2);
-    background: var(--sd-bg);
   }
   > ._bottomBtns {
     flex: 0 0 auto;
