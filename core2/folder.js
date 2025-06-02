@@ -287,10 +287,9 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(path_to_folder, "meta.txt");
       const previous_meta = JSON.parse(JSON.stringify(meta));
 
-      let { ...new_meta } = data;
-
       // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
-      if (new_meta && Object.keys(new_meta).length > 0) {
+      if (data && Object.keys(data).length > 0) {
+        let { ...new_meta } = data;
         const valid_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
@@ -324,7 +323,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      if (update_cover_req) {
+      if (update_cover_req && data) {
         await _updateCover({
           path_to_folder,
           data,
@@ -346,7 +345,6 @@ module.exports = (function () {
         else delete changed_meta.$preview;
       }
 
-      const cache_key = _getCacheKey({ path_to_folder });
       cache.delete({
         key: _getCacheKey({ path_to_folder }),
       });
@@ -404,15 +402,21 @@ module.exports = (function () {
       return path_to_destination_folder;
     },
 
-    removeFolder: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
+    removeFolder: async ({ path_to_type, path_to_folder }) => {
+      dev.logfunction({ path_to_type, path_to_folder });
 
       try {
         const { remove_permanently } = await require("./settings").get();
-        if (remove_permanently === true)
+        if (remove_permanently === true) {
           await _removeFolderForGood({ path_to_folder });
-        else await _moveFolderToBin({ path_to_folder });
-
+        } else {
+          // update $date_modified to now
+          await API.updateFolder({
+            path_to_type,
+            path_to_folder,
+          });
+          await _moveFolderToBin({ path_to_folder });
+        }
         await thumbs.removeFolderThumbs({ path_to_folder });
         await archives.removeFolderArchives({ path_to_folder });
 

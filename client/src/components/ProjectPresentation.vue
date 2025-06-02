@@ -81,6 +81,16 @@
             </div>
 
             <button
+              v-if="$root.app_infos.is_electron && is_instance_admin"
+              type="button"
+              class="u-buttonLink"
+              @click="openInFinder({ path: project.$path })"
+            >
+              <b-icon icon="folder-symlink" />
+              {{ $t("open_in_finder") }}
+            </button>
+
+            <button
               type="button"
               class="u-buttonLink u-buttonLink_red"
               @click="show_remove_modal = true"

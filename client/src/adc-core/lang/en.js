@@ -1256,6 +1256,7 @@ export default {
   accounts_displayed: "Accounts displayed",
   restore_projects: "Restore projects",
   bin: "Trash",
+  items_in_bin: "Items in the trash",
   all_pages: "All pages",
   all_spreads: "All spreads",
   spreads_to_export: "Spreads to export",

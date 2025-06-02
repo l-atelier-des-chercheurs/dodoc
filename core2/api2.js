@@ -894,6 +894,7 @@ module.exports = (function () {
 
     try {
       await folder.removeFolder({
+        path_to_type,
         path_to_folder,
       });
       dev.logpackets({ status: "folder was removed" });

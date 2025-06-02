@@ -61,6 +61,16 @@
             @close="show_bin_modal = false"
           />
 
+          <button
+            v-if="$root.app_infos.is_electron && is_instance_admin"
+            type="button"
+            class="u-buttonLink"
+            @click="openInFinder({ path: space.$path })"
+          >
+            <b-icon icon="folder-symlink" />
+            {{ $t("open_in_finder") }}
+          </button>
+
           <RemoveMenu
             :modal_title="$t('remove_space', { name: space.title })"
             @remove="removeSpace"

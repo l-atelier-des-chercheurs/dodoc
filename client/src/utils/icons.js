@@ -157,6 +157,7 @@ import {
   BIconWindowSidebar,
   BIconList,
   BIconFileCode,
+  BIconFolderSymlink,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -314,3 +315,4 @@ Vue.component("BIconWindowSidebar", BIconWindowSidebar);
 Vue.component("BIconBook", BIconBook);
 Vue.component("BIconList", BIconList);
 Vue.component("BIconFileCode", BIconFileCode);
+Vue.component("BIconFolderSymlink", BIconFolderSymlink);
