@@ -586,6 +586,15 @@
           }
         }
       },
+      "chats": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          }
+        },
+        "$files": {}
+      },
       "fonts": {
         "fields": {
           "title": {

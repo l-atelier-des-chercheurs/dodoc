@@ -288,6 +288,8 @@ new Vue({
     has_file_dragover_on_window: false,
     opened_modals: 0,
 
+    show_chats_list: false,
+
     current_time: "",
 
     default_new_module_width: 200,

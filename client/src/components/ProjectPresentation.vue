@@ -41,7 +41,10 @@
           />
         </transition>
 
-        <div v-if="display_original_space" class="_originalSpace">
+        <div
+          v-if="display_original_space && original_space_name"
+          class="_originalSpace"
+        >
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
@@ -278,6 +281,7 @@ export default {
   },
   computed: {
     original_space_name() {
+      if (!this.project.$path) return;
       let { space_slug } = this.decomposePath(this.project.$path);
       const space_path = this.createPath({ space_slug });
       const space = this.getFromCache(space_path);
@@ -421,7 +425,7 @@ export default {
   overflow: hidden;
 
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);

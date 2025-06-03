@@ -1356,4 +1356,7 @@ export default {
   add_row: "Ajouter une ligne",
   remove_column: "Supprimer la dernière colonne",
   remove_row: "Supprimer la dernière ligne",
+  chats: "Discussions",
+  list_of_topics: "Liste des sujets",
+  create_a_chat: "Créer une discussion",
 };

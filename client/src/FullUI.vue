@@ -18,11 +18,22 @@
         />
         <template v-else>
           <TopBar />
-          <transition name="pagetransition" mode="out-in">
-            <router-view v-slot="{ Component }" :key="$route.path">
-              <component :is="Component" />
-            </router-view>
-          </transition>
+
+          <div class="_mainContent">
+            <transition name="pagetransition" mode="out-in">
+              <div class="_routerView" :key="$route.path">
+                <router-view class="" v-slot="{ Component }">
+                  <component :is="Component" />
+                </router-view>
+              </div>
+            </transition>
+            <div
+              class="_chatsListContainer"
+              :class="{ 'is--shown': $root.show_chats_list }"
+            >
+              <ChatsList v-if="$root.show_chats_list" />
+            </div>
+          </div>
           <!-- <TaskTracker /> -->
         </template>
       </div>
@@ -36,6 +47,7 @@ import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import ChatsList from "@/adc-core/chats/ChatsList.vue";
 
 export default {
   props: {},
@@ -46,6 +58,7 @@ export default {
     TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
+    ChatsList,
   },
   data() {
     return {
@@ -123,5 +136,37 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._fullUI {
+}
+
+._mainContent {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  flex: 1;
+  overflow: hidden;
+
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  // gap: var(--spacing);
+
+  > * {
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  ._routerView {
+    flex: 1 1 auto;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+
+  ._chatsListContainer {
+    position: relative;
+    flex: 0 0 0;
+    width: 0;
+
+    --chats-list-width: 300px;
+
+    &.is--shown {
+      flex: 0 0 var(--chats-list-width);
+    }
+  }
 }
 </style>

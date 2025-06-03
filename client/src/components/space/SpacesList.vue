@@ -41,7 +41,7 @@
 
     <CreateFolder
       v-if="show_create_modal"
-      :type_of_folder="'space'"
+      :modal_name="$t('create_a_space')"
       :path="'spaces'"
       @close="show_create_modal = false"
       @openNew="openNewSpace"
