@@ -145,6 +145,8 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topBar {
+  --topbar-font-size: 16px;
+
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -169,7 +171,7 @@ export default {
   font-weight: bold;
 
   ._logo {
-    font-size: 20px;
+    font-size: var(--topbar-font-size);
   }
 
   a {
@@ -199,7 +201,7 @@ export default {
     background-color: transparent;
     // border: 1px solid #ddd;
     border-radius: 0;
-    font-size: 20px;
+    font-size: var(--topbar-font-size);
     cursor: pointer;
     text-decoration: none;
 

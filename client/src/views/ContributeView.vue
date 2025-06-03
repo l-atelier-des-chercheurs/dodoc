@@ -147,10 +147,10 @@
           v-if="selected_items.length > 0"
           key="selection"
         >
-          <div class="u-sameRow _dbleBtns">
+          <div class="_dbleBtns">
             <button
               type="button"
-              class="u-button u-button_pill"
+              class="u-button"
               @click="show_pick_existing_mediastack_modal = true"
             >
               <!-- <b-icon icon="plus-square-dotted" /> -->
@@ -163,7 +163,7 @@
             />
             <button
               type="button"
-              class="u-button u-button_pill"
+              class="u-button"
               @click="show_new_mediastack_modal = true"
             >
               <!-- <b-icon icon="plus-square-dotted" /> -->
@@ -665,8 +665,9 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   // box-shadow: 0 2px 6px 0 black;
-  background: var(--h-700);
-  color: white;
+  background: white;
+  border-top: 1px solid var(--border-color);
+  // color: white;
   padding: calc(var(--spacing) * 1);
   // padding-bottom: calc(var(--spacing) * 2);
 }
@@ -703,12 +704,12 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 1);
   padding-bottom: calc(var(--spacing) / 4);
   width: 100%;
 }
 ._dbleBtns > * {
-  flex: 0 1 120px;
+  flex: 0 1 250px;
   // gap: calc(var(--spacing) / 4);
   // display: flex;
   // flex-flow: column nowrap;

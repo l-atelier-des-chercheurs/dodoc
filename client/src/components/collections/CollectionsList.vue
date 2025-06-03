@@ -45,7 +45,7 @@
       >
         <h3>{{ collection.title }}</h3>
         <div class="_collection_type">
-          {{ $t(collection.template) }}
+          {{ $t(collection.template || "story").toLowerCase() }}
         </div>
         <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
           <AuthorTag
@@ -85,12 +85,14 @@ export default {
         search_in_titles: "Rechercher dans les titres",
         collection_instr:
           "Les collections regroupent des médias dans l’espace partagé pour les partager.",
+        agora: "Agora",
       },
       en: {
         collections: "Collections",
         create_a_collection: "Create a collection",
         search_in_titles: "Search in titles",
         collection_instr: "Collections group multiple medias",
+        agora: "Agora",
       },
     },
   },
@@ -176,5 +178,13 @@ export default {
   h3 {
     margin: 0;
   }
+}
+
+._collection_type {
+  font-size: var(--sl-font-size-small);
+}
+
+.u-listOfAvatars {
+  padding: 0;
 }
 </style>
