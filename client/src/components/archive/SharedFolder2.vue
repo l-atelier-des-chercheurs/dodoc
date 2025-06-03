@@ -318,7 +318,7 @@ export default {
     },
     closeCorpus() {
       localStorage.removeItem("last_opened_folder_slug");
-      this.$router.push("/consult");
+      this.$router.push("/explore");
     },
     isFavorite(stack_path) {
       if (

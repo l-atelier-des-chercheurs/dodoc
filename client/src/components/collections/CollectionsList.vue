@@ -1,7 +1,7 @@
 <template>
   <div class="_collectionsList">
     <div class="u-spacingBottom u-instructions">
-      {{ $t("collection_instr") }}
+      {{ $t("publication_instr") }}
     </div>
     <div class="u-spacingBottom">
       <button
@@ -10,11 +10,11 @@
         @click="show_create_collection = true"
       >
         <b-icon icon="plus-circle" />&nbsp;
-        {{ $t("create_a_collection") }}
+        {{ $t("create_a_publication") }}
       </button>
       <CreateCollection
         v-if="show_create_collection"
-        :modal_name="$t('create_a_collection')"
+        :modal_name="$t('create_a_publication')"
         :path="'collections'"
         :default_folder_status="'private'"
         @close="show_create_collection = false"
@@ -35,7 +35,7 @@
         class="u-instructions"
         :key="'nopublis'"
       >
-        {{ $t("no_collections") }}
+        {{ $t("no_publications") }}
       </div>
       <router-link
         v-for="collection in filtered_collections"
@@ -80,18 +80,19 @@ export default {
   i18n: {
     messages: {
       fr: {
-        collections: "Collections",
-        create_a_collection: "Créer une collection",
+        publications: "Publications",
+        create_a_publication: "Créer une publication",
         search_in_titles: "Rechercher dans les titres",
-        collection_instr:
-          "Les collections regroupent des médias dans l’espace partagé pour les partager.",
+        publication_instr:
+          "Les publications regroupent des médias dans l’espace partagé pour les partager.",
         agora: "Agora",
       },
       en: {
-        collections: "Collections",
-        create_a_collection: "Create a collection",
+        publications: "Publications",
+        create_a_publication: "Create a publication",
         search_in_titles: "Search in titles",
-        collection_instr: "Collections group multiple medias",
+        publication_instr:
+          "Publications include multiple medias to be shared together.",
         agora: "Agora",
       },
     },

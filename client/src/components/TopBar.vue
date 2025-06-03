@@ -80,11 +80,11 @@
       </div>
     </div>
     <div class="_menu">
-      <router-link to="/import" active-class="is--active">{{
-        $t("import")
+      <router-link to="/contribute" active-class="is--active">{{
+        $t("contribute")
       }}</router-link>
-      <router-link to="/consult" active-class="is--active">
-        {{ $t("consult") }}
+      <router-link to="/explore" active-class="is--active"
+        >{{ $t("explore") }}
       </router-link>
       <router-link to="/publish" active-class="is--active">
         {{ $t("publish") }}
@@ -114,13 +114,13 @@ export default {
   i18n: {
     messages: {
       fr: {
-        import: "Déposer",
-        consult: "Consulter",
+        contribute: "Contribuer",
+        explore: "Explorer",
         publish: "Publier",
       },
       en: {
-        import: "Import",
-        consult: "Consult",
+        contribute: "Contribute",
+        explore: "Explore",
         publish: "Publish",
       },
     },

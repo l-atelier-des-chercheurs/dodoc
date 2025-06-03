@@ -11,22 +11,22 @@ const routes = [
       import(/* webpackChunkName: "AccueilView" */ "../views/Accueil.vue"),
   },
   {
-    path: "/import",
-    name: "Importer",
+    path: "/contribute",
+    name: "Contribuer",
     component: () =>
       import(
         /* webpackChunkName: "ContributeView" */ "../views/ContributeView.vue"
       ),
   },
   {
-    path: "/consult",
-    name: "Consulter",
+    path: "/explore",
+    name: "Explorer",
     component: () =>
       import(/* webpackChunkName: "ShareView" */ "../views/ShareView.vue"),
   },
   {
-    path: "/consult/:folder_slug",
-    name: "Consulter",
+    path: "/explore/:folder_slug",
+    name: "Explorer",
     component: () =>
       import(/* webpackChunkName: "CorpusView" */ "../views/CorpusView.vue"),
   },

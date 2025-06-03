@@ -287,9 +287,9 @@ export default {
 
   ._chutierRow--preview {
     position: relative;
-    height: 80px;
+    height: 120px;
     border-radius: 2px;
-    width: 80px;
+    width: 120px;
     flex: 0 0 auto;
     overflow: hidden;
     // color: white;

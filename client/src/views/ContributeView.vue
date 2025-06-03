@@ -495,7 +495,7 @@ export default {
       this.show_confirm_remove_menu = false;
     },
     async stackPosted(new_stack_slug) {
-      // this.link_to_new_stack = `/consult/${new_stack_slug}`;
+      // this.link_to_new_stack = `/explore/${new_stack_slug}`;
       this.show_new_mediastack_modal = false;
     },
     async moveFilesToStack(stack) {
