@@ -591,6 +591,12 @@
           "title": {
             "type": "string",
             "unique": true
+          },
+          "last_message_date": {
+            "type": "string"
+          },
+          "last_message_count": {
+            "type": "number"
           }
         },
         "$files": {

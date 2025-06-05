@@ -26,9 +26,18 @@
           />
         </div>
 
-        <div class="_openedChat--header--row">
-          {{ messages.length }} messages
+        <div class="_openedChat--header--row _lastMessageDate">
+          <div>
+            {{
+              $tc("message_count", messages.length, { count: messages.length })
+            }}
+          </div>
         </div>
+        <!-- <div>
+          <div v-if="chat.last_message_date">
+            {{ formatDateTimeToHuman(chat.last_message_date) }}
+          </div>
+        </div> -->
 
         <div class="_openedChat--header--row _adminsAndContributors">
           <AdminsAndContributorsField
@@ -46,16 +55,18 @@
           {{ $t("no_messages_in_chat") }}
         </div>
         <template v-else>
-          <button
-            type="button"
-            class="u-button u-button_red"
-            v-if="
-              messages.length > max_messages_to_display && !load_all_messages
-            "
-            @click="load_all_messages = true"
-          >
-            {{ $t("load_all_messages") }}
-          </button>
+          <div class="_loadMoreMessages">
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small"
+              v-if="
+                messages.length > max_messages_to_display && !load_all_messages
+              "
+              @click="load_all_messages = true"
+            >
+              {{ $t("load_older_messages") }}
+            </button>
+          </div>
 
           <template v-for="day in messages_grouped_by_date">
             <div class="_dayTitle" :key="day.date">
@@ -266,6 +277,15 @@ export default {
 
       const path = this.chat.$path + "/" + meta_filename;
       this.new_message = "";
+
+      const last_message_date = new Date().toISOString();
+      const last_message_count = this.messages.length;
+
+      await this.$api.updateMeta({
+        path: this.chat.$path,
+        new_meta: { last_message_date, last_message_count },
+      });
+
       // setTimeout(() => {
       //   this.scrollToMessage(path);
       // }, 100);
@@ -325,10 +345,15 @@ export default {
   display: flex;
   align-items: center;
 
+  margin-bottom: calc(var(--spacing) / 2);
+
   :deep(._editBtn) {
     --color2: white;
     --color-text: var(--c-noir);
   }
+}
+._lastMessageDate {
+  justify-content: space-between;
 }
 
 ._openedChat--content {
@@ -396,6 +421,11 @@ export default {
     right: 0;
     bottom: 0;
   }
+}
+
+._loadMoreMessages {
+  text-align: center;
+  // margin: calc(var(--spacing) / 1);
 }
 </style>
 <style lang="scss">

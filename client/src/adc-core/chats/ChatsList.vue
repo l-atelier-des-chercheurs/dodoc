@@ -15,13 +15,31 @@
     <div class="_chatsList--content">
       <div class="_chat" v-for="chat in chats" :key="chat.$path">
         <h3>{{ chat.title }}</h3>
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="openChat(chat.$path)"
-        >
-          {{ $t("open") }}
-        </button>
+        <div class="_chat--infos">
+          <div>
+            <span v-if="chat.last_message_date">
+              {{ $t("last_message_date") }}
+              {{ formatDateTimeToHuman(chat.last_message_date) }}
+            </span>
+            <span v-else> – </span>
+          </div>
+          <div v-if="chat.last_message_count">
+            {{
+              $tc("message_count", chat.last_message_count, {
+                count: chat.last_message_count,
+              })
+            }}
+          </div>
+        </div>
+        <div class="_chat--actions">
+          <button
+            type="button"
+            class="u-button u-button_red"
+            @click="openChat(chat.$path)"
+          >
+            {{ $t("open") }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -124,11 +142,31 @@ export default {
 ._chat {
   background: var(--c-rouge);
   border-radius: var(--border-radius);
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) / 2);
 
+  h3 {
+    margin-bottom: calc(var(--spacing) / 2);
+  }
+
+  :deep(.u-label) {
+    color: white;
+  }
+}
+
+._chat--infos {
+  // display: flex;
+  // justify-content: space-between;
+  // align-items: center;
+}
+
+._chat--actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
 }
+
+// display: flex;
+// justify-content: space-between;
+// align-items: center;
 </style>

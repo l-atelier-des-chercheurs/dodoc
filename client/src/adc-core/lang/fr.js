@@ -1372,5 +1372,8 @@ export default {
   anonymous_user: "Anonyme",
   no_messages_in_chat: "Aucun message dans cette discussion.",
   remove_this_message: "Supprimer ce message",
-  load_all_messages: "Afficher tous les messages",
+  load_older_messages: "Afficher les messages plus anciens",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Dernier message le",
+  message_has_been_removed: "Ce message a été supprimé.",
 };
