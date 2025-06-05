@@ -88,7 +88,7 @@
           :content="space.title"
           :path="space.$path"
           :required="true"
-          :maxlength="280"
+          :maxlength="40"
           :can_edit="can_edit"
         />
         <!-- :label="can_edit ? $t('subtitle') : undefined" -->
