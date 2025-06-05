@@ -4,93 +4,118 @@
     <div v-else-if="!chat && err_loading_chat" class="_error">
       {{ $t("error:") }} {{ err_loading_chat }}
     </div>
-    <div class="_openedChat--header" v-else-if="chat" key="chat">
-      <div class="_openedChat--header--row">
-        <button
-          type="button"
-          class="u-button u-button_icon _backBtn"
-          @click="closeChat"
-        >
-          <b-icon icon="arrow-left-circle" :aria-label="$t('back')" />
-        </button>
-        <TitleField
-          :field_name="'title'"
-          :label="$t('title')"
-          :show_label="false"
-          :content="chat.title"
-          :path="chat.$path"
-          :tag="'h3'"
-          :required="true"
-          :can_edit="can_edit_chat"
-        />
-      </div>
-
-      <div class="_openedChat--header--row">
-        {{ sorted_messages.length }} messages
-      </div>
-
-      <div class="_openedChat--header--row _adminsAndContributors">
-        <AdminsAndContributorsField
-          :folder="chat"
-          :can_edit="can_edit_chat"
-          :custom_label="$t('participants')"
-          :admin_label="$t('admin')"
-          :admin_instructions="$t('chat_admin_instructions')"
-          :contrib_instructions="$t('chat_contrib_instructions')"
-        />
-      </div>
-    </div>
-
-    <div class="_openedChat--content" ref="messages">
-      <div class="_noMedia" v-if="messages_grouped_by_date.length === 0">
-        {{ $t("no_message_in_chat") }}
-      </div>
-      <template v-else>
-        <template v-for="day in messages_grouped_by_date">
-          <div class="_dayTitle" :key="day.date">
-            {{ formatDateToHuman(day.date) }}
-          </div>
-          <Message
-            v-for="message in day.messages"
-            :key="message.$path"
-            :ref="`message-${message.$path}`"
-            :message="message"
+    <template v-else>
+      <div class="_openedChat--header" key="chat">
+        <div class="_openedChat--header--row">
+          <button
+            type="button"
+            class="u-button u-button_icon _backBtn"
+            @click="closeChat"
+          >
+            <b-icon icon="arrow-left-circle" :aria-label="$t('back')" />
+          </button>
+          <TitleField
+            :field_name="'title'"
+            :label="$t('title')"
+            :show_label="false"
+            :content="chat.title"
+            :path="chat.$path"
+            :tag="'h3'"
+            :required="true"
             :can_edit="can_edit_chat"
           />
-        </template>
-        <div class="_message--footer">
-          <b-icon icon="check" />
         </div>
-      </template>
-    </div>
 
-    <div class="_openedChat--footer">
-      <template v-if="can_contribute_to_chat">
-        <TextInput
-          :content.sync="new_message"
-          :autofocus="true"
-          :placeholder="$t('write_a_message')"
-          :minlength="0"
-          :maxlength="300"
-          @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="postMessage"
-        >
-          <template #suffix>
-            <button
-              type="button"
-              class="u-button u-button_icon u-suffix"
-              v-if="new_message.length > 0"
-              @click="postMessage"
-            >
-              <b-icon icon="arrow-up-right-square-fill" />
-            </button>
-          </template>
-        </TextInput>
-      </template>
-      <div v-else class="u-instructions">
-        {{ $t("not_allowed_to_post_messages") }}
+        <div class="_openedChat--header--row">
+          {{ messages.length }} messages
+        </div>
+
+        <div class="_openedChat--header--row _adminsAndContributors">
+          <AdminsAndContributorsField
+            :folder="chat"
+            :can_edit="can_edit_chat"
+            :custom_label="$t('participants')"
+            :admin_label="$t('admin')"
+            :admin_instructions="$t('chat_admin_instructions')"
+            :contrib_instructions="$t('chat_contrib_instructions')"
+          />
+        </div>
       </div>
-    </div>
+      <div class="_openedChat--content" ref="messages" @scroll="onScroll">
+        <div class="_noMedia" v-if="messages_grouped_by_date.length === 0">
+          {{ $t("no_messages_in_chat") }}
+        </div>
+        <template v-else>
+          <button
+            type="button"
+            class="u-button u-button_red"
+            v-if="
+              messages.length > max_messages_to_display && !load_all_messages
+            "
+            @click="load_all_messages = true"
+          >
+            {{ $t("load_all_messages") }}
+          </button>
+
+          <template v-for="day in messages_grouped_by_date">
+            <div class="_dayTitle" :key="day.date">
+              {{ formatDateToHuman(day.date) }}
+            </div>
+            <Message
+              v-for="message in day.messages"
+              :key="message.$path"
+              :ref="`message-${message.$path}`"
+              :message="message"
+              :can_edit="can_edit_chat"
+            />
+          </template>
+          <div class="_message--footer">
+            <b-icon icon="check" />
+          </div>
+
+          <div class="_scrollToEndBtn">
+            <transition name="scrollEndBtn">
+              <button
+                v-if="pane_scroll_until_end > 100"
+                type="button"
+                class="u-button u-button_icon u-button_red"
+                @click="scrollToEnd()"
+              >
+                <b-icon icon="arrow-down" />
+              </button>
+            </transition>
+          </div>
+        </template>
+      </div>
+
+      <div class="_openedChat--footer">
+        <template v-if="can_contribute_to_chat">
+          <TextInput
+            :content.sync="new_message"
+            :autofocus="true"
+            :placeholder="$t('write_a_message')"
+            :minlength="0"
+            :maxlength="300"
+            @toggleValidity="($event) => (allow_save = $event)"
+            @onEnter="postMessage"
+          >
+            <template #suffix>
+              <button
+                type="button"
+                class="u-button u-button_icon u-suffix"
+                v-if="new_message.length > 0"
+                @click="postMessage"
+              >
+                <b-icon icon="arrow-up-right-square-fill" />
+              </button>
+            </template>
+          </TextInput>
+        </template>
+        <div v-else class="u-instructions">
+          {{ $t("not_allowed_to_post_messages") }}
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -112,6 +137,11 @@ export default {
       err_loading_chat: false,
       is_loading: true,
       new_message: "",
+      max_messages_to_display: 100,
+      load_all_messages: false,
+      is_scrolled_to_end: false,
+
+      pane_scroll_until_end: 0,
     };
   },
   created() {},
@@ -125,20 +155,25 @@ export default {
     });
 
     // post messages until 1000
-    // while (this.sorted_messages.length < 100) {
-    //   this.new_message = "message " + this.sorted_messages.length;
-    //   await this.postMessage();
-    //   await new Promise((resolve) => setTimeout(resolve, 100));
+    // let i = 0;
+    // while (i < 850) {
+    //   this.new_message = "message " + i++;
+    //   this.postMessage();
+    //   await new Promise((resolve) => setTimeout(resolve, 10));
     // }
+
+    this.$eventHub.$on("file.created", this.checkForNewMessages);
   },
   beforeDestroy() {
     this.$api.leave({ room: this.chat.$path });
+    this.$eventHub.$off("file.created", this.checkForNewMessages);
   },
   watch: {
     sorted_messages: {
       handler() {
+        // annoying: jumps for any event, like removing or editing a message
         this.$nextTick(() => {
-          this.scrollToEnd();
+          // this.scrollToEnd();
         });
       },
       deep: true,
@@ -147,15 +182,16 @@ export default {
   computed: {
     messages() {
       if (!this.chat || !this.chat.$files) return [];
-      return this.chat.$files.filter((file) => file.hasOwnProperty("content"));
+      return this.chat.$files.filter((file) => file.hasOwnProperty("$content"));
     },
     sorted_messages() {
-      return this.messages
-        .slice()
-        .sort((a, b) => {
-          return +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded);
-        })
-        .reverse();
+      let messages = this.messages.slice().sort((a, b) => {
+        return +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded);
+      });
+      if (!this.load_all_messages)
+        messages = messages.slice(0, this.max_messages_to_display);
+      messages.reverse();
+      return messages;
     },
     messages_grouped_by_date() {
       return this.sorted_messages.reduce((acc, message) => {
@@ -181,6 +217,19 @@ export default {
     },
   },
   methods: {
+    onScroll(event) {
+      this.pane_scroll_until_end =
+        event.target.scrollHeight -
+        event.target.scrollTop -
+        event.target.clientHeight;
+    },
+    checkForNewMessages({ meta }) {
+      if (meta.$path.startsWith(this.chat.$path)) {
+        this.$nextTick(() => {
+          this.scrollToMessage(meta.$path);
+        });
+      }
+    },
     async loadChat() {
       const chat = await this.$api
         .getFolder({
@@ -204,14 +253,14 @@ export default {
       //   content: this.new_message,
       // });
       let additional_meta = {};
-      additional_meta.content = this.new_message;
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
-      const { meta_filename } = await this.$api.uploadFile({
+      const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
         additional_meta,
+        content: this.new_message,
       });
 
       const path = this.chat.$path + "/" + meta_filename;
@@ -227,6 +276,7 @@ export default {
       }
     },
     scrollToEnd(behavior = "smooth") {
+      if (!this.$refs.messages) return;
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
         behavior,
@@ -281,12 +331,17 @@ export default {
 }
 
 ._openedChat--content {
+  position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
   padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1) 0;
 }
 ._openedChat--footer {
   color: var(--c-noir);
+  box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+    0 0.9px 1.25px hsla(230, 13%, 9%, 0.025), 0 3px 5px hsla(230, 13%, 9%, 0.05),
+    0 12px 20px hsla(230, 13%, 9%, 0.09);
+
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   background: white;
 }
@@ -326,5 +381,30 @@ export default {
 ._backBtn {
   padding: calc(var(--spacing) / 2);
   padding-left: 0;
+}
+
+._scrollToEndBtn {
+  position: sticky;
+  bottom: calc(var(--spacing) * 1);
+  right: calc(var(--spacing) * 1);
+  z-index: 1000;
+  overflow: visible;
+
+  > button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+}
+</style>
+<style lang="scss">
+.scrollEndBtn-enter-active,
+.scrollEndBtn-leave-active {
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.scrollEndBtn-enter,
+.scrollEndBtn-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
 }
 </style>

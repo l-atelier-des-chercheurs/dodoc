@@ -162,8 +162,12 @@ export default {
     flex: 0 0 0;
     width: 0;
 
-    --chats-list-width: 340px;
-    min-width: var(--chats-list-width);
+    --chats-list-width: 320px;
+    --chats-list-padding: 4px;
+
+    min-width: calc(var(--chats-list-width) + var(--chats-list-padding) * 2);
+    padding-left: var(--chats-list-padding);
+    padding-right: var(--chats-list-padding);
 
     &.is--shown {
       flex: 0 1 var(--chats-list-width);

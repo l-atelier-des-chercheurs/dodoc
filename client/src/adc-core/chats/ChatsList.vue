@@ -53,7 +53,7 @@ export default {
   data() {
     return {
       chats: [],
-      path: "/chats",
+      path: "chats",
       fetch_chats_error: null,
       show_create_chat_modal: false,
       opened_chat_slug: null,
@@ -102,8 +102,9 @@ export default {
   overflow: auto;
   background: var(--c-rouge_fonce);
   color: white;
-  border-top-left-radius: var(--border-radius);
-  border-bottom-left-radius: var(--border-radius);
+  // border-top-left-radius: var(--border-radius);
+  // border-bottom-left-radius: var(--border-radius);
+  border-radius: var(--border-radius);
 
   ._chatsList--header {
     display: flex;

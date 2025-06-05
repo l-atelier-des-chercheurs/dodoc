@@ -27,10 +27,17 @@
           &nbsp;&nbsp;<i>{{ $t("anonymous_user").toLowerCase() }}</i>
         </template> -->
       </div>
-      <div class="_message--header--date">{{ formatted_date }}</div>
+      <div class="_message--header--date">
+        {{ formatted_date }}
+        <RemoveMenu
+          :show_button_text="false"
+          :modal_title="$t('remove_this_message')"
+          @remove="removeMessage"
+        />
+      </div>
     </div>
     <div class="_message--content">
-      {{ message.content || "…" }}
+      {{ message.$content || "…" }}
     </div>
   </div>
 </template>
@@ -46,6 +53,11 @@ export default {
     can_edit: {
       type: Boolean,
       default: false,
+    },
+  },
+  methods: {
+    async removeMessage() {
+      await this.$api.deleteItem({ path: this.message.$path });
     },
   },
   computed: {
@@ -105,6 +117,10 @@ export default {
     font-size: var(--sl-font-size-small);
     color: var(--c-gris_fonce);
     padding: calc(var(--spacing) / 4);
+
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) / 4);
   }
 }
 ._message--content {

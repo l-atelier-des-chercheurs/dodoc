@@ -243,7 +243,7 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:not(.is--uptop) {
-    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.05));
     // padding-top: var(--spacing);
   }
 

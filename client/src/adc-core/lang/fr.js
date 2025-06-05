@@ -1370,4 +1370,7 @@ export default {
   chat_contrib_instructions:
     "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
   anonymous_user: "Anonyme",
+  no_messages_in_chat: "Aucun message dans cette discussion.",
+  remove_this_message: "Supprimer ce message",
+  load_all_messages: "Afficher tous les messages",
 };
