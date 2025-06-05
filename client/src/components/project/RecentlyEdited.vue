@@ -45,20 +45,24 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._recentlyEdited {
-  position: fixed;
-  right: 0;
-  top: 55px;
-  width: 140px;
-  max-height: 300px;
+  position: relative;
+  // right: 0;
+  // top: 55px;
+  // width: 140px;
+  // max-height: 300px;
   z-index: 1000;
   padding: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) * 2) auto;
   // padding-top: calc(var(--spacing) / 2);
-  background: var(--c-bleumarine);
+  // background: var(--c-bleumarine);
+  background: var(--c-gris_clair);
   // color: white;
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+
   border-radius: var(--border-radius) 0 0 var(--border-radius);
-  box-shadow: var(--panel-shadows);
-  display: flex;
-  flex-direction: row;
+  // box-shadow: var(--panel-shadows);
+  // display: flex;
+  // flex-direction: row;
 
   overflow: auto;
 
@@ -67,7 +71,7 @@ export default {
   }
 
   ::v-deep label {
-    color: white;
+    // color: white;
   }
 }
 
@@ -79,11 +83,11 @@ export default {
 }
 
 ._title {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  transform: rotate(180deg);
-  margin-right: calc(var(--spacing) / 2);
-  white-space: nowrap;
+  // writing-mode: vertical-rl;
+  // text-orientation: mixed;
+  // transform: rotate(180deg);
+  // margin-right: calc(var(--spacing) / 2);
+  // white-space: nowrap;
 }
 
 ._content {
