@@ -281,10 +281,10 @@ export default {
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
 
-      await this.$api.updateMeta({
-        path: this.chat.$path,
-        new_meta: { last_message_date, last_message_count },
-      });
+      // await this.$api.updateMeta({
+      //   path: this.chat.$path,
+      //   new_meta: { last_message_date, last_message_count },
+      // });
 
       // setTimeout(() => {
       //   this.scrollToMessage(path);
