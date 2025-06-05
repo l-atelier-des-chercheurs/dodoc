@@ -55,6 +55,12 @@
           v-if="show_create_modal"
           :modal_name="$t('create_a_project')"
           :path="projects_path"
+          :private_status_explanations="
+            $t('private_status_explanations_projects')
+          "
+          :public_status_explanations="
+            $t('public_status_explanations_projects')
+          "
           :default_folder_status="'draft'"
           @close="show_create_modal = false"
           @openNew="openNewProject"

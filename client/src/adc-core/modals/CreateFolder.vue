@@ -38,8 +38,9 @@
         :content.sync="new_folder_is_private"
         :label="$t('private')"
         :options="{
-          true: $t('private_status_explanations'),
-          false: $t('public_status_explanations'),
+          true:
+            private_status_explanations || $t('private_status_explanations'),
+          false: public_status_explanations || $t('public_status_explanations'),
         }"
       />
 
@@ -70,6 +71,8 @@ export default {
   props: {
     modal_name: String,
     path: String,
+    private_status_explanations: String,
+    public_status_explanations: String,
     default_folder_status: { type: String, default: "public" },
   },
   components: {},

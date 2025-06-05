@@ -6,20 +6,29 @@
     </div>
     <div class="_openedChat--header" v-else-if="chat" key="chat">
       <div class="_openedChat--header--row">
-        <h3>{{ chat.title }}</h3>
         <button
           type="button"
-          class="u-button u-button_icon _closeBtn"
+          class="u-button u-button_icon _backBtn"
           @click="closeChat"
         >
-          <b-icon icon="x-lg" :label="$t('close')" />
+          <b-icon icon="arrow-left-circle" :aria-label="$t('back')" />
         </button>
+        <TitleField
+          :field_name="'title'"
+          :label="$t('title')"
+          :show_label="false"
+          :content="chat.title"
+          :path="chat.$path"
+          :tag="'h3'"
+          :required="true"
+          :can_edit="can_edit_chat"
+        />
       </div>
 
       <div class="_openedChat--header--row _adminsAndContributors">
         <AdminsAndContributorsField
           :folder="chat"
-          :can_edit="can_contribute_to_chat"
+          :can_edit="can_edit_chat"
           :custom_label="$t('participants')"
           :admin_label="$t('admin')"
           :admin_instructions="$t('chat_admin_instructions')"
@@ -29,20 +38,26 @@
     </div>
 
     <div class="_openedChat--content" ref="messages">
-      <div class="_noMedia" v-if="messages.length === 0">
+      <div class="_noMedia" v-if="messages_grouped_by_date.length === 0">
         {{ $t("no_message_in_chat") }}
       </div>
-      <div v-else>
-        <Message
-          v-for="message in messages"
-          :key="message.$path"
-          :ref="`message-${message.$path}`"
-          :message="message"
-        />
+      <template v-else>
+        <template v-for="day in messages_grouped_by_date">
+          <div class="_dayTitle" :key="day.date">
+            {{ formatDateToHuman(day.date) }}
+          </div>
+          <Message
+            v-for="message in day.messages"
+            :key="message.$path"
+            :ref="`message-${message.$path}`"
+            :message="message"
+            :can_edit="can_edit_chat"
+          />
+        </template>
         <div class="_message--footer">
           <b-icon icon="check" />
         </div>
-      </div>
+      </template>
     </div>
 
     <div class="_openedChat--footer">
@@ -102,17 +117,79 @@ export default {
     this.$api.join({ room: this.chat.$path });
 
     this.$nextTick(() => {
-      this.scrollToEnd();
+      this.scrollToEnd("instant");
     });
   },
   beforeDestroy() {
     this.$api.leave({ room: this.chat.$path });
   },
-  watch: {},
+  watch: {
+    sorted_messages: {
+      handler() {
+        this.$nextTick(() => {
+          this.scrollToEnd();
+        });
+      },
+      deep: true,
+    },
+  },
   computed: {
     messages() {
       if (!this.chat || !this.chat.$files) return [];
       return this.chat.$files.filter((file) => file.hasOwnProperty("content"));
+    },
+    sorted_messages() {
+      return this.messages
+        .slice()
+        .sort((a, b) => {
+          return +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded);
+        })
+        .reverse();
+    },
+    messages_grouped_by_date() {
+      return this.sorted_messages.reduce((acc, message) => {
+        /* create structure 
+        [
+          {
+            date: "2025-01-01",
+            messages: [
+              {
+                $path: "/messages/1",
+                $date_uploaded: "2025-01-01",
+                content: "Hello",
+                $authors: ["/users/1"],
+              },
+            ],
+          },
+          {
+            date: "2025-01-02",
+            messages: [
+              {
+                $path: "/messages/2",
+                $date_uploaded: "2025-01-02",
+                content: "Hello",
+                $authors: ["/users/2"],
+              },
+            ],
+          },
+        ]
+        */
+
+        const date = new Date(message.$date_uploaded).toDateString();
+        let day = acc.find((day) => day.date === date);
+        if (!day) {
+          day = { date, messages: [] };
+          acc.push(day);
+        }
+        day.messages.push(message);
+        // day.messages.sort((a, b) => {
+        //   return +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded);
+        // });
+        return acc;
+      }, []);
+    },
+    can_edit_chat() {
+      return this.canLoggedinEditFolder({ folder: this.chat });
     },
     can_contribute_to_chat() {
       if (!this.chat) return false;
@@ -155,9 +232,9 @@ export default {
 
       const path = this.chat.$path + "/" + meta_filename;
       this.new_message = "";
-      setTimeout(() => {
-        this.scrollToMessage(path);
-      }, 100);
+      // setTimeout(() => {
+      //   this.scrollToMessage(path);
+      // }, 100);
     },
     scrollToMessage(path) {
       const messages = this.$refs[`message-${path}`];
@@ -165,10 +242,10 @@ export default {
         messages[0].$el.scrollIntoView({ behavior: "smooth" });
       }
     },
-    scrollToEnd() {
+    scrollToEnd(behavior = "smooth") {
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
-        behavior: "instant",
+        behavior,
       });
     },
   },
@@ -211,8 +288,12 @@ export default {
 }
 ._openedChat--header--row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+
+  :deep(._editBtn) {
+    --color2: white;
+    --color-text: var(--c-noir);
+  }
 }
 
 ._openedChat--content {
@@ -233,14 +314,33 @@ export default {
   // z-index: 1000;
 }
 
+._dayTitle {
+  text-align: center;
+  // font-size: 0.8rem;
+  margin: calc(var(--spacing) / 1);
+  font-style: italic;
+  opacity: 0.7;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
 ._message--footer {
   text-align: center;
+  margin: calc(var(--spacing) / 1);
 }
 
 ._adminsAndContributors {
   :deep(.u-label),
-  :deep(._icon) {
+  :deep(._icon),
+  :deep(.u-instructions) {
     color: white !important;
   }
+}
+
+._backBtn {
+  padding: calc(var(--spacing) / 2);
+  padding-left: 0;
 }
 </style>

@@ -162,10 +162,11 @@ export default {
     flex: 0 0 0;
     width: 0;
 
-    --chats-list-width: 300px;
+    --chats-list-width: 340px;
+    min-width: var(--chats-list-width);
 
     &.is--shown {
-      flex: 0 0 var(--chats-list-width);
+      flex: 0 1 var(--chats-list-width);
     }
   }
 }

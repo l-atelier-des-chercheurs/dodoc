@@ -13,6 +13,19 @@
           :mode="'link'"
           :size="'small'"
         />
+        <!-- <AuthorField
+          :label="$t('authors')"
+          :show_label="false"
+          :field="'$authors'"
+          :authors_paths="message.$authors"
+          :path="message.$path"
+          :can_edit="can_edit"
+          :instructions="$t('file_author_instructions')"
+          :no_options="true"
+        /> -->
+        <!-- <template v-else>
+          &nbsp;&nbsp;<i>{{ $t("anonymous_user").toLowerCase() }}</i>
+        </template> -->
       </div>
       <div class="_message--header--date">{{ formatted_date }}</div>
     </div>
@@ -30,6 +43,10 @@ export default {
       type: Object,
       required: true,
     },
+    can_edit: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     formatted_date() {
@@ -45,7 +62,7 @@ export default {
       return undefined;
     },
     is_self() {
-      if (this.message_author_path)
+      if (this.message_author_path && this.connected_as)
         return this.message_author_path === this.connected_as.$path;
       return false;
     },
@@ -58,13 +75,13 @@ export default {
   border-radius: var(--border-radius);
   background: white;
   color: var(--c-noir);
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 4);
 
   &.is-self {
-    margin-left: calc(var(--spacing) * 1);
+    margin-left: calc(var(--spacing) * 2);
   }
   &:not(.is-self) {
-    margin-right: calc(var(--spacing) * 1);
+    margin-right: calc(var(--spacing) * 2);
   }
 
   &:last-child {

@@ -339,6 +339,9 @@ export default {
 
   private_status_explanations_projects:
     "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+  public_status_explanations_projects:
+    "Le projet sera affiché avec les autres projets, il sera accessible à tous ceux qui ont accès à son espace.",
+
   finished_status_explanations:
     "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
   draft_status_explanations:
@@ -419,8 +422,8 @@ export default {
   everyone: "Tout le monde",
   everyone_instr: "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
   everyone_can_edit:
-    "Contribution, modification et suppression ouverte à tout le monde.",
-  everyone_can_contribute: "Contribution ouverte à tout le monde",
+    "Contribution, modification et suppression ouverte à tous.",
+  everyone_can_contribute: "Contribution ouverte à tous.",
   noone: "Aucun·e",
   noone_instr: "Fermer à tous les comptes.",
   restricted: "Uniquement les comptes de la liste",
@@ -1366,4 +1369,5 @@ export default {
     "Les administrateurs sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/suppression d’un participant).",
   chat_contrib_instructions:
     "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
+  anonymous_user: "Anonyme",
 };
