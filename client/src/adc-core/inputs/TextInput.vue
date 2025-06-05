@@ -253,6 +253,7 @@ export default {
 .u-inputGroup {
   :deep(._collaborativeEditor) {
     width: 100%;
+    overflow: hidden;
   }
 }
 </style>
