@@ -2,7 +2,7 @@
   <div
     class="_message"
     :ref="`message-${message.$path}`"
-    :class="{ 'is-self': is_self }"
+    :class="{ 'is--self': is_self, 'is--removed': message_is_removed }"
   >
     <div class="_message--header">
       <div class="_message--header--author">
@@ -30,6 +30,7 @@
       <div class="_message--header--date">
         {{ formatted_date }}
         <RemoveMenu
+          v-if="!message_is_removed && can_edit"
           :show_button_text="false"
           :modal_title="$t('remove_this_message')"
           @remove="removeMessage"
@@ -86,6 +87,9 @@ export default {
       }
       return "…";
     },
+    message_is_removed() {
+      return this.message.$content === "message_removed";
+    },
     formatted_date() {
       if (!this.message.$date_uploaded) return "";
       const date = new Date(this.message.$date_uploaded);
@@ -114,15 +118,19 @@ export default {
   color: var(--c-noir);
   margin-bottom: calc(var(--spacing) / 4);
 
-  &.is-self {
+  &.is--self {
     margin-left: calc(var(--spacing) * 2);
   }
-  &:not(.is-self) {
+  &:not(.is--self) {
     margin-right: calc(var(--spacing) * 2);
   }
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &.is--removed {
+    opacity: 0.5;
   }
 }
 
