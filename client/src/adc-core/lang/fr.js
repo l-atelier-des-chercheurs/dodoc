@@ -61,7 +61,6 @@ export default {
 
   instance_admins_and_admins: "Administrateurs d’instance et contributeurs",
   admins_and_contributors: "Référents et contributeurs",
-  set_admins_and_contributors: "Définir les référents et contributeurs",
   instance_admins_instr:
     "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
   instance_contributors_instr:
@@ -1362,4 +1361,9 @@ export default {
   not_allowed_to_post_messages:
     "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
   write_a_message: "Écrivez un message…",
+  participants: "Participants",
+  chat_admin_instructions:
+    "Les administrateurs sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/suppression d’un participant).",
+  chat_contrib_instructions:
+    "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
 };

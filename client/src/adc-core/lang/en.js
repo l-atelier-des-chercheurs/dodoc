@@ -53,7 +53,6 @@ export default {
 
   instance_admins_and_admins: "Instance admins and contributors",
   admins_and_contributors: "Admins and contributors",
-  set_admins_and_contributors: "Set admins and contributors",
   instance_admins_instr:
     "The accounts listed here will be able to access all content, private or public. They will also be able to modify or delete user accounts, and modify settings.",
   instance_contributors_instr:

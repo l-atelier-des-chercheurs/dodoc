@@ -5,22 +5,27 @@
       {{ $t("error:") }} {{ err_loading_chat }}
     </div>
     <div class="_openedChat--header" v-else-if="chat" key="chat">
-      <h3>{{ chat.title }}</h3>
-      <AdminsAndContributorsField
-        :folder="chat"
-        :can_edit="can_contribute_to_chat"
-        :admin_label="$t('referent')"
-        :admin_instructions="$t('project_admin_instructions')"
-        :contrib_instructions="$t('project_contrib_instructions')"
-      />
+      <div class="_openedChat--header--row">
+        <h3>{{ chat.title }}</h3>
+        <button
+          type="button"
+          class="u-button u-button_icon _closeBtn"
+          @click="closeChat"
+        >
+          <b-icon icon="x-lg" :label="$t('close')" />
+        </button>
+      </div>
 
-      <button
-        type="button"
-        class="u-button u-button_icon _closeBtn"
-        @click="closeChat"
-      >
-        <b-icon icon="x-lg" :label="$t('close')" />
-      </button>
+      <div class="_openedChat--header--row _adminsAndContributors">
+        <AdminsAndContributorsField
+          :folder="chat"
+          :can_edit="can_contribute_to_chat"
+          :custom_label="$t('participants')"
+          :admin_label="$t('admin')"
+          :admin_instructions="$t('chat_admin_instructions')"
+          :contrib_instructions="$t('chat_contrib_instructions')"
+        />
+      </div>
     </div>
 
     <div class="_openedChat--content" ref="messages">
@@ -110,6 +115,7 @@ export default {
       return this.chat.$files.filter((file) => file.hasOwnProperty("content"));
     },
     can_contribute_to_chat() {
+      if (!this.chat) return false;
       return this.canLoggedinContributeToFolder({ folder: this.chat });
     },
   },
@@ -200,11 +206,13 @@ export default {
 }
 
 ._openedChat--header {
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2)
+    calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+}
+._openedChat--header--row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2)
-    calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 
 ._openedChat--content {
@@ -227,5 +235,12 @@ export default {
 
 ._message--footer {
   text-align: center;
+}
+
+._adminsAndContributors {
+  :deep(.u-label),
+  :deep(._icon) {
+    color: white !important;
+  }
 }
 </style>
