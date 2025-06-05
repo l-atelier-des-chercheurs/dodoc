@@ -1,8 +1,5 @@
 <template>
-  <BaseModal2
-    @close="$emit('closeModal')"
-    :title="$t('set_admins_and_contributors')"
-  >
+  <BaseModal2 @close="$emit('closeModal')" :title="modal_title">
     <div v-if="true" class="u-instructions">
       <template
         v-if="
@@ -55,6 +52,7 @@
 <script>
 export default {
   props: {
+    modal_title: String,
     folder: Object,
     admins_path: [Boolean, String, Array],
     contributors_path: [Boolean, String, Array],

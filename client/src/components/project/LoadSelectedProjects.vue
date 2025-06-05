@@ -44,11 +44,11 @@ export default {
             no_files: true,
           })
           .catch((err) => {
-            this.fetch_err = err.response;
+            // this.fetch_err = err.response;
           });
-        if (project) this.projects.push(project);
-        this.is_loading = false;
+        if (project && project.$path) this.projects.push(project);
       }
+      this.is_loading = false;
     },
   },
 };

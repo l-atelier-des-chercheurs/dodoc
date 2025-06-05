@@ -46,6 +46,20 @@
         <button
           type="button"
           class="u-button u-button_icon"
+          :class="{
+            'is--active': $root.show_chats_list,
+          }"
+          :title="$t('chats')"
+          @click="$root.show_chats_list = !$root.show_chats_list"
+        >
+          <b-icon
+            :icon="$root.show_chats_list ? 'chat-dots-fill' : 'chat-dots'"
+          />
+        </button>
+
+        <button
+          type="button"
+          class="u-button u-button_icon"
           :title="$t('about_dodoc')"
           @click="show_credits_modal = !show_credits_modal"
         >
@@ -129,6 +143,7 @@ export default {
       show_credits_modal: false,
       show_qr_code_modal: false,
       show_settings_modal: false,
+      show_chats_modal: false,
       isScrolledDown: false,
       lastScrollTop: 0,
       scroll_top: 0,
@@ -228,7 +243,7 @@ export default {
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:not(.is--uptop) {
-    filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.05));
     // padding-top: var(--spacing);
   }
 

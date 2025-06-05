@@ -7,6 +7,7 @@
       <DLabel
         v-if="show_labels"
         :str="custom_label ? custom_label : $t('admins_and_contributors')"
+        @toggleInstructions="show_modal = true"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
       <transition-group tag="div" class="u-listOfAvatars" name="listComplete">
@@ -48,15 +49,26 @@
           </template>
         </div>
         <div class="" key="more_informations">
-          <button type="button" class="u-buttonLink" @click="show_modal = true">
+          <!-- <button
+            type="button"
+            class="u-button u-button_icon"
+            v-if="!can_edit"
+            @click="show_modal = true"
+          >
             {{ $t("more_informations") }}
-          </button>
+          </button> -->
+          <EditBtn
+            v-if="can_edit"
+            :label="$t('more_informations')"
+            @click="show_modal = true"
+          />
         </div>
       </transition-group>
     </div>
 
     <EditAdminsAndContributorsField
       v-if="show_modal"
+      :modal_title="custom_label ? custom_label : $t('admins_and_contributors')"
       :folder="folder"
       :admins_path="admins_path"
       :contributors_path="contributors_path"

@@ -61,7 +61,6 @@ export default {
 
   instance_admins_and_admins: "Amministratore dell'istanza e contributori",
   admins_and_contributors: "Referenti e contributori",
-  set_admins_and_contributors: "Definire i referenti e i contributori",
   instance_admins_instr:
     "Gli account elencati possono accedere a tutti contenuti, privati o pubblici. Possono modificare o eliminare gli account degli utenti, e modificare delle impostazioni.",
   instance_contributors_instr:

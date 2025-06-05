@@ -53,7 +53,6 @@ export default {
 
   instance_admins_and_admins: "Instance admins and contributors",
   admins_and_contributors: "Admins and contributors",
-  set_admins_and_contributors: "Set admins and contributors",
   instance_admins_instr:
     "The accounts listed here will be able to access all content, private or public. They will also be able to modify or delete user accounts, and modify settings.",
   instance_contributors_instr:
@@ -628,13 +627,13 @@ export default {
   public_status_explanations: "Will be visible on the home page.",
   private_status_explanations: "Will only be visible to its contributors.",
   private_status_explanations_projects:
-    "The project will not be displayed with other projects, it will only be accessible to its contributors.",
+    "This project will not be displayed with other projects, it will only be accessible to its contributors.",
   finished_status_explanations:
     "This project will be marked with a pictogram ✓ and will be accessible to all people who have access to its space.",
   draft_status_explanations:
     "This project will be accessible to all people who have access to its space.",
   public_status_explanations_publis:
-    "The post will be visible to everyone who accesses the project.",
+    "The publication will be visible to everyone who accesses the project.",
   private_status_explanations_publis:
     "The publication will only be visible to project contributors.",
 

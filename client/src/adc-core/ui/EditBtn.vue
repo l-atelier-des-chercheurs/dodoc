@@ -196,7 +196,7 @@ export default {
   &:active,
   &:focus-visible {
     z-index: 2;
-    transform: scale(1.2);
+    // transform: scale(1.2);
   }
 
   ._icon {

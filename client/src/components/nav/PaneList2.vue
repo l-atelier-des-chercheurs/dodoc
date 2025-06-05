@@ -464,7 +464,7 @@ export default {
   }
   span {
     min-height: 2rem;
-    max-width: 40ch;
+    max-width: 20ch;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;

@@ -6,9 +6,10 @@
     :to="author_url"
     :title="author.name"
     :class="{
-      'u-card2': !show_image_only,
+      'u-card2': !show_image_only && !!mode,
     }"
     class="_author"
+    :data-size="size"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
     @click="$emit('click')"
@@ -73,7 +74,7 @@ export default {
   props: {
     path: String,
     mode: String,
-
+    size: String,
     show_image_only: {
       type: Boolean,
       default: false,
@@ -129,7 +130,7 @@ export default {
   &:where(button) {
     &:hover,
     &:focus-visible {
-      font-weight: 800;
+      font-weight: 600;
       // background-color: var(--c-gris_clair);
     }
   }
@@ -181,14 +182,19 @@ export default {
     position: relative;
     overflow: hidden;
     // border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
   }
+  &[data-size="small"] ._cover {
+    width: 15px;
+    height: 15px;
+  }
+
   &[data-imageonly] ._cover {
     border-radius: 50%;
   }
   &[data-imageonly][data-isself] ._cover {
-    border: 2px solid var(--c-bleumarine);
+    border: 1.5px solid var(--c-bleumarine);
   }
 
   ._infos {
@@ -198,8 +204,8 @@ export default {
     //   calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
     ._name {
-      font-size: var(--sl-font-size-normal);
-      font-weight: 500;
+      font-size: var(--sl-font-size-small);
+      // font-weight: 500;
 
       display: flex;
       flex-flow: row nowrap;

@@ -288,6 +288,8 @@ new Vue({
     has_file_dragover_on_window: false,
     opened_modals: 0,
 
+    show_chats_list: false,
+
     current_time: "",
 
     default_new_module_width: 200,
@@ -344,7 +346,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < this.mobile_breakpoint;
+      return this.window.innerWidth <= this.mobile_breakpoint;
     },
     is_touch_device() {
       return window.matchMedia("(pointer: coarse)").matches;

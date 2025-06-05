@@ -31,6 +31,7 @@
           <b-icon v-if="!show_password_in_clear" icon="eye-fill" />
           <b-icon v-else icon="eye-slash-fill" />
         </button>
+        <slot name="suffix" />
       </div>
     </template>
     <CollaborativeEditor3
@@ -235,7 +236,7 @@ export default {
 <style lang="scss" scoped>
 ._notices {
   flex: 0 0 auto;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 8);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 8);
 
   display: flex;
   justify-content: space-between;

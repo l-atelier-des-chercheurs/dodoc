@@ -207,7 +207,7 @@ export default {
 
   container-type: inline-size;
   ._noImage--letter {
-    font-weight: 200;
+    font-weight: 300;
     font-size: 1.5em;
     color: var(--c-bleumarine);
     user-select: none;
