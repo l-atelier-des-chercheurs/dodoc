@@ -113,6 +113,10 @@ export default {
 ._chatsList {
   --chat-left-padding: 2px;
 
+  min-width: calc(var(--chats-list-width) + var(--chats-list-padding) * 2);
+  padding-left: var(--chats-list-padding);
+  padding-right: var(--chats-list-padding);
+
   position: fixed;
   width: calc(var(--chats-list-width) - var(--chat-left-padding));
   margin-left: var(--chat-left-padding);
