@@ -95,7 +95,7 @@ export default {
 ._chatsList {
   --chat-left-padding: 2px;
 
-  position: relative;
+  position: fixed;
   width: calc(var(--chats-list-width) - var(--chat-left-padding));
   margin-left: var(--chat-left-padding);
   height: 90vh;
@@ -122,9 +122,9 @@ export default {
 
 ._chat {
   background: var(--c-rouge);
-  padding: calc(var(--spacing) / 1);
   border-radius: var(--border-radius);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / 2);
 
   display: flex;
   justify-content: space-between;

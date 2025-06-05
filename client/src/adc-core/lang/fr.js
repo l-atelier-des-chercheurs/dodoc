@@ -1359,4 +1359,7 @@ export default {
   chats: "Discussions",
   list_of_topics: "Liste des sujets",
   create_a_chat: "Créer une discussion",
+  not_allowed_to_post_messages:
+    "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
+  write_a_message: "Écrivez un message…",
 };

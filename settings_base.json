@@ -593,7 +593,13 @@
             "unique": true
           }
         },
-        "$files": {}
+        "$files": {
+          "fields": {
+            "content": {
+              "type": "string"
+            }
+          }
+        }
       },
       "fonts": {
         "fields": {
