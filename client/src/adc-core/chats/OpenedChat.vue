@@ -25,6 +25,10 @@
         />
       </div>
 
+      <div class="_openedChat--header--row">
+        {{ sorted_messages.length }} messages
+      </div>
+
       <div class="_openedChat--header--row _adminsAndContributors">
         <AdminsAndContributorsField
           :folder="chat"
@@ -119,6 +123,13 @@ export default {
     this.$nextTick(() => {
       this.scrollToEnd("instant");
     });
+
+    // post messages until 1000
+    // while (this.sorted_messages.length < 100) {
+    //   this.new_message = "message " + this.sorted_messages.length;
+    //   await this.postMessage();
+    //   await new Promise((resolve) => setTimeout(resolve, 100));
+    // }
   },
   beforeDestroy() {
     this.$api.leave({ room: this.chat.$path });
@@ -148,33 +159,6 @@ export default {
     },
     messages_grouped_by_date() {
       return this.sorted_messages.reduce((acc, message) => {
-        /* create structure 
-        [
-          {
-            date: "2025-01-01",
-            messages: [
-              {
-                $path: "/messages/1",
-                $date_uploaded: "2025-01-01",
-                content: "Hello",
-                $authors: ["/users/1"],
-              },
-            ],
-          },
-          {
-            date: "2025-01-02",
-            messages: [
-              {
-                $path: "/messages/2",
-                $date_uploaded: "2025-01-02",
-                content: "Hello",
-                $authors: ["/users/2"],
-              },
-            ],
-          },
-        ]
-        */
-
         const date = new Date(message.$date_uploaded).toDateString();
         let day = acc.find((day) => day.date === date);
         if (!day) {
