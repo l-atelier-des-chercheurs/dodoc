@@ -77,7 +77,8 @@
               :key="message.$path"
               :ref="`message-${message.$path}`"
               :message="message"
-              :can_edit="can_edit_chat"
+              :can_edit_chat="can_edit_chat"
+              :can_contribute_to_chat="can_contribute_to_chat"
             />
           </template>
           <div class="_message--footer">

@@ -30,7 +30,11 @@
       <div class="_message--header--date">
         {{ formatted_date }}
         <RemoveMenu
-          v-if="!message_is_removed && can_edit"
+          v-if="
+            !message_is_removed &&
+            can_contribute_to_chat &&
+            (is_self || can_edit_chat)
+          "
           :show_button_text="false"
           :modal_title="$t('remove_this_message')"
           @remove="removeMessage"
@@ -63,7 +67,11 @@ export default {
       type: Object,
       required: true,
     },
-    can_edit: {
+    can_contribute_to_chat: {
+      type: Boolean,
+      default: false,
+    },
+    can_edit_chat: {
       type: Boolean,
       default: false,
     },
@@ -158,5 +166,7 @@ export default {
 }
 ._message--content {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1.5);
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 </style>

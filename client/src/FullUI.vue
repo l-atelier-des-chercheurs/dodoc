@@ -161,16 +161,13 @@ export default {
     position: relative;
     flex: 0 0 0;
     width: 0;
+    overflow: hidden;
 
     --chats-list-width: 320px;
     --chats-list-padding: 4px;
 
-    min-width: calc(var(--chats-list-width) + var(--chats-list-padding) * 2);
-    padding-left: var(--chats-list-padding);
-    padding-right: var(--chats-list-padding);
-
     &.is--shown {
-      flex: 0 1 var(--chats-list-width);
+      flex: 0 0 var(--chats-list-width);
     }
   }
 }
