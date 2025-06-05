@@ -36,13 +36,25 @@
         />
       </div>
     </div>
-    <div class="_message--content">
-      {{ message.$content || "…" }}
-    </div>
+    <div class="_message--content" v-html="message_content" />
   </div>
 </template>
 
 <script>
+import DOMPurify from "dompurify";
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  if ("target" in node) {
+    node.setAttribute("target", "_blank");
+    node.setAttribute("rel", "noopener noreferrer");
+  }
+  if (
+    !node.hasAttribute("target") &&
+    (node.hasAttribute("xlink:href") || node.hasAttribute("href"))
+  ) {
+    node.setAttribute("xlink:show", "new");
+  }
+});
+
 export default {
   name: "Message",
   props: {
@@ -57,10 +69,23 @@ export default {
   },
   methods: {
     async removeMessage() {
-      await this.$api.deleteItem({ path: this.message.$path });
+      await this.$api.updateMeta({
+        path: this.message.$path,
+        new_meta: {
+          $content: "message_removed",
+        },
+      });
     },
   },
   computed: {
+    message_content() {
+      if (this.message.$content === "message_removed") {
+        return `<i>${this.$t("message_has_been_removed")}</i>`;
+      } else if (this.message.$content) {
+        return DOMPurify.sanitize(this.message.$content);
+      }
+      return "…";
+    },
     formatted_date() {
       if (!this.message.$date_uploaded) return "";
       const date = new Date(this.message.$date_uploaded);

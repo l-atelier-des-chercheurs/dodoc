@@ -93,6 +93,7 @@
           <TextInput
             :content.sync="new_message"
             :autofocus="true"
+            :input_type="'editor'"
             :placeholder="$t('write_a_message')"
             :minlength="0"
             :maxlength="300"
