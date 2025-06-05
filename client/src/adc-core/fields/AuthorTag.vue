@@ -194,7 +194,7 @@ export default {
     border-radius: 50%;
   }
   &[data-imageonly][data-isself] ._cover {
-    border: 1.5px solid var(--c-bleumarine);
+    border: 2px solid var(--c-bleumarine);
   }
 
   ._infos {

@@ -2,7 +2,7 @@
   <div
     class="_message"
     :ref="`message-${message.$path}`"
-    :class="{ 'is-self': is_self }"
+    :class="{ 'is--self': is_self, 'is--removed': message_is_removed }"
   >
     <div class="_message--header">
       <div class="_message--header--author">
@@ -30,19 +30,32 @@
       <div class="_message--header--date">
         {{ formatted_date }}
         <RemoveMenu
+          v-if="!message_is_removed && can_edit"
           :show_button_text="false"
           :modal_title="$t('remove_this_message')"
           @remove="removeMessage"
         />
       </div>
     </div>
-    <div class="_message--content">
-      {{ message.$content || "…" }}
-    </div>
+    <div class="_message--content" v-html="message_content" />
   </div>
 </template>
 
 <script>
+import DOMPurify from "dompurify";
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  if ("target" in node) {
+    node.setAttribute("target", "_blank");
+    node.setAttribute("rel", "noopener noreferrer");
+  }
+  if (
+    !node.hasAttribute("target") &&
+    (node.hasAttribute("xlink:href") || node.hasAttribute("href"))
+  ) {
+    node.setAttribute("xlink:show", "new");
+  }
+});
+
 export default {
   name: "Message",
   props: {
@@ -57,10 +70,26 @@ export default {
   },
   methods: {
     async removeMessage() {
-      await this.$api.deleteItem({ path: this.message.$path });
+      await this.$api.updateMeta({
+        path: this.message.$path,
+        new_meta: {
+          $content: "message_removed",
+        },
+      });
     },
   },
   computed: {
+    message_content() {
+      if (this.message.$content === "message_removed") {
+        return `<i>${this.$t("message_has_been_removed")}</i>`;
+      } else if (this.message.$content) {
+        return DOMPurify.sanitize(this.message.$content);
+      }
+      return "…";
+    },
+    message_is_removed() {
+      return this.message.$content === "message_removed";
+    },
     formatted_date() {
       if (!this.message.$date_uploaded) return "";
       const date = new Date(this.message.$date_uploaded);
@@ -89,15 +118,19 @@ export default {
   color: var(--c-noir);
   margin-bottom: calc(var(--spacing) / 4);
 
-  &.is-self {
+  &.is--self {
     margin-left: calc(var(--spacing) * 2);
   }
-  &:not(.is-self) {
+  &:not(.is--self) {
     margin-right: calc(var(--spacing) * 2);
   }
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &.is--removed {
+    opacity: 0.5;
   }
 }
 

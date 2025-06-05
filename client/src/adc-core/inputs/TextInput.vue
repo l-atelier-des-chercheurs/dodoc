@@ -34,17 +34,21 @@
         <slot name="suffix" />
       </div>
     </template>
-    <CollaborativeEditor3
-      v-else-if="tag === 'editor'"
-      ref="field"
-      :field_to_edit="'field_to_edit'"
-      :content="content"
-      :custom_formats="['bold', 'italic', 'link']"
-      :is_collaborative="false"
-      :mode="'always_active'"
-      :can_edit="true"
-      @input="$emit('update:content', $event)"
-    />
+    <div v-else-if="tag === 'editor'">
+      <div class="u-inputGroup">
+        <CollaborativeEditor3
+          ref="field"
+          :field_to_edit="'field_to_edit'"
+          :content="content"
+          :custom_formats="['bold', 'italic', 'link']"
+          :is_collaborative="false"
+          :mode="'always_active'"
+          :can_edit="true"
+          @input="$emit('update:content', $event)"
+        />
+        <slot name="suffix" />
+      </div>
+    </div>
     <span
       v-else-if="tag === 'span'"
       ref="field"
@@ -244,5 +248,11 @@ export default {
 ._revealBtn {
   padding: 0;
   text-transform: lowercase;
+}
+
+.u-inputGroup {
+  :deep(._collaborativeEditor) {
+    width: 100%;
+  }
 }
 </style>
