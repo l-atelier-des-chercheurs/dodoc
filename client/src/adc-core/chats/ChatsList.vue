@@ -17,7 +17,7 @@
         <div class="_chat" v-for="chat in sorted_chats" :key="chat.$path">
           <div class="_chat--title">
             <b-icon v-if="chat.$private" icon="file-lock2-fill" />
-            <b>{{ chat.title }}</b>
+            <TitleField :content="chat.title" :tag="'strong'" />
           </div>
           <div class="_chat--infos">
             <div>
