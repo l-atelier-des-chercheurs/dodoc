@@ -16,6 +16,7 @@
           </button>
           <TitleField
             :field_name="'title'"
+            class="_openedChat--header--title"
             :label="$t('title')"
             :show_label="false"
             :content="chat.title"
@@ -44,15 +45,7 @@
               @close="show_remove_modal = false"
             />
           </DropDown>
-        </div>
-
-        <div class="_openedChat--header--row">
-          <StatusTag
-            :status="chat.$status"
-            :status_options="['public', 'private']"
-            :path="chat.$path"
-            :can_edit="can_edit_chat"
-          />
+          <div v-else />
         </div>
 
         <!-- <div class="_openedChat--header--row _lastMessageDate">
@@ -73,6 +66,12 @@
             :admin_label="$t('admin')"
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
+          />
+          <StatusTag
+            :status="chat.$status"
+            :status_options="['public', 'private']"
+            :path="chat.$path"
+            :can_edit="can_edit_chat"
           />
         </div>
       </div>
@@ -387,6 +386,8 @@ export default {
 }
 ._openedChat--header--row {
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
   align-items: center;
 
   &:not(:last-child) {
@@ -400,6 +401,12 @@ export default {
     --color-text: var(--c-noir);
   }
 }
+
+._openedChat--header--title {
+  overflow: hidden;
+  flex: 1 1 0;
+}
+
 ._lastMessageDate {
   justify-content: space-between;
 }
