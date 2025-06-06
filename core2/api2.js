@@ -1577,7 +1577,7 @@ module.exports = (function () {
 
   async function _updateFolderCountAndBroadcast(path_to_folder) {
     dev.logfunction({ path_to_folder });
-    const { path_to_type } = utils.getContainingFolder(path_to_folder);
+    const path_to_type = utils.getContainingFolder(path_to_folder);
     const $files_count = await file.getFilesCount({ path_to_folder });
     const changed_data = await folder.updateFolder({
       path_to_type,
