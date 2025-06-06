@@ -1379,4 +1379,5 @@ export default {
   unread: "Non lu",
   remove_chat: "Supprimer la discussion {name}",
   chat_was_removed: "La discussion a été supprimée.",
+  edit_this_message: "Modifier ce message",
 };

@@ -29,16 +29,60 @@
       </div>
       <div class="_message--header--date">
         {{ formatted_date }}
-        <RemoveMenu
+
+        <template
           v-if="
             !message_is_removed &&
             can_contribute_to_chat &&
             (is_self || can_edit_chat)
           "
-          :show_button_text="false"
-          :modal_title="$t('remove_this_message')"
-          @remove="removeMessage"
-        />
+        >
+          <button
+            type="button"
+            class="u-buttonLink"
+            :title="$t('edit')"
+            @click="show_edit_modal = true"
+          >
+            <b-icon icon="pencil" />
+          </button>
+
+          <BaseModal2
+            v-if="show_edit_modal"
+            :title="$t('edit_this_message')"
+            :path="message.$path"
+            @close="show_edit_modal = false"
+          >
+            <TitleField
+              :label="$t('content')"
+              :field_name="'$content'"
+              :content="message.$content"
+              :path="message.$path"
+              :input_type="'editor'"
+              :custom_formats="['bold', 'italic', 'link']"
+              :minlength="0"
+              :maxlength="300"
+              :can_edit="true"
+            />
+          </BaseModal2>
+
+          <button
+            type="button"
+            class="u-buttonLink"
+            :title="$t('remove')"
+            @click="show_remove_modal = true"
+          >
+            <b-icon icon="trash" />
+            <!-- {{ $t("remove") }} -->
+          </button>
+
+          <RemoveMenu2
+            v-if="show_remove_modal"
+            :modal_title="$t('remove_this_message')"
+            :path="message.$path"
+            @removedSuccessfully="$emit('close')"
+            @close="show_remove_modal = false"
+          />
+        </template>
       </div>
     </div>
     <div class="_message--content" v-html="message_content" />
@@ -75,6 +119,12 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data() {
+    return {
+      show_remove_modal: false,
+      show_edit_modal: false,
+    };
   },
   methods: {
     async removeMessage() {
