@@ -29,15 +29,12 @@
         <div class="_openedChat--header--row _lastMessageDate">
           <div>
             {{
-              $tc("message_count", messages.length, { count: messages.length })
+              $tc("message_count", chat.$files_count, {
+                count: chat.$files_count,
+              })
             }}
           </div>
         </div>
-        <!-- <div>
-          <div v-if="chat.last_message_date">
-            {{ formatDateTimeToHuman(chat.last_message_date) }}
-          </div>
-        </div> -->
 
         <div class="_openedChat--header--row _adminsAndContributors">
           <AdminsAndContributorsField
@@ -51,17 +48,22 @@
         </div>
       </div>
       <div class="_openedChat--content" ref="messages" @scroll="onScroll">
-        <div class="_noMedia" v-if="messages_grouped_by_date.length === 0">
-          {{ $t("no_messages_in_chat") }}
+        <div
+          class="u-instructions _noMessages"
+          v-if="messages_grouped_by_date.length === 0"
+        >
+          {{ $t("no_messages_in_chat").toLowerCase() }}
         </div>
         <template v-else>
-          <div class="_loadMoreMessages">
+          <div
+            class="_loadMoreMessages"
+            v-if="
+              messages.length > max_messages_to_display && !load_all_messages
+            "
+          >
             <button
               type="button"
               class="u-button u-button_red u-button_small"
-              v-if="
-                messages.length > max_messages_to_display && !load_all_messages
-              "
               @click="load_all_messages = true"
             >
               {{ $t("load_older_messages") }}
@@ -115,7 +117,7 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_icon u-suffix"
+                class="u-button u-button_bleuvert"
                 v-if="new_message.length > 0"
                 @click="postMessage"
               >
@@ -150,7 +152,7 @@ export default {
       err_loading_chat: false,
       is_loading: true,
       new_message: "",
-      max_messages_to_display: 100,
+      max_messages_to_display: 50,
       load_all_messages: false,
       is_scrolled_to_end: false,
 
@@ -163,9 +165,9 @@ export default {
     this.is_loading = false;
     this.$api.join({ room: this.chat.$path });
 
-    this.$nextTick(() => {
+    setTimeout(() => {
       this.scrollToEnd("instant");
-    });
+    }, 100);
 
     // post messages until 1000
     // let i = 0;
@@ -412,21 +414,31 @@ export default {
 
 ._scrollToEndBtn {
   position: sticky;
-  bottom: calc(var(--spacing) * 1);
-  right: calc(var(--spacing) * 1);
+  bottom: 0;
+  right: 0;
   z-index: 1000;
   overflow: visible;
 
   > button {
     position: absolute;
-    right: 0;
-    bottom: 0;
+    right: calc(var(--spacing) * 1);
+    bottom: calc(var(--spacing) * 1);
+
+    filter: drop-shadow(0 0px 2px rgba(0, 0, 0, 0.2));
   }
 }
 
 ._loadMoreMessages {
   text-align: center;
   // margin: calc(var(--spacing) / 1);
+}
+
+._noMessages {
+  text-align: center;
+  margin: calc(var(--spacing) / 1);
+  font-style: italic;
+  opacity: 0.7;
+  color: white;
 }
 </style>
 <style lang="scss">

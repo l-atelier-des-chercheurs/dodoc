@@ -1,44 +1,52 @@
 <template>
   <div class="_chatsList">
-    <div class="_chatsList--header">
-      <h3>{{ $t("list_of_topics") }}</h3>
+    <div class="_content">
+      <div class="_chatsList--header">
+        <h3>{{ $t("list_of_topics") }}</h3>
 
-      <button
-        type="button"
-        class="u-button u-button_red"
-        @click="show_create_chat_modal = true"
-      >
-        <b-icon icon="plus-lg" />
-        {{ $t("create") }}
-      </button>
-    </div>
-    <div class="_chatsList--content">
-      <div class="_chat" v-for="chat in chats" :key="chat.$path">
-        <h3>{{ chat.title }}</h3>
-        <div class="_chat--infos">
-          <div>
-            <span v-if="chat.last_message_date">
+        <button
+          type="button"
+          class="u-button u-button_red"
+          @click="show_create_chat_modal = true"
+        >
+          <b-icon icon="plus-lg" />
+          {{ $t("create") }}
+        </button>
+      </div>
+      <div class="_chatsList--content">
+        <div class="_chat" v-for="chat in sorted_chats" :key="chat.$path">
+          <div class="_chat--title">
+            <b-icon v-if="chat.$private" icon="file-lock2-fill" />
+            <b>{{ chat.title }}</b>
+          </div>
+          <div class="_chat--infos">
+            <div>
               {{ $t("last_message_date") }}
-              {{ formatDateTimeToHuman(chat.last_message_date) }}
-            </span>
-            <span v-else> – </span>
+              {{ formatDateTimeToHuman(chat.$date_modified) }}
+            </div>
+            <div v-if="chat.$files_count">
+              {{
+                $tc("message_count", chat.$files_count, {
+                  count: chat.$files_count,
+                })
+              }}
+            </div>
+            <div class="_chat--participants">
+              <AdminsAndContributorsField
+                :folder="chat"
+                :show_label="false"
+                :custom_label="$t('participants')"
+              />
+            </div>
           </div>
-          <div v-if="chat.last_message_count">
-            {{
-              $tc("message_count", chat.last_message_count, {
-                count: chat.last_message_count,
-              })
-            }}
+          <div class="_chat--actions">
+            <button
+              type="button"
+              class="u-button u-button_red _openChat"
+              :title="$t('open')"
+              @click="openChat(chat.$path)"
+            ></button>
           </div>
-        </div>
-        <div class="_chat--actions">
-          <button
-            type="button"
-            class="u-button u-button_red"
-            @click="openChat(chat.$path)"
-          >
-            {{ $t("open") }}
-          </button>
         </div>
       </div>
     </div>
@@ -86,7 +94,20 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    filtered_chats() {
+      return this.chats.filter((chat) =>
+        this.canLoggedinSeeFolder({
+          folder: chat,
+        })
+      );
+    },
+    sorted_chats() {
+      return this.filtered_chats.sort((a, b) => {
+        return +new Date(b.$date_modified) - +new Date(a.$date_modified);
+      });
+    },
+  },
   methods: {
     async loadChats() {
       this.chats = await this.$api
@@ -111,43 +132,46 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._chatsList {
-  --chat-left-padding: 2px;
-
-  min-width: calc(var(--chats-list-width) + var(--chats-list-padding) * 2);
-  padding-left: var(--chats-list-padding);
-  padding-right: var(--chats-list-padding);
+  --chat-padding: 2px;
 
   position: fixed;
-  width: calc(var(--chats-list-width) - var(--chat-left-padding));
-  margin-left: var(--chat-left-padding);
-  height: 90vh;
-  overflow: auto;
+  width: calc(var(--chats-list-width) - var(--chat-padding) * 2);
+  margin-left: var(--chat-padding);
+  margin-right: var(--chat-padding);
   background: var(--c-rouge_fonce);
   color: white;
   // border-top-left-radius: var(--border-radius);
   // border-bottom-left-radius: var(--border-radius);
   border-radius: var(--border-radius);
+}
 
-  ._chatsList--header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 calc(var(--spacing) / 1);
-    padding: calc(var(--spacing) / 1) 0;
+._content {
+  height: 90vh;
+  overflow: auto;
+}
 
-    border-bottom: 2px solid white;
-  }
+._chatsList--header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1) 0;
 
-  ._chatsList--content {
-    padding: calc(var(--spacing) / 1);
-  }
+  border-bottom: 2px solid white;
+}
+
+._chatsList--content {
+  padding: calc(var(--spacing) / 1);
 }
 
 ._chat {
+  position: relative;
   background: var(--c-rouge);
   border-radius: var(--border-radius);
   padding: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 4);
+
+  // min-height: 500px;
 
   h3 {
     margin-bottom: calc(var(--spacing) / 2);
@@ -158,10 +182,12 @@ export default {
   }
 }
 
+._chat--participants {
+  // margin-top: calc(var(--spacing) / 2);
+}
+
 ._chat--infos {
-  // display: flex;
-  // justify-content: space-between;
-  // align-items: center;
+  font-size: var(--sl-font-size-x-small);
 }
 
 ._chat--actions {
@@ -173,4 +199,23 @@ export default {
 // display: flex;
 // justify-content: space-between;
 // align-items: center;
+
+._openChat {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
 </style>

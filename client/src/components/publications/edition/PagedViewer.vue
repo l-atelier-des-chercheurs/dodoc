@@ -138,13 +138,15 @@ export default {
           <!-- ${chapter.title} -->`;
         html += `<section class="chapter"
           data-starts-on-page="${chapter.starts_on_page}"
+          data-column-count="${chapter.column_count}"
           data-chapter-meta-filename="${chapter.meta_filename}"
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
         >`;
         if (chapter.title && chapter.section_type !== "gallery")
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
-        if (chapter.content) html += `${chapter.content}`;
+        if (chapter.content)
+          html += `<div class="chapterContent">${chapter.content}</div>`;
         html += `</section>`;
       });
 
