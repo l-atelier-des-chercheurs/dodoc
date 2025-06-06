@@ -110,6 +110,13 @@ export default {
       if (Array.isArray(this.contributors_path))
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
+
+      // if currently connected user is in the list, move it to first position
+      if (this.connected_as?.$path && p.includes(this.connected_as?.$path)) {
+        p = p.filter((p) => p !== this.connected_as?.$path);
+        p.unshift(this.connected_as?.$path);
+      }
+
       // p = p.concat(p).concat(p);
       // p = p.concat(p).concat(p);
       return p;
