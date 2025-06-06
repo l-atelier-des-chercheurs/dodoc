@@ -93,7 +93,7 @@
                 v-if="pane_scroll_until_end > 100"
                 type="button"
                 class="u-button u-button_icon u-button_red"
-                @click="scrollToEnd()"
+                @click="scrollToLatest()"
               >
                 <b-icon icon="arrow-down" />
               </button>
@@ -162,11 +162,12 @@ export default {
   created() {},
   async mounted() {
     await this.loadChat();
+    await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
     this.$api.join({ room: this.chat.$path });
 
     setTimeout(() => {
-      this.scrollToEnd("instant");
+      this.scrollToLatest("instant");
     }, 100);
 
     // post messages until 1000
@@ -299,12 +300,23 @@ export default {
         messages[0].$el.scrollIntoView({ behavior: "smooth" });
       }
     },
-    scrollToEnd(behavior = "smooth") {
+    scrollToLatest(behavior = "smooth") {
       if (!this.$refs.messages) return;
+      this.updateAccountLastReadMessage(this.sorted_messages.length);
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
         behavior,
       });
+    },
+    updateAccountLastReadMessage(message_index) {
+      debugger;
+
+      //
+
+      // this.$api.updateMeta({
+      //   path: this.chat.$path,
+      //   new_meta: { last_read_message_index: message_index },
+      // });
     },
   },
 };
@@ -320,11 +332,15 @@ export default {
   height: 100%;
   background: var(--c-rouge);
 
+  :deep(.u-loader) {
+    background: var(--c-rouge_fonce);
+  }
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: var(--border-radius);
   overflow: hidden;
+  border-radius: var(--border-radius);
   border: 2px solid var(--c-rouge_fonce);
 
   > ._openedChat--header {
