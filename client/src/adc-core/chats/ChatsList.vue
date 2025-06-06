@@ -14,7 +14,9 @@
     </div>
     <div class="_chatsList--content">
       <div class="_chat" v-for="chat in chats" :key="chat.$path">
-        <h3>{{ chat.title }}</h3>
+        <div class="_chat--title">
+          <b>{{ chat.title }}</b>
+        </div>
         <div class="_chat--infos">
           <div>
             <span v-if="chat.last_message_date">
@@ -34,11 +36,10 @@
         <div class="_chat--actions">
           <button
             type="button"
-            class="u-button u-button_red"
+            class="u-button u-button_red _openChat"
+            :title="$t('open')"
             @click="openChat(chat.$path)"
-          >
-            {{ $t("open") }}
-          </button>
+          ></button>
         </div>
       </div>
     </div>
@@ -144,10 +145,11 @@ export default {
 }
 
 ._chat {
+  position: relative;
   background: var(--c-rouge);
   border-radius: var(--border-radius);
   padding: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 4);
 
   h3 {
     margin-bottom: calc(var(--spacing) / 2);
@@ -159,9 +161,7 @@ export default {
 }
 
 ._chat--infos {
-  // display: flex;
-  // justify-content: space-between;
-  // align-items: center;
+  font-size: var(--sl-font-size-x-small);
 }
 
 ._chat--actions {
@@ -173,4 +173,23 @@ export default {
 // display: flex;
 // justify-content: space-between;
 // align-items: center;
+
+._openChat {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
 </style>
