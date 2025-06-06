@@ -105,6 +105,29 @@
 
     <div class="u-spacingBottom"></div>
 
+    <TitleField
+      :field_name="'title'"
+      :label="$t('title')"
+      :content="'Un super titre'"
+      :path="'/'"
+      :maxlength="40"
+      :tag="'h1'"
+      :can_edit="true"
+    />
+    <div class="u-spacingBottom"></div>
+
+    <TitleField
+      :field_name="'title'"
+      :label="$t('title')"
+      :content="'Un super titre sur deux deux deux lignes '"
+      :path="'/'"
+      :maxlength="40"
+      :tag="'h1'"
+      :can_edit="true"
+    />
+
+    <div class="u-spacingBottom"></div>
+
     <AdminsAndContributorsField
       :folder="{ $admins: 'everyone' }"
       :can_edit="true"
