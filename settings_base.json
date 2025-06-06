@@ -449,6 +449,9 @@
                     "section_starts_on_page": {
                       "type": "string"
                     },
+                    "column_count": {
+                      "type": "number"
+                    },
                     "main_text_meta": {
                       "type": "string"
                     },
