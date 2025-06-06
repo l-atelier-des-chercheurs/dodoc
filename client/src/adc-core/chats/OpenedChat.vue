@@ -383,14 +383,17 @@ export default {
 }
 
 ._openedChat--header {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2)
-    calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 }
 ._openedChat--header--row {
   display: flex;
   align-items: center;
 
-  margin-bottom: calc(var(--spacing) / 2);
+  &:not(:last-child) {
+    border-bottom: 2px solid var(--c-rouge_fonce);
+    margin-bottom: calc(var(--spacing) / 2);
+    padding-bottom: calc(var(--spacing) / 2);
+  }
 
   :deep(._editBtn) {
     --color2: white;
