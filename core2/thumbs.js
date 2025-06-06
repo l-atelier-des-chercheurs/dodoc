@@ -129,7 +129,6 @@ module.exports = (function () {
       const infos_filename = media_filename + ".infos.txt";
 
       const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
-
       try {
         const infos = await utils.readMetaFile(
           path_to_thumb_folder,
@@ -181,8 +180,6 @@ module.exports = (function () {
 
       let infos = {};
       infos.size = await utils.getFolderSize(path_to_folder);
-
-      // TODO also get quantity of medias
 
       return infos;
     },

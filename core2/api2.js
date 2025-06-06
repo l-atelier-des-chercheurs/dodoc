@@ -284,6 +284,13 @@ module.exports = (function () {
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
+
+    notifier.on("fileCreated", async (room, { path_to_folder }) => {
+      _updateFolderCountAndBroadcast(path_to_folder);
+    });
+    notifier.on("fileRemoved", async (room, { path_to_folder }) => {
+      _updateFolderCountAndBroadcast(path_to_folder);
+    });
   }
 
   function _corsCheck(req, callback) {
@@ -1566,6 +1573,28 @@ module.exports = (function () {
       });
       return acc;
     }, []);
+  }
+
+  async function _updateFolderCountAndBroadcast(path_to_folder) {
+    dev.logfunction({ path_to_folder });
+    const { path_to_type } = utils.getContainingFolder(path_to_folder);
+    const $files_count = await file.getFilesCount({ path_to_folder });
+    const changed_data = await folder.updateFolder({
+      path_to_type,
+      path_to_folder,
+      admin_meta: {
+        $files_count,
+      },
+    });
+    notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
+      changed_data,
+    });
+    if (path_to_type)
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
+        changed_data,
+      });
   }
 
   return API;
