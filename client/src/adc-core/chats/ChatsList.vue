@@ -30,6 +30,13 @@
                 })
               }}
             </div>
+            <div class="_chat--participants">
+              <AdminsAndContributorsField
+                :folder="chat"
+                :show_label="false"
+                :custom_label="$t('participants')"
+              />
+            </div>
           </div>
           <div class="_chat--actions">
             <button
@@ -159,6 +166,10 @@ export default {
   :deep(.u-label) {
     color: white;
   }
+}
+
+._chat--participants {
+  // margin-top: calc(var(--spacing) / 2);
 }
 
 ._chat--infos {
