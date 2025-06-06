@@ -587,6 +587,13 @@
           "projects_recently_edited": {
             "type": "array"
           }
+        },
+        "$files": {
+          "fields": {
+            "chat_read_indexes": {
+              "type": "object"
+            }
+          }
         }
       },
       "chats": {

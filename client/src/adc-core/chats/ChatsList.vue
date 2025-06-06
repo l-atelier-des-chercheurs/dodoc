@@ -98,12 +98,14 @@
 </template>
 <script>
 import OpenedChat from "./OpenedChat.vue";
+import authorMessageMixin from "./mixins/authorMessageMixin";
 
 export default {
   props: {},
   components: {
     OpenedChat,
   },
+  mixins: [authorMessageMixin],
   data() {
     return {
       chats: [],
@@ -169,7 +171,6 @@ export default {
   width: calc(var(--chats-list-width) - var(--chat-padding) * 2);
   margin-left: var(--chat-padding);
   margin-right: var(--chat-padding);
-  color: white;
   overscroll-behavior: contain;
   // border-top-left-radius: var(--border-radius);
   // border-bottom-left-radius: var(--border-radius);
@@ -178,6 +179,7 @@ export default {
 ._content {
   height: 90vh;
   background: var(--c-rouge_fonce);
+  color: white;
   border-radius: var(--border-radius);
   overflow: auto;
 }

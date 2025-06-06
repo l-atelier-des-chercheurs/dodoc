@@ -135,6 +135,7 @@
 </template>
 <script>
 import Message from "./Message.vue";
+import authorMessageMixin from "./mixins/authorMessageMixin";
 
 export default {
   props: {
@@ -146,6 +147,7 @@ export default {
   components: {
     Message,
   },
+  mixins: [authorMessageMixin],
   data() {
     return {
       chat: null,
@@ -170,19 +172,11 @@ export default {
       this.scrollToLatest("instant");
     }, 100);
 
-    // post messages until 1000
-    // let i = 0;
-    // while (i < 850) {
-    //   this.new_message = "message " + i++;
-    //   this.postMessage();
-    //   await new Promise((resolve) => setTimeout(resolve, 10));
-    // }
-
-    this.$eventHub.$on("file.created", this.checkForNewMessages);
+    this.$eventHub.$on("file.created", this.newMessagePosted);
   },
   beforeDestroy() {
     this.$api.leave({ room: this.chat.$path });
-    this.$eventHub.$off("file.created", this.checkForNewMessages);
+    this.$eventHub.$off("file.created", this.newMessagePosted);
   },
   watch: {
     sorted_messages: {
@@ -239,12 +233,24 @@ export default {
         event.target.scrollTop -
         event.target.clientHeight;
     },
-    checkForNewMessages({ meta }) {
-      if (meta.$path.startsWith(this.chat.$path)) {
-        this.$nextTick(() => {
-          this.scrollToMessage(meta.$path);
-        });
-      }
+    newMessagePosted({ meta }) {
+      this.$nextTick(() => {
+        this.scrollToLatest("smooth");
+      });
+    },
+    // checkForNewMessages({ meta }) {
+    //   if (meta.$path.startsWith(this.chat.$path)) {
+    //     this.$nextTick(() => {
+    //       this.scrollToMessage(meta.$path);
+    //       this.updateAuthorReadCount();
+    //     });
+    //   }
+    // },
+    updateAuthorReadCount() {
+      this.updateAuthorLastReadMessage({
+        chat_path: this.chat.$path,
+        chat_read_index: this.messages.length,
+      });
     },
     async loadChat() {
       const chat = await this.$api
@@ -301,22 +307,12 @@ export default {
       }
     },
     scrollToLatest(behavior = "smooth") {
+      this.updateAuthorReadCount();
       if (!this.$refs.messages) return;
-      this.updateAccountLastReadMessage(this.sorted_messages.length);
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
         behavior,
       });
-    },
-    updateAccountLastReadMessage(message_index) {
-      debugger;
-
-      //
-
-      // this.$api.updateMeta({
-      //   path: this.chat.$path,
-      //   new_meta: { last_read_message_index: message_index },
-      // });
     },
   },
 };
@@ -331,6 +327,7 @@ export default {
   width: 100%;
   height: 100%;
   background: var(--c-rouge);
+  color: white;
 
   :deep(.u-loader) {
     background: var(--c-rouge_fonce);
