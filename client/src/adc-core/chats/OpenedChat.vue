@@ -117,11 +117,11 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_bleuvert"
+                class="u-button u-button_bleuvert _sendBtn"
                 v-if="new_message.length > 0"
                 @click="postMessage"
               >
-                <b-icon icon="arrow-up-right-square-fill" />
+                <b-icon icon="arrow-up-right-square" />
               </button>
             </template>
           </TextInput>
@@ -384,6 +384,9 @@ export default {
     0 0.9px 1.25px hsla(230, 13%, 9%, 0.025), 0 3px 5px hsla(230, 13%, 9%, 0.05),
     0 12px 20px hsla(230, 13%, 9%, 0.09);
 
+  max-height: 50vh;
+  overflow: auto;
+
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   background: white;
 }
@@ -452,6 +455,10 @@ export default {
   font-style: italic;
   opacity: 0.7;
   color: white;
+}
+
+._sendBtn {
+  padding: calc(var(--spacing) / 2);
 }
 </style>
 <style lang="scss">

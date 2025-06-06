@@ -167,6 +167,9 @@ export default {
 ._message--content {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1.5);
   overflow-wrap: break-word;
+
+  max-height: 30rem;
+  overflow: auto;
   hyphens: auto;
 }
 </style>

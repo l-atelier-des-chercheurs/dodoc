@@ -160,6 +160,7 @@ import {
   BIconFolderSymlink,
   BIconChatDots,
   BIconChatDotsFill,
+  BIconArrowUpRightSquare,
   BIconArrowUpRightSquareFill,
 } from "bootstrap-vue";
 
@@ -321,4 +322,5 @@ Vue.component("BIconFileCode", BIconFileCode);
 Vue.component("BIconFolderSymlink", BIconFolderSymlink);
 Vue.component("BIconChatDots", BIconChatDots);
 Vue.component("BIconChatDotsFill", BIconChatDotsFill);
+Vue.component("BIconArrowUpRightSquare", BIconArrowUpRightSquare);
 Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);
