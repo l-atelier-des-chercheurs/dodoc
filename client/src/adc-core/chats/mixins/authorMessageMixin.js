@@ -3,11 +3,15 @@ export default {
     return {};
   },
   computed: {
-    author_chat_read_index() {
-      if (!this.connected_as?.$files) return;
-      return this.connected_as.$files.find((f) =>
+    author_chat_read_index_media() {
+      if (!this.connected_as?.$files) return null;
+      const chat_read_index = this.connected_as.$files.find((f) =>
         f.$path.includes("chat-read-index")
       );
+      return chat_read_index;
+    },
+    author_chat_read_index() {
+      return this.author_chat_read_index_media?.chat_read_indexes || {};
     },
   },
   methods: {
@@ -15,7 +19,7 @@ export default {
       if (!this.connected_as?.$path) return;
 
       try {
-        if (!this.author_chat_read_index) {
+        if (!this.author_chat_read_index_media) {
           const additional_meta = {
             chat_read_indexes: {
               [chat_path]: chat_read_index,
@@ -28,8 +32,6 @@ export default {
           });
         } else {
           const index = this.getIndexFromChatPath(chat_path);
-          console.log("index", index);
-          console.log("chat_read_index", chat_read_index);
 
           if (!index || index < chat_read_index) {
             await this.updateIndex(chat_path, chat_read_index);
@@ -41,20 +43,19 @@ export default {
     },
 
     getIndexFromChatPath(chat_path) {
-      const chat_read_indexes = this.author_chat_read_index.chat_read_indexes;
-      return chat_read_indexes[chat_path];
+      return this.author_chat_read_index?.[chat_path] || 0;
     },
 
     async updateIndex(chat_path, chat_read_index) {
-      if (!this.author_chat_read_index) return;
+      if (!this.author_chat_read_index_media) return;
 
       const chat_read_indexes = JSON.parse(
-        JSON.stringify(this.author_chat_read_index.chat_read_indexes)
+        JSON.stringify(this.author_chat_read_index)
       );
       chat_read_indexes[chat_path] = chat_read_index;
 
       const { meta_filename } = await this.$api.updateMeta({
-        path: this.author_chat_read_index.$path,
+        path: this.author_chat_read_index_media.$path,
         new_meta: {
           chat_read_indexes,
         },

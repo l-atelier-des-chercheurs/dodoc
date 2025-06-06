@@ -28,47 +28,13 @@
             <b-icon icon="plus-lg" />
             {{ $t("create") }}
           </button>
-          <div
-            class="_chat"
+          <ChatPreview
             v-for="chat in sorted_chats"
             :key="chat.$path"
-            :class="{
-              'is--opened': opened_chat_slug === getFilename(chat.$path),
-            }"
-          >
-            <div class="_chat--title">
-              <b-icon v-if="chat.$private" icon="file-lock2-fill" />
-              <TitleField :content="chat.title" :tag="'strong'" />
-            </div>
-            <div class="_chat--infos">
-              <div>
-                {{ $t("last_message_date") }}
-                {{ formatDateTimeToHuman(chat.$date_modified) }}
-              </div>
-              <div v-if="chat.$files_count">
-                {{
-                  $tc("message_count", chat.$files_count, {
-                    count: chat.$files_count,
-                  })
-                }}
-              </div>
-              <div class="_chat--participants">
-                <AdminsAndContributorsField
-                  :folder="chat"
-                  :show_label="false"
-                  :custom_label="$t('participants')"
-                />
-              </div>
-            </div>
-            <div class="_chat--actions">
-              <button
-                type="button"
-                class="u-button u-button_red _openChat"
-                :title="$t('open')"
-                @click="toggleChat(chat.$path)"
-              ></button>
-            </div>
-          </div>
+            :chat="chat"
+            :is-opened="opened_chat_slug === getFilename(chat.$path)"
+            @toggle="toggleChat"
+          />
         </div>
       </div>
 
@@ -98,12 +64,14 @@
 </template>
 <script>
 import OpenedChat from "./OpenedChat.vue";
+import ChatPreview from "./ChatPreview.vue";
 import authorMessageMixin from "./mixins/authorMessageMixin";
 
 export default {
   props: {},
   components: {
     OpenedChat,
+    ChatPreview,
   },
   mixins: [authorMessageMixin],
   data() {

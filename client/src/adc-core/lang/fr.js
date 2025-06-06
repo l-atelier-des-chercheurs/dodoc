@@ -1376,4 +1376,5 @@ export default {
   message_count: "{count} message | {count} messages",
   last_message_date: "Dernier message le",
   message_has_been_removed: "Ce message a été supprimé.",
+  unread: "Non lu",
 };
