@@ -96,7 +96,7 @@
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
           :label="$t('subtitle')"
-          :show_label="context === 'full' && can_edit && !space.subtitle"
+          :show_label="context === 'full' && can_edit"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
