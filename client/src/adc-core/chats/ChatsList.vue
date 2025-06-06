@@ -1,81 +1,79 @@
 <template>
   <div class="_chatsList">
-    <div class="_content">
-      <div class="_chatsList--header">
-        <h3>{{ $t("list_of_topics") }}</h3>
-
-        <button
-          type="button"
-          class="u-button u-button_red"
-          @click="show_create_chat_modal = true"
-        >
-          <b-icon icon="plus-lg" />
-          {{ $t("create") }}
-        </button>
-      </div>
-      <div class="_chatsList--content">
-        <div class="_chat" v-for="chat in sorted_chats" :key="chat.$path">
-          <div class="_chat--title">
-            <b-icon v-if="chat.$private" icon="file-lock2-fill" />
-            <b>{{ chat.title }}</b>
-          </div>
-          <div class="_chat--infos">
-            <div>
-              {{ $t("last_message_date") }}
-              {{ formatDateTimeToHuman(chat.$date_modified) }}
-            </div>
-            <div v-if="chat.$files_count">
-              {{
-                $tc("message_count", chat.$files_count, {
-                  count: chat.$files_count,
-                })
-              }}
-            </div>
-            <div class="_chat--participants">
-              <AdminsAndContributorsField
-                :folder="chat"
-                :show_label="false"
-                :custom_label="$t('participants')"
-              />
-            </div>
-          </div>
-          <div class="_chat--actions">
-            <button
-              type="button"
-              class="u-button u-button_red _openChat"
-              :title="$t('open')"
-              @click="openChat(chat.$path)"
-            ></button>
-          </div>
+    <component
+      :is="open_in_modal ? 'BaseModal2' : 'div'"
+      class="_baseModalLocal"
+      :size="'large'"
+      :nopadding="true"
+      @close="open_in_modal = false"
+    >
+      <div class="_content">
+        <div class="_chatsList--header">
+          <h3>{{ $t("list_of_topics") }}</h3>
+          <button
+            type="button"
+            class="u-button u-button_red u-button_icon"
+            @click="open_in_modal = !open_in_modal"
+          >
+            <b-icon v-if="!open_in_modal" icon="fullscreen" />
+            <b-icon v-else icon="fullscreen-exit" />
+          </button>
+        </div>
+        <div class="_chatsList--content">
+          <button
+            type="button"
+            class="u-button u-button_red u-spacingBottom _createChat"
+            @click="show_create_chat_modal = true"
+          >
+            <b-icon icon="plus-lg" />
+            {{ $t("create") }}
+          </button>
+          <ChatPreview
+            v-for="chat in sorted_chats"
+            :key="chat.$path"
+            :chat="chat"
+            :is-opened="opened_chat_slug === getFilename(chat.$path)"
+            @toggle="toggleChat"
+          />
         </div>
       </div>
-    </div>
 
-    <transition name="pagechange">
-      <OpenedChat
-        v-if="opened_chat_slug"
-        :chat_slug="opened_chat_slug"
-        @close="opened_chat_slug = null"
+      <transition name="pagechange">
+        <div
+          v-if="opened_chat_slug"
+          class="_openedChatContainer"
+          :class="{ 'is--fullscreen': open_in_modal }"
+        >
+          <OpenedChat
+            :key="opened_chat_slug"
+            :chat_slug="opened_chat_slug"
+            @close="opened_chat_slug = null"
+          />
+        </div>
+      </transition>
+
+      <CreateFolder
+        v-if="show_create_chat_modal"
+        :modal_name="$t('create_a_chat')"
+        :path="path"
+        @close="show_create_chat_modal = false"
+        @openNew="openNewChat"
       />
-    </transition>
-
-    <CreateFolder
-      v-if="show_create_chat_modal"
-      :modal_name="$t('create_a_chat')"
-      :path="path"
-      @close="show_create_chat_modal = false"
-      @openNew="openNewChat"
-    />
+    </component>
   </div>
 </template>
 <script>
 import OpenedChat from "./OpenedChat.vue";
+import ChatPreview from "./ChatPreview.vue";
+import authorMessageMixin from "./mixins/authorMessageMixin";
 
 export default {
   props: {},
   components: {
     OpenedChat,
+    ChatPreview,
   },
+  mixins: [authorMessageMixin],
   data() {
     return {
       chats: [],
@@ -83,6 +81,7 @@ export default {
       fetch_chats_error: null,
       show_create_chat_modal: false,
       opened_chat_slug: null,
+      open_in_modal: false,
     };
   },
   created() {
@@ -124,8 +123,10 @@ export default {
       this.show_create_chat_modal = false;
       this.opened_chat_slug = new_chat_slug;
     },
-    openChat(path) {
-      this.opened_chat_slug = this.getFilename(path);
+    toggleChat(path) {
+      const chat_slug = this.getFilename(path);
+      this.opened_chat_slug =
+        this.opened_chat_slug === chat_slug ? null : chat_slug;
     },
   },
 };
@@ -138,15 +139,16 @@ export default {
   width: calc(var(--chats-list-width) - var(--chat-padding) * 2);
   margin-left: var(--chat-padding);
   margin-right: var(--chat-padding);
-  background: var(--c-rouge_fonce);
-  color: white;
+  overscroll-behavior: contain;
   // border-top-left-radius: var(--border-radius);
   // border-bottom-left-radius: var(--border-radius);
-  border-radius: var(--border-radius);
 }
 
 ._content {
   height: 90vh;
+  background: var(--c-rouge_fonce);
+  color: white;
+  border-radius: var(--border-radius);
   overflow: auto;
 }
 
@@ -172,6 +174,10 @@ export default {
   margin-bottom: calc(var(--spacing) / 4);
 
   // min-height: 500px;
+
+  &.is--opened {
+    opacity: 0.5;
+  }
 
   h3 {
     margin-bottom: calc(var(--spacing) / 2);
@@ -216,6 +222,21 @@ export default {
 
   &:hover {
     opacity: 0.5;
+  }
+}
+
+._openedChatContainer {
+  --side-padding: 0px;
+
+  position: absolute;
+  top: 0;
+  left: var(--side-padding);
+  width: calc(100% - var(--side-padding) * 1);
+  height: 100%;
+  background: transparent;
+
+  &.is--fullscreen {
+    --side-padding: 20vw;
   }
 }
 </style>

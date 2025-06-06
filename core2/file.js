@@ -495,6 +495,7 @@ module.exports = (function () {
     const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
 
     const parseFilename = (filename) => {
+      if (!filename.includes(".")) return { name: filename, ext: "" };
       const name = filename.substring(0, filename.indexOf("."));
       const ext = filename.substring(filename.indexOf("."), filename.length);
       return { name, ext };

@@ -494,9 +494,11 @@ module.exports = (function () {
     try {
       const folder_is_private = await auth.isFolderPrivate({ path_to_folder });
       if (!folder_is_private) {
-        dev.log("Folder is not private, can be listed without restrictions");
+        dev.logverbose(
+          "Folder is not private, can be listed without restrictions"
+        );
         return next();
-      } else dev.log("Folder is private");
+      } else dev.logverbose("Folder is private");
 
       const allowed = await _canContributeToFolder({
         path_to_type,
@@ -504,10 +506,10 @@ module.exports = (function () {
         req,
       });
       if (allowed) {
-        dev.log("User allowed to open private folder");
+        dev.logverbose("User allowed to open private folder");
         return next();
       } else {
-        dev.error("User NOT allowed to open private");
+        dev.error("User NOT allowed to open private folder");
         return res.status(401).send({ code: "folder_private" });
       }
     } catch (err) {
@@ -738,16 +740,16 @@ module.exports = (function () {
 
     const detailed = req.query?.detailed === "true";
     const no_files = req.query?.no_files === "true";
-    const hrstart = process.hrtime();
+    // const hrstart = process.hrtime();
 
     try {
       let d = await folder.getFolder({ path_to_folder, detailed });
       if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
-      let hrend = process.hrtime(hrstart);
-      dev.performance(
-        `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
-      );
+      // let hrend = process.hrtime(hrstart);
+      // dev.performance(
+      //   `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      // );
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });

@@ -16,6 +16,7 @@
           </button>
           <TitleField
             :field_name="'title'"
+            class="_openedChat--header--title"
             :label="$t('title')"
             :show_label="false"
             :content="chat.title"
@@ -24,9 +25,30 @@
             :required="true"
             :can_edit="can_edit_chat"
           />
+
+          <DropDown v-if="can_edit_chat" :show_label="false" :right="true">
+            <button
+              type="button"
+              class="u-buttonLink u-buttonLink_red"
+              @click="show_remove_modal = true"
+            >
+              <b-icon icon="trash" />
+              {{ $t("remove") }}
+            </button>
+
+            <RemoveMenu2
+              v-if="show_remove_modal"
+              :modal_title="$t('remove_chat', { name: chat.title })"
+              :success_notification="$t('chat_was_removed')"
+              :path="chat.$path"
+              @removedSuccessfully="$emit('close')"
+              @close="show_remove_modal = false"
+            />
+          </DropDown>
+          <div v-else />
         </div>
 
-        <div class="_openedChat--header--row _lastMessageDate">
+        <!-- <div class="_openedChat--header--row _lastMessageDate">
           <div>
             {{
               $tc("message_count", chat.$files_count, {
@@ -34,7 +56,7 @@
               })
             }}
           </div>
-        </div>
+        </div> -->
 
         <div class="_openedChat--header--row _adminsAndContributors">
           <AdminsAndContributorsField
@@ -44,6 +66,12 @@
             :admin_label="$t('admin')"
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
+          />
+          <StatusTag
+            :status="chat.$status"
+            :status_options="['public', 'private']"
+            :path="chat.$path"
+            :can_edit="can_edit_chat"
           />
         </div>
       </div>
@@ -93,7 +121,7 @@
                 v-if="pane_scroll_until_end > 100"
                 type="button"
                 class="u-button u-button_icon u-button_red"
-                @click="scrollToEnd()"
+                @click="scrollToLatest()"
               >
                 <b-icon icon="arrow-down" />
               </button>
@@ -117,11 +145,11 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_bleuvert"
+                class="u-button u-button_bleuvert _sendBtn"
                 v-if="new_message.length > 0"
                 @click="postMessage"
               >
-                <b-icon icon="arrow-up-right-square-fill" />
+                <b-icon icon="arrow-up-right-square" />
               </button>
             </template>
           </TextInput>
@@ -135,6 +163,7 @@
 </template>
 <script>
 import Message from "./Message.vue";
+import authorMessageMixin from "./mixins/authorMessageMixin";
 
 export default {
   props: {
@@ -146,6 +175,7 @@ export default {
   components: {
     Message,
   },
+  mixins: [authorMessageMixin],
   data() {
     return {
       chat: null,
@@ -155,33 +185,26 @@ export default {
       max_messages_to_display: 50,
       load_all_messages: false,
       is_scrolled_to_end: false,
-
+      show_remove_modal: false,
       pane_scroll_until_end: 0,
     };
   },
   created() {},
   async mounted() {
     await this.loadChat();
+    await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
     this.$api.join({ room: this.chat.$path });
 
     setTimeout(() => {
-      this.scrollToEnd("instant");
+      this.scrollToLatest("instant");
     }, 100);
 
-    // post messages until 1000
-    // let i = 0;
-    // while (i < 850) {
-    //   this.new_message = "message " + i++;
-    //   this.postMessage();
-    //   await new Promise((resolve) => setTimeout(resolve, 10));
-    // }
-
-    this.$eventHub.$on("file.created", this.checkForNewMessages);
+    this.$eventHub.$on("file.created", this.newMessagePosted);
   },
   beforeDestroy() {
     this.$api.leave({ room: this.chat.$path });
-    this.$eventHub.$off("file.created", this.checkForNewMessages);
+    this.$eventHub.$off("file.created", this.newMessagePosted);
   },
   watch: {
     sorted_messages: {
@@ -238,12 +261,24 @@ export default {
         event.target.scrollTop -
         event.target.clientHeight;
     },
-    checkForNewMessages({ meta }) {
-      if (meta.$path.startsWith(this.chat.$path)) {
-        this.$nextTick(() => {
-          this.scrollToMessage(meta.$path);
-        });
-      }
+    newMessagePosted({ meta }) {
+      this.$nextTick(() => {
+        this.scrollToLatest("smooth");
+      });
+    },
+    // checkForNewMessages({ meta }) {
+    //   if (meta.$path.startsWith(this.chat.$path)) {
+    //     this.$nextTick(() => {
+    //       this.scrollToMessage(meta.$path);
+    //       this.updateAuthorReadCount();
+    //     });
+    //   }
+    // },
+    updateAuthorReadCount() {
+      this.updateAuthorLastReadMessage({
+        chat_path: this.chat.$path,
+        chat_read_index: this.messages.length,
+      });
     },
     async loadChat() {
       const chat = await this.$api
@@ -299,7 +334,8 @@ export default {
         messages[0].$el.scrollIntoView({ behavior: "smooth" });
       }
     },
-    scrollToEnd(behavior = "smooth") {
+    scrollToLatest(behavior = "smooth") {
+      this.updateAuthorReadCount();
       if (!this.$refs.messages) return;
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
@@ -319,12 +355,17 @@ export default {
   width: 100%;
   height: 100%;
   background: var(--c-rouge);
+  color: white;
+
+  :deep(.u-loader) {
+    background: var(--c-rouge_fonce);
+  }
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: var(--border-radius);
   overflow: hidden;
+  border-radius: var(--border-radius);
   border: 2px solid var(--c-rouge_fonce);
 
   > ._openedChat--header {
@@ -341,20 +382,31 @@ export default {
 }
 
 ._openedChat--header {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2)
-    calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 }
 ._openedChat--header--row {
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
   align-items: center;
 
-  margin-bottom: calc(var(--spacing) / 2);
+  &:not(:last-child) {
+    border-bottom: 2px solid var(--c-rouge_fonce);
+    margin-bottom: calc(var(--spacing) / 2);
+    padding-bottom: calc(var(--spacing) / 2);
+  }
 
   :deep(._editBtn) {
     --color2: white;
     --color-text: var(--c-noir);
   }
 }
+
+._openedChat--header--title {
+  overflow: hidden;
+  flex: 1 1 0;
+}
+
 ._lastMessageDate {
   justify-content: space-between;
 }
@@ -370,6 +422,9 @@ export default {
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.9px 1.25px hsla(230, 13%, 9%, 0.025), 0 3px 5px hsla(230, 13%, 9%, 0.05),
     0 12px 20px hsla(230, 13%, 9%, 0.09);
+
+  max-height: 50vh;
+  overflow: auto;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   background: white;
@@ -439,6 +494,10 @@ export default {
   font-style: italic;
   opacity: 0.7;
   color: white;
+}
+
+._sendBtn {
+  padding: calc(var(--spacing) / 2);
 }
 </style>
 <style lang="scss">

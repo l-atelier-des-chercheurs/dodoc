@@ -84,8 +84,6 @@ export default {
       )
         return false;
 
-      console.log("UPDATE RECENTLY EDITED");
-
       await this.$api.updateMeta({
         path: this.connected_as.$path,
         new_meta: {

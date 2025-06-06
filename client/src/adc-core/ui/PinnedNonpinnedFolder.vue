@@ -228,7 +228,7 @@ export default {
   );
 
   &.is--mobileView {
-    display: block;
+    // display: block;
   }
 }
 ._list_pinned {

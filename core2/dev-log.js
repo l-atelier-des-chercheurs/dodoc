@@ -134,8 +134,6 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
   function logapi() {
-    if (!logToFile && !isDebugMode) return;
-
     const message =
       `↓ ` +
       _createLogMessage({
@@ -144,7 +142,7 @@ module.exports = dev = (function () {
       });
 
     if (logToFile) _sendToLogFile(message);
-    if (isDebugMode) _sendToConsole(message, chalk.blue);
+    _sendToConsole(message, chalk.blue);
   }
   function error() {
     const message =
