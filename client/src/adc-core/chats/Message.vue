@@ -37,14 +37,16 @@
             (is_self || can_edit_chat)
           "
         >
-          <button
-            type="button"
-            class="u-buttonLink"
-            :title="$t('edit')"
-            @click="show_edit_modal = true"
-          >
-            <b-icon icon="pencil" />
-          </button>
+          <div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              :title="$t('edit')"
+              @click="show_edit_modal = true"
+            >
+              <b-icon icon="pencil" />
+            </button>
+          </div>
 
           <BaseModal2
             v-if="show_edit_modal"
@@ -65,22 +67,10 @@
             />
           </BaseModal2>
 
-          <button
-            type="button"
-            class="u-buttonLink"
-            :title="$t('remove')"
-            @click="show_remove_modal = true"
-          >
-            <b-icon icon="trash" />
-            <!-- {{ $t("remove") }} -->
-          </button>
-
-          <RemoveMenu2
-            v-if="show_remove_modal"
+          <RemoveMenu
+            :show_button_text="false"
             :modal_title="$t('remove_this_message')"
-            :path="message.$path"
-            @removedSuccessfully="$emit('close')"
-            @close="show_remove_modal = false"
+            @remove="removeMessage"
           />
         </template>
       </div>
