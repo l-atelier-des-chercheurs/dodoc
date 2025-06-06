@@ -1,11 +1,16 @@
 <template>
   <div class="_chat" :class="{ 'is--opened': isOpened }">
     <div class="_chat--title">
-      <b-icon v-if="chat.$status === 'private'" icon="file-lock2-fill" />
-      <div v-if="unread_count > 0" class="_chat--unread" :title="$t('unread')">
+      <span v-if="unread_count > 0" class="_chat--unread" :title="$t('unread')">
         {{ unread_count }}
-      </div>
-      <b v-text="chat.title" />
+      </span>
+      <b class="_chat--title--text" v-text="chat.title" />
+
+      <b-icon
+        v-if="chat.$status === 'private'"
+        class="_chat--status"
+        icon="file-lock2-fill"
+      />
     </div>
     <div class="_chat--infos">
       <div>
@@ -105,22 +110,28 @@ export default {
 }
 
 ._chat--title {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+._chat--title--text {
+  // display: inline-block;
+  flex: 1 1 0;
+  overflow: hidden;
   overflow-wrap: break-word;
   margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._chat--unread {
-  // position: absolute;
-  // top: 0;
-  // right: 0;
-
   min-width: 30px;
   min-height: 30px;
 
   border-radius: calc(var(--border-radius) / 1);
   font-family: "Fira Code";
   // margin: calc(var(--spacing) / 8);
-  margin-right: calc(var(--spacing) / 4);
+  margin-right: calc(var(--spacing) / 2);
 
   background: var(--c-rouge_fonce);
   // background: white;
@@ -167,5 +178,12 @@ export default {
   &:hover {
     opacity: 0.5;
   }
+}
+
+._chat--status {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: calc(var(--spacing) / 2);
 }
 </style>

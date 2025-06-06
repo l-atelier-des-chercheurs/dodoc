@@ -24,9 +24,38 @@
             :required="true"
             :can_edit="can_edit_chat"
           />
+
+          <DropDown v-if="can_edit_chat" :show_label="false" :right="true">
+            <button
+              type="button"
+              class="u-buttonLink u-buttonLink_red"
+              @click="show_remove_modal = true"
+            >
+              <b-icon icon="trash" />
+              {{ $t("remove") }}
+            </button>
+
+            <RemoveMenu2
+              v-if="show_remove_modal"
+              :modal_title="$t('remove_chat', { name: chat.title })"
+              :success_notification="$t('chat_was_removed')"
+              :path="chat.$path"
+              @removedSuccessfully="$emit('close')"
+              @close="show_remove_modal = false"
+            />
+          </DropDown>
         </div>
 
-        <div class="_openedChat--header--row _lastMessageDate">
+        <div class="_openedChat--header--row">
+          <StatusTag
+            :status="chat.$status"
+            :status_options="['public', 'private']"
+            :path="chat.$path"
+            :can_edit="can_edit_chat"
+          />
+        </div>
+
+        <!-- <div class="_openedChat--header--row _lastMessageDate">
           <div>
             {{
               $tc("message_count", chat.$files_count, {
@@ -34,7 +63,7 @@
               })
             }}
           </div>
-        </div>
+        </div> -->
 
         <div class="_openedChat--header--row _adminsAndContributors">
           <AdminsAndContributorsField
@@ -157,7 +186,7 @@ export default {
       max_messages_to_display: 50,
       load_all_messages: false,
       is_scrolled_to_end: false,
-
+      show_remove_modal: false,
       pane_scroll_until_end: 0,
     };
   },
