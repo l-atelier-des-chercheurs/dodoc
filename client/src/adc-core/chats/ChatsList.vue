@@ -14,8 +14,9 @@
         </button>
       </div>
       <div class="_chatsList--content">
-        <div class="_chat" v-for="chat in chats" :key="chat.$path">
+        <div class="_chat" v-for="chat in sorted_chats" :key="chat.$path">
           <div class="_chat--title">
+            <b-icon v-if="chat.$private" icon="file-lock2-fill" />
             <b>{{ chat.title }}</b>
           </div>
           <div class="_chat--infos">
@@ -93,7 +94,20 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    filtered_chats() {
+      return this.chats.filter((chat) =>
+        this.canLoggedinSeeFolder({
+          folder: chat,
+        })
+      );
+    },
+    sorted_chats() {
+      return this.filtered_chats.sort((a, b) => {
+        return +new Date(b.$date_modified) - +new Date(a.$date_modified);
+      });
+    },
+  },
   methods: {
     async loadChats() {
       this.chats = await this.$api
