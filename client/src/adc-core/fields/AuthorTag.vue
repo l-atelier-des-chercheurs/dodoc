@@ -200,8 +200,8 @@ export default {
     position: relative;
     overflow: hidden;
     // border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
   }
   &[data-size="small"] ._cover {
     width: 15px;

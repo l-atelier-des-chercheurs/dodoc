@@ -81,15 +81,15 @@
 
     <div
       class="_currentlyConnected"
-      v-if="$api.all_devices_connected.length > 1"
+      v-if="$api.other_devices_connected.length > 1"
     >
       <DetailsPane
         :header="$t('devices_connected')"
         :icon="'people'"
-        :has_items="$api.all_devices_connected.length"
+        :has_items="$api.other_devices_connected.length"
       >
         <div
-          v-for="device in $api.all_devices_connected"
+          v-for="device in $api.other_devices_connected"
           :key="device.id"
           class="u-spacingBottom"
         >
