@@ -102,6 +102,7 @@
             <span v-else>{{ $t("not_logged_in") }}</span>
           </div>
           <div>{{ device.meta.user_agent }}</div>
+          <DLabel :str="'emplacement'" />
           <div>{{ device.meta.path }}</div>
         </div>
       </DetailsPane>

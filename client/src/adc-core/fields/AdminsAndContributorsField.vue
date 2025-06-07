@@ -10,7 +10,7 @@
         @toggleInstructions="show_modal = true"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <transition-group tag="div" class="u-listOfAvatars" name="listComplete">
+      <div class="u-listOfAvatars">
         <AuthorTag
           v-for="atpath in subset_participants_path"
           :path="atpath"
@@ -60,7 +60,7 @@
             @click="show_modal = true"
           />
         </div>
-      </transition-group>
+      </div>
     </div>
 
     <EditAdminsAndContributorsField

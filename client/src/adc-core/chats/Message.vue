@@ -10,7 +10,6 @@
           v-if="message_author_path"
           :key="message_author_path"
           :path="message_author_path"
-          :mode="'link'"
           :size="'small'"
         />
         <!-- <AuthorField

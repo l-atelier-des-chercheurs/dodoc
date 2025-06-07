@@ -12,6 +12,7 @@
     :data-size="size"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
+    :data-connected="is_connected"
     @click="$emit('click')"
   >
     <div class="_cover">
@@ -27,6 +28,7 @@
     </div>
     <div v-if="!show_image_only" class="_infos">
       <span class="_name">
+        {{ author.name }}
         <b-icon
           v-if="
             authorIsInstance({
@@ -35,9 +37,15 @@
             })
           "
           icon="shield-check"
-          :aria-label="$t('admin')"
+          :title="$t('admin')"
         />
-        {{ author.name }}
+        <div class="_connected" v-if="is_connected && !is_self">
+          <b-icon
+            icon="people-fill"
+            class=""
+            :title="$t('connected_currently')"
+          />
+        </div>
       </span>
     </div>
 
@@ -106,6 +114,11 @@ export default {
       if (this.mode === "link") return this.createURLFromPath(this.path);
       return false;
     },
+    is_connected() {
+      return this.$api.other_devices_connected.some(
+        (u) => u.meta?.token_path === this.author.$path
+      );
+    },
   },
   methods: {},
 };
@@ -165,6 +178,11 @@ export default {
     background-color: var(--c-bleumarine_clair);
   }
 
+  &[data-connected]:not([data-isself]):not([data-imageonly]) {
+    // border-color: var(--c-bleumarine);
+    // background-color: var(--c-bleumarine_clair);
+  }
+
   &[data-imageonly] {
     padding: 0;
     box-shadow: none;
@@ -205,7 +223,7 @@ export default {
 
     ._name {
       font-size: var(--sl-font-size-small);
-      // font-weight: 500;
+      font-weight: 500;
 
       display: flex;
       flex-flow: row nowrap;
@@ -217,6 +235,12 @@ export default {
       // color: var(--c-bleumarine);
     }
   }
+}
+._connected {
+  border-color: var(--c-bleumarine);
+  background-color: var(--c-bleumarine_clair);
+  padding: 0 calc(var(--spacing) / 8);
+  border-radius: 4px;
 }
 
 a {
