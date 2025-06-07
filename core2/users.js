@@ -9,7 +9,7 @@ module.exports = (function () {
     init: (_io) => {
       io = _io;
 
-      const interval = 1000 * 10;
+      const interval = 1000 * 5;
       setInterval(async () => {
         if (!isCleaningUp) {
           try {
