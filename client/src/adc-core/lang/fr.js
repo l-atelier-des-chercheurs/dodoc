@@ -1370,6 +1370,7 @@ export default {
   chat_contrib_instructions:
     "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
   anonymous_user: "Anonyme",
+
   no_messages_in_chat: "Aucun message dans cette discussion.",
   remove_this_message: "Supprimer ce message",
   load_older_messages: "Afficher les messages plus anciens",
@@ -1380,4 +1381,5 @@ export default {
   remove_chat: "Supprimer la discussion {name}",
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",
+  new_messages: "{count} nouveau message | {count} nouveaux messages",
 };
