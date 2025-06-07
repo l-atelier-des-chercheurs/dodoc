@@ -150,6 +150,7 @@ export default {
   color: white;
   border-radius: var(--border-radius);
   overflow: auto;
+  padding-bottom: calc(var(--spacing) * 1);
 }
 
 ._chatsList--header {
