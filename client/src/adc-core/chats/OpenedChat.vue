@@ -303,6 +303,7 @@ export default {
     newMessagePosted({ meta }) {
       this.$nextTick(() => {
         this.scrollToLatest("smooth");
+        this.updateAuthorReadCount();
       });
     },
     // checkForNewMessages({ meta }) {
@@ -453,7 +454,7 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1) 0;
+  padding: 0 calc(var(--spacing) * 1) 0;
 }
 ._openedChat--footer {
   color: var(--c-noir);
@@ -476,15 +477,16 @@ export default {
 }
 
 ._dayTitle {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
   text-align: center;
   // font-size: 0.8rem;
-  margin: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   font-style: italic;
-  opacity: 0.7;
-
-  &:first-child {
-    margin-top: 0;
-  }
+  background: var(--c-rouge_fonce);
+  // background: linear-gradient(to bottom, var(--c-rouge_fonce) 60%, transparent);
 }
 
 ._message--footer {
