@@ -6,6 +6,7 @@ var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
+const slowDown = require("express-slow-down");
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
@@ -26,6 +27,19 @@ module.exports = function () {
       crossOriginResourcePolicy: false,
     })
   );
+
+  // Rate limiting middleware, slow down API requests after the limit is reached
+  const apiSpeedLimiter = slowDown({
+    windowMs: 1 * 60 * 1000,
+    delayAfter: 60,
+    delayMs: () => 100,
+    maxDelayMs: 1000,
+    keyGenerator: (req) => {
+      return req.ip || req.connection.remoteAddress;
+    },
+  });
+  // Apply rate limiting only to _api2 endpoints
+  app.use("/_api2", apiSpeedLimiter);
 
   // only for HTTPS, works without asking for a certificate
   const options = {
