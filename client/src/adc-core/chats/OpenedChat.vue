@@ -102,7 +102,7 @@
             <div class="_dayTitle" :key="day.date">
               {{ formatDateToHuman(day.date) }}
             </div>
-            <template v-for="message in day.messages">
+            <template v-for="(message, index) in day.messages">
               <div
                 v-if="message._index === last_message_read_index"
                 class="_unreadMessages"
@@ -116,6 +116,14 @@
                 }}
                 <b-icon icon="arrow-down-short" />
               </div>
+              <div
+                v-if="
+                  index > 0 &&
+                  day.messages[index - 1].$authors[0] !== message.$authors[0]
+                "
+                class="_changeAuthor"
+              ></div>
+
               <Message
                 :key="message.$path"
                 :ref="`message-${message.$path}`"
@@ -454,7 +462,7 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding: 0 calc(var(--spacing) * 1) 0;
+  padding: 0 calc(var(--spacing) / 2) 0;
 }
 ._openedChat--footer {
   color: var(--c-noir);
@@ -549,6 +557,11 @@ export default {
 
 ._sendBtn {
   padding: calc(var(--spacing) / 2);
+}
+._changeAuthor {
+  // height: 1px;
+  // background: var(--c-rouge_fonce);
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>
 <style lang="scss">

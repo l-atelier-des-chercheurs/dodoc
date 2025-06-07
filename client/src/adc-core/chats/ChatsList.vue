@@ -172,7 +172,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin: 0 calc(var(--spacing) / 1);
-  padding: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 2) 0;
 
   border-bottom: 2px solid white;
 }
