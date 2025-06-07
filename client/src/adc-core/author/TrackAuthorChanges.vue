@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       projects_recently_edited: [],
-      max_items_in_memory: 5,
+      max_items_in_memory: 3,
     };
   },
 
