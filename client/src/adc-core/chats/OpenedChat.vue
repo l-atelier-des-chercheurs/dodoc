@@ -63,7 +63,7 @@
             :folder="chat"
             :can_edit="can_edit_chat"
             :custom_label="$t('participants')"
-            :admin_label="$t('admin')"
+            :admin_label="$t('referent')"
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
           />
@@ -167,11 +167,22 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_bleuvert _sendBtn"
+                class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
                 @click="postMessage"
               >
-                <b-icon icon="arrow-up-right-square" />
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 21L23 12L2 3V10L17 12L2 14V21Z"
+                    fill="currentColor"
+                  />
+                </svg>
               </button>
             </template>
           </TextInput>

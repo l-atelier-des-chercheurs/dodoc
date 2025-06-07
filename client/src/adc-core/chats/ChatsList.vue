@@ -181,46 +181,6 @@ export default {
   padding: calc(var(--spacing) / 1);
 }
 
-._chat {
-  position: relative;
-  background: var(--c-rouge);
-  border-radius: var(--border-radius);
-  padding: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 4);
-
-  // min-height: 500px;
-
-  &.is--opened {
-    opacity: 0.5;
-  }
-
-  h3 {
-    margin-bottom: calc(var(--spacing) / 2);
-  }
-
-  :deep(.u-label) {
-    color: white;
-  }
-}
-
-._chat--participants {
-  // margin-top: calc(var(--spacing) / 2);
-}
-
-._chat--infos {
-  font-size: var(--sl-font-size-x-small);
-}
-
-._chat--actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-// display: flex;
-// justify-content: space-between;
-// align-items: center;
-
 ._openChat {
   position: absolute;
   right: 0;

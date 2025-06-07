@@ -121,7 +121,11 @@
             :show_image_only="true"
             @click="showAuthorModal"
           />
-          <sup class="_badge" v-text="$api.other_devices_connected.length" />
+          <sup
+            class="_badge"
+            v-if="$api.other_devices_connected.length > 0"
+            v-text="$api.other_devices_connected.length"
+          />
         </div>
         <button
           type="button"
@@ -130,7 +134,11 @@
           @click="showAuthorModal"
         >
           {{ $t("login") }}
-          <sup class="_badge" v-text="$api.other_devices_connected.length" />
+          <sup
+            class="_badge"
+            v-if="$api.other_devices_connected.length > 0"
+            v-text="$api.other_devices_connected.length"
+          />
         </button>
 
         <!-- <div
