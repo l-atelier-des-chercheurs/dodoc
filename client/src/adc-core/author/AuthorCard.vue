@@ -287,6 +287,7 @@ export default {
       flex-flow: column nowrap;
       align-items: stretch;
       gap: calc(var(--spacing) / 1);
+      padding: 0;
 
       ._cover {
         flex: 0 0 auto;

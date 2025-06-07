@@ -79,7 +79,7 @@ export default {
 ._authorView {
   padding-bottom: calc(var(--spacing) * 6);
   max-width: min(var(--max-column-width), var(--max-column-width-px));
-  margin: calc(var(--spacing) * 1) auto;
+  margin: calc(var(--spacing) * 2) auto calc(var(--spacing) * 4);
 }
 
 ._card {
