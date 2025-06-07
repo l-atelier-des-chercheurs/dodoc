@@ -102,14 +102,28 @@
             <div class="_dayTitle" :key="day.date">
               {{ formatDateToHuman(day.date) }}
             </div>
-            <Message
-              v-for="message in day.messages"
-              :key="message.$path"
-              :ref="`message-${message.$path}`"
-              :message="message"
-              :can_edit_chat="can_edit_chat"
-              :can_contribute_to_chat="can_contribute_to_chat"
-            />
+            <template v-for="message in day.messages">
+              <div
+                v-if="message._index === last_message_read_index"
+                class="_unreadMessages"
+                ref="unreadMessagesNotice"
+              >
+                <b-icon icon="arrow-down-short" />
+                {{
+                  $tc("new_messages", unread_since_last_visit, {
+                    count: unread_since_last_visit,
+                  }).toLowerCase()
+                }}
+                <b-icon icon="arrow-down-short" />
+              </div>
+              <Message
+                :key="message.$path"
+                :ref="`message-${message.$path}`"
+                :message="message"
+                :can_edit_chat="can_edit_chat"
+                :can_contribute_to_chat="can_contribute_to_chat"
+              />
+            </template>
           </template>
           <div class="_message--footer">
             <b-icon icon="check" />
@@ -184,20 +198,32 @@ export default {
       new_message: "",
       max_messages_to_display: 50,
       load_all_messages: false,
-      is_scrolled_to_end: false,
       show_remove_modal: false,
       pane_scroll_until_end: 0,
+
+      last_message_read_index: 0,
     };
   },
   created() {},
   async mounted() {
     await this.loadChat();
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    // await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
+
+    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
+
+    if (this.unread_since_last_visit > this.max_messages_to_display) {
+      this.max_messages_to_display = this.unread_since_last_visit + 10;
+    }
+
     this.$api.join({ room: this.chat.$path });
 
+    if (this.pane_scroll_until_end < 100) {
+      this.updateAuthorReadCount();
+    }
+
     setTimeout(() => {
-      this.scrollToLatest("instant");
+      this.scrollToUnread();
     }, 100);
 
     this.$eventHub.$on("file.created", this.newMessagePosted);
@@ -216,19 +242,32 @@ export default {
       },
       deep: true,
     },
+    pane_scroll_until_end: {
+      handler() {
+        if (this.pane_scroll_until_end < 100) {
+          this.updateAuthorReadCount();
+        }
+      },
+    },
   },
   computed: {
+    unread_since_last_visit() {
+      return this.chat.$files_count - this.last_message_read_index;
+    },
     messages() {
       if (!this.chat || !this.chat.$files) return [];
       return this.chat.$files.filter((file) => file.hasOwnProperty("$content"));
     },
     sorted_messages() {
       let messages = this.messages.slice().sort((a, b) => {
-        return +new Date(b.$date_uploaded) - +new Date(a.$date_uploaded);
+        return +new Date(a.$date_uploaded) - +new Date(b.$date_uploaded);
+      });
+      messages = messages.map((message, index) => {
+        message._index = index;
+        return message;
       });
       if (!this.load_all_messages)
-        messages = messages.slice(0, this.max_messages_to_display);
-      messages.reverse();
+        messages = messages.slice(-this.max_messages_to_display);
       return messages;
     },
     messages_grouped_by_date() {
@@ -274,11 +313,12 @@ export default {
     //     });
     //   }
     // },
-    updateAuthorReadCount() {
-      this.updateAuthorLastReadMessage({
+    async updateAuthorReadCount() {
+      await this.updateAuthorLastReadMessage({
         chat_path: this.chat.$path,
         chat_read_index: this.messages.length,
       });
+      this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     },
     async loadChat() {
       const chat = await this.$api
@@ -318,15 +358,6 @@ export default {
 
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
-
-      // await this.$api.updateMeta({
-      //   path: this.chat.$path,
-      //   new_meta: { last_message_date, last_message_count },
-      // });
-
-      // setTimeout(() => {
-      //   this.scrollToMessage(path);
-      // }, 100);
     },
     scrollToMessage(path) {
       const messages = this.$refs[`message-${path}`];
@@ -335,11 +366,18 @@ export default {
       }
     },
     scrollToLatest(behavior = "smooth") {
-      this.updateAuthorReadCount();
       if (!this.$refs.messages) return;
       this.$refs.messages.scrollTo({
         top: this.$refs.messages.scrollHeight,
         behavior,
+      });
+    },
+    async scrollToUnread() {
+      if (!this.$refs.unreadMessagesNotice)
+        return this.scrollToLatest("instant");
+
+      return this.$refs.unreadMessagesNotice[0].scrollIntoView({
+        behavior: "instant",
       });
     },
   },
@@ -488,12 +526,23 @@ export default {
   // margin: calc(var(--spacing) / 1);
 }
 
-._noMessages {
+._noMessages,
+._unreadMessages {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) / 2);
+
   text-align: center;
   margin: calc(var(--spacing) / 1);
   font-style: italic;
   opacity: 0.7;
   color: white;
+}
+
+._unreadMessages {
+  opacity: 1;
 }
 
 ._sendBtn {

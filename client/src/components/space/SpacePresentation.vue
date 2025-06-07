@@ -117,15 +117,14 @@
         :can_edit="can_edit"
       />
 
-      <template v-if="context === 'full'">
-        <AdminsAndContributorsField
-          :folder="space"
-          :can_edit="can_edit"
-          :admin_label="$t('referent')"
-          :admin_instructions="$t('space_admin_instructions')"
-          :contrib_instructions="$t('space_contrib_instructions')"
-        />
-      </template>
+      <AdminsAndContributorsField
+        v-if="context === 'full'"
+        :folder="space"
+        :can_edit="can_edit"
+        :admin_label="$t('referent')"
+        :admin_instructions="$t('space_admin_instructions')"
+        :contrib_instructions="$t('space_contrib_instructions')"
+      />
     </div>
     <!-- <div class="_descriptionField">
     </div> -->

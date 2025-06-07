@@ -114,6 +114,7 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   justify-content: flex-start;
+  margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._chat--title--text {
@@ -121,12 +122,11 @@ export default {
   flex: 1 1 0;
   overflow: hidden;
   overflow-wrap: break-word;
-  margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._chat--unread {
-  min-width: 30px;
-  min-height: 30px;
+  min-width: 25px;
+  min-height: 20px;
 
   border-radius: calc(var(--border-radius) / 1);
   font-family: "Fira Code";
@@ -139,7 +139,7 @@ export default {
   // border: 2px dashed white;
 
   padding: calc(var(--spacing) / 4);
-  font-size: var(--sl-font-size-medium);
+  font-size: var(--sl-font-size-small);
   font-weight: 500;
 
   display: inline-flex;

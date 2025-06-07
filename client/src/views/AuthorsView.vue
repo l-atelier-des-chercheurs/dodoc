@@ -253,7 +253,7 @@ export default {
 ._authorsView {
   // padding: calc(var(--spacing) * 1);
   max-width: min(var(--max-column-width), var(--max-column-width-px));
-  margin: 0 auto;
+  margin: calc(var(--spacing) * 2) auto calc(var(--spacing) * 4);
 }
 
 ._currentlyConnected {
