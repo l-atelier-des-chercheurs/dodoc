@@ -14,28 +14,22 @@
       <div class="_topRightButtons">
         <button
           type="button"
-          class="u-button u-button_icon"
+          class="u-button u-button_icon _qrCodeBtn"
           @click="show_qr_code_modal = true"
           :title="$t('share_link_to_page')"
         >
-          <div part="base" class="icon" aria-hidden="true">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              class="bi bi-qr-code"
-              viewBox="0 0 16 16"
-            >
-              <path d="M2 2h2v2H2V2Z"></path>
-              <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
-              <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"></path>
-              <path
-                d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
-              ></path>
-              <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
-            </svg>
-          </div>
+          <svg
+            class="_qrCodeIcon"
+            enable-background="new 0 0 90 90"
+            viewBox="0 0 90 90"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+          >
+            <path
+              d="m48 0v42h42v-42zm36 36h-30v-30h30zm-71 41h16v-16h-16zm-13 13h42v-42h-42zm6-36h30v30h-30zm57-6h-15v13h15zm6 6h8v7h-8v12h-8v-8h-9v8h5v9h-9v8h21v-8h13v-9h-5v-8h13v-17h-21zm-69-12h42v-42h-42zm6-36h30v30h-30zm84 84v-8h-8v8zm-77-61h16v-16h-16zm64-16h-16v16h16z"
+            />
+          </svg>
         </button>
         <QRModal
           v-if="show_qr_code_modal"
@@ -45,11 +39,28 @@
 
         <button
           type="button"
-          class="u-button u-button_icon"
+          class="u-button u-button_icon _helpBtn"
           :title="$t('about_dodoc')"
           @click="show_credits_modal = !show_credits_modal"
         >
-          <b-icon icon="patch-question" />
+          <svg
+            class="_helpIcon"
+            enable-background="new 0 0 168 168"
+            viewBox="0 0 168 168"
+            xmlns="http://www.w3.org/2000/svg"
+            :aria-label="$t('about_dodoc')"
+          >
+            <circle
+              cx="84"
+              cy="84"
+              r="84"
+              :fill="show_credits_modal ? '#fc4b60' : 'none'"
+            />
+            <path
+              d="m101.1 38.2c4.2 2 7.3 4.6 9.4 7.8 2.1 3.3 3.1 6.8 3.1 10.6 0 3.6-.6 6.6-1.8 9.1s-2.7 4.5-4.4 6-4 3.3-6.9 5.3c-3.5 2.3-6 4.5-7.7 6.4s-2.5 4.5-2.5 7.6v4h-17v-4.6c0-4 .6-7.4 1.9-10.1 1.3-2.8 2.8-5 4.6-6.6s4-3.4 6.7-5.2c2.8-1.8 4.8-3.4 6-4.8 1.3-1.4 1.9-3.2 1.9-5.3 0-2.7-.9-4.7-2.7-6.2-1.8-1.4-4.2-2.1-7.3-2.1-5.9 0-11.2 2.7-15.9 8.2l-12-9.2c3.8-4.4 8.1-7.8 13-10.1s10.4-3.5 16.6-3.5c5.8-.2 10.9.8 15 2.7zm-11.3 72.3c2.2 2.2 3.3 4.8 3.3 7.8s-1.1 5.7-3.3 7.9-4.8 3.3-7.9 3.3-5.7-1.1-7.9-3.2c-2.1-2.2-3.2-4.8-3.2-7.9 0-3 1.1-5.6 3.2-7.8s4.7-3.3 7.9-3.3 5.7 1 7.9 3.2z"
+              fill="#353535"
+            />
+          </svg>
         </button>
         <CreditsModal
           v-if="show_credits_modal"
@@ -75,7 +86,7 @@
                 :fill="show_settings_modal ? '#fc4b60' : 'none'"
                 r="84"
               />
-              <g transform="scale(1.22) translate(-18 -14)">
+              <g transform="scale(1.22) translate(-14 -14)">
                 <path
                   d="m122.7 88.8v-10c0-1.1.6-2.1 1.6-2.6l9.6-4.9-2-5.8-11 1.6c-1.1.2-2.2-.3-2.9-1.2l-6-8.1c-.7-.9-.8-2.1-.3-3l4.8-9.6-5.2-3.6-7.7 7.5c-.8.8-2 1-3.1.7l-9.9-3c-1.1-.3-1.9-1.3-2.1-2.4l-1.7-10.4h-6.4l-1.7 10.4c-.2 1.1-.9 2-2 2.4l-9.9 3.2c-1.1.3-2.2.1-3.1-.7l-7.8-7.3-5.1 3.7 4.9 9.4c.5 1 .4 2.1-.2 3l-6 8.2c-.6.9-1.8 1.4-2.9 1.2l-10.8-1.5-1.8 5.8 9.7 4.8c1 .5 1.7 1.5 1.7 2.6v10c0 1.1-.6 2.1-1.6 2.6l-9.6 4.9 2 5.9 10.9-1.6c1.1-.2 2.2.3 2.9 1.2l6 8.1c.7.9.8 2.1.3 3l-4.8 9.6 5.1 3.6 7.7-7.5c.8-.8 2-1 3.1-.7l9.9 3c1.1.3 1.9 1.3 2.1 2.4l1.9 10.4h6.4l1.7-10.4c.2-1.1.9-2 2-2.4l9.9-3.2c1.1-.3 2.2-.1 3.1.7l7.8 7.3 5.1-3.7-4.9-9.4c-.5-1-.4-2.1.2-3l6-8.1c.7-.9 1.8-1.4 2.9-1.2l10.8 1.5 1.8-5.9-9.7-4.8c-1.1-.6-1.7-1.6-1.7-2.7zm-38.7 15.7c-11.7 0-21.1-9.2-21.1-20.5s9.5-20.5 21.1-20.5 21.1 9.2 21.1 20.5-9.4 20.5-21.1 20.5z"
                   fill="#12224c"
@@ -386,6 +397,12 @@ export default {
   //   margin-left: 0;
   // }
 }
+
+._currentUser,
+._authorBtn {
+  margin-left: calc(var(--spacing) / 2);
+}
+
 ._authorBtn {
   position: relative;
   // background: var(--c-bleumarine_clair);
@@ -399,7 +416,7 @@ export default {
 ._topRightButtons {
   display: flex;
   justify-content: flex-end;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
   align-items: center;
   // crispy crisp icons
@@ -417,20 +434,13 @@ export default {
     .is--mobileView & {
       padding: calc(var(--spacing) / 2);
     }
-  }
-}
 
-._adminInfo {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-weight: normal;
-  text-align: center;
-  width: 100%;
-  justify-content: center;
-  /* right: 0; */
-  text-decoration: none;
-  font-size: 80%;
+    &:hover {
+      background: var(--c-rouge, #f0f0f0);
+      svg {
+      }
+    }
+  }
 }
 
 ._currentUsers {
@@ -456,14 +466,24 @@ export default {
 }
 
 ._chatsBtn,
-._settingsBtn {
+._settingsBtn,
+._helpBtn,
+._qrCodeBtn {
   position: relative;
   display: inline-flex;
-  padding: calc(var(--spacing) / 4);
+  width: 2.7rem;
+  height: 2.7rem;
+  padding: calc(var(--spacing) / 3);
 
   svg {
-    width: 30px;
-    height: 30px;
+    width: 2.2rem;
+    height: 2.2rem;
+    fill: var(--c-noir);
+
+    &._qrCodeIcon {
+      width: 1.4rem;
+      height: 1.4rem;
+    }
   }
 }
 
