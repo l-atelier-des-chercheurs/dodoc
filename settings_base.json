@@ -388,58 +388,7 @@
             },
             "date_created_corrected": {
               "type": "string"
-            }
-          }
-        },
-        "$folders": {
-          "stacks": {
-            "$cover": {
-              "width": 2000,
-              "height": 2000,
-              "thumbs": {
-                "resolutions": [50, 320, 640, 2000]
-              }
             },
-            "fields": {
-              "title": {
-                "type": "string"
-              },
-              "keywords": {
-                "type": "array"
-              },
-              "date_created_corrected": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "caption": {
-                "type": "string"
-              },
-              "stack_spot": {
-                "type": "number"
-              },
-              "stack_files_metas": {
-                "type": "array"
-              }
-            },
-            "$files": {
-              "thumbs": {
-                "resolutions": [220, 360, 1600]
-              },
-              "fields": {
-                "caption": {
-                  "type": "string"
-                },
-                "date_created_corrected": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "$files": {
-          "fields": {
             "chat_read_indexes": {
               "type": "object"
             }

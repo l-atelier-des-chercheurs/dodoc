@@ -557,6 +557,7 @@ export default {
 
   > ._filesList {
     flex: 5 1 0;
+    overflow: auto;
   }
 }
 ._importFiles {
@@ -782,14 +783,26 @@ export default {
 }
 
 ._items--list {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: calc(var(--spacing) / 1);
+  // display: flex;
+  // flex-flow: row wrap;
+  // justify-content: flex-start;
+  // align-items: flex-start;
+  // gap: calc(var(--spacing) / 1);
+
+  // display: grid;
+  // grid-auto-rows: max-content;
+  // grid-gap: calc(var(--spacing) / 1);
+  // align-items: stretch;
+  // grid-template-columns: repeat(
+  //   auto-fill,
+  //   minmax(var(--item-width, 320px), 1fr)
+  // );
+
+  columns: 3 28em;
 
   > * {
-    flex: 0 1 28em;
+    flex: 1 1 28em;
+    margin-bottom: calc(var(--spacing) / 4);
     // max-width: 22em;
   }
 }

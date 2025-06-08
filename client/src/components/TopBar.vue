@@ -236,6 +236,11 @@ export default {
       }, 0);
     },
   },
+  methods: {
+    showAuthorModal() {
+      this.$eventHub.$emit("showAuthorModal");
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -263,7 +268,7 @@ export default {
   justify-content: space-between;
   padding: 0 1rem;
   // font-size: 20px;
-  justify-content: center;
+  // justify-content: center;
 }
 ._badge {
   position: absolute;

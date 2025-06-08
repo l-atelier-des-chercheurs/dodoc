@@ -225,7 +225,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  margin: var(--spacing);
+  margin: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 3);
   z-index: 1;
 }
@@ -278,6 +278,7 @@ header {
   }
   &.has_nopadding {
     padding: 0;
+    margin: 0;
   }
 }
 ._footer {
