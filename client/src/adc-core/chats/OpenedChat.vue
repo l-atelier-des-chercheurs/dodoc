@@ -413,7 +413,6 @@ export default {
   width: 100%;
   height: 100%;
   background: var(--c-rouge);
-  color: white;
 
   :deep(.u-loader) {
     background: var(--c-rouge_fonce);
@@ -441,6 +440,7 @@ export default {
 
 ._openedChat--header {
   padding: calc(var(--spacing) / 2);
+  color: white;
 }
 ._openedChat--header--row {
   display: flex;
@@ -476,7 +476,6 @@ export default {
   padding: 0 calc(var(--spacing) / 2) 0;
 }
 ._openedChat--footer {
-  color: var(--c-noir);
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     0 0.9px 1.25px hsla(230, 13%, 9%, 0.025), 0 3px 5px hsla(230, 13%, 9%, 0.05),
     0 12px 20px hsla(230, 13%, 9%, 0.09);
@@ -484,8 +483,10 @@ export default {
   max-height: 50vh;
   overflow: auto;
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
-  background: white;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  padding-bottom: 0;
+  background-color: white;
+  color: var(--c-noir);
 }
 
 ._closeBtn {
