@@ -12,6 +12,22 @@
           <b-icon icon="info-circle" />
           {{ $t("imported_docs") }}
         </div>
+
+        <div
+          class="u-instructions u-spacingBottom"
+          v-if="chutier_items.length > 0"
+        >
+          <b-icon icon="text-left" />
+          {{ $t("files_with_caption") }}: {{ files_with_caption_percentage }}%
+        </div>
+
+        <div
+          class="u-instructions u-spacingBottom"
+          v-if="chutier_items.length > 0"
+        >
+          <b-icon icon="info-circle" />
+          {{ $t("files_with_credits") }}: {{ files_with_credits_percentage }}%
+        </div>
       </div>
       <div class="_importFiles--content">
         <div class="_importButton">
@@ -272,6 +288,8 @@ export default {
         go_to_new_stack: "Aller au nouveau document",
         too_many_items_selected:
           "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
+        files_with_caption: "Fichiers avec légende",
+        files_with_credits: "Fichiers avec crédits",
       },
       en: {
         imported_docs:
@@ -283,6 +301,8 @@ export default {
         go_to_new_stack: "Go to new document",
         too_many_items_selected:
           "You can only select {max_items_selected} media maximum.",
+        files_with_caption: "Files with caption",
+        files_with_credits: "Files with credits",
       },
     },
   },
@@ -385,6 +405,20 @@ export default {
         ["date_created_corrected", "$date_created", "$date_uploaded"],
         "day"
       );
+    },
+    files_with_caption_percentage() {
+      if (this.chutier_items.length === 0) return 0;
+      const files_with_caption = this.chutier_items.filter(
+        (item) => item.caption && item.caption.trim()
+      ).length;
+      return Math.round((files_with_caption / this.chutier_items.length) * 100);
+    },
+    files_with_credits_percentage() {
+      if (this.chutier_items.length === 0) return 0;
+      const files_with_credits = this.chutier_items.filter(
+        (item) => item.$credits && item.$credits.trim()
+      ).length;
+      return Math.round((files_with_credits / this.chutier_items.length) * 100);
     },
   },
   methods: {
