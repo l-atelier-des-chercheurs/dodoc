@@ -304,8 +304,8 @@ export default {
         go_to_new_stack: "Aller au nouveau document",
         too_many_items_selected:
           "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
-        files_with_caption: "Fichiers avec légende",
-        files_with_credits: "Fichiers avec crédits",
+        files_with_caption: "Fichiers avec légende :",
+        files_with_credits: "Fichiers avec crédits :",
       },
       en: {
         imported_docs:
