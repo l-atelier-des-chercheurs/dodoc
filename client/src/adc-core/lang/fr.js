@@ -1278,7 +1278,7 @@ export default {
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
-  devices_connected: "Appareils connectés actuellement",
+  other_devices_connected: "Autres appareils connectés",
 
   remove_publication: "Supprimer la publication {name}",
 
@@ -1366,7 +1366,7 @@ export default {
   write_a_message: "Écrivez un message…",
   participants: "Participants",
   chat_admin_instructions:
-    "Les administrateurs sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/retrait d’un participant).",
+    "Les référents sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/retrait d’un participant).",
   chat_contrib_instructions:
     "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
   anonymous_user: "Anonyme",

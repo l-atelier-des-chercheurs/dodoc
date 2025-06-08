@@ -96,8 +96,11 @@ export default {
   padding: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) / 4);
 
+  transition: border-left 0.1s ease-in-out;
+
   &.is--opened {
-    opacity: 0.5;
+    // opacity: 0.5;
+    border-left: 4px solid white;
   }
 
   h3 {
@@ -176,7 +179,7 @@ export default {
   transition: opacity 0.1s ease-in-out;
 
   &:hover {
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 

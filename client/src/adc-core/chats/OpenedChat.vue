@@ -63,7 +63,7 @@
             :folder="chat"
             :can_edit="can_edit_chat"
             :custom_label="$t('participants')"
-            :admin_label="$t('admin')"
+            :admin_label="$t('referent')"
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
           />
@@ -102,7 +102,7 @@
             <div class="_dayTitle" :key="day.date">
               {{ formatDateToHuman(day.date) }}
             </div>
-            <template v-for="message in day.messages">
+            <template v-for="(message, index) in day.messages">
               <div
                 v-if="message._index === last_message_read_index"
                 class="_unreadMessages"
@@ -116,6 +116,14 @@
                 }}
                 <b-icon icon="arrow-down-short" />
               </div>
+              <div
+                v-if="
+                  index > 0 &&
+                  day.messages[index - 1].$authors[0] !== message.$authors[0]
+                "
+                class="_changeAuthor"
+              ></div>
+
               <Message
                 :key="message.$path"
                 :ref="`message-${message.$path}`"
@@ -159,11 +167,22 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_bleuvert _sendBtn"
+                class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
                 @click="postMessage"
               >
-                <b-icon icon="arrow-up-right-square" />
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 21L23 12L2 3V10L17 12L2 14V21Z"
+                    fill="currentColor"
+                  />
+                </svg>
               </button>
             </template>
           </TextInput>
@@ -303,6 +322,7 @@ export default {
     newMessagePosted({ meta }) {
       this.$nextTick(() => {
         this.scrollToLatest("smooth");
+        this.updateAuthorReadCount();
       });
     },
     // checkForNewMessages({ meta }) {
@@ -453,7 +473,7 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 1) 0;
+  padding: 0 calc(var(--spacing) / 2) 0;
 }
 ._openedChat--footer {
   color: var(--c-noir);
@@ -476,15 +496,16 @@ export default {
 }
 
 ._dayTitle {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
   text-align: center;
   // font-size: 0.8rem;
-  margin: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
   font-style: italic;
-  opacity: 0.7;
-
-  &:first-child {
-    margin-top: 0;
-  }
+  background: var(--c-rouge_fonce);
+  // background: linear-gradient(to bottom, var(--c-rouge_fonce) 60%, transparent);
 }
 
 ._message--footer {
@@ -547,6 +568,11 @@ export default {
 
 ._sendBtn {
   padding: calc(var(--spacing) / 2);
+}
+._changeAuthor {
+  // height: 1px;
+  // background: var(--c-rouge_fonce);
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>
 <style lang="scss">

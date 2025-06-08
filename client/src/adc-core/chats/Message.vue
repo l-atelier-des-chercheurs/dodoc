@@ -10,9 +10,11 @@
           v-if="message_author_path"
           :key="message_author_path"
           :path="message_author_path"
-          :mode="'link'"
           :size="'small'"
         />
+        <!-- <span v-else-if="is_self" class="_message--header--author--self">{{
+          "Vous"
+        }}</span> -->
         <!-- <AuthorField
           :label="$t('authors')"
           :show_label="false"
@@ -164,6 +166,7 @@ export default {
   border-radius: var(--border-radius);
   background: white;
   color: var(--c-noir);
+  margin-top: calc(var(--spacing) / 4);
   margin-bottom: calc(var(--spacing) / 4);
 
   &.is--self {
@@ -205,7 +208,7 @@ export default {
   }
 }
 ._message--content {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1.5);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   overflow-wrap: break-word;
 
   max-height: 30rem;
