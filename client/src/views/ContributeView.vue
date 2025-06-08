@@ -17,16 +17,32 @@
           class="u-instructions u-spacingBottom"
           v-if="chutier_items.length > 0"
         >
-          <b-icon icon="text-left" />
-          {{ $t("files_with_caption") }}: {{ files_with_caption_percentage }}%
+          <div class="_statLine">
+            <b-icon icon="text-left" />
+            {{ $t("files_with_caption") }}: {{ files_with_caption_percentage }}%
+          </div>
+          <div class="_progressBar">
+            <div
+              class="_progressFill"
+              :style="{ width: files_with_caption_percentage + '%' }"
+            ></div>
+          </div>
         </div>
 
         <div
           class="u-instructions u-spacingBottom"
           v-if="chutier_items.length > 0"
         >
-          <b-icon icon="info-circle" />
-          {{ $t("files_with_credits") }}: {{ files_with_credits_percentage }}%
+          <div class="_statLine">
+            <b-icon icon="info-circle" />
+            {{ $t("files_with_credits") }}: {{ files_with_credits_percentage }}%
+          </div>
+          <div class="_progressBar">
+            <div
+              class="_progressFill"
+              :style="{ width: files_with_credits_percentage + '%' }"
+            ></div>
+          </div>
         </div>
       </div>
       <div class="_importFiles--content">
@@ -845,5 +861,25 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+._statLine {
+  margin-bottom: calc(var(--spacing) / 4);
+}
+
+._progressBar {
+  width: 100%;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+._progressFill {
+  height: 100%;
+  background-color: var(--active-color);
+  border-radius: 2px;
+  transition: width 0.3s ease-out;
 }
 </style>
