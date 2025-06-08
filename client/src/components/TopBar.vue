@@ -267,8 +267,10 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  // font-size: 20px;
-  // justify-content: center;
+
+  a {
+    text-decoration: none;
+  }
 }
 ._badge {
   position: absolute;

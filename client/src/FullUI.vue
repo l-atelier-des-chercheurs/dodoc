@@ -173,7 +173,7 @@ export default {
   ._fullUI--content--view {
     position: relative;
     flex: 1;
-    overflow-y: hidden;
+    overflow-y: visible;
   }
 }
 
