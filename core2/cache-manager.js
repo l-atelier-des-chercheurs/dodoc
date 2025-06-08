@@ -52,13 +52,13 @@ module.exports = (function () {
     },
 
     async cleanupCache() {
-      dev.logfunction(`cleanupCache`);
+      dev.logfunction(`Will clean up cache`);
 
       try {
         const cacheFolder = global.pathToCache;
         if (!cacheFolder) return;
 
-        dev.log("Starting cache cleanup...");
+        // dev.log("Starting cache cleanup...");
 
         // Get all files in cache directory
         const files = await fs.readdir(cacheFolder);
@@ -74,7 +74,7 @@ module.exports = (function () {
           }
         }
 
-        dev.log("Cache cleanup completed");
+        dev.logverbose(`Cache cleanup completed`);
       } catch (err) {
         dev.error("Error during cache cleanup:", err);
       }

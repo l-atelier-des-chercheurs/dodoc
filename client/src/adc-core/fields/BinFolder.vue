@@ -23,7 +23,7 @@
             />
           </div>
 
-          <hr />
+          <!-- <hr /> -->
 
           <div class="_items">
             <BinFolderItem
@@ -99,10 +99,12 @@ export default {
   flex-flow: row nowrap;
   // justify-content: space-between;
   align-items: center;
+  margin-bottom: calc(var(--spacing) / 1);
   gap: calc(var(--spacing) / 1);
 
   > * {
     flex: 1 1 0;
+    margin-bottom: 0;
   }
 }
 ._items {

@@ -169,6 +169,10 @@ import {
   BIconFileCode,
   BIconFolderSymlink,
   BIconCalendarWeek,
+  BIconChatDots,
+  BIconChatDotsFill,
+  BIconArrowUpRightSquare,
+  BIconArrowUpRightSquareFill,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -339,3 +343,7 @@ Vue.component("BIconList", BIconList);
 Vue.component("BIconFileCode", BIconFileCode);
 Vue.component("BIconFolderSymlink", BIconFolderSymlink);
 Vue.component("BIconCalendarWeek", BIconCalendarWeek);
+Vue.component("BIconChatDots", BIconChatDots);
+Vue.component("BIconChatDotsFill", BIconChatDotsFill);
+Vue.component("BIconArrowUpRightSquare", BIconArrowUpRightSquare);
+Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);

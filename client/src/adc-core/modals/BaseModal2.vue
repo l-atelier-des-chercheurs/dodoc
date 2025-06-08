@@ -25,6 +25,7 @@
             v-if="$slots.hasOwnProperty('default')"
             :class="{
               has_nofooter: !$slots.hasOwnProperty('footer'),
+              has_nopadding: nopadding,
             }"
           >
             <slot />
@@ -62,6 +63,10 @@ export default {
   props: {
     title: String,
     size: String,
+    nopadding: {
+      type: Boolean,
+      default: false,
+    },
     is_closable: {
       type: Boolean,
       default: true,
@@ -261,7 +266,7 @@ header {
   margin: 0 calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 
   &:first-child {
-    margin-top: calc(var(--spacing) * 1);
+    // margin-top: calc(var(--spacing) * 1);
   }
 
   ._baseModal[data-size="full"] & {
@@ -270,6 +275,9 @@ header {
 
   &.has_nofooter {
     padding-bottom: calc(var(--spacing) * 1);
+  }
+  &.has_nopadding {
+    padding: 0;
   }
 }
 ._footer {

@@ -2,7 +2,7 @@
   <div
     class="_mediaGrid"
     :class="{
-      'is--multipleMedias': is_multiple_medias,
+      'is--multipleMedias': is_multiple_medias && !$root.is_mobile_view,
       'is--singleText': is_single_text,
     }"
   >

@@ -6,6 +6,6 @@ Branches:
 
 Main code, running on luma server
 
-- lumadoc-node_pagine
+- lumadoc-node-avril25
 
-Experimental branches
+Experimental branch, new version prepared for June 2025.

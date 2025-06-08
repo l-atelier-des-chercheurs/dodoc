@@ -99,11 +99,6 @@ module.exports = (function () {
       });
       const meta = Object.assign({}, validated_meta, extracted_meta);
 
-      // let new_meta_filename = await _preventFileOverride({
-      //   path_to_folder,
-      //   original_filename: meta_filename,
-      // });
-
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
         file_slug: meta_filename,
@@ -112,7 +107,6 @@ module.exports = (function () {
 
       return { meta, meta_filename };
     },
-
     getFiles: async ({ path_to_folder, embed_source }) => {
       dev.logfunction({ path_to_folder, embed_source });
 
@@ -140,6 +134,11 @@ module.exports = (function () {
       }
 
       return metas;
+    },
+    getFilesCount: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+      const meta_filenames = await _getMetasInFolder({ path_to_folder });
+      return meta_filenames.length;
     },
     getFile: async ({ path_to_meta }) => {
       dev.logfunction({ path_to_meta });
@@ -496,6 +495,7 @@ module.exports = (function () {
     const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
 
     const parseFilename = (filename) => {
+      if (!filename.includes(".")) return { name: filename, ext: "" };
       const name = filename.substring(0, filename.indexOf("."));
       const ext = filename.substring(filename.indexOf("."), filename.length);
       return { name, ext };

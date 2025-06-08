@@ -70,12 +70,37 @@
                   </option>
                 </select>
               </div>
-              <div class="_buttonRow">
+              <fieldset class="_buttonRow">
+                <button
+                  type="button"
+                  class="u-button u-button_verysmall u-button_bleuvert"
+                  @click="show_instructions_modal = !show_instructions_modal"
+                >
+                  <b-icon
+                    :icon="
+                      !show_instructions_modal
+                        ? 'info-circle'
+                        : 'info-circle-fill'
+                    "
+                    :class="{
+                      'is--active': show_instructions_modal,
+                    }"
+                  />
+                </button>
+                <BaseModal2
+                  v-if="show_instructions_modal"
+                  :title="$t('text_image_layout')"
+                  @close="show_instructions_modal = false"
+                >
+                  <p>
+                    {{ $t("width_alignment_grid_only_non_mobile") }}
+                  </p>
+                </BaseModal2>
                 <button
                   v-for="size in [100, 66.6, 50, 33.3]"
                   :key="size"
                   type="button"
-                  class="u-button u-button_small u-button_transparent _sizes"
+                  class="u-button u-button_verysmall u-button_bleuvert _sizes"
                   :class="{
                     'is--active':
                       (!publimodule.size && size === 100) ||
@@ -85,29 +110,26 @@
                 >
                   {{ size }}%
                 </button>
-              </div>
 
-              <div
-                class="_buttonRow"
-                v-if="publimodule.size && publimodule.size !== 100"
-              >
-                <button
-                  v-for="align in ['left', 'center', 'right']"
-                  :key="align"
-                  type="button"
-                  class="u-button u-button_small u-button_transparent"
-                  :class="{
-                    'is--active':
-                      (!publimodule.align && align === 'left') ||
-                      publimodule.align === align,
-                  }"
-                  @click="updateMeta({ align: align })"
-                >
-                  <b-icon v-if="align === 'left'" icon="align-start" />
-                  <b-icon v-if="align === 'center'" icon="align-center" />
-                  <b-icon v-if="align === 'right'" icon="align-end" />
-                </button>
-              </div>
+                <template v-if="publimodule.size && publimodule.size !== 100">
+                  <button
+                    v-for="align in ['left', 'center', 'right']"
+                    :key="align"
+                    type="button"
+                    class="u-button u-button_small u-button_bleuvert"
+                    :class="{
+                      'is--active':
+                        (!publimodule.align && align === 'left') ||
+                        publimodule.align === align,
+                    }"
+                    @click="updateMeta({ align: align })"
+                  >
+                    <b-icon v-if="align === 'left'" icon="align-start" />
+                    <b-icon v-if="align === 'center'" icon="align-center" />
+                    <b-icon v-if="align === 'right'" icon="align-end" />
+                  </button>
+                </template>
+              </fieldset>
             </div>
             <div class="_carto" v-if="is_associated_to_map">
               <div class="_latlon" v-if="false">
@@ -179,7 +201,7 @@
               </div>
             </div>
 
-            <DropDown :right="true">
+            <DropDown :show_label="false" :right="true">
               <button
                 type="button"
                 class="u-buttonLink"
@@ -429,6 +451,7 @@
   </div>
 </template>
 <script>
+import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 import MediasModule from "@/components/publications/modules/MediasModule.vue";
 
 export default {
@@ -464,6 +487,7 @@ export default {
     return {
       is_repicking_location: false,
       observer: undefined,
+      show_instructions_modal: false,
     };
   },
   created() {},
@@ -612,6 +636,9 @@ export default {
     },
     media_styles() {
       let margin_left = 0;
+
+      if (this.$root.is_mobile_view) return;
+
       if (this.publimodule.align === "center")
         if (this.publimodule.size === 66.6) margin_left = 16.6;
         else if (this.publimodule.size === 50) margin_left = 25;
@@ -899,6 +926,8 @@ export default {
   flex-flow: row wrap;
   align-items: center;
 
+  justify-content: space-between;
+
   gap: calc(var(--spacing) / 4);
 }
 ._saveBtn {
@@ -927,10 +956,15 @@ export default {
   display: flex;
   flex-flow: row wrap;
   padding: calc(var(--spacing) / 4);
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   align-items: center;
+  background: transparent;
+  border: none;
+  --active-color: var(--c-bleuvert_fonce);
 
-  --active-color: white;
+  > button {
+    padding: calc(var(--spacing) / 4);
+  }
 }
 
 ._sizes.is--active {

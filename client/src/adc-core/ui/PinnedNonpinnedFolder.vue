@@ -15,6 +15,9 @@
             v-else
             tag="section"
             class="_list _list_pinned"
+            :class="{
+              'is--mobileView': $root.is_mobile_view,
+            }"
             name="listComplete"
             appear
           >
@@ -71,6 +74,9 @@
     <transition-group
       tag="section"
       class="_nonpinned _list"
+      :class="{
+        'is--mobileView': $root.is_mobile_view,
+      }"
       name="listComplete"
       appear
     >
@@ -212,13 +218,18 @@ export default {
 
 ._list {
   display: grid;
+  // width: 100%;
   grid-auto-rows: max-content;
   grid-gap: var(--item-gap, calc(var(--spacing) / 1));
   align-items: stretch;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(var(--item-width, 320px), 1fr)
+    minmax(min(100%, var(--item-width, 320px)), 1fr)
   );
+
+  &.is--mobileView {
+    // display: block;
+  }
 }
 ._list_pinned {
   // border-radius: 3px;

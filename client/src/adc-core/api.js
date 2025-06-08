@@ -795,7 +795,7 @@ export default function () {
         });
       },
       other_devices_connected() {
-        return this.users.filter((u) => !u.is_self);
+        return this.all_devices_connected.filter((u) => !u.is_self);
       },
     },
   });

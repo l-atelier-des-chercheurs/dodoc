@@ -230,6 +230,16 @@ hr {
 .chapter[data-starts-on-page="right"] {
   break-before: right;
 }
+.chapter[data-column-count="2"] .chapterContent {
+  column-count: 2;
+  column-fill: auto;
+  column-gap: 1rem;
+}
+.chapter[data-column-count="3"] .chapterContent {
+  column-count: 3;
+  column-fill: auto;
+  column-gap: 1rem;
+}
 
 /* SET COVER OPTIONS */
 .book {

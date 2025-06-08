@@ -176,4 +176,38 @@ export default {
     overflow-y: hidden;
   }
 }
+
+._mainContent {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  flex: 1;
+  overflow: hidden;
+
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  // gap: var(--spacing);
+
+  > * {
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  ._routerView {
+    flex: 1 1 auto;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+
+  ._chatsListContainer {
+    position: relative;
+    flex: 0 0 0;
+    width: 0;
+    overflow: hidden;
+
+    --chats-list-width: 320px;
+    --chats-list-padding: 4px;
+
+    &.is--shown {
+      flex: 0 0 var(--chats-list-width);
+    }
+  }
+}
 </style>

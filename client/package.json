@@ -21,6 +21,7 @@
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.37.1",
     "debounce": "^1.2.1",
+    "dompurify": "^3.2.6",
     "file-saver": "^2.0.5",
     "fix-webm-duration": "^1.0.6",
     "flickity": "^3.0.0",

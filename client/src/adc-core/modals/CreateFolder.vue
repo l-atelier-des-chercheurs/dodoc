@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="modal_name" @close="$emit('close')">
+  <BaseModal2 :title="modal_name || $t('create')" @close="$emit('close')">
     <form class="input-validation-required" @submit.prevent="createFolder">
       <DLabel :str="$t('title')" />
       <TextInput
@@ -38,8 +38,9 @@
         :content.sync="new_folder_is_private"
         :label="$t('private')"
         :options="{
-          true: $t('private_status_explanations'),
-          false: $t('public_status_explanations'),
+          true:
+            private_status_explanations || $t('private_status_explanations'),
+          false: public_status_explanations || $t('public_status_explanations'),
         }"
       />
 
@@ -68,8 +69,10 @@
 <script>
 export default {
   props: {
-    type_of_folder: String,
+    modal_name: String,
     path: String,
+    private_status_explanations: String,
+    public_status_explanations: String,
     default_folder_status: { type: String, default: "public" },
   },
   components: {},
@@ -93,26 +96,26 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    modal_name() {
-      if (this.type_of_folder === "space") return this.$t("create_a_space");
-      else if (this.type_of_folder === "project")
-        return this.$t("create_a_project");
-      return undefined;
-    },
-    admin_instructions() {
-      if (this.type_of_folder === "space")
-        return this.$t("space_admin_instructions");
-      else if (this.type_of_folder === "project")
-        return this.$t("project_admin_instructions");
-      return undefined;
-    },
-    contrib_instructions() {
-      if (this.type_of_folder === "space")
-        return this.$t("space_contrib_instructions");
-      else if (this.type_of_folder === "project")
-        return this.$t("project_contrib_instructions");
-      return undefined;
-    },
+    // modal_name() {
+    //   if (this.type_of_folder === "space") return this.$t("create_a_space");
+    //   else if (this.type_of_folder === "project")
+    //     return this.$t("create_a_project");
+    //   return undefined;
+    // },
+    // admin_instructions() {
+    //   if (this.type_of_folder === "space")
+    //     return this.$t("space_admin_instructions");
+    //   else if (this.type_of_folder === "project")
+    //     return this.$t("project_admin_instructions");
+    //   return undefined;
+    // },
+    // contrib_instructions() {
+    //   if (this.type_of_folder === "space")
+    //     return this.$t("space_contrib_instructions");
+    //   else if (this.type_of_folder === "project")
+    //     return this.$t("project_contrib_instructions");
+    //   return undefined;
+    // },
   },
   methods: {
     async createFolder() {

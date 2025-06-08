@@ -8,11 +8,12 @@
     />
 
     <div class="_container">
-      <div class="_content" v-if="content && content.length > 0">
-        <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
-        <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
+      <div class="_content">
+        <component :is="tag">
+          <span v-if="content && content.length > 0" v-html="clean_content" />
+          <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
+        </component>
       </div>
-      <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
     </div>
 
     <BaseModal2
@@ -53,6 +54,8 @@
   </span>
 </template>
 <script>
+import DOMPurify from "dompurify";
+
 export default {
   props: {
     field_name: String,
@@ -122,6 +125,9 @@ export default {
     content_is_changed() {
       return this.new_content !== this.content;
     },
+    clean_content() {
+      return DOMPurify.sanitize(this.content);
+    },
   },
   methods: {
     enableEditMode() {
@@ -183,8 +189,9 @@ export default {
   // width: 100%;
 
   ._content {
-    display: inline-block;
+    display: block;
     margin-right: calc(var(--spacing) / 2);
+    overflow-wrap: break-word;
 
     > * {
       margin: 0;

@@ -7,6 +7,7 @@ const utils = require("./utils"),
   file = require("./file"),
   cache = require("./cache"),
   archives = require("./archives");
+
 module.exports = (function () {
   const API = {
     getFolders: async ({ path_to_type, detailed = false }) => {
@@ -91,7 +92,6 @@ module.exports = (function () {
       if (folder_meta.$password && folder_meta.$password.length > 0)
         folder_meta.$password = "_active";
 
-      // TODO get number of files if files in item_in_schema
       cache.set({
         key: _getCacheKey({ path_to_folder }),
         value: JSON.parse(JSON.stringify(folder_meta)),
@@ -123,6 +123,8 @@ module.exports = (function () {
 
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
+
+      valid_meta.$files_count = 0;
 
       valid_meta.$status = valid_meta.$status ? valid_meta.$status : "private";
 
@@ -428,6 +430,18 @@ module.exports = (function () {
       } catch (err) {
         throw err;
       }
+    },
+
+    updateFolderFilesCount: async ({ path_to_folder, new_files_count }) => {
+      dev.logfunction({ path_to_folder });
+      const path_to_type = utils.getContainingFolder(path_to_folder);
+      await API.updateFolder({
+        path_to_type,
+        path_to_folder,
+        admin_meta: {
+          $files_count: new_files_count,
+        },
+      });
     },
 
     login: async ({ path_to_folder, submitted_password }) => {

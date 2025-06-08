@@ -371,6 +371,9 @@ export default {
 
   private_status_explanations_projects:
     "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+  public_status_explanations_projects:
+    "Le projet sera affiché avec les autres projets, il sera accessible à tous ceux qui ont accès à son espace.",
+
   finished_status_explanations:
     "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
   draft_status_explanations:
@@ -451,8 +454,8 @@ export default {
   everyone: "Tout le monde",
   everyone_instr: "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
   everyone_can_edit:
-    "Contribution, modification et suppression ouverte à tout le monde.",
-  everyone_can_contribute: "Contribution ouverte à tout le monde",
+    "Contribution, modification et suppression ouverte à tous.",
+  everyone_can_contribute: "Contribution ouverte à tous.",
   noone: "Aucun·e",
   noone_instr: "Fermer à tous les comptes.",
   restricted: "Uniquement les comptes de la liste",
@@ -1311,7 +1314,7 @@ export default {
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
-  devices_connected: "Appareils connectés actuellement",
+  other_devices_connected: "Autres appareils connectés",
 
   remove_publication: "Supprimer la publication {name}",
 
@@ -1384,4 +1387,35 @@ export default {
   forgot_password: "Mot de passe oublié ?",
   folder_not_public:
     "Ce contenu n’est pas publique, pour y accéder son auteur doit le rendre publique.",
+  width_alignment_grid_only_non_mobile:
+    "La largeur du module et son alignement (au milieu ou à droite) ne s’appliquent que si la largeur de l’écran le permet (plus de 767 pixels).",
+
+  add_column: "Ajouter une colonne",
+  add_row: "Ajouter une ligne",
+  remove_column: "Supprimer la dernière colonne",
+  remove_row: "Supprimer la dernière ligne",
+  chats: "Discussions",
+  list_of_topics: "Liste des sujets",
+  create_a_chat: "Créer une discussion",
+  not_allowed_to_post_messages:
+    "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
+  write_a_message: "Écrivez un message…",
+  participants: "Participants",
+  chat_admin_instructions:
+    "Les référents sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/retrait d’un participant).",
+  chat_contrib_instructions:
+    "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
+  anonymous_user: "Anonyme",
+
+  no_messages_in_chat: "Aucun message dans cette discussion.",
+  remove_this_message: "Supprimer ce message",
+  load_older_messages: "Afficher les messages plus anciens",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Dernier message le",
+  message_has_been_removed: "Ce message a été supprimé.",
+  unread: "Non lu",
+  remove_chat: "Supprimer la discussion {name}",
+  chat_was_removed: "La discussion a été supprimée.",
+  edit_this_message: "Modifier ce message",
+  new_messages: "{count} nouveau message | {count} nouveaux messages",
 };

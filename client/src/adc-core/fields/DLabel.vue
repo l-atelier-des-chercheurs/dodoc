@@ -8,7 +8,7 @@
       >
         {{ str }}
       </component>
-      <template v-if="instructions">
+      <template v-if="instructions || hasToggleInstructionsListener">
         &nbsp;
         <button
           type="button"
@@ -55,10 +55,17 @@ export default {
       if (this.tag === "label") return "  color: var(--label-color)";
       return "";
     },
+    hasToggleInstructionsListener() {
+      return this.$listeners && "toggleInstructions" in this.$listeners;
+    },
   },
   methods: {
     toggleInstructions() {
-      if (this.instructions) this.show_instructions = !this.show_instructions;
+      if (this.hasToggleInstructionsListener) {
+        this.$emit("toggleInstructions", this.show_instructions);
+      } else {
+        this.show_instructions = !this.show_instructions;
+      }
     },
   },
 };
