@@ -60,7 +60,6 @@
       <div class="_middleContent">
         <template v-if="chutier_items && chutier_items.length > 0">
           <label
-            v-if="false"
             for=""
             class="_item--label"
             :class="{
@@ -271,6 +270,8 @@ export default {
         dashboard: "Dashboard",
         new_stack_created: "Nouveau document créé",
         go_to_new_stack: "Aller au nouveau document",
+        too_many_items_selected:
+          "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
       },
       en: {
         imported_docs:
@@ -280,6 +281,8 @@ export default {
         dashboard: "Dashboard",
         new_stack_created: "New document created",
         go_to_new_stack: "Go to new document",
+        too_many_items_selected:
+          "You can only select {max_items_selected} media maximum.",
       },
     },
   },
@@ -331,12 +334,11 @@ export default {
           0,
           this.max_items_selected
         );
-        this.$alertify.delay(4000).error(this.$t("too_many_items_selected"));
-        setTimeout(() => {
-          this.$alertify
-            .delay(4000)
-            .error(this.$t("max_items_is") + " " + this.max_items_selected);
-        }, 500);
+        this.$alertify.delay(4000).error(
+          this.$t("too_many_items_selected", {
+            max_items_selected: this.max_items_selected,
+          })
+        );
       }
     },
     chutier_items() {
