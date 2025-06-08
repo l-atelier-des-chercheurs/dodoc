@@ -130,7 +130,6 @@
 <script>
 import FilterBar from "@/components/archive/FilterBar.vue";
 import StackPreview from "@/components/archive/StackPreview.vue";
-import AdminLumaSettings from "@/components/AdminLumaSettings.vue";
 import StackDisplay from "@/components/StackDisplay.vue";
 
 export default {
@@ -144,7 +143,6 @@ export default {
   components: {
     FilterBar,
     StackPreview,
-    AdminLumaSettings,
     StackDisplay,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
