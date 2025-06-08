@@ -59,10 +59,29 @@
         <template v-if="is_instance_admin">
           <button
             type="button"
-            class="u-button u-button_icon"
+            class="u-button u-button_icon _settingsBtn"
             @click="show_settings_modal = !show_settings_modal"
           >
-            <b-icon icon="gear" :aria-label="$t('admin_settings')" />
+            <svg
+              class="_settingsIcon"
+              enable-background="new 0 0 168 168"
+              viewBox="0 0 168 168"
+              xmlns="http://www.w3.org/2000/svg"
+              :aria-label="$t('admin_settings')"
+            >
+              <circle
+                cx="84"
+                cy="84"
+                :fill="show_settings_modal ? '#fc4b60' : 'none'"
+                r="84"
+              />
+              <g transform="scale(1.22) translate(-18 -14)">
+                <path
+                  d="m122.7 88.8v-10c0-1.1.6-2.1 1.6-2.6l9.6-4.9-2-5.8-11 1.6c-1.1.2-2.2-.3-2.9-1.2l-6-8.1c-.7-.9-.8-2.1-.3-3l4.8-9.6-5.2-3.6-7.7 7.5c-.8.8-2 1-3.1.7l-9.9-3c-1.1-.3-1.9-1.3-2.1-2.4l-1.7-10.4h-6.4l-1.7 10.4c-.2 1.1-.9 2-2 2.4l-9.9 3.2c-1.1.3-2.2.1-3.1-.7l-7.8-7.3-5.1 3.7 4.9 9.4c.5 1 .4 2.1-.2 3l-6 8.2c-.6.9-1.8 1.4-2.9 1.2l-10.8-1.5-1.8 5.8 9.7 4.8c1 .5 1.7 1.5 1.7 2.6v10c0 1.1-.6 2.1-1.6 2.6l-9.6 4.9 2 5.9 10.9-1.6c1.1-.2 2.2.3 2.9 1.2l6 8.1c.7.9.8 2.1.3 3l-4.8 9.6 5.1 3.6 7.7-7.5c.8-.8 2-1 3.1-.7l9.9 3c1.1.3 1.9 1.3 2.1 2.4l1.9 10.4h6.4l1.7-10.4c.2-1.1.9-2 2-2.4l9.9-3.2c1.1-.3 2.2-.1 3.1.7l7.8 7.3 5.1-3.7-4.9-9.4c-.5-1-.4-2.1.2-3l6-8.1c.7-.9 1.8-1.4 2.9-1.2l10.8 1.5 1.8-5.9-9.7-4.8c-1.1-.6-1.7-1.6-1.7-2.7zm-38.7 15.7c-11.7 0-21.1-9.2-21.1-20.5s9.5-20.5 21.1-20.5 21.1 9.2 21.1 20.5-9.4 20.5-21.1 20.5z"
+                  fill="#12224c"
+                />
+              </g>
+            </svg>
           </button>
 
           <AdminSettings
@@ -436,7 +455,8 @@ export default {
   font-weight: bold;
 }
 
-._chatsBtn {
+._chatsBtn,
+._settingsBtn {
   position: relative;
   display: inline-flex;
   padding: calc(var(--spacing) / 4);
