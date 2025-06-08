@@ -21,7 +21,7 @@
             :context="'preview'"
           />
         </div>
-        <div class="_titleDateField">
+        <div class="_titleDateField" v-if="context !== 'show_only_thumbs'">
           <div>
             <div class="_tile_filename">
               <div
@@ -94,7 +94,7 @@
             </div>
           </div>
         </div>
-        <div class="_actions">
+        <div class="_actions" v-if="context !== 'show_only_thumbs'">
           <button type="button" class="u-button_icon _dragBtn" v-if="draggable">
             <svg
               width="24"
@@ -338,9 +338,9 @@ export default {
 
   ._chutierRow--preview {
     position: relative;
-    height: 120px;
+    height: 132px;
     border-radius: 2px;
-    width: 120px;
+    width: 132px;
     flex: 0 0 auto;
     overflow: hidden;
     // color: white;
@@ -472,6 +472,7 @@ export default {
 ._infos2 {
   margin-top: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) / 2);
+  font-size: var(--sl-font-size-small);
 
   ._collaborativeEditor {
     overflow: hidden;

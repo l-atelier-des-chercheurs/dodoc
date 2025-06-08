@@ -3,7 +3,8 @@
     size=""
     :title="modal_name"
     class=""
-    :is_closable="false"
+    :confirm_before_closing="true"
+    @save=""
     @close="$emit('close')"
   >
     <div class="_createNewMediastackModal">
@@ -43,11 +44,17 @@
               </div>
             </div>
 
-            <div class="u-spacingBottom _form-review-items">
+            <div
+              class="u-spacingBottom _form-review-items"
+              :class="{
+                'has--onlyThumbs': show_only_thumbs,
+              }"
+            >
               <ChutierItem
                 v-for="file in selected_items"
                 :key="file.$path"
                 :file="file"
+                :context="show_only_thumbs ? 'show_only_thumbs' : ''"
                 :is_selected="true"
               />
             </div>
@@ -271,6 +278,9 @@ export default {
       if (this.current_step === 1) return this.stack_tags.length > 0;
       return true;
     },
+    show_only_thumbs() {
+      return this.current_step > 0 && this.current_step !== 3;
+    },
   },
   methods: {
     backStep() {
@@ -460,6 +470,24 @@ export default {
 ._cantNextInstr {
   width: 100%;
   text-align: right;
+}
+
+._form-review-items {
+  > * {
+    margin-bottom: calc(var(--spacing) / 4);
+    // max-width: 22em;
+  }
+
+  &.has--onlyThumbs {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: calc(var(--spacing) / 2);
+    > * {
+      // max-width: 22em;
+    }
+  }
 }
 </style>
 <style lang="scss">

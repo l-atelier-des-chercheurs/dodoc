@@ -4,8 +4,6 @@
     :class="{ 'is--mobile': $root.is_mobile_view }"
     @click="last_clicked = false"
   >
-    <portal-target name="largemedia" multiple />
-
     <div class="_importFiles" @click.self="selected_items_slugs = []">
       <div class="_dashboard">
         <DLabel :str="$t('dashboard')" />
@@ -216,6 +214,7 @@
           </button>
         </div>
       </transition>
+
       <transition name="slideup" mode="out-in">
         <div v-if="link_to_new_stack" key="new_stack" class="_newStack">
           <div class="">
