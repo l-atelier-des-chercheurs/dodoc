@@ -181,7 +181,7 @@ export default {
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
   --border-radius: 6px;
-  --border-color: var(--h-100);
+  --border-color: var(--h-200);
 
   --input-font-family: inherit;
   --input-font-size: 1rem;
@@ -246,18 +246,37 @@ export default {
   // --chutier-bg: rgb(37, 39, 41);
   // --chutier-bg: #77757c;
 
+  --g-50: hsl(240, 29%, 97%);
+  --g-100: hsl(240, 28%, 95%);
+  --g-200: hsl(0, 0%, 87%);
+  --g-300: hsl(0, 0%, 82%);
+  --g-400: hsl(0, 0%, 77%);
+  --g-500: hsl(0, 0%, 70%);
+  --g-600: hsl(0, 0%, 60%);
+  --g-700: hsl(0, 0%, 51%);
+  --g-900: hsl(0, 0%, 30%);
+
   --r-200: #ffe08a;
   --r-500: #ffbc00;
   --r-600: #e8ab00;
   --r-900: #6b4f00;
 
-  --h-50: #f6f6fa;
-  --h-100: #e4e3ee;
-  --h-200: #d7d6e6;
-  --h-500: #a8a5c8;
-  --h-600: #9996b6;
-  --h-700: #77758e;
-  --h-900: #474554;
+  // --h-50: #f6f6fa;
+  // --h-100: #e4e3ee;
+  // --h-200: #d7d6e6;
+  // --h-500: #a8a5c8;
+  // --h-600: #9996b6;
+  // --h-700: #77758e;
+  // --h-900: #474554;
+  --h-50: var(--g-50);
+  --h-100: var(--g-100);
+  --h-200: var(--g-200);
+  --h-300: var(--g-300);
+  --h-400: var(--g-400);
+  --h-500: var(--g-500);
+  --h-600: var(--g-600);
+  --h-700: var(--g-700);
+  --h-900: var(--g-900);
 
   // --g-50: #f6f6fa;
 

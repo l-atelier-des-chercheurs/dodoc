@@ -14,7 +14,7 @@
   >
     <div class="_chutierRow--rows">
       <div class="_infos">
-        <div class="_chutierRow--openLarge">
+        <div class="_chutierRow--previewMedia">
           <span @click.stop="show_large = true">
             <MediaContent
               class="_chutierRow--preview"
@@ -52,13 +52,6 @@
         <div class="_titleDateField" v-if="context !== 'show_only_thumbs'">
           <div>
             <div class="_tile_filename">
-              <div
-                class="u-filename _filename"
-                v-if="file.$media_filename"
-                :title="file.$media_filename"
-              >
-                {{ file.$media_filename }}
-              </div>
               <div class="_time">
                 {{
                   context === "stack"
@@ -68,6 +61,13 @@
                         minute: "2-digit",
                       })
                 }}
+              </div>
+              <div
+                class="u-filename _filename"
+                v-if="file.$media_filename"
+                :title="file.$media_filename"
+              >
+                {{ file.$media_filename }}
               </div>
             </div>
 
@@ -265,16 +265,17 @@ export default {
   flex: 1 1 auto;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
   gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
   // padding: 0 calc(var(--spacing) / 4);
+  // border: 1px solid var(--h-50);
   width: 100%;
 
   ._titleDateField {
     flex: 1 1 0;
     height: 100%;
     overflow: hidden;
+    padding-right: calc(var(--spacing) / 2);
   }
 }
 
@@ -305,7 +306,7 @@ export default {
   // padding: calc(var(--spacing) / 4) 0;
   overflow: hidden;
   border-radius: 3px;
-  color: var(--h-300);
+  // color: var(--g-700);
   cursor: pointer;
   transform-origin: center center;
 
@@ -314,8 +315,7 @@ export default {
   &.can--toggleSelect {
     @media (hover: hover) and (pointer: fine) {
       &:not(.is--selected):hover {
-        background-color: var(--h-200);
-        color: var(--h-900);
+        background-color: var(--h-300);
       }
     }
   }
@@ -326,7 +326,7 @@ export default {
   }
 
   &.is--selected {
-    background-color: var(--h-500);
+    background-color: var(--h-400);
     color: var(--h-900);
     // transform: scale(0.98);
 
@@ -334,11 +334,12 @@ export default {
     }
   }
 
-  ._chutierRow--openLarge {
+  ._chutierRow--previewMedia {
     position: relative;
     display: block;
     cursor: pointer;
     // margin-right: calc(var(--spacing) / 2);
+    // background-color: var(--h-200);
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &:hover {
@@ -363,7 +364,7 @@ export default {
     overflow: hidden;
     // color: white;
     // background: black;
-    background: var(--h-200);
+    background: var(--h-100);
     color: var(--h-200);
 
     display: block !important;
@@ -444,8 +445,6 @@ export default {
   margin: 0 calc(var(--spacing) / 2);
   cursor: pointer;
 }
-</style>
-<style lang="scss">
 ._largePreview {
   position: absolute;
   top: 0;
@@ -528,7 +527,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-start;
   align-items: center;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   pointer-events: none;
 }
 </style>
