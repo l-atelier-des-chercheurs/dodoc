@@ -1,6 +1,9 @@
 <template>
   <div>
-    <SharedFolder2 :shared_folder_path="shared_folder_path" />
+    <SharedFolder2
+      :shared_folder_path="shared_folder_path"
+      @changeCorpus="changeCorpus"
+    />
   </div>
 </template>
 <script>
@@ -22,7 +25,12 @@ export default {
       return "folders/" + this.$route.params.folder_slug;
     },
   },
-  methods: {},
+  methods: {
+    changeCorpus(path) {
+      const slug = path.split("/").pop();
+      this.$router.push(`/explore/${slug}`);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

@@ -109,7 +109,7 @@ export default {
       "last_opened_folder_slug"
     );
     if (last_opened_folder_slug) {
-      this.$router.push(`/explore/${last_opened_folder_slug}`);
+      this.$emit("changeCorpus", last_opened_folder_slug);
     }
   },
   beforeDestroy() {
@@ -127,7 +127,7 @@ export default {
     openFolder() {
       const folder_slug = this.shared_folder_path.split("/").pop();
       localStorage.setItem("last_opened_folder_slug", folder_slug);
-      this.$router.push(`/explore/${folder_slug}`);
+      this.$emit("changeCorpus", folder_slug);
     },
     async createCorpus() {
       this.is_creating_corpus = true;

@@ -25,7 +25,11 @@
       </button>
     </div>
 
-    <CorpusMenu v-if="show_corpus_menu" @close="show_corpus_menu = false" />
+    <CorpusMenu
+      v-if="show_corpus_menu"
+      @changeCorpus="$emit('changeCorpus', $event)"
+      @close="show_corpus_menu = false"
+    />
 
     <transition name="slideup" mode="out-in">
       <StackDisplay

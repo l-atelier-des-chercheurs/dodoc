@@ -6,14 +6,14 @@
     @close="$emit('close')"
   >
     <div class="_pickExistingMediastackModal">
-      <div class="u-spacingBottom">
+      <!-- <div class="u-spacingBottom">
         <DLabel :str="$t('corpus')" />
         <DestinationCorpusSelector
           :selected_destination_folder_path.sync="
             selected_destination_folder_path
           "
         />
-      </div>
+      </div> -->
 
       <transition name="pagechange" mode="out-in">
         <div
@@ -24,6 +24,7 @@
           <SharedFolder2
             :shared_folder_path="selected_destination_folder_path"
             :select_mode="select_mode"
+            @changeCorpus="changeCorpus"
             @selectMedias="$emit('mediasSelected', $event)"
             @selectStack="$emit('stackSelected', $event)"
           />
@@ -69,7 +70,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {},
-  methods: {},
+  methods: {
+    changeCorpus(path) {
+      debugger;
+      this.selected_destination_folder_path = path;
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
