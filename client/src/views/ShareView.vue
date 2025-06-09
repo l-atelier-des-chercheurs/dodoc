@@ -1,6 +1,6 @@
 <template>
   <div class="_contributeView">
-    <LoaderSpinner v-if="!folders" />
+    <LoaderSpinner v-if="is_loading" />
     <template v-else>
       <div class="_selectFolder">
         <div>
@@ -43,7 +43,7 @@
               type="button"
               :disabled="!shared_folder_path"
               class="u-button"
-              @click="openFolder"
+              @click="openFolder(shared_folder_path)"
             >
               {{ $t("open") }}
             </button>
@@ -73,6 +73,8 @@ export default {
   data() {
     return {
       path: "folders",
+      is_loading: true,
+
       folders: undefined,
       shared_folder_path: "",
       new_corpus_name: "",
@@ -104,18 +106,6 @@ export default {
     // todo add lang selector instead
     // this.$i18n.locale = "fr";
 
-    const saved_panes_width = this.loadPanesWidthFromStorage();
-    if (saved_panes_width) this.panes_width = saved_panes_width;
-    else {
-      if (this.$root.is_mobile_view) {
-        this.panes_width.archive = 100;
-        this.panes_width.collection = 0;
-      } else {
-        this.panes_width.archive = 100;
-        this.panes_width.collection = 0;
-      }
-    }
-
     await this.loadFolders();
     this.$api.join({ room: this.path });
 
@@ -123,8 +113,13 @@ export default {
       "last_opened_folder_slug"
     );
     if (last_opened_folder_slug) {
-      this.$router.push(`/explore/${last_opened_folder_slug}`);
+      this.openFolder(last_opened_folder_slug);
+    } else if (this.folders) {
+      const first_folder = this.folders[0];
+      this.openFolder(first_folder.$path);
     }
+
+    this.is_loading = false;
     // check if necerray to login or create account :
   },
   async mounted() {},
@@ -158,15 +153,15 @@ export default {
         })
         .catch((err) => {
           this.fetch_spaces_error = err.response;
-          // this.is_loading = false;
           return;
         });
     },
-    openFolder() {
-      const folder_slug = this.shared_folder_path.split("/").pop();
+    openFolder(path) {
+      const folder_slug = path.split("/").pop();
       localStorage.setItem("last_opened_folder_slug", folder_slug);
       this.$router.push(`/explore/${folder_slug}`);
     },
+
     async createCorpus() {
       this.is_creating_corpus = true;
       const slug = await this.$api.createFolder({
