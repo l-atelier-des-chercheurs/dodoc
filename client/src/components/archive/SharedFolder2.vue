@@ -1,14 +1,9 @@
 <template>
   <div class="_sharedFolder">
     <div class="_topBar">
-      <button
-        type="button"
-        class="u-button u-button_white u-button_icon u-button_small"
-        @click="closeCorpus"
-      >
-        <b-icon icon="arrow-left-short" />
-        <!-- {{ $t("previous") }} -->
-      </button>
+      <label class="u-label _corpusLabel">
+        {{ $t("Corpus") }}
+      </label>
       <TitleField
         v-if="folder?.title"
         :field_name="'title'"
@@ -18,9 +13,19 @@
         :content="folder.title || $t('untitled')"
         :path="folder.$path"
         :required="true"
-        :can_edit="can_edit"
+        :can_edit="false"
       />
+      <button
+        type="button"
+        class="u-button u-button_white u-button_icon u-button_small"
+        @click="show_corpus_menu = !show_corpus_menu"
+      >
+        <b-icon icon="three-dots" />
+        <!-- {{ $t("previous") }} -->
+      </button>
     </div>
+
+    <CorpusMenu v-if="show_corpus_menu" @close="show_corpus_menu = false" />
 
     <transition name="slideup" mode="out-in">
       <StackDisplay
@@ -131,6 +136,7 @@
 import FilterBar from "@/components/archive/FilterBar.vue";
 import StackPreview from "@/components/archive/StackPreview.vue";
 import StackDisplay from "@/components/StackDisplay.vue";
+import CorpusMenu from "@/components/archive/CorpusMenu.vue";
 
 export default {
   props: {
@@ -144,12 +150,15 @@ export default {
     FilterBar,
     StackPreview,
     StackDisplay,
+    CorpusMenu,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
     return {
       folder: undefined,
       all_stacks: [],
+
+      show_corpus_menu: false,
 
       is_loading_folder: true,
       show_admin_settings: false,
@@ -428,7 +437,11 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-bottom: 1px solid var(--h-200);
+}
+
+._corpusLabel {
+  margin-bottom: 0;
 }
 </style>
