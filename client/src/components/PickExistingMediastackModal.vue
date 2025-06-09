@@ -16,11 +16,7 @@
       </div> -->
 
       <transition name="pagechange" mode="out-in">
-        <div
-          v-if="selected_destination_folder_path"
-          :key="selected_destination_folder_path"
-          class="_stackPickerFrame"
-        >
+        <div :key="selected_destination_folder_path" class="_stackPickerFrame">
           <SharedFolder2
             :shared_folder_path="selected_destination_folder_path"
             :select_mode="select_mode"
@@ -50,7 +46,7 @@ export default {
   },
   data() {
     return {
-      selected_destination_folder_path: undefined,
+      selected_destination_folder_path: "",
     };
   },
   i18n: {
@@ -72,7 +68,6 @@ export default {
   computed: {},
   methods: {
     changeCorpus(path) {
-      debugger;
       this.selected_destination_folder_path = path;
     },
   },

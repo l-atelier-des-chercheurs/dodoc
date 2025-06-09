@@ -68,12 +68,18 @@ import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 import LoaderSpinner from "@/adc-core/fields/LoaderSpinner.vue";
 
 export default {
+  props: {
+    current_corpus_path: {
+      type: String,
+      default: "",
+    },
+  },
   components: { BaseModal2, LoaderSpinner },
   data() {
     return {
       path: "folders",
       folders: undefined,
-      shared_folder_path: "",
+      shared_folder_path: this.current_corpus_path,
       new_corpus_name: "",
       is_creating_corpus: false,
     };
@@ -105,12 +111,12 @@ export default {
   async created() {
     await this.loadFolders();
     this.$api.join({ room: this.path });
-    const last_opened_folder_slug = localStorage.getItem(
-      "last_opened_folder_slug"
-    );
-    if (last_opened_folder_slug) {
-      this.$emit("changeCorpus", last_opened_folder_slug);
-    }
+    // const last_opened_folder_slug = localStorage.getItem(
+    //   "last_opened_folder_slug"
+    // );
+    // if (last_opened_folder_slug) {
+    //   this.$emit("changeCorpus", last_opened_folder_slug);
+    // }
   },
   beforeDestroy() {
     this.$api.leave({ room: this.path });

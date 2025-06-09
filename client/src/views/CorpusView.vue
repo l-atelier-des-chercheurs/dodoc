@@ -22,7 +22,11 @@ export default {
   watch: {},
   computed: {
     shared_folder_path() {
-      return "folders/" + this.$route.params.folder_slug;
+      if (this.$route.params.folder_slug) {
+        return "folders/" + this.$route.params.folder_slug;
+      } else {
+        return "";
+      }
     },
   },
   methods: {

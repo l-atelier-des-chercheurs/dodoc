@@ -19,13 +19,7 @@ const routes = [
       ),
   },
   {
-    path: "/explore",
-    name: "Explorer",
-    component: () =>
-      import(/* webpackChunkName: "ShareView" */ "../views/ShareView.vue"),
-  },
-  {
-    path: "/explore/:folder_slug",
+    path: "/explore/:folder_slug?",
     name: "Explorer",
     component: () =>
       import(/* webpackChunkName: "CorpusView" */ "../views/CorpusView.vue"),

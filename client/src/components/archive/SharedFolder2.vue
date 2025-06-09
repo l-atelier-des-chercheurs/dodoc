@@ -27,6 +27,7 @@
 
     <CorpusMenu
       v-if="show_corpus_menu"
+      :current_corpus_path="shared_folder_path"
       @changeCorpus="$emit('changeCorpus', $event)"
       @close="show_corpus_menu = false"
     />
@@ -197,6 +198,27 @@ export default {
   },
   async created() {},
   async mounted() {
+    debugger;
+    if (!this.shared_folder_path) {
+      const folders = await this.$api.getFolders({ path: "folders" });
+      const last_opened_folder_slug = localStorage.getItem(
+        "last_opened_folder_slug"
+      );
+      debugger;
+      if (last_opened_folder_slug) {
+        const matching_folder = folders.find((f) =>
+          f.$path.endsWith("/" + last_opened_folder_slug)
+        );
+        if (matching_folder) {
+          this.shared_folder_path = matching_folder.$path;
+        } else {
+          this.$emit("changeCorpus", folders[0].$path);
+        }
+      } else {
+        this.$emit("changeCorpus", folders[0].$path);
+      }
+    }
+
     this.folder = await this.$api.getFolder({
       path: this.shared_folder_path,
     });
