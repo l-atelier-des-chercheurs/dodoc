@@ -283,13 +283,18 @@ export default {
   top: 0;
   right: 0;
   width: 100%;
-  height: 100%;
+  height: auto;
+  padding-top: 42%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) / 2);
   flex: 0 0 auto;
+
+  input {
+    background-color: white;
+  }
 }
 
 ._chutierRow {
