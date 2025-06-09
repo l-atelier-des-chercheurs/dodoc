@@ -4,7 +4,7 @@
       <h1>Accueil</h1>
       <p>Pour contribuer --> <a href="/import">Importer</a></p>
       <p>Pour consulter --> <a href="/consult">Consulter</a></p>
-      <p>Pour partager --> <a href="/share">Partager</a></p>
+      <p>Pour partager --> <a href="/publish">Partager</a></p>
       <hr />
       <p>
         <small>{{ $t("version") }} {{ $root.app_infos.version }}</small>

@@ -220,7 +220,7 @@ export default {
   --indicator-color: var(--c-vert) !important;
   --active-color: var(--r-500);
 
-  --sl-font-sans: "IBM Plex Sans";
+  --sl-font-sans: "Archivo";
   --sl-font-serif: "IBM Plex Serif";
   --sl-font-mono: "IBM Plex Mono";
 
@@ -258,6 +258,8 @@ export default {
   --h-600: #9996b6;
   --h-700: #77758e;
   --h-900: #474554;
+
+  // --g-50: #f6f6fa;
 
   --chutier-bg: var(--h-900);
 }

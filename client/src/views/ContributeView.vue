@@ -19,7 +19,11 @@
         >
           <div class="_statLine">
             <b-icon icon="text-left" />
-            {{ $t("files_with_caption") }}: {{ files_with_caption_percentage }}%
+            {{
+              $t("files_with_caption", {
+                percentage: files_with_caption_percentage,
+              })
+            }}
           </div>
           <div class="_progressBar">
             <div
@@ -35,7 +39,11 @@
         >
           <div class="_statLine">
             <b-icon icon="info-circle" />
-            {{ $t("files_with_credits") }}: {{ files_with_credits_percentage }}%
+            {{
+              $t("files_with_credits", {
+                percentage: files_with_credits_percentage,
+              })
+            }}
           </div>
           <div class="_progressBar">
             <div
@@ -304,8 +312,8 @@ export default {
         go_to_new_stack: "Aller au nouveau document",
         too_many_items_selected:
           "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
-        files_with_caption: "Fichiers avec légende :",
-        files_with_credits: "Fichiers avec crédits :",
+        files_with_caption: "Fichiers avec légende : {percentage}%",
+        files_with_credits: "Fichiers avec crédits : {percentage}%",
       },
       en: {
         imported_docs:
@@ -317,8 +325,8 @@ export default {
         go_to_new_stack: "Go to new document",
         too_many_items_selected:
           "You can only select {max_items_selected} media maximum.",
-        files_with_caption: "Files with caption",
-        files_with_credits: "Files with credits",
+        files_with_caption: "Files with caption: {percentage}%",
+        files_with_credits: "Files with credits: {percentage}%",
       },
     },
   },
