@@ -63,11 +63,12 @@
     </button>
 
     <transition name="fade_fast" mode="out-in">
-      <div v-if="can_be_added_to_fav && (is_favorite || start_slide)">
+      <div>
         <button
           type="button"
           class="u-button u-button_icon u-button_transparent _addToFav"
           :data-isfav="is_favorite"
+          :disabled="can_be_added_to_fav && (is_favorite || start_slide)"
           @click.stop="$emit('toggleFav')"
         >
           <svg

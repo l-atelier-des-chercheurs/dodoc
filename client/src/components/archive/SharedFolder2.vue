@@ -28,6 +28,7 @@
     <CorpusMenu
       v-if="show_corpus_menu"
       :current_corpus_path="shared_folder_path"
+      :can_edit="false"
       @changeCorpus="$emit('changeCorpus', $event)"
       @close="show_corpus_menu = false"
     />
@@ -42,6 +43,7 @@
         :can_be_added_to_fav="can_be_added_to_fav"
         :can_be_selected="select_mode"
         :is_favorite="isFavorite(opened_stack.$path)"
+        :read_only="read_only"
         @toggleFav="toggleFav(opened_stack.$path)"
         @prevMedia="navMedia(-1)"
         @nextMedia="navMedia(+1)"
@@ -150,6 +152,7 @@ export default {
       type: [Boolean, String],
       default: false,
     },
+    read_only: Boolean,
   },
   components: {
     FilterBar,
@@ -233,7 +236,11 @@ export default {
       return this.shared_folder_path + "/stacks";
     },
     can_be_added_to_fav() {
-      return this.connected_as && this.connected_as?.$path !== undefined;
+      return (
+        this.connected_as &&
+        this.connected_as?.$path !== undefined &&
+        !this.read_only
+      );
     },
     sorted_stacks() {
       return this.all_stacks

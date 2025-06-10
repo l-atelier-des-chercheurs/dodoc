@@ -234,6 +234,7 @@ export default {
     is_favorite: Boolean,
     can_be_added_to_fav: Boolean,
     can_be_selected: String,
+    read_only: Boolean,
   },
   components: {
     // ChutierItem,
@@ -332,7 +333,7 @@ export default {
   },
   computed: {
     can_edit() {
-      if (!this.stack) return false;
+      if (!this.stack || this.read_only) return false;
       return this.canLoggedinEditFolder({ folder: this.stack });
     },
     stack_files_in_order() {

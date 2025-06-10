@@ -20,6 +20,7 @@
           <SharedFolder2
             :shared_folder_path="selected_destination_folder_path"
             :select_mode="select_mode"
+            :read_only="true"
             @changeCorpus="changeCorpus"
             @selectMedias="$emit('mediasSelected', $event)"
             @selectStack="$emit('stackSelected', $event)"
