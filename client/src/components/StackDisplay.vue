@@ -205,6 +205,9 @@
           :data-dualdisplay="dual_display"
           :files="stack_files_in_order"
           :can_edit="can_edit"
+          :can_be_selected="can_be_selected"
+          :selected_files="selected_stack_files"
+          @toggleMediaSelection="handleToggleMediaSelection"
           @removeMediaFromStack="removeMediaFromStack"
           @changeMediaOrder="changeMediaOrder"
         />
@@ -216,9 +219,23 @@
       </button>
     </div>
     <div v-if="can_be_selected === 'multiple'" class="_selectBar">
-      <button class="u-button" type="button" @click="selectAllStackMedias">
-        {{ $t("add_all_stack_medias") }}
+      <button type="button" class="u-buttonLink" :disabled="selected_stack_files.length === stack_files_in_order.length" @click="selectAllMedias">
+        {{ $t("select_all") }}
       </button>
+      <button
+        class="u-button"
+        type="button"
+        @click="addSelectedMedias"
+        :disabled="selected_stack_files.length === 0"
+      >
+        {{
+          $tc("add_selected_medias", selected_stack_files.length, {
+            count: selected_stack_files.length,
+          })
+        }}
+      </button>
+    </div>
+
     </div>
   </div>
 </template>
@@ -250,6 +267,7 @@ export default {
       show_sidebar: localStorage.getItem("show_sidebar") !== "false",
       pane_width: undefined,
       ro: undefined,
+      selected_stack_files: [],
     };
   },
   i18n: {
@@ -261,7 +279,8 @@ export default {
         stack_not_public: "Ce document n'est pas public",
         error_loading_stack: "Erreur lors du chargement du document",
         select_stack: "Sélectionner ce document",
-        add_all_stack_medias: "Ajouter tous les médias de ce document",
+        add_selected_medias:
+          "Ajouter le média sélectionné | Ajouter les {count} médias sélectionnés",
       },
       en: {
         fill_title: "Fill in the title field",
@@ -270,7 +289,8 @@ export default {
         stack_not_public: "This document is not public",
         error_loading_stack: "Error loading document",
         select_stack: "Select this document",
-        add_all_stack_medias: "Add all medias of this document",
+        add_selected_medias:
+          "Add selected media | Add the selected {count} medias",
       },
     },
   },
@@ -308,6 +328,8 @@ export default {
           },
         });
       }
+
+      this.selected_stack_files.push(this.stack_files_in_order[0]);
     }
   },
   mounted() {
@@ -357,8 +379,8 @@ export default {
     updatePaneWidth() {
       this.pane_width = this.$el.offsetWidth;
     },
-    selectAllStackMedias() {
-      this.$emit("selectMedias", this.stack_files_in_order);
+    addSelectedMedias() {
+      this.$emit("selectMedias", this.selected_stack_files);
     },
     async changeMediaOrder(old_position, new_position) {
       let meta_filenames = this.stack_files_in_order.map((f) =>
@@ -439,6 +461,21 @@ export default {
         this.$eventHub.$emit("fileshown.hideInfos");
       }
     },
+    handleToggleMediaSelection(file, checked) {
+      if (checked) {
+        if (!this.selected_stack_files.some((f) => f.$path === file.$path)) {
+          this.selected_stack_files = [...this.selected_stack_files, file];
+        }
+      } else {
+        this.selected_stack_files = this.selected_stack_files.filter(
+          (f) => f.$path !== file.$path
+        );
+      }
+      this.$emit("updateSelectedStackMedias", this.selected_stack_files);
+    },
+    selectAllMedias() {
+      this.selected_stack_files = JSON.parse(JSON.stringify(this.stack_files_in_order));
+    }
   },
 };
 </script>
@@ -642,10 +679,10 @@ hr {
 }
 
 ._selectBar {
-  // position: absolute;
-  // bottom: 0;
-  // left: 0;
-  // width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--spacing) / 2);
+
   z-index: 100;
   background-color: var(--h-500);
   // border-top: 1px solid var(--h-50);

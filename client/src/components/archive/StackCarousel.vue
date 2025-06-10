@@ -25,6 +25,30 @@
       >
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
 
+        <div v-if="can_be_selected === 'multiple'" class="_selectCheckbox">
+          <label
+            :for="'selectinputid-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')"
+          >
+            <input
+              type="checkbox"
+              :id="
+                'selectinputid-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')
+              "
+              :name="
+                'selectinputname-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')
+              "
+              :checked="
+                selected_files &&
+                selected_files.some((f) => f.$path === file.$path)
+              "
+              @change="
+                $emit('toggleMediaSelection', file, $event.target.checked)
+              "
+              @click.stop
+            />
+          </label>
+        </div>
+
         <transition name="fade" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
             <div class="_previewOverlay" />
@@ -66,6 +90,8 @@ export default {
   props: {
     files: Array,
     can_edit: Boolean,
+    can_be_selected: String,
+    selected_files: Array,
   },
   components: {
     FileShown,
@@ -252,5 +278,44 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 2);
+}
+
+._selectCheckbox {
+  position: absolute;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > label {
+    background-color: rgba(255, 255, 255, 0.3);
+
+    padding: calc(var(--spacing) / 1);
+    border-radius: 50%;
+  }
+}
+
+._selectAllRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+._selectAllBtn {
+  padding: 4px 12px;
+  border-radius: 4px;
+  background: var(--c-gris);
+  border: 1px solid var(--sd-separator);
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s;
+}
+._selectAllBtn:hover {
+  background: var(--c-gris-fonce);
 }
 </style>

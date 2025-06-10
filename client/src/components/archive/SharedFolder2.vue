@@ -334,8 +334,6 @@ export default {
       // first load all folders
       const folders = await this.$api.getFolders({ path: "folders" });
 
-      debugger;
-
       if (this.shared_folder_path) {
         const matching_folder = folders.find(
           (f) => f.$path === this.shared_folder_path
