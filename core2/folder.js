@@ -124,8 +124,6 @@ module.exports = (function () {
       valid_meta.$date_created = valid_meta.$date_modified =
         utils.getCurrentDate();
 
-      valid_meta.$files_count = 0;
-
       valid_meta.$status = valid_meta.$status ? valid_meta.$status : "private";
 
       if (valid_meta.$password) {
@@ -430,18 +428,6 @@ module.exports = (function () {
       } catch (err) {
         throw err;
       }
-    },
-
-    updateFolderFilesCount: async ({ path_to_folder, new_files_count }) => {
-      dev.logfunction({ path_to_folder });
-      const path_to_type = utils.getContainingFolder(path_to_folder);
-      await API.updateFolder({
-        path_to_type,
-        path_to_folder,
-        admin_meta: {
-          $files_count: new_files_count,
-        },
-      });
     },
 
     login: async ({ path_to_folder, submitted_password }) => {

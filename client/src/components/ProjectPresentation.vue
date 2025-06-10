@@ -375,7 +375,7 @@ export default {
   &.is--list {
     display: block;
     ._projectInfos--infos {
-      padding: calc(var(--spacing) / 2);
+      padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
       width: 100%;
       place-content: flex-start;
       // max-height: 12rem;

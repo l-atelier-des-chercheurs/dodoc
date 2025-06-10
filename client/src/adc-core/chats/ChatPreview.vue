@@ -13,6 +13,10 @@
       />
     </div>
     <div class="_chat--infos">
+      <div class="" v-if="chat.$date_last_file">
+        {{ $t("last_message_date") }}
+        {{ formatDateTimeToHuman(chat.$date_last_file) }}
+      </div>
       <div>
         <span>
           {{
@@ -23,10 +27,10 @@
         </span>
         <!-- <b v-if="unread_count > 0"> {{ $t("unread") }} = {{ unread_count }} </b> -->
       </div>
-      <div class="">
-        {{ $t("last_message_date") }}
+      <!-- <div class="">
+        {{ $t("date_modified") }}
         {{ formatDateTimeToHuman(chat.$date_modified) }}
-      </div>
+      </div> -->
       <div class="_chat--participants">
         <AdminsAndContributorsField
           :folder="chat"
@@ -94,7 +98,6 @@ export default {
   background: var(--c-rouge);
   border-radius: var(--border-radius);
   padding: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 4);
 
   transition: border-left 0.1s ease-in-out;
 
@@ -118,6 +121,8 @@ export default {
   align-items: center;
   justify-content: flex-start;
   margin-bottom: calc(var(--spacing) / 4);
+
+  padding-right: calc(var(--spacing) * 5);
 }
 
 ._chat--title--text {
@@ -136,14 +141,15 @@ export default {
   // margin: calc(var(--spacing) / 8);
   margin-right: calc(var(--spacing) / 2);
 
-  background: var(--c-rouge_fonce);
+  background: var(--c-bleumarine);
   // background: white;
+  // color: var(--c-rouge);
   color: white;
   // border: 2px dashed white;
 
   padding: calc(var(--spacing) / 4);
   font-size: var(--sl-font-size-small);
-  font-weight: 500;
+  font-weight: 700;
 
   display: inline-flex;
   align-items: center;
@@ -155,7 +161,13 @@ export default {
 }
 
 ._chat--infos {
-  font-size: var(--sl-font-size-x-small);
+  font-size: var(--sl-font-size-small);
+
+  :deep(.u-label),
+  :deep(._icon),
+  :deep(.u-instructions) {
+    color: white !important;
+  }
 }
 
 ._chat--actions {

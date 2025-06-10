@@ -75,6 +75,7 @@
             :class="{
               'is--active': show_settings_modal,
             }"
+            :title="$t('admin_settings')"
             @click="show_settings_modal = !show_settings_modal"
           >
             <svg
@@ -431,7 +432,7 @@ export default {
     // height: 3rem;
 
     .is--mobileView & {
-      padding: calc(var(--spacing) / 2);
+      // padding: calc(var(--spacing) / 2);
     }
 
     &:hover,
