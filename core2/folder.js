@@ -459,7 +459,7 @@ module.exports = (function () {
         !folder_meta.hasOwnProperty("$password") ||
         folder_meta.$password === ""
       ) {
-        const err = new Error("Folder doesn’t have password");
+        const err = new Error("Folder doesn't have password");
         err.code = "no_password_for_folder";
         throw err;
       }
@@ -469,7 +469,7 @@ module.exports = (function () {
         stored_password_with_salt: folder_meta.$password,
       });
       if (!submitted_password_matches) {
-        const err = new Error("Submitted password doesn’t match");
+        const err = new Error("Submitted password doesn't match");
         err.code = "submitted_password_is_wrong";
         throw err;
       }
@@ -610,7 +610,7 @@ module.exports = (function () {
         path_to_folder,
       })
       .catch((err) => {
-        dev.error("couldn’t make cover thumbs, returning false");
+        dev.error("couldn't make cover thumbs, returning false");
         return false;
       });
 
@@ -671,18 +671,28 @@ module.exports = (function () {
 
     if (path_to_type && path_to_type !== ".") {
       // not applicable to instance settings
-      // TODO check for impact on performance
-      let siblings_folders = await API.getFolders({ path_to_type });
-      siblings_folders = siblings_folders.filter(
-        (sf) => sf.$path !== path_to_folder
+
+      // Find all unique fields
+      const uniqueFields = Object.entries(fields)
+        .filter(([key, f]) => f.unique === true)
+        .map(([key]) => key);
+      // Check if meta is attempting to set/change a unique field
+      const isChangingUniqueField = uniqueFields.some((field) =>
+        meta.hasOwnProperty(field)
       );
-      if (siblings_folders.length > 0)
-        meta = await utils.checkFieldUniqueness({
-          fields,
-          meta,
-          siblings_folders,
-          handle_duplicates,
-        });
+      if (uniqueFields.length > 0 && isChangingUniqueField) {
+        let siblings_folders = await API.getFolders({ path_to_type });
+        siblings_folders = siblings_folders.filter(
+          (sf) => sf.$path !== path_to_folder
+        );
+        if (siblings_folders.length > 0)
+          meta = await utils.checkFieldUniqueness({
+            fields,
+            meta,
+            siblings_folders,
+            handle_duplicates,
+          });
+      }
     }
 
     return utils.validateMeta({
