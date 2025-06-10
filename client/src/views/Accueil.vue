@@ -25,9 +25,9 @@
         <p>{{ section.text }}</p>
       </div>
     </section>
-    <p>
+    <div class="_footer">
       <small>{{ $t("version") }} {{ $root.app_infos.version }}</small>
-    </p>
+    </div>
   </div>
 </template>
 <script>
@@ -94,33 +94,26 @@ By documenting your work, you help create assemblages, of materials, skills, and
 }
 
 ._accueil--top {
-  margin: 0 auto;
-  padding: calc(var(--spacing) * 2) 0;
   background-color: var(--g-100);
-
-  ._accueil--top--content {
-    display: flex;
-    flex-flow: row wrap;
-    gap: calc(var(--spacing) * 4);
-    max-width: var(--max-width);
-    margin: calc(var(--spacing) * 4) auto;
-  }
 }
-
-._section {
+._accueil--top--content,
+._section,
+._footer {
+  margin: 0 auto;
+  padding: calc(var(--spacing) * 2);
   max-width: var(--max-width);
-  margin: calc(var(--spacing) * 4) auto;
-  margin-bottom: calc(var(--spacing) * 1);
-
   display: flex;
   flex-flow: row wrap;
   gap: calc(var(--spacing) * 4);
+  margin: 0 auto;
+}
 
+._section {
   > * {
     flex: 1 1 0;
   }
   > img {
-    flex: 0 0 200px;
+    flex: 1 1 0;
     width: 100%;
   }
 }
@@ -131,9 +124,12 @@ By documenting your work, you help create assemblages, of materials, skills, and
 
 ._topImg {
   background-color: var(--g-200);
-  flex: 1 1 auto;
 }
 
 ._section {
+}
+
+._footer {
+  justify-content: center;
 }
 </style>
