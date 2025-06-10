@@ -29,13 +29,25 @@
             <b-icon icon="plus-lg" />
             {{ $t("create") }}
           </button>
-          <ChatPreview
-            v-for="chat in sorted_chats"
-            :key="chat.$path"
-            :chat="chat"
-            :is-opened="opened_chat_slug === getFilename(chat.$path)"
-            @toggle="toggleChat"
-          />
+
+          <PinnedNonpinnedFolder
+            :field_name="'chats_pinned'"
+            :label="$tc('chats_pinned', settings?.chats_pinned?.length)"
+            :content="settings.chats_pinned"
+            :path="''"
+            :folders="sorted_chats"
+            :direction="'vertical'"
+            :can_edit="is_instance_admin"
+            v-slot="slotProps"
+          >
+            <ChatPreview
+              :chat="slotProps.item"
+              :is-opened="
+                opened_chat_slug === getFilename(slotProps.item.$path)
+              "
+              @toggle="toggleChat"
+            />
+          </PinnedNonpinnedFolder>
         </div>
       </div>
 
@@ -68,15 +80,19 @@ import OpenedChat from "./OpenedChat.vue";
 import ChatPreview from "./ChatPreview.vue";
 import authorMessageMixin from "./mixins/authorMessageMixin";
 
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
+
 export default {
   props: {},
   components: {
     OpenedChat,
     ChatPreview,
+    PinnedNonpinnedFolder,
   },
   mixins: [authorMessageMixin],
   data() {
     return {
+      settings: undefined,
       chats: [],
       path: "chats",
       fetch_chats_error: null,
@@ -85,8 +101,9 @@ export default {
       open_in_modal: false,
     };
   },
-  created() {
-    this.loadChats();
+  async created() {
+    this.loadSettings();
+    await this.loadChats();
     this.$api.join({ room: this.path });
   },
   mounted() {},
@@ -112,6 +129,16 @@ export default {
     },
   },
   methods: {
+    async loadSettings() {
+      this.settings = await this.$api
+        .getFolder({
+          path: "",
+        })
+        .catch((err) => {
+          return err;
+        });
+      this.$api.join({ room: "." });
+    },
     async loadChats() {
       this.chats = await this.$api
         .getFolders({
@@ -180,6 +207,22 @@ export default {
 
 ._chatsList--content {
   padding: calc(var(--spacing) / 1);
+
+  :deep(.u-label),
+  :deep(._pinSpace) {
+    color: white;
+  }
+
+  :deep(._pinSpace) {
+    right: 0;
+    left: auto;
+  }
+  :deep(._list_pinned) {
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.3) 2px,
+      transparent 2px
+    );
+  }
 }
 
 ._openChat {
@@ -205,6 +248,7 @@ export default {
   --side-padding: 0px;
 
   position: absolute;
+  z-index: 100;
   top: 0;
   left: var(--side-padding);
   width: calc(100% - var(--side-padding) * 1);

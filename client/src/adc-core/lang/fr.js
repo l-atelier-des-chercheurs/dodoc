@@ -1382,4 +1382,5 @@ export default {
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",
   new_messages: "{count} nouveau message | {count} nouveaux messages",
+  chats_pinned: "Discussion épinglée | Discussions épinglées",
 };

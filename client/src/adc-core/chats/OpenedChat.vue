@@ -455,6 +455,7 @@ export default {
   }
 
   :deep(._editBtn) {
+    --color1: transparent;
     --color2: white;
     --color-text: var(--c-noir);
   }
