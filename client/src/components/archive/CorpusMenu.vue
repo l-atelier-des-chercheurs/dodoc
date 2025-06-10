@@ -131,8 +131,8 @@ export default {
         });
     },
     openFolder() {
-      const folder_slug = this.shared_folder_path.split("/").pop();
-      localStorage.setItem("last_opened_folder_slug", folder_slug);
+      const folder_slug = this.shared_folder_path;
+      // localStorage.setItem("last_opened_folder_slug", folder_slug);
       this.$emit("changeCorpus", folder_slug);
     },
     async createCorpus() {

@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {
-      selected_destination_folder_path: "",
+      selected_destination_folder_path: undefined,
     };
   },
   i18n: {

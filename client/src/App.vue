@@ -364,7 +364,8 @@ button {
 
   ._prefix,
   ._suffix {
-    padding: 0.5rem 0.6rem 0.3rem;
+    display: flex;
+    padding: 0.3rem 0.6rem 0.3rem;
     background: var(--inputcol);
     color: var(--h-200);
 

@@ -198,26 +198,9 @@ export default {
   },
   async created() {},
   async mounted() {
-    debugger;
-    if (!this.shared_folder_path) {
-      const folders = await this.$api.getFolders({ path: "folders" });
-      const last_opened_folder_slug = localStorage.getItem(
-        "last_opened_folder_slug"
-      );
-      debugger;
-      if (last_opened_folder_slug) {
-        const matching_folder = folders.find((f) =>
-          f.$path.endsWith("/" + last_opened_folder_slug)
-        );
-        if (matching_folder) {
-          this.shared_folder_path = matching_folder.$path;
-        } else {
-          this.$emit("changeCorpus", folders[0].$path);
-        }
-      } else {
-        this.$emit("changeCorpus", folders[0].$path);
-      }
-    }
+    await this.checkExistingFolder();
+
+    localStorage.setItem("last_opened_folder_path", this.shared_folder_path);
 
     this.folder = await this.$api.getFolder({
       path: this.shared_folder_path,
@@ -340,6 +323,41 @@ export default {
     },
   },
   methods: {
+    async checkExistingFolder() {
+      // first load all folders
+      const folders = await this.$api.getFolders({ path: "folders" });
+
+      debugger;
+
+      if (this.shared_folder_path) {
+        const matching_folder = folders.find(
+          (f) => f.$path === this.shared_folder_path
+        );
+        if (matching_folder) {
+          return;
+        } else {
+          // folder doesnt exist
+        }
+      }
+
+      // then check locals
+      const last_opened_folder_path = localStorage.getItem(
+        "last_opened_folder_path"
+      );
+      if (last_opened_folder_path) {
+        const matching_folder = folders.find(
+          (f) => f.$path === last_opened_folder_path
+        );
+        if (matching_folder?.$path) {
+          this.$emit("changeCorpus", matching_folder.$path);
+          return;
+        }
+      }
+
+      if (folders.length > 0) {
+        this.$emit("changeCorpus", folders[0].$path);
+      }
+    },
     toggleMediaFocus(path) {
       const slug = this.getFilename(path);
       this.openStack(slug);
@@ -348,10 +366,6 @@ export default {
       let query = Object.assign({}, this.$route.query) || {};
       query.stack = stack_slug;
       this.$router.push({ query });
-    },
-    closeCorpus() {
-      localStorage.removeItem("last_opened_folder_slug");
-      this.$router.push("/explore");
     },
     isFavorite(stack_path) {
       if (
