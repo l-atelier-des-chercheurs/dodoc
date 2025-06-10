@@ -6,7 +6,7 @@
       :nopadding="true"
       @close="closeModal"
     >
-      <div class="_content" :class="{ 'is--mobileview': in_modal }">
+      <div class="_content" :class="{ 'is--mobileview': $root.is_mobile_view }">
         <div class="_chatsList--header">
           <h3>{{ $t("list_of_topics") }}</h3>
           <button

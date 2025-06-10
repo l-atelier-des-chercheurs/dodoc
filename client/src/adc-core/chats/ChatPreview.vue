@@ -141,14 +141,15 @@ export default {
   // margin: calc(var(--spacing) / 8);
   margin-right: calc(var(--spacing) / 2);
 
-  background: var(--c-rouge_fonce);
+  background: var(--c-bleumarine);
   // background: white;
+  // color: var(--c-rouge);
   color: white;
   // border: 2px dashed white;
 
   padding: calc(var(--spacing) / 4);
   font-size: var(--sl-font-size-small);
-  font-weight: 500;
+  font-weight: 700;
 
   display: inline-flex;
   align-items: center;
