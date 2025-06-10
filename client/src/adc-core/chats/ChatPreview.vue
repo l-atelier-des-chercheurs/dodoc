@@ -25,6 +25,10 @@
       </div>
       <div class="">
         {{ $t("last_message_date") }}
+        {{ formatDateTimeToHuman(chat.$date_last_file) }}
+      </div>
+      <div class="">
+        {{ $t("date_modified") }}
         {{ formatDateTimeToHuman(chat.$date_modified) }}
       </div>
       <div class="_chat--participants">

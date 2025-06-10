@@ -286,10 +286,10 @@ module.exports = (function () {
     app.get("/*", loadIndex);
 
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast(path_to_folder);
+      _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
     });
     notifier.on("fileRemoved", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast(path_to_folder);
+      _updateFolderCountAndBroadcast("fileRemoved", path_to_folder);
     });
   }
 
@@ -1577,16 +1577,21 @@ module.exports = (function () {
     }, []);
   }
 
-  async function _updateFolderCountAndBroadcast(path_to_folder) {
+  async function _updateFolderCountAndBroadcast(event, path_to_folder) {
     dev.logfunction({ path_to_folder });
     const path_to_type = utils.getContainingFolder(path_to_folder);
     const $files_count = await file.getFilesCount({ path_to_folder });
+
+    let admin_meta = {
+      $files_count,
+    };
+    if (event === "fileCreated")
+      admin_meta.$date_last_file = utils.getCurrentDate();
+
     const changed_data = await folder.updateFolder({
       path_to_type,
       path_to_folder,
-      admin_meta: {
-        $files_count,
-      },
+      admin_meta,
     });
     notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
       path: utils.convertToSlashPath(path_to_folder),
