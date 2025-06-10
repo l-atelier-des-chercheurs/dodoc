@@ -246,8 +246,8 @@ export default {
   // --chutier-bg: rgb(37, 39, 41);
   // --chutier-bg: #77757c;
 
-  --g-50: hsl(240, 29%, 97%);
-  --g-100: hsl(240, 28%, 95%);
+  --g-50: hsl(0, 0%, 97%);
+  --g-100: hsl(0, 0%, 95%);
   --g-200: hsl(0, 0%, 87%);
   --g-300: hsl(0, 0%, 82%);
   --g-400: hsl(0, 0%, 77%);
@@ -340,6 +340,9 @@ a {
   }
 }
 
+h1 {
+}
+
 button {
   appearance: none;
   border: none;
@@ -424,9 +427,9 @@ h1,
 h2,
 h3 {
   margin: calc(var(--spacing) / 1) 0;
-  font-size: var(--sl-font-size-large);
+  font-size: var(--sl-font-size-x-large);
   line-height: 1.2;
-  font-weight: 500;
+  font-weight: 700;
 
   &:first-child {
     margin-top: 0;
