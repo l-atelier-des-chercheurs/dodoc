@@ -1106,7 +1106,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   circle: "Cerchio",
   polygon: "Poligono",
 
-  mouse_position: "Posizione del puntatore",
   search_for_a_place: "Ricerca un luogo",
   no_results: "nessun risultato",
 
