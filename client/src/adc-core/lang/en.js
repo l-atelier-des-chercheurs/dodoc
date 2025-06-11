@@ -626,6 +626,9 @@ export default {
   visible: "Visible",
   public_status_explanations: "Will be visible on the home page.",
   private_status_explanations: "Will only be visible to its contributors.",
+  public_status_explanations_projects:
+    "The project will be visible to everyone who has access to this space.",
+
   private_status_explanations_projects:
     "This project will not be displayed with other projects, it will only be accessible to its contributors.",
   finished_status_explanations:
@@ -1282,4 +1285,38 @@ export default {
   no_media_selected: "No media selected",
   folder_not_public:
     "This content is not public, to access it its author must make it public.",
+
+  other_devices_connected: "Other devices connected",
+  width_alignment_grid_only_non_mobile:
+    "The width and alignment of this module (when centered or right-aligned) will only be used if the window width is larger than 767 pixels.",
+  add_column: "Add column",
+  add_row: "Add row",
+  remove_column: "Remove column",
+  remove_row: "Remove row",
+  chats: "Discussion topics",
+  list_of_topics: "List of topics",
+  create_a_topic: "Create a topic",
+  not_allowed_to_post_messages:
+    "You are not allowed to post messages to this topic.",
+  write_a_message: "Write a message…",
+  participants: "Participants",
+
+  chat_admin_instructions:
+    "Topic referents are responsible for managing the discussion (changing its name, deleting a message, adding/removing a participant or removing it with all its contents).",
+  chat_contrib_instructions:
+    "Participants can post a new message or edit/delete their own messages.",
+  anonymous_user: "Anonymous",
+
+  no_messages_in_chat: "No messages in this topic.",
+  remove_this_message: "Delete this message",
+  load_older_messages: "Show older messages",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Last message on",
+  message_has_been_removed: "This message has been removed.",
+  unread: "Unread",
+  remove_chat: "Delete topic {name}",
+  chat_was_removed: "The topic has been removed.",
+  edit_this_message: "Edit this message",
+  new_messages: "{count} new message | {count} new messages",
+  topics_pinned: "Pinned topic | Pinned topics",
 };

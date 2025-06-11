@@ -16,8 +16,7 @@
       <div class="" v-if="chat.$date_last_file">
         {{ $t("last_message_date") }}
         {{ formatDateTimeToHuman(chat.$date_last_file) }}
-      </div>
-      <div>
+        –
         <span>
           {{
             $tc("message_count", messages_count, {

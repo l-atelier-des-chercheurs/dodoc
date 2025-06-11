@@ -89,7 +89,7 @@
       "spaces_pinned": {
         "type": "array"
       },
-      "chats_pinned": {
+      "topics_pinned": {
         "type": "array"
       },
       "users_must_accept_terms_to_signup": {
