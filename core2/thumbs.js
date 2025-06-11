@@ -129,7 +129,6 @@ module.exports = (function () {
       const infos_filename = media_filename + ".infos.txt";
 
       const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
-
       try {
         const infos = await utils.readMetaFile(
           path_to_thumb_folder,
@@ -142,8 +141,6 @@ module.exports = (function () {
       }
 
       dev.logverbose(`Creating infos file for`, full_media_path);
-
-      const hrstart = process.hrtime();
 
       let infos = {};
       try {
@@ -160,9 +157,6 @@ module.exports = (function () {
       if (size !== undefined) infos.size = size;
       if (mtimems !== undefined) infos.mtimems = mtimems;
       if (hash !== undefined) infos.hash = hash;
-
-      let hrend = process.hrtime(hrstart);
-      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
         const path_to_infos_file = utils.getPathToUserContent(
@@ -181,8 +175,6 @@ module.exports = (function () {
 
       let infos = {};
       infos.size = await utils.getFolderSize(path_to_folder);
-
-      // TODO also get quantity of medias
 
       return infos;
     },

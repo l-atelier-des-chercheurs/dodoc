@@ -58,19 +58,20 @@ a:focus-visible {
 .u-warning {
   display: flex;
   gap: calc(var(--spacing) / 1);
-  justify-content: center;
+  // justify-content: center;
   align-items: center;
   color: var(--c-rouge);
   // font-weight: bold;
-  border: 1px solid var(--c-rouge);
-  border-bottom-width: 4px;
-  // background-color: var(--c-rouge_fonce);
+  border: 1px solid var(--c-rouge_clair);
+  border-top-width: 4px;
+  max-width: 50ch;
+  // background-color: var(--c-rouge_clair);
   // color: white;
   // color: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
   border-radius: var(--input-border-radius);
 
-  font-weight: 400;
+  // font-weight: 400;
 
   &::before {
     content: "⚠";
@@ -904,7 +905,7 @@ input[type="checkbox"] {
     height: 0.65em;
     clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
     transform: scale(0);
-    transform-origin: bottom left;
+    transform-origin: 50% 50%;
     transition: 0.12s transform cubic-bezier(0.19, 1, 0.22, 1);
     box-shadow: inset 1em 1em currentColor;
     /* Windows High Contrast Mode */

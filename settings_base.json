@@ -89,6 +89,9 @@
       "spaces_pinned": {
         "type": "array"
       },
+      "chats_pinned": {
+        "type": "array"
+      },
       "users_must_accept_terms_to_signup": {
         "type": "boolean"
       },
@@ -449,6 +452,9 @@
                     "section_starts_on_page": {
                       "type": "string"
                     },
+                    "column_count": {
+                      "type": "number"
+                    },
                     "main_text_meta": {
                       "type": "string"
                     },
@@ -583,6 +589,34 @@
           },
           "projects_recently_edited": {
             "type": "array"
+          }
+        },
+        "$files": {
+          "fields": {
+            "chat_read_indexes": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "chats": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "last_message_date": {
+            "type": "string"
+          },
+          "last_message_count": {
+            "type": "number"
+          }
+        },
+        "$files": {
+          "fields": {
+            "content": {
+              "type": "string"
+            }
           }
         }
       },

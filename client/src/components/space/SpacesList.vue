@@ -41,7 +41,7 @@
 
     <CreateFolder
       v-if="show_create_modal"
-      :type_of_folder="'space'"
+      :modal_name="$t('create_a_space')"
       :path="'spaces'"
       @close="show_create_modal = false"
       @openNew="openNewSpace"
@@ -147,6 +147,7 @@ export default {
     this.is_loading = false;
   },
   beforeDestroy() {
+    this.$api.leave({ room: "." });
     this.$api.leave({ room: this.path });
   },
   watch: {},

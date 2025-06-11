@@ -5,11 +5,12 @@
     </template> -->
     <div class="">
       <DLabel
-        v-if="show_labels"
+        v-if="show_label"
         :str="custom_label ? custom_label : $t('admins_and_contributors')"
+        @toggleInstructions="show_modal = true"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <transition-group tag="div" class="u-listOfAvatars" name="listComplete">
+      <div class="u-listOfAvatars">
         <AuthorTag
           v-for="atpath in subset_participants_path"
           :path="atpath"
@@ -19,20 +20,17 @@
         />
         <button
           type="button"
-          class="u-button u-button_icon _unshortenListBtn"
+          class="u-button u-button_white _unshortenListBtn"
           v-if="all_participants_path.length > 10"
           :key="'shorten_list'"
           @click="shorten_list = !shorten_list"
         >
-          <transition name="fade_fast" mode="out-in">
-            <div key="plus" v-if="shorten_list">
-              +
-              {{
-                all_participants_path.length - subset_participants_path.length
-              }}
-            </div>
-            <b-icon v-else key="minus" icon="dash" />
-          </transition>
+          <template v-if="shorten_list">
+            <b-icon icon="plus" />{{
+              all_participants_path.length - subset_participants_path.length
+            }}
+          </template>
+          <b-icon v-else key="minus" icon="dash" />
         </button>
         <div class="u-instructions _indicators" key="instructions">
           <template v-if="admins_path === 'everyone'">
@@ -48,15 +46,26 @@
           </template>
         </div>
         <div class="" key="more_informations">
-          <button type="button" class="u-buttonLink" @click="show_modal = true">
+          <!-- <button
+            type="button"
+            class="u-button u-button_icon"
+            v-if="!can_edit"
+            @click="show_modal = true"
+          >
             {{ $t("more_informations") }}
-          </button>
+          </button> -->
+          <EditBtn
+            v-if="can_edit"
+            :label="$t('more_informations')"
+            @click="show_modal = true"
+          />
         </div>
-      </transition-group>
+      </div>
     </div>
 
     <EditAdminsAndContributorsField
       v-if="show_modal"
+      :modal_title="custom_label ? custom_label : $t('admins_and_contributors')"
       :folder="folder"
       :admins_path="admins_path"
       :contributors_path="contributors_path"
@@ -77,7 +86,7 @@ export default {
     admin_label: String,
     admin_instructions: String,
     contrib_instructions: String,
-    show_labels: {
+    show_label: {
       type: Boolean,
       default: true,
     },
@@ -101,6 +110,13 @@ export default {
       if (Array.isArray(this.contributors_path))
         p = p.concat(this.contributors_path);
       p = [...new Set(p)];
+
+      // if currently connected user is in the list, move it to first position
+      if (this.connected_as?.$path && p.includes(this.connected_as?.$path)) {
+        p = p.filter((p) => p !== this.connected_as?.$path);
+        p.unshift(this.connected_as?.$path);
+      }
+
       // p = p.concat(p).concat(p);
       // p = p.concat(p).concat(p);
       return p;
@@ -156,10 +172,14 @@ export default {
 }
 
 ._unshortenListBtn {
-  min-width: 30px;
-  height: 30px;
-  border: 2px solid var(--c-gris);
+  min-width: 25px;
+  height: 25px;
+  // border: 1px solid white;
+  // background: rgba(0, 0, 0, 0.1);
   border-radius: 15px;
+  padding: calc(var(--spacing) / 2);
+  // font-weight: 400;
+  font-size: var(--sl-font-size-small);
 }
 
 ._indicators {

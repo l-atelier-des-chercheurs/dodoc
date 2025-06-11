@@ -37,7 +37,7 @@
 
       <div class="_mode">
         <button
-          class="u-button u-button_small u-button_transparent"
+          class="u-button u-button_icon u-button_transparent"
           type="button"
           :class="{
             'is--active': view_mode === 'list',
@@ -67,7 +67,7 @@
           </svg>
         </button>
         <button
-          class="u-button u-button_small u-button_transparent"
+          class="u-button u-button_icon u-button_transparent"
           type="button"
           :class="{
             'is--active': view_mode === 'map',
@@ -81,15 +81,15 @@
 
     <div
       class="_currentlyConnected"
-      v-if="$api.all_devices_connected.length > 1"
+      v-if="$api.other_devices_connected.length >= 1"
     >
       <DetailsPane
-        :header="$t('devices_connected')"
+        :header="$t('other_devices_connected')"
         :icon="'people'"
-        :has_items="$api.all_devices_connected.length"
+        :has_items="$api.other_devices_connected.length"
       >
         <div
-          v-for="device in $api.all_devices_connected"
+          v-for="device in $api.other_devices_connected"
           :key="device.id"
           class="u-spacingBottom"
         >
@@ -102,6 +102,7 @@
             <span v-else>{{ $t("not_logged_in") }}</span>
           </div>
           <div>{{ device.meta.user_agent }}</div>
+          <DLabel :str="'emplacement'" />
           <div>{{ device.meta.path }}</div>
         </div>
       </DetailsPane>
@@ -162,7 +163,9 @@ export default {
     });
     this.$api.join({ room: this.path });
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.$api.leave({ room: this.path });
+  },
   watch: {},
   computed: {
     pins() {
@@ -251,7 +254,7 @@ export default {
 ._authorsView {
   // padding: calc(var(--spacing) * 1);
   max-width: min(var(--max-column-width), var(--max-column-width-px));
-  margin: 0 auto;
+  margin: calc(var(--spacing) * 2) auto calc(var(--spacing) * 4);
 }
 
 ._currentlyConnected {
@@ -289,6 +292,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 4);
+  align-items: center;
 }
 
 ._mapContainer {

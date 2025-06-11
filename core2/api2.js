@@ -284,6 +284,13 @@ module.exports = (function () {
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
+
+    notifier.on("fileCreated", async (room, { path_to_folder }) => {
+      _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
+    });
+    notifier.on("fileRemoved", async (room, { path_to_folder }) => {
+      _updateFolderCountAndBroadcast("fileRemoved", path_to_folder);
+    });
   }
 
   function _corsCheck(req, callback) {
@@ -487,9 +494,11 @@ module.exports = (function () {
     try {
       const folder_is_private = await auth.isFolderPrivate({ path_to_folder });
       if (!folder_is_private) {
-        dev.log("Folder is not private, can be listed without restrictions");
+        dev.logverbose(
+          "Folder is not private, can be listed without restrictions"
+        );
         return next();
-      } else dev.log("Folder is private");
+      } else dev.logverbose("Folder is private");
 
       const allowed = await _canContributeToFolder({
         path_to_type,
@@ -497,10 +506,10 @@ module.exports = (function () {
         req,
       });
       if (allowed) {
-        dev.log("User allowed to open private folder");
+        dev.logverbose("User allowed to open private folder");
         return next();
       } else {
-        dev.error("User NOT allowed to open private");
+        dev.error("User NOT allowed to open private folder");
         return res.status(401).send({ code: "folder_private" });
       }
     } catch (err) {
@@ -731,16 +740,16 @@ module.exports = (function () {
 
     const detailed = req.query?.detailed === "true";
     const no_files = req.query?.no_files === "true";
-    const hrstart = process.hrtime();
+    // const hrstart = process.hrtime();
 
     try {
       let d = await folder.getFolder({ path_to_folder, detailed });
       if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
-      let hrend = process.hrtime(hrstart);
-      dev.performance(
-        `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
-      );
+      // let hrend = process.hrtime(hrstart);
+      // dev.performance(
+      //   `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
+      // );
 
       res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets({ d });
@@ -894,6 +903,7 @@ module.exports = (function () {
 
     try {
       await folder.removeFolder({
+        path_to_type,
         path_to_folder,
       });
       dev.logpackets({ status: "folder was removed" });
@@ -1565,6 +1575,33 @@ module.exports = (function () {
       });
       return acc;
     }, []);
+  }
+
+  async function _updateFolderCountAndBroadcast(event, path_to_folder) {
+    dev.logfunction({ path_to_folder });
+    const path_to_type = utils.getContainingFolder(path_to_folder);
+    const $files_count = await file.getFilesCount({ path_to_folder });
+
+    let admin_meta = {
+      $files_count,
+    };
+    if (event === "fileCreated")
+      admin_meta.$date_last_file = utils.getCurrentDate();
+
+    const changed_data = await folder.updateFolder({
+      path_to_type,
+      path_to_folder,
+      admin_meta,
+    });
+    notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
+      changed_data,
+    });
+    if (path_to_type)
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
+        changed_data,
+      });
   }
 
   return API;

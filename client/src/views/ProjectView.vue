@@ -4,8 +4,9 @@
       <div class="u-divCentered" v-if="is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else-if="fetch_project_error_message" key="err">
-        <div class="u-instructions _errNotice">
+      <div class="_errNotice" v-else-if="fetch_project_error_message" key="err">
+        <NotFound v-if="fetch_project_error_message === 'not_found'" />
+        <div v-else class="u-instructions _errNotice">
           {{ fetch_project_error_message }}
         </div>
       </div>
@@ -49,6 +50,7 @@
 import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
+import NotFound from "@/components/NotFound.vue";
 
 export default {
   props: {},
@@ -56,6 +58,7 @@ export default {
     ProjectPresentation,
     PaneList2,
     ProjectPanes,
+    NotFound,
   },
   data() {
     return {
@@ -231,6 +234,11 @@ export default {
     // -webkit-overflow-scrolling: touch;
   }
 }
+._errNotice {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
+}
+
 ._topContent {
   position: relative;
 }

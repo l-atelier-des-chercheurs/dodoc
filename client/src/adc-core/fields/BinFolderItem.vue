@@ -10,23 +10,20 @@
             :can_edit="false"
           />
         </div>
-        <SizeDisplay
-          v-if="folder.$infos.size"
-          class="u-spacingBottom"
-          :size="folder.$infos.size"
-        />
+        <SizeDisplay v-if="folder.$infos.size" :size="folder.$infos.size" />
         <DateDisplay
           :title="$t('date_created')"
           :date="folder.$date_created"
-          :context="'tiny'"
           class="u-spacingBottom"
+          :show_detail_initially="true"
         />
         <DateDisplay
           :title="$t('date_removed')"
           :date="folder.$date_modified"
-          :context="'tiny'"
           class="u-spacingBottom"
+          :show_detail_initially="true"
         />
+        <div class=""></div>
       </div>
       <div class="u-sameRow _btns">
         <button
@@ -98,6 +95,8 @@ export default {
     0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
     0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
     0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 ._projectThumb--infos {
@@ -113,7 +112,9 @@ export default {
   pointer-events: none;
 }
 ._btns {
+  border-top: 2px solid var(--c-gris_clair);
+  // background-color: var(--c-gris);
   justify-content: space-around;
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
 }
 </style>

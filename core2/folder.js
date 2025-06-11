@@ -7,6 +7,7 @@ const utils = require("./utils"),
   file = require("./file"),
   cache = require("./cache"),
   archives = require("./archives");
+
 module.exports = (function () {
   const API = {
     getFolders: async ({ path_to_type, detailed = false }) => {
@@ -91,7 +92,6 @@ module.exports = (function () {
       if (folder_meta.$password && folder_meta.$password.length > 0)
         folder_meta.$password = "_active";
 
-      // TODO get number of files if files in item_in_schema
       cache.set({
         key: _getCacheKey({ path_to_folder }),
         value: JSON.parse(JSON.stringify(folder_meta)),
@@ -287,10 +287,9 @@ module.exports = (function () {
       let meta = await utils.readMetaFile(path_to_folder, "meta.txt");
       const previous_meta = JSON.parse(JSON.stringify(meta));
 
-      let { ...new_meta } = data;
-
       // filter new_meta with schema – only keep props present in the schema, not read_only, and respecing the type
-      if (new_meta && Object.keys(new_meta).length > 0) {
+      if (data && Object.keys(data).length > 0) {
+        let { ...new_meta } = data;
         const valid_meta = await _cleanFields({
           meta: new_meta,
           path_to_type,
@@ -324,7 +323,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      if (update_cover_req) {
+      if (update_cover_req && data) {
         await _updateCover({
           path_to_folder,
           data,
@@ -346,7 +345,6 @@ module.exports = (function () {
         else delete changed_meta.$preview;
       }
 
-      const cache_key = _getCacheKey({ path_to_folder });
       cache.delete({
         key: _getCacheKey({ path_to_folder }),
       });
@@ -404,15 +402,21 @@ module.exports = (function () {
       return path_to_destination_folder;
     },
 
-    removeFolder: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
+    removeFolder: async ({ path_to_type, path_to_folder }) => {
+      dev.logfunction({ path_to_type, path_to_folder });
 
       try {
         const { remove_permanently } = await require("./settings").get();
-        if (remove_permanently === true)
+        if (remove_permanently === true) {
           await _removeFolderForGood({ path_to_folder });
-        else await _moveFolderToBin({ path_to_folder });
-
+        } else {
+          // update $date_modified to now
+          await API.updateFolder({
+            path_to_type,
+            path_to_folder,
+          });
+          await _moveFolderToBin({ path_to_folder });
+        }
         await thumbs.removeFolderThumbs({ path_to_folder });
         await archives.removeFolderArchives({ path_to_folder });
 
@@ -441,7 +445,7 @@ module.exports = (function () {
         !folder_meta.hasOwnProperty("$password") ||
         folder_meta.$password === ""
       ) {
-        const err = new Error("Folder doesn’t have password");
+        const err = new Error("Folder doesn't have password");
         err.code = "no_password_for_folder";
         throw err;
       }
@@ -451,7 +455,7 @@ module.exports = (function () {
         stored_password_with_salt: folder_meta.$password,
       });
       if (!submitted_password_matches) {
-        const err = new Error("Submitted password doesn’t match");
+        const err = new Error("Submitted password doesn't match");
         err.code = "submitted_password_is_wrong";
         throw err;
       }
@@ -592,7 +596,7 @@ module.exports = (function () {
         path_to_folder,
       })
       .catch((err) => {
-        dev.error("couldn’t make cover thumbs, returning false");
+        dev.error("couldn't make cover thumbs, returning false");
         return false;
       });
 
@@ -653,18 +657,28 @@ module.exports = (function () {
 
     if (path_to_type && path_to_type !== ".") {
       // not applicable to instance settings
-      // TODO check for impact on performance
-      let siblings_folders = await API.getFolders({ path_to_type });
-      siblings_folders = siblings_folders.filter(
-        (sf) => sf.$path !== path_to_folder
+
+      // Find all unique fields
+      const uniqueFields = Object.entries(fields)
+        .filter(([key, f]) => f.unique === true)
+        .map(([key]) => key);
+      // Check if meta is attempting to set/change a unique field
+      const isChangingUniqueField = uniqueFields.some((field) =>
+        meta.hasOwnProperty(field)
       );
-      if (siblings_folders.length > 0)
-        meta = await utils.checkFieldUniqueness({
-          fields,
-          meta,
-          siblings_folders,
-          handle_duplicates,
-        });
+      if (uniqueFields.length > 0 && isChangingUniqueField) {
+        let siblings_folders = await API.getFolders({ path_to_type });
+        siblings_folders = siblings_folders.filter(
+          (sf) => sf.$path !== path_to_folder
+        );
+        if (siblings_folders.length > 0)
+          meta = await utils.checkFieldUniqueness({
+            fields,
+            meta,
+            siblings_folders,
+            handle_duplicates,
+          });
+      }
     }
 
     return utils.validateMeta({

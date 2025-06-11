@@ -1,26 +1,41 @@
 <template>
   <BaseModal2 :title="modal_title || button_text" @close="$emit('close')">
     <div class="_cont">
-      <div v-if="bin_folders.length === 0">
-        <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
-      </div>
-      <template v-else>
-        <SizeDisplay
-          v-if="bin_folder_size"
-          class="u-spacingBottom"
-          :size="bin_folder_size"
-        />
-
-        <div class="_items">
-          <BinFolderItem
-            v-for="bin_folder in bin_folders"
-            :key="bin_folder.slug"
-            :folder="bin_folder"
-            @restoredSuccessfully="getBinContent"
-            @removedSuccessfully="getBinContent"
-          />
+      <transition name="fade" mode="out-in">
+        <div class="_loader" v-if="is_loading" key="loader">
+          <LoaderSpinner />
         </div>
-      </template>
+        <div v-else-if="bin_folders.length === 0" key="empty">
+          <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
+        </div>
+        <div v-else key="content">
+          <div class="_infos">
+            <div class="u-metaField">
+              <DLabel :str="$t('items_in_bin')" />
+              <div>
+                {{ bin_folders.length }}
+              </div>
+            </div>
+            <SizeDisplay
+              v-if="bin_folder_size"
+              class="u-spacingBottom"
+              :size="bin_folder_size"
+            />
+          </div>
+
+          <!-- <hr /> -->
+
+          <div class="_items">
+            <BinFolderItem
+              v-for="bin_folder in bin_folders"
+              :key="bin_folder.slug"
+              :folder="bin_folder"
+              @restoredSuccessfully="getBinContent"
+              @removedSuccessfully="getBinContent"
+            />
+          </div>
+        </div>
+      </transition>
     </div>
   </BaseModal2>
 </template>
@@ -39,12 +54,16 @@ export default {
   },
   data() {
     return {
+      is_loading: false,
       bin_folder_size: undefined,
       bin_folders: [],
     };
   },
-  created() {
-    this.getBinContent();
+  async created() {
+    this.is_loading = true;
+    await this.getBinContent();
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    this.is_loading = false;
   },
   methods: {
     async getBinContent() {
@@ -70,6 +89,23 @@ export default {
 <style lang="scss" scoped>
 ._cont {
   position: relative;
+}
+
+._loader {
+  height: 4rem;
+}
+._infos {
+  display: flex;
+  flex-flow: row nowrap;
+  // justify-content: space-between;
+  align-items: center;
+  margin-bottom: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 1);
+
+  > * {
+    flex: 1 1 0;
+    margin-bottom: 0;
+  }
 }
 ._items {
   display: flex;

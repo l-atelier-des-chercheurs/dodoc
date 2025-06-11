@@ -97,6 +97,7 @@
             type="button"
             class="u-button u-button_small u-button_icon"
             @click="addCol"
+            :title="$t('add_column')"
           >
             <b-icon icon="plus-circle" />
           </button>
@@ -104,6 +105,7 @@
             type="button"
             class="u-button u-button_small u-button_icon"
             @click="removeCol"
+            :title="$t('remove_column')"
           >
             <b-icon icon="dash-circle" />
           </button>
@@ -124,6 +126,7 @@
         type="button"
         class="u-button u-button_small u-button_icon"
         @click="addRow"
+        :title="$t('add_row')"
       >
         <b-icon icon="plus-circle" />
       </button>
@@ -131,6 +134,7 @@
         type="button"
         class="u-button u-button_small u-button_icon"
         @click="removeRow"
+        :title="$t('remove_row')"
       >
         <b-icon icon="dash-circle" />
       </button>
@@ -348,6 +352,10 @@ export default {
   flex-flow: row nowrap;
   align-items: flex-start;
   overflow-x: auto;
+
+  table {
+    width: 100%;
+  }
 }
 
 ._addMarginToClearDragHandle {

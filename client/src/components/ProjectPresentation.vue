@@ -5,6 +5,7 @@
       'is--list': ['list', 'tiny'].includes(context),
       'is--own': is_own_project,
       'u-card2': context !== 'full',
+      'is--mobileView': $root.is_mobile_view,
     }"
     :data-context="context"
   >
@@ -40,7 +41,10 @@
           />
         </transition>
 
-        <div v-if="display_original_space" class="_originalSpace">
+        <div
+          v-if="display_original_space && original_space_name"
+          class="_originalSpace"
+        >
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
@@ -79,6 +83,16 @@
                 @close="show_dup_modal = false"
               />
             </div>
+
+            <button
+              v-if="$root.app_infos.is_electron && is_instance_admin"
+              type="button"
+              class="u-buttonLink"
+              @click="openInFinder({ path: project.$path })"
+            >
+              <b-icon icon="folder-symlink" />
+              {{ $t("open_in_finder") }}
+            </button>
 
             <button
               type="button"
@@ -267,6 +281,7 @@ export default {
   },
   computed: {
     original_space_name() {
+      if (!this.project.$path) return;
       let { space_slug } = this.decomposePath(this.project.$path);
       const space_path = this.createPath({ space_slug });
       const space = this.getFromCache(space_path);
@@ -360,7 +375,7 @@ export default {
   &.is--list {
     display: block;
     ._projectInfos--infos {
-      padding: calc(var(--spacing) / 2);
+      padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
       width: 100%;
       place-content: flex-start;
       // max-height: 12rem;
@@ -414,6 +429,14 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);
+
+  .is--mobileView & {
+    display: block;
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
 
   > * {
     flex: 1 1 320px;

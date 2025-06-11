@@ -125,6 +125,28 @@
         </div>
       </div>
 
+      <fieldset v-if="chapter.section_type === 'text'">
+        <legend>{{ $t("text_image_layout") }}</legend>
+        <div>
+          <DLabel :str="$t('column_count')" />
+          <div class="">
+            <SelectField2
+              :field_name="'column_count'"
+              :value="chapter.column_count || 1"
+              :path="chapter.$path"
+              size="small"
+              :hide_validation="true"
+              :can_edit="true"
+              :options="[
+                { key: 1, text: '1' },
+                { key: 2, text: '2' },
+                { key: 3, text: '3' },
+              ]"
+            />
+          </div>
+        </div>
+      </fieldset>
+
       <div class="_content">
         <template v-if="chapter.section_type === 'text'">
           <template v-if="chapter._main_text">
@@ -439,9 +461,11 @@ export default {
     async pickMediasForGallery(medias) {
       const new_entries = [];
       for (const media of medias) {
+        const import_mode = this.$root.publication_include_mode;
         const new_entry = await this.prepareMediaForPublication({
           path_to_source_media_meta: media.$path,
           publication_path: this.publication.$path,
+          import_mode,
         });
         new_entries.push(new_entry);
       }

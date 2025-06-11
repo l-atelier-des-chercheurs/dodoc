@@ -61,6 +61,16 @@
             @close="show_bin_modal = false"
           />
 
+          <button
+            v-if="$root.app_infos.is_electron && is_instance_admin"
+            type="button"
+            class="u-buttonLink"
+            @click="openInFinder({ path: space.$path })"
+          >
+            <b-icon icon="folder-symlink" />
+            {{ $t("open_in_finder") }}
+          </button>
+
           <RemoveMenu
             :modal_title="$t('remove_space', { name: space.title })"
             @remove="removeSpace"
@@ -78,7 +88,7 @@
           :content="space.title"
           :path="space.$path"
           :required="true"
-          :maxlength="280"
+          :maxlength="40"
           :can_edit="can_edit"
         />
         <!-- :label="can_edit ? $t('subtitle') : undefined" -->
@@ -86,7 +96,7 @@
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
           :label="$t('subtitle')"
-          :show_label="context === 'full' && can_edit && !space.subtitle"
+          :show_label="context === 'full' && can_edit"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
@@ -107,15 +117,14 @@
         :can_edit="can_edit"
       />
 
-      <template v-if="context === 'full'">
-        <AdminsAndContributorsField
-          :folder="space"
-          :can_edit="can_edit"
-          :admin_label="$t('referent')"
-          :admin_instructions="$t('space_admin_instructions')"
-          :contrib_instructions="$t('space_contrib_instructions')"
-        />
-      </template>
+      <AdminsAndContributorsField
+        v-if="context === 'full'"
+        :folder="space"
+        :can_edit="can_edit"
+        :admin_label="$t('referent')"
+        :admin_instructions="$t('space_admin_instructions')"
+        :contrib_instructions="$t('space_contrib_instructions')"
+      />
     </div>
     <!-- <div class="_descriptionField">
     </div> -->
