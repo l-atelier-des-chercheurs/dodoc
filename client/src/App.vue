@@ -246,6 +246,13 @@ export default {
   // --chutier-bg: rgb(37, 39, 41);
   // --chutier-bg: #77757c;
 
+  --b-200: #a8d2fc;
+  --y-200: #f6efae;
+  --y-400: #ffbc00;
+  --gr-200: #a5c8a3;
+  --p-200: #feddf2;
+  --o-200: #e99072;
+
   --g-50: hsl(0, 0%, 97%);
   --g-100: hsl(0, 0%, 95%);
   --g-200: hsl(0, 0%, 87%);
@@ -321,6 +328,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--h-700);
+  color: black;
 }
 body {
   min-height: 100%;

@@ -97,11 +97,8 @@ export default {
     top_text() {
       if (this.$i18n.locale === "fr") {
         return `
-        <p>Documenter et partager les démarches de recherches pour participer à la création de projets de design qui répondent aux enjeux sociaux, environnementaux et économiques des acteurs des territoires.</p>
-<p>Initiée par Atelier Luma, DocSpaces soutient
-une approche interdisciplinaire et biorégionale du
-design qui contribue à un réseau vivant de connaissances, de pratiques et de ressources
-à échelles locales.</p>`;
+        <p>Documenter et partager les démarches de recherches pour participer à la <b>création de projets de design</b> qui répondent aux enjeux <b>sociaux, environnementaux et économiques</b> des acteurs des territoires.</p>
+<p>Initiée par Atelier Luma, <i>DocSpaces</i> soutient une approche <b>interdisciplinaire</b> et <b>biorégionale</b> du design qui contribue à un réseau vivant de <b>connaissances</b>, de <b>pratiques</b> et de <b>ressources</b> à échelles locales.</p>`;
       } else {
         return `<p>Share your research and design projects to contribute to a living network of knowledge, practices, and local-based resources.</p>
 <p>Initiated by Atelier Luma, this platform supports an interdisciplinary and bioregional approach to design, addressing environmental, social, and economic challenges at the local scale.
@@ -144,10 +141,15 @@ By documenting your work, you help create assemblages, of materials, skills, and
 }
 
 ._accueil--top--content--text {
-  max-width: 45ch;
+  flex: 10 1 0;
+  min-width: 40ch;
+  // max-width: 45ch;
 
   h1 {
     font-size: var(--sl-font-size-xx-large);
+  }
+  :deep(p) {
+    font-size: var(--sl-font-size-large);
   }
 
   h1,
@@ -161,11 +163,30 @@ By documenting your work, you help create assemblages, of materials, skills, and
     ._renforcer,
     ._design {
       background-color: var(--g-200);
+      border-radius: 4px;
+      padding: 0 2px;
+
+      &._partager {
+        background-color: var(--y-200);
+      }
+      &._connecter {
+        background-color: var(--gr-200);
+      }
+      &._renforcer {
+        background-color: var(--o-200);
+      }
+
+      &._design {
+        background-color: var(--b-200);
+      }
     }
   }
 }
 
 ._topImg {
+  flex: 1 1 320px;
+  min-width: 320px;
+  min-height: 320px;
   background-color: var(--g-200);
 }
 
