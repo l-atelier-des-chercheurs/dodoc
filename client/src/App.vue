@@ -327,7 +327,7 @@ html {
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--h-700);
+  color: var(--g-900);
   color: black;
 }
 body {
@@ -434,7 +434,7 @@ strong {
 h1,
 h2,
 h3 {
-  margin: calc(var(--spacing) / 1) 0;
+  margin: calc(var(--spacing) * 2) 0;
   font-size: var(--sl-font-size-x-large);
   line-height: 1.2;
   font-weight: 500;
@@ -443,6 +443,10 @@ h3 {
     margin-top: 0;
   }
 }
+
+h2 {
+}
+
 h4 {
   margin: 0;
   font-size: var(--sl-font-size-normal);

@@ -1,17 +1,26 @@
 <template>
-  <div class="_accueil">
+  <div
+    class="_accueil"
+    :class="{
+      'is--mobileView': $root.is_mobile_view,
+    }"
+  >
     <div class="_accueil--top">
       <div class="_accueil--top--content">
         <div class="_accueil--top--content--text">
           <h1 v-html="top_title"></h1>
           <div class="" v-html="top_text" />
         </div>
-        <div class="_topImg" />
+        <div class="_topImg"></div>
       </div>
     </div>
 
     <div class="_section">
-      <h2>Donner à voir l'ensemble des processus de recherche et création</h2>
+      <h3
+        v-text="
+          `Donner à voir l’ensemble des processus de recherche et création`
+        "
+      />
     </div>
 
     <section class="_section" v-for="section in sections">
@@ -126,17 +135,33 @@ By documenting your work, you help create assemblages, of materials, skills, and
   max-width: var(--max-width);
   display: flex;
   flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
   gap: calc(var(--spacing) * 4);
   margin: 0 auto;
 }
 
 ._section {
+  h2 {
+    font-weight: 700;
+  }
+
+  p {
+    font-size: var(--sl-font-size-large);
+  }
+
   > * {
     flex: 1 1 0;
   }
   > img {
-    flex: 1 1 0;
+    flex: 0 1 320px;
     width: 100%;
+  }
+
+  &:nth-child(2n) {
+    ._accueil:not(.is--mobileView) & img {
+      order: 1;
+    }
   }
 }
 
