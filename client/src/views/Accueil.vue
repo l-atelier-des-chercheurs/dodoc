@@ -11,7 +11,14 @@
           <h1 v-html="top_title"></h1>
           <div class="" v-html="top_text" />
         </div>
-        <div class="_topImg"></div>
+        <div class="_topImg">
+          <figure>
+            <img :src="$root.publicPath + '/home/agora-screenshot.jpeg'" />
+            <figcaption>
+              Aperçu du format de présentation dans l’espace : Agora
+            </figcaption>
+          </figure>
+        </div>
       </div>
     </div>
 
@@ -120,7 +127,7 @@ By documenting your work, you help create assemblages, of materials, skills, and
 </script>
 <style lang="scss" scoped>
 ._accueil {
-  --max-width: 1000px;
+  --max-width: 1100px;
 }
 
 ._accueil--top {
@@ -167,7 +174,7 @@ By documenting your work, you help create assemblages, of materials, skills, and
 
 ._accueil--top--content--text {
   flex: 10 1 0;
-  min-width: 40ch;
+  min-width: 200px;
   // max-width: 45ch;
 
   h1 {
@@ -209,10 +216,20 @@ By documenting your work, you help create assemblages, of materials, skills, and
 }
 
 ._topImg {
-  flex: 1 1 320px;
+  flex: 1 1 420px;
   min-width: 320px;
-  min-height: 320px;
-  background-color: var(--g-200);
+  // min-height: 320px;
+
+  figure {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    text-align: right;
+
+    figcaption {
+      margin-top: calc(var(--spacing) / 2);
+    }
+  }
 }
 
 ._section {
