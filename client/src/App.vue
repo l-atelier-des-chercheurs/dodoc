@@ -429,7 +429,7 @@ h3 {
   margin: calc(var(--spacing) / 1) 0;
   font-size: var(--sl-font-size-x-large);
   line-height: 1.2;
-  font-weight: 700;
+  font-weight: 500;
 
   &:first-child {
     margin-top: 0;

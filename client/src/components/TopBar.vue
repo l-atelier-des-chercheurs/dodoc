@@ -56,9 +56,8 @@
         type="button"
         class="u-button u-button_icon"
         @click="show_lang_modal = !show_lang_modal"
-      >
-        {{ current_lang_code }}
-      </button>
+        v-text="current_lang_code"
+      ></button>
       <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
 
       <button
