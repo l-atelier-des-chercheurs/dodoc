@@ -31,9 +31,9 @@
           </button>
 
           <PinnedNonpinnedFolder
-            :field_name="'chats_pinned'"
-            :label="$tc('chats_pinned', settings?.chats_pinned?.length)"
-            :content="settings.chats_pinned"
+            :field_name="'topics_pinned'"
+            :label="$tc('topics_pinned', topics_pinned.length)"
+            :content="topics_pinned"
             :path="''"
             :folders="sorted_chats"
             :direction="'vertical'"
@@ -67,7 +67,7 @@
 
       <CreateFolder
         v-if="show_create_chat_modal"
-        :modal_name="$t('create_a_chat')"
+        :modal_name="$t('create_a_topic')"
         :path="path"
         @close="show_create_chat_modal = false"
         @openNew="openNewChat"
@@ -114,6 +114,14 @@ export default {
   computed: {
     in_modal() {
       return this.open_in_modal || this.$root.is_mobile_view;
+    },
+    topics_pinned() {
+      if (
+        !this.settings?.topics_pinned ||
+        !Array.isArray(this.settings.topics_pinned)
+      )
+        return [];
+      return this.settings.topics_pinned;
     },
     filtered_chats() {
       return this.chats.filter((chat) =>
@@ -209,6 +217,7 @@ export default {
   padding: calc(var(--spacing) / 1);
 
   :deep(.u-label),
+  :deep(.u-instructions),
   :deep(._pinSpace) {
     color: white;
   }

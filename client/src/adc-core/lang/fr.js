@@ -1360,7 +1360,7 @@ export default {
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
   list_of_topics: "Liste des sujets",
-  create_a_chat: "Créer une discussion",
+  create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
     "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
   write_a_message: "Écrivez un message…",
@@ -1382,5 +1382,5 @@ export default {
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",
   new_messages: "{count} nouveau message | {count} nouveaux messages",
-  chats_pinned: "Discussion épinglée | Discussions épinglées",
+  topics_pinned: "Sujet épinglé | Sujets épinglés",
 };
