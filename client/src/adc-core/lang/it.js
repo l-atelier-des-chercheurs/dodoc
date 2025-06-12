@@ -863,8 +863,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   add_to_instance_admin: "Aggiungi come amministratore d'istanza",
   instance_admin_instructions:
-    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle.",
-  instance_contrib_instructions: "Possono solo creare spazi e amministrarli.",
+    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle. // TODO add mention that they can also create discution topics",
+  instance_contrib_instructions:
+    "Possono solo creare spazi e amministrarli. // TODO add Discussion topics next to space",
 
   space_admin_instructions:
     "I referenti di uno spazio possono modificarlo o eliminarlo, compresi tutti i suoi contenuti (anche quelli privati). Possono anche modificare l'elenco dei referenti e dei contributori.",

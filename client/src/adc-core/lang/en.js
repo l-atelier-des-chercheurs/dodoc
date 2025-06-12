@@ -926,8 +926,9 @@ export default {
 
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
-    "Can access, modify and delete all content (spaces, projects, accounts, etc.). They have access to these settings and can modify them.",
-  instance_contrib_instructions: "Can only create spaces and adsminister.",
+    "Can access, modify and delete all content (spaces, projects, accounts, discussion topics). They also have access to these settings and can modify them.",
+  instance_contrib_instructions:
+    "Can only create spaces and discussion topics and manage them.",
   space_admin_instructions:
     "The referrers of a space can modify or delete it, as well as all its contents (including those which are private). They can also modify the list of referrers and contributors.",
   space_contrib_instructions:
