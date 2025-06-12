@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "desired_port": 8080,
   "contentPath": "dodoc",
 

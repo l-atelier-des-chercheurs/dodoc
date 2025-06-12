@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,

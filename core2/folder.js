@@ -480,8 +480,19 @@ module.exports = (function () {
       try {
         return utils.sendMail({
           to: folder_meta.email,
-          subject: "Coucou do•doc",
-          text: "Contenu du mail",
+          subject: "Récupérer votre mot de passe",
+          text: `Bonjour,
+
+Vous avez demandé la récupération du mot de passe pour votre compte${
+            global.settings.domain ? " sur " + global.settings.domain : ""
+          }.
+
+Votre mot de passe a été 
+
+Si vous n'avez pas demandé cette récupération, vous pouvez ignorer cet email.
+
+Cordialement,
+L'équipe Dodoc`,
         });
       } catch (err) {
         throw err;
