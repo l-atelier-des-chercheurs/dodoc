@@ -1258,7 +1258,7 @@ export default {
   forgot_password: "Forgot password?",
   current_f: "Current",
   reset: "Reset",
-  accounts_displayed: "Accounts displayed",
+  accounts_displayed: "Accounts displayed: {count} / {total}",
   restore_projects: "Restore projects",
   bin: "Trash",
   items_in_bin: "Items in the trash",

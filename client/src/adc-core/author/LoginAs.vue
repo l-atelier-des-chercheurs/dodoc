@@ -99,6 +99,7 @@
             </div>
             <RecoverPasswordModal
               v-if="show_recover_modal"
+              :author="author_to_login_to"
               @close="show_recover_modal = false"
             />
 

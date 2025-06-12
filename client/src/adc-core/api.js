@@ -493,6 +493,16 @@ export default function () {
           throw this.processError(err);
         }
       },
+      async recoverPassword({ path }) {
+        try {
+          const anonymous_email_used = await this.$axios.post(
+            `${path}/_recoverPassword`
+          );
+          return anonymous_email_used;
+        } catch (err) {
+          throw this.processError(err);
+        }
+      },
       async logoutFromFolder() {
         const path = this.tokenpath.token_path;
         const auth_infos = {
@@ -777,7 +787,7 @@ export default function () {
               " Mo. Please try again with a smaller file.";
             this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
-          // this.$alertify.delay(4000).error("Message d’erreur : " + code);
+          // this.$alertify.delay(4000).error("Message d'erreur : " + code);
           console.error("processError – " + code);
         } else console.error("processError – NO ERROR CODES");
 

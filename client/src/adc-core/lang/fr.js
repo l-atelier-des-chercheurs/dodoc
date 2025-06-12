@@ -1383,4 +1383,6 @@ export default {
   edit_this_message: "Modifier ce message",
   new_messages: "{count} nouveau message | {count} nouveaux messages",
   topics_pinned: "Sujet épinglé | Sujets épinglés",
+
+  no_email_from_folder: "Aucun courriel associé à ce compte.",
 };
