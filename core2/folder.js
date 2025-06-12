@@ -479,7 +479,7 @@ module.exports = (function () {
 
       try {
         return utils.sendMail({
-          to: "louis.eveillard@gmail.com",
+          to: folder_meta.email,
           subject: "Coucou do•doc",
           text: "Contenu du mail",
         });
