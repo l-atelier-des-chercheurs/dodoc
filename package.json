@@ -17,8 +17,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "debug": "electron --inspect=5858 . -- --debug --verbose",
-    "debug-lr": "electron --inspect=5858 . -- --debug --verbose --livereload",
+    "debug": "electronmon --inspect=5858 . -- --debug --verbose",
+    "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps"
@@ -73,6 +73,7 @@
     "electron": "^35.0.0",
     "electron-builder": "^24.13.3",
     "electron-rebuild": "^3.2.9",
+    "electronmon": "^2.0.3",
     "node-gyp": "^10.3.1"
   },
   "optionalDependencies": {
