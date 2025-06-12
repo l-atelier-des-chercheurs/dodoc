@@ -1589,7 +1589,7 @@ module.exports = (function () {
       await folder.recoverPassword({
         path_to_folder,
       });
-      dev.logpackets({ status: "email sent to folder", path_to_folder, token });
+      dev.logpackets({ status: "email sent to folder", path_to_folder });
       res.status(200).json({ status: "ok" });
     } catch (err) {
       dev.error(err);

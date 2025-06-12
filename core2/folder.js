@@ -484,7 +484,6 @@ module.exports = (function () {
           text: "Contenu du mail",
         });
       } catch (err) {
-        debugger;
         throw err;
       }
     },
