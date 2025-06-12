@@ -26,6 +26,17 @@
 
   "mediaThumbQuality": 90,
 
+  "mailer": {
+    "host": "smtp.example.com",
+    "port": 587,
+    "secure": false,
+    "auth": {
+      "user": "your@email.com",
+      "pass": "yourpassword"
+    },
+    "from": "do•doc <your@email.com>"
+  },
+
   "schema": {
     "$cover": {
       "width": 2000,

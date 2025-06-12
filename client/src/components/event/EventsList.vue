@@ -42,14 +42,18 @@
     </div>
 
     <div class="_lineCont"><div class="_line" /></div>
-    <!-- <FlickityCarousel
+    <FlickityCarousel
       v-if="sorted_events.length > 0"
       :key="slider_key"
       :options="flickityOptions"
       class="_eventsCarousel"
-    > -->
-    <section class="_horizontalEventsList">
-      <div v-for="event in sorted_events" :key="event.$path" class="_slide">
+      ref="flickity"
+    >
+      <div
+        v-for="event in sorted_events"
+        :key="event.$path"
+        class="carousel-cell"
+      >
         <div class="_eventsDate">
           <template v-if="event.start_date">
             {{ formatDateToPrecise(event.start_date) }}
@@ -87,17 +91,16 @@
           </div>
         </div>
       </div>
-    </section>
-    <!-- </FlickityCarousel> -->
+    </FlickityCarousel>
   </div>
 </template>
 <script>
-// import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
+import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 
 export default {
   props: {},
   components: {
-    // FlickityCarousel,
+    FlickityCarousel,
   },
   data() {
     return {
@@ -114,6 +117,8 @@ export default {
         selectedAttraction: 0.2,
         percentPosition: false,
         friction: 0.8,
+        cellAlign: "left",
+        contain: true,
       },
     };
   },
@@ -161,7 +166,14 @@ export default {
       this.$router.push(url);
     },
     sliderClick(evt) {
-      // if (this.$refs.flickity.$flickity.isPreventingClicks) return false;
+      // Access Flickity instance
+      const flickity = this.$refs.flickity && this.$refs.flickity.flickity;
+
+      if (flickity && flickity.isPreventingClicks) {
+        // Prevent click if dragging
+        evt.preventDefault();
+        return;
+      }
       this.$router.push(evt.currentTarget.getAttribute("href"));
     },
   },
@@ -169,31 +181,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._eventsList {
-  margin: 0 auto;
-
-  // max-width: var(--max-column-width);
+  overflow: visible;
   padding: calc(var(--spacing) * 2) 0;
 }
 
-._slide {
-  position: relative;
-  width: 280px;
-  min-height: 100px;
-  padding: 0;
+._eventsCarousel {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
 
-  max-width: 56ch;
-  width: 100%;
-
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &:hover,
-  &:focus-visible {
-    // transform: translateY(-4px);
-    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-
-    ._eventsDate::after {
-      background: var(--active-color);
-    }
+  :deep(.flickity-viewport) {
+    overflow: visible;
   }
 }
 
@@ -213,7 +210,7 @@ export default {
     content: "";
     width: 10px;
     height: 10px;
-    background: var(--c-bleuvert);
+    background: var(--c-gris_fonce);
     position: absolute;
     top: 17px;
     left: -10px;
@@ -264,20 +261,18 @@ export default {
   }
 }
 
-._horizontalEventsList {
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 calc(var(--spacing) * 2) calc(var(--spacing) * 1) 10vw;
+.carousel-cell.carousel-cell {
+  width: clamp(280px, 30vw, 380px);
+  aspect-ratio: auto !important;
+  margin-right: calc(var(--spacing) * 2);
 
-  overflow-x: auto;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: safe center;
-
-  width: 100%;
-
-  > * {
-    flex: 0 0 auto;
+  &:hover,
+  &:focus-visible {
+    ._eventsDate {
+      &::after {
+        background: var(--active-color);
+      }
+    }
   }
 }
 </style>

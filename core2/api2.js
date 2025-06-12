@@ -173,6 +173,11 @@ module.exports = (function () {
       _loginToFolder
     );
     app.post(
+      ["/_api2/:folder_type/:folder_slug/_recoverPassword"],
+      _generalPasswordCheck,
+      _recoverPassword
+    );
+    app.post(
       ["/_api2/:folder_type/:folder_slug/_logout"],
       _generalPasswordCheck,
       _logoutFromFolder
@@ -284,7 +289,6 @@ module.exports = (function () {
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
-
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
       _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
     });
@@ -1575,6 +1579,22 @@ module.exports = (function () {
       });
       return acc;
     }, []);
+  }
+
+  async function _recoverPassword(req, res) {
+    const { path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    try {
+      await folder.recoverPassword({
+        path_to_folder,
+      });
+      dev.logpackets({ status: "email sent to folder", path_to_folder });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send({ code: err.code });
+    }
   }
 
   async function _updateFolderCountAndBroadcast(event, path_to_folder) {

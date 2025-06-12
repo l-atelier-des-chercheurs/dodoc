@@ -24,6 +24,11 @@
     "node": "22.14.0",
     "npm": "*"
   },
+  "electronmon": {
+    "patterns": [
+      "!client/**"
+    ]
+  },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "archiver": "^7.0.1",
@@ -47,6 +52,7 @@
     "lru-cache": "^10.4.3",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",
+    "nodemailer": "^7.0.3",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
     "platform-folders": "^0.6.0",

@@ -546,7 +546,7 @@ export default {
 
 ._loadMoreMessages {
   text-align: center;
-  // margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
 }
 
 ._noMessages,
