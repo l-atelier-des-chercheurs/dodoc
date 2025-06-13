@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,
@@ -27,14 +28,14 @@
   "mediaThumbQuality": 90,
 
   "mailer": {
-    "host": "smtp.example.com",
-    "port": 587,
+    "host": "",
+    "port": "",
     "secure": false,
     "auth": {
-      "user": "your@email.com",
-      "pass": "yourpassword"
+      "user": "",
+      "pass": ""
     },
-    "from": "do•doc <your@email.com>"
+    "from": ""
   },
 
   "schema": {

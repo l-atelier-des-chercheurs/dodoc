@@ -461,32 +461,6 @@ module.exports = (function () {
       }
       return;
     },
-    recoverPassword: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
-
-      // get folder meta
-      let folder_meta = await utils
-        .readMetaFile(path_to_folder, "meta.txt")
-        .catch((err) => {
-          throw err;
-        });
-
-      if (!folder_meta.hasOwnProperty("email") || folder_meta.email === "") {
-        const err = new Error("Folder doesn't have email");
-        err.code = "no_email_for_folder";
-        throw err;
-      }
-
-      try {
-        return utils.sendMail({
-          to: folder_meta.email,
-          subject: "Coucou do•doc",
-          text: "Contenu du mail",
-        });
-      } catch (err) {
-        throw err;
-      }
-    },
 
     getBinContent: async ({ path_to_type }) => {
       dev.logfunction({ path_to_type });

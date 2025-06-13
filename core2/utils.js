@@ -12,8 +12,7 @@ const path = require("path"),
   crypto = require("crypto"),
   archiver = require("archiver"),
   { promisify } = require("util"),
-  fastFolderSize = require("fast-folder-size"),
-  nodemailer = require("nodemailer");
+  fastFolderSize = require("fast-folder-size");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -881,33 +880,6 @@ module.exports = (function () {
         dev.error(err);
         return "download.zip";
       }
-    },
-
-    /**
-     * Send an email using SMTP settings from settings.json
-     * @param {Object} options - { to, subject, text, html }
-     * @returns {Promise}
-     */
-    async sendMail({ to, subject, text = "", html = "" }) {
-      const { host, port, secure, auth, from } = global.settings.mailer;
-
-      const transporter = nodemailer.createTransport({
-        host,
-        port,
-        secure,
-        auth,
-      });
-      const info = await transporter.sendMail({
-        from,
-        to,
-        subject,
-        text,
-        html,
-      });
-
-      console.log("Mail sent:", info.messageId);
-
-      return info;
     },
   };
 

@@ -89,6 +89,25 @@ npm i
 npm run dev
 ```
 
+# After installation
+
+When starting the app for the first time, a message will tell you about an admin account that is created by default. Its password is "dodoc". Connect to this account and change the password by opening that account's page and clicking Options, and editing the password field. It is recommended to open the admin settings afterwards (the gear icon in the top bar) and read/adapt all settings.
+
+More advanced settings are available to all by duplicating the settings.example.json file and renaming it to settings.json. You can override the default settings_base.json values with ones you need:
+
+- set the url where dodoc will be accessed (used for emails sent to users) (for example, https://test.dodoc.fr)
+
+- adapt the port used on startup, useful when hosting multiple dodoc on the same server (possible values: any port not already used, for example 443 or 8000)
+
+- indicate a bonjour domain for local discovery, like dodoc.local
+
+- change the folder used for storing all the user-generated contents by editing the contentPath field.
+
+  - if the value is just a string like "dodoc", then this will be the name of the folder used in the /Documents subfolder.
+  - if the value is a path (like /mnt/storage/dodoc-custom) then this path will be tested and used for storing all content
+
+- if you'd like for dodoc to be able to send email to help users recover their password, fill in the information to a mail server and account with the "mailer" property.
+
 # How the core works
 
 Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).

@@ -10,7 +10,8 @@ const folder = require("./folder"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
   auth = require("./auth"),
-  users = require("./users");
+  users = require("./users"),
+  recoverPassword = require("./recover-password");
 
 module.exports = (function () {
   const API = {
@@ -176,6 +177,11 @@ module.exports = (function () {
       ["/_api2/:folder_type/:folder_slug/_recoverPassword"],
       _generalPasswordCheck,
       _recoverPassword
+    );
+    app.post(
+      ["/_api2/:folder_type/:folder_slug/_resetPassword"],
+      _generalPasswordCheck,
+      _resetPassword
     );
     app.post(
       ["/_api2/:folder_type/:folder_slug/_logout"],
@@ -355,7 +361,7 @@ module.exports = (function () {
         err.code = "no_token_submitted";
         throw err;
       }
-      auth.checkTokenValidity({ token, token_path });
+      auth.checkTokenValidity({ token, token_path, purpose: "auth" });
     } catch (err) {
       return res.status(401).send({ code: err.code });
     }
@@ -582,6 +588,7 @@ module.exports = (function () {
     d.text_background_color = text_background_color || "";
     d.text_image_layout = text_image_layout || "";
     d.has_general_password = !!general_password;
+    d.can_send_email = global.can_send_email;
     d.signup_password_hashed = signup_password
       ? utils.hashCode(signup_password)
       : "";
@@ -1581,22 +1588,6 @@ module.exports = (function () {
     }, []);
   }
 
-  async function _recoverPassword(req, res) {
-    const { path_to_folder, data } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, data });
-
-    try {
-      await folder.recoverPassword({
-        path_to_folder,
-      });
-      dev.logpackets({ status: "email sent to folder", path_to_folder });
-      res.status(200).json({ status: "ok" });
-    } catch (err) {
-      dev.error(err);
-      res.status(500).send({ code: err.code });
-    }
-  }
-
   async function _updateFolderCountAndBroadcast(event, path_to_folder) {
     dev.logfunction({ path_to_folder });
     const path_to_type = utils.getContainingFolder(path_to_folder);
@@ -1622,6 +1613,52 @@ module.exports = (function () {
         path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
+  }
+
+  async function _recoverPassword(req, res) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const result = await recoverPassword.recoverPassword({
+        path_to_folder,
+      });
+      dev.logpackets({ status: "email sent to folder", path_to_folder });
+      res.status(200).json(result);
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send({ code: err.code });
+    }
+  }
+
+  async function _resetPassword(req, res) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    try {
+      const { token, new_password } = data;
+      const result = await recoverPassword.resetPassword({
+        path_to_type,
+        path_to_folder,
+        token,
+        new_password,
+      });
+
+      res.status(200).json(result);
+
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
+        changed_data: result.changed_data,
+      });
+      if (path_to_type)
+        notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+          path: utils.convertToSlashPath(path_to_folder),
+          changed_data: result.changed_data,
+        });
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send({ code: err.code });
+    }
   }
 
   return API;

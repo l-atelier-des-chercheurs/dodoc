@@ -1,4 +1,5 @@
 {
+  "url": "https://domain-to-your-dodoc.com",
   "desired_port": 8080,
   "contentPath": "dodoc",
 
