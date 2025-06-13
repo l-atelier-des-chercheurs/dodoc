@@ -588,6 +588,7 @@ module.exports = (function () {
     d.text_background_color = text_background_color || "";
     d.text_image_layout = text_image_layout || "";
     d.has_general_password = !!general_password;
+    d.can_send_email = global.can_send_email;
     d.signup_password_hashed = signup_password
       ? utils.hashCode(signup_password)
       : "";
@@ -1619,11 +1620,11 @@ module.exports = (function () {
     dev.logapi({ path_to_folder });
 
     try {
-      await recoverPassword.recoverPassword({
+      const result = await recoverPassword.recoverPassword({
         path_to_folder,
       });
       dev.logpackets({ status: "email sent to folder", path_to_folder });
-      res.status(200).json({ status: "ok" });
+      res.status(200).json(result);
     } catch (err) {
       dev.error(err);
       res.status(500).send({ code: err.code });

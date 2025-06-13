@@ -15,17 +15,6 @@
       disconnect
     </button> -->
 
-    <button
-      type="button"
-      @click="
-        $api.recoverPassword({
-          path: 'authors/admin',
-        })
-      "
-    >
-      RECOVER
-    </button>
-
     <component :is="'style'">
       {{ custom_fonts_css }}
     </component>

@@ -1,6 +1,7 @@
-const utils = require("./utils");
-const auth = require("./auth");
-const folder = require("./folder");
+const utils = require("./utils"),
+  auth = require("./auth"),
+  folder = require("./folder"),
+  mail = require("./mail");
 
 module.exports = (function () {
   const API = {
@@ -32,10 +33,18 @@ module.exports = (function () {
       try {
         const encoded_path_to_folder = encodeURIComponent(path_to_folder);
         const reset_link = `${global.settings.url}/reset-password?token=${reset_token}&path=${encoded_path_to_folder}`;
-        return utils.sendMail({
+        const info = await mail.sendMail({
           to: folder_meta.email,
           ...createEmailContent({ reset_link }),
         });
+        const anonymized_email = info.envelope.to[0].replace(
+          /@.*$/,
+          "@***.***"
+        );
+        return {
+          status: "recovery_mail_sent",
+          recovery_email_sent_to: anonymized_email,
+        };
       } catch (err) {
         throw err;
       }

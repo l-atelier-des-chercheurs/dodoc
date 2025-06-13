@@ -1394,4 +1394,10 @@ export default {
   failed_to_reset_password: "Échec de la réinitialisation du mot de passe",
   no_email_for_account: "Aucun courriel associé à ce compte.",
   recover_via_email: "M’envoyer un courriel",
+  click_to_send_recovery_mail:
+    "En cliquant sur le bouton ci-dessous, un courriel vous sera envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "Un courriel vous a été envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b> sur l’adresse <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
 };

@@ -8,7 +8,8 @@ const server = require("./server"),
   cacheManager = require("./cache-manager"),
   utils = require("./utils"),
   paths = require("./paths"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  mail = require("./mail");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
@@ -126,6 +127,8 @@ async function setupApp() {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
+
+  global.can_send_email = mail.canSendMail();
 
   auth.createSuperadminToken();
 
