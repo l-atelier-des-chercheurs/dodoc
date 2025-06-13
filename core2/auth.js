@@ -9,6 +9,7 @@ const folder = require("./folder"),
 module.exports = (function () {
   let tokens = {};
   let superadmintoken = undefined;
+  let cleanupInterval = null;
 
   const path_to_tokens = path.join(global.appRoot, "tokens.json");
   (async () => {
@@ -17,6 +18,18 @@ module.exports = (function () {
         .readFile(path_to_tokens, "UTF-8")
         .catch((err) => {});
       if (_tokens) tokens = JSON.parse(_tokens);
+
+      // Start cleanup interval (run every hour)
+      cleanupInterval = setInterval(() => {
+        API.removeObsoleteTokens().catch((err) => {
+          console.error("Error during token cleanup:", err);
+        });
+      }, 60 * 60 * 1000); // 1 hour in milliseconds
+
+      // Run initial cleanup
+      API.removeObsoleteTokens().catch((err) => {
+        console.error("Error during initial token cleanup:", err);
+      });
     } catch (err) {}
   })();
 
@@ -147,13 +160,27 @@ module.exports = (function () {
     },
 
     async removeObsoleteTokens() {
-      Object.entries(tokens).find(([token, tp]) => {
-        const issued = tp.issued;
-        // TODO
-        // if (tp.issued) delete tokens[token];
+      const now = +new Date();
+      let cleanedCount = 0;
+
+      Object.entries(tokens).forEach(([token, tokenData]) => {
+        const issued = tokenData.issued;
+        const expires_after_minutes =
+          tokenData.expires_in_minutes ||
+          60 * 24 * (global.settings.tokenIsValidForXDays || 60);
+        const minutes_since_issued = (now - issued) / (1000 * 60);
+
+        if (minutes_since_issued > expires_after_minutes) {
+          delete tokens[token];
+          cleanedCount++;
+        }
       });
-      await API.updateTokensFile();
-      return;
+
+      if (cleanedCount > 0) {
+        await API.updateTokensFile();
+        console.log(`Cleaned up ${cleanedCount} expired tokens`);
+      }
+      return cleanedCount;
     },
     async revokeToken({ token_to_revoke }) {
       delete tokens[token_to_revoke];
@@ -174,5 +201,19 @@ module.exports = (function () {
       return tokens[token];
     },
   };
+
+  // Cleanup on process exit
+  process.on("SIGTERM", () => {
+    if (cleanupInterval) {
+      clearInterval(cleanupInterval);
+    }
+  });
+
+  process.on("SIGINT", () => {
+    if (cleanupInterval) {
+      clearInterval(cleanupInterval);
+    }
+  });
+
   return API;
 })();
