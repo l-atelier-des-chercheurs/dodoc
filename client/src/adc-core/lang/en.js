@@ -1329,4 +1329,12 @@ export default {
   failed_to_reset_password: "Failed to reset password",
   no_email_for_account: "No email associated with this account.",
   recover_via_email: "Send me an email",
+  click_to_send_recovery_mail:
+    "By clicking on the button below, an email will be sent to you with a link to reset the password of the account <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "An email has been sent to you with a link to reset the password of the account <b>{account_name}</b> on the address <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "You can now close this window and open the email to reset your password.",
+  password_reset_successful:
+    "Password reset successfully. You can now log in with your new password.",
 };
