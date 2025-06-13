@@ -31,11 +31,7 @@ module.exports = (function () {
       // abusing and changing password for other accounts…
       try {
         const encoded_path_to_folder = encodeURIComponent(path_to_folder);
-
         const reset_link = `${global.settings.url}/reset-password?token=${reset_token}&path=${encoded_path_to_folder}`;
-
-        dev.log("reset_link", reset_link);
-
         return utils.sendMail({
           to: folder_meta.email,
           ...createEmailContent({ reset_link }),

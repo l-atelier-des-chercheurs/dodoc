@@ -507,7 +507,7 @@ export default {
   hide_meta: "Hide metadata",
   recover_password: "Recover password",
   please_contact_to_recover:
-    "Please send an email to the following address indicating your username to recover a new password",
+    "Please send an email to the following address indicating your username to recover a new password:",
   visibility: "Visibility",
   visibility_text:
     "Indicate here the progress of the project and who will be able to consult it.",
@@ -1324,6 +1324,9 @@ export default {
   set_new_password_for_account: "Set new password for account",
   reset_password: "Reset Password",
   resetting_password: "Resetting...",
-  password_reset_successful: "Password has been reset successfully",
   invalid_reset_link: "Invalid reset link",
+  loading: "Loading...",
+  failed_to_reset_password: "Failed to reset password",
+  no_email_for_account: "No email associated with this account.",
+  recover_via_email: "Send me an email",
 };

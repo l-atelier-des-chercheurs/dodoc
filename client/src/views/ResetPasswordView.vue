@@ -1,8 +1,8 @@
 <template>
   <div class="_resetPassword">
     <div class="_resetPassword--form">
-      <h1 class="u-spacingBottom">Reset Password</h1>
-      <div v-if="is_loading" class="loading-message">Loading...</div>
+      <h1 class="u-spacingBottom">{{ $t("reset_password") }}</h1>
+      <div v-if="is_loading" class="loading-message">{{ $t("loading") }}</div>
       <div v-else-if="error" class="error-message">
         {{ error }}
       </div>
@@ -60,7 +60,9 @@
             class="u-button u-button_bleuvert"
             :disabled="!allow_save || is_submitting"
           >
-            {{ is_submitting ? "Resetting..." : "Reset Password" }}
+            {{
+              is_submitting ? $t("resetting_password") : $t("reset_password")
+            }}
           </button>
         </div>
       </form>
@@ -113,12 +115,12 @@ export default {
           token: this.$route.query.token,
         });
 
-        this.submitSuccess = "Password reset successful";
+        this.submitSuccess = this.$t("password_reset_successful");
 
         // this.$router.push("/login?message=Password reset successful");
       } catch (err) {
         this.submitError =
-          err.response?.data?.message || "Failed to reset password";
+          err.response?.data?.message || this.$t("failed_to_reset_password");
       } finally {
         this.is_submitting = false;
       }

@@ -185,7 +185,7 @@ export default {
   hide_meta: "Masquer les métadonnées",
   recover_password: "Récupérer le mot de passe",
   please_contact_to_recover:
-    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
+    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe :",
 
   visibility: "Visibilité",
   visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -1387,4 +1387,11 @@ export default {
   no_email_from_folder: "Aucun courriel associé à ce compte.",
   set_new_password_for_account:
     "Définir un nouveau mot de passe pour le compte ",
+  reset_password: "Réinitialiser le mot de passe",
+  resetting_password: "Réinitialisation en cours...",
+  invalid_reset_link: "Lien de réinitialisation invalide",
+  loading: "Chargement en cours...",
+  failed_to_reset_password: "Échec de la réinitialisation du mot de passe",
+  no_email_for_account: "Aucun courriel associé à ce compte.",
+  recover_via_email: "M’envoyer un courriel",
 };

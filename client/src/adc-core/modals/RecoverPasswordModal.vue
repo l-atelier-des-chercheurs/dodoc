@@ -9,14 +9,18 @@
         {{ recovery_email_sent_to }}
       </div>
       <div v-else-if="status === 'no_email_for_folder'">
-        {{ $t("no_email_from_folder") }}
-        {{ $t("please_contact_to_recover") }} <br />
-        <a
-          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-          target="_blank"
-        >
-          {{ $root.app_infos.instance_meta.contactmail }}
-        </a>
+        <p>
+          {{ $t("no_email_for_account") }}
+        </p>
+        <p>
+          {{ $t("please_contact_to_recover") }} <br />
+          <a
+            :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+            target="_blank"
+          >
+            {{ $root.app_infos.instance_meta.contactmail }}
+          </a>
+        </p>
       </div>
       <div v-else-if="status === 'error'">
         {{ err_recovering }}

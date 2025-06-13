@@ -182,7 +182,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   hide_meta: "Nascondi i metadati",
   recover_password: "Recupera la password",
   please_contact_to_recover:
-    "Per ottenere una nuova password, invia un'email al seguente indirizzo indicando il proprio nome utente",
+    "Per ottenere una nuova password, invia un'email al seguente indirizzo indicando il proprio nome utente:",
 
   visibility: "Visibilità",
   visibility_text: `Indica qui lo stato di avanzamento del progetto e chi potrà consultarlo.`,

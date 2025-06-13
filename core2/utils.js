@@ -889,6 +889,12 @@ module.exports = (function () {
      * @returns {Promise}
      */
     async sendMail({ to, subject, text = "", html = "" }) {
+      if (!global.settings.mailer?.host) {
+        const err = new Error("Mailer settings are not defined");
+        err.code = "mailer_settings_not_defined";
+        throw err;
+      }
+
       const { host, port, secure, auth, from } = global.settings.mailer;
 
       const transporter = nodemailer.createTransport({
