@@ -122,11 +122,13 @@ export default {
 
 <style lang="scss" scoped>
 ._hero--container {
+  --hero-radius: 36px;
+
   width: 100%;
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
   background: var(--hero-bg, transparent);
-  border-radius: 12px;
+  border-radius: var(--hero-radius);
 
   ._homeCover {
     background: white;
@@ -188,8 +190,8 @@ export default {
 
     border-radius: var(--panel-radius);
     // box-shadow: var(--panel-shadows);
-    padding: calc(var(--spacing) / 1);
-    margin: 1%;
+    padding: calc(var(--spacing) * 1);
+    margin: calc(var(--spacing) * 1);
 
     background: var(--text-bg, white);
   }
@@ -200,7 +202,7 @@ export default {
 
     // https://codepen.io/herrstrietzel/pen/jOQEjEm?editors=0010
     // clip-path: url(#clipPathSquircle);
-    border-radius: 36px;
+    border-radius: var(--hero-radius);
     overflow: hidden;
 
     // overflow: hidden;
