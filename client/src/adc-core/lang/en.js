@@ -141,7 +141,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it in a mail to",
+    "If you don't know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   already_added: "Already added",
@@ -285,7 +285,7 @@ export default {
   hide_already_translated: "Hide translations already made",
   to_translate: "To translate",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l'Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",
 
   no_coordinates: "No coordinates available",
@@ -507,7 +507,7 @@ export default {
   hide_meta: "Hide metadata",
   recover_password: "Recover password",
   please_contact_to_recover:
-    "Please send an email to the following address indicating your username to retrieve a new password",
+    "Please send an email to the following address indicating your username to recover a new password",
   visibility: "Visibility",
   visibility_text:
     "Indicate here the progress of the project and who will be able to consult it.",
@@ -713,7 +713,7 @@ export default {
   failed_to_start_recording: "Failed to start recording",
   new_user_connected_to_stream: "New user connected to the stream",
   no_stream_found_while_sharing: "No stream found while sharing",
-  media_couldnt_be_sent: "Media couldn’t be sent",
+  media_couldnt_be_sent: "Media couldn't be sent",
 
   watermark: "Dressing",
   watermark_instructions:
@@ -1080,7 +1080,7 @@ export default {
   about_dodoc_txt: `do•doc is a free and open-source digital tool created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
   It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
   The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" title="Atelier des chercheurs" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
-  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
+  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l'Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
   about_dodoc_links: `
   Here are some other links:
   <ul>
@@ -1112,9 +1112,9 @@ export default {
   change: "Change",
   transition_fade: "Transition: fade",
 
-  couldntbesaved: "Value couldn’t be saved",
+  couldntbesaved: "Value couldn't be saved",
 
-  dont_zoom: "Don’t zoom",
+  dont_zoom: "Don't zoom",
   very_far: "Very far",
   very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
@@ -1320,4 +1320,10 @@ export default {
   edit_this_message: "Edit this message",
   new_messages: "{count} new message | {count} new messages",
   topics_pinned: "Pinned topic | Pinned topics",
+
+  set_new_password_for_account: "Set new password for account",
+  reset_password: "Reset Password",
+  resetting_password: "Resetting...",
+  password_reset_successful: "Password has been reset successfully",
+  invalid_reset_link: "Invalid reset link",
 };

@@ -67,6 +67,11 @@ const routes = [
     component: () => import("@/views/PreviewMedia.vue"),
   },
   {
+    path: "/reset-password",
+    name: "Reset Password",
+    component: () => import("@/views/ResetPasswordView.vue"),
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import("@/views/NotFound.vue"),

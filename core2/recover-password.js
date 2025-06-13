@@ -30,7 +30,9 @@ module.exports = (function () {
       // we generate a token/link instead of a new password, to make sure someone else is not
       // abusing and changing password for other accounts…
       try {
-        const reset_link = `${global.settings.url}/reset-password?token=${reset_token}&path=${path_to_folder}`;
+        const encoded_path_to_folder = encodeURIComponent(path_to_folder);
+
+        const reset_link = `${global.settings.url}/reset-password?token=${reset_token}&path=${encoded_path_to_folder}`;
 
         dev.log("reset_link", reset_link);
 

@@ -1385,4 +1385,6 @@ export default {
   topics_pinned: "Sujet épinglé | Sujets épinglés",
 
   no_email_from_folder: "Aucun courriel associé à ce compte.",
+  set_new_password_for_account:
+    "Définir un nouveau mot de passe pour le compte ",
 };

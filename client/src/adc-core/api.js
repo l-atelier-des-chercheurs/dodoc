@@ -503,6 +503,14 @@ export default function () {
           throw this.processError(err);
         }
       },
+      async resetPassword({ path, new_password, token }) {
+        const response = await this.$axios.post(`${path}/_resetPassword`, {
+          new_password,
+          token,
+        });
+        return response.data;
+      },
+
       async logoutFromFolder() {
         const path = this.tokenpath.token_path;
         const auth_infos = {
