@@ -21,7 +21,11 @@ module.exports = (function () {
   })();
 
   const API = {
-    async createAndStoreToken({ path_to_folder }) {
+    async createAndStoreToken({
+      path_to_folder,
+      purpose = "auth",
+      expires_in_minutes,
+    }) {
       dev.logfunction({ path_to_folder });
       // todo replace with jwt with expiration
       // https://www.digitalocean.com/community/tutorials/nodejs-jwt-expressjs
@@ -29,10 +33,12 @@ module.exports = (function () {
       tokens[token] = {
         token_path: utils.convertToSlashPath(path_to_folder),
         issued: +new Date(),
+        purpose,
+        expires_in_minutes,
       };
 
       API.updateTokensFile();
-      dev.logverbose("set new token", { token, path_to_folder });
+      dev.logverbose("set new token", { token, path_to_folder, purpose });
       return token;
     },
 
@@ -53,7 +59,7 @@ module.exports = (function () {
       try {
         const { token, token_path } = JSON.parse(req.headers.authorization);
         if (token && token_path) {
-          API.checkTokenValidity({ token, token_path });
+          API.checkTokenValidity({ token, token_path, purpose: "auth" });
           return token_path;
         }
       } catch (err) {
@@ -61,17 +67,23 @@ module.exports = (function () {
       }
     },
 
-    checkTokenValidity({ token, token_path }) {
+    checkTokenValidity({ token, token_path, purpose }) {
       if (!tokens.hasOwnProperty(token))
         throw new Error(`token_does_not_exist`);
       if (tokens[token].token_path !== token_path)
         throw new Error(`token_path_mismatch`);
 
+      // Check token purpose if specified
+      const token_purpose = tokens[token].purpose || "auth";
+      if (purpose && token_purpose !== purpose) {
+        throw new Error(`token_purpose_mismatch`);
+      }
+
       // check if token isn't expired
       const issued = tokens[token].issued;
-      // 7 days
       const expires_after_minutes =
-        60 * 24 * (global.settings.tokenIsValidForXDays || 60);
+        tokens[token].expires_in_minutes ||
+        60 * 24 * (global.settings.tokenIsValidForXDays || 60); // Default to 60 days if not specified
       const minutes_since_issued = (+new Date() - issued) / (1000 * 60);
 
       if (minutes_since_issued > expires_after_minutes) {
@@ -154,6 +166,12 @@ module.exports = (function () {
         if (tp.token_path === token_path) delete tokens[token];
       });
       API.updateTokensFile();
+    },
+    getTokenData(token) {
+      if (!tokens.hasOwnProperty(token)) {
+        throw new Error("token_does_not_exist");
+      }
+      return tokens[token];
     },
   };
   return API;

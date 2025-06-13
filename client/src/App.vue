@@ -15,7 +15,7 @@
       disconnect
     </button> -->
 
-    <!-- <button
+    <button
       type="button"
       @click="
         $api.recoverPassword({
@@ -24,7 +24,7 @@
       "
     >
       RECOVER
-    </button> -->
+    </button>
 
     <component :is="'style'">
       {{ custom_fonts_css }}
