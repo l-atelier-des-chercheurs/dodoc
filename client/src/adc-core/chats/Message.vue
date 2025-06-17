@@ -6,12 +6,16 @@
   >
     <div class="_message--header">
       <div class="_message--header--author">
-        <AuthorTag
-          v-if="message_author_path"
-          :key="message_author_path"
-          :path="message_author_path"
-          :size="'small'"
-        />
+        <template v-if="message_author_path">
+          <AuthorTag
+            :key="message_author_path"
+            :path="message_author_path"
+            :size="'small'"
+          />
+        </template>
+        <span v-else class="_message--header--author--anonymous">
+          {{ $t("anonymous_user") }}
+        </span>
         <!-- <span v-else-if="is_self" class="_message--header--author--self">{{
           "Vous"
         }}</span> -->
@@ -149,7 +153,7 @@ export default {
       });
     },
     message_author_path() {
-      if (this.message.$authors?.length > 0) return this.message.$authors[0];
+      if (this.message.$authors?.length > 0) return this.message.$authors?.[0];
       return undefined;
     },
     is_self() {
@@ -205,6 +209,11 @@ export default {
     display: flex;
     align-items: center;
     gap: calc(var(--spacing) / 4);
+  }
+
+  ._message--header--author--anonymous {
+    font-style: italic;
+    padding-left: calc(var(--spacing) / 4);
   }
 }
 ._message--content {

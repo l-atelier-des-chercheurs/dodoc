@@ -1400,4 +1400,6 @@ export default {
     "Un courriel vous a été envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b> sur l’adresse <b>{email}</b>.",
   recovery_mail_sent_to_instructions:
     "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
+  password_reset_successful:
+    "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
 };

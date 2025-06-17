@@ -127,7 +127,7 @@ L'équipe do•doc`,
 <p>This link will expire in 1 hour.</p>
 <p>If you did not request this password reset, you can safely ignore this email.</p>
 <p>Best regards,<br>
-The Dodoc Team</p>
+The do•doc Team</p>
 
 <hr>
 

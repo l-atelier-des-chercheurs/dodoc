@@ -119,7 +119,8 @@
               <div
                 v-if="
                   index > 0 &&
-                  day.messages[index - 1].$authors[0] !== message.$authors[0]
+                  day.messages[index - 1].$authors?.[0] !==
+                    message.$authors?.[0]
                 "
                 class="_changeAuthor"
               ></div>
