@@ -55,10 +55,7 @@ module.exports = async function () {
 
     if (global.is_electron) {
       const { dialog } = require("electron");
-      dialog.showErrorBox(
-        `Impossible de démarrer l'application`,
-        `Code erreur: ${err}`
-      );
+      dialog.showErrorBox(`Failed to start the application`, `Error: ${err}`);
     }
 
     throw err;
@@ -174,7 +171,17 @@ async function copyAndRenameUserFolder(full_default_path) {
     } catch (err) {
       // failed to write to custom path, fallback to default path
       // todo display error message to user
-      dev.error(`-> failed to write to custom path`, err);
+      dev.error(`-> failed to write to custom contentPath`, err);
+
+      if (global.is_electron) {
+        const { dialog } = require("electron");
+        dialog.showErrorBox(
+          `Failed to write to custom content path: ${global.settings.contentPath}`,
+          `Error: ${err}\n\n` +
+            `Please check if the path is correct and if you have the necessary permissions to write to it. do•doc will start with the default Documents/dodoc folder`
+        );
+      }
+
       full_path_to_content = path.join(user_dir_path, "dodoc");
       dev.log("fallback to default path for content", full_path_to_content);
     }
