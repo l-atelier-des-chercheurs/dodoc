@@ -18,7 +18,7 @@
         </button>
         <div class="_baseModal--content">
           <header v-if="title">
-            <h3>{{ title }}</h3>
+            <h2>{{ title }}</h2>
           </header>
           <div
             class="_content"
@@ -254,7 +254,7 @@ header {
   }
 
   ._baseModal[data-size="full"] & {
-    padding: 0;
+    // padding: 0;
   }
 
   &.has_nofooter {

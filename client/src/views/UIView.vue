@@ -159,6 +159,75 @@
     </div>
 
     <div class="u-spacingBottom"></div>
+
+    <button class="u-button" @click="show_modal = 1">Show modal small</button>
+    <BaseModal2
+      v-if="show_modal === 1"
+      :size="'small'"
+      :title="$t('title')"
+      :is_closable="true"
+      @close="show_modal = 0"
+    >
+      <div>Test</div>
+    </BaseModal2>
+
+    <button class="u-button" @click="show_modal = 2">Show modal large</button>
+    <BaseModal2
+      v-if="show_modal === 2"
+      :size="'large'"
+      :title="$t('title')"
+      :is_closable="true"
+      @close="show_modal = 0"
+    >
+      <div>Test</div>
+    </BaseModal2>
+    <button class="u-button" @click="show_modal = 3">Show modal x-large</button>
+    <BaseModal2
+      v-if="show_modal === 3"
+      :size="'x-large'"
+      :title="$t('title')"
+      :is_closable="true"
+      @close="show_modal = 0"
+    >
+      <div>
+        Test
+        <img
+          src="https://latelier-des-chercheurs.fr/content/apercu.png"
+          alt="test"
+        />
+      </div>
+    </BaseModal2>
+
+    <button class="u-button" @click="show_modal = 4">Show modal full</button>
+    <BaseModal2
+      v-if="show_modal === 4"
+      :size="'full'"
+      :title="$t('title')"
+      :is_closable="true"
+      @close="show_modal = 0"
+    >
+      <div>
+        Test
+        <img
+          src="https://latelier-des-chercheurs.fr/content/apercu.png"
+          alt="test"
+        />
+      </div>
+    </BaseModal2>
+
+    <button class="u-button" @click="show_modal = 5">
+      Show modal nopadding
+    </button>
+    <BaseModal2
+      v-if="show_modal === 5"
+      :nopadding="true"
+      @close="show_modal = 0"
+    >
+      <img
+        src="https://latelier-des-chercheurs.fr/content/apercu.png"
+        alt="test"
+      />
+    </BaseModal2>
   </div>
 </template>
 <script>
@@ -168,6 +237,7 @@ export default {
   data() {
     return {
       authors: [],
+      show_modal: 0,
     };
   },
   created() {},
