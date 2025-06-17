@@ -163,70 +163,58 @@
     <button class="u-button" @click="show_modal = 1">Show modal small</button>
     <BaseModal2
       v-if="show_modal === 1"
-      :size="'small'"
-      :title="$t('title')"
-      :is_closable="true"
-      @close="show_modal = 0"
-    >
-      <div>Test</div>
-    </BaseModal2>
-
-    <button class="u-button" @click="show_modal = 2">Show modal large</button>
-    <BaseModal2
-      v-if="show_modal === 2"
-      :size="'large'"
-      :title="$t('title')"
-      :is_closable="true"
-      @close="show_modal = 0"
-    >
-      <div>Test</div>
-    </BaseModal2>
-    <button class="u-button" @click="show_modal = 3">Show modal x-large</button>
-    <BaseModal2
-      v-if="show_modal === 3"
-      :size="'x-large'"
-      :title="$t('title')"
-      :is_closable="true"
+      :size="modal_size"
+      :title="modal_notitle ? '' : $t('title')"
+      :nopadding="modal_nopadding"
       @close="show_modal = 0"
     >
       <div>
-        Test
-        <img
-          src="https://latelier-des-chercheurs.fr/content/apercu.png"
-          alt="test"
+        <label
+          v-for="size in ['small', 'large', 'x-large', 'full']"
+          :key="size"
+        >
+          <input type="radio" v-model="modal_size" :value="size" />
+          {{ size }}
+        </label>
+        <div class="u-spacingBottom"></div>
+        <ToggleInput
+          :label="$t('no_padding')"
+          :content.sync="modal_nopadding"
         />
+        <div class="u-spacingBottom"></div>
+        <ToggleInput :label="$t('no_title')" :content.sync="modal_notitle" />
+        <div class="u-spacingBottom"></div>
+        <p>
+          Pellentesque vitae maximus enim. Suspendisse consequat nisl dui, eu
+          efficitur erat pulvinar id. Sed nec arcu nec est sagittis finibus non
+          eget mauris. Donec ornare lectus quis bibendum gravida. Vestibulum
+          quis laoreet purus. Ut semper, justo ut malesuada aliquam, velit arcu
+          consequat erat, eu lacinia orci orci eu sem. Sed sodales tristique
+          nunc, in lobortis sapien pulvinar non. Nam luctus euismod justo quis
+          semper. Fusce sit amet tortor ut odio dignissim ultrices vel nec
+          ligula. Nunc odio nulla, rutrum a tristique non, porttitor vel massa.
+          Integer eget pulvinar orci.
+        </p>
+        <figure>
+          <img
+            src="https://latelier-des-chercheurs.fr/content/apercu.png"
+            alt="test"
+          />
+          <figcaption>
+            <p>
+              Pellentesque vitae maximus enim. Suspendisse consequat nisl dui,
+              eu efficitur erat pulvinar id. Sed nec arcu nec est sagittis
+              finibus non eget mauris. Donec ornare lectus quis bibendum
+              gravida. Vestibulum quis laoreet purus. Ut semper, justo ut
+              malesuada aliquam, velit arcu consequat erat, eu lacinia orci orci
+              eu sem. Sed sodales tristique nunc, in lobortis sapien pulvinar
+              non. Nam luctus euismod justo quis semper. Fusce sit amet tortor
+              ut odio dignissim ultrices vel nec ligula. Nunc odio nulla, rutrum
+              a tristique non, porttitor vel massa. Integer eget pulvinar orci.
+            </p>
+          </figcaption>
+        </figure>
       </div>
-    </BaseModal2>
-
-    <button class="u-button" @click="show_modal = 4">Show modal full</button>
-    <BaseModal2
-      v-if="show_modal === 4"
-      :size="'full'"
-      :title="$t('title')"
-      :is_closable="true"
-      @close="show_modal = 0"
-    >
-      <div>
-        Test
-        <img
-          src="https://latelier-des-chercheurs.fr/content/apercu.png"
-          alt="test"
-        />
-      </div>
-    </BaseModal2>
-
-    <button class="u-button" @click="show_modal = 5">
-      Show modal nopadding
-    </button>
-    <BaseModal2
-      v-if="show_modal === 5"
-      :nopadding="true"
-      @close="show_modal = 0"
-    >
-      <img
-        src="https://latelier-des-chercheurs.fr/content/apercu.png"
-        alt="test"
-      />
     </BaseModal2>
   </div>
 </template>
@@ -238,6 +226,9 @@ export default {
     return {
       authors: [],
       show_modal: 0,
+      modal_size: "small",
+      modal_nopadding: false,
+      modal_notitle: false,
     };
   },
   created() {},
