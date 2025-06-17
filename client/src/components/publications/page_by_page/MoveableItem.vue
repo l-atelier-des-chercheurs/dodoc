@@ -586,7 +586,8 @@ export default {
 
     ._mediasModule {
       height: 100%;
-      overflow: hidden;
+      // necessary for box-shadows to be visible in page by page
+      overflow: visible;
     }
 
     ._mediaGrid,
