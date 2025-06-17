@@ -10,6 +10,8 @@
     /> -->
 
     <TitleField
+      :label="$t('content')"
+      :show_label="false"
       :input_type="'editor'"
       :custom_formats="['bold', 'italic', 'link']"
       :content="cell.content"
