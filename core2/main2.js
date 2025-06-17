@@ -55,10 +55,7 @@ module.exports = async function () {
 
     if (global.is_electron) {
       const { dialog } = require("electron");
-      dialog.showErrorBox(
-        `Impossible de démarrer l'application`,
-        `Code erreur: ${err}`
-      );
+      dialog.showErrorBox(`Failed to start the application`, `Error: ${err}`);
     }
 
     throw err;
@@ -159,30 +156,51 @@ async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
   const user_dir_path = paths.getDocumentsFolder();
-
   let full_path_to_content;
-  const path_is_custom =
-    global.settings.contentPath.startsWith("/") ||
-    global.settings.contentPath.includes(path.sep);
 
-  if (path_is_custom) {
-    try {
-      // attempt to use custom path
-      const custom_path = global.settings.contentPath.replaceAll("/", path.sep);
-      await utils.testWriteFileInFolder(custom_path);
-      full_path_to_content = custom_path;
-    } catch (err) {
-      // failed to write to custom path, fallback to default path
-      // todo display error message to user
-      dev.error(`-> failed to write to custom path`, err);
-      full_path_to_content = path.join(user_dir_path, "dodoc");
-      dev.log("fallback to default path for content", full_path_to_content);
-    }
+  if (
+    global.settings.contentPath.includes("/") ||
+    global.settings.contentPath.includes(path.sep)
+  ) {
+    full_path_to_content = global.settings.contentPath.replaceAll(
+      "/",
+      path.sep
+    );
   } else {
     full_path_to_content = path.join(
       user_dir_path,
       global.settings.contentPath
     );
+  }
+
+  try {
+    // Check write permissions for both custom and default paths
+    await utils.testWriteFileInFolder(full_path_to_content);
+  } catch (err) {
+    dev.error(`-> failed to write to content path`, err);
+
+    if (global.is_electron) {
+      const { dialog } = require("electron");
+      dialog.showErrorBox(
+        `Failed to write to content path: ${full_path_to_content}`,
+        `Error: ${err}\n\n` +
+          `Please check if the path is correct and if you have the necessary permissions to write to it. do•doc will start with the default Documents/dodoc folder`
+      );
+    }
+
+    // Fallback to default path
+    full_path_to_content = path.join(user_dir_path, "dodoc");
+    dev.log("fallback to default path for content", full_path_to_content);
+
+    // Check write permissions for fallback path
+    try {
+      await utils.testWriteFileInFolder(full_path_to_content);
+    } catch (fallbackErr) {
+      dev.error(`-> failed to write to fallback path`, fallbackErr);
+      throw new Error(
+        `Cannot write to any content directory: ${fallbackErr.message}`
+      );
+    }
   }
 
   if (await contentFolderIsValid(full_path_to_content)) {
