@@ -336,10 +336,6 @@ export default {
       type: Number,
       default: 1,
     },
-    zoom_animation: {
-      type: Number,
-      default: 0,
-    },
     map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
@@ -1340,22 +1336,6 @@ export default {
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
       const duration = 1400;
-
-      // if (this.zoom_animation && this.zoom_animation > 0)
-      //   this.view.animate(
-      //     {
-      //       zoom: zoom - this.zoom_animation,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   this.view.animate(
-      //     {
-
-      //       zoom: zoom,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   else
       this.view.animate({
         center,
         duration,

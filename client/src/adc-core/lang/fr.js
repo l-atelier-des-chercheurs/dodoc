@@ -1081,7 +1081,6 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
-  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",

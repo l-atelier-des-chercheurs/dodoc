@@ -1020,7 +1020,6 @@ export default {
   bw_filter: "Black and white filter",
   failed_loading_tiles:
     "Failed loading the baselayer, you can try to zoom out.",
-  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",

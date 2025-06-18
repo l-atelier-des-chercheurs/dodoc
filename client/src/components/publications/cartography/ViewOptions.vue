@@ -115,23 +115,6 @@
             "
           />
         </div>
-
-        <div class="u-spacingBottom">
-          <RangeValueInput
-            :label="$t('zoom_animation')"
-            :value="view.zoom_animation"
-            :min="0"
-            :max="5"
-            :step="0.1"
-            :default_value="0"
-            @save="
-              updateView({
-                field: 'zoom_animation',
-                value: $event,
-              })
-            "
-          />
-        </div>
       </DetailsPane>
     </div>
   </div>
