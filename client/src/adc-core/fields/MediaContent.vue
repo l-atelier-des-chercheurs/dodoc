@@ -281,12 +281,7 @@ export default {
     load_iframe_type() {
       if (this.file.$type === "pdf") return "pdf";
       if (["stl", "obj"].includes(this.file.$type)) return "3D file";
-      if (
-        this.url_to_site.type === "any" ||
-        (this.url_to_site.type === "youtube" &&
-          this.url_to_site.src.includes("start="))
-      )
-        return "any";
+      if (this.url_to_site.type === "any") return "any";
       return "video";
     },
     thumb() {
@@ -368,6 +363,19 @@ export default {
     loadIframe() {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
+
+      setTimeout(() => {
+        // if the iframe is a youtube video and it has a start parameter,
+        // we need to set the time to the start parameter
+        if (
+          this.url_to_site.type === "youtube" &&
+          this.url_to_site.src.includes("start=")
+        ) {
+          this.$refs.plyr.player.currentTime = Number(
+            this.url_to_site.src.split("start=")[1]
+          );
+        }
+      }, 500);
     },
   },
 };
