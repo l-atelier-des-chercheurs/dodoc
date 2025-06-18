@@ -140,26 +140,30 @@
               </div> -->
             </div>
             <iframe
-              v-if="file.$type === 'pdf'"
+              v-if="load_iframe_type === 'pdf'"
               class=""
               frameborder="0"
               :src="file_full_path"
               @load="iframeLoaded"
             />
             <ThreeDPreview
-              v-else-if="['stl', 'obj'].includes(file.$type)"
+              v-else-if="load_iframe_type === '3D file'"
               class="_threeDPreview"
               :key="file_full_path"
               :file_type="file.$type"
               :src="file_full_path"
             />
             <iframe
-              v-else-if="url_to_site.type === 'any'"
-              :src="url_to_site.src"
+              v-else-if="load_iframe_type === 'any'"
               frameborder="0"
+              :src="url_to_site.src"
               @load="iframeLoaded"
             />
-            <vue-plyr v-else :key="'plyr-' + file_full_path" ref="plyr">
+            <vue-plyr
+              v-else-if="load_iframe_type === 'video'"
+              :key="'plyr-' + file_full_path"
+              ref="plyr"
+            >
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"
@@ -274,6 +278,17 @@ export default {
   },
   watch: {},
   computed: {
+    load_iframe_type() {
+      if (this.file.$type === "pdf") return "pdf";
+      if (["stl", "obj"].includes(this.file.$type)) return "3D file";
+      if (
+        this.url_to_site.type === "any" ||
+        (this.url_to_site.type === "youtube" &&
+          this.url_to_site.src.includes("start="))
+      )
+        return "any";
+      return "video";
+    },
     thumb() {
       if (this.file.$thumbs === "no_preview" || !this.file.$path) return false;
 
