@@ -63,7 +63,21 @@
       <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
         <!-- hidden if electron, need to find alternative strategy -->
         <button type="button" class="u-button" @click="getCurrentPosition">
-          <b-icon class="inlineSVG" icon="disc-fill" />
+          <span class="u-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle fill="transparent" cx="12" cy="12" r="8" />
+              <circle fill="currentColor" cx="12" cy="12" r="4" />
+              <line x1="0" y1="12" x2="24" y2="12" />
+              <line x1="12" y1="0" x2="12" y2="24" />
+            </svg>
+          </span>
         </button>
       </div>
 
