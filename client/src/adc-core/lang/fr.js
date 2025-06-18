@@ -1404,4 +1404,5 @@ export default {
   looking_for_gps_coordinates:
     "Recherche des coordonnées GPS de votre appareil...",
   gps_coordinates_found: "Coordonnées GPS trouvées.",
+  column_count: "Nombre de colonnes",
 };
