@@ -899,9 +899,13 @@ export default {
         timeout: 5000,
         maximumAge: 0,
       };
+
+      this.$alertify.delay(4000).log(this.$t("looking_for_gps_coordinates"));
+
       const success = async (pos) => {
         var crd = pos.coords;
         this.is_looking_for_gps_coords = false;
+        this.$alertify.delay(4000).success(this.$t("gps_coordinates_found"));
         await this.setClickBtn({
           longitude: crd.longitude,
           latitude: crd.latitude,

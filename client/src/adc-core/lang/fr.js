@@ -1402,4 +1402,7 @@ export default {
     "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
   password_reset_successful:
     "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+  looking_for_gps_coordinates:
+    "Recherche des coordonnées GPS de votre appareil...",
+  gps_coordinates_found: "Coordonnées GPS trouvées.",
 };
