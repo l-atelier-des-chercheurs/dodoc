@@ -117,7 +117,7 @@
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
-                <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
+                <use xlink:href="#plyr-play" />
               </svg>
               <span class="plyr__sr-only">{{ $t("play") }}</span>
             </button>
