@@ -13,7 +13,7 @@
       :label="$t('content')"
       :show_label="false"
       :input_type="'editor'"
-      :custom_formats="['bold', 'italic', 'link']"
+      :custom_formats="['bold', 'italic', 'link', 'align']"
       :content="cell.content"
       :can_edit="can_edit"
       @save="save({ key: 'content', value: $event })"
@@ -68,9 +68,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._cellEdit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
 
   ::v-deep {
     ._collaborativeEditor {
