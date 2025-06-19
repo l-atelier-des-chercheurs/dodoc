@@ -21,6 +21,7 @@
     "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
+    "dist:win-store": "electron-builder --win appx",
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
