@@ -969,6 +969,10 @@ export default {
   }
   &[data-tilemode="table"] {
     display: block;
+    // flex-flow: column nowrap;
+    // align-items: stretch;
+    // justify-content: stretch;
+    // overflow-x: auto;
   }
 }
 
@@ -1033,7 +1037,7 @@ export default {
 }
 
 ._gridSection {
-  padding-bottom: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 1);
 }
 
 ._mediaCount {
@@ -1139,7 +1143,8 @@ export default {
   --dropzone-color2: var(--c-rouge);
   color: white;
 
-  width: 100%;
+  flex: 1 1 auto;
+  // width: 100%;
 }
 
 ._importCreateTextButtons--createText {
@@ -1175,6 +1180,7 @@ export default {
   text-transform: lowercase;
 }
 ._binButton {
-  margin: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  text-align: center;
 }
 </style>
