@@ -1336,4 +1336,8 @@ export default {
     "You can now close this window and open the email to reset your password.",
   password_reset_successful:
     "Password reset successfully. You can now log in with your new password.",
+  looking_for_gps_coordinates: "Looking for GPS coordinates...",
+  gps_coordinates_found: "GPS coordinates found.",
+  column_count: "Column count",
+  restore_publications: "Restore deleted publications",
 };

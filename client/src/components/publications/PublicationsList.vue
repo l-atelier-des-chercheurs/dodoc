@@ -80,10 +80,17 @@
         <BinFolder
           v-if="show_bin_modal"
           :modal_title="$t('restore_publications')"
-          :path="project.$path"
-          :subfolders_type="'publications'"
+          :path="project.$path + '/publications'"
           @close="show_bin_modal = false"
-        />
+        >
+          <template v-slot="slotProps">
+            <PublicationPreview
+              :publication="slotProps.project"
+              :template_options="template_options"
+              :can_edit="slotProps.can_edit"
+            />
+          </template>
+        </BinFolder>
       </template>
     </div>
   </div>
