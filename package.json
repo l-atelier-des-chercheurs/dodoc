@@ -22,7 +22,7 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:win-store": "electron-builder --win appx",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps && node scripts/cleanup-ffprobe.js"
   },
   "engines": {
     "node": "22.14.0",
