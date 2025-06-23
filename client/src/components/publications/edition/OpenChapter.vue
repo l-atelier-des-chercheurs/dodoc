@@ -359,10 +359,11 @@ export default {
       md.use(markdownItCsc, {
         getMediaSrc: (src) => {
           const folder_path = this.getParent(this.chapter.$path);
+
+          let source_media = this.transformMediaSrc(src);
+
           return this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: src,
-            },
+            source_media,
             folder_path,
           });
         },
@@ -406,16 +407,14 @@ export default {
         if (["image", "video", "audio"].includes(token.tag) && token.content) {
           const meta_src = token.content;
           const folder_path = this.getParent(this.chapter.$path);
+
+          const source_media = this.transformMediaSrc(meta_src);
           const media = this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: meta_src,
-            },
+            source_media,
             folder_path,
           });
           if (media) {
-            source_medias.push({
-              meta_filename_in_project: meta_src,
-            });
+            source_medias.push(source_media);
           }
         }
         // Call the original renderer if it exists, otherwise return empty string
@@ -455,6 +454,22 @@ export default {
       const editor = this.$refs.collaborativeEditor;
       if (editor) {
         editor.insertAtCursor(text);
+      }
+    },
+
+    transformMediaSrc(meta_src) {
+      if (meta_src.startsWith("./")) {
+        return {
+          meta_filename: meta_src.substring(2),
+        };
+      } else if (meta_src.startsWith("../")) {
+        return {
+          meta_filename_in_project: meta_src.substring(3),
+        };
+      } else {
+        return {
+          meta_filename_in_project: meta_src,
+        };
       }
     },
 

@@ -66,7 +66,9 @@ export default {
     },
     makeMediaFileURL({ $path, $media_filename }) {
       const full_path = this.makeMediaFilePath({ $path, $media_filename });
-      return window.location.origin + full_path;
+      if (!window.app_infos.page_is_standalone_html)
+        return window.location.origin + full_path;
+      else return full_path;
     },
     getSourceMedia({ source_media, folder_path }) {
       // three cases : source_media contains

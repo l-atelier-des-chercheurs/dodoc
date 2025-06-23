@@ -488,16 +488,34 @@ export default {
     getMediaSrc(meta_src, source_medias) {
       if (!meta_src) return;
 
-      let media = this.getSourceMedia({
-        source_media: {
+      let source_media;
+
+      if (meta_src.startsWith("./")) {
+        meta_src = meta_src.substring(2);
+        source_media = {
+          meta_filename: meta_src,
+        };
+      } else if (meta_src.startsWith("../")) {
+        meta_src = meta_src.substring(3);
+        source_media = {
           meta_filename_in_project: meta_src,
-        },
+        };
+      } else {
+        source_media = {
+          meta_filename_in_project: meta_src,
+        };
+      }
+
+      let media = this.getSourceMedia({
+        source_media,
         folder_path: this.publication.$path,
       });
 
       if (!media) {
+        debugger;
         // attempt to find in chapter source_medias
         if (source_medias?.length > 0) {
+          debugger;
           const local_media = source_medias.find(
             (sm) => sm.meta_filename_in_project === meta_src
           );
