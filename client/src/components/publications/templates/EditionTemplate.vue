@@ -156,7 +156,7 @@ export default {
   watch: {},
   computed: {
     view_mode() {
-      return this.pane_infos?.view_mode || "book";
+      return this.$route.query?.view_mode || "book";
     },
     all_chapters() {
       return this.getSectionsWithProps({
