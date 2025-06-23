@@ -120,8 +120,8 @@ export default {
   methods: {},
 };
 </script>
-<style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
-<style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
+<style src="@node_modules/splitpanes/dist/splitpanes.css"></style>
+<style src="@node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
 :root {
   --spacing: 1rem;
