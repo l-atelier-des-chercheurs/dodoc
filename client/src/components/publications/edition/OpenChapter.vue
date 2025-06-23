@@ -430,7 +430,9 @@ export default {
         (media, index, self) =>
           index ===
           self.findIndex(
-            (t) => t.meta_filename_in_project === media.meta_filename_in_project
+            (t) =>
+              t.meta_filename_in_project === media.meta_filename_in_project ||
+              t.meta_filename === media.meta_filename
           )
       );
 
