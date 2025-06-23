@@ -13,7 +13,16 @@
         </div>
         <div class="_topImg">
           <figure>
-            <img :src="$root.publicPath + '/home/agora-screenshot.jpeg'" />
+            <!-- <img :src="$root.publicPath + '/home/agora-screenshot.jpeg'" /> -->
+            <div class="_fakeBrowserBar" />
+            <video
+              :src="$root.publicPath + '/home/agora-r.mp4'"
+              autoplay
+              loop
+              muted
+              playsinline
+              class="agora-video"
+            />
             <figcaption>
               Aperçu du format de présentation dans l’espace : Agora
             </figcaption>
@@ -216,8 +225,8 @@ By documenting your work, you help create assemblages, of materials, skills, and
 }
 
 ._topImg {
-  flex: 1 1 420px;
-  min-width: 320px;
+  flex: 1 1 220px;
+  // min-width: 320px;
   // min-height: 320px;
 
   figure {
@@ -225,6 +234,47 @@ By documenting your work, you help create assemblages, of materials, skills, and
     margin: 0;
     background-color: transparent;
     text-align: right;
+
+    --radius: 8px;
+
+    ._fakeBrowserBar {
+      position: relative;
+      width: 100%;
+      height: 15px;
+      background-color: var(--g-200);
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        // left: 50%;
+        transform: translate(5px, -50%);
+        // padding-top: 100%;
+        margin: 2px;
+        width: 5px;
+        height: 5px;
+        background-color: var(--g-500);
+        border-radius: 50%;
+        // position: absolute;
+        // top: 50%;
+        // left: 50%;
+        // transform: translate(-50%, -50%);
+      }
+    }
+
+    video {
+      // max-height: max(60vh, 320px);
+      // width: max(100%, 220px);
+      height: auto;
+      border-bottom-left-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
+      overflow: hidden;
+      background-color: var(--g-50);
+      border: 2px solid var(--g-200);
+    }
 
     figcaption {
       margin-top: calc(var(--spacing) / 2);
