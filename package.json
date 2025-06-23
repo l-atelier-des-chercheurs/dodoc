@@ -18,7 +18,8 @@
   "scripts": {
     "start": "node .",
     "debug": "node . --inspect=5858 -- --debug --verbose",
-    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload"
+    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
+    "postinstall": "node scripts/cleanup-ffprobe.js"
   },
   "engines": {
     "node": "22.14.0",
