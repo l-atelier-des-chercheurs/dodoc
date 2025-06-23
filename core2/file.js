@@ -117,7 +117,7 @@ module.exports = (function () {
       let metas = [];
       for (const meta_filename of meta_filenames) {
         try {
-          dev.logverbose(`reading ${meta_filename}`);
+          // dev.logverbose(`reading ${meta_filename}`);
 
           const path_to_meta = path.join(path_to_folder, meta_filename);
           let meta = await API.getFile({

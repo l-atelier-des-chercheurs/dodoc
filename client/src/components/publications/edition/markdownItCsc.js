@@ -213,6 +213,7 @@ export default (md, o = {}) => {
         src = token.attrs.src;
       } else {
         let msg = "⚠️ Media not found";
+        debugger;
         return `<div class="media media-error"><i>${msg}</i></div>`;
       }
 

@@ -140,17 +140,36 @@ export default {
     };
   },
   methods: {
-    pickMedias(medias) {
+    async pickMedias(medias) {
       this.medias_were_picked = true;
-      this.pick_medias_text = this.makeStringFromMedias(medias);
+
+      let source_medias = [];
+      for (const media of medias) {
+        const import_mode = this.$root.publication_include_mode;
+        const new_entry = await this.prepareMediaForPublication({
+          path_to_source_media_meta: media.$path,
+          publication_path: this.publication_path,
+          import_mode,
+        });
+        new_entry.$type = media.$type;
+        new_entry.caption = media.caption;
+        source_medias.push(new_entry);
+      }
+
+      this.pick_medias_text = this.makeStringFromMedias(source_medias);
     },
-    makeStringFromMedias(medias) {
+    makeStringFromMedias(source_medias) {
       let html = [];
 
-      medias.map((m) => {
+      source_medias.map((m) => {
         let media_html = "(";
 
-        const meta_filename = m.$path.split("/").pop();
+        let src;
+        if (m.hasOwnProperty("meta_filename_in_project")) {
+          src = "../" + m.meta_filename_in_project;
+        } else if (m.hasOwnProperty("meta_filename")) {
+          src = "./" + m.meta_filename;
+        }
 
         let tag;
         if (m.$type === "image") tag = "image";
@@ -158,7 +177,7 @@ export default {
         else if (m.$type === "audio") tag = "audio";
         else throw new Error("Unknown media type");
 
-        media_html += `${tag}: ${meta_filename}`;
+        media_html += `${tag}: ${src}`;
 
         if (m.caption) {
           const md_caption = this.turnHtmlToMarkdown(m.caption);
