@@ -5,7 +5,7 @@
         <div class="_loader" v-if="is_loading" key="loader">
           <LoaderSpinner />
         </div>
-        <div v-else-if="bin_items.length === 0" key="empty">
+        <div v-else-if="bin_folders.length === 0" key="empty">
           <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
         </div>
         <div v-else key="content">
@@ -13,7 +13,7 @@
             <div class="u-metaField">
               <DLabel :str="$t('items_in_bin')" />
               <div>
-                {{ bin_items.length }}
+                {{ bin_folders.length }}
               </div>
             </div>
             <SizeDisplay
@@ -24,23 +24,15 @@
           </div>
 
           <!-- <hr /> -->
+
           <div class="_items">
             <BinFolderItem
-              v-for="bin_item in bin_items"
-              :key="bin_item.$path"
-              :item="bin_item"
+              v-for="bin_folder in bin_folders"
+              :key="bin_folder.slug"
+              :folder="bin_folder"
               @restoredSuccessfully="getBinContent"
               @removedSuccessfully="getBinContent"
-            >
-              <template v-slot="slotProps">
-                <slot
-                  :project="slotProps.project"
-                  :context="slotProps.context"
-                  :display_original_space="slotProps.display_original_space"
-                  :can_edit="slotProps.can_edit"
-                />
-              </template>
-            </BinFolderItem>
+            />
           </div>
         </div>
       </transition>
@@ -55,6 +47,7 @@ export default {
     button_text: String,
     modal_title: String,
     path: String,
+    subfolders_type: String,
   },
   components: {
     BinFolderItem,
@@ -63,7 +56,7 @@ export default {
     return {
       is_loading: false,
       bin_folder_size: undefined,
-      bin_items: [],
+      bin_folders: [],
     };
   },
   async created() {
@@ -76,14 +69,14 @@ export default {
     async getBinContent() {
       const bin_content = await this.$api
         .getBin({
-          path: this.path,
+          path: `${this.path}/${this.subfolders_type}`,
         })
         .catch((err) => {
           console.error(err);
         });
 
       this.bin_folder_size = bin_content.size;
-      this.bin_items = bin_content.items;
+      this.bin_folders = bin_content.folders;
     },
     // async emptyBin(path) {
     //   await this.$api.emptyBin({ path });

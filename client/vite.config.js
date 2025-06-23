@@ -34,7 +34,6 @@ export default defineConfig({
       ),
     },
   },
-  assetsInclude: ["**/*.svg"],
   server: {
     https: true,
     port: 5173,
@@ -50,21 +49,10 @@ export default defineConfig({
     assetsDir: "assets",
     emptyOutDir: true,
     rollupOptions: {
-      input: "./src/main.js",
-      output: [
-        {
-          format: "iife",
-          entryFileNames: "bundle.js",
-          globals: {
-            vue: "Vue",
-            "vue-router": "VueRouter",
-          },
-        },
-        {
-          format: "es",
-          entryFileNames: "build.js",
-        },
-      ],
+      input: "./src/main.js", // Specify your JS entry point here
+      output: {
+        entryFileNames: "build.js",
+      },
     },
   },
 });

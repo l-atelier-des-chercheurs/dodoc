@@ -617,18 +617,9 @@ export default function () {
         this.$eventHub.$emit("hooks.copyFile", { path });
         return response.data.meta_filename;
       },
-      async copyFolder({
-        path,
-        new_meta = {},
-        path_to_destination_type = "",
-        is_copy_or_move = "copy",
-      }) {
+      async copyFolder({ path, new_meta = {}, path_to_destination_type = "" }) {
         const response = await this.$axios
-          .post(`${path}/_copy`, {
-            new_meta,
-            path_to_destination_type,
-            is_copy_or_move,
-          })
+          .post(`${path}/_copy`, { new_meta, path_to_destination_type })
           .catch((err) => {
             throw this.processError(err);
           });

@@ -431,6 +431,9 @@
                     "all_pins_icon": {
                       "type": "boolean"
                     },
+                    "zoom_animation": {
+                      "type": "number"
+                    },
                     "map_baselayer": {
                       "type": "string"
                     },

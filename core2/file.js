@@ -276,52 +276,6 @@ module.exports = (function () {
 
       return changed_data;
     },
-
-    getFilesBin: async ({ path_to_folder }) => {
-      dev.logfunction({ path_to_folder });
-
-      const bin_folder_path = _getBinFolderPath(path_to_folder);
-
-      const bin_files = await API.getFiles({
-        path_to_folder: bin_folder_path,
-      });
-
-      const bin_size = await utils.getFolderSize(bin_folder_path);
-
-      return {
-        size: bin_size,
-        items: bin_files,
-      };
-    },
-
-    restoreFileFromBin: async ({ path_to_folder, meta_filename }) => {
-      dev.logfunction({ path_to_folder, meta_filename });
-
-      const bin_folder_path = _getBinFolderPath(path_to_folder);
-      const path_to_file_in_bin = path.join(bin_folder_path, meta_filename);
-
-      const restored_file_path = await API.copyFile({
-        path_to_folder: bin_folder_path,
-        path_to_destination_folder: path_to_folder,
-        meta_filename: meta_filename,
-        path_to_meta: path_to_file_in_bin,
-        new_meta: {},
-      });
-
-      // Remove the file from bin after successful restore
-      await _removeFileForGood({ path_to_meta: path_to_file_in_bin });
-
-      return restored_file_path;
-    },
-
-    removeBinFile: async ({ path_to_folder, meta_filename }) => {
-      dev.logfunction({ path_to_folder, meta_filename });
-
-      const bin_folder_path = _getBinFolderPath(path_to_folder);
-      const path_to_file_in_bin = path.join(bin_folder_path, meta_filename);
-      await _removeFileForGood({ path_to_meta: path_to_file_in_bin });
-    },
-
     _regenerateThumbs: async ({
       path_to_folder,
       path_to_meta,
@@ -374,9 +328,9 @@ module.exports = (function () {
             if (remove_permanently === true)
               await fs.remove(full_path_to_file_or_folder);
             else {
-              const bin_folder_path = _getBinFolderPath(path_to_folder);
               const dest_path = utils.getPathToUserContent(
-                bin_folder_path,
+                path_to_folder,
+                global.settings.deletedFolderName,
                 file_folder_names
               );
               await fs.move(full_path_to_file_or_folder, dest_path, {
@@ -781,43 +735,6 @@ module.exports = (function () {
     if (_map) meta["_map_base_media"] = _map;
 
     return meta;
-  }
-
-  async function _removeFileForGood({ path_to_meta }) {
-    dev.logfunction({ path_to_meta });
-
-    const path_to_folder = utils.getContainingFolder(path_to_meta);
-    const meta_filename = path.basename(path_to_meta);
-
-    try {
-      await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
-      await archives.removeFileArchives({ path_to_folder, meta_filename });
-
-      const _all_files_and_folders = await _getAllFilesAndFolders({
-        path_to_folder,
-        meta_filename,
-      });
-
-      for (const file_folder_names of _all_files_and_folders) {
-        const full_path_to_file_or_folder = utils.getPathToUserContent(
-          path_to_folder,
-          file_folder_names
-        );
-        await fs.remove(full_path_to_file_or_folder);
-      }
-
-      cache.delete({
-        key: `${path_to_meta}`,
-      });
-
-      return;
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  function _getBinFolderPath(path_to_folder) {
-    return path.join(path_to_folder, global.settings.deletedFolderName);
   }
 
   return API;

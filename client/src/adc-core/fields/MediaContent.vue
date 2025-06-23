@@ -117,7 +117,7 @@
               @click="loadIframe"
             >
               <svg aria-hidden="true" focusable="false">
-                <use xlink:href="#plyr-play" />
+                <use :xlink:href="$root.publicPath + 'plyr.svg#plyr-play'" />
               </svg>
               <span class="plyr__sr-only">{{ $t("play") }}</span>
             </button>
@@ -140,30 +140,26 @@
               </div> -->
             </div>
             <iframe
-              v-if="load_iframe_type === 'pdf'"
+              v-if="file.$type === 'pdf'"
               class=""
               frameborder="0"
               :src="file_full_path"
               @load="iframeLoaded"
             />
             <ThreeDPreview
-              v-else-if="load_iframe_type === '3D file'"
+              v-else-if="['stl', 'obj'].includes(file.$type)"
               class="_threeDPreview"
               :key="file_full_path"
               :file_type="file.$type"
               :src="file_full_path"
             />
             <iframe
-              v-else-if="load_iframe_type === 'any'"
-              frameborder="0"
+              v-else-if="url_to_site.type === 'any'"
               :src="url_to_site.src"
+              frameborder="0"
               @load="iframeLoaded"
             />
-            <vue-plyr
-              v-else-if="load_iframe_type === 'video'"
-              :key="'plyr-' + file_full_path"
-              ref="plyr"
-            >
+            <vue-plyr v-else :key="'plyr-' + file_full_path" ref="plyr">
               <div class="plyr__video-embed">
                 <iframe
                   :src="url_to_site.src"
@@ -278,12 +274,6 @@ export default {
   },
   watch: {},
   computed: {
-    load_iframe_type() {
-      if (this.file.$type === "pdf") return "pdf";
-      if (["stl", "obj"].includes(this.file.$type)) return "3D file";
-      if (this.url_to_site.type === "any") return "any";
-      return "video";
-    },
     thumb() {
       if (this.file.$thumbs === "no_preview" || !this.file.$path) return false;
 
@@ -363,19 +353,6 @@ export default {
     loadIframe() {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;
       this.start_iframe = true;
-
-      setTimeout(() => {
-        // if the iframe is a youtube video and it has a start parameter,
-        // we need to set the time to the start parameter
-        if (
-          this.url_to_site.type === "youtube" &&
-          this.url_to_site.src.includes("start=")
-        ) {
-          this.$refs.plyr.player.currentTime = Number(
-            this.url_to_site.src.split("start=")[1]
-          );
-        }
-      }, 500);
     },
   },
 };

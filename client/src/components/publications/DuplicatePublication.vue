@@ -164,7 +164,6 @@ export default {
         .copyFolder({
           path: this.path,
           path_to_destination_type,
-          is_copy_or_move: this.remove_original ? "move" : "copy",
           new_meta: {
             title: this.new_title,
           },

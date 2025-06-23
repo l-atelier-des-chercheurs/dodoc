@@ -312,34 +312,6 @@
               />
             </transition-group>
           </div>
-
-          <div class="_binButton" v-if="can_edit_project">
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_bin_modal = true"
-            >
-              <b-icon icon="recycle" />
-              {{ $t("bin") }}
-            </button>
-          </div>
-          <BinFolder
-            v-if="show_bin_modal"
-            :modal_title="$t('restore_medias')"
-            :path="project.$path"
-            @close="show_bin_modal = false"
-          >
-            <template v-slot="slotProps">
-              <MediaTile
-                :file="slotProps.project"
-                :index="0"
-                :project_path="project.$path"
-                :tile_mode="tile_mode"
-                :is_selectable="false"
-                :is_selected="false"
-              />
-            </template>
-          </BinFolder>
         </div>
       </transition>
 
@@ -428,7 +400,6 @@ import MediaTile from "@/components/MediaTile.vue";
 import MediaModal from "@/components/MediaModal.vue";
 import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.vue";
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
-import BinFolder from "@/adc-core/fields/BinFolder.vue";
 
 export default {
   props: {
@@ -438,7 +409,6 @@ export default {
     hide_already_present_medias: Boolean,
     meta_filenames_already_present: [Boolean, Array],
     show_only_media_of_types: [String, Array],
-    can_edit_project: Boolean,
   },
   components: {
     ImportFileZone,
@@ -447,7 +417,6 @@ export default {
     BatchEditInformationsModal,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
     DuplicateMedia,
-    BinFolder,
   },
   data() {
     return {
@@ -464,7 +433,6 @@ export default {
       hide_dropzone_timeout: undefined,
 
       fav_filter: false,
-      show_bin_modal: false,
 
       group_mode: "day",
       // group_mode: localStorage.getItem("library_group_mode") || "day",
@@ -969,10 +937,6 @@ export default {
   }
   &[data-tilemode="table"] {
     display: block;
-    // flex-flow: column nowrap;
-    // align-items: stretch;
-    // justify-content: stretch;
-    // overflow-x: auto;
   }
 }
 
@@ -1037,7 +1001,7 @@ export default {
 }
 
 ._gridSection {
-  padding-bottom: calc(var(--spacing) / 1);
+  padding-bottom: calc(var(--spacing) / 2);
 }
 
 ._mediaCount {
@@ -1143,8 +1107,7 @@ export default {
   --dropzone-color2: var(--c-rouge);
   color: white;
 
-  flex: 1 1 auto;
-  // width: 100%;
+  width: 100%;
 }
 
 ._importCreateTextButtons--createText {
@@ -1178,9 +1141,5 @@ export default {
   text-align: center;
   font-weight: bold;
   text-transform: lowercase;
-}
-._binButton {
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
-  text-align: center;
 }
 </style>

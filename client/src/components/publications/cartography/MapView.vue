@@ -15,6 +15,7 @@
           :map_baselayer_color="
             opened_view ? opened_view.map_baselayer_color : undefined
           "
+          :zoom_animation="opened_view ? opened_view.zoom_animation : undefined"
           :map_base_media="base_media"
           :pins="pins"
           :lines="lines"

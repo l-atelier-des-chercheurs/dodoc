@@ -10,13 +10,6 @@
     :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
-    <ToggleInput
-      v-if="is_selectable"
-      class="_selectCb"
-      :content="is_selected"
-      @update:content="$emit('setSelected', $event)"
-    />
-
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
@@ -93,6 +86,13 @@
     <div class="_dragFileIcon">
       <DragFile :file="file" :is_dragged.sync="is_dragged" />
     </div>
+
+    <ToggleInput
+      v-if="is_selectable"
+      class="_selectCb"
+      :content="is_selected"
+      @update:content="$emit('setSelected', $event)"
+    />
   </div>
 </template>
 <script>
@@ -265,13 +265,10 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    width: 100%;
-    gap: calc(var(--spacing) / 2);
+    gap: calc(var(--spacing) / 4);
     background: transparent;
     border-bottom: 1px solid white;
     font-size: var(--sl-font-size-small);
-
-    overflow: auto;
 
     // margin-top: 2px;
     // margin-bottom: 2px;
@@ -279,13 +276,6 @@ export default {
       border: none;
       // border-left: 3px solid var(--active-color);
       background-color: var(--active-color);
-    }
-    &.is--selected {
-      background-color: hsla(227, 63%, 41%, 0.4);
-
-      &::after {
-        display: none;
-      }
     }
 
     > * {
@@ -298,7 +288,6 @@ export default {
 
       &._filename {
         flex: 0 0 30ch;
-        font-size: var(--sl-font-size-x-small);
       }
 
       &._content,
@@ -504,23 +493,17 @@ export default {
   -webkit-line-clamp: 1;
 }
 
-._selectCb._selectCb {
+._selectCb {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 1;
   line-height: 0;
   border-radius: 50%;
-
-  // width: 2rem;
-  // height: 2rem;
+  // font-size: 80%;
   cursor: pointer;
 
-  ::v-deep ._inputLabel {
-    padding: var(--spacing);
-  }
-
-  ._mediaTile:not([data-tilemode="table"]) & {
+  &:not([data-tilemode="table"]) {
     width: 100%;
     height: 100%;
     display: flex;

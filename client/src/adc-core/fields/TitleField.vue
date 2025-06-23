@@ -36,7 +36,6 @@
           :autofocus="true"
           :autocomplete="input_type === 'email' ? 'email' : undefined"
           :minlength="minlength"
-          :custom_formats="custom_formats"
           :maxlength="maxlength"
           :key="edit_mode + content"
           @toggleValidity="($event) => (allow_save = $event)"
@@ -100,7 +99,6 @@ export default {
     can_edit: {
       type: Boolean,
     },
-    custom_formats: Array,
   },
   components: {},
   data() {
@@ -201,18 +199,6 @@ export default {
 
     span {
       white-space: break-spaces;
-    }
-
-    ::v-deep {
-      .ql-align-right {
-        text-align: right;
-      }
-      .ql-align-center {
-        text-align: center;
-      }
-      .ql-align-justify {
-        text-align: justify;
-      }
     }
   }
 

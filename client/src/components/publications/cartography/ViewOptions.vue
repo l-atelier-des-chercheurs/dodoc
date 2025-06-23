@@ -37,13 +37,13 @@
           />
         </div>
         <div class="u-spacingBottom">
-          <DLabel :str="$t('pin_icons')" />
-          <SelectField2
+          <RadioCheckboxField
+            :label="$t('pin_icons')"
             :field_name="'all_pins_icon'"
-            :value="view.all_pins_icon || ''"
+            :input_type="'radio'"
+            :content="view.all_pins_icon || ''"
             :path="view.$path"
             :options="icon_options"
-            :hide_validation="true"
             :can_edit="true"
           />
         </div>
@@ -51,12 +51,11 @@
         <div class="u-spacingBottom">
           <DLabel :str="$t('map_baselayer')" />
           <SelectField2
-            :field_name="'map_baselayer'"
-            :path="view.$path"
             :value="view.map_baselayer || 'OSM'"
             :options="map_baselayer_options"
-            :hide_validation="true"
             :can_edit="true"
+            :hide_validation="false"
+            @update="updateView({ field: 'map_baselayer', value: $event })"
           />
         </div>
 
@@ -115,6 +114,23 @@
             "
           />
         </div>
+
+        <div class="u-spacingBottom">
+          <RangeValueInput
+            :label="$t('zoom_animation')"
+            :value="view.zoom_animation"
+            :min="0"
+            :max="5"
+            :step="0.1"
+            :default_value="0"
+            @save="
+              updateView({
+                field: 'zoom_animation',
+                value: $event,
+              })
+            "
+          />
+        </div>
       </DetailsPane>
     </div>
   </div>
@@ -139,11 +155,11 @@ export default {
         // },
         {
           key: "",
-          text: this.$t("icon"),
+          label: this.$t("icon"),
         },
         {
           key: "media_preview",
-          text: this.$t("media_preview"),
+          label: this.$t("media_preview"),
         },
       ],
 

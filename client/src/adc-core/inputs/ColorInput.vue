@@ -41,10 +41,7 @@
               class="u-button u-button_verysmall _customCol"
               :style="`--patch-color: ${local_value}`"
             >
-              <span
-                class="_colorPatch _colorPatch_isButton is--active"
-                v-if="is_custom_color"
-              />
+              <span class="_colorPatch is--active" v-if="is_custom_color" />
               <span class="_customCol--label">{{ $t("custom_color") }}</span>
               <input
                 ref="field"
@@ -266,11 +263,10 @@ export default {
 
 ._customCol {
   margin: calc(var(--spacing) / 4) auto;
-  padding: calc(var(--spacing) / 4);
   display: flex;
 }
 ._customCol--label {
-  // padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 4);
 }
 
 ._submitBtn {

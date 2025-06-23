@@ -1020,6 +1020,7 @@ export default {
   bw_filter: "Black and white filter",
   failed_loading_tiles:
     "Failed loading the baselayer, you can try to zoom out.",
+  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
@@ -1336,8 +1337,4 @@ export default {
     "You can now close this window and open the email to reset your password.",
   password_reset_successful:
     "Password reset successfully. You can now log in with your new password.",
-  looking_for_gps_coordinates: "Looking for GPS coordinates...",
-  gps_coordinates_found: "GPS coordinates found.",
-  column_count: "Column count",
-  restore_publications: "Restore deleted publications",
 };

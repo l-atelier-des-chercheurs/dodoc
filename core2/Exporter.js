@@ -427,65 +427,51 @@ class Exporter {
 
       const length = folder_data.$files.length;
 
-      // Helper function to copy media and thumbs
-      const copyMediaAndThumbs = async (
-        media_filename,
-        media_path,
-        thumbs_data
-      ) => {
-        if (!media_filename) return;
-
-        // copy necessary medias from the project to the cache
-        const parent_folder_path = utils.getContainingFolder(media_path);
-        const parent_folder_full_path =
-          utils.getPathToUserContent(parent_folder_path);
-        const source = path.join(parent_folder_full_path, media_filename);
-        const destination = path.join(
-          full_path_to_folder_in_cache,
-          "medias",
-          media_filename
-        );
-        await fs.copy(source, destination);
-
-        // copy necessary thumbs from the project to the cache
-        if (thumbs_data && typeof thumbs_data === "object") {
-          const full_path_to_thumb = await utils.getPathToUserContent(
-            await thumbs.getThumbFolderPath(parent_folder_path)
-          );
-
-          await thumbs.copyAllThumbsForFile({
-            full_path_to_thumb,
-            full_path_to_new_thumb: path.join(
-              full_path_to_folder_in_cache,
-              "thumbs"
-            ),
-            media_filename,
-          });
-        }
-      };
-
       for (const [index, file] of folder_data.$files.entries()) {
         this._notifyProgress(25 + Math.round((index / length) * 50));
 
-        try {
-          // Handle files with source_medias
-          if (file.source_medias) {
-            for (const source_media of file.source_medias) {
-              await copyMediaAndThumbs(
-                source_media._media?.$media_filename,
-                source_media._media?.$path,
-                source_media._media?.$thumbs
-              );
-            }
-          }
+        if (!file.source_medias) continue;
 
-          // Handle files with their own $media_filename
-          if (file.$media_filename) {
-            await copyMediaAndThumbs(
-              file.$media_filename,
-              file.$path,
-              file.$thumbs
+        try {
+          for (const source_media of file.source_medias) {
+            if (!source_media._media?.$media_filename) continue;
+
+            // copy necessary medias from the project to the cache
+            const parent_folder_path = utils.getContainingFolder(
+              source_media._media.$path
             );
+            const parent_folder_full_path =
+              utils.getPathToUserContent(parent_folder_path);
+            const source = path.join(
+              parent_folder_full_path,
+              source_media._media.$media_filename
+            );
+            const destination = path.join(
+              full_path_to_folder_in_cache,
+              "medias",
+              source_media._media.$media_filename
+            );
+            await fs.copy(source, destination);
+
+            // copy necessary thumbs from the project to the cache
+            if (
+              !source_media._media?.$thumbs ||
+              typeof source_media._media.$thumbs !== "object"
+            )
+              continue;
+
+            const full_path_to_thumb = await utils.getPathToUserContent(
+              await thumbs.getThumbFolderPath(parent_folder_path)
+            );
+
+            await thumbs.copyAllThumbsForFile({
+              full_path_to_thumb,
+              full_path_to_new_thumb: path.join(
+                full_path_to_folder_in_cache,
+                "thumbs"
+              ),
+              media_filename: source_media._media.$media_filename,
+            });
           }
         } catch (error) {
           dev.error(error.message);

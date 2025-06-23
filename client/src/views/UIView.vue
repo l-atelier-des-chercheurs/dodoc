@@ -159,63 +159,6 @@
     </div>
 
     <div class="u-spacingBottom"></div>
-
-    <button class="u-button" @click="show_modal = 1">Show modal small</button>
-    <BaseModal2
-      v-if="show_modal === 1"
-      :size="modal_size"
-      :title="modal_notitle ? '' : $t('title')"
-      :nopadding="modal_nopadding"
-      @close="show_modal = 0"
-    >
-      <div>
-        <label
-          v-for="size in ['small', 'large', 'x-large', 'full']"
-          :key="size"
-        >
-          <input type="radio" v-model="modal_size" :value="size" />
-          {{ size }}
-        </label>
-        <div class="u-spacingBottom"></div>
-        <ToggleInput
-          :label="$t('no_padding')"
-          :content.sync="modal_nopadding"
-        />
-        <div class="u-spacingBottom"></div>
-        <ToggleInput :label="$t('no_title')" :content.sync="modal_notitle" />
-        <div class="u-spacingBottom"></div>
-        <p>
-          Pellentesque vitae maximus enim. Suspendisse consequat nisl dui, eu
-          efficitur erat pulvinar id. Sed nec arcu nec est sagittis finibus non
-          eget mauris. Donec ornare lectus quis bibendum gravida. Vestibulum
-          quis laoreet purus. Ut semper, justo ut malesuada aliquam, velit arcu
-          consequat erat, eu lacinia orci orci eu sem. Sed sodales tristique
-          nunc, in lobortis sapien pulvinar non. Nam luctus euismod justo quis
-          semper. Fusce sit amet tortor ut odio dignissim ultrices vel nec
-          ligula. Nunc odio nulla, rutrum a tristique non, porttitor vel massa.
-          Integer eget pulvinar orci.
-        </p>
-        <figure>
-          <img
-            src="https://latelier-des-chercheurs.fr/content/apercu.png"
-            alt="test"
-          />
-          <figcaption>
-            <p>
-              Pellentesque vitae maximus enim. Suspendisse consequat nisl dui,
-              eu efficitur erat pulvinar id. Sed nec arcu nec est sagittis
-              finibus non eget mauris. Donec ornare lectus quis bibendum
-              gravida. Vestibulum quis laoreet purus. Ut semper, justo ut
-              malesuada aliquam, velit arcu consequat erat, eu lacinia orci orci
-              eu sem. Sed sodales tristique nunc, in lobortis sapien pulvinar
-              non. Nam luctus euismod justo quis semper. Fusce sit amet tortor
-              ut odio dignissim ultrices vel nec ligula. Nunc odio nulla, rutrum
-              a tristique non, porttitor vel massa. Integer eget pulvinar orci.
-            </p>
-          </figcaption>
-        </figure>
-      </div>
-    </BaseModal2>
   </div>
 </template>
 <script>
@@ -225,10 +168,6 @@ export default {
   data() {
     return {
       authors: [],
-      show_modal: 0,
-      modal_size: "small",
-      modal_nopadding: false,
-      modal_notitle: false,
     };
   },
   created() {},

@@ -67,31 +67,6 @@
           @open="openEntry(slotProps.item.$path)"
         />
       </PinnedNonpinnedFolder>
-
-      <template v-if="can_edit">
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="show_bin_modal = true"
-        >
-          <b-icon icon="recycle" />
-          {{ $t("bin") }}
-        </button>
-        <BinFolder
-          v-if="show_bin_modal"
-          :modal_title="$t('restore_publications')"
-          :path="project.$path + '/publications'"
-          @close="show_bin_modal = false"
-        >
-          <template v-slot="slotProps">
-            <PublicationPreview
-              :publication="slotProps.project"
-              :template_options="template_options"
-              :can_edit="slotProps.can_edit"
-            />
-          </template>
-        </BinFolder>
-      </template>
     </div>
   </div>
 </template>
@@ -99,7 +74,6 @@
 import CreatePublication from "@/components/publications/CreatePublication.vue";
 import PublicationPreview from "@/components/publications/PublicationPreview.vue";
 import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
-import BinFolder from "@/adc-core/fields/BinFolder.vue";
 
 export default {
   props: {
@@ -110,14 +84,13 @@ export default {
     CreatePublication,
     PublicationPreview,
     PinnedNonpinnedFolder,
-    BinFolder,
   },
   data() {
     return {
       path: `${this.project.$path}/publications`,
       show_create_publication: false,
       publications: [],
-      show_bin_modal: false,
+
       template_options: [
         {
           key: "page_by_page",

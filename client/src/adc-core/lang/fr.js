@@ -1081,6 +1081,7 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
+  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1401,10 +1402,4 @@ export default {
     "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
   password_reset_successful:
     "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
-  looking_for_gps_coordinates:
-    "Recherche des coordonnées GPS de votre appareil...",
-  gps_coordinates_found: "Coordonnées GPS trouvées.",
-  column_count: "Nombre de colonnes",
-  restore_publications: "Restaurer des publications supprimées",
-  restore_medias: "Restaurer des médias supprimés",
 };
