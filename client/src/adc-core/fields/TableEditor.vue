@@ -298,9 +298,9 @@ export default {
 }
 
 .column-header {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  // display: flex;
+  // flex-direction: column;
+  // gap: 0.5rem;
 }
 .column-controls-row {
   th {

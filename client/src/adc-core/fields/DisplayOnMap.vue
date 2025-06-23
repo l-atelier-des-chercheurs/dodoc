@@ -63,7 +63,21 @@
       <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
         <!-- hidden if electron, need to find alternative strategy -->
         <button type="button" class="u-button" @click="getCurrentPosition">
-          <b-icon class="inlineSVG" icon="disc-fill" />
+          <span class="u-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle fill="transparent" cx="12" cy="12" r="8" />
+              <circle fill="currentColor" cx="12" cy="12" r="4" />
+              <line x1="0" y1="12" x2="24" y2="12" />
+              <line x1="12" y1="0" x2="12" y2="24" />
+            </svg>
+          </span>
         </button>
       </div>
 
@@ -321,10 +335,6 @@ export default {
     map_baselayer_opacity: {
       type: Number,
       default: 1,
-    },
-    zoom_animation: {
-      type: Number,
-      default: 0,
     },
     map_baselayer_color: String,
     map_base_media: Object,
@@ -885,9 +895,13 @@ export default {
         timeout: 5000,
         maximumAge: 0,
       };
+
+      this.$alertify.delay(4000).log(this.$t("looking_for_gps_coordinates"));
+
       const success = async (pos) => {
         var crd = pos.coords;
         this.is_looking_for_gps_coords = false;
+        this.$alertify.delay(4000).success(this.$t("gps_coordinates_found"));
         await this.setClickBtn({
           longitude: crd.longitude,
           latitude: crd.latitude,
@@ -1322,22 +1336,6 @@ export default {
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
       const duration = 1400;
-
-      // if (this.zoom_animation && this.zoom_animation > 0)
-      //   this.view.animate(
-      //     {
-      //       zoom: zoom - this.zoom_animation,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   this.view.animate(
-      //     {
-
-      //       zoom: zoom,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   else
       this.view.animate({
         center,
         duration,

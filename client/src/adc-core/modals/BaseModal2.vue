@@ -18,7 +18,7 @@
         </button>
         <div class="_baseModal--content">
           <header v-if="title">
-            <h3>{{ title }}</h3>
+            <h2>{{ title }}</h2>
           </header>
           <div
             class="_content"
@@ -186,6 +186,7 @@ export default {
 
     margin: 0 auto;
     padding: 0;
+    overflow: hidden;
 
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -249,12 +250,12 @@ header {
   position: relative;
   padding: 0 calc(var(--spacing) * 1);
 
-  &:first-child {
-    // margin-top: calc(var(--spacing) * 1);
+  &:first-child:not(.has_nopadding) {
+    margin-top: calc(var(--spacing) * 1);
   }
 
   ._baseModal[data-size="full"] & {
-    padding: 0;
+    // padding: 0;
   }
 
   &.has_nofooter {

@@ -1070,7 +1070,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   bw_filter: "Filtro bianco e nero",
   failed_loading_tiles:
     "Errore nel caricamento dello sfondo della mappa, puoi provare a ridurre lo zoom",
-  zoom_animation: "Animazione zoom",
 
   IGN_max_zoom_limits:
     "Gli sfondi delle mappe proposti da IGN non consentono di utilizzare il livello massimo  di zoom.",
