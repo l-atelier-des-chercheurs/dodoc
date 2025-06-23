@@ -127,7 +127,7 @@
 
       <fieldset v-if="chapter.section_type === 'text'">
         <legend>{{ $t("text_image_layout") }}</legend>
-        <div>
+        <div class="_colCount">
           <DLabel :str="$t('column_count')" />
           <div class="">
             <SelectField2
@@ -682,5 +682,9 @@ export default {
       display: none;
     }
   }
+}
+
+._colCount {
+  max-width: 20ch;
 }
 </style>
