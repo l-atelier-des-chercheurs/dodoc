@@ -207,7 +207,7 @@ export default {
   hide_meta: "Masquer les métadonnées",
   recover_password: "Récupérer le mot de passe",
   please_contact_to_recover:
-    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
+    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe :",
 
   visibility: "Visibilité",
   visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -905,9 +905,9 @@ export default {
 
   add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:
-    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
+    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, sujets de discussion, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
   instance_contrib_instructions:
-    "Peuvent uniquement créer des espaces et les administrer.",
+    "Peuvent uniquement créer des espaces et des sujets de discussion et les administrer.",
 
   space_admin_instructions:
     "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
@@ -1115,7 +1115,6 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
-  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1396,7 +1395,7 @@ export default {
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
   list_of_topics: "Liste des sujets",
-  create_a_chat: "Créer une discussion",
+  create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
     "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
   write_a_message: "Écrivez un message…",
@@ -1418,4 +1417,30 @@ export default {
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",
   new_messages: "{count} nouveau message | {count} nouveaux messages",
+  topics_pinned: "Sujet épinglé | Sujets épinglés",
+
+  no_email_from_folder: "Aucun courriel associé à ce compte.",
+  set_new_password_for_account:
+    "Définir un nouveau mot de passe pour le compte ",
+  reset_password: "Réinitialiser le mot de passe",
+  resetting_password: "Réinitialisation en cours...",
+  invalid_reset_link: "Lien de réinitialisation invalide",
+  loading: "Chargement en cours...",
+  failed_to_reset_password: "Échec de la réinitialisation du mot de passe",
+  no_email_for_account: "Aucun courriel associé à ce compte.",
+  recover_via_email: "M’envoyer un courriel",
+  click_to_send_recovery_mail:
+    "En cliquant sur le bouton ci-dessous, un courriel vous sera envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "Un courriel vous a été envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b> sur l’adresse <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
+  password_reset_successful:
+    "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+  looking_for_gps_coordinates:
+    "Recherche des coordonnées GPS de votre appareil...",
+  gps_coordinates_found: "Coordonnées GPS trouvées.",
+  column_count: "Nombre de colonnes",
+  restore_publications: "Restaurer des publications supprimées",
+  restore_medias: "Restaurer des médias supprimés",
 };

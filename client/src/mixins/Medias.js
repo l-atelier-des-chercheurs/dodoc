@@ -191,8 +191,31 @@ export default {
         const match = url.match(regExp);
         return match && match[2].length === 11 ? match[2] : null;
       }
+
+      function getTimestamp(url) {
+        // Handle different timestamp formats: t=123, t=1m23s, #t=123, &t=123
+        const timeRegex = /[?&#]t=([0-9]+h)?([0-9]+m)?([0-9]+s?)?/i;
+        const match = url.match(timeRegex);
+
+        if (!match) return null;
+
+        const hours = match[1] ? parseInt(match[1]) : 0;
+        const minutes = match[2] ? parseInt(match[2]) : 0;
+        const seconds = match[3] ? parseInt(match[3]) : 0;
+
+        return hours * 3600 + minutes * 60 + seconds;
+      }
+
       const video_id = getId(url);
-      return `https://www.youtube.com/embed/${video_id}?autoplay=${autoplay_value}&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`;
+      const timestamp = getTimestamp(url);
+
+      let embedUrl = `https://www.youtube.com/embed/${video_id}?autoplay=${autoplay_value}&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`;
+
+      if (timestamp) {
+        embedUrl += `&start=${timestamp}`;
+      }
+
+      return embedUrl;
     },
     getVimeoEmbedURLFromURL(url, autoplay_value) {
       function getId(url) {

@@ -10,7 +10,8 @@ const folder = require("./folder"),
   utils = require("./utils"),
   Exporter = require("./Exporter"),
   auth = require("./auth"),
-  users = require("./users");
+  users = require("./users"),
+  recoverPassword = require("./recover-password");
 
 module.exports = (function () {
   const API = {
@@ -60,7 +61,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _restrictToLocalAdmins,
-      _getBin
+      _getFolderBin
     );
     app.post(
       [
@@ -70,7 +71,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _restrictToLocalAdmins,
-      _restoreFromBin
+      _restoreFolderFromBin
     );
     app.delete(
       [
@@ -92,6 +93,36 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _getFile
+    );
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_bin",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_bin",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _getFilesBin
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_bin/:meta_filename/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_bin/:meta_filename/_restore",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_bin/:meta_filename/_restore",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _restoreFileFromBin
+    );
+    app.delete(
+      [
+        "/_api2/:folder_type/:folder_slug/_bin/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_bin/:meta_filename",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_bin/:meta_filename",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _removeBinFile
     );
     app.post(
       [
@@ -171,6 +202,16 @@ module.exports = (function () {
       ["/_api2/:folder_type/:folder_slug/_login"],
       _generalPasswordCheck,
       _loginToFolder
+    );
+    app.post(
+      ["/_api2/:folder_type/:folder_slug/_recoverPassword"],
+      _generalPasswordCheck,
+      _recoverPassword
+    );
+    app.post(
+      ["/_api2/:folder_type/:folder_slug/_resetPassword"],
+      _generalPasswordCheck,
+      _resetPassword
     );
     app.post(
       ["/_api2/:folder_type/:folder_slug/_logout"],
@@ -284,12 +325,11 @@ module.exports = (function () {
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
     app.get("/*", loadIndex);
-
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast(path_to_folder);
+      _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
     });
     notifier.on("fileRemoved", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast(path_to_folder);
+      _updateFolderCountAndBroadcast("fileRemoved", path_to_folder);
     });
   }
 
@@ -351,7 +391,7 @@ module.exports = (function () {
         err.code = "no_token_submitted";
         throw err;
       }
-      auth.checkTokenValidity({ token, token_path });
+      auth.checkTokenValidity({ token, token_path, purpose: "auth" });
     } catch (err) {
       return res.status(401).send({ code: err.code });
     }
@@ -580,6 +620,7 @@ module.exports = (function () {
     d.text_background_color = text_background_color || "";
     d.text_image_layout = text_image_layout || "";
     d.has_general_password = !!general_password;
+    d.can_send_email = global.can_send_email;
     d.signup_password_hashed = signup_password
       ? utils.hashCode(signup_password)
       : "";
@@ -1025,7 +1066,7 @@ module.exports = (function () {
     dev.logapi({ path_to_type, path_to_folder, data });
 
     try {
-      let { path_to_destination_type, new_meta } = data;
+      let { path_to_destination_type, new_meta, is_copy_or_move } = data;
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
       else if (path_to_destination_type !== path_to_type) {
         // todo check for auth to copy folder
@@ -1052,6 +1093,7 @@ module.exports = (function () {
         path_to_source_folder,
         path_to_destination_type,
         new_meta,
+        is_copy_or_move,
       });
       dev.logpackets({
         status: `copied folder`,
@@ -1127,11 +1169,11 @@ module.exports = (function () {
 
   /************************************************************************************ BIN ***********/
 
-  async function _getBin(req, res, next) {
+  async function _getFolderBin(req, res, next) {
     const { path_to_type } = utils.makePathFromReq(req);
 
     try {
-      const bin_content = await folder.getBinContent({
+      const bin_content = await folder.getFolderBinContent({
         path_to_type,
       });
       res.json(bin_content);
@@ -1144,7 +1186,8 @@ module.exports = (function () {
       });
     }
   }
-  async function _restoreFromBin(req, res, next) {
+
+  async function _restoreFolderFromBin(req, res, next) {
     const { path_to_type, path_to_folder_in_bin } = utils.makePathFromReq(req);
     dev.logapi({ path_to_type, path_to_folder_in_bin });
 
@@ -1185,6 +1228,79 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remove bin folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
+  async function _getFilesBin(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+
+    try {
+      const bin_content = await file.getFilesBin({
+        path_to_folder,
+      });
+      res.json(bin_content);
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to get bin folder: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
+  async function _restoreFileFromBin(req, res, next) {
+    const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, meta_filename });
+
+    try {
+      const restored_file_path = await file.restoreFileFromBin({
+        path_to_folder,
+        meta_filename,
+      });
+
+      dev.logpackets({
+        status: `restored file from bin`,
+        restored_file_path,
+      });
+      res.status(200).json({ restored_file_path });
+
+      const restored_file_meta = await file.getFile({
+        path_to_meta: path.join(path_to_folder, restored_file_path),
+      });
+
+      notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        meta: restored_file_meta,
+      });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to restore file from bin: " + message);
+      res.status(500).send({
+        code,
+        err_infos,
+      });
+    }
+  }
+
+  async function _removeBinFile(req, res, next) {
+    const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, meta_filename });
+
+    try {
+      await file.removeBinFile({
+        path_to_folder,
+        meta_filename,
+      });
+      dev.logpackets({ status: "file was removed from bin" });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      const { message, code, err_infos } = err;
+      dev.error("Failed to remove bin file: " + message);
       res.status(500).send({
         code,
         err_infos,
@@ -1580,16 +1696,21 @@ module.exports = (function () {
     }, []);
   }
 
-  async function _updateFolderCountAndBroadcast(path_to_folder) {
+  async function _updateFolderCountAndBroadcast(event, path_to_folder) {
     dev.logfunction({ path_to_folder });
     const path_to_type = utils.getContainingFolder(path_to_folder);
     const $files_count = await file.getFilesCount({ path_to_folder });
+
+    let admin_meta = {
+      $files_count,
+    };
+    if (event === "fileCreated")
+      admin_meta.$date_last_file = utils.getCurrentDate();
+
     const changed_data = await folder.updateFolder({
       path_to_type,
       path_to_folder,
-      admin_meta: {
-        $files_count,
-      },
+      admin_meta,
     });
     notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
       path: utils.convertToSlashPath(path_to_folder),
@@ -1600,6 +1721,52 @@ module.exports = (function () {
         path: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
+  }
+
+  async function _recoverPassword(req, res) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder });
+
+    try {
+      const result = await recoverPassword.recoverPassword({
+        path_to_folder,
+      });
+      dev.logpackets({ status: "email sent to folder", path_to_folder });
+      res.status(200).json(result);
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send({ code: err.code });
+    }
+  }
+
+  async function _resetPassword(req, res) {
+    const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder, data });
+
+    try {
+      const { token, new_password } = data;
+      const result = await recoverPassword.resetPassword({
+        path_to_type,
+        path_to_folder,
+        token,
+        new_password,
+      });
+
+      res.status(200).json(result);
+
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+        path: utils.convertToSlashPath(path_to_folder),
+        changed_data: result.changed_data,
+      });
+      if (path_to_type)
+        notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+          path: utils.convertToSlashPath(path_to_folder),
+          changed_data: result.changed_data,
+        });
+    } catch (err) {
+      dev.error(err);
+      res.status(500).send({ code: err.code });
+    }
   }
 
   return API;

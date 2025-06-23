@@ -68,7 +68,9 @@
 
       <LoaderSpinner class="_loader" v-if="is_loading" />
       <div v-else-if="url_to_site" class="_previewEmbed" :key="url_to_site.src">
-        <template v-if="url_to_site.type === 'any'">
+        <template
+          v-if="url_to_site.type === 'any' || url_to_site.type === 'youtube'"
+        >
           <iframe
             class="_siteIframe"
             :src="url_to_site.src"

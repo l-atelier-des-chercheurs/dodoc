@@ -119,7 +119,8 @@
               <div
                 v-if="
                   index > 0 &&
-                  day.messages[index - 1].$authors[0] !== message.$authors[0]
+                  day.messages[index - 1].$authors?.[0] !==
+                    message.$authors?.[0]
                 "
                 class="_changeAuthor"
               ></div>
@@ -455,6 +456,7 @@ export default {
   }
 
   :deep(._editBtn) {
+    --color1: transparent;
     --color2: white;
     --color-text: var(--c-noir);
   }
@@ -545,7 +547,7 @@ export default {
 
 ._loadMoreMessages {
   text-align: center;
-  // margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
 }
 
 ._noMessages,

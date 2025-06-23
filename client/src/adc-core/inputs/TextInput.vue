@@ -40,7 +40,7 @@
           ref="field"
           :field_to_edit="'field_to_edit'"
           :content="content"
-          :custom_formats="['bold', 'italic', 'link']"
+          :custom_formats="custom_formats"
           :is_collaborative="false"
           :mode="'always_active'"
           :can_edit="true"
@@ -123,6 +123,10 @@ export default {
     maxlength: {
       type: [Boolean, Number],
       default: false,
+    },
+    custom_formats: {
+      type: Array,
+      default: () => ["bold", "italic", "link"],
     },
   },
   components: {},

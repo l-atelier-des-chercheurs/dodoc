@@ -182,7 +182,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   hide_meta: "Nascondi i metadati",
   recover_password: "Recupera la password",
   please_contact_to_recover:
-    "Per ottenere una nuova password, invia un'email al seguente indirizzo indicando il proprio nome utente",
+    "Per ottenere una nuova password, invia un'email al seguente indirizzo indicando il proprio nome utente:",
 
   visibility: "Visibilità",
   visibility_text: `Indica qui lo stato di avanzamento del progetto e chi potrà consultarlo.`,
@@ -863,8 +863,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   add_to_instance_admin: "Aggiungi come amministratore d'istanza",
   instance_admin_instructions:
-    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle.",
-  instance_contrib_instructions: "Possono solo creare spazi e amministrarli.",
+    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle. // TODO add mention that they can also create discution topics",
+  instance_contrib_instructions:
+    "Possono solo creare spazi e amministrarli. // TODO add Discussion topics next to space",
 
   space_admin_instructions:
     "I referenti di uno spazio possono modificarlo o eliminarlo, compresi tutti i suoi contenuti (anche quelli privati). Possono anche modificare l'elenco dei referenti e dei contributori.",
@@ -1069,7 +1070,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   bw_filter: "Filtro bianco e nero",
   failed_loading_tiles:
     "Errore nel caricamento dello sfondo della mappa, puoi provare a ridurre lo zoom",
-  zoom_animation: "Animazione zoom",
 
   IGN_max_zoom_limits:
     "Gli sfondi delle mappe proposti da IGN non consentono di utilizzare il livello massimo  di zoom.",
@@ -1106,7 +1106,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   circle: "Cerchio",
   polygon: "Poligono",
 
-  mouse_position: "Posizione del puntatore",
   search_for_a_place: "Ricerca un luogo",
   no_results: "nessun risultato",
 

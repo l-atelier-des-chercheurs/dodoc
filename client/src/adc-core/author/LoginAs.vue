@@ -90,24 +90,18 @@
                 type="button"
                 class="u-buttonLink"
                 :class="{
-                  'is--active': show_recover_instr,
+                  'is--active': show_recover_modal,
                 }"
-                @click="show_recover_instr = !show_recover_instr"
+                @click="show_recover_modal = true"
               >
                 {{ $t("recover_password") }}
               </button>
             </div>
-            <div class="u-spacingBottom">
-              <div class="u-instructions" v-if="show_recover_instr">
-                {{ $t("please_contact_to_recover") }} <br />
-                <a
-                  :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-                  target="_blank"
-                >
-                  {{ $root.app_infos.instance_meta.contactmail }}
-                </a>
-              </div>
-            </div>
+            <RecoverPasswordModal
+              v-if="show_recover_modal"
+              :author="author_to_login_to"
+              @close="show_recover_modal = false"
+            />
 
             <transition name="fade" mode="out-in">
               <div
@@ -139,7 +133,9 @@ export default {
   props: {
     authors: Array,
   },
-  components: {},
+  components: {
+    RecoverPasswordModal: () => import("../modals/RecoverPasswordModal.vue"),
+  },
   data() {
     return {
       search_author_name: "",
@@ -147,6 +143,7 @@ export default {
 
       input_password: "",
       show_recover_instr: false,
+      show_recover_modal: false,
       connection_status: undefined,
 
       msg_password_is_wrong: undefined,

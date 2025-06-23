@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,
@@ -26,6 +27,17 @@
   },
 
   "mediaThumbQuality": 90,
+
+  "mailer": {
+    "host": "",
+    "port": "",
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "from": ""
+  },
 
   "schema": {
     "fields": {
@@ -84,6 +96,9 @@
         "type": "string"
       },
       "spaces_pinned": {
+        "type": "array"
+      },
+      "topics_pinned": {
         "type": "array"
       },
       "users_must_accept_terms_to_signup": {

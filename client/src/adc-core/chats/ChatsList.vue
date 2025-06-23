@@ -6,7 +6,7 @@
       :nopadding="true"
       @close="closeModal"
     >
-      <div class="_content" :class="{ 'is--mobileview': in_modal }">
+      <div class="_content" :class="{ 'is--mobileview': $root.is_mobile_view }">
         <div class="_chatsList--header">
           <h3>{{ $t("list_of_topics") }}</h3>
           <button
@@ -29,13 +29,25 @@
             <b-icon icon="plus-lg" />
             {{ $t("create") }}
           </button>
-          <ChatPreview
-            v-for="chat in sorted_chats"
-            :key="chat.$path"
-            :chat="chat"
-            :is-opened="opened_chat_slug === getFilename(chat.$path)"
-            @toggle="toggleChat"
-          />
+
+          <PinnedNonpinnedFolder
+            :field_name="'topics_pinned'"
+            :label="$tc('topics_pinned', topics_pinned.length)"
+            :content="topics_pinned"
+            :path="''"
+            :folders="sorted_chats"
+            :direction="'vertical'"
+            :can_edit="is_instance_admin"
+            v-slot="slotProps"
+          >
+            <ChatPreview
+              :chat="slotProps.item"
+              :is-opened="
+                opened_chat_slug === getFilename(slotProps.item.$path)
+              "
+              @toggle="toggleChat"
+            />
+          </PinnedNonpinnedFolder>
         </div>
       </div>
 
@@ -55,7 +67,7 @@
 
       <CreateFolder
         v-if="show_create_chat_modal"
-        :modal_name="$t('create_a_chat')"
+        :modal_name="$t('create_a_topic')"
         :path="path"
         @close="show_create_chat_modal = false"
         @openNew="openNewChat"
@@ -68,15 +80,19 @@ import OpenedChat from "./OpenedChat.vue";
 import ChatPreview from "./ChatPreview.vue";
 import authorMessageMixin from "./mixins/authorMessageMixin";
 
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
+
 export default {
   props: {},
   components: {
     OpenedChat,
     ChatPreview,
+    PinnedNonpinnedFolder,
   },
   mixins: [authorMessageMixin],
   data() {
     return {
+      settings: undefined,
       chats: [],
       path: "chats",
       fetch_chats_error: null,
@@ -85,8 +101,9 @@ export default {
       open_in_modal: false,
     };
   },
-  created() {
-    this.loadChats();
+  async created() {
+    this.loadSettings();
+    await this.loadChats();
     this.$api.join({ room: this.path });
   },
   mounted() {},
@@ -97,6 +114,14 @@ export default {
   computed: {
     in_modal() {
       return this.open_in_modal || this.$root.is_mobile_view;
+    },
+    topics_pinned() {
+      if (
+        !this.settings?.topics_pinned ||
+        !Array.isArray(this.settings.topics_pinned)
+      )
+        return [];
+      return this.settings.topics_pinned;
     },
     filtered_chats() {
       return this.chats.filter((chat) =>
@@ -112,6 +137,16 @@ export default {
     },
   },
   methods: {
+    async loadSettings() {
+      this.settings = await this.$api
+        .getFolder({
+          path: "",
+        })
+        .catch((err) => {
+          return err;
+        });
+      this.$api.join({ room: "." });
+    },
     async loadChats() {
       this.chats = await this.$api
         .getFolders({
@@ -180,6 +215,23 @@ export default {
 
 ._chatsList--content {
   padding: calc(var(--spacing) / 1);
+
+  :deep(.u-label),
+  :deep(.u-instructions),
+  :deep(._pinSpace) {
+    color: white;
+  }
+
+  :deep(._pinSpace) {
+    right: 0;
+    left: auto;
+  }
+  :deep(._list_pinned) {
+    background-image: radial-gradient(
+      rgba(255, 255, 255, 0.3) 2px,
+      transparent 2px
+    );
+  }
 }
 
 ._openChat {
@@ -205,6 +257,7 @@ export default {
   --side-padding: 0px;
 
   position: absolute;
+  z-index: 100;
   top: 0;
   left: var(--side-padding);
   width: calc(100% - var(--side-padding) * 1);

@@ -19,6 +19,7 @@
               @change="current_tab = $event"
             />
           </div>
+          <hr />
           <div class="u-spacingBottom" />
           <transition name="fade" mode="out-in">
             <div v-if="current_tab === 'informations'">

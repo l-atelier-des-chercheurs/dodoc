@@ -141,7 +141,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it in a mail to",
+    "If you don't know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   open_app: "Access",
@@ -315,7 +315,7 @@ export default {
   hide_already_translated: "Hide translations already made",
   to_translate: "To translate",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l'Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",
 
   no_coordinates: "No coordinates available",
@@ -538,7 +538,7 @@ export default {
   hide_meta: "Hide metadata",
   recover_password: "Recover password",
   please_contact_to_recover:
-    "Please send an email to the following address indicating your username to retrieve a new password",
+    "Please send an email to the following address indicating your username to recover a new password:",
   visibility: "Visibility",
   visibility_text:
     "Indicate here the progress of the project and who will be able to consult it.",
@@ -657,6 +657,9 @@ export default {
   visible: "Visible",
   public_status_explanations: "Will be visible on the home page.",
   private_status_explanations: "Will only be visible to its contributors.",
+  public_status_explanations_projects:
+    "The project will be visible to everyone who has access to this space.",
+
   private_status_explanations_projects:
     "This project will not be displayed with other projects, it will only be accessible to its contributors.",
   finished_status_explanations:
@@ -741,7 +744,7 @@ export default {
   failed_to_start_recording: "Failed to start recording",
   new_user_connected_to_stream: "New user connected to the stream",
   no_stream_found_while_sharing: "No stream found while sharing",
-  media_couldnt_be_sent: "Media couldn’t be sent",
+  media_couldnt_be_sent: "Media couldn't be sent",
 
   watermark: "Dressing",
   watermark_instructions:
@@ -954,8 +957,9 @@ export default {
 
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
-    "Can access, modify and delete all content (spaces, projects, accounts, etc.). They have access to these settings and can modify them.",
-  instance_contrib_instructions: "Can only create spaces and adsminister.",
+    "Can access, modify and delete all content (spaces, projects, accounts, discussion topics). They also have access to these settings and can modify them.",
+  instance_contrib_instructions:
+    "Can only create spaces and discussion topics and manage them.",
   space_admin_instructions:
     "The referrers of a space can modify or delete it, as well as all its contents (including those which are private). They can also modify the list of referrers and contributors.",
   space_contrib_instructions:
@@ -1047,7 +1051,6 @@ export default {
   bw_filter: "Black and white filter",
   failed_loading_tiles:
     "Failed loading the baselayer, you can try to zoom out.",
-  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
@@ -1107,7 +1110,7 @@ export default {
   about_dodoc_txt: `do•doc is a free and open-source digital tool created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
   It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
   The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" title="Atelier des chercheurs" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
-  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
+  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l'Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
   about_dodoc_links: `
   Here are some other links:
   <ul>
@@ -1139,9 +1142,9 @@ export default {
   change: "Change",
   transition_fade: "Transition: fade",
 
-  couldntbesaved: "Value couldn’t be saved",
+  couldntbesaved: "Value couldn't be saved",
 
-  dont_zoom: "Don’t zoom",
+  dont_zoom: "Don't zoom",
   very_far: "Very far",
   very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
@@ -1287,7 +1290,7 @@ export default {
   forgot_password: "Forgot password?",
   current_f: "Current",
   reset: "Reset",
-  accounts_displayed: "Accounts displayed",
+  accounts_displayed: "Accounts displayed: {count} / {total}",
   restore_projects: "Restore projects",
   bin: "Trash",
   items_in_bin: "Items in the trash",
@@ -1315,4 +1318,59 @@ export default {
   no_media_selected: "No media selected",
   folder_not_public:
     "This content is not public, to access it its author must make it public.",
+
+  other_devices_connected: "Other devices connected",
+  width_alignment_grid_only_non_mobile:
+    "The width and alignment of this module (when centered or right-aligned) will only be used if the window width is larger than 767 pixels.",
+  add_column: "Add column",
+  add_row: "Add row",
+  remove_column: "Remove column",
+  remove_row: "Remove row",
+  chats: "Discussion topics",
+  list_of_topics: "List of topics",
+  create_a_topic: "Create a topic",
+  not_allowed_to_post_messages:
+    "You are not allowed to post messages to this topic.",
+  write_a_message: "Write a message…",
+  participants: "Participants",
+
+  chat_admin_instructions:
+    "Topic referents are responsible for managing the discussion (changing its name, deleting a message, adding/removing a participant or removing it with all its contents).",
+  chat_contrib_instructions:
+    "Participants can post a new message or edit/delete their own messages.",
+  anonymous_user: "Anonymous",
+
+  no_messages_in_chat: "No messages in this topic.",
+  remove_this_message: "Delete this message",
+  load_older_messages: "Show older messages",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Last message on",
+  message_has_been_removed: "This message has been removed.",
+  unread: "Unread",
+  remove_chat: "Delete topic {name}",
+  chat_was_removed: "The topic has been removed.",
+  edit_this_message: "Edit this message",
+  new_messages: "{count} new message | {count} new messages",
+  topics_pinned: "Pinned topic | Pinned topics",
+
+  set_new_password_for_account: "Set new password for account",
+  reset_password: "Reset Password",
+  resetting_password: "Resetting...",
+  invalid_reset_link: "Invalid reset link",
+  loading: "Loading...",
+  failed_to_reset_password: "Failed to reset password",
+  no_email_for_account: "No email associated with this account.",
+  recover_via_email: "Send me an email",
+  click_to_send_recovery_mail:
+    "By clicking on the button below, an email will be sent to you with a link to reset the password of the account <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "An email has been sent to you with a link to reset the password of the account <b>{account_name}</b> on the address <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "You can now close this window and open the email to reset your password.",
+  password_reset_successful:
+    "Password reset successfully. You can now log in with your new password.",
+  looking_for_gps_coordinates: "Looking for GPS coordinates...",
+  gps_coordinates_found: "GPS coordinates found.",
+  column_count: "Column count",
+  restore_publications: "Restore deleted publications",
 };
