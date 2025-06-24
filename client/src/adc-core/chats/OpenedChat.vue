@@ -163,6 +163,7 @@
             :placeholder="$t('write_a_message')"
             :minlength="0"
             :maxlength="300"
+            :intercept_enter="true"
             @toggleValidity="($event) => (allow_save = $event)"
             @onEnter="postMessage"
           >
@@ -374,7 +375,7 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // await new Promise((resolve) => setTimeout(resolve, 100));
 
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,

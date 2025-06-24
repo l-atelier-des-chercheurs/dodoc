@@ -40,7 +40,7 @@
           :maxlength="maxlength"
           :key="edit_mode + content"
           @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="updateText"
+          @onEnter="input_type !== 'editor' ? updateText() : undefined"
         />
       </component>
 

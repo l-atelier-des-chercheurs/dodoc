@@ -299,6 +299,21 @@ export default {
         modules: {
           cardEditable: true,
           toolbar,
+          keyboard: {
+            bindings: {
+              enter: {
+                key: "Enter",
+                handler: (range, context) => {
+                  if (this.$listeners.onEnter) {
+                    return this.$listeners.onEnter(range, context);
+                  }
+                  // Return true to allow default Enter behavior
+                  // Return false to prevent default behavior
+                  return true;
+                },
+              },
+            },
+          },
           // syntax: { hljs },
         },
         bounds: this.$refs.editor,
