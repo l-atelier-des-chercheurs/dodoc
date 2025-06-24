@@ -196,11 +196,12 @@ export default {
           password: this.input_password,
         })
         .then(() => {
-          // this.$alertify
-          //   .delay(4000)
-          //   .success(this.$t("logged_in"));
+          this.$alertify.delay(4000).success(this.$t("logged_in"));
           this.connection_status = "success";
-          window.location.reload();
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
         })
         .catch((err) => {
           this.connection_status = "failed";
