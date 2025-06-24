@@ -1029,6 +1029,7 @@ export default {
       content: "😀";
       font-size: var(--quill-buttons-size);
       line-height: 1;
+      filter: grayscale(1);
     }
   }
 
