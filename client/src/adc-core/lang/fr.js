@@ -1408,7 +1408,7 @@ export default {
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
 
-  emoji_choose_emoji: "Choisir un emoji",
+  choose_emoji: "Choisir un emoji",
   emoji_search: "Rechercher un emoji",
   emoji_not_found: "Aucun emoji trouvé",
   emoji_recent: "Récents",

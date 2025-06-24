@@ -6,13 +6,13 @@
   >
     <Picker
       :data="emojiIndex"
-      set="twitter"
-      :native="false"
+      set="apple"
       :emoji-size="24"
       :per-line="8"
       :show-preview="true"
       :show-search="true"
       :i18n="emoji_i18n"
+      :title="''"
       @select="onEmojiSelect"
     />
   </BaseModal2>
@@ -59,6 +59,10 @@ export default {
       this.$emit("select", emoji);
       this.$emit("close");
     },
+    backgroundImageFn(set, sheetSize) {
+      return ``;
+      // return `${this.$root.publicPath}images/apple-12.0-sheets-256-64.png`;
+    },
   },
 };
 </script>
@@ -67,7 +71,6 @@ export default {
 // Global styles for emoji picker
 .emoji-mart {
   border: none;
-
   .emoji-mart-bar {
     border-color: var(--c-gris);
   }

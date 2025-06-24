@@ -161,6 +161,7 @@
             ref="textInput"
             :input_type="'editor'"
             :placeholder="$t('write_a_message')"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :minlength="0"
             :maxlength="300"
             :intercept_enter="true"
