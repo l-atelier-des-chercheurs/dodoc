@@ -140,7 +140,7 @@ Default values are:
 ```
 
 Custom values can be defined in the schema property in settings_base.json.
-Editable default values and all custom values can only be edited by an $admins.
+Editable default values and all custom values can only be edited by an $admin.
 
 ### Files
 
@@ -174,3 +174,154 @@ Default values are:
   - gps             (Object)
   - hash            (String)                              file hash (to find duplicates)
 ```
+
+Custom values can be defined in the schema property in settings_base.json.
+Editable default values and all custom values can only be edited by an $admins.
+
+## Security and visibility
+
+### Status
+
+Each folder and each file have a "$status" property, which defines who can read them using getFolders, getFolder, getFiles and getFile:
+
+- by default, it is set to **private**: folder will only be listed by their respective authors and instance admins.
+- otherwise, if set to anything else, they will be listed by anyone (loggedin or not, as long as they have access to dodoc)
+
+### Password
+
+If a folder has a $password, then this ressource and its content can only be edited by people that are logged in to this folder using its password.
+
+### Editing
+
+If a folder has $admins, only people logged in with a token that matches one of these $admin path can edit/remove this folder's meta and its subfolders.
+
+If a folder has $contributors, people logged in with a token that matches one of these $contributors can not edit this folder's meta but can create/edit/remove subfolders or import/edit/remove files.
+
+If a folder has `$contributors = "everyone"`, all users (including anonymous, non logged-in users) have contributors' permissions.
+If a folder has `$admins = "everyone"`, all users (including anonymous) have admins' permissions.
+If a folder has `$admins = "parent_contributors"` then all parent's $contributors are admins to this folder. This is the same behaviour as files in that parent folder.
+If a folder has `$admins = "authors"` then all logged in authors are admins to this folder (anonymous contributions are forbidden).
+
+These permissions trickle down: an instance admin has admin rights to all the instance contents. A space admin has admin rights to all its projects. A project admin has admin rights to all its content (medias, stopmotions, publications).
+
+An instance contributor, though, only has contributors rights to the direct content it contains. For instance, a contributor to a space can create a project, but not remove a project he/she is not an $admin of.
+
+If a folder type schema has the property `$can_be_created_by: "everyone"`, this overrides the above behaviour and such folder can be created by all users even those that are not logged in. This is useful for accounts creation.
+
+If a folder has `$can_be_remixed = true`, it can be remixed: duplicated somewhere else to the same level. When it is remixed, the path to the new folder gets appended to the array `$list_of_remixes` and the remix folder gets a `$is_remix_of` string.
+
+## Examples
+
+### Schema and path
+
+The path to a ressource is decomposed like this:
+
+`/type-of-ressource/name-of-ressource/type-of-child-ressource/name-of-child-ressource`
+
+For example, with the following schema:
+
+```
+{
+  "schema": {
+    "$folders": {
+      "spaces": {
+        "$cover": {
+          "width": 1200,
+          "height": 1200,
+          "thumbs": {
+            "resolutions": [50, 320, 640, 1200]
+          }
+        },
+        "fields": {
+          "title": {
+            "type": "string"
+          }
+        },
+        "$folders": {
+          "projects": {
+            "$cover": {
+              "width": 2000,
+              "height": 2000,
+              "thumbs": {
+                "resolutions": [50, 320, 640, 2000]
+              }
+            },
+            "fields": {
+              "title": {
+                "type": "string",
+                "unique": true
+              }
+            },
+            "$folders": {
+              "publications": {
+                "$cover": {
+                  "width": 1200,
+                  "height": 1200,
+                  "thumbs": {
+                    "resolutions": [50, 320, 640, 1200]
+                  }
+                },
+                "fields": {
+                  "title": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Then the following routes will redirect to:
+
+- /spaces
+  --> returns a list of all folders in /spaces with their metas
+
+- /spaces/bonjour
+  --> returns the meta of a single "bonjour" folder with a list of all their files with their metas
+
+- /spaces/bonjour/projects
+  --> returns a list of all folders in /spaces/bonjour/projects with their metas
+
+- /spaces/bonjour/projects/elephant-with-plywood
+  --> returns the meta of a single "elephant-with-plywood" folder with a list of all their files with their metas
+
+- /spaces/bonjour/projects/elephant-with-plywood.zip
+  --> downloads a zip file with all the content of that folder
+
+### Permission
+
+For an existing folder:
+
+```
+Role                  | Edit | Upload file | Create subfolder | Export | Copy |  Download | GeneratePreview |
+-------------------------------------------------------------------------------------------------------------
+Instance admins       |   x  |     x       |        x         |    x   |   x  |     x     |        x        |
+Folder $admins        |   x  |     x       |        x         |    x   |   x  |     x     |        x        |
+Folder $contributors  |      |     x       |        x         |        |      |           |                 |
+-------------------------------------------------------------------------------------------------------------
+```
+
+So, for example for a space /bonjour, its $admins can edit all meta properties while a contributor can only import/edit/remove files, and create projects (of which they'll be $admins by default).
+
+---
+
+## Cookies / LocalStorage
+
+Data stored in the LocalStorage (similar to cookies) :
+
+- sessionID: random identifier to persist connection
+- general_password: access password for dodoc if set for that instance, and if "remember" is checked
+- tokenpath: login identifier, to reconnect to a logged in account when the page is refreshed
+- selected_devices: selected video/audio devices in Capture page
+- location_to_add_to_medias: coordinates picked to add to captured media
+- fontLastUsed: last font used in a text block
+- language: lang picked by user if it was changed from the default (browser or OS langage)
+- translations_to_share: when using the translation helper, translations entered by a user
+- show_meta_sidebar: show/hide the information sidebar when opening the modal for a media in Collect
+- library_tile_mode: last used media preview mode in Collect
+- page_settings: for each publication, remember grid options (show/hide, snap, gridstep)
