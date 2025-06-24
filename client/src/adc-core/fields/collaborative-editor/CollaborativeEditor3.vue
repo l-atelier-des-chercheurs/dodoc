@@ -45,6 +45,12 @@
         @close="show_markdown_help = false"
       />
 
+      <EmojiPicker
+        v-if="show_emoji_picker"
+        @select="onEmojiSelect"
+        @close="closeEmojiPicker"
+      />
+
       <slot name="custom_buttons" />
 
       <div class="_archiveSaveContainer">
@@ -209,6 +215,7 @@ export default {
   components: {
     TextVersioning,
     MarkdownHelpModal,
+    EmojiPicker: () => import("./EmojiPicker.vue"),
   },
   data() {
     return {
@@ -224,6 +231,7 @@ export default {
 
       show_archives: false,
       show_markdown_help: false,
+      show_emoji_picker: false,
 
       debounce_textUpdate: undefined,
 
@@ -352,6 +360,7 @@ export default {
         "underline",
         "strike",
         "link",
+        "emoji",
         "blockquote",
       ];
       basic_formatting.map((bf) => {
@@ -428,6 +437,9 @@ export default {
       if (reference_formats.length > 0) container.push(["clean"]);
 
       let handlers = {
+        emoji: () => {
+          this.toggleEmojiPicker();
+        },
         divider: function () {
           var range = this.quill.getSelection();
           if (range) {
@@ -692,6 +704,22 @@ export default {
         // const { font } = this.editor.getFormat();
         // localStorage.setItem("fontLastUsed", font);
       }, 2000);
+    },
+
+    toggleEmojiPicker() {
+      this.show_emoji_picker = !this.show_emoji_picker;
+    },
+
+    onEmojiSelect(emoji) {
+      if (emoji.native) {
+        this.insertAtCursor(emoji.native);
+      } else if (emoji.colons) {
+        this.insertAtCursor(emoji.colons);
+      }
+    },
+
+    closeEmojiPicker() {
+      this.show_emoji_picker = false;
     },
   },
 };
@@ -993,6 +1021,15 @@ export default {
   .ql-color-picker,
   .ql-icon-picker {
     width: var(--quill-options-size);
+  }
+
+  // Emoji button styling
+  .ql-emoji {
+    &:after {
+      content: "😀";
+      font-size: var(--quill-buttons-size);
+      line-height: 1;
+    }
   }
 
   .ql-formats {
