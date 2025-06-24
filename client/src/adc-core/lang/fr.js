@@ -1421,4 +1421,7 @@ export default {
   emoji_symbols: "Symboles et signes",
   emoji_flags: "Drapeaux",
   emoji_custom: "Personnalisé",
+  message_too_long:
+    "Le message est trop long, il ne doit pas dépasser {max_length} caractères.",
+  today: "Aujourd’hui",
 };
