@@ -4,6 +4,9 @@ import router from "./router";
 
 import "./utils/icons";
 
+// Add Bootstrap Vue CSS for icon animations
+import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
+
 Vue.config.productionTip = false;
 
 const publicPath =

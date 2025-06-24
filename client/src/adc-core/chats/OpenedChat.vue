@@ -5,7 +5,6 @@
       {{ $t("error:") }} {{ err_loading_chat }}
     </div>
     <template v-else>
-      {{ last_message_read_index }}
       <div class="_openedChat--header" key="chat">
         <div class="_openedChat--header--row">
           <button
@@ -159,6 +158,7 @@
           <TextInput
             :content.sync="new_message"
             :autofocus="true"
+            ref="textInput"
             :input_type="'editor'"
             :placeholder="$t('write_a_message')"
             :minlength="0"
@@ -171,9 +171,11 @@
                 type="button"
                 class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
+                :disabled="is_posting_message"
                 @click="postMessage"
               >
                 <svg
+                  v-if="!is_posting_message"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
@@ -185,6 +187,7 @@
                     fill="currentColor"
                   />
                 </svg>
+                <b-icon v-else icon="three-dots" animation="cylon" />
               </button>
             </template>
           </TextInput>
@@ -221,6 +224,8 @@ export default {
       load_all_messages: false,
       show_remove_modal: false,
       pane_scroll_until_end: 0,
+
+      is_posting_message: false,
 
       last_message_read_index: 0,
     };
@@ -356,6 +361,8 @@ export default {
     },
     async postMessage() {
       if (!this.new_message) return;
+
+      this.is_posting_message = true;
       const filename = "message-" + +new Date() + ".txt";
       // not using content, to improve performance loading thousands of messages
       //   const { meta_filename } = await this.$api.uploadText({
@@ -367,6 +374,8 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
@@ -375,10 +384,17 @@ export default {
       });
 
       const path = this.chat.$path + "/" + meta_filename;
+      this.is_posting_message = false;
       this.new_message = "";
 
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
+
+      this.$nextTick(() => {
+        try {
+          this.$refs.textInput.$children[0].editor.focus();
+        } catch (error) {}
+      });
     },
     scrollToMessage(path) {
       const messages = this.$refs[`message-${path}`];
@@ -569,15 +585,25 @@ export default {
 
 ._unreadMessages {
   opacity: 1;
+  background: var(--c-rouge);
+  border-radius: var(--border-radius);
+  // color: var(--c-noir);
 }
 
 ._sendBtn {
+  position: relative;
   padding: calc(var(--spacing) / 2);
 }
 ._changeAuthor {
   // height: 1px;
   // background: var(--c-rouge_fonce);
   margin-bottom: calc(var(--spacing) / 1);
+}
+
+._loader {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>
 <style lang="scss">
