@@ -772,4 +772,17 @@ img {
     opacity: 0;
   }
 }
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_clair) !important;
+}
 </style>
