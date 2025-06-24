@@ -5,6 +5,7 @@
       {{ $t("error:") }} {{ err_loading_chat }}
     </div>
     <template v-else>
+      {{ last_message_read_index }}
       <div class="_openedChat--header" key="chat">
         <div class="_openedChat--header--row">
           <button
@@ -227,10 +228,9 @@ export default {
   created() {},
   async mounted() {
     await this.loadChat();
+    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     // await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
-
-    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
 
     if (this.unread_since_last_visit > this.max_messages_to_display) {
       this.max_messages_to_display = this.unread_since_last_visit + 10;
@@ -339,7 +339,7 @@ export default {
         chat_path: this.chat.$path,
         chat_read_index: this.messages.length,
       });
-      this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
+      // this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     },
     async loadChat() {
       const chat = await this.$api
@@ -394,10 +394,10 @@ export default {
       });
     },
     async scrollToUnread() {
-      if (!this.$refs.unreadMessagesNotice)
+      if (!this.$refs.unreadMessagesNotice?.[0])
         return this.scrollToLatest("instant");
 
-      return this.$refs.unreadMessagesNotice[0].scrollIntoView({
+      return this.$refs.unreadMessagesNotice?.[0]?.scrollIntoView({
         behavior: "instant",
       });
     },
@@ -504,6 +504,7 @@ export default {
   z-index: 1000;
 
   text-align: center;
+  color: white;
   // font-size: 0.8rem;
   padding: calc(var(--spacing) / 2);
   font-style: italic;
@@ -513,6 +514,7 @@ export default {
 
 ._message--footer {
   text-align: center;
+  color: white;
   margin: calc(var(--spacing) / 1);
 }
 
