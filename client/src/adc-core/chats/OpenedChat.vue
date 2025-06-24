@@ -154,7 +154,12 @@
       </div>
 
       <div class="_openedChat--footer">
-        <template v-if="can_contribute_to_chat">
+        <template v-if="!connected_as">
+          <div class="u-instructions">
+            {{ $t("you_must_login_to_contribute") }}
+          </div>
+        </template>
+        <template v-else-if="can_contribute_to_chat">
           <TextInput
             :content.sync="new_message"
             :autofocus="true"
@@ -194,9 +199,11 @@
             </template>
           </TextInput>
         </template>
-        <div v-else class="u-instructions">
-          {{ $t("not_allowed_to_post_messages") }}
-        </div>
+        <template v-else>
+          <div class="u-instructions">
+            {{ $t("not_allowed_to_post_messages") }}
+          </div>
+        </template>
       </div>
     </template>
   </div>
@@ -504,7 +511,8 @@ export default {
   overflow: auto;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-  padding-bottom: 0;
+  // padding-bottom: 0;
+  text-align: center;
   background-color: white;
   color: var(--c-noir);
 }
