@@ -12,7 +12,7 @@
         :content="project.authors_list"
         :path="project.$path"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :can_edit="can_edit"
       />
     </div>
@@ -54,7 +54,7 @@
         :content="project.custom_license || $t('fill_out_your_license')"
         :path="project.$path"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :can_edit="can_edit"
       />
     </div>

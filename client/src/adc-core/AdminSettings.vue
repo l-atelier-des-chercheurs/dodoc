@@ -42,7 +42,7 @@
                   :field_name="'presentation_of_instance'"
                   :instructions="$t('presentation_of_instance_instructions')"
                   :input_type="'editor'"
-                  :custom_formats="['bold', 'italic', 'link']"
+                  :custom_formats="['bold', 'italic', 'link', 'emoji']"
                   :content="settings.presentation_of_instance || ''"
                   :path="settings.$path"
                   :can_edit="is_instance_admin"

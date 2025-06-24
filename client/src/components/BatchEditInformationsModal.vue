@@ -18,7 +18,7 @@
           <CollaborativeEditor2
             :label="$t('caption')"
             :content="''"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
             @save="
@@ -31,7 +31,7 @@
             :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
             :content="''"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
             @save="

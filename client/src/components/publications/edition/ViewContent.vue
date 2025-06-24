@@ -512,10 +512,8 @@ export default {
       });
 
       if (!media) {
-        debugger;
         // attempt to find in chapter source_medias
         if (source_medias?.length > 0) {
-          debugger;
           const local_media = source_medias.find(
             (sm) => sm.meta_filename_in_project === meta_src
           );

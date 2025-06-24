@@ -85,7 +85,7 @@
               :field_to_edit="'presentation'"
               :content="event.presentation"
               :path="event.$path"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :is_collaborative="false"
               :maxlength="1280"
               :can_edit="can_edit_event"

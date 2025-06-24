@@ -45,6 +45,7 @@
           :mode="'always_active'"
           :can_edit="true"
           @input="$emit('update:content', $event)"
+          @onEnter="onEnter"
         />
         <slot name="suffix" />
       </div>
@@ -127,6 +128,10 @@ export default {
     custom_formats: {
       type: Array,
       default: () => ["bold", "italic", "link"],
+    },
+    intercept_enter: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {},
@@ -237,6 +242,13 @@ export default {
     },
     toggleInputType() {
       this.show_password_in_clear = !this.show_password_in_clear;
+    },
+    onEnter() {
+      if (this.intercept_enter) {
+        this.$emit("onEnter");
+        return false; // Prevent default Enter behavior
+      }
+      return true; // Allow default Enter behavior
     },
   },
 };

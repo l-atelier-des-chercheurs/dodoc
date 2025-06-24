@@ -4,6 +4,9 @@ import router from "./router";
 
 import "./utils/icons";
 
+// Add Bootstrap Vue CSS for icon animations
+import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
+
 Vue.config.productionTip = false;
 
 const publicPath =
@@ -22,8 +25,63 @@ import {
   findMissingTranslations,
 } from "@/adc-core/lang/i18n.js";
 
-import alertify from "alertify.js";
-Vue.prototype.$alertify = alertify;
+// Modern toast notifications
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+Vue.use(Toast, {
+  position: "bottom-left",
+  timeout: 4000,
+  closeOnClick: true,
+  pauseOnFocusLoss: false,
+  pauseOnHover: true,
+  draggable: true,
+  draggablePercent: 0.6,
+  showCloseButtonOnHover: false,
+  hideProgressBar: false,
+  closeButton: "button",
+  transition: "Vue-Toastification__fade",
+  icon: true,
+  rtl: false,
+});
+
+// Create a compatibility layer for the old alertify API
+Vue.prototype.$alertify = {
+  delay: (time) => ({
+    error: (message) => Vue.prototype.$toast.error(message, { timeout: time }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { timeout: time }),
+    log: (message) => Vue.prototype.$toast.info(message, { timeout: time }),
+  }),
+  closeLogOnClick: (enabled) => ({
+    delay: (time) => ({
+      error: (message) =>
+        Vue.prototype.$toast.error(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      success: (message) =>
+        Vue.prototype.$toast.success(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      log: (message) =>
+        Vue.prototype.$toast.info(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+    }),
+    error: (message) =>
+      Vue.prototype.$toast.error(message, { closeOnClick: enabled }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { closeOnClick: enabled }),
+    log: (message) =>
+      Vue.prototype.$toast.info(message, { closeOnClick: enabled }),
+  }),
+  error: (message) => Vue.prototype.$toast.error(message),
+  success: (message) => Vue.prototype.$toast.success(message),
+  log: (message) => Vue.prototype.$toast.info(message),
+};
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);

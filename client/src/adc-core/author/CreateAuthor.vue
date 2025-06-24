@@ -35,7 +35,7 @@
         </button>
       </form>
       <form
-        v-else
+        v-else-if="!account_created_notice"
         class="input-validation-required"
         @submit.prevent="createAuthor"
       >
@@ -69,9 +69,14 @@
           <div class="">
             <DLabel :str="$t('pick_portrait')" />
             <div>
-              <img class="_imgPreview" :src="new_cover_object_url" />
+              <img
+                class="_imgPreview"
+                v-if="new_cover_object_url"
+                :src="new_cover_object_url"
+              />
               <EditBtn
                 :label="!new_cover ? $t('add') : undefined"
+                :is_unfolded="true"
                 @click="select_image = true"
               />
               <ImageSelect
@@ -142,15 +147,10 @@
             {{ $t("create") }}
           </button>
         </fieldset>
-
-        <div v-if="account_created_notice">
-          {{ $t("account_created") }}
-        </div>
-
-        <template v-if="error_msg">
-          <div class="u-errorMsg" v-text="error_msg" />
-        </template>
       </form>
+      <div v-else-if="account_created_notice" class="u-successMsg">
+        {{ $t("account_created") }}
+      </div>
     </transition>
   </div>
 </template>

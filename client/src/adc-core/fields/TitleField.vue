@@ -27,6 +27,7 @@
         <span v-html="instructions" />
       </div>
 
+      {{ custom_formats }}
       <component :is="tag">
         <TextInput
           ref="TextInput"
@@ -40,7 +41,7 @@
           :maxlength="maxlength"
           :key="edit_mode + content"
           @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="updateText"
+          @onEnter="input_type !== 'editor' ? updateText() : undefined"
         />
       </component>
 

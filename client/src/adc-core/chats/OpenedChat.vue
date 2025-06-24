@@ -158,10 +158,13 @@
           <TextInput
             :content.sync="new_message"
             :autofocus="true"
+            ref="textInput"
             :input_type="'editor'"
             :placeholder="$t('write_a_message')"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :minlength="0"
             :maxlength="300"
+            :intercept_enter="true"
             @toggleValidity="($event) => (allow_save = $event)"
             @onEnter="postMessage"
           >
@@ -170,9 +173,11 @@
                 type="button"
                 class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
+                :disabled="is_posting_message"
                 @click="postMessage"
               >
                 <svg
+                  v-if="!is_posting_message"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
@@ -184,6 +189,7 @@
                     fill="currentColor"
                   />
                 </svg>
+                <b-icon v-else icon="three-dots" animation="cylon" />
               </button>
             </template>
           </TextInput>
@@ -221,16 +227,17 @@ export default {
       show_remove_modal: false,
       pane_scroll_until_end: 0,
 
+      is_posting_message: false,
+
       last_message_read_index: 0,
     };
   },
   created() {},
   async mounted() {
     await this.loadChat();
+    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     // await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
-
-    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
 
     if (this.unread_since_last_visit > this.max_messages_to_display) {
       this.max_messages_to_display = this.unread_since_last_visit + 10;
@@ -339,7 +346,7 @@ export default {
         chat_path: this.chat.$path,
         chat_read_index: this.messages.length,
       });
-      this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
+      // this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     },
     async loadChat() {
       const chat = await this.$api
@@ -356,6 +363,8 @@ export default {
     },
     async postMessage() {
       if (!this.new_message) return;
+
+      this.is_posting_message = true;
       const filename = "message-" + +new Date() + ".txt";
       // not using content, to improve performance loading thousands of messages
       //   const { meta_filename } = await this.$api.uploadText({
@@ -367,6 +376,8 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
+      // await new Promise((resolve) => setTimeout(resolve, 100));
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
@@ -375,10 +386,17 @@ export default {
       });
 
       const path = this.chat.$path + "/" + meta_filename;
+      this.is_posting_message = false;
       this.new_message = "";
 
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
+
+      this.$nextTick(() => {
+        try {
+          this.$refs.textInput.$children[0].editor.focus();
+        } catch (error) {}
+      });
     },
     scrollToMessage(path) {
       const messages = this.$refs[`message-${path}`];
@@ -394,10 +412,10 @@ export default {
       });
     },
     async scrollToUnread() {
-      if (!this.$refs.unreadMessagesNotice)
+      if (!this.$refs.unreadMessagesNotice?.[0])
         return this.scrollToLatest("instant");
 
-      return this.$refs.unreadMessagesNotice[0].scrollIntoView({
+      return this.$refs.unreadMessagesNotice?.[0]?.scrollIntoView({
         behavior: "instant",
       });
     },
@@ -504,6 +522,7 @@ export default {
   z-index: 1000;
 
   text-align: center;
+  color: white;
   // font-size: 0.8rem;
   padding: calc(var(--spacing) / 2);
   font-style: italic;
@@ -513,6 +532,7 @@ export default {
 
 ._message--footer {
   text-align: center;
+  color: white;
   margin: calc(var(--spacing) / 1);
 }
 
@@ -567,15 +587,25 @@ export default {
 
 ._unreadMessages {
   opacity: 1;
+  background: var(--c-rouge);
+  border-radius: var(--border-radius);
+  // color: var(--c-noir);
 }
 
 ._sendBtn {
+  position: relative;
   padding: calc(var(--spacing) / 2);
 }
 ._changeAuthor {
   // height: 1px;
   // background: var(--c-rouge_fonce);
   margin-bottom: calc(var(--spacing) / 1);
+}
+
+._loader {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>
 <style lang="scss">

@@ -139,7 +139,7 @@
           :label="$t('description')"
           :show_label="context === 'full'"
           :input_type="'editor'"
-          :custom_formats="['bold', 'italic', 'link']"
+          :custom_formats="['bold', 'italic', 'link', 'emoji']"
           :content="project.description"
           :path="project.$path"
           :maxlength="1280"

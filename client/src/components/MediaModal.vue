@@ -192,7 +192,7 @@
               :content="file.caption"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -203,7 +203,7 @@
               :content="file.$credits"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>

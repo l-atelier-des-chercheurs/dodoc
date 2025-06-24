@@ -1248,6 +1248,7 @@ export default {
   warning_wont_be_able_to_edit:
     "Warning! By changing this setting, you will no longer be able to edit this content.",
   markdown_help: "Text formatting (markdown) help",
+  choose_emoji: "Choose emoji",
   import_medias: "Import medias",
 
   multisupport_embed_img_instr:
