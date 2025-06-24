@@ -339,7 +339,7 @@
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
             :field_name="'caption'"
             :input_type="'editor'"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :content="active_module.caption"
             :path="active_module.$path"
             :maxlength="640"

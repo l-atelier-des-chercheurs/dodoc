@@ -1,6 +1,7 @@
 <template>
   <BaseModal2
     :title="$t('choose_emoji') || 'Choose emoji'"
+    :size="'small'"
     @close="$emit('close')"
   >
     <Picker
@@ -11,6 +12,7 @@
       :per-line="8"
       :show-preview="true"
       :show-search="true"
+      :i18n="emoji_i18n"
       @select="onEmojiSelect"
     />
   </BaseModal2>
@@ -33,6 +35,23 @@ export default {
   data() {
     return {
       emojiIndex,
+      emoji_i18n: {
+        search: this.$t("emoji_search"),
+        notfound: this.$t("emoji_not_found"),
+        categories: {
+          search: this.$t("emoji_not_found"),
+          recent: this.$t("emoji_recent"),
+          people: this.$t("emoji_people"),
+          nature: this.$t("emoji_nature"),
+          foods: this.$t("emoji_foods"),
+          activity: this.$t("emoji_activity"),
+          places: this.$t("emoji_places"),
+          objects: this.$t("emoji_objects"),
+          symbols: this.$t("emoji_symbols"),
+          flags: this.$t("emoji_flags"),
+          custom: this.$t("emoji_custom"),
+        },
+      },
     };
   },
   methods: {

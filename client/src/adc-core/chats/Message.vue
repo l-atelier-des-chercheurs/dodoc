@@ -66,7 +66,7 @@
               :content="message.$content"
               :path="message.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :minlength="0"
               :maxlength="300"
               :can_edit="true"

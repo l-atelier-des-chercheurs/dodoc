@@ -27,6 +27,7 @@
         <span v-html="instructions" />
       </div>
 
+      {{ custom_formats }}
       <component :is="tag">
         <TextInput
           ref="TextInput"

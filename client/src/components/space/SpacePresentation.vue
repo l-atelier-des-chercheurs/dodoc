@@ -118,7 +118,7 @@
         :show_label="context === 'full'"
         :field_name="'description'"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :content="space.description"
         :path="space.$path"
         :maxlength="1280"
