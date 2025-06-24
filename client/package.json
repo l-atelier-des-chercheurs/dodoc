@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "^1.0.2",
-    "alertify.js": "^1.0.12",
     "axios": "^0.28.1",
     "axios-debug-log": "^0.8.4",
     "bootstrap-vue": "^2.23.1",
@@ -60,6 +59,7 @@
     "vue-plyr": "^7.0.0",
     "vue-router": "^3.6.5",
     "vue-slicksort": "^1.2.0",
+    "vue-toastification": "^1.7.14",
     "waveform-playlist": "^4.3.3",
     "yoyoo-ddr": "^0.7.0"
   },

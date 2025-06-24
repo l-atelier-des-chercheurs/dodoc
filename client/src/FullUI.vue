@@ -103,7 +103,7 @@ export default {
   computed: {},
   methods: {
     socketConnected() {
-      if (this.debug_mode)
+      if (this.$root.debug_mode)
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
