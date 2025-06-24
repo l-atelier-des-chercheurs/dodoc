@@ -67,12 +67,14 @@
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
           />
-          <StatusTag
-            :status="chat.$status"
-            :status_options="['public', 'private']"
-            :path="chat.$path"
-            :can_edit="can_edit_chat"
-          />
+          <div class="_status">
+            <StatusTag
+              :status="chat.$status"
+              :status_options="['public', 'private']"
+              :path="chat.$path"
+              :can_edit="can_edit_chat"
+            />
+          </div>
         </div>
       </div>
       <div class="_openedChat--content" ref="messages" @scroll="onScroll">
@@ -129,6 +131,7 @@
                 :key="message.$path"
                 :ref="`message-${message.$path}`"
                 :message="message"
+                :max_message_length="max_message_length"
                 :can_edit_chat="can_edit_chat"
                 :can_contribute_to_chat="can_contribute_to_chat"
               />
@@ -168,9 +171,9 @@
             :placeholder="$t('write_a_message')"
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :minlength="0"
-            :maxlength="300"
+            :maxlength="max_message_length"
             :intercept_enter="true"
-            @toggleValidity="($event) => (allow_save = $event)"
+            @toggleValidity="($event) => (allow_send = $event)"
             @onEnter="postMessage"
           >
             <template #suffix>
@@ -178,7 +181,7 @@
                 type="button"
                 class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
-                :disabled="is_posting_message"
+                :disabled="is_posting_message || !allow_send"
                 @click="postMessage"
               >
                 <svg
@@ -237,6 +240,9 @@ export default {
       is_posting_message: false,
 
       last_message_read_index: 0,
+      max_message_length: 300,
+
+      allow_send: false,
     };
   },
   created() {},
@@ -371,6 +377,15 @@ export default {
     async postMessage() {
       if (!this.new_message) return;
 
+      if (!this.allow_send) {
+        this.$alertify
+          .delay(4000)
+          .error(
+            this.$t("message_too_long", { max_length: this.max_message_length })
+          );
+        return;
+      }
+
       this.is_posting_message = true;
       const filename = "message-" + +new Date() + ".txt";
       // not using content, to improve performance loading thousands of messages
@@ -472,7 +487,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   &:not(:last-child) {
     border-bottom: 2px solid var(--c-rouge_fonce);
@@ -484,6 +499,10 @@ export default {
     --color1: transparent;
     --color2: white;
     --color-text: var(--c-noir);
+  }
+
+  > ._status {
+    flex: 0 0 9ch;
   }
 }
 
@@ -535,6 +554,7 @@ export default {
   padding: calc(var(--spacing) / 2);
   font-style: italic;
   background: var(--c-rouge_fonce);
+  text-transform: lowercase;
   // background: linear-gradient(to bottom, var(--c-rouge_fonce) 60%, transparent);
 }
 
