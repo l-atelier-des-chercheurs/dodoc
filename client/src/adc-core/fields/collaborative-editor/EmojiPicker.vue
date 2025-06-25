@@ -71,6 +71,9 @@ export default {
 // Global styles for emoji picker
 .emoji-mart {
   border: none;
+  height: max(420px, 60vh);
+  width: 100% !important;
+
   .emoji-mart-bar {
     border-color: var(--c-gris);
   }

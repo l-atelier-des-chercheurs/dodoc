@@ -180,6 +180,13 @@ export default {
         {
           opacity: .7 !important;
         }
+        .pagedjs_page:hover:not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"]))
+        {
+          opacity: .85 !important;
+        }
+        .chapter.clickable[data-chapter-meta-filename="${this.opened_chapter_meta_filename}"] {
+          cursor: default !important;
+        }
       `;
       }
       return "";
@@ -269,6 +276,12 @@ export default {
         chapter.appendChild(btn);
         chapter.classList.add("clickable");
         chapter.addEventListener("click", () => {
+          // only if not active
+          if (
+            chapter.getAttribute("data-chapter-meta-filename") ===
+            this.opened_chapter_meta_filename
+          )
+            return;
           this.$emit(
             "openChapter",
             chapter.getAttribute("data-chapter-meta-filename")
