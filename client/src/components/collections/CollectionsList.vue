@@ -43,9 +43,11 @@
         class="_collection"
         :to="getURLToFolder(collection.$path)"
       >
-        <h3>{{ collection.title }}</h3>
-        <div class="_collection_type">
-          {{ $t(collection.template || "story").toLowerCase() }}
+        <div>
+          <h3>{{ collection.title }}</h3>
+          <div class="_collection_type">
+            {{ $t(collection.template || "story") }}
+          </div>
         </div>
         <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
           <AuthorTag
@@ -178,6 +180,7 @@ export default {
 
   h3 {
     margin: 0;
+    font-size: var(--sl-font-size-large);
   }
 }
 
