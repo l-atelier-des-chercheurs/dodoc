@@ -4,7 +4,7 @@
 const tags_list = ["image", "video", "audio", "embed", "break"];
 
 export default (md, o = {}) => {
-  const getMediaSrc = o.getMediaSrc;
+  const placeLocalMedia = o.placeLocalMedia;
   const transformURL = o.transformURL;
 
   function csc(state, startLine, endLine, silent) {
@@ -193,97 +193,120 @@ export default (md, o = {}) => {
 
     // Handle different types of shortcodes
     if (tags_list.includes(token.tag)) {
-      // Use getMediaSrc if available, otherwise fallback to normal behavior
-      let media = null;
-
       if (token.tag === "break") {
         return `<div class="break break-${token.attrs.src}"></div>\n`;
       }
 
-      if (getMediaSrc && !token.attrs.src.startsWith("http")) {
-        media = getMediaSrc(token.attrs.src);
-      }
+      // Handle external URLs
+      if (token.attrs.src.startsWith("http")) {
+        const attrs = [];
+        let class_attr = "";
+        if (token.attrs.class) {
+          class_attr = `${token.attrs.class}`;
+        }
 
-      const attrs = [];
+        // Add all other attributes except caption
+        for (const [key, value] of Object.entries(token.attrs)) {
+          if (
+            key !== "src" &&
+            key !== "caption" &&
+            key !== "class" &&
+            key !== "float" &&
+            key !== "width"
+          ) {
+            attrs.push(`${key}="${value}"`);
+          }
+        }
 
-      let src = "";
-      if (media) {
-        src = media.src;
-      } else if (token.attrs.src.startsWith("http")) {
-        src = token.attrs.src;
-      } else {
-        let msg = "⚠️ Media not found";
-        return `<div class="media media-error"><i>${msg}</i></div>`;
-      }
+        let classes = ["media", "media-" + token.tag];
+        if (class_attr) {
+          classes.push(class_attr);
+        }
+        if (token.attrs.float) {
+          classes.push(`float-${token.attrs.float}`);
+        }
 
-      let class_attr = "";
-      if (token.attrs.class) {
-        class_attr = `${token.attrs.class}`;
-      }
-
-      // Add all other attributes except caption
-      for (const [key, value] of Object.entries(token.attrs)) {
         if (
-          key !== "src" &&
-          key !== "caption" &&
-          key !== "class" &&
-          key !== "float" &&
-          key !== "width"
+          token.attrs.width &&
+          (token.attrs.width.includes("%") || token.attrs.width.includes("cm"))
         ) {
-          attrs.push(`${key}="${value}"`);
+          attrs.push(`style="width: ${token.attrs.width};"`);
         }
-      }
 
-      let classes = ["media", "media-" + token.tag];
-      if (class_attr) {
-        classes.push(class_attr);
-      }
-      if (token.attrs.float) {
-        classes.push(`float-${token.attrs.float}`);
-      }
+        const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
+        let media_tag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
 
-      if (
-        token.attrs.width &&
-        (token.attrs.width.includes("%") || token.attrs.width.includes("cm"))
-      ) {
-        attrs.push(`style="width: ${token.attrs.width};"`);
-      }
-
-      // Create the image tag with all attributes
-      const attrs_str = attrs.length > 0 ? ` ${attrs.join(" ")}` : "";
-      let media_tag = `<figure class="${classes.join(" ")}"${attrs_str}>`;
-
-      if (token.tag === "image") {
-        media_tag += `<img src="${src}" />`;
-      } else if (token.tag === "video") {
-        media_tag += `<video src="${src}" controls>`;
-        media_tag += "</video>";
-      } else if (token.tag === "audio") {
-        media_tag += `<audio src="${src}" controls>`;
-        media_tag += "</audio>";
-      } else if (token.tag === "embed") {
-        if (transformURL) {
-          const embed = transformURL({
-            url: src,
-            autoplay: false,
-          });
-          media_tag += `<iframe src="${embed.src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
-        } else {
-          media_tag += `<iframe src="${src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
+        if (token.tag === "image") {
+          media_tag += `<img src="${token.attrs.src}" />`;
+        } else if (token.tag === "video") {
+          media_tag += `<video src="${token.attrs.src}" controls></video>`;
+        } else if (token.tag === "audio") {
+          media_tag += `<audio src="${token.attrs.src}" controls></audio>`;
+        } else if (token.tag === "embed") {
+          if (transformURL) {
+            const embed = transformURL({
+              url: token.attrs.src,
+              autoplay: false,
+            });
+            media_tag += `<iframe src="${embed.src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
+          } else {
+            media_tag += `<iframe src="${token.attrs.src}" allowfullscreen allowtransparency allow="autoplay" frameborder="0"></iframe>`;
+          }
         }
+
+        // Add caption if it exists and is not empty
+        const markdownCaption = token.attrs.caption;
+        const caption =
+          markdownCaption !== undefined && markdownCaption !== ""
+            ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
+                markdownCaption
+              )}</span></figcaption>`
+            : "";
+
+        return media_tag + caption + "</figure>\n";
       }
 
-      // Add caption if it exists and is not empty
-      const markdownCaption = token.attrs.caption;
+      // Use placeLocalMedia for local media
+      if (placeLocalMedia) {
+        const alt = token.attrs.caption || "";
+        const width = token.attrs.width || "";
+        const height = token.attrs.height || "";
+        const title = token.attrs.title || "";
 
-      const caption =
-        markdownCaption !== undefined && markdownCaption !== ""
-          ? `\n<figcaption class="mediaCaption"><span>${md.renderInline(
-              markdownCaption
-            )}</span></figcaption>`
-          : "";
+        const { html, is_qr_code } = placeLocalMedia({
+          meta_src: token.attrs.src,
+          alt,
+          width: token.attrs.width,
+          height: token.attrs.height,
+          title,
+        });
 
-      return media_tag + caption + "</figure>\n";
+        if (!html || html.includes("Media not found")) {
+          return `<figure class="media media-error"><i>⚠️ Media not found</i></figure>`;
+        }
+
+        // Apply custom classes and attributes if specified
+        let processedHtml = html;
+        if (token.attrs.class || token.attrs.float) {
+          const customClasses = [];
+          if (token.attrs.class) customClasses.push(token.attrs.class);
+          if (token.attrs.float)
+            customClasses.push(`float-${token.attrs.float}`);
+
+          if (customClasses.length > 0) {
+            // Add custom classes to the figure element
+            processedHtml = html.replace(
+              'class="media',
+              `class="media ${customClasses.join(" ")}`
+            );
+          }
+        }
+
+        return processedHtml;
+      }
+
+      // Fallback if no placeLocalMedia function
+      return `<div class="media media-error"><i>⚠️ Media not found</i></div>`;
     } else if (token.tag === "break") {
       return `<div class="break break-${token.attrs.type}"></div>\n`;
     } else {
