@@ -27,6 +27,7 @@
 
         <div class="_editGraphics">
           <button
+            v-if="false"
             type="button"
             class="u-button u-button_bleumarine"
             @click="$emit('updatePane', { key: 'edit_graphics', value: true })"
