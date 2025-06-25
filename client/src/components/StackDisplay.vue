@@ -329,7 +329,7 @@ export default {
         });
       }
 
-      this.selected_stack_files.push(this.stack_files_in_order[0]);
+      // this.selected_stack_files.push(this.stack_files_in_order[0]);
     }
   },
   mounted() {

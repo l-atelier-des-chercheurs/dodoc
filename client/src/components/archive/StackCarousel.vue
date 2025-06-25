@@ -26,17 +26,11 @@
         <MediaContent :file="file" :context="'preview'" :resolution="360" />
 
         <div v-if="can_be_selected === 'multiple'" class="_selectCheckbox">
-          <label
-            :for="'selectinputid-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')"
-          >
+          <label :for="boxid">
             <input
               type="checkbox"
-              :id="
-                'selectinputid-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')
-              "
-              :name="
-                'selectinputname-' + file.$path.replace(/[^a-zA-Z0-9_-]/g, '_')
-              "
+              :id="boxid"
+              :name="boxid"
               :checked="
                 selected_files &&
                 selected_files.some((f) => f.$path === file.$path)
@@ -132,6 +126,9 @@ export default {
     },
   },
   computed: {
+    boxid() {
+      return "selectinputid-" + this.files.map((f) => f.$path).join("-");
+    },
     enable_drag() {
       // hacky but it works
       return (
@@ -293,7 +290,7 @@ export default {
   align-items: center;
 
   > label {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
 
     padding: calc(var(--spacing) / 1);
     border-radius: 50%;
