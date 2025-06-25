@@ -318,52 +318,6 @@ export default {
       //     });
       // });
     },
-    renderImage(meta_src, title, alt, source_medias) {
-      if (meta_src.startsWith("http")) {
-        let custom_classes = ["media"],
-          width,
-          height;
-
-        if (title?.startsWith("=")) {
-          if (title.startsWith("=full-page")) {
-            if (this.view_mode === "book") {
-              custom_classes.push("_isFullPage");
-              if (title.startsWith("=full-page-cover")) {
-                custom_classes.push("_isFullPageCover");
-              }
-            }
-          } else {
-            [width, height] = title
-              .slice(1)
-              .split("x")
-              .map((v) => v.trim())
-              .filter(Boolean);
-          }
-        }
-
-        let html = `
-            <img src="${meta_src}"
-              alt="${alt}"
-              ${width ? ` width="${width}"` : ""}
-              ${height ? ` height="${height}"` : ""}
-            >
-          `;
-
-        if (alt) {
-          html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
-        }
-
-        return `<figure class="${custom_classes.join(" ")}">${html}</figure>`;
-      } else {
-        const { html } = this.placeLocalMedia({
-          meta_src,
-          source_medias,
-          alt,
-          title,
-        });
-        return html;
-      }
-    },
 
     parseMarkdownWithMarkedownIt(content, source_medias) {
       const md = markdownit({
@@ -394,8 +348,14 @@ export default {
         const alt = token.content;
 
         if (src) {
-          // Use the existing renderImage method to handle the image
-          return this.renderImage(src, title, alt, source_medias);
+          // Use the renderMedia method to handle the image
+          const { html } = this.renderMedia({
+            meta_src: src,
+            source_medias,
+            alt,
+            title,
+          });
+          return html;
         }
 
         // Fallback to default renderer if no src
@@ -411,8 +371,8 @@ export default {
         },
       });
       md.use(markdownItCsc, {
-        placeLocalMedia: ({ meta_src, alt, width, height, title }) =>
-          this.placeLocalMedia({
+        renderMedia: ({ meta_src, alt, width, height, title }) =>
+          this.renderMedia({
             meta_src,
             source_medias,
             alt,
@@ -464,20 +424,37 @@ export default {
       return html;
     },
     parseStory(chapter) {
-      const modules = this.getModulesForSection({
+      const pmodules = this.getModulesForSection({
         publication: this.publication,
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "<p>// TODO</p>";
+      let html = "";
 
-      modules.forEach((module) => {
-        html += `<p class="module">
-          <div class="module-type">${
-            this.$t("type") + " " + module.module_type
-          }</div>
-        </p>`;
-        //           <div class="module-content">${JSON.stringify(module, null, 4)}</div>
+      pmodules.forEach((pmodule) => {
+        // parse source medias
+        const source_medias = pmodule.source_medias;
+
+        const medias = source_medias
+          .map((media) => {
+            return this.getSourceMedia({
+              source_media: media,
+              folder_path: this.publication.$path,
+            });
+          })
+          .filter(Boolean);
+
+        medias.forEach((media) => {
+          const { html: _html } = this.renderMedia({
+            media,
+            alt: pmodule.caption,
+            width: pmodule.width,
+            height: pmodule.height,
+            title: pmodule.title,
+          });
+
+          html += _html;
+        });
       });
 
       return html;
@@ -523,7 +500,7 @@ export default {
 
       return media;
     },
-    placeLocalMedia({ meta_src, source_medias, alt, width, height, title }) {
+    renderMedia({ media, meta_src, source_medias, alt, width, height, title }) {
       let media_html = "";
       let is_qr_code = false;
       let custom_classes = ["media"];
@@ -546,60 +523,77 @@ export default {
         }
       }
 
-      const media = this.getMediaSrc(meta_src, source_medias);
-      if (!media)
-        return {
-          html: `<figure class="${custom_classes.join(
-            " "
-          )}"><i>Media not found</i></figure>`,
-          is_qr_code: false,
-        };
-
-      const src = this.makeMediaFileURL({
-        $path: media.$path,
-        $media_filename: media.$media_filename,
-      });
-
-      if (!width && !height) {
-        width = media.$infos.width;
-        height = media.$infos.height;
-      }
-
-      if (media.$type === "image") {
+      // Handle external URLs (http/https)
+      if (meta_src && meta_src.startsWith("http")) {
         media_html = `
-                  <img src="${src}"
-                    alt="${alt}"
-                    ${width ? ` width="${width}"` : ""}
-                    ${height ? ` height="${height}"` : ""}
-                  />
-                `;
+          <img src="${meta_src}"
+            alt="${alt}"
+            ${width ? ` width="${width}"` : ""}
+            ${height ? ` height="${height}"` : ""}
+          />
+        `;
       } else {
-        if (this.view_mode === "book") {
-          is_qr_code = true;
-          custom_classes.push("_isqrcode");
-          media_html = this.makeQREmbedForQR({
-            alt,
-            width,
-            height,
-            media,
-          });
+        // Handle local media
+        if (!media) {
+          media = this.getMediaSrc(meta_src, source_medias);
+        }
+
+        if (!media)
+          return {
+            html: `<figure class="${custom_classes.join(
+              " "
+            )}"><i>Media not found</i></figure>`,
+            is_qr_code: false,
+          };
+
+        const src = this.makeMediaFileURL({
+          $path: media.$path,
+          $media_filename: media.$media_filename,
+        });
+
+        if (!width && !height) {
+          width = media.$infos.width;
+          height = media.$infos.height;
+        }
+
+        if (media.$type === "text") {
+          media_html = media.$content;
+        } else if (media.$type === "image") {
+          media_html = `
+            <img src="${src}"
+              alt="${alt}"
+              ${width ? ` width="${width}"` : ""}
+              ${height ? ` height="${height}"` : ""}
+            />
+          `;
         } else {
-          if (media.$type === "video") {
-            media_html = `
-              <video src="${src}" controls
-                alt="${alt}"
-                ${width ? ` width="${width}"` : ""}
-                ${height ? ` height="${height}"` : ""}
-              />
-            `;
-          } else if (media.$type === "audio") {
-            media_html = `
-              <audio src="${src}" controls
-                alt="${alt}"
-                ${width ? ` width="${width}"` : ""}
-                ${height ? ` height="${height}"` : ""}
-              />
-            `;
+          if (this.view_mode === "book") {
+            is_qr_code = true;
+            custom_classes.push("_isqrcode");
+            media_html = this.makeQREmbedForQR({
+              alt,
+              width,
+              height,
+              media,
+            });
+          } else {
+            if (media.$type === "video") {
+              media_html = `
+                <video src="${src}" controls
+                  alt="${alt}"
+                  ${width ? ` width="${width}"` : ""}
+                  ${height ? ` height="${height}"` : ""}
+                />
+              `;
+            } else if (media.$type === "audio") {
+              media_html = `
+                <audio src="${src}" controls
+                  alt="${alt}"
+                  ${width ? ` width="${width}"` : ""}
+                  ${height ? ` height="${height}"` : ""}
+                />
+              `;
+            }
           }
         }
       }
