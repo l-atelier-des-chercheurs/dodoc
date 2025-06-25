@@ -544,7 +544,7 @@ export default {
 
   margin: 0 calc(var(--spacing) / 1);
   margin-bottom: 0;
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 2);
 }
 
 ._close_button {
