@@ -1443,4 +1443,21 @@ export default {
   column_count: "Nombre de colonnes",
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
+
+  choose_emoji: "Choisir un emoji",
+  emoji_search: "Rechercher un emoji",
+  emoji_not_found: "Aucun emoji trouvé",
+  emoji_recent: "Récents",
+  emoji_people: "Personnes",
+  emoji_nature: "Animaux et nature",
+  emoji_foods: "Aliments et boissons",
+  emoji_activity: "Activités",
+  emoji_places: "Lieux et monuments",
+  emoji_objects: "Objets",
+  emoji_symbols: "Symboles et signes",
+  emoji_flags: "Drapeaux",
+  emoji_custom: "Personnalisé",
+  message_too_long:
+    "Le message est trop long, il ne doit pas dépasser {max_length} caractères.",
+  today: "Aujourd’hui",
 };

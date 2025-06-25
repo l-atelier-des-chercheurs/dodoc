@@ -67,12 +67,14 @@
             :admin_instructions="$t('chat_admin_instructions')"
             :contrib_instructions="$t('chat_contrib_instructions')"
           />
-          <StatusTag
-            :status="chat.$status"
-            :status_options="['public', 'private']"
-            :path="chat.$path"
-            :can_edit="can_edit_chat"
-          />
+          <div class="_status">
+            <StatusTag
+              :status="chat.$status"
+              :status_options="['public', 'private']"
+              :path="chat.$path"
+              :can_edit="can_edit_chat"
+            />
+          </div>
         </div>
       </div>
       <div class="_openedChat--content" ref="messages" @scroll="onScroll">
@@ -129,6 +131,7 @@
                 :key="message.$path"
                 :ref="`message-${message.$path}`"
                 :message="message"
+                :max_message_length="max_message_length"
                 :can_edit_chat="can_edit_chat"
                 :can_contribute_to_chat="can_contribute_to_chat"
               />
@@ -154,15 +157,23 @@
       </div>
 
       <div class="_openedChat--footer">
-        <template v-if="can_contribute_to_chat">
+        <template v-if="!connected_as">
+          <div class="u-instructions">
+            {{ $t("you_must_login_to_contribute") }}
+          </div>
+        </template>
+        <template v-else-if="can_contribute_to_chat">
           <TextInput
             :content.sync="new_message"
             :autofocus="true"
+            ref="textInput"
             :input_type="'editor'"
             :placeholder="$t('write_a_message')"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :minlength="0"
-            :maxlength="300"
-            @toggleValidity="($event) => (allow_save = $event)"
+            :maxlength="max_message_length"
+            :intercept_enter="true"
+            @toggleValidity="($event) => (allow_send = $event)"
             @onEnter="postMessage"
           >
             <template #suffix>
@@ -170,9 +181,11 @@
                 type="button"
                 class="u-button u-button_bleumarine _sendBtn"
                 v-if="new_message.length > 0"
+                :disabled="is_posting_message || !allow_send"
                 @click="postMessage"
               >
                 <svg
+                  v-if="!is_posting_message"
                   width="16"
                   height="16"
                   viewBox="0 0 24 24"
@@ -184,13 +197,16 @@
                     fill="currentColor"
                   />
                 </svg>
+                <b-icon v-else icon="three-dots" animation="cylon" />
               </button>
             </template>
           </TextInput>
         </template>
-        <div v-else class="u-instructions">
-          {{ $t("not_allowed_to_post_messages") }}
-        </div>
+        <template v-else>
+          <div class="u-instructions">
+            {{ $t("not_allowed_to_post_messages") }}
+          </div>
+        </template>
       </div>
     </template>
   </div>
@@ -221,16 +237,20 @@ export default {
       show_remove_modal: false,
       pane_scroll_until_end: 0,
 
+      is_posting_message: false,
+
       last_message_read_index: 0,
+      max_message_length: 300,
+
+      allow_send: false,
     };
   },
   created() {},
   async mounted() {
     await this.loadChat();
+    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     // await new Promise((resolve) => setTimeout(resolve, 200));
     this.is_loading = false;
-
-    this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
 
     if (this.unread_since_last_visit > this.max_messages_to_display) {
       this.max_messages_to_display = this.unread_since_last_visit + 10;
@@ -339,7 +359,7 @@ export default {
         chat_path: this.chat.$path,
         chat_read_index: this.messages.length,
       });
-      this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
+      // this.last_message_read_index = this.getIndexFromChatPath(this.chat.$path);
     },
     async loadChat() {
       const chat = await this.$api
@@ -356,6 +376,17 @@ export default {
     },
     async postMessage() {
       if (!this.new_message) return;
+
+      if (!this.allow_send) {
+        this.$alertify
+          .delay(4000)
+          .error(
+            this.$t("message_too_long", { max_length: this.max_message_length })
+          );
+        return;
+      }
+
+      this.is_posting_message = true;
       const filename = "message-" + +new Date() + ".txt";
       // not using content, to improve performance loading thousands of messages
       //   const { meta_filename } = await this.$api.uploadText({
@@ -367,6 +398,8 @@ export default {
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 
+      // await new Promise((resolve) => setTimeout(resolve, 100));
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
@@ -375,10 +408,17 @@ export default {
       });
 
       const path = this.chat.$path + "/" + meta_filename;
+      this.is_posting_message = false;
       this.new_message = "";
 
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
+
+      this.$nextTick(() => {
+        try {
+          this.$refs.textInput.$children[0].editor.focus();
+        } catch (error) {}
+      });
     },
     scrollToMessage(path) {
       const messages = this.$refs[`message-${path}`];
@@ -394,10 +434,10 @@ export default {
       });
     },
     async scrollToUnread() {
-      if (!this.$refs.unreadMessagesNotice)
+      if (!this.$refs.unreadMessagesNotice?.[0])
         return this.scrollToLatest("instant");
 
-      return this.$refs.unreadMessagesNotice[0].scrollIntoView({
+      return this.$refs.unreadMessagesNotice?.[0]?.scrollIntoView({
         behavior: "instant",
       });
     },
@@ -447,7 +487,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 
   &:not(:last-child) {
     border-bottom: 2px solid var(--c-rouge_fonce);
@@ -459,6 +499,10 @@ export default {
     --color1: transparent;
     --color2: white;
     --color-text: var(--c-noir);
+  }
+
+  > ._status {
+    flex: 0 0 9ch;
   }
 }
 
@@ -486,7 +530,8 @@ export default {
   overflow: auto;
 
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
-  padding-bottom: 0;
+  // padding-bottom: 0;
+  text-align: center;
   background-color: white;
   color: var(--c-noir);
 }
@@ -504,15 +549,18 @@ export default {
   z-index: 1000;
 
   text-align: center;
+  color: white;
   // font-size: 0.8rem;
   padding: calc(var(--spacing) / 2);
   font-style: italic;
   background: var(--c-rouge_fonce);
+  text-transform: lowercase;
   // background: linear-gradient(to bottom, var(--c-rouge_fonce) 60%, transparent);
 }
 
 ._message--footer {
   text-align: center;
+  color: white;
   margin: calc(var(--spacing) / 1);
 }
 
@@ -567,15 +615,25 @@ export default {
 
 ._unreadMessages {
   opacity: 1;
+  background: var(--c-rouge);
+  border-radius: var(--border-radius);
+  // color: var(--c-noir);
 }
 
 ._sendBtn {
+  position: relative;
   padding: calc(var(--spacing) / 2);
 }
 ._changeAuthor {
   // height: 1px;
   // background: var(--c-rouge_fonce);
   margin-bottom: calc(var(--spacing) / 1);
+}
+
+._loader {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>
 <style lang="scss">

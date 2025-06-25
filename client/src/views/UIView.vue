@@ -216,6 +216,24 @@
         </figure>
       </div>
     </BaseModal2>
+
+    <div class="u-spacingBottom"></div>
+
+    <TextInput
+      :content="'test'"
+      ref="textInput"
+      :input_type="'editor'"
+      :custom_formats="['bold', 'italic', 'link', 'emoji']"
+      :placeholder="$t('write_a_message')"
+      :minlength="0"
+      :maxlength="300"
+    >
+      <template #suffix>
+        <button type="button" class="u-button u-button_bleumarine _sendBtn">
+          <b-icon icon="three-dots" animation="cylon" />
+        </button>
+      </template>
+    </TextInput>
   </div>
 </template>
 <script>

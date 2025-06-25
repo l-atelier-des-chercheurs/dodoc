@@ -892,6 +892,7 @@ img {
   }
 }
 
+
 .projectsList-move {
   position: relative;
   transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
@@ -923,5 +924,17 @@ img {
   animation-timing-function: ease-in-out;
   animation-fill-mode: forwards;
   animation-direction: alternate;
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_clair) !important;
 }
 </style>

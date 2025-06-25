@@ -1281,6 +1281,7 @@ export default {
   coll_is_private:
     "This collection is private and can only be viewed by the referrers.",
   markdown_help: "Text formatting (markdown) help",
+  choose_emoji: "Choose emoji",
   import_medias: "Import medias",
 
   multisupport_embed_img_instr:

@@ -66,7 +66,7 @@
                 :content="sent_file.caption"
                 :path="sent_file.$path"
                 :input_type="'editor'"
-                :custom_formats="['bold', 'italic', 'link']"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
                 :can_edit="true"
               />
             </div>
@@ -77,7 +77,7 @@
                 :content="sent_file.$credits"
                 :path="sent_file.$path"
                 :input_type="'editor'"
-                :custom_formats="['bold', 'italic', 'link']"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
                 :can_edit="true"
               />
             </div>

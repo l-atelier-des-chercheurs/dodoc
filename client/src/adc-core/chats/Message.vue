@@ -66,9 +66,9 @@
               :content="message.$content"
               :path="message.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :minlength="0"
-              :maxlength="300"
+              :maxlength="max_message_length"
               :can_edit="true"
             />
           </BaseModal2>
@@ -107,6 +107,7 @@ export default {
       type: Object,
       required: true,
     },
+    max_message_length: Number,
     can_contribute_to_chat: {
       type: Boolean,
       default: false,

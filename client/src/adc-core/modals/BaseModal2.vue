@@ -148,7 +148,7 @@ export default {
 ._baseModal {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 9998;
 
   display: flex;
   justify-content: center;

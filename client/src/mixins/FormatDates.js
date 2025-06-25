@@ -8,6 +8,10 @@ export default {
       return new Date(date).toLocaleDateString(this.$i18n.locale, options);
     },
     formatDateToHuman(date) {
+      if (new Date(date).toDateString() === new Date().toDateString()) {
+        return this.$t("today");
+      }
+
       return this.formatDate(date, {
         weekday: "long",
         year: "numeric",
