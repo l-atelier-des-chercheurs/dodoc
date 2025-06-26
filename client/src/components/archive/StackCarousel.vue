@@ -42,6 +42,18 @@
             />
           </label>
         </div>
+        <div v-else-if="can_be_selected === 'single'" class="_selectRadio">
+          <label :for="boxid">
+            <input
+              type="radio"
+              :id="boxid"
+              :name="boxid"
+              :checked="current_file_shown.$path === file.$path"
+              @change="$emit('selectMedia', file)"
+              @click.stop
+            />
+          </label>
+        </div>
 
         <transition name="fade" mode="out-in">
           <div class="_btnRow" v-if="current_file_shown.$path === file.$path">
@@ -106,6 +118,10 @@ export default {
   mounted() {
     this.$eventHub.$on("carousel.next", this.nextFile);
     this.$eventHub.$on("carousel.prev", this.prevFile);
+
+    if (this.can_be_selected === "single") {
+      this.$emit("selectMedia", this.current_file_shown);
+    }
   },
   beforeDestroy() {
     this.$eventHub.$off("carousel.next", this.nextFile);
@@ -277,7 +293,8 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 
-._selectCheckbox {
+._selectCheckbox,
+._selectRadio {
   position: absolute;
   z-index: 100;
   width: 100%;

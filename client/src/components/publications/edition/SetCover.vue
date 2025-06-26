@@ -152,9 +152,11 @@ export default {
 
     async pickCover(medias) {
       const media = medias[0];
+      const import_mode = this.$root.publication_include_mode;
       const new_entry = await this.prepareMediaForPublication({
         path_to_source_media_meta: media.$path,
         publication_path: this.publication.$path,
+        import_mode,
       });
 
       this.$api.updateMeta({

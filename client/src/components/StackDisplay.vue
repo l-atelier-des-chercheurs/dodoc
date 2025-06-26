@@ -208,6 +208,7 @@
           :can_be_selected="can_be_selected"
           :selected_files="selected_stack_files"
           @toggleMediaSelection="handleToggleMediaSelection"
+          @selectMedia="selectMedia"
           @removeMediaFromStack="removeMediaFromStack"
           @changeMediaOrder="changeMediaOrder"
         />
@@ -216,6 +217,11 @@
     <div v-if="can_be_selected === 'single_stack'" class="_selectBar">
       <button class="u-button" type="button" @click="$emit('selectStack')">
         {{ $t("select_stack") }}
+      </button>
+    </div>
+    <div v-if="can_be_selected === 'single'" class="_selectBar">
+      <button class="u-button" type="button" @click="addSelectedMedia">
+        {{ $t("select_media") }}
       </button>
     </div>
     <div v-if="can_be_selected === 'multiple'" class="_selectBar">
@@ -379,8 +385,14 @@ export default {
     updatePaneWidth() {
       this.pane_width = this.$el.offsetWidth;
     },
+    addSelectedMedia() {
+      this.$emit("selectMedias", this.selected_stack_files);
+    },
     addSelectedMedias() {
       this.$emit("selectMedias", this.selected_stack_files);
+    },
+    selectMedia($event) {
+      this.selected_stack_files = [$event];
     },
     async changeMediaOrder(old_position, new_position) {
       let meta_filenames = this.stack_files_in_order.map((f) =>
