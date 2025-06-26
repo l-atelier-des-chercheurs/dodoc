@@ -38,45 +38,45 @@
       url("alegreya/alegreya-v13-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+/* //////////////////////////////////////////////////////// REMOVED BECAUSE LOADED OTHERWISE AS V24 */
 /* archivo-regular - latin */
-@font-face {
+/* @font-face {
   font-family: "Archivo";
   font-style: normal;
   font-weight: 400;
   src: url("archivo/archivo-v16-latin-regular.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("archivo/archivo-v16-latin-regular.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
+      url("archivo/archivo-v16-latin-regular.woff") format("woff"); 
+} 
+*/
 
 /* archivo-700 - latin */
-@font-face {
+/* @font-face {
   font-family: "Archivo";
   font-style: normal;
   font-weight: 700;
   src: url("archivo/archivo-v16-latin-700.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("archivo/archivo-v16-latin-700.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
+      url("archivo/archivo-v16-latin-700.woff") format("woff"); 
+} */
 
 /* archivo-italic - latin */
-@font-face {
+/* @font-face {
   font-family: "Archivo";
   font-style: italic;
   font-weight: 400;
   src: url("archivo/archivo-v16-latin-italic.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("archivo/archivo-v16-latin-italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
+      url("archivo/archivo-v16-latin-italic.woff") format("woff"); 
+} */
 
 /* archivo-700italic - latin */
-@font-face {
+/* @font-face {
   font-family: "Archivo";
   font-style: italic;
   font-weight: 700;
   src: url("archivo/archivo-v16-latin-700italic.woff2") format("woff2"),
-    /* Chrome 26+, Opera 23+, Firefox 39+ */
-      url("archivo/archivo-v16-latin-700italic.woff") format("woff"); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
-}
+      url("archivo/archivo-v16-latin-700italic.woff") format("woff"); 
+} */
+
+/* //////////////////////////////////////////////////////// REMOVED BECAUSE LOADED OTHERWISE AS V24 */
 
 /* roboto-mono-regular - latin */
 @font-face {
