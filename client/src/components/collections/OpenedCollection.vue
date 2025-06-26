@@ -46,62 +46,103 @@
             :show_image_only="true"
           />
 
-          <StatusTag
-            v-if="can_edit"
-            :status="collection.$status || 'public'"
-            :status_options="['public', 'private']"
-            :path="collection.$path"
-            :can_edit="can_edit"
-          />
+          <div class="_btnRow">
+            <div>
+              <StatusTag
+                v-if="can_edit"
+                :status="collection.$status || 'public'"
+                :status_options="['public', 'private']"
+                :path="collection.$path"
+                :can_edit="can_edit"
+              />
+            </div>
+            <div>
+              <button
+                type="button"
+                v-if="
+                  can_edit && !['cartography'].includes(collection.template)
+                "
+                @click="toggleSettings"
+                caret
+                class="u-buttonLink"
+              >
+                <b-icon
+                  icon="gear"
+                  slot="prefix"
+                  :aria-label="$t('settings')"
+                />
+                {{ $t("settings") }}
+              </button>
+            </div>
 
-          <DropDown v-if="can_edit">
             <RemoveMenu
               v-if="can_edit"
               :remove_text="$t('remove')"
               @remove="removeCollection"
             />
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_qr_code_modal = true"
-            >
-              <div part="base" class="icon" aria-hidden="true">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-qr-code"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M2 2h2v2H2V2Z"></path>
-                  <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
-                  <path
-                    d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"
-                  ></path>
-                  <path
-                    d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
-                  ></path>
-                  <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
-                </svg>
-              </div>
-              {{ $t("direct_link") }}
-            </button>
-          </DropDown>
-          <QRModal
-            v-if="show_qr_code_modal"
-            :url_to_access="share_url"
-            @close="show_qr_code_modal = false"
-          >
-            <ToggleField
-              :label="$t('make_public')"
-              :field_name="'$public'"
-              :content="collection.$public === true"
-              :path="collection.$path"
-              :can_edit="can_edit"
+            <!-- <DropDown v-if="can_edit"> -->
+            <div v-if="can_edit">
+              <button
+                type="button"
+                class="u-buttonLink _exportBtn"
+                @click="show_export_pdf_modal = true"
+              >
+                <b-icon icon="save2-fill" />
+                {{ $t("export") }}
+              </button>
+            </div>
+            <ExportPubliModal
+              v-if="show_export_pdf_modal"
+              :modal_title="$t('export_publi', { name: collection.title })"
+              :publication="collection"
+              :pane_infos="pane_infos"
+              @close="show_export_pdf_modal = false"
             />
-          </QRModal>
 
+            <div>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_qr_code_modal = true"
+              >
+                <div part="base" class="icon" aria-hidden="true">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-qr-code"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M2 2h2v2H2V2Z"></path>
+                    <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
+                    <path
+                      d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"
+                    ></path>
+                    <path
+                      d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
+                    ></path>
+                    <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
+                  </svg>
+                </div>
+                {{ $t("direct_link") }}
+              </button>
+              <!-- </DropDown> -->
+              <QRModal
+                v-if="show_qr_code_modal"
+                :url_to_access="share_url"
+                @close="show_qr_code_modal = false"
+              >
+                <ToggleField
+                  :label="$t('make_public')"
+                  :field_name="'$public'"
+                  :content="collection.$public === true"
+                  :path="collection.$path"
+                  :can_edit="can_edit"
+                />
+              </QRModal>
+            </div>
+          </div>
           <!-- <DropDown v-if="can_edit"> -->
           <!-- </DropDown> -->
         </div>
@@ -147,6 +188,8 @@ export default {
       import("@/components/publications/templates/AgoraTemplate.vue"),
     EditionTemplate: () =>
       import("@/components/publications/templates/EditionTemplate.vue"),
+    ExportPubliModal: () =>
+      import("@/components/publications/ExportPubliModal.vue"),
   },
   data() {
     return {
@@ -155,6 +198,7 @@ export default {
       path: "collections/" + this.opened_collection_slug,
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
+      show_export_pdf_modal: false,
     };
   },
   i18n: {
@@ -227,6 +271,9 @@ export default {
         path: this.collection.$path,
       });
       this.$emit("close");
+    },
+    toggleSettings() {
+      this.$eventHub.$emit("publication.settings.toggle");
     },
   },
 };
@@ -302,5 +349,13 @@ export default {
 }
 ._error {
   padding: calc(var(--spacing) * 1);
+}
+
+._btnRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: calc(var(--spacing) / 1);
 }
 </style>

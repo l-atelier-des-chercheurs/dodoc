@@ -25,6 +25,10 @@
           v-else-if="collection.template === 'agora'"
           :publication="collection"
         />
+        <EditionExport
+          v-else-if="collection.template === 'edition'"
+          :publication="collection"
+        />
       </div>
     </transition>
   </div>
@@ -38,6 +42,8 @@ export default {
       import("@/components/publications/story/SectionWithPrint.vue"),
     AgoraExport: () =>
       import("@/components/publications/agora/AgoraExport.vue"),
+    EditionExport: () =>
+      import("@/components/publications/edition/EditionExport.vue"),
     // MapForPrint: () =>
     //   import("@/components/publications/cartography/MapForPrint.vue"),
   },

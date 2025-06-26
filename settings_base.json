@@ -195,6 +195,9 @@
           "autoscroll": {
             "type": "boolean"
           },
+          "layout_mode": {
+            "type": "string"
+          },
           "page_width": {
             "type": "number"
           },
