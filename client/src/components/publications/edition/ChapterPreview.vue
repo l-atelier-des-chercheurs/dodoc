@@ -220,6 +220,11 @@ export default {
   font-size: var(--sl-font-size-x-small);
   color: var(--c-gris_fonce);
 }
+
+._item--title {
+  margin-top: 0;
+}
+
 ._item--title--icon {
 }
 
