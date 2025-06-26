@@ -1009,7 +1009,7 @@ module.exports = (function () {
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
 
     const folder_to_export_to =
-      data.export_to_parent_folder === true && path_to_parent_folder
+      data.export_to_parent_folder === true && path_to_parent_folder !== "."
         ? path_to_parent_folder
         : path_to_folder;
 
