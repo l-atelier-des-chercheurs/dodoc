@@ -41,7 +41,7 @@ const routes = [
       ),
   },
   {
-    path: "/publication/:document_slug",
+    path: "/publications/:document_slug",
     name: "Publication",
     meta: {
       /* do not load full UI */

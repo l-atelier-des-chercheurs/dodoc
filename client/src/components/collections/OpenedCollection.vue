@@ -195,7 +195,7 @@ export default {
     return {
       is_loading: true,
       collection: undefined,
-      path: "collections/" + this.opened_collection_slug,
+      path: "publications/" + this.opened_collection_slug,
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
       show_export_pdf_modal: false,

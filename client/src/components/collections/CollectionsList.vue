@@ -15,7 +15,7 @@
       <CreateCollection
         v-if="show_create_collection"
         :modal_name="$t('create_a_publication')"
-        :path="'collections'"
+        :path="'publications'"
         :default_folder_status="'private'"
         @close="show_create_collection = false"
         @openNew="openNewCollection"
@@ -75,7 +75,7 @@ export default {
     return {
       show_create_collection: false,
       collections: [],
-      path: "collections",
+      path: "publications",
       search_coll_name: "",
     };
   },

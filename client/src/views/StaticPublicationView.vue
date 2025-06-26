@@ -107,7 +107,7 @@ export default {
   },
   computed: {
     collection_path() {
-      return `collections/${this.$route.params.document_slug}`;
+      return `publications/${this.$route.params.document_slug}`;
     },
   },
   methods: {},
