@@ -334,10 +334,8 @@ class Exporter {
   async _loadPageAndPrint() {
     try {
       dev.logfunction();
-      const path_without_space = this.path_to_folder
-        .replace("spaces" + path.sep, "/+")
-        .replace("projects" + path.sep, "");
-      let url = global.appInfos.homeURL + path_without_space;
+
+      let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
       if (this.instructions.page) {
@@ -388,11 +386,7 @@ class Exporter {
       // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
 
-      const path_without_space = this.path_to_folder
-        .replace("spaces" + path.sep, "/+")
-        .replace("projects" + path.sep, "");
-
-      let url = global.appInfos.homeURL + path_without_space;
+      let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
       if (this.instructions.page) {
@@ -1045,6 +1039,13 @@ class Exporter {
       : 4000;
     const output_format = instructions.output_format || "mp4";
     return { output_width, output_height, video_bitrate, output_format };
+  }
+
+  _createURLFromPath(path_to_folder) {
+    const path_without_space = path_to_folder
+      .replace("spaces" + path.sep, "+")
+      .replace("projects" + path.sep, "");
+    return global.appInfos.homeURL + "/" + path_without_space;
   }
 }
 
