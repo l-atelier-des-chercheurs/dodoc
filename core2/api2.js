@@ -143,7 +143,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _restrictToContributors,
-      _exportToParent
+      _export
     );
     app.patch(
       [
@@ -247,7 +247,7 @@ module.exports = (function () {
       ],
       _generalPasswordCheck,
       _restrictToLocalAdmins,
-      _exportToParent
+      _export
     );
     app.post(
       [
@@ -1000,15 +1000,15 @@ module.exports = (function () {
       } catch (e) {}
     }
   }
-  async function _exportToParent(req, res, next) {
+  async function _export(req, res, next) {
     const { path_to_folder, path_to_parent_folder, meta_filename, data } =
       utils.makePathFromReq(req);
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
 
-    // export to folder if optimizing file, otherwise export to parent
-    const folder_to_export_to = meta_filename
-      ? path_to_folder
-      : path_to_parent_folder;
+    const folder_to_export_to =
+      data.export_to_parent_folder === true && path_to_parent_folder
+        ? path_to_parent_folder
+        : path_to_folder;
 
     // add res to data so res becomes available to Exporter to generate HTML
     data.express_res = res;
