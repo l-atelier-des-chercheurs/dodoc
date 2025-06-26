@@ -95,7 +95,7 @@ export default {
         meta_filename = this.getFilename(source_media.path);
       }
       if (!source_path) {
-        this.$alertify.delay(4000).error("couldnt find media");
+        // this.$alertify.delay(4000).error("couldnt find media");
         return;
       }
       return this.getMediaInFolder({ folder_path: source_path, meta_filename });
