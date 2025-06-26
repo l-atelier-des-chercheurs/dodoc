@@ -252,7 +252,7 @@ export default {
         query = { scroll: "auto" };
 
       const collection_slug = this.collection.$path.split("/").at(-1);
-      const path = `/publication/${collection_slug}`;
+      const path = `/publications/${collection_slug}`;
 
       const route = this.$router.resolve({
         path,
