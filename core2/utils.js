@@ -573,7 +573,10 @@ module.exports = (function () {
         if (subsub_folder_slug)
           path_to_parent_folder.push(sub_folder_type, sub_folder_slug);
       }
-      obj.path_to_parent_folder = path.join(...path_to_parent_folder);
+      obj.path_to_parent_folder =
+        path_to_parent_folder.length > 0
+          ? path.join(...path_to_parent_folder)
+          : undefined;
 
       if (meta_filename && meta_filename.includes(".")) {
         obj.meta_filename = meta_filename;
