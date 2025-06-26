@@ -783,6 +783,6 @@ img {
   background-color: var(--c-orange) !important;
 }
 .Vue-Toastification__toast--info {
-  background-color: var(--c-gris_clair) !important;
+  background-color: var(--c-gris_fonce) !important;
 }
 </style>

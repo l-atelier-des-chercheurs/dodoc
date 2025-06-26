@@ -34,15 +34,9 @@ Vue.use(Toast, {
   timeout: 4000,
   closeOnClick: true,
   pauseOnFocusLoss: false,
-  pauseOnHover: true,
-  draggable: true,
-  draggablePercent: 0.6,
-  showCloseButtonOnHover: false,
-  hideProgressBar: false,
   closeButton: "button",
   transition: "Vue-Toastification__fade",
-  icon: true,
-  rtl: false,
+  maxToasts: 10,
 });
 
 // Create a compatibility layer for the old alertify API

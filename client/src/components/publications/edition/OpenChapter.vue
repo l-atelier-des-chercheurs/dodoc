@@ -50,7 +50,7 @@
         <TitleField
           :field_name="'section_title'"
           :content="chapter.section_title"
-          :maxlength="40"
+          :maxlength="100"
           :tag="'h1'"
           :path="chapter.$path"
           :can_edit="true"

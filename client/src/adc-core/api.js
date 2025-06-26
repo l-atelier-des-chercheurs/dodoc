@@ -694,6 +694,8 @@ export default function () {
         return response.data.remix_folder_path;
       },
       async exportFolder({ path, instructions }) {
+        if (instructions.export_to_parent_folder === undefined)
+          instructions.export_to_parent_folder = true;
         const response = await this.$axios
           .post(`${path}/_export`, instructions)
           .catch((err) => {
@@ -705,6 +707,8 @@ export default function () {
         return task_id;
       },
       async optimizeFile({ path, instructions }) {
+        if (instructions.export_to_parent_folder === undefined)
+          instructions.export_to_parent_folder = false;
         const response = await this.$axios
           .post(`${path}/_optimize`, instructions)
           .catch((err) => {

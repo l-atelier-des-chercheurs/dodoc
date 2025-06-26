@@ -678,7 +678,13 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    await webpreview.captureScreenshot({ url, full_path_to_thumb });
+    try {
+      await webpreview.captureScreenshot({ url, full_path_to_thumb });
+      return;
+    } catch (err) {
+      dev.error(err);
+      throw new Error("failed to capture screenshot");
+    }
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
