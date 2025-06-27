@@ -55,8 +55,6 @@
   </span>
 </template>
 <script>
-import DOMPurify from "dompurify";
-
 export default {
   props: {
     field_name: String,
@@ -128,7 +126,7 @@ export default {
       return this.new_content !== this.content;
     },
     clean_content() {
-      return DOMPurify.sanitize(this.content);
+      return this.$sanitize(this.content);
     },
   },
   methods: {

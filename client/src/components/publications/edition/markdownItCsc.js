@@ -5,7 +5,6 @@ const tags_list = ["image", "video", "audio", "embed", "break"];
 
 export default (md, o = {}) => {
   const renderMedia = o.renderMedia;
-  const transformURL = o.transformURL;
 
   function csc(state, startLine, endLine, silent) {
     let pos = state.bMarks[startLine] + state.tShift[startLine];
@@ -199,42 +198,38 @@ export default (md, o = {}) => {
 
       // Handle external URLs using renderMedia
       if (token.attrs.src.startsWith("http")) {
-        if (renderMedia) {
-          const alt = token.attrs.caption || "";
-          const width = token.attrs.width || "";
-          const height = token.attrs.height || "";
-          const title = token.attrs.title || "";
+        const alt = token.attrs.caption || "";
+        const width = token.attrs.width || "";
+        const height = token.attrs.height || "";
+        const title = token.attrs.title || "";
 
-          const { html } = renderMedia({
-            meta_src: token.attrs.src,
-            alt,
-            width: token.attrs.width,
-            height: token.attrs.height,
-            title,
-          });
+        let html = `
+            <img src="${token.attrs.src}"
+              alt="${alt}"
+              ${width ? ` width="${width}"` : ""}
+              ${height ? ` height="${height}"` : ""}
+            />
+          `;
 
-          // Apply custom classes and attributes if specified
-          let processedHtml = html;
-          if (token.attrs.class || token.attrs.float) {
-            const customClasses = [];
-            if (token.attrs.class) customClasses.push(token.attrs.class);
-            if (token.attrs.float)
-              customClasses.push(`float-${token.attrs.float}`);
+        // Apply custom classes and attributes if specified
+        let processedHtml = html;
+        if (token.attrs.class || token.attrs.float) {
+          const customClasses = [];
+          if (token.attrs.class) customClasses.push(token.attrs.class);
+          if (token.attrs.float)
+            customClasses.push(`float-${token.attrs.float}`);
 
-            if (customClasses.length > 0) {
-              // Add custom classes to the figure element
-              processedHtml = html.replace(
-                'class="media',
-                `class="media ${customClasses.join(" ")}`
-              );
-            }
+          if (customClasses.length > 0) {
+            // Add custom classes to the figure element
+            processedHtml = html.replace(
+              'class="media',
+              `class="media ${customClasses.join(" ")}`
+            );
           }
 
           return processedHtml;
         }
-
-        // Fallback for external URLs if no renderMedia function
-        return `<figure class="media media-error"><i>⚠️ renderMedia function not available</i></figure>`;
+        return processedHtml;
       }
 
       // Use renderMedia for local media

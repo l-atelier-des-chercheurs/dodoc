@@ -31,7 +31,7 @@
   h2,
   h3, 
   figure {
-    margin-bottom: 0.5cm;
+    margin-bottom: 1em;
   }
 
   h1 {
@@ -61,7 +61,7 @@
   }
 
   ul, ol {
-    margin-left: 1cm;
+    margin-left: 1rem;
   }
   li::marker {
     font-size: 10pt;

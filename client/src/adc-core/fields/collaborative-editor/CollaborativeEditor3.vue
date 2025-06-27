@@ -331,7 +331,19 @@ export default {
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
       });
-      if (this.content) this.editor.root.innerHTML = this.content;
+
+      if (this.content) {
+        this.editor.setText(this.content, "silent");
+        // if (this.save_format === "raw") {
+        //   this.content = this.$sanitize(this.content);
+        //   this.editor.clipboard.dangerouslyPasteHTML(this.content);
+        //   this.editor.setContents(this.editor.getContents(), "init");
+        // } else {
+        //   // this.editor.root.innerHTML = this.content;
+        //   this.editor.setText(this.content);
+        // }
+        // this.editor.root.innerHTML = this.content;
+      }
 
       this.setStatusButton();
     },
