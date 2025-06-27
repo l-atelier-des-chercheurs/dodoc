@@ -169,11 +169,11 @@ export default {
             title: this.new_title,
           },
         })
-        .catch((err_code) => {
-          if (err_code === "unique_field_taken") {
+        .catch((err) => {
+          if (err.code === "unique_field_taken") {
             this.$alertify.delay(4000).error(this.$t("title_taken"));
             this.$refs.titleInput.$el.querySelector("input").select();
-          } else if (err_code === "not_allowed_to_copy_to_space") {
+          } else if (err.code === "not_allowed_to_copy_to_space") {
             this.$alertify
               .delay(4000)
               .error(this.$t("not_allowed_to_copy_to_space"));

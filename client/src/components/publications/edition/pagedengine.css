@@ -208,7 +208,7 @@ hr {
 
 .media-container {
   display: flex;
-  flex-direction: row nowrap;
+  flex-flow: row nowrap;
   gap: 1rem;
 
   > * {
