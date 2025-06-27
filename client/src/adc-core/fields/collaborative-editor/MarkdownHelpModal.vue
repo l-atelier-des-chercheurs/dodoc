@@ -120,6 +120,15 @@ Un deuxième paragraphe."
       Lire la documentation sur
       <a href="https://www.markdownguide.org/">markdownguide.org</a>.
     </p>
+    <p>
+      (Utilisation avancée) Vous pouvez également utiliser les balises HTML
+      directement dans le texte. En combinant avec la fonctionnalité
+      <b>Styles graphiques</b>, vous pouvez appliquer des styles à des éléments
+      spécifiques.
+    </p>
+    <CodeBlock
+      code='<div style="color: red; font-size: 200%;" class="titre rouge">texte en rouge</div>'
+    />
   </BaseModal2>
 </template>
 <script>
