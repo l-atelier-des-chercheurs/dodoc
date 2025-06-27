@@ -8,21 +8,38 @@
     <p class="u-spacingBottom">Voici une brève documentation de son usage.</p>
 
     <h3>Paragraphes et saut de ligne</h3>
-    <p>
-      Pour créer un paragraphe, laisser une ligne blanche entre deux lignes de
-      texte :
-    </p>
-    <div class="u-spacingBottom" />
-    <blockquote>
-      <code>Un premier paragraphe.</code> <br />
-      <br />
-      <code>Un deuxième paragraphe.</code>
-    </blockquote>
     <p>Pour retourner à la ligne dans un même paragraphe :</p>
     <blockquote>
       <code>Un premier vers. </code>
       <br />
       <code>Un deuxième vers.</code>
+    </blockquote>
+    <p>
+      Pour créer un nouveau paragraphe, laisser une ligne blanche entre deux
+      lignes de texte :
+    </p>
+    <div class="u-spacingBottom" />
+    <blockquote>
+      <code>
+        Un premier paragraphe. <br />
+        <br />
+        Un deuxième paragraphe.</code
+      >
+    </blockquote>
+
+    <p>
+      Pour espacer davantage des éléments (paragraphes, titres, images, etc.),
+      ajouter un caractère \ en début de ligne :
+    </p>
+    <div class="u-spacingBottom" />
+    <blockquote>
+      <pre>
+        Un premier paragraphe.
+        \
+        \
+        \
+        Un deuxième paragraphe.
+      </pre>
     </blockquote>
 
     <h3>Saut de page</h3>
@@ -114,6 +131,34 @@
       Vous pouvez ensuite lui attribuer des propriétés CSS en ouvrant l’éditeur
       de styles graphiques, depuis le sommaire de la publication.
     </p>
+
+    <h3>Espacement entre les éléments</h3>
+    <p>
+      Plusieurs méthodes sont disponibles pour ajouter de l'espace entre les
+      paragraphes&nbsp;:
+    </p>
+    <p><strong>Méthode 1: Classes CSS prédéfinies</strong></p>
+    <blockquote>
+      <code>Paragraphe avec petit espacement {class="espace-petit"}</code><br />
+      <code>Paragraphe avec espacement moyen {class="espace-moyen"}</code><br />
+      <code>Paragraphe avec grand espacement {class="espace-grand"}</code>
+    </blockquote>
+
+    <p><strong>Méthode 2: Style inline personnalisé</strong></p>
+    <blockquote>
+      <code
+        >Paragraphe avec espacement personnalisé {style="margin-bottom:
+        3rem;"}</code
+      >
+    </blockquote>
+
+    <p><strong>Méthode 3: Balises HTML avec style</strong></p>
+    <blockquote>
+      <code
+        >&lt;div style="margin-bottom: 2rem;"&gt;Paragraphe avec espacement
+        HTML&lt;/div&gt;</code
+      >
+    </blockquote>
 
     <h3>Aller plus loin</h3>
     <p>

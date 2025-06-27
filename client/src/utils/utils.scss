@@ -858,6 +858,22 @@ code {
   margin-bottom: calc(var(--spacing));
 }
 
+// Additional spacing utility classes for markdown content
+.spacing-small,
+.espace-petit {
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+.spacing-medium,
+.espace-moyen {
+  margin-bottom: calc(var(--spacing) * 1.5);
+}
+
+.spacing-large,
+.espace-grand {
+  margin-bottom: calc(var(--spacing) * 2.5);
+}
+
 fieldset {
   border: 2px solid var(--c-gris);
   margin: 0;
