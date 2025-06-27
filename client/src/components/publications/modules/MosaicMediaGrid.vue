@@ -262,6 +262,7 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+    width: 100%;
   }
 
   &.is--singleText {
@@ -292,6 +293,9 @@ export default {
     flex: 1 1 calc(100% / var(--number_of_medias));
 
     &[data-mediatype="text"] {
+      aspect-ratio: auto;
+    }
+    &[data-mediatype="audio"] {
       aspect-ratio: auto;
     }
     &:not([data-mediatype="text"]) {
