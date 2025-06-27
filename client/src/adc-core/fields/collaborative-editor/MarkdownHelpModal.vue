@@ -7,7 +7,7 @@
     </p>
     <p class="u-spacingBottom">Voici une brève documentation de son usage.</p>
 
-    <h3>Paragraphes et sauts de ligne</h3>
+    <h3>Paragraphes et saut de ligne</h3>
     <p>
       Pour créer un paragraphe, laisser une ligne blanche entre deux lignes de
       texte :
@@ -23,6 +23,24 @@
       <code>Un premier vers. </code>
       <br />
       <code>Un deuxième vers.</code>
+    </blockquote>
+
+    <h3>Saut de page</h3>
+    <p>
+      À n'importe quel endroit, pour interrompre le texte et démarrer en haut
+      d'une nouvelle page, utiliser la balise&nbsp;:
+    </p>
+    <blockquote>
+      <code>(break: page)</code>
+    </blockquote>
+
+    <p>
+      Vous pouvez également préciser si vous souhaitez démarrer sur une page de
+      gauche ou de droite en utilisant la balise&nbsp;:
+    </p>
+    <blockquote>
+      <code>(break: left)</code> <br />
+      <code>(break: right)</code>
     </blockquote>
 
     <h3>Syntaxe</h3>
