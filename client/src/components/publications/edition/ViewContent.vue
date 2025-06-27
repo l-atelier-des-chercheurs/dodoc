@@ -431,7 +431,7 @@ export default {
         section: chapter,
       }).map(({ _module }) => _module);
 
-      let html = "";
+      let md_string = "";
 
       pmodules.forEach((pmodule) => {
         // parse source medias
@@ -447,17 +447,31 @@ export default {
           .filter(Boolean);
 
         medias.forEach((media) => {
-          const { html: _html } = this.renderMedia({
-            media,
-            alt: pmodule.caption,
-            width: pmodule.width,
-            height: pmodule.height,
-            title: pmodule.title,
-          });
+          const meta_filename = this.getFilename(media.$path);
 
-          html += _html;
+          if (media.$type === "text") {
+            // SOUCIS : le HTML n'est pas géré ni dans quill ni dans markdownIt. Donc ça rends du texte brut.
+            md_string += media.$content;
+          } else if (media.$type === "image") {
+            md_string += `(image: ${meta_filename})`;
+          } else if (media.$type === "video") {
+            md_string += `(video: ${meta_filename})`;
+          } else if (media.$type === "audio") {
+            md_string += `(audio: ${meta_filename})`;
+          } else if (media.$type === "embed") {
+            md_string += `(embed: ${meta_filename})`;
+          }
         });
+
+        md_string += "\n\n";
       });
+
+      debugger;
+
+      const html = this.parseMarkdownWithMarkedownIt(
+        md_string,
+        chapter.source_medias
+      );
 
       return html;
     },
@@ -605,9 +619,16 @@ export default {
         media_html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
       }
 
+      let style_attr = "";
+      if (width || height) {
+        const _width = width ? `width: ${width};` : "";
+        const _height = height ? `height: ${height};` : "";
+        style_attr = ` style="${_width}${_height}"`;
+      }
+
       const html = `<figure class="${custom_classes.join(
         " "
-      )}">${media_html}</figure>`;
+      )}"${style_attr}>${media_html}</figure>`;
 
       return { html, is_qr_code };
     },
