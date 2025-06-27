@@ -324,7 +324,7 @@ export default {
         breaks: true,
         linkify: true,
         typographer: true,
-        html: false,
+        html: true,
         highlight: function (str, lang) {
           if (lang && hljs.getLanguage(lang)) {
             try {
@@ -391,7 +391,9 @@ export default {
       });
 
       const result = md.render(content);
-      return result;
+      const sanitized_result = this.$sanitize(result);
+
+      return sanitized_result;
     },
     parseGallery(source_medias) {
       if (!source_medias || source_medias.length === 0)

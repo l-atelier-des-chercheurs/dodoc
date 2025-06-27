@@ -333,8 +333,15 @@ export default {
       });
 
       if (this.content) {
-        this.content = this.$sanitize(this.content);
-        this.editor.clipboard.dangerouslyPasteHTML(this.content);
+        this.editor.setText(this.content);
+        // if (this.save_format === "raw") {
+        //   this.content = this.$sanitize(this.content);
+        //   this.editor.clipboard.dangerouslyPasteHTML(this.content);
+        //   this.editor.setContents(this.editor.getContents(), "init");
+        // } else {
+        //   // this.editor.root.innerHTML = this.content;
+        //   this.editor.setText(this.content);
+        // }
         // this.editor.root.innerHTML = this.content;
       }
 
