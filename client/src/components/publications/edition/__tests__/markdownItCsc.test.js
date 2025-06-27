@@ -119,6 +119,18 @@ Some text in between
         "<p><strong>Bold text</strong> and <em>italic text</em></p>\n"
     );
   });
+  it("should preserve text after a tag", () => {
+    const input = `
+(image: https://example.com/image.jpg caption: An image) hello
+    `.trim();
+
+    const output = md.render(input);
+    expect(output).toBe(
+      '<figure class="media media-image"><img src="https://example.com/image.jpg" />\n' +
+        '<figcaption class="mediaCaption"><span>An image</span></figcaption></figure>\n' +
+        "<p>hello</p>\n"
+    );
+  });
 
   // it should handle class attribute
   it("should handle class attribute", () => {
