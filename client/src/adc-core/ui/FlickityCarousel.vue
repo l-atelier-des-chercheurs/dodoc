@@ -100,6 +100,9 @@ export default {
         if (!screenfull.isFullscreen) {
           this.is_fullscreen = false;
           this.$emit("fullscreen-exit");
+          setTimeout(() => {
+            this.resize();
+          }, 1000);
         }
       });
 
