@@ -122,6 +122,10 @@ if (window.app_infos.is_electron)
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
 
+// Import DOMPurify for HTML sanitization
+import DOMPurify from "dompurify";
+Vue.prototype.$sanitize = DOMPurify.sanitize;
+
 // globals mainly for non-editing components
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
