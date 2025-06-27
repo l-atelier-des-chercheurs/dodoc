@@ -466,8 +466,6 @@ export default {
         md_string += "\n\n";
       });
 
-      debugger;
-
       const html = this.parseMarkdownWithMarkedownIt(
         md_string,
         chapter.source_medias
