@@ -333,7 +333,7 @@ export default {
       });
 
       if (this.content) {
-        this.editor.setText(this.content);
+        this.editor.setText(this.content, "silent");
         // if (this.save_format === "raw") {
         //   this.content = this.$sanitize(this.content);
         //   this.editor.clipboard.dangerouslyPasteHTML(this.content);
