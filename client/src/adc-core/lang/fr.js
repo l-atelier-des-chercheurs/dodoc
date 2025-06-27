@@ -1294,7 +1294,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  graphic_styles: "Style graphiques",
+  graphic_styles: "Styles graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
   create_custom_stylesheet: "Créer une feuille de style personnalisée",
