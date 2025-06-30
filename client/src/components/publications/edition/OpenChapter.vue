@@ -11,36 +11,44 @@
     </div> -->
     <div class="_navBtns">
       <div class="_navBtns--content">
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="prev_section"
-            @click="$emit('prev')"
-          >
-            <b-icon icon="arrow-left-short" />
-            <span>
-              {{ prev_section.section_title }}
-            </span>
-          </button>
+        <div class="" />
+        <div class="_navBtns--content--buttons">
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="prev_section"
+              @click="$emit('prev')"
+            >
+              <b-icon icon="arrow-left-short" />
+              <span>
+                {{ prev_section.section_title }}
+              </span>
+            </button>
+            <span v-else>–</span>
+          </span>
+
+          <span class="_separator">|</span>
+
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="next_section"
+              @click="$emit('next')"
+            >
+              <span>
+                {{ next_section.section_title }}
+              </span>
+              <b-icon icon="arrow-right-short" />
+            </button>
+            <span v-else>-</span>
+          </span>
         </div>
         <div>
           <button type="button" class="u-linkList" @click="$emit('close')">
             <b-icon icon="x-circle" :label="$t('close')" />
             {{ $t("close") }}
-          </button>
-        </div>
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="next_section"
-            @click="$emit('next')"
-          >
-            <span>
-              {{ next_section.section_title }}
-            </span>
-            <b-icon icon="arrow-right-short" />
           </button>
         </div>
       </div>
@@ -574,6 +582,7 @@ export default {
   // padding-top: calc(var(--spacing) * 4);
   // padding-bottom: calc(var(--spacing) * 4);
 }
+
 ._navBtns--content {
   display: flex;
   align-items: center;
@@ -581,20 +590,52 @@ export default {
   gap: calc(var(--spacing) / 1);
   height: 20px;
 
-  > * {
-    flex: 1 1 0;
-    overflow: hidden;
+  &:first-child,
+  &:last-child {
+    flex: 0 0 10ch;
+  }
 
-    &:nth-child(2) {
-      .u-linkList {
-        justify-content: center;
-      }
+  > * {
+    flex: 0 1 10ch;
+    overflow: hidden;
+  }
+}
+
+._navBtns--content--buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+
+  > * {
+    display: block;
+    flex: 1 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    > * {
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     }
-    &:last-child {
-      .u-linkList {
+
+    &:first-child {
+      text-align: right;
+
+      > * {
         justify-content: flex-end;
       }
     }
+
+    &:last-child > * {
+      text-align: left;
+    }
+  }
+
+  ._separator {
+    flex: 0 0 1ch;
+    margin: 0ch;
+    text-align: center;
   }
 }
 
