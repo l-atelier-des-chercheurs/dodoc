@@ -12,7 +12,10 @@
     <div class="_navBtns">
       <div class="_navBtns--content">
         <div class="" />
-        <div class="_navBtns--content--buttons">
+        <div
+          class="_navBtns--content--buttons"
+          v-show="next_section || prev_section"
+        >
           <span>
             <button
               type="button"
@@ -42,7 +45,7 @@
               </span>
               <b-icon icon="arrow-right-short" />
             </button>
-            <span v-else>-</span>
+            <span v-else>–</span>
           </span>
         </div>
         <div>
