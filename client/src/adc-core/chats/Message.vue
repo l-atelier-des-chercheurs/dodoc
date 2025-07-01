@@ -171,8 +171,7 @@ export default {
   border-radius: var(--border-radius);
   background: white;
   color: var(--c-noir);
-  margin-top: calc(var(--spacing) / 4);
-  margin-bottom: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   &.is--self {
     margin-left: calc(var(--spacing) * 2);

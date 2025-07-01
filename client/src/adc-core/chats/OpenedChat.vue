@@ -138,7 +138,7 @@
             </template>
           </template>
           <div class="_message--footer">
-            <b-icon icon="check" />
+            <b-icon icon="check-lg" />
           </div>
 
           <div class="_scrollToEndBtn">
@@ -519,7 +519,7 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding: 0 calc(var(--spacing) / 2) 0;
+  padding-top: calc(var(--spacing) / 2);
 }
 ._openedChat--footer {
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
