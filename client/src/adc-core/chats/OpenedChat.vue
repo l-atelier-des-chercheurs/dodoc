@@ -377,12 +377,18 @@ export default {
     async postMessage() {
       if (!this.new_message) return;
 
+      debugger;
+
       if (!this.allow_send) {
-        this.$alertify
-          .delay(4000)
-          .error(
-            this.$t("message_too_long", { max_length: this.max_message_length })
-          );
+        if (this.new_message.length > this.max_message_length) {
+          this.$alertify
+            .delay(4000)
+            .error(
+              this.$t("message_too_long", {
+                max_length: this.max_message_length,
+              })
+            );
+        }
         return;
       }
 
@@ -400,11 +406,13 @@ export default {
 
       // await new Promise((resolve) => setTimeout(resolve, 100));
 
+      const content = this.cleanUpString(this.new_message);
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
         additional_meta,
-        content: this.new_message,
+        content,
       });
 
       const path = this.chat.$path + "/" + meta_filename;
