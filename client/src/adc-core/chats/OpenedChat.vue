@@ -381,13 +381,11 @@ export default {
 
       if (!this.allow_send) {
         if (this.new_message.length > this.max_message_length) {
-          this.$alertify
-            .delay(4000)
-            .error(
-              this.$t("message_too_long", {
-                max_length: this.max_message_length,
-              })
-            );
+          this.$alertify.delay(4000).error(
+            this.$t("message_too_long", {
+              max_length: this.max_message_length,
+            })
+          );
         }
         return;
       }
@@ -527,7 +525,6 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding-top: calc(var(--spacing) / 2);
 }
 ._openedChat--footer {
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
