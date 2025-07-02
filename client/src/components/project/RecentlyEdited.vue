@@ -50,7 +50,7 @@ export default {
   // top: 55px;
   // width: 140px;
   // max-height: 300px;
-  z-index: 1000;
+  // z-index: 100;
   padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) * 2) auto;
   // padding-top: calc(var(--spacing) / 2);
