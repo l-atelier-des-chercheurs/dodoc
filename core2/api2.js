@@ -696,6 +696,7 @@ module.exports = (function () {
 
   async function _getFolders(req, res, next) {
     const { path_to_type } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_type });
 
     try {
       let d = await folder.getFolders({ path_to_type });
@@ -703,7 +704,7 @@ module.exports = (function () {
       // todo : filter depending on $status, only authors see folders
 
       res.setHeader("Access-Control-Allow-Origin", "*");
-      dev.logpackets({ d });
+      dev.logpackets(`Successfully got folders ${path_to_type}`);
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -725,10 +726,10 @@ module.exports = (function () {
         path_to_type,
         data,
       });
-      dev.logpackets(`folder was created with name ${new_folder_slug}`);
       res.status(200).json({ new_folder_slug });
 
       const path_to_folder = path.join(path_to_type, new_folder_slug);
+      dev.logpackets(`Successfully created folder ${path_to_folder}`);
       const new_folder_meta = await folder.getFolder({
         path_to_folder,
       });
@@ -755,7 +756,7 @@ module.exports = (function () {
         path_to_type,
         req,
       });
-      dev.logpackets(`folder was imported with path ${path_to_new_folder}`);
+      dev.logpackets(`Successfully imported folder ${path_to_new_folder}`);
       const new_folder_meta = await folder.getFolder({
         path_to_folder: path_to_new_folder,
       });
@@ -793,7 +794,7 @@ module.exports = (function () {
       // );
 
       res.setHeader("Access-Control-Allow-Origin", "*");
-      dev.logpackets({ d });
+      dev.logpackets(`Successfully got folder ${path_to_folder}`);
       res.json(d);
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -830,7 +831,7 @@ module.exports = (function () {
         });
         d.$files = files;
         res.setHeader("Access-Control-Allow-Origin", "*");
-        dev.logpackets({ d });
+        dev.logpackets(`Successfully got public folder ${path_to_folder}`);
         res.json(d);
       } catch (err) {
         dev.error("Failed to get files: " + err);
@@ -862,7 +863,7 @@ module.exports = (function () {
         data,
         update_cover_req: update_cover ? req : false,
       });
-      dev.logpackets({ status: "folder was updated" });
+      dev.logpackets(`Successfully updated folder ${path_to_folder}`);
       res.status(200).json({ status: "ok" });
 
       // TODO if $password is updated successfully, then revoke all tokens except current
@@ -900,7 +901,7 @@ module.exports = (function () {
       const token = await auth.createAndStoreToken({
         path_to_folder,
       });
-      dev.logpackets({ status: "logged in to folder", path_to_folder, token });
+      dev.logpackets(`Successfully logged in to folder ${path_to_folder}`);
       res.status(200).json({ status: "ok", token });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -922,11 +923,7 @@ module.exports = (function () {
       await auth.revokeToken({
         token_to_revoke: token,
       });
-      dev.logpackets({
-        status: "logged out from folder",
-        token,
-        path_to_folder,
-      });
+      dev.logpackets(`Successfully logged out from folder ${path_to_folder}`);
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -947,7 +944,7 @@ module.exports = (function () {
         path_to_type,
         path_to_folder,
       });
-      dev.logpackets({ status: "folder was removed" });
+      dev.logpackets(`Successfully removed folder ${path_to_folder}`);
       res.status(200).json({ status: "ok" });
 
       await auth.removeAllTokensForFolder({ token_path: path_to_folder });
@@ -977,12 +974,10 @@ module.exports = (function () {
         path_to_folder,
         req,
       });
-      dev.logpackets({
-        status: `uploaded file`,
-        path_to_folder,
-      });
+      const path_to_meta = path.join(path_to_folder, meta_filename);
+      dev.logpackets(`Successfully uploaded file ${path_to_meta}`);
       const meta = await file.getFile({
-        path_to_meta: path.join(path_to_folder, meta_filename),
+        path_to_meta,
       });
       res.status(200).json({ uploaded_meta: meta, meta_filename });
       notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
@@ -1026,11 +1021,7 @@ module.exports = (function () {
     // 3. using this ID, client can join a room to get progress on task
     // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
 
-    dev.logpackets({
-      status: `task_started`,
-      folder_to_export_to,
-      task_id,
-    });
+    dev.logpackets(`Successfully started export task ${task_id}`);
     res.status(200).json({ task_id });
 
     // wait a bit to make sure that the client has the time to watch task, in case it fails right away
@@ -1092,11 +1083,9 @@ module.exports = (function () {
         new_meta,
         is_copy_or_move,
       });
-      dev.logpackets({
-        status: `copied folder`,
-        path_to_source_folder,
-        path_to_destination_type,
-      });
+      dev.logpackets(
+        `Successfully copied folder ${path_to_source_folder} to ${copy_folder_path}`
+      );
       res.status(200).json({ copy_folder_path });
 
       const new_folder_meta = await folder.getFolder({
@@ -1193,10 +1182,7 @@ module.exports = (function () {
         path_to_folder_in_bin,
         path_to_type,
       });
-      dev.logpackets({
-        status: `restored folder from bin`,
-        restored_folder_path,
-      });
+      dev.logpackets(`Successfully restored folder ${restored_folder_path}`);
       res.status(200).json({ restored_folder_path });
 
       const new_folder_meta = await folder.getFolder({
@@ -1220,7 +1206,9 @@ module.exports = (function () {
       await folder.removeBinFolder({
         path_to_folder_in_bin,
       });
-      dev.logpackets({ status: "folder was removed from bin" });
+      dev.logpackets(
+        `Successfully removed bin folder ${path_to_folder_in_bin}`
+      );
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -1260,10 +1248,7 @@ module.exports = (function () {
         meta_filename,
       });
 
-      dev.logpackets({
-        status: `restored file from bin`,
-        restored_file_path,
-      });
+      dev.logpackets(`Successfully restored file ${restored_file_path}`);
       res.status(200).json({ restored_file_path });
 
       const restored_file_meta = await file.getFile({
@@ -1293,7 +1278,9 @@ module.exports = (function () {
         path_to_folder,
         meta_filename,
       });
-      dev.logpackets({ status: "file was removed from bin" });
+      dev.logpackets(
+        `Successfully removed bin file ${path_to_folder} ${meta_filename}`
+      );
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -1339,11 +1326,9 @@ module.exports = (function () {
         path_to_destination_type,
         new_meta,
       });
-      dev.logpackets({
-        status: `remixed folder`,
-        path_to_source_folder,
-        path_to_destination_type,
-      });
+      dev.logpackets(
+        `Successfully remixed folder ${path_to_source_folder} to ${remix_folder_path}`
+      );
       res.status(200).json({ remix_folder_path });
 
       await _updateFolderListOfRemixes({
@@ -1468,7 +1453,7 @@ module.exports = (function () {
       if (file_archives) meta.$archives = file_archives;
 
       res.setHeader("Access-Control-Allow-Origin", "*");
-      dev.logpackets({ meta });
+      dev.logpackets(`Successfully got file ${path_to_meta}`);
       res.json(meta);
     } catch (err) {
       const { message, code, err_infos } = err;
@@ -1490,7 +1475,7 @@ module.exports = (function () {
         path_to_meta,
         data,
       });
-      dev.logpackets({ status: "file was updated" });
+      dev.logpackets(`Successfully updated file ${path_to_meta}`);
       res.status(200).json({ status: "ok" });
 
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
@@ -1549,7 +1534,9 @@ module.exports = (function () {
         meta_filename,
         path_to_meta,
       });
-      dev.logpackets(`file ${meta_filename} was removed`);
+      dev.logpackets(
+        `Successfully removed file ${path_to_folder} ${meta_filename}`
+      );
       res.status(200).json({ status: "ok" });
 
       notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
@@ -1597,12 +1584,9 @@ module.exports = (function () {
         path_to_meta,
         new_meta,
       });
-      dev.logpackets({
-        status: `copied file`,
-        path_to_folder,
-        path_to_destination_folder,
-        copy_meta_filename,
-      });
+      dev.logpackets(
+        `Successfully copied file ${path_to_folder} to ${path_to_destination_folder}`
+      );
       res.status(200).json({ meta_filename: copy_meta_filename });
 
       const meta = await file.getFile({
@@ -1728,7 +1712,7 @@ module.exports = (function () {
       const result = await recoverPassword.recoverPassword({
         path_to_folder,
       });
-      dev.logpackets({ status: "email sent to folder", path_to_folder });
+      dev.logpackets(`Successfully recovered password for ${path_to_folder}`);
       res.status(200).json(result);
     } catch (err) {
       dev.error(err);
@@ -1749,6 +1733,7 @@ module.exports = (function () {
         new_password,
       });
 
+      dev.logpackets(`Successfully reset password for ${path_to_folder}`);
       res.status(200).json(result);
 
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {

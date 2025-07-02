@@ -5,8 +5,8 @@ const path = require("path"),
 module.exports = dev = (function () {
   let isDebugMode = false;
   let isVerboseMode = false;
-  let livereload = false;
-  let logToFile = false;
+  let isLivereload = false;
+  let isLogToFile = false;
 
   const API = {
     init: ({ debug, verbose, livereload, logToFile }) => {
@@ -23,17 +23,17 @@ module.exports = dev = (function () {
     error: error,
     performance: performance,
     isDebug: () => isDebugMode,
-    isLivereload: () => livereload,
-    isLogToFile: () => logToFile,
+    isLivereload: () => isLivereload,
+    isLogToFile: () => isLogToFile,
   };
 
   function initModule({ debug, verbose, livereload, logToFile }) {
     isDebugMode = debug;
     isVerboseMode = verbose;
-    livereload = livereload;
-    logToFile = logToFile;
+    isLivereload = livereload;
+    isLogToFile = logToFile;
     console.log(
-      `Init module with debug = ${debug} verbose = ${verbose} livereload = ${livereload} logToFile = ${logToFile}`
+      `Init module with debug = ${debug} verbose = ${verbose} livereload = ${isLivereload} logToFile = ${isLogToFile}`
     );
 
     if (isDebugMode) {
@@ -57,9 +57,9 @@ module.exports = dev = (function () {
   }
 
   function space() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
-    _sendToLogFile(``);
+    // _sendToLogFile(``);
     _sendToConsole(``);
   }
 
@@ -73,7 +73,7 @@ module.exports = dev = (function () {
     _sendToConsole(message);
   }
   function logverbose() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `- ` +
@@ -86,7 +86,7 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, chalk.gray);
   }
   function logpackets() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `* ` +
@@ -99,7 +99,7 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, chalk.green);
   }
   function logsockets() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `→ ` +
@@ -112,7 +112,7 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, chalk.cyan);
   }
   function logrooms() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `¶ ` +
@@ -125,7 +125,7 @@ module.exports = dev = (function () {
     if (isDebugMode) _sendToConsole(message, chalk.yellow);
   }
   function logfunction() {
-    if (!logToFile && !isDebugMode) return;
+    if (!isLogToFile && !isDebugMode) return;
 
     const message =
       `~ ` +
