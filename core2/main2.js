@@ -9,7 +9,8 @@ const server = require("./server"),
   utils = require("./utils"),
   paths = require("./paths"),
   auth = require("./auth"),
-  mail = require("./mail");
+  mail = require("./mail"),
+  journalLogger = require("./journal-logger");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
@@ -29,9 +30,10 @@ module.exports = async function () {
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const livereload =
     process.argv.length > 0 && process.argv.includes("--livereload");
-  const logToFile = false;
+  const logToFile = true;
 
-  dev.init(debug, verbose, livereload, logToFile);
+  // Initialize dev logger without file logging first (file logging starts after content path is set)
+  dev.init({ debug, verbose, livereload, logToFile });
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -124,6 +126,12 @@ async function setupApp() {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
+
+  // Now that content path is available, start file logging if requested
+  if (dev.isLogToFile()) {
+    journalLogger.init();
+    dev.log("Journal logging started");
+  }
 
   global.can_send_email = mail.canSendMail();
 
