@@ -1,6 +1,8 @@
 const path = require("path");
-const packagejson = require("./package.json");
-const base_settings = require("./settings_base.json");
+
+const packagejson = require("./package.json"),
+  base_settings = require("./settings_base.json"),
+  journal = require("./core2/journal");
 
 global.appRoot = path.resolve(__dirname);
 global.appInfos = {

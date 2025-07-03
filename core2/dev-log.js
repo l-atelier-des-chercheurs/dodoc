@@ -1,6 +1,6 @@
 const path = require("path"),
   chalk = require("chalk"),
-  journalLogger = require("./journal-logger");
+  journal = require("./journal");
 
 module.exports = dev = (function () {
   let isDebugMode = false;
@@ -59,7 +59,6 @@ module.exports = dev = (function () {
   function space() {
     if (!isLogToFile && !isVerboseMode) return;
 
-    // _sendToLogFile(``);
     _sendToConsole(``);
   }
 
@@ -69,7 +68,6 @@ module.exports = dev = (function () {
       args: arguments,
     });
 
-    // _sendToLogFile(message);
     _sendToConsole(message);
   }
   function logverbose() {
@@ -82,7 +80,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    // _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.gray);
   }
   function logpackets() {
@@ -95,7 +92,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.green);
   }
   function logsockets() {
@@ -108,7 +104,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.cyan);
   }
   function logrooms() {
@@ -121,7 +116,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.yellow);
   }
   function logfunction() {
@@ -134,7 +128,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    // _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
   function logapi() {
@@ -145,7 +138,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    // _sendToLogFile(message);
     _sendToConsole(message, chalk.blue);
   }
   function error() {
@@ -156,7 +148,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    _sendToLogFile(message);
+    journal.log({ message, type: "error" });
     console.error(chalk.red(message));
   }
 
@@ -166,12 +158,7 @@ module.exports = dev = (function () {
     const fct_name = performance.caller.name;
     var message = `~ ${fct_name} - `.concat(args);
 
-    _sendToLogFile(message);
     _sendToConsole(message, chalk.yellow);
-  }
-
-  function _sendToLogFile(message) {
-    journalLogger.writeToFile(message);
   }
 
   function _sendToConsole(message, color = chalk.white) {

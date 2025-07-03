@@ -103,16 +103,25 @@ module.exports = function () {
   app.use(express.json()); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
+  journal.log({
+    message: "Server up and running",
+  });
+
   serverRTC(server);
+
+  journal.log({
+    message: "Server RTC initialized",
+  });
+
   api2.init(app);
 
-  dev.logverbose("Starting server 3");
+  dev.logverbose("API ready");
 
   server.listen(app.get("port"), () => {
-    dev.log(
-      `Server up and running. ` +
-        `Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`
-    );
-    dev.log(` `);
+    const message = `Server up and running. Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
+    dev.log(message);
+    journal.log({
+      message,
+    });
   });
 };

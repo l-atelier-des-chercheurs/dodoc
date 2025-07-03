@@ -325,3 +325,11 @@ Data stored in the LocalStorage (similar to cookies) :
 - show_meta_sidebar: show/hide the information sidebar when opening the modal for a media in Collect
 - library_tile_mode: last used media preview mode in Collect
 - page_settings: for each publication, remember grid options (show/hide, snap, gridstep)
+
+## Logging
+
+All API calls (getting content, creating folders, etc.) are logged in a "journal" folder, in the content folder. Each run of the app is stored in a JSONL file named with the timestamp it was created. Each line in this file logs the timestamp, the user who requested it, from what kind of device, the ip address, and if the call was successull or not.
+
+Only instance admins can load logging files from the app.
+
+These logs contain both general app-related events (like which version of node.js is running, is there any settings.json environment specific files) and specific content related.

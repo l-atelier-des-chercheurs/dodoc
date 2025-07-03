@@ -9,9 +9,10 @@ const {
 const path = require("path");
 const writeFileAtomic = require("write-file-atomic");
 
-const utils = require("./utils");
-const notifier = require("./notifier");
-const cacheManager = require("./cache-manager");
+const utils = require("./utils"),
+  notifier = require("./notifier"),
+  cacheManager = require("./cache-manager"),
+  journal = require("./journal");
 
 app.commandLine.appendSwitch("ignore-certificate-errors", "true");
 app.commandLine.appendSwitch("allow-insecure-localhost", "true");
@@ -34,6 +35,9 @@ module.exports = (function () {
           // if sharp reports its version number, it means it's version > 0.32.0
           // because of a memory cage instability issue with sharp > 0.31.3, we show an error
           const found_sharp_version = require("sharp").versions?.sharp;
+          journal.log({
+            message: `ELECTRON — init : sharp version ${found_sharp_version}`,
+          });
           if (found_sharp_version) {
             // const err = new Error(
             //   `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
@@ -66,6 +70,9 @@ module.exports = (function () {
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
+          journal.log({
+            message: "ELECTRON — init : ready",
+          });
 
           _createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
@@ -133,6 +140,7 @@ module.exports = (function () {
       let page_timeout = setTimeout(async () => {
         closeWin();
         const err = new Error("Failed to capture screenshot");
+        dev.error(err);
         err.code = "timeout";
         throw err;
       }, 10_000);

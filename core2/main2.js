@@ -10,14 +10,18 @@ const server = require("./server"),
   paths = require("./paths"),
   auth = require("./auth"),
   mail = require("./mail"),
-  journalLogger = require("./journal-logger");
+  journal = require("./journal");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
 
-  console.log(`App is ${global.is_electron ? "electron" : "node"}`);
-  console.log(`Starting = ${global.appInfos.name}`);
-  console.log(`Node = ${process.versions.node}`);
+  const infos = `Starting ${global.appInfos.name} v${
+    global.appInfos.version
+  }, app is ${global.is_electron ? "electron" : "node"}, node v${
+    process.versions.node
+  }`;
+  console.log(infos);
+  journal.log({ message: infos });
 
   // setInterval(() => {
   //   const usedHeapSize = process.memoryUsage().heapUsed;
@@ -30,10 +34,13 @@ module.exports = async function () {
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const livereload =
     process.argv.length > 0 && process.argv.includes("--livereload");
-  const logToFile = true;
+  const logToFile = false;
 
   // Initialize dev logger without file logging first (file logging starts after content path is set)
   dev.init({ debug, verbose, livereload, logToFile });
+  journal.log({
+    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}, logToFile: ${logToFile}`,
+  });
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -126,14 +133,18 @@ async function setupApp() {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
+  journal.log({
+    message: "Will store contents in: " + global.pathToUserContent,
+  });
 
   // Now that content path is available, start file logging if requested
-  if (dev.isLogToFile()) {
-    journalLogger.init();
-    dev.log("Journal logging started");
-  }
+  journal.init();
+  dev.log("Journal logging started");
 
   global.can_send_email = mail.canSendMail();
+  journal.log({
+    message: "Can send email: " + global.can_send_email,
+  });
 
   auth.createSuperadminToken();
 
@@ -147,12 +158,19 @@ async function setupApp() {
       throw err;
     });
 
-  if (port === global.settings.desired_port)
+  if (port === global.settings.desired_port) {
     dev.log(`Desired port ${port} available`);
-  else
+    journal.log({
+      message: `Desired port ${port} available`,
+    });
+  } else {
     dev.log(
       `Desired port ${global.settings.desired_port} NOT available, using ${port}`
     );
+    journal.log({
+      message: `Desired port ${global.settings.desired_port} NOT available, using ${port}`,
+    });
+  }
 
   global.appInfos.port = port;
   global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;

@@ -11,7 +11,8 @@ module.exports = (function () {
   const API = {
     init: () => _setupLogFile(),
     isEnabled: () => isEnabled,
-    writeToFile: (message) => _writeToFile(message),
+    log: ({ message, type = "general", level = "info" }) =>
+      _log({ message, type, level }),
     getLogFilePath: () => logFilePath,
     cleanupOldLogs: (keepDays = 7) => _cleanupOldLogs(keepDays),
     shutdown: () => _handleCleanShutdown(),
@@ -34,11 +35,16 @@ module.exports = (function () {
         .replace(/:/g, "-")
         .split(".")[0]; // Remove milliseconds
 
-      logFilePath = path.join(logDirPath, `${timestamp}.log`);
+      logFilePath = path.join(logDirPath, `${timestamp}.jsonl`);
 
-      // Write initial log entry
-      const initMessage = `[${now.toISOString()}] === DODOC LOG STARTED ===\n`;
-      fs.writeFileSync(logFilePath, initMessage);
+      // Write initial log entry as JSON
+      const initEntry = {
+        ts: now.toISOString(),
+        type: "general",
+        level: "info",
+        message: "DODOC LOG STARTED",
+      };
+      fs.writeFileSync(logFilePath, JSON.stringify(initEntry) + "\n");
 
       // Write any buffered messages from before file was ready
       if (pendingMessages.length > 0) {
@@ -108,17 +114,21 @@ module.exports = (function () {
   }
 
   function _handleCleanShutdown() {
-    const timestamp = new Date().toISOString();
-    const shutdownMessage = `[${timestamp}] === DODOC CLEAN SHUTDOWN ===\n`;
+    const shutdownEntry = {
+      ts: new Date().toISOString(),
+      type: "general",
+      level: "info",
+      message: "DODOC CLEAN SHUTDOWN",
+    };
 
     if (!logFilePath || !isEnabled) {
       // If file not ready, add to buffer (though unlikely during shutdown)
-      pendingMessages.push(shutdownMessage);
+      pendingMessages.push(JSON.stringify(shutdownEntry) + "\n");
       return;
     }
 
     try {
-      fs.appendFileSync(logFilePath, shutdownMessage);
+      fs.appendFileSync(logFilePath, JSON.stringify(shutdownEntry) + "\n");
 
       // Rename file to indicate clean shutdown
       _renameToCleanShutdown();
@@ -132,8 +142,8 @@ module.exports = (function () {
 
     try {
       const dir = path.dirname(logFilePath);
-      const name = path.basename(logFilePath, ".log");
-      const cleanLogPath = path.join(dir, `${name}_ok.log`);
+      const name = path.basename(logFilePath, ".jsonl");
+      const cleanLogPath = path.join(dir, `${name}_ok.jsonl`);
 
       if (fs.existsSync(logFilePath)) {
         fs.renameSync(logFilePath, cleanLogPath);
@@ -144,36 +154,46 @@ module.exports = (function () {
   }
 
   function _writeCrashInfo(crashType, error) {
-    const timestamp = new Date().toISOString();
     const errorMessage = error?.message || error?.toString() || "Unknown error";
-    const crashMessage = `[${timestamp}] === DODOC CRASHED (${crashType}) === ${errorMessage}\n`;
+    const crashEntry = {
+      ts: new Date().toISOString(),
+      type: "general",
+      level: "crash",
+      message: `DODOC CRASHED (${crashType})`,
+      error: errorMessage,
+      stack: error?.stack || null,
+    };
 
     if (!logFilePath || !isEnabled) {
       // If file not ready, add to buffer
-      pendingMessages.push(crashMessage);
+      pendingMessages.push(JSON.stringify(crashEntry) + "\n");
       return;
     }
 
     try {
-      fs.appendFileSync(logFilePath, crashMessage);
+      fs.appendFileSync(logFilePath, JSON.stringify(crashEntry) + "\n");
       // Note: Don't rename file - leave it without suffix to indicate crash
     } catch (writeError) {
       // Silent failure in crash handler
     }
   }
 
-  function _writeToFile(message) {
-    const timestamp = new Date().toISOString();
-    const logLine = `[${timestamp}] ${message}\n`;
+  function _log({ message, type = "general", level = "info" }) {
+    const logEntry = {
+      ts: new Date().toISOString(),
+      type: type,
+      level,
+      message,
+    };
 
     if (!logFilePath || !isEnabled) {
       // Buffer the message until file is ready
-      pendingMessages.push(logLine);
+      pendingMessages.push(JSON.stringify(logEntry) + "\n");
       return;
     }
 
     try {
-      fs.appendFileSync(logFilePath, logLine);
+      fs.appendFileSync(logFilePath, JSON.stringify(logEntry) + "\n");
     } catch (error) {
       console.error(`Failed to write to journal file: ${error.message}`);
     }
@@ -187,7 +207,7 @@ module.exports = (function () {
       const cutoffTime = Date.now() - keepDays * 24 * 60 * 60 * 1000;
 
       files.forEach((file) => {
-        if (path.extname(file) === ".log") {
+        if (path.extname(file) === ".jsonl") {
           const filePath = path.join(logDirPath, file);
           const stats = fs.statSync(filePath);
 
