@@ -34,10 +34,10 @@
         <RadioSwitch
           v-if="connected_as"
           class="_switch"
-          :content.sync="show_my_publications"
+          :content.sync="show_publications_from"
           :options="[
-            { label: $t('all_publications'), value: false },
-            { label: $t('my_publications'), value: true },
+            { label: $t('all_publications'), value: 'all' },
+            { label: $t('my_publications'), value: 'me' },
           ]"
         />
         <div class="_searchinput">
@@ -50,7 +50,19 @@
 
       <div class="u-spacingBottom" />
 
-      <div class="_collections">
+      <PinnedNonpinnedFolder
+        v-if="!is_loading"
+        :field_name="'publications_pinned'"
+        :label="$t('publications_pinned')"
+        :content="settings.publications_pinned"
+        :path="''"
+        :folders="filtered_collections"
+        :can_edit="is_instance_admin"
+        v-slot="slotProps"
+      >
+        <PublicationPreview :publication="slotProps.item" />
+      </PinnedNonpinnedFolder>
+      <!-- <div class="_collections">
         <div
           v-if="filtered_collections.length === 0"
           class="u-instructions"
@@ -80,7 +92,7 @@
             />
           </div>
         </router-link>
-      </div>
+      </div>-->
     </template>
   </TwoColumnLayout>
 </template>
@@ -88,6 +100,8 @@
 import TwoColumnLayout from "@/adc-core/ui/TwoColumnLayout.vue";
 import CreateCollection from "@/components/collections/CreateCollection.vue";
 import SearchInput2 from "@/components/SearchInput2.vue";
+import PinnedNonpinnedFolder from "@/adc-core/ui/PinnedNonpinnedFolder.vue";
+import PublicationPreview from "@/components/collections/PublicationPreview.vue";
 
 export default {
   props: {},
@@ -95,14 +109,18 @@ export default {
     TwoColumnLayout,
     SearchInput2,
     CreateCollection,
+    PinnedNonpinnedFolder,
+    PublicationPreview,
   },
   data() {
     return {
+      settings: undefined,
+      is_loading: true,
       show_create_collection: false,
       collections: [],
       path: "publications",
       search_coll_name: "",
-      show_my_publications: false,
+      show_publications_from: "all",
     };
   },
   i18n: {
@@ -130,9 +148,11 @@ export default {
     },
   },
   async created() {
+    await this.loadSettings();
     this.collections = await this.$api.getFolders({
       path: this.path,
     });
+    this.is_loading = false;
     this.$api.join({ room: this.path });
   },
   mounted() {},
@@ -164,7 +184,7 @@ export default {
           !this.twoStringsSearch(c.title, this.search_coll_name)
         )
           return false;
-        if (this.show_my_publications) {
+        if (this.show_publications_from === "me") {
           if (!c.$admins.includes(this.connected_as.$path)) return false;
         }
         return true;
@@ -172,6 +192,16 @@ export default {
     },
   },
   methods: {
+    async loadSettings() {
+      this.settings = await this.$api
+        .getFolder({
+          path: "",
+        })
+        .catch((err) => {
+          return err;
+        });
+      this.$api.join({ room: "." });
+    },
     openNewCollection(new_publication_slug) {
       this.show_create_collection = false;
       this.$emit("open", new_publication_slug);

@@ -109,6 +109,9 @@
       },
       "confidentiality_in_footer": {
         "type": "boolean"
+      },
+      "publications_pinned": {
+        "type": "array"
       }
     },
     "$files": {
