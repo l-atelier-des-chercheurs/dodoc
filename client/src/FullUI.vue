@@ -143,7 +143,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-start;
   flex: 1;
-  overflow: hidden;
+  // overflow: hidden;
 
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   // gap: var(--spacing);
