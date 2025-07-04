@@ -10,8 +10,9 @@ const slowDown = require("express-slow-down");
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
-  // cors_for_ressources = require("./cors_for_ressources"),
+  journal = require("./journal"),
   serverRTC = require("./serverRTC.js");
+// cors_for_ressources = require("./cors_for_ressources"),
 
 module.exports = function () {
   dev.logverbose("Starting server 1");
