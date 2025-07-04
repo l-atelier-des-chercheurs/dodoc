@@ -1,5 +1,5 @@
 <template>
-  <div class="_topBar">
+  <div class="_topBar" :class="{ 'is--mobileView': $root.is_mobile_view }">
     <div class="_logoIcons">
       <router-link to="/" class="_logo">LumaDoc</router-link>
     </div>
@@ -242,9 +242,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topBar {
-  --topbar-font-size: 150%;
+  --topbar-font-size: var(--sl-font-size-x-large);
 
   display: flex;
+  flex-flow: row nowrap;
   justify-content: space-between;
   align-items: stretch;
   // gap: 1rem;
@@ -258,7 +259,7 @@ export default {
     }
 
     &._logoIcons {
-      flex: 0 0 20vw;
+      flex: 0 0 400px;
     }
     &._menu {
       flex: 1 1 auto;
@@ -273,7 +274,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 4rem;
+  padding: 0 calc(var(--spacing) * 2);
   // padding-right: 5rem;
 
   a._logo {

@@ -1,7 +1,5 @@
 <template>
-  <div class="_documentsView">
-    <CollectionsList @open="openCollection" />
-  </div>
+  <CollectionsList @open="openCollection" />
 </template>
 <script>
 import CollectionsList from "@/components/collections/CollectionsList.vue";
@@ -28,10 +26,4 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-._documentsView {
-  padding: calc(var(--spacing) / 1);
-  height: 100%;
-  overflow: auto;
-}
-</style>
+<style lang="scss" scoped></style>

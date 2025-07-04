@@ -54,8 +54,8 @@ export default {
 
 ._colLeft {
   flex: 0 0 v-bind(sidebarWidth);
-  padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
-  margin: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+  margin: 0;
   border-right: 1px solid var(--border-color);
   overflow: auto;
 

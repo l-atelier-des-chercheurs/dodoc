@@ -31,6 +31,14 @@
 
     <template #content>
       <div class="u-spacingBottom _actions">
+        <RadioSwitch
+          class="_switch"
+          :content.sync="show_my_publications"
+          :options="[
+            { label: $t('all_publications'), value: false },
+            { label: $t('my_publications'), value: true },
+          ]"
+        />
         <div class="_searchinput">
           <SearchInput2
             v-model="search_coll_name"
@@ -39,14 +47,6 @@
         </div>
       </div>
 
-      <RadioSwitch
-        class="_switch"
-        :content.sync="show_my_publications"
-        :options="[
-          { label: $t('all_publications'), value: false },
-          { label: $t('my_publications'), value: true },
-        ]"
-      />
       <div class="u-spacingBottom" />
 
       <div class="_collections">
@@ -113,6 +113,8 @@ export default {
         publication_instr:
           "Les publications regroupent des médias dans l'espace partagé pour les partager.",
         agora: "Agora",
+        all_publications: "Toutes les publications",
+        my_publications: "Mes publications",
       },
       en: {
         publications: "Publications",
@@ -121,6 +123,8 @@ export default {
         publication_instr:
           "Publications include multiple medias to be shared together.",
         agora: "Agora",
+        all_publications: "All publications",
+        my_publications: "My publications",
       },
     },
   },
@@ -192,10 +196,15 @@ export default {
 }
 
 ._actions {
-  display: flex;
-  flex-flow: row nowrap;
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--item-width, 320px), 1fr)
+  );
   gap: calc(var(--spacing) / 1);
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--spacing) * 2);
 
   @media (max-width: 600px) {
     flex-flow: column nowrap;
@@ -209,7 +218,18 @@ export default {
 }
 
 ._switch {
-  margin-bottom: calc(var(--spacing) * 1);
+  // margin-bottom: calc(var(--spacing) * 1);
+  --item-width: 100%;
+  --radio-switch-width: 100%;
+
+  ::v-deep .radio-switch {
+    width: 100%;
+    border: 0px;
+    font-size: var(--sl-font-size-small);
+    --radio-switch-width: 100%;
+    --radio-switch-height: 54px;
+    --radio-switch-padding: 0px;
+  }
 }
 
 ._collections {
