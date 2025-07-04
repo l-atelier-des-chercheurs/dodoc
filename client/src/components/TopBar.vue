@@ -242,7 +242,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._topBar {
-  --topbar-font-size: 20px;
+  --topbar-font-size: 150%;
 
   display: flex;
   justify-content: space-between;

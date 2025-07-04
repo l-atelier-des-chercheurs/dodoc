@@ -284,7 +284,7 @@ export default {
         files_missing: "Veuillez ajouter des médias à ce document",
         stack_not_public: "Ce document n'est pas public",
         error_loading_stack: "Erreur lors du chargement du document",
-        select_stack: "Sélectionner ce document",
+        select_stack: "Ajouter à ce document",
         add_selected_medias:
           "Ajouter le média sélectionné | Ajouter les {count} médias sélectionnés",
       },
@@ -294,7 +294,7 @@ export default {
         files_missing: "Add medias to this document",
         stack_not_public: "This document is not public",
         error_loading_stack: "Error loading document",
-        select_stack: "Select this document",
+        select_stack: "Add to this document",
         add_selected_medias:
           "Add selected media | Add the selected {count} medias",
       },

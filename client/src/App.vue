@@ -230,9 +230,9 @@ export default {
 
   --sl-font-size-normal: 1rem;
 
-  --sl-font-size-large: 1.4rem;
-  --sl-font-size-x-large: 1.66rem;
-  --sl-font-size-xx-large: 2.8rem;
+  --sl-font-size-large: 1.2rem;
+  --sl-font-size-x-large: 1.4rem;
+  --sl-font-size-xx-large: 2rem;
 
   --sl-font-size-small: 0.875rem;
   --sl-font-size-x-small: 0.75rem;
@@ -322,7 +322,7 @@ html {
   font-style: normal;
   font-weight: 400;
 
-  font-size: 90%;
+  font-size: 100%;
   line-height: 1.41;
 
   -webkit-font-smoothing: antialiased;
@@ -434,17 +434,18 @@ strong {
 h1,
 h2,
 h3 {
-  margin: calc(var(--spacing) * 2) 0;
+  margin: calc(var(--spacing) * 1) 0;
   font-size: var(--sl-font-size-x-large);
   line-height: 1.2;
-  font-weight: 500;
+  font-weight: normal;
 
   &:first-child {
     margin-top: 0;
   }
 }
 
-h2 {
+h3 {
+  font-size: var(--sl-font-size-large);
 }
 
 h4 {

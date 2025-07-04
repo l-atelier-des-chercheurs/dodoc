@@ -75,11 +75,33 @@
               </button>
             </div>
 
-            <RemoveMenu
-              v-if="can_edit"
-              :remove_text="$t('remove')"
-              @remove="removeCollection"
-            />
+            <DropDown>
+              <template #trigger>
+                <button type="button" class="u-buttonLink">
+                  {{ $t("options") }}
+                </button>
+              </template>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_duplicate_publi_modal = true"
+              >
+                {{ $t("duplicate") }}
+              </button>
+              <DuplicatePubliModal
+                v-if="show_duplicate_publi_modal"
+                :modal_title="$t('duplicate', { name: collection.title })"
+                :publication="collection"
+                @close="show_duplicate_publi_modal = false"
+              />
+
+              <RemoveMenu
+                v-if="can_edit"
+                :remove_text="$t('remove')"
+                @remove="removeCollection"
+              />
+            </DropDown>
+
             <!-- <DropDown v-if="can_edit"> -->
             <div v-if="can_edit">
               <button
@@ -176,6 +198,8 @@
   </div>
 </template>
 <script>
+import DuplicatePubliModal from "@/components/collections/DuplicatePubliModal.vue";
+
 export default {
   props: {
     opened_collection_slug: String,
@@ -190,6 +214,7 @@ export default {
       import("@/components/publications/templates/EditionTemplate.vue"),
     ExportPubliModal: () =>
       import("@/components/publications/ExportPubliModal.vue"),
+    DuplicatePubliModal,
   },
   data() {
     return {
@@ -199,6 +224,7 @@ export default {
       fetch_coll_error_message: "",
       show_qr_code_modal: false,
       show_export_pdf_modal: false,
+      show_duplicate_publi_modal: false,
     };
   },
   i18n: {

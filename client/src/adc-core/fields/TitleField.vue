@@ -201,6 +201,7 @@ export default {
 
     span {
       white-space: break-spaces;
+      display: inline-block;
     }
 
     ::v-deep {

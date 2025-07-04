@@ -6,17 +6,16 @@
   >
     <div class="_importFiles" @click.self="selected_items_slugs = []">
       <div class="_dashboard">
-        <DLabel :str="$t('dashboard')" />
+        <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
         <div class="u-spacingBottom" />
         <div class="u-instructions u-spacingBottom">
           <b-icon icon="info-circle" />
           {{ $t("imported_docs") }}
         </div>
 
-        <div
-          class="u-instructions u-spacingBottom"
-          v-if="chutier_items.length > 0"
-        >
+        <hr />
+
+        <div class="_stats" v-if="chutier_items.length > 0">
           <div class="_statLine">
             <b-icon icon="text-left" />
             {{
@@ -33,10 +32,7 @@
           </div>
         </div>
 
-        <div
-          class="u-instructions u-spacingBottom"
-          v-if="chutier_items.length > 0"
-        >
+        <div class="_stats" v-if="chutier_items.length > 0">
           <div class="_statLine">
             <b-icon icon="info-circle" />
             {{
@@ -74,8 +70,7 @@
               class="u-button u-button_outline"
               @click="createNote"
             >
-              <b-icon icon="file-text" />
-              &nbsp; note
+              <b-icon icon="file-text" />note
             </button>
 
             <button
@@ -83,8 +78,7 @@
               class="u-button u-button_outline"
               @click="show_link_picker = true"
             >
-              <b-icon icon="link-45deg" />
-              &nbsp; url
+              <b-icon icon="link-45deg" scale="1.4" />url
             </button>
             <EmbedPicker
               v-if="show_link_picker"
@@ -594,7 +588,7 @@ export default {
   top: 0;
   height: calc(100% - 50px);
   overflow: hidden;
-  color: var(--h-700);
+  color: var(--h-900);
 
   display: flex;
   flex-flow: row nowrap;
@@ -638,13 +632,13 @@ export default {
   flex-flow: column nowrap;
   justify-content: flex-start;
   // height: 100%;
-  max-width: 400px;
-  margin: 0 auto;
+  // max-width: 400px;
+  margin: calc(var(--spacing) * 2);
   // padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
 
   ::v-deep .u-dropzone {
-    padding: calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 4);
   }
 
   @media (max-width: 600px) {
@@ -684,7 +678,11 @@ export default {
   padding-bottom: calc(var(--spacing) * 6);
 }
 ._item {
-  margin: calc(var(--spacing) * 1) 0;
+  margin: calc(var(--spacing) * 2) 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
 }
 
 ._item--label {
@@ -693,8 +691,9 @@ export default {
   display: inline-block;
   cursor: pointer;
   // font-weight: 500;
-  margin-bottom: 4px;
+  margin-bottom: calc(var(--spacing) / 1);
   color: currentColor;
+  font-size: var(--sl-font-size-large);
 
   // opacity: 0.8;
   transition: all 0.25s ease-out;
@@ -797,8 +796,9 @@ export default {
 }
 
 ._dashboard {
-  min-height: 30ch;
+  // min-height: 30ch;
   background: var(--h-50);
+  // font-size: var(--sl-font-size-large);
 
   margin: calc(var(--spacing) * 2);
   padding: calc(var(--spacing) / 1);
@@ -806,7 +806,7 @@ export default {
 
 ._importButton {
   // width: 100%;
-  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
+  // margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
   --dropzone-color1: transparent;
   // --dropzone-color2: var(--h-900);
   --dropzone-color2: var(--r-200);
@@ -830,8 +830,8 @@ export default {
 
   .u-button {
     flex: 1 1 0;
-    border-radius: 5px;
-    padding: calc(var(--spacing) / 2);
+    // border-radius: 5px;
+    // padding: calc(var(--spacing) / 2);
     align-items: center;
 
     svg {
@@ -858,10 +858,11 @@ export default {
   // );
 
   columns: 3 28em;
+  column-gap: var(--spacing);
 
   > * {
     flex: 1 1 28em;
-    margin-bottom: calc(var(--spacing) / 4);
+    margin-bottom: calc(var(--spacing) / 1);
     // max-width: 22em;
   }
 }
@@ -871,13 +872,17 @@ export default {
   right: 0;
 }
 
+._stats:not(:last-child) {
+  margin-bottom: calc(var(--spacing) * 1);
+}
+
 ._statLine {
-  margin-bottom: calc(var(--spacing) / 4);
+  margin-bottom: calc(var(--spacing) / 2);
 }
 
 ._progressBar {
   width: 100%;
-  height: 4px;
+  height: 8px;
   background-color: var(--border-color);
   border-radius: 2px;
   overflow: hidden;
@@ -889,5 +894,9 @@ export default {
   background-color: var(--active-color);
   border-radius: 2px;
   transition: width 0.3s ease-out;
+}
+
+._dashboard--label {
+  // font-size: var(--sl-font-size-large);
 }
 </style>

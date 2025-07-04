@@ -52,6 +52,13 @@
         <div class="_titleDateField" v-if="context !== 'show_only_thumbs'">
           <div>
             <div class="_tile_filename">
+              <div
+                class="u-filename _filename"
+                v-if="file.$media_filename"
+                :title="file.$media_filename"
+              >
+                {{ file.$media_filename }}
+              </div>
               <div class="_time">
                 {{
                   context === "stack"
@@ -61,13 +68,6 @@
                         minute: "2-digit",
                       })
                 }}
-              </div>
-              <div
-                class="u-filename _filename"
-                v-if="file.$media_filename"
-                :title="file.$media_filename"
-              >
-                {{ file.$media_filename }}
               </div>
             </div>
 
@@ -86,7 +86,7 @@
                 :content="file.caption"
                 :path="file.$path"
                 :maxlength="1280"
-                :can_edit="true"
+                :can_edit="false"
               />
 
               <!-- 
@@ -134,10 +134,14 @@
             :custom_formats="['bold', 'italic', 'underline', 'link']"
           /> -->
 
-    <template v-if="show_large">
-      <BaseModal2 size="full" @close="show_large = false" :nopadding="true">
-        <div class="_largePreview">
-          <!-- <div class="_closeLarge">
+    <BaseModal2
+      v-if="show_large"
+      size="full"
+      @close="show_large = false"
+      :nopadding="true"
+    >
+      <div class="_largePreview">
+        <!-- <div class="_closeLarge">
             <button
               class="u-button u-button_icon u-button_transparent"
               @click="show_large = false"
@@ -145,16 +149,15 @@
               <b-icon icon="x-lg" :label="$t('close')" />
             </button>
           </div> -->
-          <FileShown
-            class="_fileLarge"
-            :key="file.$path"
-            :context="'chutier'"
-            :file="file"
-            :can_edit="true"
-          />
-        </div>
-      </BaseModal2>
-    </template>
+        <FileShown
+          class="_fileLarge"
+          :key="file.$path"
+          :context="'chutier'"
+          :file="file"
+          :can_edit="true"
+        />
+      </div>
+    </BaseModal2>
     <div class="anim_backgroundPosition" v-if="is_selected && false" />
   </div>
 </template>
@@ -265,7 +268,7 @@ export default {
   flex: 1 1 auto;
   display: flex;
   flex-flow: row nowrap;
-  gap: calc(var(--spacing) / 2);
+  // gap: calc(var(--spacing) / 2);
   // padding-left: 1px;
   // padding: 0 calc(var(--spacing) / 4);
   // border: 1px solid var(--h-50);
@@ -275,7 +278,7 @@ export default {
     flex: 1 1 0;
     height: 100%;
     overflow: hidden;
-    padding-right: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   }
 }
 
@@ -285,11 +288,11 @@ export default {
   right: 0;
   width: 100%;
   height: auto;
-  padding-top: 42%;
+  padding: calc(var(--spacing) / 4);
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: calc(var(--spacing) / 2);
   flex: 0 0 auto;
 
@@ -302,7 +305,7 @@ export default {
   position: relative;
   // width: 100%;
   break-inside: avoid;
-  padding: 2px;
+  padding: 1px;
   // padding: calc(var(--spacing) / 4) 0;
   overflow: hidden;
   border-radius: 3px;
@@ -314,8 +317,8 @@ export default {
 
   &.can--toggleSelect {
     @media (hover: hover) and (pointer: fine) {
-      &:not(.is--selected):hover {
-        background-color: var(--h-300);
+      &:hover:not(.is--selected) {
+        background-color: var(--h-100);
       }
     }
   }
@@ -326,7 +329,7 @@ export default {
   }
 
   &.is--selected {
-    background-color: var(--h-400);
+    background-color: var(--h-200);
     color: var(--h-900);
     // transform: scale(0.98);
 
@@ -357,9 +360,9 @@ export default {
 
   ._chutierRow--preview {
     position: relative;
-    height: 132px;
+    height: 150px;
+    width: 150px;
     border-radius: 2px;
-    width: 132px;
     flex: 0 0 auto;
     overflow: hidden;
     // color: white;
@@ -442,7 +445,7 @@ export default {
   border-radius: 4px;
   border: 1px solid var(--h-500);
   background-color: transparent;
-  margin: 0 calc(var(--spacing) / 2);
+  margin: 0;
   cursor: pointer;
 }
 ._largePreview {
@@ -453,9 +456,10 @@ export default {
   height: 100%;
   z-index: 2000;
   overflow: auto;
+  --sd-separator: var(--h-200);
 
-  background-color: var(--chutier-bg);
-  color: white;
+  // background-color: var(--chutier-bg);
+  // color: white;
 
   display: flex;
   flex-flow: column nowrap;
@@ -487,8 +491,8 @@ export default {
 }
 
 ._infos2 {
-  margin-top: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / 1);
   font-size: var(--sl-font-size-small);
 
   ._collaborativeEditor {
@@ -509,7 +513,7 @@ export default {
   gap: calc(var(--spacing) / 2);
 
   // margin-top: calc(var(--spacing) / 2);
-  margin-bottom: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 1);
 }
 
 ._filename {
@@ -520,7 +524,8 @@ export default {
 }
 
 ._time {
-  opacity: 0.5;
+  font-size: var(--sl-font-size-x-small);
+  // opacity: 0.5;
 }
 ._labelLine {
   display: flex;

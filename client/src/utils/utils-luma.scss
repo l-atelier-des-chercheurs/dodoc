@@ -1,10 +1,36 @@
 ._editBtn._editBtn {
-  --color2: var(--h-700) !important;
+  --color2: var(--h-500) !important;
+  // --color2: currentColor !important;
+
+  svg {
+    width: 1.2em !important;
+    height: 1.2em !important;
+  }
 }
 
 .u-warning {
   border-radius: 0;
   background-color: var(--bg-color);
+}
+
+.u-button {
+  font-size: var(--sl-font-size-medium);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+
+  > .b-icon {
+    margin-right: calc(var(--spacing) / 2);
+  }
+}
+
+.u-button_outline {
+  &:hover,
+  &:active,
+  &:focus-visible,
+  &.is--active {
+    &:not([disabled]) {
+      border-color: transparent;
+    }
+  }
 }
 
 .u-button[disabled] {

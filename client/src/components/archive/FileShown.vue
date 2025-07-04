@@ -337,6 +337,11 @@ export default {
   }
 }
 
+._infos--content {
+  margin: 0 auto;
+  max-width: 100ch;
+}
+
 ._dragEditBtn {
   position: absolute;
   top: 0;
