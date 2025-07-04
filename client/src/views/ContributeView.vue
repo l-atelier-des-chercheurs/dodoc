@@ -1,55 +1,50 @@
 <template>
-  <div
-    class="_myChutier"
-    :class="{ 'is--mobile': $root.is_mobile_view }"
-    @click="last_clicked = false"
-  >
-    <div class="_importFiles" @click.self="selected_items_slugs = []">
-      <div class="_dashboard">
-        <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
-        <div class="u-spacingBottom" />
-        <div class="u-instructions u-spacingBottom">
-          <b-icon icon="info-circle" />
-          {{ $t("imported_docs") }}
+  <TwoColumnLayout :content-padding="false" @click="last_clicked = false">
+    <template #sidebar>
+      <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
+      <div class="u-spacingBottom" />
+      <div class="u-instructions u-spacingBottom">
+        <b-icon icon="info-circle" />
+        {{ $t("imported_docs") }}
+      </div>
+
+      <hr />
+
+      <div class="_stats" v-if="chutier_items.length > 0">
+        <div class="_statLine">
+          <b-icon icon="text-left" />
+          {{
+            $t("files_with_caption", {
+              percentage: files_with_caption_percentage,
+            })
+          }}
         </div>
-
-        <hr />
-
-        <div class="_stats" v-if="chutier_items.length > 0">
-          <div class="_statLine">
-            <b-icon icon="text-left" />
-            {{
-              $t("files_with_caption", {
-                percentage: files_with_caption_percentage,
-              })
-            }}
-          </div>
-          <div class="_progressBar">
-            <div
-              class="_progressFill"
-              :style="{ width: files_with_caption_percentage + '%' }"
-            ></div>
-          </div>
-        </div>
-
-        <div class="_stats" v-if="chutier_items.length > 0">
-          <div class="_statLine">
-            <b-icon icon="info-circle" />
-            {{
-              $t("files_with_credits", {
-                percentage: files_with_credits_percentage,
-              })
-            }}
-          </div>
-          <div class="_progressBar">
-            <div
-              class="_progressFill"
-              :style="{ width: files_with_credits_percentage + '%' }"
-            ></div>
-          </div>
+        <div class="_progressBar">
+          <div
+            class="_progressFill"
+            :style="{ width: files_with_caption_percentage + '%' }"
+          ></div>
         </div>
       </div>
-      <div class="_importFiles--content">
+
+      <div class="_stats" v-if="chutier_items.length > 0">
+        <div class="_statLine">
+          <b-icon icon="info-circle" />
+          {{
+            $t("files_with_credits", {
+              percentage: files_with_credits_percentage,
+            })
+          }}
+        </div>
+        <div class="_progressBar">
+          <div
+            class="_progressFill"
+            :style="{ width: files_with_credits_percentage + '%' }"
+          ></div>
+        </div>
+      </div>
+
+      <div class="_importSection">
         <div class="_importButton">
           <ImportFileZone
             :multiple="true"
@@ -88,197 +83,184 @@
           </div>
         </div>
       </div>
-    </div>
+    </template>
 
-    <div class="_filesList">
-      <div class="_middleContent">
-        <template v-if="chutier_items && chutier_items.length > 0">
-          <label
-            for=""
-            class="_item--label"
-            :class="{
-              'is--fullySelected': all_items_selected,
-            }"
-            @click="!all_items_selected ? selectAll() : deselectAll()"
-          >
-            <!-- <button
-              type="button"
-              class="u-buttonLink u-selectBtn"
-              v-if="chutier_items.length > 0"
-            >
-              <b-icon
-                :icon="
-                  !all_items_selected
-                    ? 'plus-square-dotted'
-                    : 'dash-square-dotted'
-                "
-              />
-            </button> -->
-            {{ $t("items_to_share") }} • {{ chutier_items.length }}
-          </label>
-        </template>
-
-        <div class="_items" @click.self="selected_items_slugs = []">
-          <div
-            class="_item"
-            v-for="ci in chutier_items_grouped"
-            :key="ci.label"
-            @click.self="selected_items_slugs = []"
-          >
-            <div
+    <template #content>
+      <div class="_filesList" @click.self="selected_items_slugs = []">
+        <div class="_middleContent">
+          <template v-if="chutier_items && chutier_items.length > 0">
+            <label
+              for=""
               class="_item--label"
-              @click="
-                rangeIsSelected(ci.files.map((f) => f.$path))
-                  ? deselectRange(ci.files.map((f) => f.$path))
-                  : selectRange(ci.files.map((f) => f.$path))
-              "
               :class="{
-                'is--fullySelected': rangeIsSelected(
-                  ci.files.map((f) => f.$path)
-                ),
+                'is--fullySelected': all_items_selected,
               }"
+              @click="!all_items_selected ? selectAll() : deselectAll()"
             >
-              <!-- <button
-                v-if="!rangeIsSelected(ci.files.map((f) => f.$path))"
-                type="button"
-                class="u-buttonLink u-selectBtn"
+              {{ $t("items_to_share") }} • {{ chutier_items.length }}
+            </label>
+          </template>
+
+          <div class="_items" @click.self="selected_items_slugs = []">
+            <div
+              class="_item"
+              v-for="ci in chutier_items_grouped"
+              :key="ci.label"
+              @click.self="selected_items_slugs = []"
+            >
+              <div
+                class="_item--label"
+                @click="
+                  rangeIsSelected(ci.files.map((f) => f.$path))
+                    ? deselectRange(ci.files.map((f) => f.$path))
+                    : selectRange(ci.files.map((f) => f.$path))
+                "
+                :class="{
+                  'is--fullySelected': rangeIsSelected(
+                    ci.files.map((f) => f.$path)
+                  ),
+                }"
               >
-                <b-icon icon="plus-square-dotted" />
-              </button>
-              <button v-else type="button" class="u-buttonLink u-selectBtn">
-                <b-icon icon="dash-square-dotted" />
-              </button> -->
-              {{ ci.label }}
-            </div>
-            <transition-group
-              tag="div"
-              class="_items--list"
-              name="listComplete"
-            >
-              <ChutierItem
-                v-for="file in ci.files"
-                :key="file.$path"
-                :file="file"
-                :is_clicked="last_clicked === file.$path"
-                :is_selected="selected_items_slugs.includes(file.$path)"
-                :draggable="false"
-                @toggleSelect="toggleSelect(file.$path)"
-                @unclicked="last_clicked = false"
-                @click.stop="last_clicked = file.$path"
-              />
-            </transition-group>
-          </div>
-        </div>
-        {{ link_to_new_stack }}
-      </div>
-
-      <transition name="slideup" mode="out-in">
-        <div
-          class="_selectionBar"
-          v-if="selected_items.length > 0"
-          key="selection"
-        >
-          <div class="_dbleBtns">
-            <button
-              type="button"
-              class="u-button"
-              @click="show_pick_existing_mediastack_modal = true"
-            >
-              <!-- <b-icon icon="plus-square-dotted" /> -->
-              {{ $t("add_to_existing_document") }}
-            </button>
-            <PickExistingMediastackModal
-              v-if="show_pick_existing_mediastack_modal"
-              @close="show_pick_existing_mediastack_modal = false"
-              @stackSelected="moveFilesToStack"
-            />
-            <button
-              type="button"
-              class="u-button"
-              @click="show_new_mediastack_modal = true"
-            >
-              <!-- <b-icon icon="plus-square-dotted" /> -->
-              {{ $t("create_new_document") }}
-            </button>
-          </div>
-          <div class="u-sameRow _selectionBar-btns">
-            <transition name="fade" mode="out-in">
-              <div :key="selected_items.length">
-                <template v-if="selected_items.length === 1">
-                  {{ $t("selected_item") }}
-                </template>
-                <template v-else>
-                  {{ $t("selected_items") }}
-                </template>
-                {{ selected_items.length }}
+                {{ ci.label }}
               </div>
-            </transition>
+              <transition-group
+                tag="div"
+                class="_items--list"
+                name="listComplete"
+              >
+                <ChutierItem
+                  v-for="file in ci.files"
+                  :key="file.$path"
+                  :file="file"
+                  :is_clicked="last_clicked === file.$path"
+                  :is_selected="selected_items_slugs.includes(file.$path)"
+                  :draggable="false"
+                  @toggleSelect="toggleSelect(file.$path)"
+                  @unclicked="last_clicked = false"
+                  @click.stop="last_clicked = file.$path"
+                />
+              </transition-group>
+            </div>
+          </div>
+          {{ link_to_new_stack }}
+        </div>
 
-            <button type="button" class="u-buttonLink" @click="deselectAll">
-              <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
-            </button>
+        <transition name="slideup" mode="out-in">
+          <div
+            class="_selectionBar"
+            v-if="selected_items.length > 0"
+            key="selection"
+          >
+            <div class="_dbleBtns">
+              <button
+                type="button"
+                class="u-button"
+                @click="show_pick_existing_mediastack_modal = true"
+              >
+                {{ $t("add_to_existing_document") }}
+              </button>
+              <PickExistingMediastackModal
+                v-if="show_pick_existing_mediastack_modal"
+                @close="show_pick_existing_mediastack_modal = false"
+                @stackSelected="moveFilesToStack"
+              />
+              <button
+                type="button"
+                class="u-button"
+                @click="show_new_mediastack_modal = true"
+              >
+                {{ $t("create_new_document") }}
+              </button>
+              <CreateNewMediastackModal
+                v-if="show_new_mediastack_modal"
+                @close="show_new_mediastack_modal = false"
+                @stackCreated="moveFilesToStack"
+              />
+            </div>
+            <div class="u-sameRow _selectionBar-btns">
+              <transition name="fade" mode="out-in">
+                <div :key="selected_items.length">
+                  <template v-if="selected_items.length === 1">
+                    {{ $t("selected_item") }}
+                  </template>
+                  <template v-else>
+                    {{ $t("selected_items") }}
+                  </template>
+                  {{ selected_items.length }}
+                </div>
+              </transition>
+
+              <button type="button" class="u-buttonLink" @click="deselectAll">
+                <b-icon icon="dash-square-dotted" /> {{ $t("deselect_all") }}
+              </button>
+              <button
+                type="button"
+                class="u-buttonLink"
+                @click="show_confirm_remove_menu = true"
+              >
+                <b-icon icon="trash" />
+                {{ $t("remove_select") }}
+              </button>
+            </div>
+          </div>
+        </transition>
+        <transition name="slideup" mode="out-in">
+          <div class="_removeMenu" v-if="show_confirm_remove_menu" key="remove">
             <button
               type="button"
               class="u-buttonLink"
-              @click="show_confirm_remove_menu = true"
+              @click="show_confirm_remove_menu = false"
             >
-              <b-icon icon="trash" />
-              {{ $t("remove_select") }}
+              {{ $t("cancel") }}
+            </button>
+            <button
+              class="u-button u-button_red"
+              type="button"
+              autofocus
+              @click="removeItemsInSelection"
+            >
+              {{ $t("confirm_removal") }}
             </button>
           </div>
-        </div>
-      </transition>
-      <transition name="slideup" mode="out-in">
-        <div class="_removeMenu" v-if="show_confirm_remove_menu" key="remove">
-          <button
-            type="button"
-            class="u-buttonLink"
-            @click="show_confirm_remove_menu = false"
-          >
-            {{ $t("cancel") }}
-          </button>
-          <button
-            class="u-button u-button_red"
-            type="button"
-            autofocus
-            @click="removeItemsInSelection"
-          >
-            {{ $t("confirm_removal") }}
-          </button>
-        </div>
-      </transition>
+        </transition>
 
-      <transition name="slideup" mode="out-in">
-        <div v-if="link_to_new_stack" key="new_stack" class="_newStack">
-          <div class="">
-            <b-icon icon="check-circle" />
-            {{ $t("new_stack_created") }}
+        <transition name="slideup" mode="out-in">
+          <div v-if="link_to_new_stack" key="new_stack" class="_newStack">
+            <div class="">
+              <b-icon icon="check-circle" />
+              {{ $t("new_stack_created") }}
+            </div>
+            <router-link :to="link_to_new_stack" class="u-button">
+              {{ $t("go_to_new_stack") }}
+            </router-link>
+            <button
+              type="button"
+              class="u-button_icon _closeBtn"
+              @click="link_to_new_stack = undefined"
+            >
+              <b-icon icon="x-lg" />
+            </button>
           </div>
-          <router-link :to="link_to_new_stack" class="u-button">
-            {{ $t("go_to_new_stack") }}
-          </router-link>
-          <button
-            type="button"
-            class="u-button_icon _closeBtn"
-            @click="link_to_new_stack = undefined"
-          >
-            <b-icon icon="x-lg" />
-          </button>
+        </transition>
+
+        <div class="_uploadFilesList" v-if="files_to_import.length > 0">
+          <UploadFiles
+            :files_to_import="files_to_import"
+            :path="author_path"
+            :allow_caption_edition="true"
+            @importedMedias="mediaJustImported($event)"
+            @close="files_to_import = []"
+          />
         </div>
-      </transition>
-    </div>
-    <CreateNewMediastackModal
-      v-if="show_new_mediastack_modal"
-      :selected_items="selected_items"
-      @stackPosted="stackPosted"
-      @close="show_new_mediastack_modal = false"
-    />
-  </div>
+      </div>
+    </template>
+  </TwoColumnLayout>
 </template>
 <script>
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ChutierItem from "@/components/chutier/ChutierItem.vue";
+import TwoColumnLayout from "@/adc-core/ui/TwoColumnLayout.vue";
 
 export default {
   props: {},
@@ -290,6 +272,7 @@ export default {
       import("@/components/chutier/CreateNewMediastackModal.vue"),
     PickExistingMediastackModal: () =>
       import("@/components/PickExistingMediastackModal.vue"),
+    TwoColumnLayout,
   },
   provide() {
     return {};
@@ -355,17 +338,8 @@ export default {
   },
   beforeDestroy() {},
   watch: {
-    // chutier_items() {
-    //   this.selected_items_slugs = this.selected_items_slugs.filter(
-    //     (item_path) => this.chutier_items.find((ci) => ci.$path === item_path)
-    //   );
-    // },
     selected_items_slugs() {
-      if (
-        // this.selected_items_slugs.length === 0 &&
-        this.show_confirm_remove_menu
-      )
-        this.show_confirm_remove_menu = false;
+      if (this.show_confirm_remove_menu) this.show_confirm_remove_menu = false;
 
       if (this.selected_items_slugs.length > this.max_items_selected) {
         this.selected_items_slugs = this.selected_items_slugs.slice(
@@ -380,7 +354,6 @@ export default {
       }
     },
     chutier_items() {
-      // check if all items still exist, remove them if that's not the case
       const cleaned_up_items = this.selected_items_slugs.filter((fis) =>
         this.chutier_items.some((ci) => ci.$path === fis)
       );
@@ -494,10 +467,6 @@ export default {
 
     async mediaJustImported($event) {
       $event;
-      // console.log("selected_items_slugs = " + $event);
-      // this.selected_items_slugs = $event.map(
-      //   (i) => this.connected_as.$path + "/" + i
-      // );
     },
 
     onDragover($event) {
@@ -505,7 +474,6 @@ export default {
     },
     onDragEnter($event) {
       $event.preventDefault();
-      // const has_files = Array.from($event.target.files).length > 0;
       this.is_dragover = true;
     },
     onDragLeave($event) {
@@ -535,7 +503,6 @@ export default {
     },
     rangeIsSelected(range) {
       if (this.selected_items_slugs.length === 0) return false;
-      // for each item in range, make sure it is included in selected_items_slugs
       return !range.find((p) => {
         if (this.selected_items_slugs.includes(p) === false) return true;
         return false;
@@ -546,10 +513,6 @@ export default {
         await this.$api.deleteItem({ path: item_path });
       }
       this.show_confirm_remove_menu = false;
-    },
-    async stackPosted(new_stack_slug) {
-      // this.link_to_new_stack = `/explore/${new_stack_slug}`;
-      this.show_new_mediastack_modal = false;
     },
     async moveFilesToStack(stack) {
       this.show_pick_existing_mediastack_modal = false;
@@ -579,63 +542,14 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._myChutier {
-  --sd-separator: var(--h-700);
-  --sd-textcolor: white;
-  --sd-bg: var(--h-900);
-
-  position: relative;
-  top: 0;
-  height: calc(100% - 50px);
-  overflow: hidden;
-  color: var(--h-900);
-
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-
-  &.is--mobile {
-    min-height: calc(100% - 50px);
-    flex-flow: column nowrap;
-    overflow: auto;
-  }
-
-  > ._importFiles {
-    flex: 1 0 320px;
-
-    @media (max-width: 600px) {
-      flex: 0 0 auto;
-    }
-  }
-
-  > ._filesList {
-    flex: 5 1 0;
-    overflow: auto;
-  }
+._importSection {
+  margin-top: calc(var(--spacing) * 2);
 }
-._importFiles {
-  position: relative;
-  top: 0;
-  height: 100%;
-  overflow: auto;
-  // border-right: 1px solid var(--border-color);
 
-  @include scrollbar(4px, 4px, 5px, transparent, white);
-
-  @media (max-width: 600px) {
-    overflow: hidden;
-    height: auto;
-  }
-}
-._importFiles--content {
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  // height: 100%;
-  // max-width: 400px;
-  margin: calc(var(--spacing) * 2);
-  // padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 4);
+._importButton {
+  --dropzone-color1: transparent;
+  --dropzone-color2: var(--r-200);
+  color: var(--active-color);
 
   ::v-deep .u-dropzone {
     padding: calc(var(--spacing) * 4);
@@ -662,9 +576,12 @@ export default {
   align-items: center;
   top: 0;
   padding: calc(var(--spacing) / 2);
+}
 
-  // backdrop-filter: blur(6px);
-  // mask: linear-gradient(black 75%, transparent 100%);
+._filesList {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
 }
 
 ._middleContent {
@@ -686,16 +603,12 @@ export default {
 }
 
 ._item--label {
-  // width: 100%;
-  // text-align: center;
   display: inline-block;
   cursor: pointer;
-  // font-weight: 500;
   margin-bottom: calc(var(--spacing) / 1);
   color: currentColor;
   font-size: var(--sl-font-size-large);
 
-  // opacity: 0.8;
   transition: all 0.25s ease-out;
 
   &:hover,
@@ -704,7 +617,6 @@ export default {
   }
 
   &.is--fullySelected {
-    // opacity: 1;
     color: var(--active-color);
   }
 }
@@ -723,12 +635,9 @@ export default {
   align-items: center;
   gap: calc(var(--spacing) / 2);
 
-  // box-shadow: 0 2px 6px 0 black;
   background: white;
   border-top: 1px solid var(--border-color);
-  // color: white;
   padding: calc(var(--spacing) * 1);
-  // padding-bottom: calc(var(--spacing) * 2);
 }
 ._removeMenu {
   position: absolute;
@@ -741,7 +650,6 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  // border: 1px solid #999;
   padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 4);
 
@@ -769,14 +677,9 @@ export default {
 }
 ._dbleBtns > * {
   flex: 0 1 250px;
-  // gap: calc(var(--spacing) / 4);
-  // display: flex;
-  // flex-flow: column nowrap;
-  // padding: calc(var(--spacing) / 1);
 }
 
 ._selectionBar-btns {
-  // margin: calc(var(--spacing) / 2) 0;
   gap: calc(var(--spacing) * 2);
 }
 
@@ -793,24 +696,6 @@ export default {
       background: black !important;
     }
   }
-}
-
-._dashboard {
-  // min-height: 30ch;
-  background: var(--h-50);
-  // font-size: var(--sl-font-size-large);
-
-  margin: calc(var(--spacing) * 2);
-  padding: calc(var(--spacing) / 1);
-}
-
-._importButton {
-  // width: 100%;
-  // margin: calc(var(--spacing) / 1) calc(var(--spacing) / 1);
-  --dropzone-color1: transparent;
-  // --dropzone-color2: var(--h-900);
-  --dropzone-color2: var(--r-200);
-  color: var(--active-color);
 }
 
 ._importBtns {
@@ -830,8 +715,6 @@ export default {
 
   .u-button {
     flex: 1 1 0;
-    // border-radius: 5px;
-    // padding: calc(var(--spacing) / 2);
     align-items: center;
 
     svg {
@@ -842,28 +725,12 @@ export default {
 }
 
 ._items--list {
-  // display: flex;
-  // flex-flow: row wrap;
-  // justify-content: flex-start;
-  // align-items: flex-start;
-  // gap: calc(var(--spacing) / 1);
-
-  // display: grid;
-  // grid-auto-rows: max-content;
-  // grid-gap: calc(var(--spacing) / 1);
-  // align-items: stretch;
-  // grid-template-columns: repeat(
-  //   auto-fill,
-  //   minmax(var(--item-width, 320px), 1fr)
-  // );
-
   columns: 3 28em;
   column-gap: var(--spacing);
 
   > * {
     flex: 1 1 28em;
     margin-bottom: calc(var(--spacing) / 1);
-    // max-width: 22em;
   }
 }
 ._closeBtn {
@@ -894,9 +761,5 @@ export default {
   background-color: var(--active-color);
   border-radius: 2px;
   transition: width 0.3s ease-out;
-}
-
-._dashboard--label {
-  // font-size: var(--sl-font-size-large);
 }
 </style>

@@ -1,17 +1,24 @@
 <template>
-  <div class="_collectionsList">
-    <div class="u-spacingBottom u-instructions">
-      {{ $t("publication_instr") }}
-    </div>
-    <div class="u-spacingBottom _actions">
-      <button
-        type="button"
-        class="u-button"
-        @click="show_create_collection = true"
-      >
-        <b-icon icon="plus-circle" />&nbsp;
-        {{ $t("create_a_publication") }}
-      </button>
+  <TwoColumnLayout>
+    <template #sidebar>
+      <h3 class="_dashboard--label">{{ $t("publications") }}</h3>
+      <div class="u-spacingBottom" />
+      <div class="u-instructions u-spacingBottom">
+        {{ $t("publication_instr") }}
+      </div>
+
+      <hr />
+
+      <div class="_createActions">
+        <button
+          class="u-button u-button_outline"
+          @click="show_create_collection = true"
+        >
+          <b-icon icon="plus-circle" />
+          {{ $t("create_a_publication") }}
+        </button>
+      </div>
+
       <CreateCollection
         v-if="show_create_collection"
         :modal_name="$t('create_a_publication')"
@@ -20,64 +27,71 @@
         @close="show_create_collection = false"
         @openNew="openNewCollection"
       />
-      <div class="_searchinput">
-        <SearchInput2
-          v-model="search_coll_name"
-          :search_placeholder="$t('search_in_titles')"
-        />
-      </div>
-    </div>
+    </template>
 
-    <RadioSwitch
-      class="_switch"
-      :content.sync="show_my_publications"
-      :options="[
-        { label: $t('all_publications'), value: false },
-        { label: $t('my_publications'), value: true },
-      ]"
-    />
-    <div class="u-spacingBottom" />
-
-    <div class="_collections">
-      <div
-        v-if="filtered_collections.length === 0"
-        class="u-instructions"
-        :key="'nopublis'"
-      >
-        {{ $t("no_publications") }}
-      </div>
-      <router-link
-        v-for="collection in filtered_collections"
-        :key="collection.$path"
-        class="_collection"
-        :to="getURLToFolder(collection.$path)"
-      >
-        <div>
-          {{ formatDate(collection.$date_created) }}
-          <h3>{{ collection.title }}</h3>
-          <div class="_collection_type">
-            {{ $t(collection.template || "story") }}
-          </div>
-        </div>
-        <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
-          <AuthorTag
-            v-for="(atpath, index) in collection.$admins"
-            :key="atpath + '_' + index"
-            :path="atpath"
-            :show_image_only="true"
+    <template #content>
+      <div class="u-spacingBottom _actions">
+        <div class="_searchinput">
+          <SearchInput2
+            v-model="search_coll_name"
+            :search_placeholder="$t('search_in_titles')"
           />
         </div>
-      </router-link>
-    </div>
-  </div>
+      </div>
+
+      <RadioSwitch
+        class="_switch"
+        :content.sync="show_my_publications"
+        :options="[
+          { label: $t('all_publications'), value: false },
+          { label: $t('my_publications'), value: true },
+        ]"
+      />
+      <div class="u-spacingBottom" />
+
+      <div class="_collections">
+        <div
+          v-if="filtered_collections.length === 0"
+          class="u-instructions"
+          :key="'nopublis'"
+        >
+          {{ $t("no_publications") }}
+        </div>
+        <router-link
+          v-for="collection in filtered_collections"
+          :key="collection.$path"
+          class="_collection"
+          :to="getURLToFolder(collection.$path)"
+        >
+          <div>
+            {{ formatDate(collection.$date_created) }}
+            <h3>{{ collection.title }}</h3>
+            <div class="_collection_type">
+              {{ $t(collection.template || "story") }}
+            </div>
+          </div>
+          <div v-if="Array.isArray(collection.$admins)" class="u-listOfAvatars">
+            <AuthorTag
+              v-for="(atpath, index) in collection.$admins"
+              :key="atpath + '_' + index"
+              :path="atpath"
+              :show_image_only="true"
+            />
+          </div>
+        </router-link>
+      </div>
+    </template>
+  </TwoColumnLayout>
 </template>
 <script>
+import TwoColumnLayout from "@/adc-core/ui/TwoColumnLayout.vue";
 import CreateCollection from "@/components/collections/CreateCollection.vue";
 import SearchInput2 from "@/components/SearchInput2.vue";
 
 export default {
   props: {},
   components: {
+    TwoColumnLayout,
     SearchInput2,
     CreateCollection,
   },
@@ -97,7 +111,7 @@ export default {
         create_a_publication: "Créer une publication",
         search_in_titles: "Rechercher dans les titres",
         publication_instr:
-          "Les publications regroupent des médias dans l’espace partagé pour les partager.",
+          "Les publications regroupent des médias dans l'espace partagé pour les partager.",
         agora: "Agora",
       },
       en: {
@@ -161,38 +175,41 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._collectionsList {
-  > * {
+._createActions {
+  margin-top: calc(var(--spacing) * 1);
+
+  .u-button {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: calc(var(--spacing) / 2);
+
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
   }
 }
 
 ._actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  display: flex;
+  flex-flow: row nowrap;
   gap: calc(var(--spacing) / 1);
+  align-items: center;
 
   @media (max-width: 600px) {
-    display: block;
-
-    > * {
-      margin-bottom: calc(var(--spacing) / 1);
-    }
+    flex-flow: column nowrap;
+    align-items: stretch;
   }
 
-  > * {
+  ._searchinput {
     flex: 1 1 0;
-    overflow: hidden;
-
-    &._searchinput {
-      grid-column: 2 / 4;
-    }
+    max-width: 400px;
   }
 }
 
-._searchinput {
-  // max-width: 40ch;
-  // width: 100%;
-  margin-bottom: 0;
+._switch {
+  margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._collections {
@@ -205,30 +222,51 @@ export default {
     auto-fill,
     minmax(var(--item-width, 320px), 1fr)
   );
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 ._collection {
-  border: 1px solid var(--h-100);
+  border: 1px solid var(--border-color);
+  border-radius: var(--card-radius);
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: flex-start;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) * 1);
   gap: calc(var(--spacing) / 2);
   text-decoration: none;
   min-height: 100px;
+  background: var(--c-blanc);
+  box-shadow: var(--card-shadow);
+  transition: all 0.15s ease;
+
+  &:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
 
   h3 {
     margin: 0;
     font-size: var(--sl-font-size-large);
+    color: var(--c-text);
+  }
+
+  > div:first-child {
+    flex: 1 1 0;
   }
 }
 
 ._collection_type {
   font-size: var(--sl-font-size-small);
+  color: var(--c-text-secondary);
+  margin-top: calc(var(--spacing) / 4);
 }
 
 .u-listOfAvatars {
   padding: 0;
+  flex: 0 0 auto;
 }
 </style>
