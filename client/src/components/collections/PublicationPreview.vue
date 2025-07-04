@@ -1,16 +1,18 @@
 <template>
   <router-link
-    class="u-card2 _publicationPreview"
+    class="_publicationPreview"
     :to="getURLToFolder(publication.$path)"
   >
     <div class="_publicationPreview_content">
       <div class="_publicationPreview_date">
         {{ formatDate(publication.$date_created) }}
       </div>
-      <h3 class="_publicationPreview_title">{{ publication.title }}</h3>
-      <div class="_publicationPreview_type">
-        {{ $t(publication.template || "story") }}
-      </div>
+      <h3 class="_publicationPreview_title">
+        {{ publication.title }}
+        <small class="_publicationPreview_type">
+          – {{ $t(publication.template || "story").toLowerCase() }}
+        </small>
+      </h3>
     </div>
     <div v-if="Array.isArray(publication.$admins)" class="u-listOfAvatars">
       <AuthorTag
@@ -62,17 +64,11 @@ export default {
 
 <style lang="scss" scoped>
 ._publicationPreview {
-  border: 1px solid var(--border-color);
-  border-radius: var(--card-radius);
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: calc(var(--spacing) * 1);
-  gap: calc(var(--spacing) / 2);
+  display: block;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing));
   text-decoration: none;
-  min-height: 100px;
   background: white;
+  border: 1px solid var(--border-color);
 
   transition: all 0.15s ease;
 

@@ -52,6 +52,7 @@
 
       <PinnedNonpinnedFolder
         v-if="!is_loading"
+        class="_pinnedPublications"
         :field_name="'publications_pinned'"
         :label="$t('publications_pinned')"
         :content="settings.publications_pinned"
@@ -264,6 +265,13 @@ export default {
     --radio-switch-width: 100%;
     --radio-switch-height: 41px;
     --radio-switch-padding: 0px;
+  }
+}
+
+._pinnedPublications {
+  ::v-deep ._pinSpace {
+    left: auto;
+    right: 0;
   }
 }
 
