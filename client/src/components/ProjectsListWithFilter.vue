@@ -497,6 +497,7 @@ export default {
 }
 ._listOfProjects {
   flex: 1 1 0;
+  max-width: 100%;
   margin-top: 0;
 }
 ._tagList {

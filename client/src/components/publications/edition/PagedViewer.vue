@@ -732,11 +732,11 @@ export default {
       .chapter.clickable {
         cursor: pointer;
 
-        &:hover {
-          .editChapterBtn {
-            background-color: var(--c-noir);
-          }
-        }
+        // &:hover {
+        //   .editChapterBtn {
+        //     background-color: var(--c-noir);
+        //   }
+        // }
       }
 
       .pagedjs_pages {

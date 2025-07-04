@@ -19,7 +19,7 @@ export default {
         .replace(/[\u0300-\u036f]/g, "");
     },
     cleanUpString(str) {
-      return str.trim();
+      return str.replace(/^[\s\r\n]+|[\s\r\n]+$/g, "");
     },
   },
 };

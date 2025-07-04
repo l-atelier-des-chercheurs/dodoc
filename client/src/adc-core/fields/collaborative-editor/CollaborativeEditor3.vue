@@ -333,16 +333,16 @@ export default {
       });
 
       if (this.content) {
-        this.editor.setText(this.content, "silent");
-        // if (this.save_format === "raw") {
-        //   this.content = this.$sanitize(this.content);
-        //   this.editor.clipboard.dangerouslyPasteHTML(this.content);
-        //   this.editor.setContents(this.editor.getContents(), "init");
-        // } else {
-        //   // this.editor.root.innerHTML = this.content;
-        //   this.editor.setText(this.content);
-        // }
-        // this.editor.root.innerHTML = this.content;
+        if (this.save_format === "raw") {
+          this.content = this.$sanitize(this.content);
+          this.editor.clipboard.dangerouslyPasteHTML(this.content);
+          this.editor.setContents(this.editor.getContents(), "init");
+        } else {
+          // this.editor.setText(this.content);
+          // this.editor.root.innerHTML = this.content;
+          const delta = this.editor.clipboard.convert({ html: this.content });
+          this.editor.setContents(delta, "silent");
+        }
       }
 
       this.setStatusButton();

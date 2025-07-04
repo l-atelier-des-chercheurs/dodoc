@@ -1,15 +1,16 @@
 const path = require("path"),
-  chalk = require("chalk");
+  chalk = require("chalk"),
+  journal = require("./journal");
 
 module.exports = dev = (function () {
   let isDebugMode = false;
   let isVerboseMode = false;
-  let livereload = false;
-  let logToFile = false;
+  let isLivereload = false;
+  let isLogToFile = false;
 
   const API = {
-    init: (isDebug, isVerbose, livereload, logToFile) => {
-      return initModule(isDebug, isVerbose, livereload, logToFile);
+    init: ({ debug, verbose, livereload, logToFile }) => {
+      return initModule({ debug, verbose, livereload, logToFile });
     },
     space: space,
     log: log,
@@ -22,15 +23,18 @@ module.exports = dev = (function () {
     error: error,
     performance: performance,
     isDebug: () => isDebugMode,
-    isLivereload: () => livereload,
+    isLivereload: () => isLivereload,
+    isLogToFile: () => isLogToFile,
   };
 
-  function initModule(d, v, lr, l) {
-    isDebugMode = d;
-    isVerboseMode = v;
-    livereload = lr;
-    logToFile = l;
-    console.log(`Init module with debug = ${d} and verbose = ${v}`);
+  function initModule({ debug, verbose, livereload, logToFile }) {
+    isDebugMode = debug;
+    isVerboseMode = verbose;
+    isLivereload = livereload;
+    isLogToFile = logToFile;
+    console.log(
+      `Init module with debug = ${debug} verbose = ${verbose} livereload = ${isLivereload} logToFile = ${isLogToFile}`
+    );
 
     if (isDebugMode) {
       console.log("Debug mode is enabled");
@@ -45,7 +49,7 @@ module.exports = dev = (function () {
       }
     }
     if (logToFile) {
-      console.log("Logging to file");
+      console.log("File logging will start once content path is available");
     } else {
       console.log("Not logging to a file");
     }
@@ -53,9 +57,8 @@ module.exports = dev = (function () {
   }
 
   function space() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
-    if (logToFile) _sendToLogFile(``);
     _sendToConsole(``);
   }
 
@@ -65,11 +68,10 @@ module.exports = dev = (function () {
       args: arguments,
     });
 
-    if (logToFile) _sendToLogFile(message);
     _sendToConsole(message);
   }
   function logverbose() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `- ` +
@@ -78,11 +80,10 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.gray);
   }
   function logpackets() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `* ` +
@@ -91,11 +92,10 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.green);
   }
   function logsockets() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `→ ` +
@@ -104,11 +104,10 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.cyan);
   }
   function logrooms() {
-    if (!logToFile && !isVerboseMode) return;
+    if (!isLogToFile && !isVerboseMode) return;
 
     const message =
       `¶ ` +
@@ -117,11 +116,10 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.yellow);
   }
   function logfunction() {
-    if (!logToFile && !isDebugMode) return;
+    if (!isLogToFile && !isDebugMode) return;
 
     const message =
       `~ ` +
@@ -130,7 +128,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     if (isDebugMode) _sendToConsole(message, chalk.magenta);
   }
   function logapi() {
@@ -141,7 +138,6 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
     _sendToConsole(message, chalk.blue);
   }
   function error() {
@@ -152,7 +148,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (logToFile) _sendToLogFile(message);
+    journal.log({ message, type: "error" });
     console.error(chalk.red(message));
   }
 
@@ -160,15 +156,13 @@ module.exports = dev = (function () {
     var args = Array.prototype.slice.call(arguments);
 
     const fct_name = performance.caller.name;
-    var logArgs = `~ ${fct_name} - `.concat(args);
+    var message = `~ ${fct_name} - `.concat(args);
 
-    if (logToFile) _sendToLogFile(logArgs);
-    _sendToConsole(logArgs, chalk.yellow);
+    _sendToConsole(message, chalk.yellow);
   }
 
-  function _sendToLogFile(logArgs) {}
-  function _sendToConsole(logArgs, color = chalk.white) {
-    console.log(color(logArgs));
+  function _sendToConsole(message, color = chalk.white) {
+    console.log(color(message));
   }
 
   function _customStringify(obj) {
@@ -223,5 +217,6 @@ module.exports = dev = (function () {
     const filename = stack[3].getFileName();
     return path.parse(filename).name.toUpperCase();
   }
+
   return API;
 })();

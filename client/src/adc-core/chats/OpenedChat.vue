@@ -138,7 +138,7 @@
             </template>
           </template>
           <div class="_message--footer">
-            <b-icon icon="check" />
+            <b-icon icon="check-lg" />
           </div>
 
           <div class="_scrollToEndBtn">
@@ -377,12 +377,16 @@ export default {
     async postMessage() {
       if (!this.new_message) return;
 
+      debugger;
+
       if (!this.allow_send) {
-        this.$alertify
-          .delay(4000)
-          .error(
-            this.$t("message_too_long", { max_length: this.max_message_length })
+        if (this.new_message.length > this.max_message_length) {
+          this.$alertify.delay(4000).error(
+            this.$t("message_too_long", {
+              max_length: this.max_message_length,
+            })
           );
+        }
         return;
       }
 
@@ -400,11 +404,13 @@ export default {
 
       // await new Promise((resolve) => setTimeout(resolve, 100));
 
+      const content = this.cleanUpString(this.new_message);
+
       const { meta_filename } = await this.$api.uploadText({
         path: this.chat.$path,
         filename,
         additional_meta,
-        content: this.new_message,
+        content,
       });
 
       const path = this.chat.$path + "/" + meta_filename;
@@ -519,7 +525,6 @@ export default {
   position: relative;
   overflow: auto;
   background: var(--c-rouge_fonce);
-  padding: 0 calc(var(--spacing) / 2) 0;
 }
 ._openedChat--footer {
   box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),

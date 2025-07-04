@@ -177,7 +177,7 @@ export default {
       // Create a temporary div to parse HTML and get plain text
       const temp = document.createElement("div");
       temp.innerHTML = this.content;
-      return temp.innerText;
+      return this.cleanUpString(temp.innerText);
     },
   },
   methods: {
