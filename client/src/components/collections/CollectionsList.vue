@@ -3,7 +3,7 @@
     <div class="u-spacingBottom u-instructions">
       {{ $t("publication_instr") }}
     </div>
-    <div class="u-spacingBottom">
+    <div class="u-spacingBottom _actions">
       <button
         type="button"
         class="u-button"
@@ -20,14 +20,23 @@
         @close="show_create_collection = false"
         @openNew="openNewCollection"
       />
+      <div class="_searchinput">
+        <SearchInput2
+          v-model="search_coll_name"
+          :search_placeholder="$t('search_in_titles')"
+        />
+      </div>
     </div>
 
-    <div class="u-spacingBottom _searchinput">
-      <SearchInput2
-        v-model="search_coll_name"
-        :search_placeholder="$t('search_in_titles')"
-      />
-    </div>
+    <RadioSwitch
+      class="_switch"
+      :content.sync="show_my_publications"
+      :options="[
+        { label: $t('all_publications'), value: false },
+        { label: $t('my_publications'), value: true },
+      ]"
+    />
+    <div class="u-spacingBottom" />
 
     <div class="_collections">
       <div
@@ -44,6 +53,7 @@
         :to="getURLToFolder(collection.$path)"
       >
         <div>
+          {{ formatDate(collection.$date_created) }}
           <h3>{{ collection.title }}</h3>
           <div class="_collection_type">
             {{ $t(collection.template || "story") }}
@@ -77,6 +87,7 @@ export default {
       collections: [],
       path: "publications",
       search_coll_name: "",
+      show_my_publications: false,
     };
   },
   i18n: {
@@ -123,13 +134,16 @@ export default {
           })
         )
         .sort((a, b) => {
-          return a.title.localeCompare(b.title);
-        });
+          return a.$date_created.localeCompare(b.$date_created);
+        })
+        .reverse();
     },
     filtered_collections() {
       return this.sorted_collections.filter((c) => {
         if (this.search_coll_name)
           return this.twoStringsSearch(c.title, this.search_coll_name);
+        if (this.show_my_publications)
+          return c.$admins.includes(this.$user.path);
         return true;
       });
     },
@@ -152,8 +166,33 @@ export default {
   }
 }
 
+._actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: calc(var(--spacing) / 1);
+
+  @media (max-width: 600px) {
+    display: block;
+
+    > * {
+      margin-bottom: calc(var(--spacing) / 1);
+    }
+  }
+
+  > * {
+    flex: 1 1 0;
+    overflow: hidden;
+
+    &._searchinput {
+      grid-column: 2 / 4;
+    }
+  }
+}
+
 ._searchinput {
-  max-width: 30ch;
+  // max-width: 40ch;
+  // width: 100%;
+  margin-bottom: 0;
 }
 
 ._collections {
@@ -173,10 +212,11 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: calc(var(--spacing) / 2);
   gap: calc(var(--spacing) / 2);
   text-decoration: none;
+  min-height: 100px;
 
   h3 {
     margin: 0;
