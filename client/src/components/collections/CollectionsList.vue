@@ -32,6 +32,7 @@
     <template #content>
       <div class="u-spacingBottom _actions">
         <RadioSwitch
+          v-if="connected_as"
           class="_switch"
           :content.sync="show_my_publications"
           :options="[
@@ -158,10 +159,14 @@ export default {
     },
     filtered_collections() {
       return this.sorted_collections.filter((c) => {
-        if (this.search_coll_name)
-          return this.twoStringsSearch(c.title, this.search_coll_name);
-        if (this.show_my_publications)
-          return c.$admins.includes(this.$user.path);
+        if (
+          this.search_coll_name &&
+          !this.twoStringsSearch(c.title, this.search_coll_name)
+        )
+          return false;
+        if (this.show_my_publications) {
+          if (!c.$admins.includes(this.connected_as.$path)) return false;
+        }
         return true;
       });
     },
@@ -204,16 +209,16 @@ export default {
   gap: calc(var(--spacing) / 1);
   align-items: center;
   justify-content: space-between;
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 1);
 
-  @media (max-width: 600px) {
-    flex-flow: column nowrap;
-    align-items: stretch;
+  ._switch {
+    grid-column: 1 / 3;
   }
 
   ._searchinput {
-    flex: 1 1 0;
-    max-width: 400px;
+    // grid-column: 2 / 3;
+    // grid-row: 1 / 2;
+    // max-width: 400px;
   }
 }
 
@@ -227,7 +232,7 @@ export default {
     border: 0px;
     font-size: var(--sl-font-size-small);
     --radio-switch-width: 100%;
-    --radio-switch-height: 54px;
+    --radio-switch-height: 41px;
     --radio-switch-padding: 0px;
   }
 }

@@ -13,15 +13,6 @@
   background-color: var(--bg-color);
 }
 
-.u-button {
-  font-size: var(--sl-font-size-medium);
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-
-  > .b-icon {
-    margin-right: calc(var(--spacing) / 2);
-  }
-}
-
 .u-button_outline {
   &:hover,
   &:active,
@@ -66,5 +57,14 @@ label,
     padding: calc(var(--spacing) / 4);
     background-color: var(--h-500);
     margin-left: calc(var(--spacing) / 2);
+  }
+}
+
+.u-button {
+  > .b-icon {
+    // only if there is text after the icon
+    &:not(:last-child) {
+      margin-right: calc(var(--spacing) / 2);
+    }
   }
 }

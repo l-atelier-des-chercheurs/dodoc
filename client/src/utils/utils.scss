@@ -206,14 +206,14 @@ button {
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.02em;
-  font-size: var(--input-font-size-small);
+  // font-size: var(--input-font-size-small);
   text-decoration: none;
   color: inherit;
   white-space: nowrap;
   background-color: var(--c-gris_clair);
   white-space: break-spaces;
 
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
   border-radius: var(--input-border-radius);
 
   background: var(--r-200);
@@ -521,7 +521,7 @@ textarea,
   vertical-align: middle;
 
   // padding: calc(var(--spacing) * 0.5);
-  padding: calc(var(--spacing) * 0.9) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
   margin: 0;
 
   border-bottom: 1px solid transparent;
