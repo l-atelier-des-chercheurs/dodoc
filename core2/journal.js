@@ -18,6 +18,14 @@ module.exports = (function () {
     shutdown: () => _handleCleanShutdown(),
   };
 
+  function _createTimestamp(date = new Date()) {
+    return date
+      .toISOString()
+      .replace(/T/, "_")
+      .replace(/:/g, "-")
+      .split(".")[0]; // Remove milliseconds
+  }
+
   function _setupLogFile() {
     dev.logfunction();
     try {
@@ -28,18 +36,13 @@ module.exports = (function () {
       }
 
       // Create timestamped filename
-      const now = new Date();
-      const timestamp = now
-        .toISOString()
-        .replace(/T/, "_")
-        .replace(/:/g, "-")
-        .split(".")[0]; // Remove milliseconds
+      const timestamp = _createTimestamp();
 
       logFilePath = path.join(logDirPath, `${timestamp}.jsonl`);
 
       // Write initial log entry as JSON
       const initEntry = {
-        ts: now.toISOString(),
+        ts: new Date().toISOString(),
         message: "DODOC LOG STARTED",
       };
       fs.writeFileSync(logFilePath, JSON.stringify(initEntry) + "\n");
@@ -141,7 +144,8 @@ module.exports = (function () {
     try {
       const dir = path.dirname(logFilePath);
       const name = path.basename(logFilePath, ".jsonl");
-      const cleanLogPath = path.join(dir, `${name}_ok.jsonl`);
+      const closeTimestamp = _createTimestamp();
+      const cleanLogPath = path.join(dir, `${name}_${closeTimestamp}.jsonl`);
 
       if (fs.existsSync(logFilePath)) {
         fs.renameSync(logFilePath, cleanLogPath);
