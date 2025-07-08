@@ -86,7 +86,11 @@
     </template>
 
     <template #content>
-      <div class="_filesList" @click.self="selected_items_slugs = []">
+      <div
+        class="_filesList"
+        @click.self="selected_items_slugs = []"
+        :class="{ 'is--mobile': $root.is_mobile_view }"
+      >
         <div class="_middleContent">
           <template v-if="chutier_items && chutier_items.length > 0">
             <label
@@ -640,6 +644,10 @@ export default {
   background: white;
   border-top: 1px solid var(--border-color);
   padding: calc(var(--spacing) * 1);
+
+  ._filesList.is--mobile & {
+    position: fixed;
+  }
 }
 ._removeMenu {
   position: absolute;

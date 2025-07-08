@@ -46,7 +46,7 @@ export default {
   padding: 0;
 
   &.is--mobile {
-    flex-flow: column nowrap;
+    display: block;
   }
 }
 
