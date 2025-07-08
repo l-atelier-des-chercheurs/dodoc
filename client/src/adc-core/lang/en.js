@@ -1344,7 +1344,7 @@ export default {
 
   logs: "Logs",
   logs_panel_instructions:
-    "This panel shows the available log files from the server.",
+    "This panel shows the available log files from the server. These files contain information about the activity of the application, from its launch to its shutdown (and, in some cases, the reasons for the crash when it happens).",
   available_logs: "Available logs",
   no_logs_available: "No logs available",
   refresh_logs: "Refresh logs",

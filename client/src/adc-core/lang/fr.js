@@ -1429,7 +1429,7 @@ export default {
 
   logs: "Journaux",
   logs_panel_instructions:
-    "Ce panneau affiche les fichiers journaux disponibles du serveur.",
+    "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
   available_logs: "Journaux disponibles",
   no_logs_available: "Aucun journal disponible",
   refresh_logs: "Actualiser les journaux",
