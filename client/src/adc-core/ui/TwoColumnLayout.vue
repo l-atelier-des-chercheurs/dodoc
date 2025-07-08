@@ -4,7 +4,7 @@
       <slot name="sidebar" />
     </div>
 
-    <div class="_colRight" :class="{ 'no-padding': !contentPadding }">
+    <div class="_colRight">
       <slot name="content" />
     </div>
   </div>
@@ -66,10 +66,6 @@ export default {
   flex: 1 1 0;
   overflow: hidden;
   position: relative;
-  padding: calc(var(--spacing) * 2);
-  &.no-padding {
-    padding: 0;
-  }
 }
 
 ._content {

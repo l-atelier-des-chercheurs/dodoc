@@ -29,41 +29,42 @@
       />
     </template>
 
-    <template #content>
-      <div class="u-spacingBottom _actions">
-        <RadioSwitch
-          v-if="connected_as"
-          class="_switch"
-          :content.sync="show_publications_from"
-          :options="[
-            { label: $t('all_publications'), value: 'all' },
-            { label: $t('my_publications'), value: 'me' },
-          ]"
-        />
-        <div class="_searchinput">
-          <SearchInput2
-            v-model="search_coll_name"
-            :search_placeholder="$t('search_in_titles')"
+    <template #content nopadding="true">
+      <div class="_content">
+        <div class="u-spacingBottom _actions">
+          <RadioSwitch
+            v-if="connected_as"
+            class="_switch"
+            :content.sync="show_publications_from"
+            :options="[
+              { label: $t('all_publications'), value: 'all' },
+              { label: $t('my_publications'), value: 'me' },
+            ]"
           />
+          <div class="_searchinput">
+            <SearchInput2
+              v-model="search_coll_name"
+              :search_placeholder="$t('search_in_titles')"
+            />
+          </div>
         </div>
-      </div>
 
-      <div class="u-spacingBottom" />
+        <div class="u-spacingBottom" />
 
-      <PinnedNonpinnedFolder
-        v-if="!is_loading"
-        class="_pinnedPublications"
-        :field_name="'publications_pinned'"
-        :label="$t('publications_pinned')"
-        :content="settings.publications_pinned"
-        :path="''"
-        :folders="filtered_collections"
-        :can_edit="is_instance_admin"
-        v-slot="slotProps"
-      >
-        <PublicationPreview :publication="slotProps.item" />
-      </PinnedNonpinnedFolder>
-      <!-- <div class="_collections">
+        <PinnedNonpinnedFolder
+          v-if="!is_loading"
+          class="_pinnedPublications"
+          :field_name="'publications_pinned'"
+          :label="$t('publications_pinned')"
+          :content="settings.publications_pinned"
+          :path="''"
+          :folders="filtered_collections"
+          :can_edit="is_instance_admin"
+          v-slot="slotProps"
+        >
+          <PublicationPreview :publication="slotProps.item" />
+        </PinnedNonpinnedFolder>
+        <!-- <div class="_collections">
         <div
           v-if="filtered_collections.length === 0"
           class="u-instructions"
@@ -94,6 +95,7 @@
           </div>
         </router-link>
       </div>-->
+      </div>
     </template>
   </TwoColumnLayout>
 </template>
@@ -331,5 +333,11 @@ export default {
 .u-listOfAvatars {
   padding: 0;
   flex: 0 0 auto;
+}
+
+._content {
+  overflow: auto;
+  padding: calc(var(--spacing) * 2);
+  height: 100%;
 }
 </style>
