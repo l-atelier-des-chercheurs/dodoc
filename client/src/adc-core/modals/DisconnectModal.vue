@@ -76,10 +76,10 @@ export default {
     "$api.connected": function () {
       if (this.$api.connected) {
         this.$emit("close");
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t("connection_back"));
+        // this.$alertify
+        //   .closeLogOnClick(true)
+        //   .delay(4000)
+        //   .success(this.$t("connection_back"));
       }
     },
   },
