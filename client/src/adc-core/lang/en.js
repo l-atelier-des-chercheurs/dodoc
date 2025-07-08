@@ -1341,4 +1341,16 @@ export default {
   gps_coordinates_found: "GPS coordinates found.",
   column_count: "Column count",
   restore_publications: "Restore deleted publications",
+
+  logs: "Logs",
+  logs_panel_instructions:
+    "This panel shows the available log files from the server.",
+  available_logs: "Available logs",
+  no_logs_available: "No logs available",
+  refresh_logs: "Refresh logs",
+  session_started: "Session started",
+  session_ended: "Session ended",
+  session_crashed: "Session crashed",
+  session_running: "Session running",
+  duration: "Duration",
 };

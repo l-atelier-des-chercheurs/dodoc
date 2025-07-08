@@ -371,6 +371,11 @@ export default function () {
         const storage_path = response.data.pathToUserContent;
         return storage_path;
       },
+      async getLogs() {
+        const response = await this.$axios.get(`_logs`);
+        const logs = response.data.logs;
+        return logs;
+      },
       async restartApp() {
         await this.$axios.post(`_restartApp`);
       },

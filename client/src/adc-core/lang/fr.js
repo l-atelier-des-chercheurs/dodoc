@@ -1426,4 +1426,17 @@ export default {
   today: "Aujourd’hui",
   copy_to_clipboard: "Copier dans le presse-papiers",
   copied: "Copié !",
+
+  logs: "Journaux",
+  logs_panel_instructions:
+    "Ce panneau affiche les fichiers journaux disponibles du serveur.",
+  available_logs: "Journaux disponibles",
+  no_logs_available: "Aucun journal disponible",
+  refresh_logs: "Actualiser les journaux",
+
+  session_crashed: "Session plantée",
+  session_running: "Session en cours",
+  duration: "Durée",
+  app_started_on: "Application démarrée le",
+  app_ended_on: "Application arrêtée le",
 };

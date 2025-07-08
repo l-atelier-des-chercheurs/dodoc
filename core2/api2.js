@@ -40,6 +40,8 @@ module.exports = (function () {
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
 
+    app.get("/_api2/_logs", _onlyAdmins, _getLogs);
+
     app.get("/_api2/_users", _getAllUsers);
     app.patch("/_api2/_users/:id", _updateUser);
 
@@ -2030,6 +2032,10 @@ module.exports = (function () {
 
   async function _restartApp(req, res, next) {
     notifier.emit("restartApp");
+  }
+  async function _getLogs(req, res, next) {
+    const logs = await journal.getLogs();
+    res.json({ logs });
   }
   async function _getStoragePath(req, res, next) {
     res.json({ pathToUserContent: global.pathToUserContent });

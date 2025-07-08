@@ -16,14 +16,23 @@ module.exports = (function () {
     getLogFilePath: () => logFilePath,
     cleanupOldLogs: (keepDays = 7) => _cleanupOldLogs(keepDays),
     shutdown: () => _handleCleanShutdown(),
+
+    getLogs: () => _getLogs(),
   };
 
   function _createTimestamp(date = new Date()) {
-    return date
-      .toISOString()
-      .replace(/T/, "_")
-      .replace(/:/g, "-")
-      .split(".")[0]; // Remove milliseconds
+    // Use local time with system locale, forcing predictable format
+    const dateStr = date.toLocaleDateString("en-CA"); // YYYY-MM-DD format (ISO-like)
+    const timeStr = date
+      .toLocaleTimeString(undefined, {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+      .replace(/:/g, "-"); // HH:MM:SS -> HH-MM-SS
+
+    return `${dateStr}_${timeStr}`;
   }
 
   function _setupLogFile() {
@@ -145,7 +154,10 @@ module.exports = (function () {
       const dir = path.dirname(logFilePath);
       const name = path.basename(logFilePath, ".jsonl");
       const closeTimestamp = _createTimestamp();
-      const cleanLogPath = path.join(dir, `${name}_${closeTimestamp}.jsonl`);
+      const cleanLogPath = path.join(
+        dir,
+        `${name}_until_${closeTimestamp}.jsonl`
+      );
 
       if (fs.existsSync(logFilePath)) {
         fs.renameSync(logFilePath, cleanLogPath);
@@ -228,6 +240,18 @@ module.exports = (function () {
     } catch (error) {
       console.error(`Failed to cleanup old journal files: ${error.message}`);
     }
+  }
+
+  function _getLogs() {
+    // return list of all available logs
+    const logs = [];
+    const files = fs.readdirSync(logDirPath);
+    files.forEach((file) => {
+      if (path.extname(file) === ".jsonl") {
+        logs.push(file);
+      }
+    });
+    return logs;
   }
 
   return API;
