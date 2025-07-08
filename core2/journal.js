@@ -11,8 +11,8 @@ module.exports = (function () {
   const API = {
     init: () => _setupLogFile(),
     isEnabled: () => isEnabled,
-    log: ({ message, type = "general", level = "info" }) =>
-      _log({ message, type, level }),
+    log: ({ message, type = "general", level = "info", from = null }) =>
+      _log({ message, type, level, from }),
     getLogFilePath: () => logFilePath,
     cleanupOldLogs: (keepDays = 7) => _cleanupOldLogs(keepDays),
     shutdown: () => _handleCleanShutdown(),
@@ -178,13 +178,17 @@ module.exports = (function () {
     }
   }
 
-  function _log({ message, type = "general", level = "info" }) {
-    const logEntry = {
+  function _log({ message, type = "general", level = "info", from = null }) {
+    let logEntry = {
       ts: new Date().toISOString(),
-      type: type,
+      type,
       level,
       message,
     };
+
+    if (from) {
+      logEntry.from = from;
+    }
 
     if (!logFilePath || !isEnabled) {
       // Buffer the message until file is ready
