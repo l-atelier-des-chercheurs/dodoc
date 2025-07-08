@@ -86,7 +86,7 @@
                 :content="file.caption"
                 :path="file.$path"
                 :maxlength="1280"
-                :can_edit="false"
+                :can_edit="true"
               />
 
               <!-- 
