@@ -148,7 +148,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    journal.log({ message, type: "error" });
+    journal.log({ message, from: "dev-log", event: "error" });
     console.error(chalk.red(message));
   }
 

@@ -11,8 +11,8 @@ module.exports = (function () {
   const API = {
     init: () => _setupLogFile(),
     isEnabled: () => isEnabled,
-    log: ({ message, type = "general", level = "info", from = null }) =>
-      _log({ message, type, level, from }),
+    log: ({ message, type = "general", event = "info", from, details }) =>
+      _log({ message, type, event, from, details }),
     getLogFilePath: () => logFilePath,
     cleanupOldLogs: (keepDays = 7) => _cleanupOldLogs(keepDays),
     shutdown: () => _handleCleanShutdown(),
@@ -40,8 +40,6 @@ module.exports = (function () {
       // Write initial log entry as JSON
       const initEntry = {
         ts: now.toISOString(),
-        type: "general",
-        level: "info",
         message: "DODOC LOG STARTED",
       };
       fs.writeFileSync(logFilePath, JSON.stringify(initEntry) + "\n");
@@ -178,17 +176,19 @@ module.exports = (function () {
     }
   }
 
-  function _log({ message, type = "general", level = "info", from = null }) {
+  function _log({ message, from, event, details }) {
+    // from: main2, server, api2, etc. (filename)
+    // event: create_folder, upload_file, etc. (action)
+    // details: { outcome: "success", path_to_folder }
+
     let logEntry = {
       ts: new Date().toISOString(),
-      type,
-      level,
-      message,
     };
 
-    if (from) {
-      logEntry.from = from;
-    }
+    if (message) logEntry.message = message;
+    if (event) logEntry.event = event;
+    if (from) logEntry.from = from;
+    if (details) logEntry.details = details;
 
     if (!logFilePath || !isEnabled) {
       // Buffer the message until file is ready

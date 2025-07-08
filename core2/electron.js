@@ -37,6 +37,7 @@ module.exports = (function () {
           const found_sharp_version = require("sharp").versions?.sharp;
           journal.log({
             message: `ELECTRON — init : sharp version ${found_sharp_version}`,
+            from: "electron",
           });
           if (found_sharp_version) {
             // const err = new Error(
@@ -57,6 +58,10 @@ module.exports = (function () {
           dev.log(
             `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`
           );
+          journal.log({
+            message: `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`,
+            from: "electron",
+          });
         }
 
         notifier.on("restartApp", () => {
@@ -72,6 +77,7 @@ module.exports = (function () {
           dev.log(`ELECTRON — init : ready`);
           journal.log({
             message: "ELECTRON — init : ready",
+            from: "electron",
           });
 
           _createWindow().then((_win) => {

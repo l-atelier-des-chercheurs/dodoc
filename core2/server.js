@@ -106,12 +106,14 @@ module.exports = function () {
 
   journal.log({
     message: "Server up and running",
+    from: "server",
   });
 
   serverRTC(server);
 
   journal.log({
     message: "Server RTC initialized",
+    from: "server",
   });
 
   api2.init(app);
@@ -123,6 +125,7 @@ module.exports = function () {
     dev.log(message);
     journal.log({
       message,
+      from: "server",
     });
   });
 };
