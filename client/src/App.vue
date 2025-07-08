@@ -120,7 +120,7 @@ export default {
 <style lang="scss">
 :root {
   --spacing: 1rem;
-  --mobile-breakpoint: 600px;
+  --mobile-breakpoint: 800px;
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);

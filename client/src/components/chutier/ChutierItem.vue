@@ -278,7 +278,7 @@ export default {
     flex: 1 1 0;
     height: 100%;
     overflow: hidden;
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
   }
 }
 
@@ -494,6 +494,10 @@ export default {
   margin-top: calc(var(--spacing) / 1);
   margin-bottom: calc(var(--spacing) / 1);
   font-size: var(--sl-font-size-small);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 
   ._collaborativeEditor {
     overflow: hidden;

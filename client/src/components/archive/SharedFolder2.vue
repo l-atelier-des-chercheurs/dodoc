@@ -5,15 +5,16 @@
         {{ $t("Corpus") }}
       </label>
       <TitleField
-        v-if="folder?.title"
+        v-if="folder"
         :field_name="'title'"
-        :label="$t('title')"
+        :label="$t('corpus_title')"
         :show_label="false"
         :tag="'b'"
         :content="folder.title || $t('untitled')"
         :path="folder.$path"
         :required="true"
-        :can_edit="false"
+        :maxlength="30"
+        :can_edit="can_edit"
       />
       <button
         type="button"
@@ -189,8 +190,12 @@ export default {
   },
   i18n: {
     messages: {
-      fr: {},
-      en: {},
+      fr: {
+        corpus_title: "Titre du corpus",
+      },
+      en: {
+        corpus_title: "Corpus title",
+      },
     },
   },
   async created() {},
@@ -202,6 +207,7 @@ export default {
     this.folder = await this.$api.getFolder({
       path: this.shared_folder_path,
     });
+    this.$api.join({ room: this.shared_folder_path });
 
     this.all_stacks = await this.$api.getFolders({
       path: this.stack_shared_folder_path,
@@ -478,6 +484,10 @@ export default {
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   border-bottom: 1px solid var(--h-200);
+
+  :deep(._content) {
+    margin-right: 0;
+  }
 }
 
 ._corpusLabel {

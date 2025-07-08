@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 @close="$emit('close')">
+  <BaseModal2 :title="$t('access_corpus')" @close="$emit('close')">
     <div class="_corpusMenu">
       <LoaderSpinner v-if="!folders" />
       <template v-else>
@@ -158,14 +158,14 @@ export default {
 }
 ._selectFolder {
   position: relative;
-  max-width: 240px;
-  padding: var(--spacing);
+  // max-width: 240px;
+  // padding: var(--spacing);
   margin: var(--spacing) auto;
 
   > div {
-    background: var(--h-100);
-    border-radius: 4px;
-    padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    // background: var(--h-100);
+    // border-radius: 4px;
+    // padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     > label {
       font-size: var(--sl-font-size-small);

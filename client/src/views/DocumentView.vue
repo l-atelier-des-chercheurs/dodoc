@@ -30,6 +30,9 @@ export default {
       let i = {};
       if (this.$route.query?.section) i.section = this.$route.query.section;
       if (this.$route.query?.chapter) i.chapter = this.$route.query.chapter;
+      if (this.$route.query?.edit_graphics)
+        i.edit_graphics = this.$route.query.edit_graphics;
+      if (this.$route.query?.style) i.style = this.$route.query.style;
       return i;
     },
   },

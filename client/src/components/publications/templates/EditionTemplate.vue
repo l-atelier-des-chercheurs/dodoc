@@ -25,12 +25,11 @@
           </div>
         </div>
 
-        <div class="_editGraphics">
+        <div class="_editGraphics" v-if="false">
           <button
-            v-if="false"
             type="button"
             class="u-button u-button_bleumarine"
-            @click="$emit('updatePane', { key: 'edit_graphics', value: true })"
+            @click="openGraphicStyles"
           >
             <b-icon icon="file-code" />
             {{ $t("graphic_styles") }}
@@ -205,7 +204,7 @@ export default {
       return this.all_chapters[idx + 1];
     },
     show_graphic_styles() {
-      return this.pane_infos?.edit_graphics === true;
+      return this.pane_infos?.edit_graphics === "true";
     },
     opened_style_file_meta() {
       return this.pane_infos?.style || "first";
@@ -272,6 +271,9 @@ export default {
     getChapterPosition(chapter_path) {
       const chapter_meta_filename = this.getFilename(chapter_path);
       return this.chapters_positions[chapter_meta_filename];
+    },
+    openGraphicStyles() {
+      this.$emit("updatePane", { key: "edit_graphics", value: true });
     },
   },
 };

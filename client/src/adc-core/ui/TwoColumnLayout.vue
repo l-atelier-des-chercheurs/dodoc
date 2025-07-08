@@ -57,7 +57,7 @@ export default {
   border-right: 1px solid var(--border-color);
   overflow: auto;
 
-  @media (max-width: 900px) {
+  &.is--mobile {
     flex: 0 0 v-bind(sidebarMobileWidth);
   }
 }
