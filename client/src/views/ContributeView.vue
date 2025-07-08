@@ -562,6 +562,8 @@ export default {
 
 ._filesList {
   position: relative;
+  height: 100%;
+  overflow: auto;
 }
 
 ._adminBtn {

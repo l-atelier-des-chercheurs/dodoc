@@ -80,7 +80,7 @@
       </div>
 
       <div class="_infos">
-        <div class="_content--type">
+        <div class="_content--type" v-if="false">
           <template v-if="chapter.section_type === 'text'">
             <b-icon icon="markdown" />
             {{ $t("text") }}
@@ -111,21 +111,12 @@
             </div>
           </div>
         </transition>
-
-        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
-          <SelectField2
-            :field_name="'section_starts_on_page'"
-            :value="chapter.section_starts_on_page || ''"
-            :path="chapter.$path"
-            size="small"
-            :hide_validation="true"
-            :can_edit="true"
-            :options="starts_on_page_options"
-          />
-        </div>
       </div>
 
-      <fieldset v-if="chapter.section_type === 'text'">
+      <fieldset
+        v-if="chapter.section_type === 'text'"
+        class="_text_image_layout"
+      >
         <legend>{{ $t("text_image_layout") }}</legend>
         <div class="_colCount">
           <DLabel :str="$t('column_count')" />
@@ -144,6 +135,19 @@
               ]"
             />
           </div>
+        </div>
+
+        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
+          <DLabel :str="$t('starts_on_page')" />
+          <SelectField2
+            :field_name="'section_starts_on_page'"
+            :value="chapter.section_starts_on_page || ''"
+            :path="chapter.$path"
+            size="small"
+            :hide_validation="true"
+            :can_edit="true"
+            :options="starts_on_page_options"
+          />
         </div>
       </fieldset>
 
@@ -267,6 +271,16 @@ export default {
     return {
       show_media_picker: false,
     };
+  },
+  i18n: {
+    messages: {
+      fr: {
+        starts_on_page: "Commence sur la page",
+      },
+      en: {
+        starts_on_page: "Starts on page",
+      },
+    },
   },
   created() {},
   mounted() {},
@@ -703,5 +717,11 @@ export default {
 
 ._colCount {
   max-width: 20ch;
+}
+._text_image_layout {
+  display: flex;
+  flex-direction: row;
+  gap: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>

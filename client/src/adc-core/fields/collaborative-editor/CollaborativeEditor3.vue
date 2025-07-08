@@ -869,6 +869,7 @@ export default {
   ::v-deep {
     .ql-editor {
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+      min-height: 10rem;
     }
   }
 }
