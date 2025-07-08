@@ -3,16 +3,167 @@
     <div class="_logoIcons">
       <router-link to="/" class="_logo">LumaDoc</router-link>
     </div>
+    <button
+      v-if="$root.is_mobile_view"
+      type="button"
+      class="u-button u-button_icon _hamburgerBtn"
+      @click="show_mobile_menu = !show_mobile_menu"
+      :class="{ 'is--active': show_mobile_menu }"
+    >
+      <div class="_hamburgerIcon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </button>
 
-    <div class="_topBar_content">
+    <!-- Mobile Menu Overlay -->
+    <div
+      v-if="$root.is_mobile_view && show_mobile_menu"
+      class="_mobileMenuOverlay"
+      @click="show_mobile_menu = false"
+    >
+      <div class="_mobileMenu" @click.stop>
+        <div class="_mobileNavLinks">
+          <router-link
+            class="_navButton"
+            to="/contribute"
+            active-class="is--active"
+            @click.native="show_mobile_menu = false"
+          >
+            {{ $t("contribute") }}
+          </router-link>
+          <router-link
+            class="_navButton"
+            to="/explore"
+            active-class="is--active"
+            @click.native="show_mobile_menu = false"
+          >
+            {{ $t("explore") }}
+          </router-link>
+          <router-link
+            class="_navButton"
+            to="/publish"
+            active-class="is--active"
+            @click.native="show_mobile_menu = false"
+          >
+            {{ $t("publish") }}
+          </router-link>
+        </div>
+
+        <div class="_mobileActions">
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="
+              show_qr_code_modal = true;
+              show_mobile_menu = false;
+            "
+          >
+            <div part="base" class="icon" aria-hidden="true">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-qr-code"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2 2h2v2H2V2Z"></path>
+                <path d="M6 0v6H0V0h6ZM5 1H1v4h4V1ZM4 12H2v2h2v-2Z"></path>
+                <path d="M6 10v6H0v-6h6Zm-5 1v4h4v-4H1Zm11-9h2v2h-2V2Z"></path>
+                <path
+                  d="M10 0v6h6V0h-6Zm5 1v4h-4V1h4ZM8 1V0h1v2H8v2H7V1h1Zm0 5V4h1v2H8ZM6 8V7h1V6h1v2h1V7h5v1h-4v1H7V8H6Zm0 0v1H2V8H1v1H0V7h3v1h3Zm10 1h-1V7h1v2Zm-1 0h-1v2h2v-1h-1V9Zm-4 0h2v1h-1v1h-1V9Zm2 3v-1h-1v1h-1v1H9v1h3v-2h1Zm0 0h3v1h-2v1h-1v-2Zm-4-1v1h1v-2H7v1h2Z"
+                ></path>
+                <path d="M7 12h1v3h4v1H7v-4Zm9 2v2h-3v-1h2v-1h1Z"></path>
+              </svg>
+            </div>
+            <span>{{ $t("share") }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="
+              $eventHub.$emit(`app.show_welcome_modal`);
+              show_mobile_menu = false;
+            "
+          >
+            <b-icon icon="question-square" />
+            <span>{{ $t("help") }}</span>
+          </button>
+
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            @click="
+              show_lang_modal = !show_lang_modal;
+              show_mobile_menu = false;
+            "
+          >
+            <span>{{ $t("language") }}: {{ current_lang_code }}</span>
+          </button>
+
+          <button
+            v-if="is_instance_admin"
+            type="button"
+            class="u-button u-button_icon"
+            @click="
+              show_admin_settings = !show_admin_settings;
+              show_mobile_menu = false;
+            "
+          >
+            <b-icon icon="gear" />
+            <span>{{ $t("admin_settings") }}</span>
+          </button>
+
+          <div v-if="connected_as" class="_mobileCurrentUser">
+            <AuthorTag
+              :path="connected_as.$path"
+              :show_image_only="false"
+              @click="
+                $eventHub.$emit('showAuthorModal');
+                show_mobile_menu = false;
+              "
+            />
+            <sup
+              class="_badge"
+              v-if="$api.other_devices_connected.length > 0"
+              v-text="$api.other_devices_connected.length"
+            />
+          </div>
+          <button
+            type="button"
+            class="_mobileAuthorBtn"
+            v-else
+            @click="
+              $eventHub.$emit('showAuthorModal');
+              show_mobile_menu = false;
+            "
+          >
+            {{ $t("login") }}
+            <sup
+              class="_badge"
+              v-if="$api.other_devices_connected.length > 0"
+              v-text="$api.other_devices_connected.length"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="_topBar_content" v-if="!$root.is_mobile_view">
       <div class="_menu">
-        <router-link to="/contribute" active-class="is--active">{{
-          $t("contribute")
-        }}</router-link>
-        <router-link to="/explore" active-class="is--active"
+        <router-link
+          to="/contribute"
+          class="_navButton"
+          active-class="is--active"
+          >{{ $t("contribute") }}</router-link
+        >
+        <router-link to="/explore" class="_navButton" active-class="is--active"
           >{{ $t("explore") }}
         </router-link>
-        <router-link to="/publish" active-class="is--active">
+        <router-link to="/publish" class="_navButton" active-class="is--active">
           {{ $t("publish") }}
         </router-link>
       </div>
@@ -41,11 +192,6 @@
             </svg>
           </div>
         </button>
-        <QRModal
-          v-if="show_qr_code_modal"
-          :url_to_access="url_to_page"
-          @close="show_qr_code_modal = false"
-        />
         <button
           type="button"
           class="u-button u-button_icon"
@@ -60,7 +206,6 @@
           @click="show_lang_modal = !show_lang_modal"
           v-text="current_lang_code"
         ></button>
-        <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
 
         <button
           type="button"
@@ -70,10 +215,6 @@
         >
           <b-icon icon="gear" :aria-label="$t('admin_settings')" />
         </button>
-        <AdminLumaSettings
-          v-if="show_admin_settings"
-          @close="show_admin_settings = false"
-        />
 
         <!-- <button
           type="button"
@@ -146,6 +287,19 @@
         </button>
       </div>
     </div>
+
+    <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+
+    <QRModal
+      v-if="show_qr_code_modal"
+      :url_to_access="url_to_page"
+      @close="show_qr_code_modal = false"
+    />
+
+    <AdminLumaSettings
+      v-if="show_admin_settings"
+      @close="show_admin_settings = false"
+    />
   </div>
 </template>
 <script>
@@ -168,6 +322,7 @@ export default {
       show_admin_settings: false,
       show_lang_modal: false,
       show_qr_code_modal: false,
+      show_mobile_menu: false,
     };
   },
   i18n: {
@@ -176,11 +331,17 @@ export default {
         contribute: "Contribuer",
         explore: "Explorer",
         publish: "Publier",
+        help: "Aide",
+        language: "Langue",
+        admin_settings: "Paramètres administrateur",
       },
       en: {
         contribute: "Contribute",
         explore: "Explore",
         publish: "Publish",
+        help: "Help",
+        language: "Language",
+        admin_settings: "Admin Settings",
       },
     },
   },
@@ -292,6 +453,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 50px;
   padding: 0 calc(var(--spacing) * 2);
   // padding-right: 5rem;
 
@@ -328,29 +490,31 @@ export default {
   align-items: center;
   justify-content: center;
   height: 100%;
-  text-transform: uppercase;
   letter-spacing: 0.01em;
 
-  a {
+  ._navButton {
     flex: 1 1 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100%;
-    min-height: 50px;
-    padding: 10px;
-    background-color: transparent;
-    // border: 1px solid #ddd;
-    border-radius: 0;
-    font-size: var(--topbar-font-size);
-    cursor: pointer;
-    text-decoration: none;
+  }
+}
+._navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: var(--spacing);
+  text-transform: uppercase;
+  background-color: transparent;
+  // border: 1px solid #ddd;
+  border-radius: 0;
+  font-size: var(--topbar-font-size);
+  cursor: pointer;
+  text-decoration: none;
 
-    &.is--active {
-      background-color: var(--h-600);
-      color: white;
-      // font-weight: bold;
-    }
+  &.is--active {
+    background-color: var(--h-600);
+    color: white;
+    // font-weight: bold;
   }
 }
 
@@ -398,5 +562,143 @@ export default {
 ._currentUser {
   display: inline-flex;
   position: relative;
+}
+
+/* Mobile Menu Styles */
+._mobileMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+._mobileMenu {
+  background-color: white;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(0);
+  z-index: 1001;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+._mobileNavLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+// ._mobileNavLinks a {
+//   font-size: var(--topbar-font-size);
+//   text-decoration: none;
+//   color: var(--h-900);
+//   padding: 10px 0;
+//   border-bottom: 1px solid var(--border-color);
+// }
+
+// ._mobileNavLinks a.is--active {
+//   color: var(--c-bleumarine);
+//   font-weight: bold;
+// }
+
+._mobileActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+._mobileActions button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background-color: var(--c-lightgray);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: var(--topbar-font-size);
+  cursor: pointer;
+  color: var(--h-900);
+  text-align: left;
+}
+
+._mobileActions button:hover {
+  background-color: var(--c-gray);
+}
+
+._mobileCurrentUser {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+._mobileAuthorBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background-color: var(--c-lightgray);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: var(--topbar-font-size);
+  cursor: pointer;
+  color: var(--h-900);
+  text-align: left;
+}
+
+._mobileAuthorBtn:hover {
+  background-color: var(--c-gray);
+}
+
+._hamburgerBtn {
+  padding: calc(var(--spacing) / 1);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  flex: 0 0 auto;
+  color: var(--h-900);
+}
+
+._hamburgerIcon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+}
+
+._hamburgerIcon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: var(--h-900);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+._hamburgerBtn.is--active ._hamburgerIcon span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+._hamburgerBtn.is--active ._hamburgerIcon span:nth-child(2) {
+  opacity: 0;
+}
+
+._hamburgerBtn.is--active ._hamburgerIcon span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
 </style>
