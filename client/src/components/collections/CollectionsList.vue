@@ -10,12 +10,34 @@
       <hr />
 
       <div class="_createActions">
+        <h3 class="_createActions_label" v-text="$t('create_a_publication')" />
+
         <button
-          class="u-button u-button_outline"
-          @click="show_create_collection = true"
+          class="u-button u-button_outline _createAction"
+          @click="show_create_collection = 'story_with_sections'"
         >
           <b-icon icon="plus-circle" />
-          {{ $t("create_a_publication") }}
+          <span v-text="$t('new_story')"></span>
+          <img :src="$root.publicPath + 'picto_luma/story.svg'" alt="story" />
+        </button>
+        <button
+          class="u-button u-button_outline _createAction"
+          @click="show_create_collection = 'edition'"
+        >
+          <b-icon icon="plus-circle" />
+          <span v-text="$t('new_booklet')"></span>
+          <img
+            :src="$root.publicPath + 'picto_luma/edition.svg'"
+            alt="booklet"
+          />
+        </button>
+        <button
+          class="u-button u-button_outline _createAction"
+          @click="show_create_collection = 'agora'"
+        >
+          <b-icon icon="plus-circle" />
+          <span v-text="$t('new_agora')"></span>
+          <img :src="$root.publicPath + 'picto_luma/agora.svg'" alt="agora" />
         </button>
       </div>
 
@@ -24,6 +46,7 @@
         :modal_name="$t('create_a_publication')"
         :path="'publications'"
         :default_folder_status="'private'"
+        :selected_template="show_create_collection"
         @close="show_create_collection = false"
         @openNew="openNewCollection"
       />
@@ -130,23 +153,27 @@ export default {
     messages: {
       fr: {
         publications: "Publications",
-        create_a_publication: "Créer une publication",
+        new_story: "Nouveau rapport",
         search_in_titles: "Rechercher dans les titres",
         publication_instr:
           "Les publications regroupent des médias dans l'espace partagé pour les partager.",
         agora: "Agora",
         all_publications: "Toutes les publications",
         my_publications: "Mes publications",
+        new_agora: "Nouvel écran",
+        new_booklet: "Nouveau livret",
       },
       en: {
         publications: "Publications",
-        create_a_publication: "Create a publication",
+        new_story: "New report",
         search_in_titles: "Search in titles",
         publication_instr:
           "Publications include multiple medias to be shared together.",
         agora: "Agora",
         all_publications: "All publications",
         my_publications: "My publications",
+        new_agora: "New screen",
+        new_booklet: "New booklet",
       },
     },
   },
@@ -221,15 +248,49 @@ export default {
   margin-top: calc(var(--spacing) * 1);
 
   .u-button {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
-    gap: calc(var(--spacing) / 2);
+    // width: 100%;
+    // justify-content: center;
+    // align-items: center;
+    // gap: calc(var(--spacing) / 2);
+  }
+}
+._createAction {
+  margin: calc(var(--spacing) / 1) 0;
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  border-color: var(--c-gris);
+  border-radius: calc(var(--spacing) / 2);
+  width: 100%;
+  font-size: var(--sl-font-size-large);
+  background-color: var(--c-blanc);
+  color: var(--c-text);
 
-    svg {
-      width: 1rem;
-      height: 1rem;
-    }
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: stretch;
+  gap: calc(var(--spacing) / 1);
+
+  .bi {
+    flex: 0 0 auto;
+    color: var(--active-color);
+    margin-right: 0;
+  }
+
+  > span {
+    flex: 1 1 auto;
+    text-align: left;
+  }
+
+  > img {
+    flex: 0 0 auto;
+    // width: 64px;
+    // height: 64px;
+  }
+
+  &:hover,
+  &:active {
+    background-color: var(--r-100);
+    border-color: var(--r-500);
   }
 }
 

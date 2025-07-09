@@ -13,6 +13,10 @@
   background-color: var(--bg-color);
 }
 
+.u-button {
+  text-transform: capitalize;
+}
+
 .u-button_outline {
   &:hover,
   &:active,
@@ -41,6 +45,7 @@
 label,
 .u-label {
   // font-weight: 500;
+  font-size: var(--sl-font-size-medium);
   font-family: var(--sl-font-sans);
 }
 

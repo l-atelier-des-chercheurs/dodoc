@@ -27,6 +27,8 @@
             </router-link>
             <TitleField
               :field_name="'title'"
+              :label="$t('title')"
+              :show_label="false"
               :content="collection.title"
               :path="collection.$path"
               :tag="'h1'"
@@ -313,6 +315,11 @@ export default {
   height: 100%;
   width: 100%;
   overflow: auto;
+
+  ::v-deep ._toggleDropdown {
+    padding: 0;
+    padding-bottom: 6px;
+  }
 }
 ._spinner {
   padding: calc(var(--spacing) * 2);

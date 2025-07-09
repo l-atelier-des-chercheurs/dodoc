@@ -12,7 +12,7 @@
         @onEnter="createFolder"
       />
 
-      <br />
+      <div class="u-spacingBottom" />
 
       <div class="">
         <ToggleInput
@@ -25,9 +25,9 @@
         />
       </div>
 
-      <br />
+      <!-- <br /> -->
 
-      <div class="">
+      <!-- <div class="">
         <DLabel :str="$t('template')" />
         <select v-model="new_folder_template">
           <option
@@ -38,7 +38,7 @@
             {{ template.label }}
           </option>
         </select>
-      </div>
+      </div> -->
 
       <br />
 
@@ -70,28 +70,13 @@ export default {
     modal_name: String,
     path: String,
     default_folder_status: { type: String, default: "public" },
+    selected_template: { type: String, default: "story_with_sections" },
   },
   components: {},
   data() {
     return {
       new_folder_title: "",
       new_folder_is_private: false,
-      new_folder_template: "story_with_sections",
-
-      available_templates: [
-        {
-          value: "story_with_sections",
-          label: this.$t("story_with_sections"),
-        },
-        {
-          value: "agora",
-          label: this.$t("agora"),
-        },
-        {
-          value: "edition",
-          label: this.$t("edition"),
-        },
-      ],
 
       is_creating_folder: false,
       allow_save: false,
@@ -122,7 +107,7 @@ export default {
 
       let additional_meta = {
         title: this.new_folder_title,
-        template: this.new_folder_template,
+        template: this.selected_template,
         requested_slug: this.new_folder_title,
         $status:
           this.new_folder_is_private === true

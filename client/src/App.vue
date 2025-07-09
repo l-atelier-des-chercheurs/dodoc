@@ -263,6 +263,7 @@ export default {
   --g-700: hsl(0, 0%, 51%);
   --g-900: hsl(0, 0%, 30%);
 
+  --r-100: #fff6dc;
   --r-200: #ffe08a;
   --r-500: #ffbc00;
   --r-600: #e8ab00;
@@ -436,7 +437,7 @@ h2,
 h3 {
   margin: calc(var(--spacing) * 1) 0;
   font-size: var(--sl-font-size-x-large);
-  line-height: 1.2;
+  // line-height: 1.2;
   font-weight: normal;
 
   &:first-child {

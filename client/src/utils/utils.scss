@@ -204,7 +204,7 @@ button {
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.02em;
   // font-size: var(--input-font-size-small);
   text-decoration: none;
@@ -213,7 +213,7 @@ button {
   background-color: var(--c-gris_clair);
   white-space: break-spaces;
 
-  padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) / 1.5) calc(var(--spacing) * 1);
   border-radius: var(--input-border-radius);
 
   background: var(--r-200);
