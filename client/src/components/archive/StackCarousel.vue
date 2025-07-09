@@ -96,7 +96,7 @@ export default {
   props: {
     files: Array,
     can_edit: Boolean,
-    can_be_selected: String,
+    can_be_selected: [Boolean, String],
     selected_files: Array,
   },
   components: {

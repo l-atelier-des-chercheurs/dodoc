@@ -147,16 +147,6 @@
                 />
               </div>
 
-              <hr />
-
-              <div v-if="can_edit" class="u-sameRow">
-                <DownloadFolder :path="stack.$path" />
-                <RemoveMenu
-                  :remove_text="$t('remove')"
-                  :remove_expl="$t('remove_stack_instr')"
-                  @remove="removeStack"
-                />
-              </div>
               <div class="" v-if="is_instance_admin">
                 <StatusTag
                   v-if="can_edit"
@@ -164,6 +154,26 @@
                   :status_options="['public', 'private']"
                   :path="stack.$path"
                   :can_edit="can_edit"
+                />
+              </div>
+
+              <hr />
+
+
+              <div v-if="can_edit" class="u-sameRow">
+                <DownloadFolder :path="stack.$path" />
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click.stop="show_duplicate_stack_modal = true"
+                >
+                <b-icon icon="file-plus" />
+                {{ $t("duplicate_or_move") }}
+                </button>
+                <RemoveMenu
+                  :remove_text="$t('remove')"
+                  :remove_expl="$t('remove_stack_instr')"
+                  @remove="removeStack"
                 />
               </div>
             </div>
@@ -241,7 +251,11 @@
         }}
       </button>
     </div>
-
+    <DuplicateStackModal
+      v-if="show_duplicate_stack_modal"
+      :stack="stack"
+      @close="show_duplicate_stack_modal = false"
+    />
     </div>
   </div>
 </template>
@@ -249,6 +263,7 @@
 // import ChutierItem from "@/components/chutier/ChutierItem.vue";
 import KeywordsField from "@/components/KeywordsField.vue";
 import StackCarousel from "@/components/archive/StackCarousel.vue";
+import DuplicateStackModal from "@/components/archive/DuplicateStackModal.vue";
 
 export default {
   props: {
@@ -256,13 +271,14 @@ export default {
     context: String,
     is_favorite: Boolean,
     can_be_added_to_fav: Boolean,
-    can_be_selected: String,
+    can_be_selected: [Boolean, String],
     read_only: Boolean,
   },
   components: {
     // ChutierItem,
     KeywordsField,
     StackCarousel,
+    DuplicateStackModal,
   },
   inject: {},
   data() {
@@ -274,6 +290,7 @@ export default {
       pane_width: undefined,
       ro: undefined,
       selected_stack_files: [],
+      show_duplicate_stack_modal: false,
     };
   },
   i18n: {
@@ -660,7 +677,7 @@ hr {
   z-index: 10;
   height: 100%;
   background: var(--sd-bg);
-  width: 32px;
+  width: 38px;
   > button {
     height: 100%;
     justify-content: flex-start;
