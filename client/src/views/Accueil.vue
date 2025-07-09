@@ -33,8 +33,8 @@
 
     <div class="_section">
       <h3
-        v-text="
-          `Donner à voir l’ensemble des processus de recherche et création`
+        v-html="
+          `Donner à voir l’ensemble des <strong>processus</strong> de <strong>recherche</strong> et <strong>création</strong>`
         "
       />
     </div>
@@ -70,7 +70,7 @@ export default {
       if (this.$i18n.locale === "fr") {
         return `Une plateforme pour <span class="_partager">partager</span>, <span class="_connecter">connecter</span> et <span class="_renforcer">renforcer</span> les territoires par le <span class="_design">design</span>`;
       } else {
-        return "A platform to share, connect, and strengthen territories through design";
+        return "A platform to <span class='_partager'>share</span>, <span class='_connecter'>connect</span> and <span class='_renforcer'>strengthen</span> territories through design";
       }
     },
     sections() {
@@ -83,7 +83,7 @@ export default {
           subtitle:
             this.$i18n.locale === "fr"
               ? "Importez toutes sortes de médias pour documenter vos idées, vos croquis, vos essais. <i>– Rien ne se perd, tout a de la valeur.</i>"
-              : `Import all kind of medias for your ideas, sketchs, tests. <i>— nothing gets lost, everything has value.</i>`,
+              : `Import all kind of medias for your ideas, sketchs, tests. <i>— Nothing gets lost, everything has value.</i>`,
           text: `DocSpaces a été conçu pour faciliter la documentation à tout moment. Le dépôt de fichiers est simplifié, adapté à un usage mobile à faible connexion, pour sauvegarder ce qui mérite de l’être à l’instant t.`,
           img: this.$root.publicPath + "home/contribute.png",
         },
@@ -94,8 +94,8 @@ export default {
               : "EXPLORE",
           subtitle:
             this.$i18n.locale === "fr"
-              ? "Explorez l'évolution du travail de vos pairs et établissez des liens entre les disciplines et les pratiques. – Ici commence le réseau"
-              : `Explore the evolving work of your peers and trace connections across disciplines and practices. — here start the network.`,
+              ? "Explorez l'évolution du travail de vos pairs et établissez des liens entre les disciplines et les pratiques. <i>– Ici commence le réseau</i>"
+              : `Explore the evolving work of your peers and trace connections across disciplines and practices. <i>— Here starts the network.</i>`,
           text:
             this.$i18n.locale === "fr"
               ? "L’archive est conçue comme un espace vivant où les connexions se font à l’aide de mots-clé croisés. Les équipes collaborent et enrichissent des ensembles de médias qui donnent à voir l’ensemble du travail mis en œuvre."
@@ -109,12 +109,12 @@ export default {
               : "PUBLISH",
           subtitle:
             this.$i18n.locale === "fr"
-              ? "Publier vos recherches et vos résultats sous de multiples formats pour encourager le retour d'information, la réflexion et la collaboration, – La recherche est affaire de collectif"
-              : `Publish your research and results in any format to encourage feedback, reflection and collaboration.— the world needs to know.`,
+              ? "Publier vos recherches et vos résultats sous de multiples formats pour encourager le retour d'information, la réflexion et la collaboration, <i>– La recherche est affaire de collectif</i>"
+              : `Publish your research and results in any format to encourage feedback, reflection and collaboration. <i>— The world needs to know.</i>`,
           text:
             this.$i18n.locale === "fr"
               ? "Diffuser les travaux de recherches est essentiel pour pérenniser leur existences et prolonger leur portée. Les canaux actuels sont multiples, les formats de publication également : aussi bien web, imprimé, que dans l’espace muséal."
-              : "à remplir",
+              : "Disseminating research is essential to sustaining its existence and extending its reach. Current channels are numerous, as are publication formats: online, printed, and in museums.",
           img: this.$root.publicPath + "home/publish.png",
         },
       ];
@@ -161,6 +161,14 @@ By documenting your work, you help create assemblages, of materials, skills, and
   h2 {
     font-weight: 700;
   }
+  h3 {
+    font-size: var(--sl-font-size-x-large);
+  }
+
+  > h3 {
+    font-size: var(--sl-font-size-xx-large);
+    text-align: center;
+  }
 
   p {
     font-size: var(--sl-font-size-large);
@@ -172,6 +180,11 @@ By documenting your work, you help create assemblages, of materials, skills, and
   > img {
     flex: 0 1 320px;
     width: 100%;
+  }
+
+  :deep(i) {
+    display: block;
+    margin-top: 0.2em;
   }
 
   &:nth-child(2n) {

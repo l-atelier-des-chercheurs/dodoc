@@ -440,9 +440,9 @@ h3 {
   // line-height: 1.2;
   font-weight: normal;
 
-  &:first-child {
-    margin-top: 0;
-  }
+  // &:first-child {
+  //   margin-top: 0;
+  // }
 }
 
 h3 {
