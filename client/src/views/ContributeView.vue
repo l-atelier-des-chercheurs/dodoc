@@ -177,6 +177,7 @@
               </button>
               <CreateNewMediastackModal
                 v-if="show_new_mediastack_modal"
+                :selected_items="selected_items"
                 @close="show_new_mediastack_modal = false"
                 @stackCreated="moveFilesToStack"
               />
