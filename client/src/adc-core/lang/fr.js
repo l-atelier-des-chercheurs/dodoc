@@ -1443,4 +1443,6 @@ export default {
   app_ended_on: "Application arrêtée le",
 
   last_page_reached: "Dernière page atteinte",
+  layout: "Mise en page",
+  starts_on_page: "Démarre sur",
 };

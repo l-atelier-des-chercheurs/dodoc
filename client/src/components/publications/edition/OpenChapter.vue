@@ -122,37 +122,42 @@
             </div>
           </div>
         </transition>
-
-        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
-          <SelectField2
-            :field_name="'section_starts_on_page'"
-            :value="chapter.section_starts_on_page || ''"
-            :path="chapter.$path"
-            size="small"
-            :hide_validation="true"
-            :can_edit="true"
-            :options="starts_on_page_options"
-          />
-        </div>
       </div>
 
-      <fieldset v-if="chapter.section_type === 'text'">
-        <legend>{{ $t("text_image_layout") }}</legend>
-        <div class="_colCount">
-          <DLabel :str="$t('column_count')" />
-          <div class="">
+      <fieldset
+        v-if="chapter.section_type === 'text' && view_mode === 'book'"
+        class="u-spacingBottom _layout"
+      >
+        <legend>{{ $t("layout") }}</legend>
+        <div class="_optionsRow">
+          <div class="_colCount">
+            <DLabel :str="$t('column_count')" />
+            <div class="">
+              <SelectField2
+                :field_name="'column_count'"
+                :value="chapter.column_count || 1"
+                :path="chapter.$path"
+                size="small"
+                :hide_validation="true"
+                :can_edit="true"
+                :options="[
+                  { key: 1, text: '1' },
+                  { key: 2, text: '2' },
+                  { key: 3, text: '3' },
+                ]"
+              />
+            </div>
+          </div>
+          <div class="_selects--starts_on_page">
+            <DLabel :str="$t('starts_on_page')" />
             <SelectField2
-              :field_name="'column_count'"
-              :value="chapter.column_count || 1"
+              :field_name="'section_starts_on_page'"
+              :value="chapter.section_starts_on_page || ''"
               :path="chapter.$path"
               size="small"
               :hide_validation="true"
               :can_edit="true"
-              :options="[
-                { key: 1, text: '1' },
-                { key: 2, text: '2' },
-                { key: 3, text: '3' },
-              ]"
+              :options="starts_on_page_options"
             />
           </div>
         </div>
@@ -747,5 +752,12 @@ export default {
 
 ._colCount {
   max-width: 20ch;
+}
+
+._optionsRow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  gap: calc(var(--spacing) * 1);
 }
 </style>
