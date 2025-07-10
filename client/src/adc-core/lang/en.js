@@ -357,7 +357,7 @@ export default {
   add_font: "Add a typeface",
   font_name: "Typeface name",
   font_instr:
-    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant.",
+    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant. To download font families, you can use <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regular (400)",
   font_bold: "Bold (700)",
   font_normal: "Normal",
@@ -1354,5 +1354,7 @@ export default {
   session_running: "Session running",
   duration: "Duration",
 
-  last: "Last",
+  last_page_reached: "Last page reached",
+  fonts_instr:
+    "Fonts are used to display texts in text blocks and publications. Fonts added are available to all users, on the entire instance.",
 };

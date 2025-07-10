@@ -1,6 +1,12 @@
 <template>
   <div>
     <template v-if="!opened_font_item_path">
+      <div class="u-instructions u-spacingBottom">
+        <p>
+          {{ $t("fonts_instr") }}
+        </p>
+      </div>
+
       <div>
         <div v-for="font in fonts" :key="font.$path" class="_fontRow">
           <h3>
@@ -28,39 +34,38 @@
         {{ $t("add") }}
       </button>
 
-      <form
-        class="input-validation-required"
+      <BaseModal2
         v-if="show_create_font"
-        @submit.prevent="createFont"
+        :title="$t('add_font')"
+        @close="show_create_font = false"
       >
-        <fieldset>
-          <legend class="u-label">{{ $t("add_font") }}</legend>
+        <TextInput
+          :content.sync="new_font_title"
+          :label_str="'font_name'"
+          :required="true"
+          :input_type="'text'"
+          :autofocus="true"
+          :maxlength="40"
+        />
 
-          <TextInput
-            :content.sync="new_font_title"
-            :label_str="'font_name'"
-            :required="true"
-            :input_type="'text'"
-          />
+        <div class="u-spacingBottom" />
 
-          <br />
-          <br />
-
+        <template #footer>
           <button
-            slot="footer"
             class="u-button u-button_bleuvert"
             :disabled="new_font_title.length === 0"
             type="submit"
+            @click="createFont"
           >
             {{ $t("create") }}
           </button>
-        </fieldset>
-      </form>
+        </template>
+      </BaseModal2>
     </template>
     <template v-else>
       <FontItem
         :font_path="opened_font_item_path"
-        @toggle="opened_font_item_path = false"
+        @close="opened_font_item_path = false"
       />
     </template>
     <!-- 
@@ -138,7 +143,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-content: center;
-  border-bottom: 2px solid var(--c-gris);
-  padding: calc(var(--spacing) / 2) 0;
+  background-color: var(--c-gris_clair);
+  padding: calc(var(--spacing) / 2);
+
+  &:not(:last-child) {
+    margin-bottom: calc(var(--spacing) / 2);
+  }
 }
 </style>

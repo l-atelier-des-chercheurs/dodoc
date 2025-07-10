@@ -451,8 +451,10 @@ export default {
   fonts: "Police de caractères",
   add_font: "Ajouter une police de caractères",
   font_name: "Nom de la police de caractères",
+  fonts_instr:
+    "Les polices de caractères sont utilisées pour l’affichage des textes dans les blocs de texte et les publications. Les polices de caractères ajoutées sont disponibles pour tous les utilisateurs, sur l’ensemble de l’instance.",
   font_instr:
-    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant.",
+    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant. Pour télécharger des familles de caractères, vous pouvez utiliser <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",

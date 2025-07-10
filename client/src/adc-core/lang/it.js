@@ -446,7 +446,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   add_font: "Aggiungi un font",
   font_name: "Nome del font",
   font_instr:
-    "Importa prima i 4 file necessari per inserire un nuovo font in formato woff2. Poi specifica per ogni elemento il file corrispondente .",
+    "Importa prima i 4 file necessari per inserire un nuovo font in formato woff2. Poi specifica per ogni elemento il file corrispondente. Per scaricare famiglie di font, puoi utilizzare <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regolare (400)",
   font_bold: "Grasseto (700)",
   font_normal: "Normale",
