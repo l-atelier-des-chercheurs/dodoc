@@ -1353,4 +1353,6 @@ export default {
   session_crashed: "Session crashed",
   session_running: "Session running",
   duration: "Duration",
+
+  last: "Last",
 };

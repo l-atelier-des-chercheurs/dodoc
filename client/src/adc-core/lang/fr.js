@@ -1439,4 +1439,6 @@ export default {
   duration: "Durée",
   app_started_on: "Application démarrée le",
   app_ended_on: "Application arrêtée le",
+
+  last_page_reached: "Dernière page atteinte",
 };

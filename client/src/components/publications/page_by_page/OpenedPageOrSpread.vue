@@ -39,6 +39,7 @@
               @update:scale="scale = $event"
               @prevPage="prevPage()"
               @nextPage="nextPage()"
+              @createPage="$emit('createPage')"
               @close="setPageActive(false)"
             />
           </div>

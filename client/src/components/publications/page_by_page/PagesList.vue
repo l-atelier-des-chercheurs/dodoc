@@ -186,6 +186,7 @@
       :can_edit="can_edit"
       @togglePage="$emit('togglePage', $event)"
       @updatePageOptions="updatePageOptions"
+      @createPage="createPage"
     />
   </transition>
 </template>
