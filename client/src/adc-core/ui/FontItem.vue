@@ -23,9 +23,7 @@
       <div>
         <br />
         <div class="u-instructions">
-          <small>
-            {{ $t("font_instr") }}
-          </small>
+          <small v-html="$t('font_instr')" />
         </div>
 
         <br />
