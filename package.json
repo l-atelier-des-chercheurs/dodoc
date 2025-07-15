@@ -68,7 +68,7 @@
     "rich-text": "^4.1.0",
     "sharedb": "^4.1.5",
     "sharedb-logger": "^0.1.4",
-    "sharp": "^0.33.5",
+    "sharp": "^0.34.3",
     "slugg": "^1.2.1",
     "socket.io": "^4.8.1",
     "unzipper": "^0.12.3",
