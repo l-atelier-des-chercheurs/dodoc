@@ -20,7 +20,7 @@
     "debug": "node . --inspect=5858 -- --debug --verbose"
   },
   "engines": {
-    "node": "20.9.0",
+    "node": "^20.9.0",
     "npm": "*"
   },
   "dependencies": {

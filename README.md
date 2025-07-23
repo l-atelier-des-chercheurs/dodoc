@@ -47,6 +47,16 @@ Download the latest release from the [release page](https://github.com/l-atelier
 
 See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developpement/426
 
+## Method 3 — the Docker way
+
+```sh
+# build the local Docker image
+docker build --file Dockerfile --tag "dodoc:latest" .
+
+# run the container
+docker run --rm -p 8080:8080 -v $PWD/documents:/root/Documents "dodoc:latest" start
+```
+
 # How the core works
 
 Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
