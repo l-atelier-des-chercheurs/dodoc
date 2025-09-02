@@ -33,7 +33,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="publication.$path"
-            :types_available="[]"
+            :types_available="['import']"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -67,7 +67,7 @@
       <ModuleCreator
         :publication_path="publication.$path"
         :start_collapsed="false"
-        :types_available="[]"
+        :types_available="['import']"
         @addModules="addModules"
       />
     </div>
