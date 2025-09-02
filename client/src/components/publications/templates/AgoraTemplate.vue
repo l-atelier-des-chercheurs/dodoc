@@ -101,9 +101,9 @@ export default {
     if (!this.sections || this.sections.length === 0) {
       await this.createSection2({
         publication: this.publication,
-        type: "section",
-        group: "sections_list",
-        title: "montage",
+        additional_meta: {
+          section_title: "agora",
+        },
       });
     }
   },
