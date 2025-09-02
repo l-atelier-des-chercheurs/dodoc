@@ -34,6 +34,7 @@
           <ModuleCreator
             :publication_path="publication.$path"
             :types_available="['import']"
+            :context="'montage'"
             @addModules="
               ({ meta_filenames }) => insertModules({ meta_filenames, index })
             "
@@ -68,6 +69,7 @@
         :publication_path="publication.$path"
         :start_collapsed="false"
         :types_available="['import']"
+        :context="'montage'"
         @addModules="addModules"
       />
     </div>
