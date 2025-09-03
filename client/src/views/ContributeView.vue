@@ -248,7 +248,7 @@
           </div>
         </transition>
 
-        <div class="_uploadFilesList" v-if="files_to_import.length > 0">
+        <!-- <div class="_uploadFilesList" v-if="files_to_import.length > 0">
           <UploadFiles
             :files_to_import="files_to_import"
             :path="author_path"
@@ -256,7 +256,7 @@
             @importedMedias="mediaJustImported($event)"
             @close="files_to_import = []"
           />
-        </div>
+        </div> -->
       </div>
     </template>
   </TwoColumnLayout>
@@ -694,20 +694,20 @@ export default {
   gap: calc(var(--spacing) * 2);
 }
 
-._uploadFilesList {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--chutier-bg);
-  z-index: 1;
+// ._uploadFilesList {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background: var(--chutier-bg);
+//   z-index: 1;
 
-  ::v-deep {
-    ._uploadFile {
-      background: black !important;
-    }
-  }
-}
+//   ::v-deep {
+//     ._uploadFile {
+//       background: black !important;
+//     }
+//   }
+// }
 
 ._importBtns {
   display: flex;
