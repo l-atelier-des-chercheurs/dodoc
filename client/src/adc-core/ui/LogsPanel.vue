@@ -6,69 +6,72 @@
 
     <div class="u-spacingBottom" />
 
-    <DLabel :str="$t('available_logs')" />
+    <!-- <DLabel :str="$t('available_logs')" /> -->
 
     <div v-if="is_loading" class="u-spacingBottom">
       <LoaderSpinner />
     </div>
 
-    <div v-else-if="logs.length === 0" class="u-spacingBottom">
-      <div class="u-instructions">
-        {{ $t("no_logs_available") }}
+    <div v-else>
+      <div class="u-instructions _refreshLogsButton">
+        <button type="button" class="u-buttonLink" @click="refreshLogs">
+          {{ $t("refresh_logs") }}
+        </button>
       </div>
-    </div>
 
-    <div v-else class="u-spacingBottom">
-      <ol class="_logsList">
-        <li
-          v-for="(logInfo, index) in parsed_logs"
-          :key="logInfo.filename"
-          class="_logItem"
-        >
-          <div class="_logInfo">
-            <div class="_logDates">
-              <div class="_datesRow">
+      <div v-if="logs.length === 0" class="u-spacingBottom">
+        <div class="u-instructions">
+          {{ $t("no_logs_available") }}
+        </div>
+      </div>
+
+      <div v-else class="u-spacingBottom">
+        <ol class="_logsList" reversed>
+          <!-- <pre>{{ parsed_logs }}</pre> -->
+          <li
+            v-for="(logInfo, index) in parsed_logs"
+            :key="logInfo.filename"
+            class="_logItem"
+          >
+            <div class="_logInfo">
+              <div class="_logDates">
+                <div class="_datesRow">
+                  <span>
+                    {{ $t("app_started_on") }}
+                    {{ formatDateToPrecise(new Date(logInfo.startDate)) }}
+                  </span>
+                  &rarr;
+                  <span v-if="logInfo.endDate">
+                    {{ formatDateToPrecise(new Date(logInfo.endDate)) }}
+                  </span>
+                  <strong v-else-if="index === 0">
+                    {{ $t("session_running") }}
+                  </strong>
+                  <span v-else class="u-warning">
+                    {{ $t("session_crashed") }}
+                  </span>
+                </div>
+              </div>
+              <div class="_logDuration" v-if="logInfo.duration">
                 <div>
-                  <span>{{ $t("app_started_on") }}</span>
-                  {{ logInfo.startDate }}
-                </div>
-                <div v-if="logInfo.endDate" class="">
-                  <span>{{ $t("app_ended_on") }}</span>
-                  {{ logInfo.endDate }}
-                </div>
-                <div v-if="index === 0" class="_logRunning">
-                  {{ $t("session_running") }}
-                </div>
-                <div v-else-if="!logInfo.endDate" class="_logCrashed">
-                  {{ $t("session_crashed") }}
+                  <span>{{ $t("duration") }}:</span>
+                  {{ logInfo.duration }}
                 </div>
               </div>
             </div>
-            <div class="_logDuration" v-if="logInfo.duration">
-              <div>
-                <span>{{ $t("duration") }}:</span>
-                {{ logInfo.duration }}
-              </div>
+            <div class="_logActions">
+              <a
+                :href="logInfo.download_url"
+                :download="logInfo.filename"
+                target="_blank"
+                class="u-buttonLink"
+              >
+                {{ $t("download") }}
+              </a>
             </div>
-          </div>
-          <div class="_logActions">
-            <a
-              :href="logInfo.download_url"
-              :download="logInfo.filename"
-              target="_blank"
-              class="u-buttonLink"
-            >
-              {{ $t("download") }}
-            </a>
-          </div>
-        </li>
-      </ol>
-    </div>
-
-    <div class="u-instructions">
-      <button type="button" class="u-buttonLink" @click="refreshLogs">
-        {{ $t("refresh_logs") }}
-      </button>
+          </li>
+        </ol>
+      </div>
     </div>
   </div>
 </template>
@@ -90,8 +93,7 @@ export default {
     parsed_logs() {
       return this.logs
         .map((filename) => this.parseLogFilename(filename))
-        .sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
-        .reverse();
+        .sort((a, b) => b.startDate - a.startDate);
     },
   },
   methods: {
@@ -136,8 +138,8 @@ export default {
       return {
         filename,
         download_url: `/journal/${filename}`,
-        startDate: startDate ? this.formatDate(startDate) : filename,
-        endDate: endDate ? this.formatDate(endDate) : null,
+        startDate: startDate ? +startDate : null,
+        endDate: endDate ? +endDate : null,
         duration,
       };
     },
@@ -195,7 +197,7 @@ export default {
 ._datesRow {
   display: flex;
   flex-flow: row wrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--spacing);
 }
 
@@ -205,5 +207,12 @@ export default {
 }
 ._logCrashed {
   color: var(--c-rouge);
+}
+._noLogs {
+  font-style: italic;
+}
+._refreshLogsButton {
+  text-align: right;
+  margin-bottom: var(--spacing);
 }
 </style>
