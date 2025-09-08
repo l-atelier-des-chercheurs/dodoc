@@ -1,3 +1,5 @@
+import { addProjections } from "ol/proj";
+
 export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
@@ -481,11 +483,11 @@ export default {
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
-  start: "début",
+  start: "Début",
   set_start: "Définir le début",
   play_extract: "Jouer l’extrait",
   stop_extract: "Arrêter l’extrait",
-  end: "fin",
+  end: "Fin",
   set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
@@ -1429,18 +1431,19 @@ export default {
   copy_to_clipboard: "Copier dans le presse-papiers",
   copied: "Copié !",
 
-  logs: "Journaux",
+  debug_logs: "Journaux de débogage",
   logs_panel_instructions:
     "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
   available_logs: "Journaux disponibles",
   no_logs_available: "Aucun journal disponible",
   refresh_logs: "Actualiser les journaux",
 
+  session_started: "Session démarrée le",
+  session_ended: "Session arrêtée le",
+  duration: "Durée",
+  actions: "Actions",
   session_crashed: "Session plantée",
   session_running: "Session en cours",
-  duration: "Durée",
-  app_started_on: "Application démarrée le",
-  app_ended_on: "Application arrêtée le",
 
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",

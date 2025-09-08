@@ -26,51 +26,51 @@
       </div>
 
       <div v-else class="u-spacingBottom">
-        <ol class="_logsList" reversed>
-          <!-- <pre>{{ parsed_logs }}</pre> -->
-          <li
-            v-for="(logInfo, index) in parsed_logs"
-            :key="logInfo.filename"
-            class="_logItem"
-          >
-            <div class="_logInfo">
-              <div class="_logDates">
-                <div class="_datesRow">
-                  <span>
-                    {{ $t("app_started_on") }}
-                    {{ formatDateToPrecise(new Date(logInfo.startDate)) }}
-                  </span>
-                  &rarr;
-                  <span v-if="logInfo.endDate">
-                    {{ formatDateToPrecise(new Date(logInfo.endDate)) }}
-                  </span>
-                  <strong v-else-if="index === 0">
-                    {{ $t("session_running") }}
-                  </strong>
-                  <span v-else class="u-warning">
-                    {{ $t("session_crashed") }}
-                  </span>
-                </div>
-              </div>
-              <div class="_logDuration" v-if="logInfo.duration">
-                <div>
-                  <span>{{ $t("duration") }}:</span>
-                  {{ logInfo.duration }}
-                </div>
-              </div>
-            </div>
-            <div class="_logActions">
-              <a
-                :href="logInfo.download_url"
-                :download="logInfo.filename"
-                target="_blank"
-                class="u-buttonLink"
-              >
-                {{ $t("download") }}
-              </a>
-            </div>
-          </li>
-        </ol>
+        <table class="_logsTable">
+          <thead>
+            <tr>
+              <th>{{ $t("start") }}</th>
+              <th>{{ $t("end") }} / {{ $t("status") }}</th>
+              <th>{{ $t("duration") }}</th>
+              <th>{{ $t("actions") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(logInfo, index) in parsed_logs" :key="logInfo.filename">
+              <td>
+                {{ formatDateToPrecise(new Date(logInfo.startDate)) }}
+              </td>
+              <td>
+                <span v-if="logInfo.endDate">
+                  {{ formatDateToPrecise(new Date(logInfo.endDate)) }}
+                </span>
+                <strong v-else-if="index === 0">
+                  {{ $t("session_running") }}
+                </strong>
+                <span v-else class="u-warning">
+                  {{ $t("session_crashed") }}
+                </span>
+              </td>
+              <td>
+                <span v-if="logInfo.duration">{{ logInfo.duration }}</span>
+                <span v-else-if="index === 0">
+                  {{ time_since_start_formatted }}
+                </span>
+                <span v-else>—</span>
+              </td>
+              <td>
+                <a
+                  :href="logInfo.download_url"
+                  :download="logInfo.filename"
+                  target="_blank"
+                  class="u-buttonLink"
+                >
+                  {{ $t("download") }}
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -94,6 +94,11 @@ export default {
       return this.logs
         .map((filename) => this.parseLogFilename(filename))
         .sort((a, b) => b.startDate - a.startDate);
+    },
+    time_since_start_formatted() {
+      return this.formatDurationToHuman(
+        (+this.$root.current_time - this.parsed_logs[0].startDate) / 1000
+      );
     },
   },
   methods: {
@@ -214,5 +219,8 @@ export default {
 ._refreshLogsButton {
   text-align: right;
   margin-bottom: var(--spacing);
+}
+._logsTable {
+  width: 100%;
 }
 </style>

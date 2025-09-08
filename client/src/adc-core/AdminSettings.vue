@@ -216,11 +216,10 @@
               v-else-if="current_tab === 'storage'"
               :can_edit="is_instance_admin && $root.app_infos.is_electron"
             />
-            <LogsPanel v-else-if="current_tab === 'logs'" />
+            <LogsPanel v-else-if="current_tab === 'debug_logs'" />
           </transition>
         </div>
         <!-- seulement modifiable dans la version appli/electron (à configurer côté code source par le dev dans la version server) -->
-
         <!-- <button type="button" class="u-button" @click="restartDodoc">
         {{ $t("restart") }}
       </button> -->
@@ -291,8 +290,8 @@ export default {
           key: "storage",
         },
         {
-          text: this.$t("logs"),
-          key: "logs",
+          text: this.$t("debug_logs"),
+          key: "debug_logs",
         },
       ],
     };

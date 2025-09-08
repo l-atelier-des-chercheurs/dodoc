@@ -669,7 +669,7 @@ export default {
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
-  start: "start",
+  start: "Start",
   set_start: "Set start",
   play_extract: "Play extract",
   stop_extract: "Stop extract",
@@ -1342,14 +1342,16 @@ export default {
   column_count: "Column count",
   restore_publications: "Restore deleted publications",
 
-  logs: "Logs",
+  debug_logs: "Debug logs",
   logs_panel_instructions:
     "This panel shows the available log files from the server. These files contain information about the activity of the application, from its launch to its shutdown (and, in some cases, the reasons for the crash when it happens).",
   available_logs: "Available logs",
   no_logs_available: "No logs available",
   refresh_logs: "Refresh logs",
+
   session_started: "Session started",
   session_ended: "Session ended",
+  actions: "Actions",
   session_crashed: "Session crashed",
   session_running: "Session running",
   duration: "Duration",
