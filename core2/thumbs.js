@@ -776,6 +776,7 @@ module.exports = (function () {
     const image =
       $('meta[property="og:image"]').attr("content") ||
       $('meta[property="og:image:url"]').attr("content") ||
+      $('meta[property="image"]').attr("content") ||
       $('meta[name="og:image"]').attr("content") ||
       $('link[rel="shortcut icon"]').attr("href") ||
       $('link[rel="icon"]').attr("href");

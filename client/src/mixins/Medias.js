@@ -122,7 +122,10 @@ export default {
         return strings.some((s) => url.includes(s));
       }
 
-      if (urlContains(cleaned_up_url, ["peertube.fr"]))
+      if (
+        urlContains(cleaned_up_url, ["peertube."]) &&
+        urlContains(cleaned_up_url, ["/w/"])
+      )
         return {
           type: "peertube",
           src: this.getPeertubeEmbedFromUrl(cleaned_up_url, autoplay),
