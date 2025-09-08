@@ -387,7 +387,7 @@ export default {
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
-    "Rafraîchir la fenêtre pour voir les modifications",
+    "Recharger la fenêtre pour voir les modifications",
   reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -1439,7 +1439,7 @@ export default {
     "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
   available_logs: "Journaux disponibles",
   no_logs_available: "Aucun journal disponible",
-  refresh_logs: "Actualiser les journaux",
+  refresh_logs: "Recharger les journaux",
 
   session_started: "Session démarrée le",
   session_ended: "Session arrêtée le",

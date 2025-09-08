@@ -210,6 +210,10 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
+              <div class="u-spacingBottom" />
+              <button type="button" class="u-buttonLink" @click="reloadPage">
+                {{ $t("refresh_window_to_see_changes") }}
+              </button>
             </div>
             <TermsPanel
               v-else-if="current_tab === 'terms'"
