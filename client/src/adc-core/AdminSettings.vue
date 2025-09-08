@@ -199,6 +199,18 @@
                 :can_edit="is_instance_admin"
               />
             </div>
+            <div v-else-if="current_tab === 'chats'">
+              <div class="u-instructions u-spacingBottom">
+                {{ $t("enable_chats_instructions") }}
+              </div>
+              <ToggleField
+                :label="$t('enable_chats')"
+                :field_name="'enable_chats'"
+                :content="settings.enable_chats === true"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+            </div>
             <TermsPanel
               v-else-if="current_tab === 'terms'"
               :settings="settings"
@@ -272,6 +284,10 @@ export default {
         {
           text: this.$t("fonts"),
           key: "fonts",
+        },
+        {
+          text: this.$t("chats") + " (experimental)",
+          key: "chats",
         },
         {
           text: this.$t("events"),

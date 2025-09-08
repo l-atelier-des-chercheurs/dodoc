@@ -1362,6 +1362,9 @@ export default {
   remove_column: "Supprimer la dernière colonne",
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
+  enable_chats: "Activer la fonctionnalité de discussion",
+  enable_chats_instructions:
+    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
   list_of_topics: "Liste des sujets",
   create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:

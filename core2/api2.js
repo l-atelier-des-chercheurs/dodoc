@@ -604,6 +604,7 @@ module.exports = (function () {
       confidentiality_in_footer,
       require_mail_to_signup,
       enable_events,
+      enable_chats,
       enable_indexing,
       $admins,
       $contributors,
@@ -632,6 +633,7 @@ module.exports = (function () {
     d.terms_in_footer = terms_in_footer === true;
     d.confidentiality_in_footer = confidentiality_in_footer === true;
     d.enable_events = enable_events === true;
+    d.enable_chats = enable_chats === true;
     d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
