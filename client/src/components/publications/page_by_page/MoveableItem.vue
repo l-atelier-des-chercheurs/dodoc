@@ -226,6 +226,13 @@ export default {
         }
       }
     },
+    "first_media.$content": {
+      handler() {
+        if (this.first_media?.$type === "text") {
+          this.detectOverflowText();
+        }
+      },
+    },
   },
   computed: {
     first_media() {
