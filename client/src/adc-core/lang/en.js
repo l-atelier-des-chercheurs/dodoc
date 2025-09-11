@@ -966,7 +966,7 @@ export default {
   action_not_allowed: "This action is not allowed",
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
-  informations: "informations",
+  informations: "Informations",
   metadatas: "Metadatas",
 
   duplicate: "Duplicate",
