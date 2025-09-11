@@ -2040,12 +2040,14 @@ module.exports = (function () {
     res.json({ logs });
   }
   async function _getStoragePath(req, res, next) {
-    res.json({ pathToUserContent: global.pathToUserContent });
+    const pathToUserContent = await settings.getStoragePath();
+    dev.logfunction({ pathToUserContent });
+    res.json({ pathToUserContent });
   }
   async function _setStoragePath(req, res, next) {
     const { data } = utils.makePathFromReq(req);
     const new_path = data.new_path;
-    settings.updatePath({ new_path });
+    await settings.updateStoragePath({ new_path });
     res.status(200).json({ status: "ok" });
   }
 
