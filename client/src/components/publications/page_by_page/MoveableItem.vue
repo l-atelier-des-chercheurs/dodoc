@@ -657,6 +657,10 @@ export default {
       border-style: solid;
     }
 
+    ._captionField {
+      pointer-events: none;
+    }
+
     ._mediaContent--iframe--content {
       resize: none;
     }
