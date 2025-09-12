@@ -220,6 +220,13 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
+
+        if (
+          ["pdf", "embed", "url", "audio", "video"].includes(
+            this.first_media.$type
+          )
+        )
+          this.setNewComponentKey();
       } else {
         if (this.first_media.$type !== "text") {
           this.$emit("update:module_being_edited", this.publimodule.$path);
