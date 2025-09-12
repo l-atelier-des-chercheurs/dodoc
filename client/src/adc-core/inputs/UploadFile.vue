@@ -1,6 +1,6 @@
 <template>
   <div
-    class="_uploadFile"
+    class="u-card2 _uploadFile"
     :class="
       (['is--' + status],
       {
@@ -126,7 +126,15 @@
         <button
           type="button"
           class="u-button u-button_icon"
-          v-else-if="status === 'sent' || status === 'creating_thumb'"
+          v-else-if="status === 'creating_thumb'"
+          @click="$emit('hide')"
+        >
+          <LoaderSpinner />
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_icon"
+          v-else-if="status === 'sent'"
           @click="$emit('hide')"
         >
           <b-icon
@@ -254,7 +262,9 @@ export default {
   position: relative;
 
   color: var(--c-noir);
+
   // border: 2px solid var(--c-gris_clair);
+  background: white;
 
   // border-radius: 4px;
   overflow: hidden;

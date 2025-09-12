@@ -6,6 +6,14 @@
       size="large"
       @close="$emit('close')"
     >
+      <DLabel
+        :str="
+          $tc('files_being_sent', files_to_upload.length, {
+            count: files_to_upload.length,
+          })
+        "
+      />
+
       <transition-group class="_uploadFiles" name="listComplete" appear>
         <UploadFile
           v-for="(file, index) in files_to_upload"
@@ -106,5 +114,6 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>

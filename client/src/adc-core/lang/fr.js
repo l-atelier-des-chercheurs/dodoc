@@ -1451,4 +1451,7 @@ export default {
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",
   starts_on_page: "Démarre sur",
+
+  files_being_sent:
+    "{count} média en cours d’importation | {count} médias en cours d’importation ",
 };
