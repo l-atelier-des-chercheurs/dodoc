@@ -53,7 +53,11 @@
             <DLabel :str="$t('filename')" />
             <div class="u-filename">{{ file.name }}</div>
           </div>
-          <SizeDisplay v-if="file.size" :size="file.size" />
+          <SizeDisplay
+            class="_sizeDisplay"
+            v-if="file.size"
+            :size="file.size"
+          />
         </div>
 
         <template v-if="sent_file">
@@ -122,7 +126,7 @@
         <button
           type="button"
           class="u-button u-button_icon"
-          v-else-if="status === 'sent'"
+          v-else-if="status === 'sent' || status === 'creating_thumb'"
           @click="$emit('hide')"
         >
           <b-icon
@@ -276,6 +280,7 @@ export default {
     flex: 1 1 auto;
     position: relative;
     z-index: 1;
+    overflow: hidden;
   }
 }
 
@@ -283,10 +288,10 @@ export default {
   position: relative;
   width: 100%;
   height: 1.5rem;
-  margin-bottom: 2px;
+  // margin-bottom: 2px;
 
   background: white;
-  // border-radius: 4px;
+  border-radius: 6px 6px 0 0;
   overflow: hidden;
 
   ._uploadFile--progressBar--bar {
@@ -333,7 +338,7 @@ export default {
   place-content: center;
   place-items: center;
   flex: 0 0 auto;
-  width: 200px;
+  width: 140px;
   max-width: 40vw;
   aspect-ratio: 1/1;
   overflow: hidden;
@@ -378,7 +383,7 @@ export default {
 
 ._infos--row {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: stretch;
   align-items: flex-start;
   gap: calc(var(--spacing) / 2);
@@ -386,6 +391,11 @@ export default {
   > * {
     flex: 1 0 20ch;
     margin-bottom: 0;
+    overflow: hidden;
+
+    &._sizeDisplay {
+      // flex: 0 0 20ch;
+    }
   }
 }
 ._captionEditor {
