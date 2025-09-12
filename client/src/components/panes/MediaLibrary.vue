@@ -281,8 +281,21 @@
             v-for="{ label, files } in grouped_medias"
             :key="label"
           >
-            <div class="_mediaLibrary--lib--label">
-              <strong>{{ label }}</strong>
+            <div
+              class="_mediaLibrary--lib--label"
+              :class="{
+                'is--clickable': select_mode !== 'single' && batch_mode,
+              }"
+            >
+              <input
+                v-if="batch_mode"
+                type="checkbox"
+                class="_groupSelectCheckbox"
+                :id="'select_btn_' + label"
+                :checked="groupAllSelected(files)"
+                @click="handleGroupLabelClick(files)"
+              />
+              <label :for="'select_btn_' + label">{{ label }}</label>
               <!-- <div class="u-nut" data-isfilled>
                 {{ files.length }}
               </div> -->
@@ -918,6 +931,29 @@ export default {
         this.filtered_medias[this.focused_media_index + 1].$path
       );
     },
+    handleGroupLabelClick(files) {
+      if (this.select_mode === "single") return;
+
+      const filePaths = files.map((f) => f.$path);
+      const allSelected = filePaths.every((p) =>
+        this.selected_medias_paths.includes(p)
+      );
+
+      if (allSelected) {
+        this.selected_medias_paths = this.selected_medias_paths.filter(
+          (p) => !filePaths.includes(p)
+        );
+      } else {
+        const newSet = new Set(this.selected_medias_paths.concat(filePaths));
+        this.selected_medias_paths = Array.from(newSet);
+      }
+
+      this.batch_mode = true;
+    },
+    groupAllSelected(files) {
+      const filePaths = files.map((f) => f.$path);
+      return filePaths.every((p) => this.selected_medias_paths.includes(p));
+    },
   },
 };
 </script>
@@ -940,22 +976,36 @@ export default {
 }
 
 ._mediaLibrary--lib--label {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   position: sticky;
   top: 0;
   z-index: 10;
   background: var(--c-orange);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 
-  strong {
-    text-transform: capitalize;
-    // padding: 0 calc(var(--spacing) / 2);
-  }
+  text-transform: capitalize;
+  font-weight: bold;
+  // padding: 0 calc(var(--spacing) / 2);
 
   ::v-deep {
     .u-nut {
       background: var(--c-noir);
     }
   }
+
+  &.is--clickable {
+    // padding: var(--spacing);
+
+    label {
+      cursor: pointer;
+    }
+  }
+}
+
+._groupSelectCheckbox {
+  margin: 0;
 }
 
 ._mediaLibrary--lib--grid {
