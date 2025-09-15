@@ -280,7 +280,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationsList {
-  --item-width: 140px;
+  --item-width: 180px;
   --item-gap: calc(var(--spacing) * 2);
 
   width: 100%;
