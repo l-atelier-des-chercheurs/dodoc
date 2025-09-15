@@ -222,6 +222,7 @@ export default {
         this.contentIsNotEdited();
 
         if (
+          this.first_media?.$type &&
           ["pdf", "embed", "url", "audio", "video"].includes(
             this.first_media.$type
           )
