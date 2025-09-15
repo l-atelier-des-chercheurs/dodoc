@@ -1285,7 +1285,7 @@ export default {
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Non connecté",
+  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1454,4 +1454,5 @@ export default {
 
   files_being_sent:
     "{count} média en cours d’importation | {count} médias en cours d’importation ",
+  opened_page: "Page consultée",
 };

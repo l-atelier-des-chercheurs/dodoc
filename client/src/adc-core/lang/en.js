@@ -1219,7 +1219,7 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "Not logged in",
+  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1365,4 +1365,5 @@ export default {
 
   files_being_sent:
     "{count} media being imported | {count} medias being imported",
+  opened_page: "Opened page",
 };
