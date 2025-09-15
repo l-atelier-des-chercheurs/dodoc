@@ -76,6 +76,7 @@
       />
     </transition>
   </component>
+  <span v-else class="" />
 </template>
 <script>
 export default {
