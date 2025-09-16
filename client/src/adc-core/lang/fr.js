@@ -1456,4 +1456,7 @@ export default {
     "{count} média en cours d’importation | {count} médias en cours d’importation ",
   opened_page: "Page consultée",
   launched: "Lancement",
+
+  import_image_from_url_failed:
+    "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
 };
