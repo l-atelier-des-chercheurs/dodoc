@@ -1,0 +1,5 @@
+"$date_modified" = 2025-06-17T07:34:49.921Z
+"$date_uploaded" = 2025-06-17T07:34:35.562Z
+"$media_filename" = "text-1750145520842-1.txt"
+"$status" = "private"
+"$type" = "text"

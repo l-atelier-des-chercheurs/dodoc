@@ -1,0 +1,12 @@
+title = "Présentation de do•doc"
+downloadable_files = [ "presentation-de-latelier-des-chercheurs.pdf.meta.txt" ]
+"$status" = "draft"
+"$admins" = [ "authors/admin" ]
+"$contributors" = [ ]
+"$date_modified" = 2025-09-16T13:59:57.215Z
+"$date_created" = 2025-09-15T10:09:51.365Z
+"$files_count" = 51
+"$date_last_file" = 2025-09-16T13:59:57.214Z
+publications_pinned = [ "presentation-de-latelier-des-chercheurs-copy" ]
+authors_list = "<p>Pauline Gourlet, Sarah Garcin, Louis Eveillard</p>"
+license = "creativecommons_by_sa"

@@ -1,0 +1,17 @@
+module_type = "mosaic"
+page_id = "706jfd"
+x = 857
+y = 1
+width = 425
+height = 347
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-03-13T09:30:00.948Z
+"$date_uploaded" = 2025-03-13T09:29:22.303Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "ftw-cairn-photo03.jpg.meta.txt"
+objectFit = "cover"

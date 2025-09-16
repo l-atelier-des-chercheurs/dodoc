@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "first_page"
+x = 0
+y = 0
+width = 483
+height = 720
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-08-19T05:58:54.638Z
+"$date_uploaded" = 2025-03-13T09:05:59.981Z
+"$status" = "private"
+z_index = 2
+
+[[source_medias]]
+meta_filename_in_project = "1060630-1201x1800-q60.jpg.meta.txt"
+objectFit = "contain"

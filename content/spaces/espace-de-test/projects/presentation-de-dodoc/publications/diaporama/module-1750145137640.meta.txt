@@ -1,0 +1,17 @@
+module_type = "text"
+page_id = "us5vmu"
+x = 533
+y = 146
+width = 605
+height = 200
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 1
+"$date_modified" = 2025-08-19T06:00:17.899Z
+"$date_uploaded" = 2025-06-17T07:25:37.640Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename = "text-1750145137503.txt.meta.txt"

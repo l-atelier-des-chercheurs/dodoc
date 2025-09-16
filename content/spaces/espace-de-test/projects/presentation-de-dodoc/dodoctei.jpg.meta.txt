@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2016-02-22T17:31:24.000Z
+"$date_modified" = 2025-09-15T10:13:31.717Z
+"$date_uploaded" = 2025-03-13T08:43:42.978Z
+"$media_filename" = "dodoctei.jpg"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

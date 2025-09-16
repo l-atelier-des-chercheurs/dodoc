@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "first_page"
+x = 544
+y = 57
+width = 675
+height = 600
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 3
+"$date_modified" = 2025-08-19T05:59:02.579Z
+"$date_uploaded" = 2025-03-13T09:07:17.532Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "dodoc-meuble-fablab-2.mov.meta.txt"
+objectFit = "contain"
