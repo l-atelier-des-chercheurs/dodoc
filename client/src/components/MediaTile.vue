@@ -34,11 +34,13 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
-    <div
-      v-if="tile_mode === 'table'"
-      class="u-filename _filename"
-      v-text="file.$media_filename"
-    />
+    <div v-if="tile_mode === 'table'" class="u-filename _filename">
+      <span v-text="file.$media_filename" />
+      <span
+        v-if="file.$infos?.size"
+        v-text="' (' + formatBytes(file.$infos.size) + ')'"
+      />
+    </div>
 
     <!-- top right  -->
     <FavSwitch
