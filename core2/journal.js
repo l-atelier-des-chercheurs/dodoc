@@ -192,6 +192,37 @@ module.exports = (function () {
     }
   }
 
+  function _parseLogFilename(filename) {
+    const nameWithoutExt = filename.replace(".jsonl", "");
+    const parts = nameWithoutExt.split("_until_");
+
+    let startTimestamp;
+    let endTimestamp;
+
+    if (parts.length >= 1) {
+      const startParts = parts[0].split("_");
+      if (startParts.length >= 2) {
+        const datePart = startParts[0];
+        const timePart = startParts[1].replace(/-/g, ":");
+        startTimestamp = `${datePart}T${timePart}`;
+      }
+
+      if (parts.length >= 2) {
+        const endParts = parts[1].split("_");
+        if (endParts.length >= 2) {
+          const endDatePart = endParts[0];
+          const endTimePart = endParts[1].replace(/-/g, ":");
+          endTimestamp = `${endDatePart}T${endTimePart}`;
+        }
+      }
+    }
+
+    const startDate = startTimestamp ? +new Date(startTimestamp) : null;
+    const endDate = endTimestamp ? +new Date(endTimestamp) : null;
+
+    return { startDate, endDate };
+  }
+
   function _log({ message, from, event, details }) {
     // from: main2, server, api2, etc. (filename)
     // event: create_folder, upload_file, etc. (action)
@@ -242,15 +273,54 @@ module.exports = (function () {
     }
   }
 
-  function _getLogs() {
+  async function _getLogs() {
     // return list of all available logs
+    if (!logDirPath || !fs.existsSync(logDirPath)) return [];
+
+    let files = [];
+    try {
+      files = await fs.readdir(logDirPath);
+    } catch (error) {
+      return [];
+    }
+
+    const jsonlFiles = files.filter(
+      (filename) => path.extname(filename) === ".jsonl"
+    );
+
+    const results = await Promise.allSettled(
+      jsonlFiles.map(async (filename) => {
+        const filePath = path.join(logDirPath, filename);
+        const { startDate, endDate } = _parseLogFilename(filename);
+        const duration =
+          startDate && endDate
+            ? Math.max(0, Math.floor((endDate - startDate) / 1000))
+            : null;
+
+        let filesize = 0;
+        try {
+          const stats = await fs.stat(filePath);
+          filesize = stats.size;
+        } catch (e) {}
+
+        return {
+          filename,
+          filesize,
+          startDate,
+          endDate,
+          duration,
+          download_url: `/journal/${filename}`,
+        };
+      })
+    );
+
     const logs = [];
-    const files = fs.readdirSync(logDirPath);
-    files.forEach((file) => {
-      if (path.extname(file) === ".jsonl") {
-        logs.push(file);
+    results.forEach((result) => {
+      if (result.status === "fulfilled" && result.value) {
+        logs.push(result.value);
       }
     });
+
     return logs;
   }
 

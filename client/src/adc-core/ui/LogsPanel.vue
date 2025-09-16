@@ -52,7 +52,9 @@
                 </span>
               </td>
               <td>
-                <span v-if="logInfo.duration">{{ logInfo.duration }}</span>
+                <span v-if="logInfo.duration">{{
+                  formatDurationToHuman(logInfo.duration)
+                }}</span>
                 <span v-else-if="index === 0">
                   {{ time_since_start_formatted }}
                 </span>
@@ -91,9 +93,7 @@ export default {
   },
   computed: {
     parsed_logs() {
-      return this.logs
-        .map((filename) => this.parseLogFilename(filename))
-        .sort((a, b) => b.startDate - a.startDate);
+      return this.logs.sort((a, b) => b.startDate - a.startDate);
     },
     time_since_start_formatted() {
       return this.formatDurationToHuman(
@@ -102,52 +102,6 @@ export default {
     },
   },
   methods: {
-    parseLogFilename(filename) {
-      // Remove .jsonl extension
-      const nameWithoutExt = filename.replace(".jsonl", "");
-
-      // Check if it has end timestamp (clean shutdown)
-      const parts = nameWithoutExt.split("_until_");
-
-      let startTimestamp, endTimestamp;
-
-      if (parts.length >= 1) {
-        // Parse start timestamp: "2025-07-08_17-49-21"
-        const startParts = parts[0].split("_");
-        if (startParts.length >= 2) {
-          const datePart = startParts[0]; // "2025-07-08"
-          const timePart = startParts[1].replace(/-/g, ":"); // "17-49-21" -> "17:49:21"
-          startTimestamp = `${datePart}T${timePart}`;
-        }
-
-        // Parse end timestamp if present: "2025-07-08_17-50-21"
-        if (parts.length >= 2) {
-          const endParts = parts[1].split("_");
-          if (endParts.length >= 2) {
-            const endDatePart = endParts[0]; // "2025-07-08"
-            const endTimePart = endParts[1].replace(/-/g, ":"); // "17-50-21" -> "17:50:21"
-            endTimestamp = `${endDatePart}T${endTimePart}`;
-          }
-        }
-      }
-
-      const startDate = startTimestamp ? new Date(startTimestamp) : null;
-      const endDate = endTimestamp ? new Date(endTimestamp) : null;
-
-      let duration = null;
-      if (startDate && endDate) {
-        const diffMs = endDate - startDate;
-        duration = this.formatDurationToHuman(diffMs / 1000);
-      }
-
-      return {
-        filename,
-        download_url: `/journal/${filename}`,
-        startDate: startDate ? +startDate : null,
-        endDate: endDate ? +endDate : null,
-        duration,
-      };
-    },
     formatDate(date) {
       return date.toLocaleString(this.$i18n.locale, {
         year: "numeric",
