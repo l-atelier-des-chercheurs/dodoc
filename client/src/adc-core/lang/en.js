@@ -1366,4 +1366,5 @@ export default {
   files_being_sent:
     "{count} media being imported | {count} medias being imported",
   opened_page: "Opened page",
+  launched: "Launched on",
 };

@@ -29,7 +29,7 @@
         <table class="_logsTable">
           <thead>
             <tr>
-              <th>{{ $t("start") }}</th>
+              <th>{{ $t("launched") }}</th>
               <th>{{ $t("end") }} / {{ $t("status") }}</th>
               <th>{{ $t("duration") }}</th>
               <th>{{ $t("actions") }}</th>

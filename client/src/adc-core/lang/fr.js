@@ -1455,4 +1455,5 @@ export default {
   files_being_sent:
     "{count} média en cours d’importation | {count} médias en cours d’importation ",
   opened_page: "Page consultée",
+  launched: "Lancement",
 };
