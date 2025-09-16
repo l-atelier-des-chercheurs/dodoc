@@ -115,16 +115,16 @@ export default {
         this.projectpanes.length === 0 ||
         !this.projectpanes.some((p) => p.type === "publish")
       ) {
-        this.projectpanes = [
+        const _pp = [
           {
             type: "publish",
             size: 100,
           },
         ];
+        this.$emit("update:projectpanes", _pp);
       } else {
-        this.projectpanes = this.projectpanes.filter(
-          (p) => p.type === "publish"
-        );
+        const _pp = this.projectpanes.filter((p) => p.type === "publish");
+        this.$emit("update:projectpanes", _pp);
       }
     }
   },
