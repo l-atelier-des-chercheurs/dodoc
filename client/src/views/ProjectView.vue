@@ -77,14 +77,6 @@ export default {
     await this.listProject();
     await this.getSpace();
 
-    if (!this.can_edit_project)
-      this.projectpanes = [
-        {
-          type: "publish",
-          size: 100,
-        },
-      ];
-
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
     this.$api.join({ room: this.project.$path });

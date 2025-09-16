@@ -108,7 +108,26 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    if (!this.can_contribute_to_project) {
+      // if no project panes, set to publish
+      if (
+        this.projectpanes.length === 0 ||
+        !this.projectpanes.some((p) => p.type === "publish")
+      ) {
+        this.projectpanes = [
+          {
+            type: "publish",
+            size: 100,
+          },
+        ];
+      } else {
+        this.projectpanes = this.projectpanes.filter(
+          (p) => p.type === "publish"
+        );
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
