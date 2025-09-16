@@ -67,7 +67,9 @@
                   target="_blank"
                   class="u-buttonLink"
                 >
-                  {{ $t("download") }}
+                  {{
+                    $t("download") + " (" + formatBytes(logInfo.filesize) + ")"
+                  }}
                 </a>
               </td>
             </tr>
