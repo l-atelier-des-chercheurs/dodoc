@@ -1367,4 +1367,6 @@ export default {
     "{count} media being imported | {count} medias being imported",
   opened_page: "Opened page",
   launched: "Launched on",
+
+  interrupt: "Interrupt",
 };

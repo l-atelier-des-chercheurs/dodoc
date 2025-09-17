@@ -31,12 +31,19 @@
 
       <template #footer>
         <div />
-        <button type="button" class="u-button" @click="$emit('close')">
+        <button
+          type="button"
+          class="u-button"
+          @click="$emit('close')"
+          :class="{
+            'u-button_red': confirm_before_closing,
+          }"
+        >
           <!-- <template v-if="files_to_upload.length > 0">
             {{ $t("cancel") }}
           </template>
           <template v-else> -->
-          {{ $t("close") }}
+          {{ confirm_before_closing ? $t("interrupt") : $t("close") }}
           <!-- </template> -->
         </button>
       </template>
@@ -60,6 +67,7 @@ export default {
       files_to_upload: this.files_to_import || [],
       upload_percentages: 0,
       list_of_added_metas: [],
+      list_of_added_files: [],
     };
   },
   watch: {
@@ -76,14 +84,16 @@ export default {
   mounted() {
     setTimeout(() => {
       this.uploadAllFiles();
-    }, 1000);
+    }, 500);
   },
   beforeDestroy() {
     this.$emit("importedMedias", this.list_of_added_metas);
   },
   computed: {
     confirm_before_closing() {
-      return this.files_to_upload.some((file) => file.status === "sending");
+      return this.files_to_upload.some(
+        (file) => !this.list_of_added_files.includes(file.name)
+      );
     },
   },
   methods: {
@@ -97,8 +107,9 @@ export default {
         }
       }
     },
-    fileUploaded(meta_filename) {
+    fileUploaded({ filename, meta_filename }) {
       if (meta_filename) this.list_of_added_metas.push(meta_filename);
+      if (filename) this.list_of_added_files.push(filename);
     },
     abortFile(index) {
       this.files_to_upload.splice(index, 1);

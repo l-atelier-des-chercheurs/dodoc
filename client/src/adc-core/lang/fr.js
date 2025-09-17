@@ -1459,4 +1459,6 @@ export default {
 
   import_image_from_url_failed:
     "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
+
+  interrupt: "Interrompre",
 };

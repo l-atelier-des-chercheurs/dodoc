@@ -248,7 +248,7 @@ export default {
         );
       }, 500);
 
-      this.$emit("uploaded", meta_filename);
+      this.$emit("uploaded", { filename: this.file.name, meta_filename });
     },
     cancelSend() {},
     retrySend() {
