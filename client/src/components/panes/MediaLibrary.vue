@@ -12,7 +12,7 @@
             :files_to_import="files_to_import"
             :path="project.$path"
             :allow_caption_edition="true"
-            @importedMedias="mediaJustImported($event)"
+            @importedMedias="mediasJustImported($event)"
             @close="files_to_import = []"
           />
         </div>
@@ -315,6 +315,11 @@
                 :index="file._index"
                 :file="file"
                 :was_focused="media_just_focused === getFilename(file.$path)"
+                :was_imported="
+                  recently_imported_meta_filenames.includes(
+                    getFilename(file.$path)
+                  )
+                "
                 :is_selectable="mediaTileIsSelectable(file.$path)"
                 :is_selected="selected_medias_paths.includes(file.$path)"
                 :data-filepath="file.$path"
@@ -473,6 +478,8 @@ export default {
       files_to_import: [],
 
       media_just_focused: undefined,
+
+      recently_imported_meta_filenames: [],
 
       hide_dropzone_timeout: undefined,
 
@@ -863,20 +870,18 @@ export default {
         this.$eventHub.$emit("media.enableEditor." + path);
       }, 500);
     },
-    mediaJustImported(list_of_added_metas) {
-      if (!this.select_mode || this.select_mode === "single") return false;
-
-      const new_medias_path = list_of_added_metas.map(
-        (meta_filename) => this.project.$path + "/" + meta_filename
-      );
-
+    mediasJustImported(list_of_added_metas) {
       if (this.select_mode === "multiple") {
+        const new_medias_path = list_of_added_metas.map(
+          (meta_filename) => this.project.$path + "/" + meta_filename
+        );
         this.selected_medias_paths =
           this.selected_medias_paths.concat(new_medias_path);
         this.batch_mode = true;
       }
 
-      // todo add focus ring to indicate medias just sent
+      this.recently_imported_meta_filenames = list_of_added_metas.slice();
+
       // this.$alertify
       //   .closeLogOnClick(true)
       //   .delay(4000)

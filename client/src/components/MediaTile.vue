@@ -3,6 +3,7 @@
     class="_mediaTile"
     :class="{
       'was--focused': was_focused,
+      'was--imported': was_imported,
       'is--dragged': is_dragged,
       'is--selected': is_selected,
       'is--own': is_own_media,
@@ -104,6 +105,7 @@ export default {
     index: Number,
     project_path: String,
     was_focused: Boolean,
+    was_imported: Boolean,
     is_selectable: Boolean,
     is_selected: Boolean,
     is_already_selected: [Boolean, Object],
@@ -199,9 +201,20 @@ export default {
     }
   }
 
-  &.was--focused {
+  &.was--focused,
+  &.was--imported {
     border: 2px solid var(--c-noir);
-    padding: 2px;
+    margin: 4px;
+    padding: 4px;
+    // background-color: var(--c-noir);
+  }
+  &.was--imported {
+    border-color: var(--c-noir);
+    // border-color: rgba(255, 255, 255, 0.4);
+    animation: fadeImport 0.6s ease-in-out 3 alternate;
+  }
+  &.was--focused {
+    border-color: var(--c-bleuvert);
   }
   &.is--dragged {
     opacity: 0.9;
@@ -324,6 +337,15 @@ export default {
     }
   }
 }
+
+// @keyframes fadeImport {
+//   from {
+//     transform: scale(1.02);
+//   }
+//   to {
+//     transform: scale(1);
+//   }
+// }
 
 ._focusMediaBtn {
   appearance: none;
