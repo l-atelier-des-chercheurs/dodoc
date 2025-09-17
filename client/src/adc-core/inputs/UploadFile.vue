@@ -107,50 +107,51 @@
         </template>
       </div>
       <div class="_uploadFile--action">
-        <button
+        <transition name="fade" mode="out-in">
+          <!-- <button
           type="button"
           class="u-button u-button_icon u-button_bleuvert"
           v-if="status === 'waiting'"
           @click="uploadFile"
         >
           <b-icon icon="play-fill" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="['waiting', 'sending'].includes(status)"
-          @click="$emit('skip')"
-        >
-          <b-icon icon="x-lg" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="status === 'creating_thumb'"
-          @click="$emit('hide')"
-        >
-          <LoaderSpinner />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="status === 'sent'"
-          @click="$emit('hide')"
-        >
-          <b-icon
-            icon="check-circle-fill
-          "
-            :aria-label="$t('hide')"
+        </button> -->
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="skip"
+            v-if="status === 'waiting'"
+            @click="$emit('skip')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
+          <LoaderSpinner
+            v-else-if="['creating_thumb', 'sending'].includes(status)"
+            key="loading"
           />
-        </button>
-        <button
-          type="button"
-          v-else
-          class="u-button u-button_bleuvert"
-          @click="retrySend"
-        >
-          {{ $t("retry") }}
-        </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="hide"
+            v-else-if="status === 'sent'"
+            @click="$emit('hide')"
+          >
+            <b-icon
+              icon="check-circle-fill
+          "
+              :aria-label="$t('hide')"
+            />
+          </button>
+          <button
+            type="button"
+            v-else
+            key="retry"
+            class="u-button u-button_bleuvert"
+            @click="retrySend"
+          >
+            {{ $t("retry") }}
+          </button>
+        </transition>
       </div>
     </div>
   </div>

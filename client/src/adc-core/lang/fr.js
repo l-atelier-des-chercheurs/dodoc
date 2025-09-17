@@ -1453,7 +1453,7 @@ export default {
   starts_on_page: "Démarre sur",
 
   files_being_sent:
-    "{count} média en cours d’importation | {count} médias en cours d’importation ",
+    "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",
   opened_page: "Page consultée",
   launched: "Lancement",
 

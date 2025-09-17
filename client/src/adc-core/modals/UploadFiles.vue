@@ -8,8 +8,8 @@
     >
       <DLabel
         :str="
-          $tc('files_being_sent', files_to_upload.length, {
-            count: files_to_upload.length,
+          $tc('files_being_sent', number_of_files_not_yet_sent, {
+            count: number_of_files_not_yet_sent,
           })
         "
       />
@@ -91,9 +91,12 @@ export default {
   },
   computed: {
     confirm_before_closing() {
-      return this.files_to_upload.some(
+      return this.number_of_files_not_yet_sent > 0;
+    },
+    number_of_files_not_yet_sent() {
+      return this.files_to_upload.filter(
         (file) => !this.list_of_added_files.includes(file.name)
-      );
+      ).length;
     },
   },
   methods: {

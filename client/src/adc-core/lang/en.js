@@ -1364,7 +1364,7 @@ export default {
     "Fonts are used to display texts in text blocks and publications. Fonts added are available to all users, on the entire instance.",
 
   files_being_sent:
-    "{count} media being imported | {count} medias being imported",
+    "All medias have been imported | {count} media being imported | {count} medias being imported",
   opened_page: "Opened page",
   launched: "Launched on",
 
