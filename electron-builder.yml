@@ -55,12 +55,11 @@ linux:
   artifactName: dodoc-${version}-linux.${ext}
   target: AppImage
   category: Education
-  icon: build/icons/512x512.png
-  executableName: do•doc
+  icon: build/icons
+  executableName: dodoc
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
 
 appImage:
   synopsis: A documentation tool for creativity.
-  category: Game
-  desktop: dodoc-linux-desktop-entry.desktop
+  category: Education
