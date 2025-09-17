@@ -103,6 +103,7 @@
 
         <button
           type="button"
+          v-if="$root.app_infos.instance_meta.enable_chats"
           class="u-button u-button_icon _chatsBtn"
           :class="{
             'is--active': $root.show_chats_list,

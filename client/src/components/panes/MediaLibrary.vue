@@ -12,7 +12,7 @@
             :files_to_import="files_to_import"
             :path="project.$path"
             :allow_caption_edition="true"
-            @importedMedias="mediaJustImported($event)"
+            @importedMedias="mediasJustImported($event)"
             @close="files_to_import = []"
           />
         </div>
@@ -281,8 +281,21 @@
             v-for="{ label, files } in grouped_medias"
             :key="label"
           >
-            <div class="_mediaLibrary--lib--label">
-              <strong>{{ label }}</strong>
+            <div
+              class="_mediaLibrary--lib--label"
+              :class="{
+                'is--clickable': select_mode !== 'single' && batch_mode,
+              }"
+            >
+              <input
+                v-if="batch_mode"
+                type="checkbox"
+                class="_groupSelectCheckbox"
+                :id="'select_btn_' + label"
+                :checked="groupAllSelected(files)"
+                @click="handleGroupLabelClick(files)"
+              />
+              <label :for="'select_btn_' + label">{{ label }}</label>
               <!-- <div class="u-nut" data-isfilled>
                 {{ files.length }}
               </div> -->
@@ -302,6 +315,11 @@
                 :index="file._index"
                 :file="file"
                 :was_focused="media_just_focused === getFilename(file.$path)"
+                :was_imported="
+                  recently_imported_meta_filenames.includes(
+                    getFilename(file.$path)
+                  )
+                "
                 :is_selectable="mediaTileIsSelectable(file.$path)"
                 :is_selected="selected_medias_paths.includes(file.$path)"
                 :data-filepath="file.$path"
@@ -460,6 +478,8 @@ export default {
       files_to_import: [],
 
       media_just_focused: undefined,
+
+      recently_imported_meta_filenames: [],
 
       hide_dropzone_timeout: undefined,
 
@@ -850,20 +870,18 @@ export default {
         this.$eventHub.$emit("media.enableEditor." + path);
       }, 500);
     },
-    mediaJustImported(list_of_added_metas) {
-      if (!this.select_mode || this.select_mode === "single") return false;
-
-      const new_medias_path = list_of_added_metas.map(
-        (meta_filename) => this.project.$path + "/" + meta_filename
-      );
-
+    mediasJustImported(list_of_added_metas) {
       if (this.select_mode === "multiple") {
+        const new_medias_path = list_of_added_metas.map(
+          (meta_filename) => this.project.$path + "/" + meta_filename
+        );
         this.selected_medias_paths =
           this.selected_medias_paths.concat(new_medias_path);
         this.batch_mode = true;
       }
 
-      // todo add focus ring to indicate medias just sent
+      this.recently_imported_meta_filenames = list_of_added_metas.slice();
+
       // this.$alertify
       //   .closeLogOnClick(true)
       //   .delay(4000)
@@ -918,6 +936,29 @@ export default {
         this.filtered_medias[this.focused_media_index + 1].$path
       );
     },
+    handleGroupLabelClick(files) {
+      if (this.select_mode === "single") return;
+
+      const filePaths = files.map((f) => f.$path);
+      const allSelected = filePaths.every((p) =>
+        this.selected_medias_paths.includes(p)
+      );
+
+      if (allSelected) {
+        this.selected_medias_paths = this.selected_medias_paths.filter(
+          (p) => !filePaths.includes(p)
+        );
+      } else {
+        const newSet = new Set(this.selected_medias_paths.concat(filePaths));
+        this.selected_medias_paths = Array.from(newSet);
+      }
+
+      this.batch_mode = true;
+    },
+    groupAllSelected(files) {
+      const filePaths = files.map((f) => f.$path);
+      return filePaths.every((p) => this.selected_medias_paths.includes(p));
+    },
   },
 };
 </script>
@@ -940,22 +981,36 @@ export default {
 }
 
 ._mediaLibrary--lib--label {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   position: sticky;
   top: 0;
   z-index: 10;
   background: var(--c-orange);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 
-  strong {
-    text-transform: capitalize;
-    // padding: 0 calc(var(--spacing) / 2);
-  }
+  text-transform: capitalize;
+  font-weight: bold;
+  // padding: 0 calc(var(--spacing) / 2);
 
   ::v-deep {
     .u-nut {
       background: var(--c-noir);
     }
   }
+
+  &.is--clickable {
+    // padding: var(--spacing);
+
+    label {
+      cursor: pointer;
+    }
+  }
+}
+
+._groupSelectCheckbox {
+  margin: 0;
 }
 
 ._mediaLibrary--lib--grid {

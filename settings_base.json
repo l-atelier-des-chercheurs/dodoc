@@ -80,6 +80,9 @@
       "enable_events": {
         "type": "boolean"
       },
+      "enable_chats": {
+        "type": "boolean"
+      },
       "hero_background_color": {
         "type": "string"
       },

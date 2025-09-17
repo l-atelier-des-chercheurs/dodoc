@@ -15,6 +15,7 @@
           :content.sync="full_url"
           :placeholder="'https://'"
           :required="true"
+          :autofocus="true"
           :input_type="'url'"
           @toggleValidity="($event) => (allow_save = $event)"
         />

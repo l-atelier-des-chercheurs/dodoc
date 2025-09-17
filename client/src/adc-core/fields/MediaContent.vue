@@ -190,7 +190,9 @@
     </small>
 
     <template
-      v-if="['image', 'stl', 'obj'].includes(file.$type) && show_fs_button"
+      v-if="
+        ['image', 'stl', 'obj', 'pdf'].includes(file.$type) && show_fs_button
+      "
     >
       <div class="_fsButton">
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
@@ -209,6 +211,12 @@
           :key="file_full_path"
           :file_type="file.$type"
           :src="file_full_path"
+        />
+        <iframe
+          v-else-if="file.$type === 'pdf'"
+          class="_pdfPreview"
+          :src="file_full_path"
+          frameborder="0"
         />
       </FullscreenView>
     </template>
@@ -506,7 +514,8 @@ export default {
   }
 }
 
-._threeDPreview {
+._threeDPreview,
+._pdfPreview {
   width: 100%;
   height: 100%;
 }

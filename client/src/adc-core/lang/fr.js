@@ -1,3 +1,5 @@
+import { addProjections } from "ol/proj";
+
 export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
@@ -385,7 +387,7 @@ export default {
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
-    "Rafraîchir la fenêtre pour voir les modifications",
+    "Recharger la fenêtre pour voir les modifications",
   reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -451,8 +453,10 @@ export default {
   fonts: "Police de caractères",
   add_font: "Ajouter une police de caractères",
   font_name: "Nom de la police de caractères",
+  fonts_instr:
+    "Les polices de caractères sont utilisées pour l’affichage des textes dans les blocs de texte et les publications. Les polices de caractères ajoutées sont disponibles pour tous les utilisateurs, sur l’ensemble de l’instance.",
   font_instr:
-    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant.",
+    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant. Pour télécharger des familles de caractères, vous pouvez utiliser <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
@@ -479,11 +483,11 @@ export default {
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
-  start: "début",
+  start: "Début",
   set_start: "Définir le début",
   play_extract: "Jouer l’extrait",
   stop_extract: "Arrêter l’extrait",
-  end: "fin",
+  end: "Fin",
   set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
@@ -1281,7 +1285,7 @@ export default {
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Non connecté",
+  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1358,6 +1362,9 @@ export default {
   remove_column: "Supprimer la dernière colonne",
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
+  enable_chats: "Activer la fonctionnalité de discussion",
+  enable_chats_instructions:
+    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
   list_of_topics: "Liste des sujets",
   create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
@@ -1426,4 +1433,32 @@ export default {
   today: "Aujourd’hui",
   copy_to_clipboard: "Copier dans le presse-papiers",
   copied: "Copié !",
+
+  debug_logs: "Journaux de débogage",
+  logs_panel_instructions:
+    "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
+  available_logs: "Journaux disponibles",
+  no_logs_available: "Aucun journal disponible",
+  refresh_logs: "Recharger les journaux",
+
+  session_started: "Session démarrée le",
+  session_ended: "Session arrêtée le",
+  duration: "Durée",
+  actions: "Actions",
+  session_crashed: "Session plantée",
+  session_running: "Session en cours",
+
+  last_page_reached: "Dernière page atteinte",
+  layout: "Mise en page",
+  starts_on_page: "Démarre sur",
+
+  files_being_sent:
+    "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",
+  opened_page: "Page consultée",
+  launched: "Lancement",
+
+  import_image_from_url_failed:
+    "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
+
+  interrupt: "Interrompre",
 };

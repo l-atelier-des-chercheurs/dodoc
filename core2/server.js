@@ -100,18 +100,20 @@ module.exports = function () {
     express.static(path.join(global.appRoot, "client", "dist"))
   );
 
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json()); // To parse the incoming requests with JSON payloads
+  // app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: "1mb" })); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
   journal.log({
     message: "Server up and running",
+    from: "server",
   });
 
   serverRTC(server);
 
   journal.log({
     message: "Server RTC initialized",
+    from: "server",
   });
 
   api2.init(app);
@@ -123,6 +125,7 @@ module.exports = function () {
     dev.log(message);
     journal.log({
       message,
+      from: "server",
     });
   });
 };

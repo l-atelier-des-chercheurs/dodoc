@@ -142,6 +142,7 @@ export default {
 ._hero--content {
   position: relative;
   width: 100%;
+  min-height: 20vh;
   margin: 0 auto;
 
   display: flex;

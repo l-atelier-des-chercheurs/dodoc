@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2025-08-19T06:18:58.322Z
+"$date_modified" = 2025-09-15T10:16:28.842Z
+"$date_uploaded" = 2025-08-19T06:18:59.778Z
+"$media_filename" = "image-7.png"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class="">  </p>'

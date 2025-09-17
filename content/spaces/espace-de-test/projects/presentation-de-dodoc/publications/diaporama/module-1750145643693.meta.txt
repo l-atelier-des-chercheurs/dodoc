@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "us5vmu"
+x = 204
+y = 463
+width = 259
+height = 199
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 4
+"$date_modified" = 2025-06-17T07:34:33.186Z
+"$date_uploaded" = 2025-06-17T07:34:03.693Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "image-2.png.meta.txt"
+objectFit = "contain"

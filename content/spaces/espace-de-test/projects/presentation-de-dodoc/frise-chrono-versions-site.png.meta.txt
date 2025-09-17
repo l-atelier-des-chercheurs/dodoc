@@ -1,0 +1,10 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2025-03-13T09:32:39.975Z
+"$date_modified" = 2025-09-15T10:13:31.287Z
+"$date_uploaded" = 2025-03-13T09:33:07.182Z
+"$media_filename" = "frise-chrono-versions-site-1.png"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+"$optimized" = true
+caption = '<p class=""> </p>'

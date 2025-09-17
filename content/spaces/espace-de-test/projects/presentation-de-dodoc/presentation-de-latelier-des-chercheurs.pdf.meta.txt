@@ -1,0 +1,10 @@
+"$date_created" = 2025-06-17T14:43:11.050Z
+"$date_modified" = 2025-09-15T10:13:31.174Z
+"$date_uploaded" = 2025-06-17T14:43:11.050Z
+"$media_filename" = "presentation-de-latelier-des-chercheurs.pdf"
+"$status" = "private"
+"$origin" = "publish"
+"$authors" = [ "authors/louis" ]
+"$type" = "pdf"
+"$credits" = "Créé par la publication Présentation de l’Atelier des Chercheurs"
+caption = '<p class=""> </p>'

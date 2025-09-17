@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "xg3ify"
+x = 640
+y = 0
+width = 640
+height = 720
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 1
+"$date_modified" = 2025-09-15T10:54:45.199Z
+"$date_uploaded" = 2025-09-12T09:32:08.761Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename = "url-1757669528367.txt.meta.txt"
+objectFit = "cover"

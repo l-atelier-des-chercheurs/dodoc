@@ -1,0 +1,10 @@
+"$authors" = [ "authors/admin" ]
+"$date_created" = 2025-08-19T07:26:06.601Z
+"$date_modified" = 2025-09-16T13:55:48.045Z
+"$date_uploaded" = 2025-08-19T07:26:08.832Z
+"$media_filename" = "image-18-1.png"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = ""
+"$optimized" = true

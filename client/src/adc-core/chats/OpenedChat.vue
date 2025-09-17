@@ -377,8 +377,6 @@ export default {
     async postMessage() {
       if (!this.new_message) return;
 
-      debugger;
-
       if (!this.allow_send) {
         if (this.new_message.length > this.max_message_length) {
           this.$alertify.delay(4000).error(

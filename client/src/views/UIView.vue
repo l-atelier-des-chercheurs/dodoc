@@ -234,6 +234,10 @@
         </button>
       </template>
     </TextInput>
+
+    <div class="u-spacingBottom"></div>
+
+    <SizeDisplay :size="2059" />
   </div>
 </template>
 <script>

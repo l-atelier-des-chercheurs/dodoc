@@ -37,6 +37,7 @@ module.exports = (function () {
           const found_sharp_version = require("sharp").versions?.sharp;
           journal.log({
             message: `ELECTRON — init : sharp version ${found_sharp_version}`,
+            from: "electron",
           });
           if (found_sharp_version) {
             // const err = new Error(
@@ -57,6 +58,10 @@ module.exports = (function () {
           dev.log(
             `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`
           );
+          journal.log({
+            message: `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`,
+            from: "electron",
+          });
         }
 
         notifier.on("restartApp", () => {
@@ -72,6 +77,7 @@ module.exports = (function () {
           dev.log(`ELECTRON — init : ready`);
           journal.log({
             message: "ELECTRON — init : ready",
+            from: "electron",
           });
 
           _createWindow().then((_win) => {
@@ -137,24 +143,28 @@ module.exports = (function () {
         win = null;
       }
 
-      let page_timeout = setTimeout(async () => {
-        closeWin();
-        const err = new Error("Failed to capture screenshot");
-        dev.error(err);
-        err.code = "timeout";
-        throw err;
-      }, 10_000);
-
       try {
-        win = await _loadWebpage({ url });
-        const image = await win.webContents.capturePage();
-        closeWin();
-        clearTimeout(page_timeout);
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        await Promise.race([
+          (async () => {
+            win = await _loadWebpage({ url });
+            const image = await win.webContents.capturePage();
+            closeWin();
+            await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+          })(),
+          new Promise((_, reject) => {
+            setTimeout(() => {
+              closeWin();
+              dev.error("Failed to capture screenshot: timeout");
+              const err = new Error("Failed to capture screenshot");
+              err.code = "timeout";
+              reject(err);
+            }, 10_000);
+          }),
+        ]);
         return;
       } catch (err) {
         closeWin();
-        clearTimeout(page_timeout);
+        dev.error("Failed to capture screenshot: " + err.message);
         throw err;
       }
     },
@@ -327,15 +337,13 @@ module.exports = (function () {
           return resolve();
         });
         win.webContents.on("did-fail-load", (event, error) => {
-          // Instead of rejecting, we'll resolve with the window
-          // This allows the process to continue even if the iframe fails to load
-          dev.log(`Failed to load iframe content: ${error}`);
-          return resolve();
+          dev.log(`Failed to load webpage content: ${error}`);
+          return reject(new Error("Failed to load webpage content: " + error));
         });
       });
     } catch (error) {
       dev.error(`Error loading webpage: ${error}`);
-      // Don't throw the error, just return the window
+      throw new Error("Failed to load webpage: " + error);
     }
 
     return win;

@@ -110,16 +110,18 @@ export default {
           .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Disconnected ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Connect error ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Connect error ${reason}`);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;

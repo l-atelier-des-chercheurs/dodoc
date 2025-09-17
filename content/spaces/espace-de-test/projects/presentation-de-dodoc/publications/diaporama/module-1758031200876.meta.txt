@@ -1,0 +1,22 @@
+module_type = "mosaic"
+page_id = "us5vmu"
+x = 201
+y = 61
+width = 277
+height = 208
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 5
+"$date_modified" = 2025-09-16T14:00:08.436Z
+"$date_uploaded" = 2025-09-16T14:00:00.876Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "moulinette2.JPG.meta.txt"
+objectFit = "contain"
+
+[location]
+latitude = 48.549058333333335
+longitude = -3.7349

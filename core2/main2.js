@@ -21,7 +21,7 @@ module.exports = async function () {
     process.versions.node
   }`;
   console.log(infos);
-  journal.log({ message: infos });
+  journal.log({ message: infos, from: "main2" });
 
   // setInterval(() => {
   //   const usedHeapSize = process.memoryUsage().heapUsed;
@@ -40,6 +40,7 @@ module.exports = async function () {
   dev.init({ debug, verbose, livereload, logToFile });
   journal.log({
     message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}, logToFile: ${logToFile}`,
+    from: "main2",
   });
 
   if (dev.isDebug()) {
@@ -135,6 +136,7 @@ async function setupApp() {
   dev.log("Will store contents in: " + global.pathToUserContent);
   journal.log({
     message: "Will store contents in: " + global.pathToUserContent,
+    from: "main2",
   });
 
   // Now that content path is available, start file logging if requested
@@ -144,6 +146,7 @@ async function setupApp() {
   global.can_send_email = mail.canSendMail();
   journal.log({
     message: "Can send email: " + global.can_send_email,
+    from: "main2",
   });
 
   auth.createSuperadminToken();
@@ -162,6 +165,7 @@ async function setupApp() {
     dev.log(`Desired port ${port} available`);
     journal.log({
       message: `Desired port ${port} available`,
+      from: "main2",
     });
   } else {
     dev.log(
@@ -169,6 +173,7 @@ async function setupApp() {
     );
     journal.log({
       message: `Desired port ${global.settings.desired_port} NOT available, using ${port}`,
+      from: "main2",
     });
   }
 
@@ -255,8 +260,6 @@ async function contentFolderIsValid(full_path) {
   const meta = utils.parseMeta(meta_file_content);
 
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
-
-  // TODO improve here: if folder is not valid, create in a subfolder called dodoc-next
 
   return true;
 }

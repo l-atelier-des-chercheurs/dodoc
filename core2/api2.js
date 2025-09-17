@@ -11,6 +11,7 @@ const folder = require("./folder"),
   Exporter = require("./Exporter"),
   auth = require("./auth"),
   users = require("./users"),
+  journal = require("./journal"),
   recoverPassword = require("./recover-password");
 
 module.exports = (function () {
@@ -39,10 +40,12 @@ module.exports = (function () {
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
 
+    app.get("/_api2/_logs", _getLogs);
+
     app.get("/_api2/_users", _getAllUsers);
     app.patch("/_api2/_users/:id", _updateUser);
 
-    /* PUBLIC FILES */
+    /* PUBLIC FOLDER */
     app.get(
       [
         "/_api2/:folder_type/:folder_slug/_public",
@@ -601,6 +604,7 @@ module.exports = (function () {
       confidentiality_in_footer,
       require_mail_to_signup,
       enable_events,
+      enable_chats,
       enable_indexing,
       $admins,
       $contributors,
@@ -629,6 +633,7 @@ module.exports = (function () {
     d.terms_in_footer = terms_in_footer === true;
     d.confidentiality_in_footer = confidentiality_in_footer === true;
     d.enable_events = enable_events === true;
+    d.enable_chats = enable_chats === true;
     d.enable_indexing = enable_indexing === true;
     d.$admins = $admins || "";
     d.$contributors = $contributors || "";
@@ -695,43 +700,67 @@ module.exports = (function () {
   }
 
   async function _getFolders(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
     dev.logapi({ path_to_type });
 
     try {
       let d = await folder.getFolders({ path_to_type });
 
       // todo : filter depending on $status, only authors see folders
-
-      res.setHeader("Access-Control-Allow-Origin", "*");
       dev.logpackets(`Successfully got folders ${path_to_type}`);
+      journal.log({
+        from: "api2",
+        event: "get_folders",
+        details: {
+          outcome: "success",
+          path_to_type,
+          folders_count: d.length || 0,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
+      res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(d);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get folders: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleGetFoldersError(err, res, { path_to_type, token_path });
     }
 
     // cache.printStatus();
   }
   async function _createFolder(req, res, next) {
     const { path_to_type, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_type });
+
+    const folder_title = data.title || "untitled";
 
     try {
       const new_folder_slug = await folder.createFolder({
         path_to_type,
         data,
       });
-      res.status(200).json({ new_folder_slug });
 
       const path_to_folder = path.join(path_to_type, new_folder_slug);
+      const new_folder_meta = await folder.getFolder({ path_to_folder });
+
       dev.logpackets(`Successfully created folder ${path_to_folder}`);
-      const new_folder_meta = await folder.getFolder({
-        path_to_folder,
+
+      res.status(200).json({ new_folder_slug });
+
+      journal.log({
+        from: "api2",
+        event: "create_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          folder_title,
+          author_path: token_path,
+        },
       });
 
       notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
@@ -739,52 +768,101 @@ module.exports = (function () {
         meta: new_folder_meta,
       });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to create folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
+      journal.log({
+        from: "api2",
+        event: "create_folder",
+        details: {
+          outcome: "error",
+          path_to_type,
+          folder_title,
+          author_path: token_path,
+        },
       });
+
+      const error_msg = `Failed to create "${folder_title}" folder in ${path_to_type}: ${err.message}`;
+      dev.error(error_msg);
+      res.status(500).send({ code: err.code, err_infos: err.err_infos });
     }
   }
+
   async function _importFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_type });
 
     try {
+      // 2. Import the folder
       const path_to_new_folder = await folder.importFolder({
         path_to_type,
         req,
       });
-      dev.logpackets(`Successfully imported folder ${path_to_new_folder}`);
+
+      // 4. Prepare success data
       const new_folder_meta = await folder.getFolder({
         path_to_folder: path_to_new_folder,
       });
 
+      // 4. Log success
+      dev.logpackets(`Successfully imported folder ${path_to_new_folder}`);
+      journal.log({
+        from: "api2",
+        event: "import_folder",
+        details: {
+          outcome: "success",
+          path_to_new_folder,
+          folder_title: new_folder_meta.title || "untitled",
+          author_path: token_path,
+        },
+      });
+
+      // 5. Send response
       res.status(200).json({ new_folder_meta });
+
+      // 7. Notify subscribers (after response)
       notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
         path: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to import folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleImportFolderError(err, res, { path_to_type, token_path });
     }
   }
 
-  async function _getFolder(req, res, next) {
-    const { path_to_folder = "" } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder });
+  // Helper function for folder import error handling
+  function _handleImportFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to import folder into ${context.path_to_type}: ${message}`;
 
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "import_folder",
+      details: {
+        outcome: "error",
+        path_to_type: context.path_to_type,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  async function _getFolder(req, res, next) {
+    // 1. Extract and validate input
+    const { path_to_folder = "" } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     const detailed = req.query?.detailed === "true";
     const no_files = req.query?.no_files === "true";
+
+    dev.logapi({ path_to_folder });
+
     // const hrstart = process.hrtime();
 
     try {
+      // 2. Get the folder and files
       let d = await folder.getFolder({ path_to_folder, detailed });
       if (!no_files) d.$files = await file.getFiles({ path_to_folder });
 
@@ -793,27 +871,39 @@ module.exports = (function () {
       //   `${path_to_folder} – ${hrend[0]}s ${hrend[1] / 1000000}ms`
       // );
 
-      res.setHeader("Access-Control-Allow-Origin", "*");
+      // 3. Log success
       dev.logpackets(`Successfully got folder ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "get_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
+      res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(d);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get folder: " + message);
-      res.status(404).send({
-        code,
-        err_infos,
-      });
+      _handleGetFolderError(err, res, { path_to_folder, token_path });
     }
     // cache.printStatus();
   }
 
   async function _getPublicFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder = "" } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
     dev.logapi({ path_to_folder });
 
     try {
+      // 2. Get the folder
       let d = await folder.getFolder({ path_to_folder });
 
+      // 3. Check if folder is public or superadmin access
       const { general_password } = await settings.get();
       if (d.$public !== true && general_password) {
         // only allow queries with superadmintoken
@@ -825,176 +915,288 @@ module.exports = (function () {
       }
 
       try {
+        // 4. Get files with embedded source
         const files = await file.getFiles({
           path_to_folder,
           embed_source: true,
         });
         d.$files = files;
-        res.setHeader("Access-Control-Allow-Origin", "*");
+
+        // 5. Log success
         dev.logpackets(`Successfully got public folder ${path_to_folder}`);
+        journal.log({
+          from: "api2",
+          event: "get_public_folder",
+          details: {
+            outcome: "success",
+            path_to_folder,
+            author_path: token_path,
+          },
+        });
+
+        // 6. Send response
+        res.setHeader("Access-Control-Allow-Origin", "*");
         res.json(d);
       } catch (err) {
         dev.error("Failed to get files: " + err);
+        journal.log({
+          from: "api2",
+          event: "get_public_folder",
+          details: {
+            outcome: "partial_success",
+            path_to_folder,
+            author_path: token_path,
+          },
+        });
         res.json({});
       }
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get public folder: " + message);
-      res.status(404).send({
-        code,
-        err_infos,
-      });
+      _handleGetPublicFolderError(err, res, { path_to_folder, token_path });
     }
   }
 
   async function _updateFolder(req, res, next) {
+    // 1. Extract and validate input
     const {
       path_to_type,
       path_to_folder = "",
       data,
     } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
     const update_cover = req.query?.hasOwnProperty("cover");
+
     dev.logapi({ path_to_folder, data, update_cover });
 
     try {
+      // 2. Update the folder
       const changed_data = await folder.updateFolder({
         path_to_type,
         path_to_folder,
         data,
         update_cover_req: update_cover ? req : false,
       });
+
+      // 3. Log success
       dev.logpackets(`Successfully updated folder ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "update_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
+      // 5. Send response
       res.status(200).json({ status: "ok" });
 
+      // 6. Notify subscribers (after response)
+      _notifyFolderUpdated(path_to_type, path_to_folder, changed_data);
+
       // TODO if $password is updated successfully, then revoke all tokens except current
-      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-        path: utils.convertToSlashPath(path_to_folder),
-        changed_data,
-      });
-      if (path_to_type)
-        notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-          path: utils.convertToSlashPath(path_to_folder),
-          changed_data,
-        });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to update folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleUpdateFolderError(err, res, { path_to_folder, token_path });
     }
   }
+
   async function _loginToFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+    const submitted_password = data.$password;
+
     dev.logapi({ path_to_folder, data });
 
     try {
+      // 2. Verify password
       await folder.login({
         path_to_folder,
-        submitted_password: data.$password,
+        submitted_password,
       });
 
+      // 3. Generate and store token
       // if no throwing error, we generate a token, store it node/electron side and send it back to the client
       // this token matches a path such as authors/louis
       // any folder that has authors can only be updated/removed by users with a valid token corresponding to those authors
       const token = await auth.createAndStoreToken({
         path_to_folder,
       });
+
+      // 4. Log success
       dev.logpackets(`Successfully logged in to folder ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "login_to_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
+      // 5. Send response
       res.status(200).json({ status: "ok", token });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to login to folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleLoginToFolderError(err, res, { path_to_folder, token_path });
     }
   }
+
+  // Helper function for login to folder error handling
+  function _handleLoginToFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to login to folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "login_to_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
   async function _logoutFromFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     const token = data.token;
+
     dev.logapi({ path_to_folder, token });
 
     try {
+      // 2. Revoke the token
       // not sure we need to check token before revoking it
       // auth.checkTokenValidity({ token, token_path: path_to_folder });
       await auth.revokeToken({
         token_to_revoke: token,
       });
+
+      // 3. Log success
       dev.logpackets(`Successfully logged out from folder ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "logout_from_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.status(200).json({ status: "ok" });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to logout to folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleLogoutFromFolderError(err, res, { path_to_folder, token_path });
     }
   }
 
+  // Helper function for logout from folder error handling
+  function _handleLogoutFromFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to logout from folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "logout_from_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
   async function _removeFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_folder });
 
     try {
+      // 2. Remove the folder
       await folder.removeFolder({
         path_to_type,
         path_to_folder,
       });
-      dev.logpackets(`Successfully removed folder ${path_to_folder}`);
-      res.status(200).json({ status: "ok" });
 
+      // 3. Clean up related data
       await auth.removeAllTokensForFolder({ token_path: path_to_folder });
 
-      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {
-        path: utils.convertToSlashPath(path_to_folder),
+      // 4. Log success
+      dev.logpackets(`Successfully removed folder ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "remove_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
       });
-      notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_folder),
-      });
+
+      // 5. Send response
+      res.status(200).json({ status: "ok" });
+
+      // 6. Notify subscribers (after response)
+      _notifyFolderRemoved(path_to_type, path_to_folder);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to remove content: " + message);
-      res.status(404).send({
-        code,
-        err_infos,
-      });
+      _handleRemoveFolderError(err, res, { path_to_folder, token_path });
     }
   }
 
   async function _uploadFile(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder = "" } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_folder });
 
     try {
+      // 2. Import the file
       const { meta_filename } = await file.importFile({
         path_to_folder,
         req,
       });
+
+      // 3. Prepare success data
       const path_to_meta = path.join(path_to_folder, meta_filename);
+      const meta = await file.getFile({ path_to_meta });
+
+      // 4. Log success
       dev.logpackets(`Successfully uploaded file ${path_to_meta}`);
-      const meta = await file.getFile({
-        path_to_meta,
+      journal.log({
+        from: "api2",
+        event: "upload_file",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          file_title: meta.title || meta_filename,
+          author_path: token_path,
+        },
       });
+
+      // 5. Send response
       res.status(200).json({ uploaded_meta: meta, meta_filename });
-      notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
-        path_to_folder: utils.convertToSlashPath(path_to_folder),
-        meta,
-      });
+
+      // 6. Notify subscribers (after response)
+      _notifyFileCreated(path_to_folder, meta);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to upload file: " + message);
-      try {
-        res.status(500).send({
-          code,
-          err_infos,
-        });
-      } catch (e) {}
+      _handleUploadFileError(err, res, { path_to_folder, token_path });
     }
   }
+
   async function _export(req, res, next) {
     const { path_to_folder, path_to_parent_folder, meta_filename, data } =
       utils.makePathFromReq(req);
@@ -1110,10 +1312,14 @@ module.exports = (function () {
     }
   }
   async function _downloadFolder(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
     dev.logapi({ path_to_folder, path_to_type });
 
     try {
+      // 2. Prepare download headers
       const filename = utils.getZipFolderFilename({
         path_to_folder,
         path_to_type,
@@ -1125,6 +1331,7 @@ module.exports = (function () {
       // });
       // if (size) res.header("Content-Length", size);
 
+      // 3. Create and stream archive
       const archive = archiver("zip", {
         zlib: { level: 0 },
       });
@@ -1142,35 +1349,96 @@ module.exports = (function () {
 
       archive.finalize();
 
+      // 4. Log success
+      dev.logpackets(`Successfully started download for ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "download_folder",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
       dev.log(`download started`);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to download content: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleDownloadFolderError(err, res, { path_to_folder, token_path });
     }
+  }
+
+  // Helper function for download folder error handling
+  function _handleDownloadFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to download folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "download_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
   }
 
   /************************************************************************************ BIN ***********/
 
   async function _getFolderBin(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
+    dev.logapi({ path_to_type });
 
     try {
+      // 2. Get the bin content
       const bin_content = await folder.getFolderBinContent({
         path_to_type,
       });
+
+      // 3. Log success
+      dev.logpackets(`Successfully got bin content for ${path_to_type}`);
+      journal.log({
+        from: "api2",
+        event: "get_folder_bin",
+        details: {
+          outcome: "success",
+          path_to_type,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.json(bin_content);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get bin folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleGetFolderBinError(err, res, { path_to_type, token_path });
     }
+  }
+
+  // Helper function for get folder bin error handling
+  function _handleGetFolderBinError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get bin content for ${context.path_to_type}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_folder_bin",
+      details: {
+        outcome: "error",
+        path_to_type: context.path_to_type,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
   }
 
   async function _restoreFolderFromBin(req, res, next) {
@@ -1221,21 +1489,57 @@ module.exports = (function () {
   }
 
   async function _getFilesBin(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
+    dev.logapi({ path_to_folder });
 
     try {
+      // 2. Get the bin content
       const bin_content = await file.getFilesBin({
         path_to_folder,
       });
+
+      // 3. Log success
+      dev.logpackets(
+        `Successfully got files bin content for ${path_to_folder}`
+      );
+      journal.log({
+        from: "api2",
+        event: "get_files_bin",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.json(bin_content);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get bin folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleGetFilesBinError(err, res, { path_to_folder, token_path });
     }
+  }
+
+  // Helper function for get files bin error handling
+  function _handleGetFilesBinError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get files bin content for ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_files_bin",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
   }
 
   async function _restoreFileFromBin(req, res, next) {
@@ -1270,21 +1574,20 @@ module.exports = (function () {
   }
 
   async function _removeBinFile(req, res, next) {
-    const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
-    dev.logapi({ path_to_folder, meta_filename });
+    const { path_to_folder_in_bin } = utils.makePathFromReq(req);
+    dev.logapi({ path_to_folder_in_bin });
 
     try {
-      await file.removeBinFile({
-        path_to_folder,
-        meta_filename,
+      await folder.removeBinFolder({
+        path_to_folder_in_bin,
       });
       dev.logpackets(
-        `Successfully removed bin file ${path_to_folder} ${meta_filename}`
+        `Successfully removed bin folder ${path_to_folder_in_bin}`
       );
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
-      dev.error("Failed to remove bin file: " + message);
+      dev.error("Failed to remove bin folder: " + message);
       res.status(500).send({
         code,
         err_infos,
@@ -1435,14 +1738,18 @@ module.exports = (function () {
   }
 
   async function _getFile(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, path_to_meta, meta_filename } =
       utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
     // no filename found in params, user may be requesting folders
     if (!path_to_meta) return next();
 
     dev.logapi({ path_to_meta });
 
     try {
+      // 2. Get the file and archives
       const meta = await file.getFile({
         path_to_meta,
       });
@@ -1452,118 +1759,208 @@ module.exports = (function () {
       });
       if (file_archives) meta.$archives = file_archives;
 
-      res.setHeader("Access-Control-Allow-Origin", "*");
+      // 3. Log success
       dev.logpackets(`Successfully got file ${path_to_meta}`);
+      journal.log({
+        from: "api2",
+        event: "get_file",
+        details: {
+          outcome: "success",
+          path_to_meta,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
+      res.setHeader("Access-Control-Allow-Origin", "*");
       res.json(meta);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to get file: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleGetFileError(err, res, { path_to_meta, token_path });
     }
   }
 
+  // Helper function for get file error handling
+  function _handleGetFileError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get file ${context.path_to_meta}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_file",
+      details: {
+        outcome: "error",
+        path_to_meta: context.path_to_meta,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
   async function _updateFile(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, path_to_meta, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_folder, path_to_meta, data });
 
     try {
+      // 2. Update the file
       const changed_data = await file.updateFile({
         path_to_folder,
         path_to_meta,
         data,
       });
+
+      // 3. Log success
       dev.logpackets(`Successfully updated file ${path_to_meta}`);
+      journal.log({
+        from: "api2",
+        event: "update_file",
+        details: {
+          outcome: "success",
+          path_to_meta,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
-        path_to_folder: utils.convertToSlashPath(path_to_folder),
-        path_to_meta: utils.convertToSlashPath(path_to_meta),
-        changed_data,
-      });
+      // 5. Notify subscribers (after response)
+      _notifyFileUpdated(path_to_folder, path_to_meta, changed_data);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to update file: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleUpdateFileError(err, res, { path_to_meta, token_path });
     }
   }
 
   async function _regenerateThumbs(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, path_to_meta, meta_filename } =
       utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
     dev.logapi({ path_to_folder, path_to_meta, meta_filename });
 
     try {
+      // 2. Regenerate the thumbnails
       const changed_data = await file._regenerateThumbs({
         path_to_folder,
         path_to_meta,
         meta_filename,
       });
+
+      // 3. Log success
+      dev.logpackets(`Successfully regenerated thumbs for ${path_to_meta}`);
+      journal.log({
+        from: "api2",
+        event: "regenerate_thumbs",
+        details: {
+          outcome: "success",
+          path_to_meta,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.status(200).json({ status: "ok" });
+
+      // 5. Notify subscribers (after response)
       notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
         path_to_folder: utils.convertToSlashPath(path_to_folder),
         path_to_meta: utils.convertToSlashPath(path_to_meta),
         changed_data,
       });
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to regenerate thumbs: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
-      });
+      _handleRegenerateThumbsError(err, res, { path_to_meta, token_path });
     }
   }
 
+  // Helper function for regenerate thumbs error handling
+  function _handleRegenerateThumbsError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to regenerate thumbs for ${context.path_to_meta}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "regenerate_thumbs",
+      details: {
+        outcome: "error",
+        path_to_meta: context.path_to_meta,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
   async function _removeFile(req, res, next) {
+    // 1. Extract and validate input
     const {
       path_to_folder = "",
       meta_filename,
       path_to_meta,
     } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_folder, meta_filename });
 
     try {
+      // 2. Remove the file
       await file.removeFile({
         path_to_folder,
         meta_filename,
         path_to_meta,
       });
+
+      // 3. Log success
       dev.logpackets(
         `Successfully removed file ${path_to_folder} ${meta_filename}`
       );
+      journal.log({
+        from: "api2",
+        event: "remove_file",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          meta_filename,
+          author_path: token_path,
+        },
+      });
+
+      // 4. Send response
       res.status(200).json({ status: "ok" });
 
-      notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
-        path_to_folder: utils.convertToSlashPath(path_to_folder),
-        path_to_meta: utils.convertToSlashPath(path_to_meta),
-      });
+      // 5. Notify subscribers (after response)
+      _notifyFileRemoved(path_to_folder, path_to_meta);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to remove file: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
+      _handleRemoveFileError(err, res, {
+        path_to_folder,
+        meta_filename,
+        token_path,
       });
     }
   }
 
   async function _copyFile(req, res, next) {
+    // 1. Extract and validate input
     const { path_to_folder, meta_filename, path_to_meta, data } =
       utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+
     dev.logapi({ path_to_folder, path_to_meta, data });
 
     try {
+      // 2. Validate destination and permissions
       let { path_to_destination_folder, new_meta } = data;
-      if (!path_to_destination_folder)
+      if (!path_to_destination_folder) {
         path_to_destination_folder = path_to_folder;
-      else {
-        // todo check for auth to copy to folder
+      } else {
+        // Check for auth to copy to folder
         const allowed = await _canContributeToFolder({
           path_to_folder: path_to_destination_folder,
           req,
@@ -1577,6 +1974,7 @@ module.exports = (function () {
         }
       }
 
+      // 4. Copy the file
       const copy_meta_filename = await file.copyFile({
         path_to_folder,
         path_to_destination_folder,
@@ -1584,28 +1982,38 @@ module.exports = (function () {
         path_to_meta,
         new_meta,
       });
-      dev.logpackets(
-        `Successfully copied file ${path_to_folder} to ${path_to_destination_folder}`
-      );
-      res.status(200).json({ meta_filename: copy_meta_filename });
 
+      // 5. Prepare success data
       const meta = await file.getFile({
         path_to_meta: path.join(path_to_destination_folder, copy_meta_filename),
       });
-      notifier.emit(
-        "fileCreated",
-        utils.convertToSlashPath(path_to_destination_folder),
-        {
-          path_to_folder: utils.convertToSlashPath(path_to_destination_folder),
-          meta,
-        }
+
+      // 5. Log success
+      dev.logpackets(
+        `Successfully copied file ${path_to_folder} to ${path_to_destination_folder}`
       );
+      journal.log({
+        from: "api2",
+        event: "copy_file",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          path_to_destination_folder,
+          meta_filename,
+          author_path: token_path,
+        },
+      });
+
+      // 6. Send response
+      res.status(200).json({ meta_filename: copy_meta_filename });
+
+      // 7. Notify subscribers (after response)
+      _notifyFileCreated(path_to_destination_folder, meta);
     } catch (err) {
-      const { message, code, err_infos } = err;
-      dev.error("Failed to copy folder: " + message);
-      res.status(500).send({
-        code,
-        err_infos,
+      _handleCopyFileError(err, res, {
+        path_to_folder,
+        meta_filename,
+        token_path,
       });
     }
   }
@@ -1627,13 +2035,19 @@ module.exports = (function () {
   async function _restartApp(req, res, next) {
     notifier.emit("restartApp");
   }
+  async function _getLogs(req, res, next) {
+    const logs = await journal.getLogs();
+    res.json({ logs });
+  }
   async function _getStoragePath(req, res, next) {
-    res.json({ pathToUserContent: global.pathToUserContent });
+    const pathToUserContent = await settings.getStoragePath();
+    dev.logfunction({ pathToUserContent });
+    res.json({ pathToUserContent });
   }
   async function _setStoragePath(req, res, next) {
     const { data } = utils.makePathFromReq(req);
     const new_path = data.new_path;
-    settings.updatePath({ new_path });
+    await settings.updateStoragePath({ new_path });
     res.status(200).json({ status: "ok" });
   }
 
@@ -1749,6 +2163,237 @@ module.exports = (function () {
       dev.error(err);
       res.status(500).send({ code: err.code });
     }
+  }
+
+  // Helper function for folder update notifications
+  function _notifyFolderUpdated(path_to_type, path_to_folder, changed_data) {
+    notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
+      changed_data,
+    });
+    if (path_to_type)
+      notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
+        path: utils.convertToSlashPath(path_to_folder),
+        changed_data,
+      });
+  }
+
+  // Helper function for folder update error handling
+  function _handleUpdateFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to update folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "update_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  // Helper function for folder removal notifications
+  function _notifyFolderRemoved(path_to_type, path_to_folder) {
+    notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {
+      path: utils.convertToSlashPath(path_to_folder),
+    });
+    notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_type), {
+      path: utils.convertToSlashPath(path_to_folder),
+    });
+  }
+
+  // Helper function for folder removal error handling
+  function _handleRemoveFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to remove folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "remove_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(404).send({ code, err_infos });
+  }
+
+  // Helper function for file creation notifications
+  function _notifyFileCreated(path_to_folder, meta) {
+    notifier.emit("fileCreated", utils.convertToSlashPath(path_to_folder), {
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
+      meta,
+    });
+  }
+
+  // Helper function for file upload error handling
+  function _handleUploadFileError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to upload file to ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "upload_file",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    try {
+      res.status(500).send({ code, err_infos });
+    } catch (e) {
+      // Response may have already been sent
+    }
+  }
+
+  // Helper function for file update notifications
+  function _notifyFileUpdated(path_to_folder, path_to_meta, changed_data) {
+    notifier.emit("fileUpdated", utils.convertToSlashPath(path_to_folder), {
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
+      path_to_meta: utils.convertToSlashPath(path_to_meta),
+      changed_data,
+    });
+  }
+
+  // Helper function for file update error handling
+  function _handleUpdateFileError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to update file ${context.path_to_meta}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "update_file",
+      details: {
+        outcome: "error",
+        path_to_meta: context.path_to_meta,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  // Helper function for file removal notifications
+  function _notifyFileRemoved(path_to_folder, path_to_meta) {
+    notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
+      path_to_meta: utils.convertToSlashPath(path_to_meta),
+    });
+  }
+
+  // Helper function for file removal error handling
+  function _handleRemoveFileError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to remove file ${context.meta_filename} from ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "remove_file",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        meta_filename: context.meta_filename,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  // Helper function for file copy error handling
+  function _handleCopyFileError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to copy file ${context.meta_filename} from ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "copy_file",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        meta_filename: context.meta_filename,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  function _handleGetFoldersError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get folders from ${context.path_to_type}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_folders",
+      details: {
+        outcome: "error",
+        path_to_type: context.path_to_type,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  function _handleGetFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
+  }
+
+  function _handleGetPublicFolderError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to get public folder ${context.path_to_folder}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "get_public_folder",
+      details: {
+        outcome: "error",
+        path_to_folder: context.path_to_folder,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    res.status(500).send({ code, err_infos });
   }
 
   return API;

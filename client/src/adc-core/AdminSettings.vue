@@ -199,6 +199,22 @@
                 :can_edit="is_instance_admin"
               />
             </div>
+            <div v-else-if="current_tab === 'chats'">
+              <div class="u-instructions u-spacingBottom">
+                {{ $t("enable_chats_instructions") }}
+              </div>
+              <ToggleField
+                :label="$t('enable_chats')"
+                :field_name="'enable_chats'"
+                :content="settings.enable_chats === true"
+                :path="settings.$path"
+                :can_edit="is_instance_admin"
+              />
+              <div class="u-spacingBottom" />
+              <button type="button" class="u-buttonLink" @click="reloadPage">
+                {{ $t("refresh_window_to_see_changes") }}
+              </button>
+            </div>
             <TermsPanel
               v-else-if="current_tab === 'terms'"
               :settings="settings"
@@ -216,10 +232,10 @@
               v-else-if="current_tab === 'storage'"
               :can_edit="is_instance_admin && $root.app_infos.is_electron"
             />
+            <LogsPanel v-else-if="current_tab === 'debug_logs'" />
           </transition>
         </div>
         <!-- seulement modifiable dans la version appli/electron (à configurer côté code source par le dev dans la version server) -->
-
         <!-- <button type="button" class="u-button" @click="restartDodoc">
         {{ $t("restart") }}
       </button> -->
@@ -233,6 +249,7 @@ import ImagesPanel from "@/adc-core/ui/ImagesPanel.vue";
 import TermsPanel from "@/adc-core/ui/TermsPanel.vue";
 import PagesPanel from "@/adc-core/ui/PagesPanel.vue";
 import SuggestedCategories from "@/adc-core/ui/SuggestedCategories.vue";
+import LogsPanel from "@/adc-core/ui/LogsPanel.vue";
 
 export default {
   props: {
@@ -244,6 +261,7 @@ export default {
     TermsPanel,
     PagesPanel,
     SuggestedCategories,
+    LogsPanel,
   },
   data() {
     return {
@@ -272,6 +290,10 @@ export default {
           key: "fonts",
         },
         {
+          text: this.$t("chats") + " (experimental)",
+          key: "chats",
+        },
+        {
           text: this.$t("events"),
           key: "events",
         },
@@ -286,6 +308,10 @@ export default {
         {
           text: this.$t("storage"),
           key: "storage",
+        },
+        {
+          text: this.$t("debug_logs"),
+          key: "debug_logs",
         },
       ],
     };

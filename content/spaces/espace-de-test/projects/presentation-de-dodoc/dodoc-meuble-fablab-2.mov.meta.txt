@@ -1,0 +1,10 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2018-01-31T16:40:01.000Z
+"$date_modified" = 2025-09-15T10:13:31.696Z
+"$date_uploaded" = 2025-03-13T08:44:22.983Z
+"$media_filename" = "dodoc-meuble-fablab-2.mp4"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "video"
+"$optimized" = true
+caption = '<p class=""> </p>'

@@ -357,7 +357,7 @@ export default {
   add_font: "Add a typeface",
   font_name: "Typeface name",
   font_instr:
-    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant.",
+    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant. To download font families, you can use <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regular (400)",
   font_bold: "Bold (700)",
   font_normal: "Normal",
@@ -669,7 +669,7 @@ export default {
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
-  start: "start",
+  start: "Start",
   set_start: "Set start",
   play_extract: "Play extract",
   stop_extract: "Stop extract",
@@ -966,7 +966,7 @@ export default {
   action_not_allowed: "This action is not allowed",
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
-  informations: "informations",
+  informations: "Informations",
   metadatas: "Metadatas",
 
   duplicate: "Duplicate",
@@ -1219,7 +1219,7 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "Not logged in",
+  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1295,6 +1295,9 @@ export default {
   remove_column: "Remove column",
   remove_row: "Remove row",
   chats: "Discussion topics",
+  enable_chats: "Enable the discussion feature",
+  enable_chats_instructions:
+    "The discussion feature allows you to create topics where selected users can exchange messages. Once enabled, click on the bubble in the top right of the screen to access it.",
   list_of_topics: "List of topics",
   create_a_topic: "Create a topic",
   not_allowed_to_post_messages:
@@ -1341,4 +1344,29 @@ export default {
   gps_coordinates_found: "GPS coordinates found.",
   column_count: "Column count",
   restore_publications: "Restore deleted publications",
+
+  debug_logs: "Debug logs",
+  logs_panel_instructions:
+    "This panel shows the available log files from the server. These files contain information about the activity of the application, from its launch to its shutdown (and, in some cases, the reasons for the crash when it happens).",
+  available_logs: "Available logs",
+  no_logs_available: "No logs available",
+  refresh_logs: "Refresh logs",
+
+  session_started: "Session started",
+  session_ended: "Session ended",
+  actions: "Actions",
+  session_crashed: "Session crashed",
+  session_running: "Session running",
+  duration: "Duration",
+
+  last_page_reached: "Last page reached",
+  fonts_instr:
+    "Fonts are used to display texts in text blocks and publications. Fonts added are available to all users, on the entire instance.",
+
+  files_being_sent:
+    "All medias have been imported | {count} media being imported | {count} medias being imported",
+  opened_page: "Opened page",
+  launched: "Launched on",
+
+  interrupt: "Interrupt",
 };

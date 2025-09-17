@@ -11,12 +11,29 @@ module.exports = (function () {
   const API = {
     init: () => _setupLogFile(),
     isEnabled: () => isEnabled,
-    log: ({ message, type = "general", level = "info" }) =>
-      _log({ message, type, level }),
+    log: ({ message, type = "general", event = "info", from, details }) =>
+      _log({ message, type, event, from, details }),
     getLogFilePath: () => logFilePath,
     cleanupOldLogs: (keepDays = 7) => _cleanupOldLogs(keepDays),
     shutdown: () => _handleCleanShutdown(),
+
+    getLogs: () => _getLogs(),
   };
+
+  function _createTimestamp(date = new Date()) {
+    // Use local time with system locale, forcing predictable format
+    const dateStr = date.toLocaleDateString("en-CA"); // YYYY-MM-DD format (ISO-like)
+    const timeStr = date
+      .toLocaleTimeString(undefined, {
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      })
+      .replace(/:/g, "-"); // HH:MM:SS -> HH-MM-SS
+
+    return `${dateStr}_${timeStr}`;
+  }
 
   function _setupLogFile() {
     dev.logfunction();
@@ -28,20 +45,13 @@ module.exports = (function () {
       }
 
       // Create timestamped filename
-      const now = new Date();
-      const timestamp = now
-        .toISOString()
-        .replace(/T/, "_")
-        .replace(/:/g, "-")
-        .split(".")[0]; // Remove milliseconds
+      const timestamp = _createTimestamp();
 
       logFilePath = path.join(logDirPath, `${timestamp}.jsonl`);
 
       // Write initial log entry as JSON
       const initEntry = {
-        ts: now.toISOString(),
-        type: "general",
-        level: "info",
+        ts: new Date().toISOString(),
         message: "DODOC LOG STARTED",
       };
       fs.writeFileSync(logFilePath, JSON.stringify(initEntry) + "\n");
@@ -143,7 +153,11 @@ module.exports = (function () {
     try {
       const dir = path.dirname(logFilePath);
       const name = path.basename(logFilePath, ".jsonl");
-      const cleanLogPath = path.join(dir, `${name}_ok.jsonl`);
+      const closeTimestamp = _createTimestamp();
+      const cleanLogPath = path.join(
+        dir,
+        `${name}_until_${closeTimestamp}.jsonl`
+      );
 
       if (fs.existsSync(logFilePath)) {
         fs.renameSync(logFilePath, cleanLogPath);
@@ -178,13 +192,50 @@ module.exports = (function () {
     }
   }
 
-  function _log({ message, type = "general", level = "info" }) {
-    const logEntry = {
+  function _parseLogFilename(filename) {
+    const nameWithoutExt = filename.replace(".jsonl", "");
+    const parts = nameWithoutExt.split("_until_");
+
+    let startTimestamp;
+    let endTimestamp;
+
+    if (parts.length >= 1) {
+      const startParts = parts[0].split("_");
+      if (startParts.length >= 2) {
+        const datePart = startParts[0];
+        const timePart = startParts[1].replace(/-/g, ":");
+        startTimestamp = `${datePart}T${timePart}`;
+      }
+
+      if (parts.length >= 2) {
+        const endParts = parts[1].split("_");
+        if (endParts.length >= 2) {
+          const endDatePart = endParts[0];
+          const endTimePart = endParts[1].replace(/-/g, ":");
+          endTimestamp = `${endDatePart}T${endTimePart}`;
+        }
+      }
+    }
+
+    const startDate = startTimestamp ? +new Date(startTimestamp) : null;
+    const endDate = endTimestamp ? +new Date(endTimestamp) : null;
+
+    return { startDate, endDate };
+  }
+
+  function _log({ message, from, event, details }) {
+    // from: main2, server, api2, etc. (filename)
+    // event: create_folder, upload_file, etc. (action)
+    // details: { outcome: "success", path_to_folder }
+
+    let logEntry = {
       ts: new Date().toISOString(),
-      type: type,
-      level,
-      message,
     };
+
+    if (message) logEntry.message = message;
+    if (event) logEntry.event = event;
+    if (from) logEntry.from = from;
+    if (details) logEntry.details = details;
 
     if (!logFilePath || !isEnabled) {
       // Buffer the message until file is ready
@@ -220,6 +271,57 @@ module.exports = (function () {
     } catch (error) {
       console.error(`Failed to cleanup old journal files: ${error.message}`);
     }
+  }
+
+  async function _getLogs() {
+    // return list of all available logs
+    if (!logDirPath || !fs.existsSync(logDirPath)) return [];
+
+    let files = [];
+    try {
+      files = await fs.readdir(logDirPath);
+    } catch (error) {
+      return [];
+    }
+
+    const jsonlFiles = files.filter(
+      (filename) => path.extname(filename) === ".jsonl"
+    );
+
+    const results = await Promise.allSettled(
+      jsonlFiles.map(async (filename) => {
+        const filePath = path.join(logDirPath, filename);
+        const { startDate, endDate } = _parseLogFilename(filename);
+        const duration =
+          startDate && endDate
+            ? Math.max(0, Math.floor((endDate - startDate) / 1000))
+            : null;
+
+        let filesize = 0;
+        try {
+          const stats = await fs.stat(filePath);
+          filesize = stats.size;
+        } catch (e) {}
+
+        return {
+          filename,
+          filesize,
+          startDate,
+          endDate,
+          duration,
+          download_url: `/journal/${filename}`,
+        };
+      })
+    );
+
+    const logs = [];
+    results.forEach((result) => {
+      if (result.status === "fulfilled" && result.value) {
+        logs.push(result.value);
+      }
+    });
+
+    return logs;
   }
 
   return API;
