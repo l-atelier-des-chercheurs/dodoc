@@ -12,10 +12,9 @@ icon: build/icon.png
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
+  icon: build/icon.png
   target:
     - target: nsis
-      arch: [x64]
-    - target: appx
       arch: [x64]
 
 nsis:
@@ -39,6 +38,7 @@ appx:
 mac:
   artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
+  icon: build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
