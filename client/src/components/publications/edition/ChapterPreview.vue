@@ -127,7 +127,7 @@ export default {
     previewContent(section) {
       const sub_content = section._main_text?.$content;
       if (sub_content) {
-        return this.$sanitize(sub_content).substring(0, 200) + "...";
+        return sub_content.substring(0, 200) + "...";
       }
       return false;
     },

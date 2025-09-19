@@ -274,7 +274,8 @@ export default {
       ) {
         this.$nextTick(() => {
           if (this.content !== this.editor.root.innerHTML)
-            this.editor.root.innerHTML = this.content;
+            // this.editor.root.innerHTML = (this.content);
+            this.editor.root.innerHTML = this.$sanitize(this.content);
         });
       }
     },
