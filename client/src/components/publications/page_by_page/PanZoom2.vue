@@ -35,6 +35,9 @@ import { VueInfiniteViewer } from "vue-infinite-viewer";
 export default {
   props: {
     scale: Number,
+    contentWidth: Number,
+    contentHeight: Number,
+    magnification: Number,
   },
   components: {
     VueInfiniteViewer,
@@ -50,25 +53,9 @@ export default {
       debounce_scroll: undefined,
     };
   },
-  created() {
-    this.viewerOptions = {
-      useMouseDrag: true,
-      useWheelScroll: true,
-      useAutoZoom: true,
-      zoomRange: [0.4, 10],
-      maxPinchWheel: 10,
-
-      // does not work well: some elements become inaccessible when zoomed in, the page becomes top left bound on small zooms…
-      // rangeX: this.panzoom_rangex,
-      // rangeY: this.panzoom_rangey,
-      // rangeOffsetX: [-200, +200],
-      // rangeOffsetY: [-200, +200],
-
-      displayVerticalScroll: true,
-      displayHorizontalScroll: true,
-    };
-  },
+  created() {},
   mounted() {
+    this.updateViewerOptions();
     this.$nextTick(() => {
       this.scrollToCorner({ animate: false });
     });
@@ -83,32 +70,55 @@ export default {
   watch: {
     scale() {
       this.updateScale(this.scale);
+      this.updateViewerOptions();
+    },
+    contentWidth() {
+      this.updateViewerOptions();
+    },
+    contentHeight() {
+      this.updateViewerOptions();
+    },
+    magnification() {
+      this.updateViewerOptions();
     },
   },
-  computed: {
-    panzoom_rangex() {
-      const amplitude = this.$root.window.innerWidth - 100;
-      return [-amplitude, amplitude];
-    },
-    panzoom_rangey() {
-      const amplitude = this.$root.window.innerHeight - 100;
-      return [-amplitude, amplitude];
-    },
-  },
+  computed: {},
   methods: {
-    onScroll() {
-      // console.log("onScroll");
-      if (this.debounce_scroll) clearTimeout(this.debounce_scroll);
-      this.debounce_scroll = setTimeout(async () => {
-        this.$root.set_new_module_offset_left = Math.max(
+    updateViewerOptions() {
+      let rangeX = undefined;
+      let rangeY = undefined;
+
+      const padding = 0;
+      if (this.$el?.offsetWidth) {
+        const max_range_x = Math.max(
           0,
-          this.$refs.viewer.getScrollLeft()
+          this.contentWidth * this.magnification * this.scale
         );
-        this.$root.set_new_module_offset_top = Math.max(
+        rangeX = [-max_range_x / 4, max_range_x / 1];
+        const max_range_y = Math.max(
           0,
-          this.$refs.viewer.getScrollTop()
+          this.contentHeight * this.magnification * this.scale
         );
-      }, 500);
+        rangeY = [-max_range_y / 4, max_range_y / 1];
+      }
+
+      console.log("rangeX", JSON.stringify(rangeX));
+      console.log("rangeY", JSON.stringify(rangeY));
+
+      this.viewerOptions = {
+        useMouseDrag: true,
+        useWheelScroll: true,
+        useAutoZoom: true,
+        zoomRange: [0.4, 10],
+        maxPinchWheel: 10,
+
+        // Use content dimensions to calculate proper pan ranges
+        rangeX,
+        rangeY,
+
+        displayVerticalScroll: true,
+        displayHorizontalScroll: true,
+      };
     },
     dragStart(event) {
       console.log("dragStart");
@@ -158,6 +168,20 @@ export default {
     },
     disableActiveModule() {
       this.$eventHub.$emit("module.setActive", false);
+    },
+    onScroll() {
+      // console.log("onScroll");
+      if (this.debounce_scroll) clearTimeout(this.debounce_scroll);
+      this.debounce_scroll = setTimeout(async () => {
+        this.$root.set_new_module_offset_left = Math.max(
+          0,
+          this.$refs.viewer.getScrollLeft()
+        );
+        this.$root.set_new_module_offset_top = Math.max(
+          0,
+          this.$refs.viewer.getScrollTop()
+        );
+      }, 500);
     },
   },
 };
