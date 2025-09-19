@@ -48,6 +48,10 @@ import { jsPDF } from "jspdf";
 export default {
   props: {
     map: Object,
+    map_baselayer_bw: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
@@ -156,6 +160,9 @@ export default {
             if (canvas.width > 0) {
               const opacity = canvas.parentNode.style.opacity;
               mapContext.globalAlpha = opacity === "" ? 1 : Number(opacity);
+              // Draw the layer as usual
+              mapContext.drawImage(canvas, 0, 0);
+
               const transform = canvas.style.transform;
               // Get the transform parameters from the style's transform matrix
               const matrix = transform
@@ -189,6 +196,28 @@ export default {
           new_map_width,
           new_map_height
         );
+
+        // Apply grayscale filter if map_baselayer_bw is true
+        if (this.map_baselayer_bw) {
+          const imageData = page_context.getImageData(
+            0,
+            0,
+            page_canvas.width,
+            page_canvas.height
+          );
+          const data = imageData.data;
+
+          for (let i = 0; i < data.length; i += 4) {
+            const gray =
+              data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+            data[i] = gray; // Red
+            data[i + 1] = gray; // Green
+            data[i + 2] = gray; // Blue
+            // Alpha channel (data[i + 3]) remains unchanged
+          }
+
+          page_context.putImageData(imageData, 0, 0);
+        }
 
         this.print_options = {
           orientation,

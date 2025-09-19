@@ -161,6 +161,7 @@
         <PrintMap
           v-if="start_map_print"
           :map="map"
+          :map_baselayer_bw="map_baselayer_bw"
           @close="start_map_print = false"
         />
       </div>
