@@ -88,18 +88,15 @@ export default {
       let rangeX = undefined;
       let rangeY = undefined;
 
-      const padding = 0;
+      const padding = 50 * this.magnification;
       if (this.$el?.offsetWidth) {
-        const max_range_x = Math.max(
-          0,
-          this.contentWidth * this.magnification * this.scale
-        );
-        rangeX = [-max_range_x / 4, max_range_x / 1];
+        const max_range_x = Math.max(0, this.contentWidth * this.magnification);
+        rangeX = [-padding, max_range_x - padding];
         const max_range_y = Math.max(
           0,
-          this.contentHeight * this.magnification * this.scale
+          this.contentHeight * this.magnification
         );
-        rangeY = [-max_range_y / 4, max_range_y / 1];
+        rangeY = [-padding, max_range_y - padding];
       }
 
       console.log("rangeX", JSON.stringify(rangeX));
