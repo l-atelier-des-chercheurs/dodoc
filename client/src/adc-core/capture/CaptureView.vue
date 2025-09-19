@@ -593,7 +593,7 @@
                   @mousedown.stop.prevent="stopStopmotion()"
                   @touchstart.stop.prevent="stopStopmotion()"
                 >
-                  {{ $t("back") }}
+                  <span class>‹ {{ $t("back") }}</span>
                 </button>
               </div>
               <div>

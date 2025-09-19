@@ -1461,4 +1461,7 @@ export default {
     "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
 
   interrupt: "Interrompre",
+
+  x_images: "Aucune image | {count} image | {count} images",
+  resume: "Reprendre l’animation",
 };
