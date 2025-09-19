@@ -12,10 +12,9 @@ icon: build/icon.png
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
+  icon: build/icon.png
   target:
     - target: nsis
-      arch: [x64]
-    - target: appx
       arch: [x64]
 
 nsis:
@@ -29,8 +28,8 @@ appx:
   displayName: "do•doc"
   publisherDisplayName: "L'Atelier des Chercheurs"
   # Replace these with values from Microsoft Partner Center:
-  identityName: "YourPackageIdentityName" # Get from App Identity page in Partner Center
-  publisher: "CN=YourPublisherID" # Get from App Identity page in Partner Center
+  identityName: "do•doc" # Get from App Identity page in Partner Center
+  publisher: "CN=21DC51D1-C93D-4F1C-8596-0ADF25BB5216" # Get from App Identity page in Partner Center
   backgroundColor: "#ffffff"
   languages: ["en-US", "fr-FR", "it-IT"]
   showNameOnTiles: true
@@ -39,6 +38,7 @@ appx:
 mac:
   artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
+  icon: build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
@@ -55,12 +55,11 @@ linux:
   artifactName: dodoc-${version}-linux.${ext}
   target: AppImage
   category: Education
-  icon: build/icons/512x512.png
-  executableName: do•doc
+  icon: build/icons
+  executableName: dodoc
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
 
 appImage:
   synopsis: A documentation tool for creativity.
-  category: Game
-  desktop: dodoc-linux-desktop-entry.desktop
+  category: Education
