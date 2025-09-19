@@ -334,9 +334,15 @@ export default {
 
       if (this.content) {
         if (this.save_format === "raw") {
-          this.content = this.$sanitize(this.content);
-          this.editor.clipboard.dangerouslyPasteHTML(this.content);
-          this.editor.setContents(this.editor.getContents(), "init");
+          // const _content = this.$sanitize(this.content);
+          // this.editor.root.innerHTML = _content;
+          // this.editor.clipboard.dangerouslyPasteHTML(_content);
+          // this.editor.setContents(this.editor.getContents(), "init");
+          const normalized = this.content.replace(/\r\n?/g, "\n");
+          const text = normalized.endsWith("\n")
+            ? normalized
+            : normalized + "\n";
+          this.editor.setContents([{ insert: text }], "init");
         } else {
           // this.editor.setText(this.content);
           // this.editor.root.innerHTML = this.content;
