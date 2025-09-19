@@ -1551,17 +1551,21 @@ export default {
         case "w":
         case "z":
         case "ArrowLeft":
-          this.$eventHub.$emit("mode.set.previous");
+          this.$eventHub.$emit("capture.navigate.previous");
           break;
         case "s":
         case "ArrowRight":
-          this.$eventHub.$emit("mode.set.next");
+          this.$eventHub.$emit("capture.navigate.next");
           break;
         case "a":
         case "q":
         case " ":
           if (!this.is_recording) this.setCaptureInit();
           else this.stopRecording();
+          break;
+        case "Backspace":
+        case "Delete":
+          this.$eventHub.$emit("capture.remove");
           break;
       }
     },

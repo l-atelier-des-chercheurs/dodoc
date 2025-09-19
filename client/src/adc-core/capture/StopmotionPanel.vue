@@ -147,6 +147,7 @@
                 />
                 <template v-if="photoIsActive(media.$path)">
                   <RemoveMenu
+                    ref="removeMediaMenu"
                     :modal_title="$t('remove_this_image')"
                     @remove="removeMedia(media.$path)"
                   >
@@ -171,7 +172,11 @@
                     :title="$t('photo') + ' ' + (index + 1)"
                     @close="show_options_menu = false"
                   >
-                    <MediaContent :file="media" :resolution="1600" />
+                    <MediaContent
+                      class="_previewImage"
+                      :file="media"
+                      :resolution="1600"
+                    />
                     <div class="u-spacingBottom" />
                     <div class="u-sameRow _options">
                       <DownloadFile :file="media">
@@ -339,6 +344,9 @@ export default {
   async mounted() {
     this.$eventHub.$on("stopmotion.addImage", this.appendToStopMotion);
     this.$eventHub.$on("stopmotion.test", this.testStopmotion);
+    this.$eventHub.$on("capture.navigate.next", this.nextImage);
+    this.$eventHub.$on("capture.navigate.previous", this.prevImage);
+    this.$eventHub.$on("capture.remove", this.openRemoveImageMenu);
 
     const stopmotion = await this.$api
       .getFolder({
@@ -353,6 +361,9 @@ export default {
   beforeDestroy() {
     this.$api.leave({ room: this.current_stopmotion_path });
     this.$eventHub.$off("stopmotion.addImage", this.appendToStopMotion);
+    this.$eventHub.$off("capture.navigate.next", this.nextImage);
+    this.$eventHub.$off("capture.navigate.previous", this.prevImage);
+    this.$eventHub.$off("capture.remove", this.openRemoveImageMenu);
   },
 
   watch: {
@@ -452,6 +463,10 @@ export default {
     },
   },
   methods: {
+    openRemoveImageMenu() {
+      if (this.$refs.removeMediaMenu?.[0])
+        this.$refs.removeMediaMenu[0].show_confirm_delete = true;
+    },
     async appendToStopMotion({ imageData }) {
       const additional_meta = {};
       additional_meta.$origin = "capture";
@@ -1037,5 +1052,9 @@ export default {
 }
 ._options {
   justify-content: space-between;
+}
+._previewImage {
+  // border-radius: 2px;
+  // overflow: hidden;
 }
 </style>
