@@ -45,7 +45,12 @@
           </div>
         </div>
         <div class="_pagePan">
-          <PanZoom2 :scale.sync="scale">
+          <PanZoom2
+            :scale.sync="scale"
+            :content-width="page_width"
+            :content-height="page_height"
+            :magnification="current_page_magnification"
+          >
             <transition name="pagechange" mode="out-in">
               <div
                 class="_pageCont"
@@ -254,6 +259,10 @@ export default {
           pages.find((p) => p && p.id === this.page_opened_id)
         )
       );
+    },
+    current_page_magnification() {
+      if (this.layout_mode === "screen") return 1;
+      return this.$root.page_magnification;
     },
   },
   methods: {

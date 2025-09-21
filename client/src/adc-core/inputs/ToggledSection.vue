@@ -8,7 +8,6 @@
       @update:content="$emit('update:show_toggle', $event)"
     />
     <DLabel v-else-if="label" :str="label" />
-
     <!-- <label :for="id" class="u-label _inputLabel">
       <input
         v-if="can_toggle"

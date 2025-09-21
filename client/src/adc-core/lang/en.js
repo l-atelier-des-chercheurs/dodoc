@@ -1369,4 +1369,6 @@ export default {
   launched: "Launched on",
 
   interrupt: "Interrupt",
+  x_images: "No image | {count} image | {count} images",
+  resume: "Resume animation",
 };

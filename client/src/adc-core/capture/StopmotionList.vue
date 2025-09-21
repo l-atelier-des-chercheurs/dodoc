@@ -86,5 +86,6 @@ export default {
 <style lang="scss" scoped>
 .m_stopmotionList {
   position: relative;
+  padding-top: calc(var(--spacing) / 2);
 }
 </style>
