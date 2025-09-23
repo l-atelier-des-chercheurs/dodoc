@@ -12,7 +12,8 @@ const path = require("path"),
   crypto = require("crypto"),
   archiver = require("archiver"),
   { promisify } = require("util"),
-  fastFolderSize = require("fast-folder-size");
+  fastFolderSize = require("fast-folder-size"),
+  fetch = require("node-fetch");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -455,6 +456,76 @@ module.exports = (function () {
 
     async imageBufferToFile({ image_buffer, full_path_to_thumb }) {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
+    },
+
+    async downloadFileFromUrl({
+      url: fileUrl,
+      destination_path,
+      max_file_size_in_mo = 100,
+      timeout_ms = 30000,
+      base_url = null,
+    }) {
+      dev.logfunction({ fileUrl, destination_path });
+
+      // Handle relative URLs by combining with base_url
+      if (base_url && !fileUrl.startsWith("http")) {
+        fileUrl = new URL(fileUrl, base_url).href;
+      } else if (!fileUrl.startsWith("http")) {
+        fileUrl = utils.addhttp(fileUrl);
+      }
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await fetch(fileUrl, {
+            timeout: timeout_ms,
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; DodocBot/1.0)",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          // Check content length
+          const contentLength = response.headers.get("content-length");
+          if (
+            contentLength &&
+            parseInt(contentLength, 10) > max_file_size_in_mo * 1024 * 1024
+          ) {
+            throw new Error("File size limit exceeded");
+          }
+
+          // Get filename from URL or use default
+          const parsedUrl = new URL(fileUrl);
+          let filename = path.basename(parsedUrl.pathname);
+          if (!filename || filename === "/") {
+            filename = "downloaded-file";
+          }
+
+          // Download the file
+          const buffer = await response.buffer();
+
+          // Check actual downloaded size
+          if (buffer.length > max_file_size_in_mo * 1024 * 1024) {
+            throw new Error("File size limit exceeded");
+          }
+
+          // Ensure destination directory exists
+          await fs.ensureDir(path.dirname(destination_path));
+
+          // Write file
+          await fs.writeFile(destination_path, buffer);
+
+          resolve({
+            filename,
+            size: buffer.length,
+            path: destination_path,
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
     },
 
     async md5FromFile({ full_media_path }) {

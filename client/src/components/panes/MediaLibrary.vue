@@ -26,6 +26,7 @@
           </button>
           <UrlPicker
             v-if="show_url_picker"
+            :path="project.$path"
             @importedURL="mediasJustImported"
             @close="show_url_picker = false"
           />

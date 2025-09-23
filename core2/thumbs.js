@@ -697,7 +697,12 @@ module.exports = (function () {
     const { image } = await _getPageMetadata({ url });
     if (image) {
       try {
-        await _fetchImageAndSave({ url, image, full_path_to_thumb });
+        await utils.downloadFileFromUrl({
+          url: image,
+          destination_path: full_path_to_thumb,
+          base_url: url,
+          max_file_size_in_mo: 50, // Smaller limit for thumbnails
+        });
         return;
       } catch (err) {
         dev.error(err);
@@ -784,26 +789,6 @@ module.exports = (function () {
     if (image) page_meta.image = image;
 
     return page_meta;
-  }
-
-  async function _fetchImageAndSave({ url, image, full_path_to_thumb }) {
-    dev.logfunction({ url, image, full_path_to_thumb });
-
-    url = utils.addhttp(url);
-    const full_url = new URL(image, url).href;
-    dev.logfunction({ full_url });
-
-    let headers = {};
-    if (url.includes("https://"))
-      headers.agent = new https.Agent({
-        rejectUnauthorized: false,
-      });
-
-    const _image = await fetch(full_url);
-    const image_buffer = await _image.buffer();
-
-    await utils.imageBufferToFile({ image_buffer, full_path_to_thumb });
-    return;
   }
 
   return API;
