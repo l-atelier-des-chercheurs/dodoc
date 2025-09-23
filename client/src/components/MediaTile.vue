@@ -204,7 +204,7 @@ export default {
   &.was--focused,
   &.was--imported {
     border: 2px solid var(--c-noir);
-    margin: 4px;
+    margin: 2px;
     padding: 4px;
     // background-color: var(--c-noir);
   }

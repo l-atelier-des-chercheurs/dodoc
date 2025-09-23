@@ -16,8 +16,24 @@
             @close="files_to_import = []"
           />
         </div>
+        <div class="_importCreateTextButtons--importFromUrl">
+          <button
+            class="u-button u-button_bleumarine"
+            @click="show_url_picker = true"
+          >
+            <b-icon icon="globe" />
+            {{ $t("importer depuis un site") }}
+          </button>
+          <UrlPicker
+            v-if="show_url_picker"
+            :path="project.$path"
+            @importedURL="mediasJustImported"
+            @close="show_url_picker = false"
+          />
+        </div>
         <div class="_importCreateTextButtons--createText">
           <button class="u-button u-button_bleuvert" @click="createText">
+            <b-icon icon="fonts" />
             {{ $t("add_text") }}
           </button>
         </div>
@@ -447,6 +463,7 @@ import MediaModal from "@/components/MediaModal.vue";
 import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.vue";
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
 import BinFolder from "@/adc-core/fields/BinFolder.vue";
+import UrlPicker from "@/adc-core/modals/UrlPicker.vue";
 
 export default {
   props: {
@@ -466,9 +483,11 @@ export default {
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
     DuplicateMedia,
     BinFolder,
+    UrlPicker,
   },
   data() {
     return {
+      show_url_picker: false,
       selected_medias_paths: [],
       batch_mode: false,
       show_batch_informations_edit_modal: false,
@@ -1202,15 +1221,20 @@ export default {
   // width: 100%;
 }
 
-._importCreateTextButtons--createText {
+._importCreateTextButtons--createText,
+._importCreateTextButtons--importFromUrl {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
 
-  border: 3px dotted var(--c-bleuvert);
+  border: 3px dotted var(--c-bleumarine);
   border-radius: 10px;
   padding: calc(var(--spacing) / 2);
+
+  &._importCreateTextButtons--createText {
+    border-color: var(--c-bleuvert);
+  }
 }
 
 ._tileMode {

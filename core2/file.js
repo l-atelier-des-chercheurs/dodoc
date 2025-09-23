@@ -20,54 +20,24 @@ module.exports = (function () {
       let extracted_meta = {};
       let meta_filename = undefined;
 
-      // if req.body has content, this means there is no files to process
-      if (Object.keys(req.body) && Object.keys(req.body).length) {
-        additional_meta = req.body;
-        extracted_meta = await _initMeta({
-          additional_meta,
-        });
+      // Determine import type and get file data
+      const {
+        fileData,
+        additional_meta: _additional_meta,
+        importType,
+      } = await _determineImportType({
+        req,
+        path_to_folder,
+      });
 
-        const prefix = additional_meta.requested_slug
-          ? utils.slug(additional_meta.requested_slug)
-          : "infos";
-        meta_filename =
-          prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
-      } else {
-        const { upload_max_file_size_in_mo } =
-          await require("./settings").get();
+      additional_meta = _additional_meta;
 
-        const {
-          originalFilename,
-          path_to_temp_file,
-          user_additional_meta: _additional_meta,
-        } = await utils
-          .handleForm({
-            path_to_folder,
-            req,
-            upload_max_file_size_in_mo,
-          })
-          .catch((err) => {
-            if (err === "file_size_limit_exceeded") {
-              const err = new Error("File size limit exceeded");
-              err.code = "file_size_limit_exceeded";
-              err.err_infos = {
-                upload_max_file_size_in_mo,
-              };
-              throw err;
-            } else {
-              dev.error(`Failed to handle form`, err);
-              const err = new Error("Failed to save file");
-              err.code = "failed_to_save_file";
-              throw err;
-            }
-          });
-
-        additional_meta = _additional_meta;
-
-        let { new_path, new_filename } = await _convertOrRenameUploadedFile({
+      if (fileData) {
+        // File-based import (URL download or regular upload)
+        const { new_path, new_filename } = await _convertOrRenameUploadedFile({
           path_to_folder,
-          originalFilename,
-          path_to_temp_file,
+          originalFilename: fileData.originalFilename,
+          path_to_temp_file: fileData.path_to_temp_file,
         }).catch((err) => {
           throw err;
         });
@@ -83,13 +53,24 @@ module.exports = (function () {
           original_filename: new_filename + ".meta.txt",
         });
 
-        dev.log(`New file uploaded to`, { path_to_folder });
+        dev.log(`New file ${importType} to`, { path_to_folder });
         dev.logverbose({
           new_filename,
           new_path,
           additional_meta,
           meta_filename,
         });
+      } else {
+        // Meta-only import
+        extracted_meta = await _initMeta({
+          additional_meta,
+        });
+
+        const prefix = additional_meta.requested_slug
+          ? utils.slug(additional_meta.requested_slug)
+          : "infos";
+        meta_filename =
+          prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
       }
 
       // user added meta
@@ -818,6 +799,89 @@ module.exports = (function () {
 
   function _getBinFolderPath(path_to_folder) {
     return path.join(path_to_folder, global.settings.deletedFolderName);
+  }
+
+  async function _determineImportType({ req, path_to_folder }) {
+    dev.logfunction({ path_to_folder });
+
+    const { upload_max_file_size_in_mo } = await require("./settings").get();
+
+    // Check if req.body has content (meta-only or URL import)
+    if (Object.keys(req.body) && Object.keys(req.body).length) {
+      const additional_meta = req.body;
+
+      // Check if this is a URL import
+      if (additional_meta.url) {
+        const destination_full_folder_path =
+          utils.getPathToUserContent(path_to_folder);
+        const tempFilename = `temp_${Date.now()}_downloaded-file`;
+        const path_to_temp_file = path.join(
+          destination_full_folder_path,
+          tempFilename
+        );
+
+        const downloadResult = await utils.downloadFileFromUrl({
+          url: additional_meta.url,
+          destination_path: path_to_temp_file,
+          max_file_size_in_mo: upload_max_file_size_in_mo,
+        });
+
+        const fileData = {
+          originalFilename: downloadResult.filename,
+          path_to_temp_file: downloadResult.path,
+        };
+
+        return {
+          fileData,
+          additional_meta,
+          importType: "downloaded from URL",
+        };
+      } else {
+        // Regular meta-only import
+        return {
+          fileData: null,
+          additional_meta,
+          importType: null,
+        };
+      }
+    } else {
+      // Regular file upload
+
+      const {
+        originalFilename,
+        path_to_temp_file,
+        user_additional_meta: _additional_meta,
+      } = await utils
+        .handleForm({
+          path_to_folder,
+          req,
+          upload_max_file_size_in_mo,
+        })
+        .catch((err) => {
+          if (err === "file_size_limit_exceeded") {
+            const err = new Error("File size limit exceeded");
+            err.code = "file_size_limit_exceeded";
+            err.err_infos = {
+              upload_max_file_size_in_mo,
+            };
+            throw err;
+          } else {
+            dev.error(`Failed to handle form`, err);
+            const err = new Error("Failed to save file");
+            err.code = "failed_to_save_file";
+            throw err;
+          }
+        });
+
+      return {
+        fileData: {
+          originalFilename,
+          path_to_temp_file,
+        },
+        additional_meta: _additional_meta,
+        importType: "uploaded",
+      };
+    }
   }
 
   return API;

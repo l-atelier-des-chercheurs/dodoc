@@ -244,7 +244,7 @@ button,
   &.is--active {
     &:not([disabled]) {
       outline: 0;
-      background: var(--c-gris);
+      background: var(--active-color);
     }
   }
 }
