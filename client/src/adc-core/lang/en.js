@@ -25,6 +25,9 @@ export default {
   save: "Save",
   input_url: "URL of the website to embed",
   input_url_instr: "Enter the URL of an image to import.",
+  image_url: "URL of an image",
+  image_url_instr:
+    "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
   import_from_url: "Import from URL",
   example_image_url: "Example image URL",
   importing_from_url: "Importing from URL...",

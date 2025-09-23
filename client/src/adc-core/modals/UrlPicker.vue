@@ -9,8 +9,8 @@
     <div class="_urlPicker">
       <div class="_urlBox">
         <TextInput
-          :label_str="$t('input_url')"
-          :instructions="$t('input_url_instr')"
+          :label_str="$t('image_url')"
+          :instructions="$t('image_url_instr')"
           :content.sync="full_url"
           :placeholder="'https://example.com/image.jpg'"
           :required="true"
@@ -40,7 +40,7 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
-          :disabled="!allow_save || is_importing_url"
+          :disabled="!allow_save || is_importing_url || !is_image_url"
           @click="importFromUrl"
         >
           {{ $t("import") }}
@@ -90,6 +90,11 @@ export default {
           this.preview_url = new_url;
         }, 1000);
       }
+    },
+  },
+  computed: {
+    is_image_url() {
+      return this.isValidImageUrl(this.full_url);
     },
   },
   methods: {
@@ -183,7 +188,8 @@ export default {
 
   img {
     max-width: 100%;
-    max-height: 300px;
+    max-height: 200px;
+    margin: 0 auto;
     border-radius: 4px;
     border: 2px solid var(--c-gris);
   }

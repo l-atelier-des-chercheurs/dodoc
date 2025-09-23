@@ -26,6 +26,9 @@ export default {
   save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
+  image_url: "URL vers une image",
+  image_url_instr:
+    "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
   import_from_url: "Importer depuis une URL",
   example_image_url: "Exemple d’URL d'image",
   importing_from_url: "Importation depuis l’URL…",
