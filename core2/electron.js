@@ -14,9 +14,14 @@ const utils = require("./utils"),
   cacheManager = require("./cache-manager"),
   journal = require("./journal");
 
-app.commandLine.appendSwitch("ignore-certificate-errors", "true");
-app.commandLine.appendSwitch("allow-insecure-localhost", "true");
-app.commandLine.appendSwitch("disable-http-cache", "true");
+// Set command line switches before app is ready
+try {
+  app.commandLine.appendSwitch("ignore-certificate-errors", "true");
+  app.commandLine.appendSwitch("allow-insecure-localhost", "true");
+  app.commandLine.appendSwitch("disable-http-cache", "true");
+} catch (err) {
+  console.warn("Could not set command line switches:", err.message);
+}
 
 const windowStateKeeper = require("electron-window-state");
 const Store = require("electron-store").default;
