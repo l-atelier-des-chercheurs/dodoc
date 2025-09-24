@@ -807,7 +807,7 @@ module.exports = (function () {
     const { upload_max_file_size_in_mo } = await require("./settings").get();
 
     // Check if req.body has content (meta-only or URL import)
-    if (Object.keys(req.body) && Object.keys(req.body).length) {
+    if (req.body && Object.keys(req.body).length) {
       const additional_meta = req.body;
 
       // Check if this is a URL import
