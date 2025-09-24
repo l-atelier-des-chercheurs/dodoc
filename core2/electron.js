@@ -267,9 +267,10 @@ module.exports = (function () {
 
       if (process.platform == "darwin") {
         app.setAboutPanelOptions({
-          applicationName: global.appInfos.name,
+          applicationName: global.appInfos.productName,
           applicationVersion: app.getVersion(),
-          copyright: "Released under the free software GNU AGPL license.",
+          copyright:
+            "do•doc est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL. \n\n do•doc is a documentation tool for creativity. Released under the free software GNU AGPL license.",
         });
       }
 
