@@ -6,7 +6,7 @@ var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
-const slowDown = require("express-slow-down");
+const slowDown = require("express-slow-down").default;
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
@@ -35,9 +35,10 @@ module.exports = function () {
     delayAfter: 60,
     delayMs: () => 100,
     maxDelayMs: 1000,
-    keyGenerator: (req) => {
-      return req.ip || req.connection.remoteAddress;
-    },
+    // keyGenerator: (req) => {
+    //   // Use the proper IP address extraction for IPv6 compatibility
+    //   return req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+    // },
   });
   // Apply rate limiting only to _api2 endpoints
   app.use("/_api2", apiSpeedLimiter);
