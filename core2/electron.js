@@ -24,6 +24,7 @@ const Store = require("electron-store").default;
 module.exports = (function () {
   const store = new Store({ name: "dodoc" });
   let win;
+  let aboutModalOpening = false; // Flag to prevent multiple rapid clicks
 
   return {
     init: () => {
@@ -369,38 +370,109 @@ module.exports = (function () {
         submenu: [
           {
             label: `À propos ${global.appInfos.productName}`,
-            selector: "orderFrontStandardAboutPanel:",
+            click: () => {
+              // Prevent multiple rapid clicks
+              if (aboutModalOpening) {
+                return;
+              }
+
+              // Check if the page is ready before executing JavaScript
+              if (!win || !win.webContents) {
+                return;
+              }
+
+              aboutModalOpening = true;
+
+              // Trigger the existing About modal in the app
+              win.webContents
+                .executeJavaScript(
+                  `
+                try {
+                  // Wait for DOM to be ready
+                  if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', function() {
+                      setTimeout(openAboutModal, 100);
+                    });
+                  } else {
+                    openAboutModal();
+                  }
+                  
+                  function openAboutModal() {
+                    // Find the help button and click it to open the About modal
+                    const helpBtn = document.querySelector('.u-button._helpBtn');
+                    if (helpBtn && !helpBtn.disabled) {
+                      helpBtn.click();
+                    } else {
+                      // Fallback: try to trigger the modal directly
+                      const event = new CustomEvent('show-about-modal');
+                      window.dispatchEvent(event);
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error opening About modal:', error);
+                }
+              `
+                )
+                .catch((error) => {
+                  console.error("Failed to execute JavaScript:", error);
+                  // Fallback to native dialog if JavaScript execution fails
+                  dialog.showMessageBox(win, {
+                    type: "info",
+                    title: `À propos ${global.appInfos.productName}`,
+                    message: global.appInfos.productName,
+                    detail: `Version ${app.getVersion()}\n\n${
+                      global.appInfos.productName
+                    } est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL.\n\n${
+                      global.appInfos.productName
+                    } is a documentation tool for creativity. Released under the free software GNU AGPL license.`,
+                    buttons: ["OK"],
+                  });
+                })
+                .finally(() => {
+                  // Reset the flag after a short delay
+                  setTimeout(() => {
+                    aboutModalOpening = false;
+                  }, 1000);
+                });
+            },
+            ...(process.platform === "darwin" && {
+              selector: "orderFrontStandardAboutPanel:",
+            }),
           },
           {
             type: "separator",
           },
-          {
-            label: "Services",
-            submenu: [],
-          },
-          {
-            type: "separator",
-          },
-          {
-            label: `Cacher ${global.appInfos.productName}`,
-            accelerator: "Command+H",
-            selector: "hide:",
-          },
-          {
-            label: "Cacher les autres",
-            accelerator: "Command+Shift+H",
-            selector: "hideOtherApplications:",
-          },
-          {
-            label: "Montrer tout",
-            selector: "unhideAllApplications:",
-          },
-          {
-            type: "separator",
-          },
+          ...(process.platform === "darwin"
+            ? [
+                {
+                  label: "Services",
+                  submenu: [],
+                },
+                {
+                  type: "separator",
+                },
+                {
+                  label: `Cacher ${global.appInfos.productName}`,
+                  accelerator: "Command+H",
+                  selector: "hide:",
+                },
+                {
+                  label: "Cacher les autres",
+                  accelerator: "Command+Shift+H",
+                  selector: "hideOtherApplications:",
+                },
+                {
+                  label: "Montrer tout",
+                  selector: "unhideAllApplications:",
+                },
+                {
+                  type: "separator",
+                },
+              ]
+            : []),
           {
             label: "Quitter",
-            accelerator: "Command+Q",
+            accelerator: process.platform === "darwin" ? "Command+Q" : "Ctrl+Q",
             click: function () {
               global.ffmpeg_processes.map((f) => f.kill());
               app.quit();
@@ -413,36 +485,37 @@ module.exports = (function () {
         submenu: [
           {
             label: "Annuler",
-            accelerator: "Command+Z",
-            selector: "undo:",
+            accelerator: process.platform === "darwin" ? "Command+Z" : "Ctrl+Z",
+            role: "undo",
           },
           {
             label: "Rétablir",
-            accelerator: "Shift+Command+Z",
-            selector: "redo:",
+            accelerator:
+              process.platform === "darwin" ? "Shift+Command+Z" : "Ctrl+Y",
+            role: "redo",
           },
           {
             type: "separator",
           },
           {
             label: "Couper",
-            accelerator: "Command+X",
-            selector: "cut:",
+            accelerator: process.platform === "darwin" ? "Command+X" : "Ctrl+X",
+            role: "cut",
           },
           {
             label: "Copier",
-            accelerator: "Command+C",
-            selector: "copy:",
+            accelerator: process.platform === "darwin" ? "Command+C" : "Ctrl+C",
+            role: "copy",
           },
           {
             label: "Coller",
-            accelerator: "Command+V",
-            selector: "paste:",
+            accelerator: process.platform === "darwin" ? "Command+V" : "Ctrl+V",
+            role: "paste",
           },
           {
             label: "Sélectionner tout",
-            accelerator: "Command+A",
-            selector: "selectAll:",
+            accelerator: process.platform === "darwin" ? "Command+A" : "Ctrl+A",
+            role: "selectall",
           },
         ],
       },
@@ -451,42 +524,47 @@ module.exports = (function () {
         submenu: [
           {
             label: "Recharger",
-            accelerator: "Command+R",
+            accelerator: process.platform === "darwin" ? "Command+R" : "Ctrl+R",
             click: function () {
               BrowserWindow.getFocusedWindow()?.reload();
             },
           },
           {
             label: "Afficher les outils de développement",
-            accelerator: "Alt+Command+I",
+            accelerator:
+              process.platform === "darwin" ? "Alt+Command+I" : "F12",
             click: function () {
               BrowserWindow.getFocusedWindow()?.toggleDevTools();
             },
           },
         ],
       },
-      {
-        label: "Fenêtre",
-        submenu: [
-          {
-            label: "Réduire",
-            accelerator: "Command+M",
-            selector: "performMiniaturize:",
-          },
-          {
-            label: "Fermer",
-            accelerator: "Command+W",
-            selector: "performClose:",
-          },
-          {
-            type: "separator",
-          },
-          {
-            label: "Mettre tout au premier plan",
-            selector: "arrangeInFront:",
-          },
-        ],
-      },
+      ...(process.platform === "darwin"
+        ? [
+            {
+              label: "Fenêtre",
+              submenu: [
+                {
+                  label: "Réduire",
+                  accelerator: "Command+M",
+                  role: "minimize",
+                },
+                {
+                  label: "Fermer",
+                  accelerator: "Command+W",
+                  role: "close",
+                },
+                {
+                  type: "separator",
+                },
+                {
+                  label: "Mettre tout au premier plan",
+                  role: "front",
+                },
+              ],
+            },
+          ]
+        : []),
       {
         label: "Aide",
         submenu: [],
