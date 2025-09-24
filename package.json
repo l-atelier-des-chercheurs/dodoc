@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "electron .",
-    "debug": "electronmon --inspect=5858 . -- --debug --verbose",
+    "debug": "electron --inspect=5858 . -- --debug --verbose",
     "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
