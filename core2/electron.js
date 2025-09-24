@@ -52,7 +52,6 @@ module.exports = (function () {
 
         // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
-        debugger;
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;
@@ -115,7 +114,7 @@ module.exports = (function () {
         app.on(
           "certificate-error",
           (event, webContents, url, error, certificate, callback) => {
-            dev.logfunction(`ELECTRON — init : certificate-error`);
+            dev.logfunction(`ELECTRON — init : certificate-error for ${url}`);
             // On certificate error we disable default behaviour (stop loading the page)
             // and we then say "it is all fine - true" to the callback
             event.preventDefault();

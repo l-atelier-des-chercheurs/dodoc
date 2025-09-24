@@ -180,6 +180,18 @@ Editable default values and all custom values can only be edited by an $admins.
 
 ## Security and visibility
 
+### SSL Certificate Warning
+
+When you first open do•doc in your browser, you may see a security warning about the SSL certificate. This is normal and expected because do•doc uses a self-signed certificate for local HTTPS connections.
+
+**To proceed safely:**
+
+1. Click "Advanced" or "Show Details" in your browser
+2. Click "Proceed to localhost (unsafe)" or "Accept the risk and continue"
+3. The warning will not appear again for this session
+
+This warning appears because the certificate is self-signed (not issued by a trusted certificate authority), but it's completely safe for local use. The certificate is included with the application and is only used for local connections.
+
 ### Status
 
 Each folder and each file have a "$status" property, which defines who can read them using getFolders, getFolder, getFiles and getFile:
