@@ -1,5 +1,5 @@
 const path = require("path"),
-  chalk = require("chalk"),
+  chalk = require("chalk").default,
   journal = require("./journal");
 
 module.exports = dev = (function () {
