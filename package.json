@@ -42,7 +42,6 @@
     "cheerio": "^1.1.2",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
-    "electron-pdf-window": "^1.0.0",
     "electron-store": "^10.1.0",
     "electron-window-state": "^5.0.3",
     "eventemitter2": "^6.4.9",
