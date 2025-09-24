@@ -26,7 +26,7 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    app.use("/_api2/*", [cors(_corsCheck)]);
+    app.use("/_api2", [cors(_corsCheck)]);
 
     app.get(
       "/_api2/_networkInfos",
@@ -327,7 +327,7 @@ module.exports = (function () {
 
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
-    app.get("/*", loadIndex);
+    app.get("/", loadIndex);
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
       _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
     });
