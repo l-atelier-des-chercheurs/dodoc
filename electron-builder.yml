@@ -4,11 +4,18 @@ productName: "do•doc"
 electronVersion: "38.1.2"
 asar: true
 asarUnpack:
-  - "content/"
-  - "./node_modules/sharp/**/*"
-  - "./node_modules/@img/**/*"
-  - "./client/dist/"
+  - "content/**"
+  - "node_modules/sharp/**"
+  - "node_modules/@img/**"
+  - "client/dist/**"
 icon: build/icon.png
+
+# Exclude problematic directories to prevent pattern length issues
+files:
+  - "!**/node_modules/**/node_modules/**"
+  - "!**/.*"
+  - "!**/*.log"
+  - "!**/.DS_Store"
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
