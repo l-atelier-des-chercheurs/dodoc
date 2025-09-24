@@ -11,7 +11,8 @@ const slowDown = require("express-slow-down").default;
 const sockets = require("./sockets"),
   api2 = require("./api2"),
   journal = require("./journal"),
-  serverRTC = require("./serverRTC.js");
+  serverRTC = require("./serverRTC.js"),
+  dev = require("./dev-log");
 // cors_for_ressources = require("./cors_for_ressources"),
 
 module.exports = function () {
