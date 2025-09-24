@@ -19,12 +19,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
   desktopCapturer: async (options) => {
     const fn = "[desktopCapturer]";
     try {
+      console.log(`${fn} Getting desktop sources with options:`, options);
       const sources = await desktopCapturer.getSources(options);
+      console.log(`${fn} Found ${sources.length} sources`);
 
-      return sources.map((el) => ({
+      const processedSources = sources.map((el) => ({
         ...el,
         thumbnail: el.thumbnail.toDataURL(),
       }));
+
+      console.log(
+        `${fn} Processed sources:`,
+        processedSources.map((s) => ({ id: s.id, name: s.name }))
+      );
+      return processedSources;
     } catch (err) {
       console.error(`${fn} error getting sources: ${err}`);
       throw err;
