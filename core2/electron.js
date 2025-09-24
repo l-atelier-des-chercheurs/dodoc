@@ -21,10 +21,10 @@ app.commandLine.appendSwitch("disable-http-cache", "true");
 const electronPDFWindow = require("electron-pdf-window");
 
 const windowStateKeeper = require("electron-window-state");
-const Store = require("electron-store");
+const Store = require("electron-store").default;
 
 module.exports = (function () {
-  const store = new Store();
+  const store = new Store({ name: "dodoc" });
   let win;
 
   return {
@@ -52,6 +52,7 @@ module.exports = (function () {
 
         // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
+        debugger;
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;
