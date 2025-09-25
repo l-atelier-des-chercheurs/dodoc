@@ -230,8 +230,8 @@ export default {
 <style lang="scss" scoped>
 ._viewOptions {
   position: absolute;
-  top: calc(var(--spacing) / 1);
-  right: calc(var(--spacing) / 1);
+  top: calc(var(--spacing) / 2);
+  left: calc(44px + var(--spacing) / 2);
   margin: 0 auto;
   width: 100%;
 
@@ -244,7 +244,6 @@ export default {
   pointer-events: auto;
 
   margin: calc(var(--spacing) / 2);
-  margin-left: auto;
 
   &::before {
     position: absolute;
