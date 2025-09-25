@@ -12,8 +12,9 @@ icon: build/icon.png
 
 # Exclude problematic directories to prevent pattern length issues
 files:
-  - "!**/node_modules/**/node_modules/**"
-  - "!**/.*"
+  - "!client/node_modules/**"
+  - "!tokens.json"
+  - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"
 
