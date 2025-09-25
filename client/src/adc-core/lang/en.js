@@ -24,7 +24,6 @@ export default {
   back: "Back",
   save: "Save",
   input_url: "URL of the website to embed",
-  input_url_instr: "Enter the URL of an image to import.",
   image_url: "URL of an image",
   image_url_instr:
     "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
@@ -1366,7 +1365,6 @@ export default {
   actions: "Actions",
   session_crashed: "Session crashed",
   session_running: "Session running",
-  duration: "Duration",
 
   last_page_reached: "Last page reached",
   fonts_instr:
@@ -1398,7 +1396,6 @@ export default {
   change_base_media: "Change base media",
   change_page: "Change page",
   "click_in_video…": "Click in the video…",
-  devices_connected: "Devices connected",
   disconnect_warning: "Disconnect warning",
   failed_to_find_block_line: "Failed to find block line",
   folder_copied: "Folder copied",
