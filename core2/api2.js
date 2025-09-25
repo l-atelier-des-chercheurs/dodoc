@@ -563,10 +563,11 @@ module.exports = (function () {
     dev.logapi();
 
     try {
-      const token_path = auth.extractAndCheckToken({ req });
-
-      if (await auth.isTokenInstanceAdmin({ token_path }))
-        return next ? next() : undefined;
+      const allowed = await _canAdminFolder({
+        path_to_folder: ".",
+        req,
+      });
+      if (allowed) return next ? next() : undefined;
 
       const err = new Error("Token not allowed");
       err.code = "token_not_allowed_must_admin";

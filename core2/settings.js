@@ -30,11 +30,11 @@ module.exports = (function () {
 
 async function _getStoragePath() {
   dev.logfunction();
-  if (global.is_electron) {
-    const Store = require("electron-store").default;
-    const store = new Store({ name: "dodoc" });
-    return store.get("custom_content_path");
-  }
+  // if (global.is_electron) {
+  //   const Store = require("electron-store").default;
+  //   const store = new Store({ name: "dodoc" });
+  //   return store.get("custom_content_path");
+  // }
   return global.pathToUserContent;
 }
 
