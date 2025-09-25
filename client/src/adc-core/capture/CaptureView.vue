@@ -1865,7 +1865,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("failed_to_start_record") + "<br>" + err.message);
+            .error(this.$t("failed_to_start_recording") + "<br>" + err.message);
         }
       });
     },

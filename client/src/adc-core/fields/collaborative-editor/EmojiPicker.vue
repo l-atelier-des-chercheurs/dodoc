@@ -32,6 +32,38 @@ export default {
   components: {
     Picker,
   },
+  i18n: {
+    messages: {
+      en: {
+        emoji_search: "Search emoji",
+        emoji_not_found: "No emoji found",
+        emoji_recent: "Recent",
+        emoji_people: "People",
+        emoji_nature: "Animals and nature",
+        emoji_foods: "Foods and drinks",
+        emoji_activity: "Activities",
+        emoji_places: "Places and monuments",
+        emoji_objects: "Objects",
+        emoji_symbols: "Symbols and signs",
+        emoji_flags: "Flags",
+        emoji_custom: "Custom",
+      },
+      fr: {
+        emoji_search: "Rechercher un emoji",
+        emoji_not_found: "Aucun emoji trouvé",
+        emoji_recent: "Récents",
+        emoji_people: "Personnes",
+        emoji_nature: "Animaux et nature",
+        emoji_foods: "Aliments et boissons",
+        emoji_activity: "Activités",
+        emoji_places: "Lieux et monuments",
+        emoji_objects: "Objets",
+        emoji_symbols: "Symboles et signes",
+        emoji_flags: "Drapeaux",
+        emoji_custom: "Personnalisé",
+      },
+    },
+  },
   data() {
     return {
       emojiIndex,
