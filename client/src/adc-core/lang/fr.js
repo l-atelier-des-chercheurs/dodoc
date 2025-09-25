@@ -1472,4 +1472,5 @@ export default {
 
   x_images: "Aucune image | {count} image | {count} images",
   resume: "Reprendre l’animation",
+  compilation_started: "Création en cours…",
 };

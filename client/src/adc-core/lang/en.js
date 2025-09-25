@@ -1380,4 +1380,5 @@ export default {
   interrupt: "Interrupt",
   x_images: "No image | {count} image | {count} images",
   resume: "Resume animation",
+  compilation_started: "Creation in progress…",
 };
