@@ -963,7 +963,7 @@ module.exports = (function () {
       data,
     } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization);
-    const update_cover = req.query?.hasOwnProperty("cover");
+    const update_cover = req.query?.cover !== undefined;
 
     dev.logapi({ path_to_folder, data, update_cover });
 
