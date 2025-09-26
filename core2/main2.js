@@ -34,12 +34,11 @@ module.exports = async function () {
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const livereload =
     process.argv.length > 0 && process.argv.includes("--livereload");
-  const logToFile = false;
 
-  // Initialize dev logger without file logging first (file logging starts after content path is set)
-  dev.init({ debug, verbose, livereload, logToFile });
+  // Initialize dev logger
+  dev.init({ debug, verbose, livereload });
   journal.log({
-    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}, logToFile: ${logToFile}`,
+    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}`,
     from: "main2",
   });
 
