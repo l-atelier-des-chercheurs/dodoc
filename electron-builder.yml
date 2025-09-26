@@ -8,9 +8,9 @@ asar: true
 # into a temporary folder, but this is not very straightforward.
 asarUnpack:
   - "content/**"
-  # - "node_modules/sharp/**"
-  # - "node_modules/@img/**"
-  # - "client/dist/**"
+  - "client/dist/**"
+  # not needed, only useful in the web version (js modules, while website export uses a bundle)
+  - "!client/dist/assets/**"
 icon: build/icon.png
 
 # Exclude problematic directories to prevent pattern length issues
