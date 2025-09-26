@@ -334,6 +334,8 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
+          allowEmptyFiles: true,
+          minFileSize: 0,
           maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
