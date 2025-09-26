@@ -148,6 +148,13 @@ async function setupApp() {
     from: "main2",
   });
 
+  // Initialize auth module (tokens file creation and cleanup task)
+  await auth.init();
+  journal.log({
+    message: "Auth module initialized",
+    from: "main2",
+  });
+
   auth.createSuperadminToken();
 
   const port = await portscanner
