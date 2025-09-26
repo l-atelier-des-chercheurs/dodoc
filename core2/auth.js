@@ -11,9 +11,14 @@ module.exports = (function () {
   let superadmintoken = undefined;
   let cleanupInterval = null;
 
-  const path_to_tokens = path.join(global.appRoot, "tokens.json");
+  const path_to_tokens = path.join(global.pathToUserContent, "tokens.json");
   (async () => {
     try {
+      // Ensure tokens.json exists, create it if it doesn't
+      if (!(await fs.pathExists(path_to_tokens))) {
+        await writeFileAtomic(path_to_tokens, JSON.stringify({}, null, 2));
+      }
+
       const _tokens = await fs
         .readFile(path_to_tokens, "UTF-8")
         .catch((err) => {});
