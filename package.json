@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
-    "electron": "38.1.2",
+    "electron": "37.5.1",
     "electron-builder": "^26.0.12",
     "electronmon": "^2.0.3",
     "node-gyp": "^11.4.2"
