@@ -2,15 +2,15 @@ appId: "dodoc"
 productName: "do•doc"
 
 electronVersion: "37.5.1"
-asar: false
+asar: true
 # asar disabled for now, because it's not working with the content folder
 # paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
 # into a temporary folder, but this is not very straightforward.
 asarUnpack:
   - "content/**"
-  - "node_modules/sharp/**"
-  - "node_modules/@img/**"
-  - "client/dist/**"
+  # - "node_modules/sharp/**"
+  # - "node_modules/@img/**"
+  # - "client/dist/**"
 icon: build/icon.png
 
 # Exclude problematic directories to prevent pattern length issues
