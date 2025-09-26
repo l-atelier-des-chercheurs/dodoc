@@ -234,6 +234,8 @@ export default {
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
     // Add scroll event listener
     window.addEventListener("scroll", this.handleScroll);
+    // Add custom event listener for menu-triggered About modal
+    window.addEventListener("show-about-modal", this.showCredits);
 
     if (this.connected_as) {
       await this.loadChatsAndDisplayUnreadMessages();
@@ -246,6 +248,8 @@ export default {
 
     // Remove scroll event listener
     window.removeEventListener("scroll", this.handleScroll);
+    // Remove custom event listener for menu-triggered About modal
+    window.removeEventListener("show-about-modal", this.showCredits);
   },
   watch: {
     $route: {

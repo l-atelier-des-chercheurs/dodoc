@@ -1,14 +1,25 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "35.0.0"
+electronVersion: "37.5.1"
 asar: true
+# asar disabled for now, because it's not working with the content folder
+# paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
+# into a temporary folder, but this is not very straightforward.
 asarUnpack:
-  - "content/"
-  - "./node_modules/sharp/**/*"
-  - "./node_modules/@img/**/*"
-  - "./client/dist/"
+  - "content/**"
+  - "client/dist/**"
+  # not needed, only useful in the web version (js modules, while website export uses a bundle)
+  - "!client/dist/assets/**"
 icon: build/icon.png
+
+# Exclude problematic directories to prevent pattern length issues
+files:
+  - "!client/node_modules/**"
+  - "!tokens.json"
+  - "!settings.json"
+  - "!**/*.log"
+  - "!**/.DS_Store"
 
 win:
   artifactName: dodoc-${version}-windows.${ext}

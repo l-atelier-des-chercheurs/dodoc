@@ -233,10 +233,10 @@ export default {
           key: "it",
           text: "Italian",
         },
-        {
-          key: "fon",
-          text: "Fon (in progress)",
-        },
+        // {
+        //   key: "fon",
+        //   text: "Fon (in progress)",
+        // },
         // {
         //   key: "de",
         //   text: "Deutsch",

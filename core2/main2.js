@@ -34,12 +34,11 @@ module.exports = async function () {
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
   const livereload =
     process.argv.length > 0 && process.argv.includes("--livereload");
-  const logToFile = false;
 
-  // Initialize dev logger without file logging first (file logging starts after content path is set)
-  dev.init({ debug, verbose, livereload, logToFile });
+  // Initialize dev logger
+  dev.init({ debug, verbose, livereload });
   journal.log({
-    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}, logToFile: ${logToFile}`,
+    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}`,
     from: "main2",
   });
 
@@ -146,6 +145,13 @@ async function setupApp() {
   global.can_send_email = mail.canSendMail();
   journal.log({
     message: "Can send email: " + global.can_send_email,
+    from: "main2",
+  });
+
+  // Initialize auth module (tokens file creation and cleanup task)
+  await auth.init();
+  journal.log({
+    message: "Auth module initialized",
     from: "main2",
   });
 

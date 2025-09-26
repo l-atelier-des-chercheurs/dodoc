@@ -1,5 +1,5 @@
 <template>
-  <div class="_mapTemplate">
+  <div class="_mapTemplate" :data-public-view="!can_edit">
     <MapView
       :publication="publication"
       :opened_view_meta_filename="opened_view_meta_filename"
@@ -48,5 +48,9 @@ export default {
   position: relative;
   width: 100%;
   height: calc(100vh - 96px);
+
+  &[data-public-view="true"] {
+    height: calc(100vh - 52px);
+  }
 }
 </style>

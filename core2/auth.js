@@ -10,30 +10,44 @@ module.exports = (function () {
   let tokens = {};
   let superadmintoken = undefined;
   let cleanupInterval = null;
-
-  const path_to_tokens = path.join(global.appRoot, "tokens.json");
-  (async () => {
-    try {
-      const _tokens = await fs
-        .readFile(path_to_tokens, "UTF-8")
-        .catch((err) => {});
-      if (_tokens) tokens = JSON.parse(_tokens);
-
-      // Start cleanup interval (run every hour)
-      cleanupInterval = setInterval(() => {
-        API.removeObsoleteTokens().catch((err) => {
-          console.error("Error during token cleanup:", err);
-        });
-      }, 60 * 60 * 1000); // 1 hour in milliseconds
-
-      // Run initial cleanup
-      API.removeObsoleteTokens().catch((err) => {
-        console.error("Error during initial token cleanup:", err);
-      });
-    } catch (err) {}
-  })();
+  let path_to_tokens = null;
 
   const API = {
+    async init() {
+      try {
+        // Set up the path to tokens file
+        path_to_tokens = path.join(global.pathToUserContent, "tokens.json");
+
+        // Ensure tokens.json exists, create it if it doesn't
+        if (!(await fs.pathExists(path_to_tokens))) {
+          await writeFileAtomic(path_to_tokens, JSON.stringify({}, null, 2));
+        }
+
+        // Load existing tokens
+        const _tokens = await fs
+          .readFile(path_to_tokens, "UTF-8")
+          .catch((err) => {});
+        if (_tokens) tokens = JSON.parse(_tokens);
+
+        // Start cleanup interval (run every hour)
+        cleanupInterval = setInterval(() => {
+          API.removeObsoleteTokens().catch((err) => {
+            console.error("Error during token cleanup:", err);
+          });
+        }, 60 * 60 * 1000); // 1 hour in milliseconds
+
+        // Run initial cleanup
+        await API.removeObsoleteTokens().catch((err) => {
+          console.error("Error during initial token cleanup:", err);
+        });
+
+        console.log("Auth module initialized successfully");
+      } catch (err) {
+        console.error("Error initializing auth module:", err);
+        throw err;
+      }
+    },
+
     async createAndStoreToken({
       path_to_folder,
       purpose = "auth",
@@ -156,6 +170,9 @@ module.exports = (function () {
       return paths && Array.isArray(paths) && paths.includes(token_path);
     },
     async updateTokensFile() {
+      if (!path_to_tokens) {
+        throw new Error("Auth module not initialized. Call auth.init() first.");
+      }
       await writeFileAtomic(path_to_tokens, JSON.stringify(tokens, null, 2));
     },
 

@@ -879,10 +879,13 @@ module.exports = (function () {
       });
     },
     async hasAudioTrack({ ffmpeg_cmd, video_path }) {
-      const { streams } = await API.getVideoMetaData({ path: video_path });
-      return resolve(
-        streams?.filter((s) => s.codec_type === "audio").length > 0
-      );
+      try {
+        const { streams } = await API.getVideoMetaData({ path: video_path });
+        return streams?.some((s) => s.codec_type === "audio");
+      } catch (err) {
+        dev.error("Error getting video metadata in hasAudioTrack:", err);
+        return false;
+      }
     },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {

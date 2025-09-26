@@ -145,9 +145,6 @@ export default {
         this.edit_mode = false;
         this.is_saving = false;
         this.path_is_changed = true;
-
-        this.new_path = undefined;
-        this.path_to_storage = await this.$api.getStoragePath();
       } catch (e) {
         this.is_saving = false;
 

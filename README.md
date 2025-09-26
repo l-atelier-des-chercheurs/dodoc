@@ -28,13 +28,13 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 # Branches
 
-- **main** --> default branch, latest stable version (currently v11), in Electron (offline app). See release page for Linux/Mac/Windows installers.
+- **main** --> default branch, latest stable version, in Electron (offline app). See release page for Linux/Mac/Windows installers.
 - **main-node** --> latest stable version without Electron, to use on online servers.
 
 - **main-dev** --> fixes and small improvements on top of the current version, in Electron. Used for testing before merging changes to **main**.
 - **main-dev-node** --> fixes and small improvements on top of the current version, for servers. Used for testing before merging changes to - **main-node**.
 
-- **next** --> code for the next major version (v11), in Electron. Use at your own risks.
+- **next** --> code for the next major version, in Electron. Use at your own risks.
 - **next-node** --> code for the next major version, without Electron. Use at your own risks.
 
 Note 1: on Ubuntu up to 24.04, you may need to install the dependency sharp 0.31.3 as the most recent version (0.33.5) is not compatible.
@@ -179,6 +179,18 @@ Custom values can be defined in the schema property in settings_base.json.
 Editable default values and all custom values can only be edited by an $admins.
 
 ## Security and visibility
+
+### SSL Certificate Warning
+
+When you first open do•doc in your browser, you may see a security warning about the SSL certificate. This is normal and expected because do•doc uses a self-signed certificate for local HTTPS connections.
+
+**To proceed safely:**
+
+1. Click "Advanced" or "Show Details" in your browser
+2. Click "Proceed to localhost (unsafe)" or "Accept the risk and continue"
+3. The warning will not appear again for this session
+
+This warning appears because the certificate is self-signed (not issued by a trusted certificate authority), but it's completely safe for local use. The certificate is included with the application and is only used for local connections.
 
 ### Status
 

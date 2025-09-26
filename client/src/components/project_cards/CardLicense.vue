@@ -115,7 +115,11 @@ export default {
   },
   computed: {
     has_items() {
-      return !!(this.project.license || this.project.authors_list);
+      return !!(
+        this.project.license ||
+        this.project.authors_list ||
+        this.project.$can_be_remixed
+      );
     },
   },
   methods: {},

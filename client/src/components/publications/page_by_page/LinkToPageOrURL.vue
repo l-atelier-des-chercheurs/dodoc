@@ -28,19 +28,6 @@
 
       <EditBtn :label_position="'right'" @click="show_page_select = true" />
 
-      <!-- <button
-        type="button"
-        class="u-buttonLink"
-        @click="show_page_select = true"
-      >
-        <b-icon icon="arrow-left-right" />
-        <template v-if="content_page_id">
-          {{ $t("change_page") }}
-        </template>
-        <template v-else>
-          {{ $t("select_page") }}
-        </template>
-      </button> -->
       <SelectPage
         v-if="show_page_select"
         :pages="pages"

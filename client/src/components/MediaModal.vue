@@ -340,7 +340,12 @@
               @click="show_optimize_modal = true"
             >
               <b-icon :icon="'file-play-fill'" />
-              {{ $t("optimize_resize") }}
+              <template v-if="file.$type === 'image'">
+                {{ $t("optimize_resize") }}
+              </template>
+              <template v-else>
+                {{ $t("convert_shorten") }}
+              </template>
             </button>
 
             <div v-for="make in available_makes" :key="make.type">

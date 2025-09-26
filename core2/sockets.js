@@ -16,7 +16,6 @@ const dev = require("./dev-log"),
   users = require("./users");
 
 module.exports = (function () {
-  dev.log(`Sockets module initialized`);
   let io;
 
   const API = {
@@ -24,6 +23,7 @@ module.exports = (function () {
   };
 
   function init(server) {
+    dev.log(`Sockets module initialized`);
     io = new Server(server, {
       cookie: false,
       serveClient: false,

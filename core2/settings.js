@@ -30,19 +30,19 @@ module.exports = (function () {
 
 async function _getStoragePath() {
   dev.logfunction();
-  if (global.is_electron) {
-    const Store = require("electron-store");
-    const store = new Store();
-    return store.get("custom_content_path");
-  }
+  // if (global.is_electron) {
+  //   const Store = require("electron-store").default;
+  //   const store = new Store({ name: "dodoc" });
+  //   return store.get("custom_content_path");
+  // }
   return global.pathToUserContent;
 }
 
 async function _saveNewPathToUserContent({ path }) {
   dev.logfunction({ path });
   try {
-    const Store = require("electron-store");
-    const store = new Store();
+    const Store = require("electron-store").default;
+    const store = new Store({ name: "dodoc" });
     store.set("custom_content_path", path);
   } catch (err) {
     throw new Error(`option_only_available_in_electron`);

@@ -3,8 +3,7 @@ const path = require("path"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https"),
-  writeFileAtomic = require("write-file-atomic");
+  https = require("https");
 
 const utils = require("./utils"),
   webpreview = require("./webpreview");

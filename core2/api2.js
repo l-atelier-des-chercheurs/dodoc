@@ -26,7 +26,7 @@ module.exports = (function () {
 
     app.get("/_perf", loadPerf);
 
-    app.use("/_api2/*", [cors(_corsCheck)]);
+    app.use("/_api2/{*index}", [cors(_corsCheck)]);
 
     app.get(
       "/_api2/_networkInfos",
@@ -327,7 +327,7 @@ module.exports = (function () {
 
     app.get("/site.webmanifest", _loadManifest);
     app.get("/robots.txt", _loadRobots);
-    app.get("/*", loadIndex);
+    app.get("/{*index}", loadIndex);
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
       _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
     });
@@ -563,10 +563,11 @@ module.exports = (function () {
     dev.logapi();
 
     try {
-      const token_path = auth.extractAndCheckToken({ req });
-
-      if (await auth.isTokenInstanceAdmin({ token_path }))
-        return next ? next() : undefined;
+      const allowed = await _canAdminFolder({
+        path_to_folder: ".",
+        req,
+      });
+      if (allowed) return next ? next() : undefined;
 
       const err = new Error("Token not allowed");
       err.code = "token_not_allowed_must_admin";
@@ -963,7 +964,7 @@ module.exports = (function () {
       data,
     } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization);
-    const update_cover = req.query?.hasOwnProperty("cover");
+    const update_cover = req.query?.cover !== undefined;
 
     dev.logapi({ path_to_folder, data, update_cover });
 
@@ -1604,20 +1605,30 @@ module.exports = (function () {
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
       else if (path_to_destination_type !== path_to_type) {
         // todo check for auth to copy folder
-        const path_to_parent_folder = utils.getContainingFolder(
-          path_to_destination_type
-        );
-        const allowed = await _canContributeToFolder({
-          path_to_folder: path_to_parent_folder,
-          req,
+        // todo check if $can_be_remixed is true
+        const folder_meta = await folder.getFolder({
+          path_to_folder,
         });
-        if (!allowed) {
-          const err = new Error(
-            "Destination folder not open to user contribution"
-          );
-          err.code = "not_allowed_to_remix_folder";
+        if (!folder_meta.$can_be_remixed) {
+          const err = new Error("Folder is not open to remix");
+          err.code = "source_folder_not_open_to_remix";
           throw err;
         }
+      }
+
+      const path_to_parent_folder = utils.getContainingFolder(
+        path_to_destination_type
+      );
+      const allowed = await _canContributeToFolder({
+        path_to_folder: path_to_parent_folder,
+        req,
+      });
+      if (!allowed) {
+        const err = new Error(
+          "Destination folder not open to user contribution"
+        );
+        err.code = "destination_folder_not_open_to_user_contribution";
+        throw err;
       }
 
       const path_to_source_folder = path_to_folder;
