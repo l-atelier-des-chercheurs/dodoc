@@ -4,8 +4,7 @@ const path = require("path");
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 const packagejson = require("./package.json"),
-  base_settings = require("./settings_base.json"),
-  journal = require("./core2/journal");
+  base_settings = require("./settings_base.json");
 
 global.appRoot = path.resolve(__dirname);
 global.appInfos = {
