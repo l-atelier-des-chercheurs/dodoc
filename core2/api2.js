@@ -1605,20 +1605,30 @@ module.exports = (function () {
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
       else if (path_to_destination_type !== path_to_type) {
         // todo check for auth to copy folder
-        const path_to_parent_folder = utils.getContainingFolder(
-          path_to_destination_type
-        );
-        const allowed = await _canContributeToFolder({
-          path_to_folder: path_to_parent_folder,
-          req,
+        // todo check if $can_be_remixed is true
+        const folder_meta = await folder.getFolder({
+          path_to_folder,
         });
-        if (!allowed) {
-          const err = new Error(
-            "Destination folder not open to user contribution"
-          );
-          err.code = "not_allowed_to_remix_folder";
+        if (!folder_meta.$can_be_remixed) {
+          const err = new Error("Folder is not open to remix");
+          err.code = "source_folder_not_open_to_remix";
           throw err;
         }
+      }
+
+      const path_to_parent_folder = utils.getContainingFolder(
+        path_to_destination_type
+      );
+      const allowed = await _canContributeToFolder({
+        path_to_folder: path_to_parent_folder,
+        req,
+      });
+      if (!allowed) {
+        const err = new Error(
+          "Destination folder not open to user contribution"
+        );
+        err.code = "destination_folder_not_open_to_user_contribution";
+        throw err;
       }
 
       const path_to_source_folder = path_to_folder;

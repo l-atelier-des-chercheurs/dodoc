@@ -363,7 +363,7 @@ module.exports = (function () {
       // check for field uniqueness
       await _cleanFields({
         meta: new_meta,
-        path_to_type,
+        path_to_type: path_to_destination_type,
         context: "update",
       });
 
@@ -394,7 +394,7 @@ module.exports = (function () {
       });
 
       await API.updateFolder({
-        path_to_type,
+        path_to_type: path_to_destination_type,
         path_to_folder: path_to_destination_folder,
         admin_meta: {
           $date_created: utils.getCurrentDate(),

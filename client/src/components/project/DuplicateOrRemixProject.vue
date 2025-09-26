@@ -174,7 +174,7 @@ export default {
             new_meta,
           });
         }
-      } catch (err_code) {
+      } catch ({ code: err_code }) {
         if (err_code === "unique_field_taken") {
           this.$alertify.delay(4000).error(this.$t("title_taken"));
           this.$refs.titleInput.$el.querySelector("input").select();
@@ -182,7 +182,20 @@ export default {
           this.$alertify
             .delay(4000)
             .error(this.$t("not_allowed_to_copy_to_space"));
+        } else if (err_code === "source_folder_not_open_to_remix") {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("not_allowed_to_remix_folder"));
+        } else if (
+          err_code === "destination_folder_not_open_to_user_contribution"
+        ) {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("not_allowed_to_copy_to_space"));
         }
+
+        debugger;
+
         this.is_copying = false;
         throw "fail";
       }
