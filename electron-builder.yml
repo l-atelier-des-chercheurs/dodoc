@@ -9,6 +9,8 @@ asar: true
 asarUnpack:
   - "content/**"
   - "client/dist/**"
+  - "node_modules/sharp"
+  - "node_modules/@img"
   # not needed, only useful in the web version (js modules, while website export uses a bundle)
   - "!client/dist/assets/**"
 icon: build/icon.png
