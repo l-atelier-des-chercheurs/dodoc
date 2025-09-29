@@ -323,7 +323,7 @@ module.exports = (function () {
         return acc;
       }, {});
 
-      if (update_cover_req && data) {
+      if (update_cover_req) {
         await _updateCover({
           path_to_folder,
           data,
@@ -542,7 +542,7 @@ module.exports = (function () {
     await thumbs.removeFolderCover({ path_to_folder });
     await fs.remove(full_path_to_thumb);
 
-    if (data.hasOwnProperty("path_to_meta")) {
+    if (data?.hasOwnProperty("path_to_meta")) {
       if (data.path_to_meta === "") return;
 
       const path_to_meta = utils.convertToLocalPath(data.path_to_meta);
