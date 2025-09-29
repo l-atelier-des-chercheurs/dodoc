@@ -36,7 +36,6 @@ module.exports = (function () {
   }
 
   function _setupLogFile() {
-    dev.logfunction();
     try {
       logDirPath = path.join(global.pathToUserContent, "journal");
 
@@ -124,24 +123,13 @@ module.exports = (function () {
   }
 
   function _handleCleanShutdown() {
-    const shutdownEntry = {
-      ts: new Date().toISOString(),
-      type: "general",
-      level: "info",
-      message: "DODOC CLEAN SHUTDOWN",
-    };
-
-    if (!logFilePath || !isEnabled) {
-      // If file not ready, add to buffer (though unlikely during shutdown)
-      pendingMessages.push(JSON.stringify(shutdownEntry) + "\n");
-      return;
-    }
-
     try {
-      fs.appendFileSync(logFilePath, JSON.stringify(shutdownEntry) + "\n");
-
-      // Rename file to indicate clean shutdown
-      _renameToCleanShutdown();
+      _log({
+        message: "DODOC CLEAN SHUTDOWN",
+        type: "general",
+        event: "shutdown",
+        from: "journal",
+      });
     } catch (error) {
       console.error(`Failed to write clean shutdown message: ${error.message}`);
     }
@@ -169,23 +157,18 @@ module.exports = (function () {
 
   function _writeCrashInfo(crashType, error) {
     const errorMessage = error?.message || error?.toString() || "Unknown error";
-    const crashEntry = {
-      ts: new Date().toISOString(),
-      type: "general",
-      level: "crash",
-      message: `DODOC CRASHED (${crashType})`,
-      error: errorMessage,
-      stack: error?.stack || null,
-    };
-
-    if (!logFilePath || !isEnabled) {
-      // If file not ready, add to buffer
-      pendingMessages.push(JSON.stringify(crashEntry) + "\n");
-      return;
-    }
 
     try {
-      fs.appendFileSync(logFilePath, JSON.stringify(crashEntry) + "\n");
+      _log({
+        message: `DODOC CRASHED (${crashType})`,
+        type: "general",
+        event: "crash",
+        from: "journal",
+        details: {
+          error: errorMessage,
+          stack: error?.stack || null,
+        },
+      });
       // Note: Don't rename file - leave it without suffix to indicate crash
     } catch (writeError) {
       // Silent failure in crash handler
