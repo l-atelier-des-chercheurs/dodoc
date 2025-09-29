@@ -23,6 +23,10 @@ module.exports = async function () {
   console.log(infos);
   journal.log({ message: infos, from: "main2" });
 
+  // Log all dependencies with their installed versions
+  console.log(utils.getDependenciesWithVersions());
+  journal.log({ message: utils.getDependenciesWithVersions(), from: "main2" });
+
   // setInterval(() => {
   //   const usedHeapSize = process.memoryUsage().heapUsed;
   //   const totalHeapSize = v8.getHeapStatistics().total_available_size;
