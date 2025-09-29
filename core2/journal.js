@@ -78,31 +78,29 @@ module.exports = (function () {
     if (shutdownHandlersRegistered) return;
 
     // Handle normal process exit
-    process.on("exit", () => {
-      _renameToCleanShutdown();
-    });
+    process.on("exit", async () => {});
 
     // Handle SIGTERM (normal termination)
-    process.on("SIGTERM", () => {
-      _handleCleanShutdown();
+    process.on("SIGTERM", async () => {
+      await _handleCleanShutdown();
       process.exit(0);
     });
 
     // Handle SIGINT (Ctrl+C)
-    process.on("SIGINT", () => {
-      _handleCleanShutdown();
+    process.on("SIGINT", async () => {
+      await _handleCleanShutdown();
       process.exit(0);
     });
 
     // Handle uncaught exceptions (crashes) - don't rename file
-    process.on("uncaughtException", (error) => {
-      _writeCrashInfo("uncaughtException", error);
+    process.on("uncaughtException", async (error) => {
+      await _writeCrashInfo("uncaughtException", error);
       process.exit(1);
     });
 
     // Handle unhandled promise rejections (potential crashes) - don't rename file
-    process.on("unhandledRejection", (reason, promise) => {
-      _writeCrashInfo("unhandledRejection", reason);
+    process.on("unhandledRejection", async (reason, promise) => {
+      await _writeCrashInfo("unhandledRejection", reason);
       process.exit(1);
     });
 
@@ -110,32 +108,33 @@ module.exports = (function () {
     if (global.is_electron) {
       const { app } = require("electron");
 
-      app.on("before-quit", () => {
-        _handleCleanShutdown();
+      app.on("before-quit", async () => {
+        await _handleCleanShutdown();
       });
 
-      app.on("window-all-closed", () => {
-        _handleCleanShutdown();
+      app.on("window-all-closed", async () => {
+        await _handleCleanShutdown();
       });
     }
 
     shutdownHandlersRegistered = true;
   }
 
-  function _handleCleanShutdown() {
+  async function _handleCleanShutdown() {
     try {
-      _log({
+      await _log({
         message: "DODOC CLEAN SHUTDOWN",
         type: "general",
         event: "shutdown",
         from: "journal",
       });
+      await _renameToCleanShutdown();
     } catch (error) {
       console.error(`Failed to write clean shutdown message: ${error.message}`);
     }
   }
 
-  function _renameToCleanShutdown() {
+  async function _renameToCleanShutdown() {
     if (!logFilePath || !isEnabled) return;
 
     try {
@@ -148,18 +147,18 @@ module.exports = (function () {
       );
 
       if (fs.existsSync(logFilePath)) {
-        fs.renameSync(logFilePath, cleanLogPath);
+        await fs.rename(logFilePath, cleanLogPath);
       }
     } catch (error) {
       // Silent failure - don't want to crash during shutdown
     }
   }
 
-  function _writeCrashInfo(crashType, error) {
+  async function _writeCrashInfo(crashType, error) {
     const errorMessage = error?.message || error?.toString() || "Unknown error";
 
     try {
-      _log({
+      await _log({
         message: `DODOC CRASHED (${crashType})`,
         type: "general",
         event: "crash",
@@ -206,7 +205,7 @@ module.exports = (function () {
     return { startDate, endDate };
   }
 
-  function _log({ message, from, event, details }) {
+  async function _log({ message, from, event, details }) {
     // from: main2, server, api2, etc. (filename)
     // event: create_folder, upload_file, etc. (action)
     // details: { outcome: "success", path_to_folder }
@@ -227,7 +226,7 @@ module.exports = (function () {
     }
 
     try {
-      fs.appendFileSync(logFilePath, JSON.stringify(logEntry) + "\n");
+      await fs.appendFile(logFilePath, JSON.stringify(logEntry) + "\n");
     } catch (error) {
       console.error(`Failed to write to journal file: ${error.message}`);
     }
