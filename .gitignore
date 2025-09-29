@@ -39,5 +39,4 @@ changelog.csv
 access.csv
 client/dist/report.html
 tokens.json
-dist/builder-effective-config.yaml
-dist/builder-debug.yml
+dist/
