@@ -435,6 +435,10 @@ export default {
     page-break-after: always;
   }
 
+  &:last-child {
+    page-break-after: avoid !important;
+  }
+
   ::v-deep {
     ._singlePage {
       > ._pagecontainer {
@@ -551,6 +555,7 @@ export default {
 }
 </style>
 <style lang="scss">
+html,
 body {
   @media print {
     width: var(--page-width);
