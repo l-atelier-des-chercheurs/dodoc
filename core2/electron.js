@@ -206,7 +206,6 @@ module.exports = (function () {
           },
           pageSize,
           printBackground: true,
-          printSelectionOnly: false,
         });
 
         reportProgress(80);
@@ -333,6 +332,7 @@ module.exports = (function () {
       userAgent: "facebookexternalhit/1.1",
     });
     win.webContents.setAudioMuted(true);
+    win.webContents.setZoomLevel(1);
 
     try {
       await new Promise((resolve, reject) => {
