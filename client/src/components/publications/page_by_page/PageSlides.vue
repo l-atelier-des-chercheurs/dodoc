@@ -245,7 +245,7 @@ export default {
     else if (this.publication.layout_mode === "print")
       document.body.style = `
           --page-width: ${this.publication.page_width}mm;
-          --page-height: calc(${this.publication.page_height}mm - 0.4mm);
+          --page-height: calc(${this.publication.page_height}mm - 0mm);
         `;
     document.addEventListener("keydown", this.keyPressed);
 
