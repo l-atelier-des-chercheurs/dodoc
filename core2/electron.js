@@ -177,6 +177,7 @@ module.exports = (function () {
       recipe,
       bw_pagesize,
       printToPDF_pagesize,
+      number_of_pages_to_export,
       reportProgress,
     }) => {
       let win;
@@ -197,7 +198,7 @@ module.exports = (function () {
           height: printToPDF_pagesize.height / 10 / 2.54,
         };
 
-        const data = await win.webContents.printToPDF({
+        const options = {
           margins: {
             top: 0,
             bottom: 0,
@@ -206,17 +207,23 @@ module.exports = (function () {
           },
           pageSize,
           printBackground: true,
-        });
+        };
+
+        if (number_of_pages_to_export) {
+          options.pageRanges = `1-${number_of_pages_to_export}`;
+        }
+
+        const pdf_data = await win.webContents.printToPDF(options);
 
         reportProgress(80);
 
         const full_path_to_pdf = await utils.createUniqueFilenameInCache("pdf");
-        await writeFileAtomic(full_path_to_pdf, data);
+        await writeFileAtomic(full_path_to_pdf, pdf_data);
 
         reportProgress(90);
         return full_path_to_pdf;
       } else if (recipe === "png") {
-        const data = await win.webContents.capturePage();
+        const png_data = await win.webContents.capturePage();
 
         reportProgress(80);
 
@@ -224,7 +231,7 @@ module.exports = (function () {
           "png"
         );
         await utils.convertAndCopyImage({
-          source: data.toPNG(1.0),
+          source: png_data.toPNG(1.0),
           destination: full_path_to_image,
           width: bw_pagesize.width,
           height: bw_pagesize.height,

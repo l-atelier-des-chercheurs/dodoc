@@ -264,6 +264,7 @@ export default {
             : this.current_spread_number;
         else if (this.pdf_pages_to_export_mode === "custom")
           instructions.page = this.specific_pdf_page_or_spread_to_export;
+        else instructions.page = "1-" + this.total_number_of_pages;
       }
 
       if (this.is_spread) instructions.page_width *= 2;
