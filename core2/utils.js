@@ -334,6 +334,8 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
+          allowEmptyFiles: true,
+          minFileSize: 0,
           maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
@@ -953,6 +955,55 @@ module.exports = (function () {
       } catch (err) {
         dev.error(err);
         return "download.zip";
+      }
+    },
+
+    getDependenciesWithVersions() {
+      try {
+        const packageJsonPath = path.join(global.appRoot, "package.json");
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath, "utf8")
+        );
+
+        const allDependencies = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+          ...packageJson.optionalDependencies,
+        };
+
+        // Get actual installed versions from node_modules
+        const installedVersions = [];
+        for (const [depName, requiredVersion] of Object.entries(
+          allDependencies
+        )) {
+          try {
+            const depPackageJsonPath = path.join(
+              global.appRoot,
+              "node_modules",
+              depName,
+              "package.json"
+            );
+            if (fs.existsSync(depPackageJsonPath)) {
+              const depPackageJson = JSON.parse(
+                fs.readFileSync(depPackageJsonPath, "utf8")
+              );
+              installedVersions.push(`${depName}:${depPackageJson.version}`);
+            } else {
+              installedVersions.push(`${depName}:NOT_INSTALLED`);
+            }
+          } catch (err) {
+            installedVersions.push(`${depName}:ERROR_READING`);
+          }
+        }
+
+        // Sort dependencies alphabetically
+        installedVersions.sort((a, b) =>
+          a.split(":")[0].localeCompare(b.split(":")[0])
+        );
+
+        return installedVersions.join(", ");
+      } catch (err) {
+        return `Error reading dependencies: ${err.message}`;
       }
     },
   };

@@ -245,7 +245,7 @@ export default {
     else if (this.publication.layout_mode === "print")
       document.body.style = `
           --page-width: ${this.publication.page_width}mm;
-          --page-height: calc(${this.publication.page_height}mm - 0.4mm);
+          --page-height: calc(${this.publication.page_height}mm - 0mm);
         `;
     document.addEventListener("keydown", this.keyPressed);
 
@@ -435,6 +435,10 @@ export default {
     page-break-after: always;
   }
 
+  &:last-child {
+    page-break-after: avoid !important;
+  }
+
   ::v-deep {
     ._singlePage {
       > ._pagecontainer {
@@ -551,6 +555,7 @@ export default {
 }
 </style>
 <style lang="scss">
+html,
 body {
   @media print {
     width: var(--page-width);
