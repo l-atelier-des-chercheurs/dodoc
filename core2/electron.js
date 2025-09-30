@@ -210,7 +210,7 @@ module.exports = (function () {
         };
 
         if (number_of_pages_to_export) {
-          options.pageRanges = [{ from: 0, to: number_of_pages_to_export }];
+          options.pageRanges = `1-${number_of_pages_to_export}`;
         }
 
         const pdf_data = await win.webContents.printToPDF(options);

@@ -354,7 +354,10 @@ class Exporter {
 
       let number_of_pages_to_export = undefined;
       if (this.instructions.page) {
-        if (this.instructions.page.includes("-")) {
+        if (
+          typeof this.instructions.page === "string" &&
+          this.instructions.page.includes("-")
+        ) {
           const [start, end] = this.instructions.page.split("-");
           number_of_pages_to_export = end - start + 1;
         } else {
