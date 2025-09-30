@@ -352,6 +352,16 @@ class Exporter {
       const document_width = this.instructions.page_width || 210;
       const document_height = this.instructions.page_height || 297;
 
+      let number_of_pages_to_export = undefined;
+      if (this.instructions.page) {
+        if (this.instructions.page.includes("-")) {
+          const [start, end] = this.instructions.page.split("-");
+          number_of_pages_to_export = end - start + 1;
+        } else {
+          number_of_pages_to_export = 1;
+        }
+      }
+
       const recipe = this.instructions.recipe;
 
       const reportProgress = (progress) => {
@@ -365,6 +375,7 @@ class Exporter {
         layout_mode,
         document_width,
         document_height,
+        number_of_pages_to_export,
         reportProgress,
       });
 
