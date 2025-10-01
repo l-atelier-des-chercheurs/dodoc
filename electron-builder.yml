@@ -38,7 +38,7 @@ nsis:
   shortcutName: "do•doc"
 
 appx:
-  applicationId: "L'AtelierDesChercheurs.DoDoc"
+  applicationId: "AtelierDesChercheurs.DoDoc"
   displayName: "do•doc"
   publisherDisplayName: "L'Atelier des Chercheurs"
   # Replace these with actual values from Microsoft Partner Center:
