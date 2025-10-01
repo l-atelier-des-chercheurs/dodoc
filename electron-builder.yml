@@ -29,6 +29,7 @@ win:
   target:
     - target: nsis
       arch: [x64]
+    # appx target for Windows Store - use npm run dist:win-store to build separately
 
 nsis:
   oneClick: true
@@ -47,6 +48,16 @@ appx:
   languages: ["en-US", "fr-FR", "it-IT"]
   showNameOnTiles: true
   electronUpdaterAware: false
+  # Capabilities required for your app features
+  capabilities:
+    - internetClient
+    - privateNetworkClientServer
+    - videosLibrary
+    - picturesLibrary
+    - documentsLibrary
+    - removableStorage
+  # Additional metadata for Store
+  setBuildNumber: true
 
 mac:
   artifactName: dodoc-${version}-macos.${ext}
