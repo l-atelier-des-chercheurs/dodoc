@@ -43,7 +43,7 @@ appx:
   publisherDisplayName: "L'Atelier des Chercheurs"
   # Replace these with actual values from Microsoft Partner Center:
   # Go to Partner Center > Your App > Product Identity
-  identityName: "do•doc" # Package/Identity name from Partner Center
+  identityName: "dodoc" # Package/Identity name from Partner Center
   publisher: "CN=21DC51D1-C93D-4F1C-8596-0ADF25BB5216" # Publisher from Partner Center
   backgroundColor: "#ffffff"
   languages: ["en-US", "fr-FR", "it-IT"]
