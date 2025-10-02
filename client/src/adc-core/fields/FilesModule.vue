@@ -29,7 +29,7 @@
           class="u-button u-button_icon"
           @click.prevent="removeFile(file.$path)"
         >
-          <b-icon icon="x-lg" />
+          <b-icon icon="x" />
         </button>
       </div>
     </template>

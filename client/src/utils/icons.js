@@ -7,6 +7,7 @@ import {
   BIconPersonCircle,
   BIconExclamationTriangleFill,
   BIconArrowLeftShort,
+  BIconX,
   BIconXLg,
   BIconPinMap,
   BIconPinMapFill,
@@ -169,6 +170,7 @@ Vue.component("BIconShieldCheck", BIconShieldCheck);
 Vue.component("BIconPersonCircle", BIconPersonCircle);
 Vue.component("BIconExclamationTriangleFill", BIconExclamationTriangleFill);
 Vue.component("BIconArrowLeftShort", BIconArrowLeftShort);
+Vue.component("BIconX", BIconX);
 Vue.component("BIconXLg", BIconXLg);
 Vue.component("BIconPinMap", BIconPinMap);
 Vue.component("BIconPinMapFill", BIconPinMapFill);
