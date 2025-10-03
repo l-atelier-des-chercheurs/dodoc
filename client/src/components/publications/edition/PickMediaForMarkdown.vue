@@ -38,9 +38,8 @@
             <b-icon icon="clipboard-check" v-else />
           </button>
         </div>
-        <div class="u-spacingBottom">
+        <div class="u-spacingBottom" v-if="pick_medias_list.length > 1">
           <DLabel :str="$t('layout')" />
-
           <label class="u-switch u-switch-xs u-switch_twoway">
             <label class="_switchLabel" for="medias_on_new_line">
               {{ $t("side_by_side") }} <b-icon icon="three-dots" />
