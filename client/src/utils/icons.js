@@ -150,6 +150,7 @@ import {
   BIconClock,
   BIconFilter,
   BIconThreeDots,
+  BIconThreeDotsVertical,
   BIconFilePlayFill,
   BIconGripVertical,
   BIconHouse,
@@ -313,6 +314,7 @@ Vue.component("BIconRulers", BIconRulers);
 Vue.component("BIconClock", BIconClock);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);
+Vue.component("BIconThreeDotsVertical", BIconThreeDotsVertical);
 Vue.component("BIconFilePlayFill", BIconFilePlayFill);
 Vue.component("BIconGripVertical", BIconGripVertical);
 Vue.component("BIconHouse", BIconHouse);

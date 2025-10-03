@@ -132,6 +132,7 @@
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
         <div class="u-spacingBottom">
+          {{ file }}
           <div class="_topbar">
             <h3>
               {{ $t("media") }}
