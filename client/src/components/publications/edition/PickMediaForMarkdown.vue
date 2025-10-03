@@ -17,7 +17,7 @@
         v-if="show_media_picker"
         :publication_path="publication_path"
         :select_mode="'multiple'"
-        :pick_from_types="['image', 'video', 'audio']"
+        :pick_from_types="['image', 'video', 'audio', 'text']"
         @pickMedias="pickMedias"
         @close="show_media_picker = false"
       />
@@ -181,6 +181,7 @@ export default {
           import_mode,
         });
         new_entry.$type = media.$type;
+        new_entry.$content = media.$content;
         new_entry.caption = media.caption;
         source_medias.push(new_entry);
       }
@@ -195,6 +196,13 @@ export default {
       let html = [];
 
       source_medias.map((m) => {
+        if (m.$type === "text") {
+          debugger;
+          const md_content = this.turnHtmlToMarkdown(m.$content);
+          html.push(md_content);
+          return;
+        }
+
         let media_html = "(";
 
         let src;
@@ -223,7 +231,7 @@ export default {
       });
 
       if (medias_on_new_line) {
-        return html.join("\n");
+        return html.join("\n\n");
       } else {
         return html.join(" ");
       }
@@ -293,7 +301,7 @@ export default {
 <style lang="scss" scoped>
 ._textField {
   resize: vertical;
-  min-height: 8rem;
+  min-height: 12rem;
   width: 100%;
 }
 
