@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 @close="removeAndCloseModal">
+  <BaseModal2 :size="modal_size" @close="removeAndCloseModal">
     <template v-if="is_exporting">
       <div class="u-instructions u-spacingBottom">
         {{ $t("export_in_progress") }}
@@ -85,6 +85,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    modal_size() {
+      return this.is_exporting ? "small" : "large";
+    },
     export_href() {
       if (!this.created_doc) return false;
       return this.makeMediaFileURL({

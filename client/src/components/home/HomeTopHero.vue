@@ -122,6 +122,8 @@ export default {
 
 <style lang="scss" scoped>
 ._hero--container {
+  --hero-radius: 36px;
+
   width: 100%;
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
@@ -140,6 +142,7 @@ export default {
 ._hero--content {
   position: relative;
   width: 100%;
+  min-height: 20vh;
   margin: 0 auto;
 
   display: flex;
@@ -188,8 +191,8 @@ export default {
 
     border-radius: var(--panel-radius);
     // box-shadow: var(--panel-shadows);
-    padding: calc(var(--spacing) / 1);
-    margin: calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) * 1);
+    margin: calc(var(--spacing) * 1);
 
     background: var(--text-bg, white);
   }
@@ -200,7 +203,7 @@ export default {
 
     // https://codepen.io/herrstrietzel/pen/jOQEjEm?editors=0010
     // clip-path: url(#clipPathSquircle);
-    border-radius: 36px;
+    border-radius: var(--hero-radius);
     overflow: hidden;
 
     // overflow: hidden;

@@ -4,6 +4,11 @@
       <LoaderSpinner />
     </div>
     <div v-else>
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <b-icon icon="arrow-left-short" />
+        {{ $t("back") }}
+      </button>
+
       <div class="_topContent">
         <TitleField
           class="_title"
@@ -13,21 +18,12 @@
           tag="h3"
           :can_edit="true"
         />
-
-        <button
-          type="button"
-          class="u-buttonLink"
-          @click="$emit('toggle')"
-          v-text="$t('close')"
-        />
       </div>
 
       <div>
         <br />
         <div class="u-instructions">
-          <small>
-            {{ $t("font_instr") }}
-          </small>
+          <small v-html="$t('font_instr')" />
         </div>
 
         <br />
@@ -96,15 +92,6 @@
             />
           </template>
         </div>
-
-        <div class="u-instructions">
-          <small>
-            {{ $t("reload_page_to_apply") }}
-          </small>
-        </div>
-        <button type="button" class="u-button" @click="$router.go()">
-          {{ $t("reload_page") }}
-        </button>
 
         <!--
       <pre>
@@ -207,7 +194,7 @@ export default {
       this.$emit("toggle");
     },
     cancel() {
-      this.initFF();
+      this.$emit("close");
     },
   },
 };

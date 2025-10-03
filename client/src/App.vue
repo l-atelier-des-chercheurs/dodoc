@@ -120,8 +120,8 @@ export default {
   methods: {},
 };
 </script>
-<style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
-<style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
+<style src="@node_modules/splitpanes/dist/splitpanes.css"></style>
+<style src="@node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
 :root {
   --spacing: 1rem;
@@ -771,5 +771,18 @@ img {
   &-leave-to {
     opacity: 0;
   }
+}
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_fonce) !important;
 }
 </style>

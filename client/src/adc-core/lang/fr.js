@@ -1,3 +1,5 @@
+import { addProjections } from "ol/proj";
+
 export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
@@ -24,6 +26,14 @@ export default {
   save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
+  image_url: "URL vers une image",
+  image_url_instr:
+    "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
+  import_from_url: "Importer depuis une URL",
+  example_image_url: "Exemple d’URL d'image",
+  importing_from_url: "Importation depuis l’URL…",
+  preview_of_image: "Aperçu de l’image",
+  failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
   table: "Tableau",
@@ -185,7 +195,7 @@ export default {
   hide_meta: "Masquer les métadonnées",
   recover_password: "Récupérer le mot de passe",
   please_contact_to_recover:
-    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
+    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe :",
 
   visibility: "Visibilité",
   visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -385,7 +395,7 @@ export default {
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
-    "Rafraîchir la fenêtre pour voir les modifications",
+    "Recharger la fenêtre pour voir les modifications",
   reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
@@ -451,8 +461,10 @@ export default {
   fonts: "Police de caractères",
   add_font: "Ajouter une police de caractères",
   font_name: "Nom de la police de caractères",
+  fonts_instr:
+    "Les polices de caractères sont utilisées pour l’affichage des textes dans les blocs de texte et les publications. Les polices de caractères ajoutées sont disponibles pour tous les utilisateurs, sur l’ensemble de l’instance.",
   font_instr:
-    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant.",
+    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant. Pour télécharger des familles de caractères, vous pouvez utiliser <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
@@ -479,11 +491,11 @@ export default {
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
-  start: "début",
+  start: "Début",
   set_start: "Définir le début",
   play_extract: "Jouer l’extrait",
   stop_extract: "Arrêter l’extrait",
-  end: "fin",
+  end: "Fin",
   set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
@@ -867,9 +879,9 @@ export default {
 
   add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:
-    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
+    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, sujets de discussion, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
   instance_contrib_instructions:
-    "Peuvent uniquement créer des espaces et les administrer.",
+    "Peuvent uniquement créer des espaces et des sujets de discussion et les administrer.",
 
   space_admin_instructions:
     "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
@@ -1081,7 +1093,6 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
-  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1282,7 +1293,7 @@ export default {
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Non connecté",
+  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1295,7 +1306,7 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  graphic_styles: "Style graphiques",
+  graphic_styles: "Styles graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
   create_custom_stylesheet: "Créer une feuille de style personnalisée",
@@ -1359,6 +1370,9 @@ export default {
   remove_column: "Supprimer la dernière colonne",
   remove_row: "Supprimer la dernière ligne",
   chats: "Discussions",
+  enable_chats: "Activer la fonctionnalité de discussion",
+  enable_chats_instructions:
+    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
   list_of_topics: "Liste des sujets",
   create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
@@ -1383,4 +1397,91 @@ export default {
   edit_this_message: "Modifier ce message",
   new_messages: "{count} nouveau message | {count} nouveaux messages",
   topics_pinned: "Sujet épinglé | Sujets épinglés",
+
+  no_email_from_folder: "Aucun courriel associé à ce compte.",
+  set_new_password_for_account:
+    "Définir un nouveau mot de passe pour le compte ",
+  reset_password: "Réinitialiser le mot de passe",
+  resetting_password: "Réinitialisation en cours...",
+  invalid_reset_link: "Lien de réinitialisation invalide",
+  loading: "Chargement en cours...",
+  failed_to_reset_password: "Échec de la réinitialisation du mot de passe",
+  no_email_for_account: "Aucun courriel associé à ce compte.",
+  recover_via_email: "M’envoyer un courriel",
+  click_to_send_recovery_mail:
+    "En cliquant sur le bouton ci-dessous, un courriel vous sera envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "Un courriel vous a été envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b> sur l’adresse <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
+  password_reset_successful:
+    "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+  looking_for_gps_coordinates:
+    "Recherche des coordonnées GPS de votre appareil...",
+  gps_coordinates_found: "Coordonnées GPS trouvées.",
+  column_count: "Nombre de colonnes",
+  restore_publications: "Restaurer des publications supprimées",
+  restore_medias: "Restaurer des médias supprimés",
+
+  choose_emoji: "Choisir un emoji",
+  message_too_long:
+    "Le message est trop long, il ne doit pas dépasser {max_length} caractères.",
+  today: "Aujourd’hui",
+  copy_to_clipboard: "Copier dans le presse-papiers",
+  copied: "Copié !",
+
+  debug_logs: "Journaux de débogage",
+  logs_panel_instructions:
+    "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
+  available_logs: "Journaux disponibles",
+  no_logs_available: "Aucun journal disponible",
+  refresh_logs: "Recharger les journaux",
+
+  session_started: "Session démarrée le",
+  session_ended: "Session arrêtée le",
+  actions: "Actions",
+  session_crashed: "Session plantée",
+  session_running: "Session en cours",
+
+  last_page_reached: "Dernière page atteinte",
+  layout: "Mise en page",
+  starts_on_page: "Démarre sur",
+
+  files_being_sent:
+    "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",
+  opened_page: "Page consultée",
+  launched: "Lancement",
+
+  import_image_from_url_failed:
+    "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
+
+  interrupt: "Interrompre",
+
+  x_images: "Aucune image | {count} image | {count} images",
+  resume: "Reprendre l’animation",
+  compilation_started: "Création en cours…",
+
+  all_content: "Tout le contenu",
+  all_publications: "Toutes les publications",
+  bandwidth_very_low_for_stream_sharing:
+    "Bande passante très faible pour le partage de flux",
+  camera_access_refused: "Accès à la caméra refusé",
+  disconnect_warning: "Avertissement de déconnexion",
+  failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
+  folder_copied: "Dossier copié",
+  "importer depuis un site": "Importer depuis un site",
+  media_type_not_handled: "Type de média non géré",
+  no_padding: "Pas de remplissage",
+  no_page_selected: "Aucune page sélectionnée",
+  no_pinned_publications: "Aucune publication épinglée",
+  no_sound: "Pas de son",
+  no_title: "Pas de titre",
+  not_supported_on_this_device: "Non supporté sur cet appareil",
+  "notifications.failed_to_find_block_line":
+    "Impossible de trouver la ligne du bloc",
+  "notifications.media_type_not_handled": "Type de média non géré",
+  on_this_list: "Sur cette liste",
+  other_users_connected: "Autres utilisateurs connectés",
+  show_cursor: "Afficher le curseur",
+  stream_sharing_media_error: "Erreur de média lors du partage de flux",
 };

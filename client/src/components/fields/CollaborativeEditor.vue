@@ -343,7 +343,7 @@ export default {
     if (!this.read_only && this.$root.state.mode === "live") {
       const name = this.$root.current_author
         ? this.$root.current_author.name
-        : this.$t("anonymous");
+        : this.$t("anonymous_user");
 
       if (this.show_cursors) {
         this.cursors.createCursor("_self", name, "#1d327f");

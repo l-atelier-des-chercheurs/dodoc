@@ -371,6 +371,11 @@ export default function () {
         const storage_path = response.data.pathToUserContent;
         return storage_path;
       },
+      async getLogs() {
+        const response = await this.$axios.get(`_logs`);
+        const logs = response.data.logs;
+        return logs;
+      },
       async restartApp() {
         await this.$axios.post(`_restartApp`);
       },
@@ -493,6 +498,24 @@ export default function () {
           throw this.processError(err);
         }
       },
+      async recoverPassword({ path }) {
+        try {
+          const anonymous_email_used = await this.$axios.post(
+            `${path}/_recoverPassword`
+          );
+          return anonymous_email_used;
+        } catch (err) {
+          throw this.processError(err);
+        }
+      },
+      async resetPassword({ path, new_password, token }) {
+        const response = await this.$axios.post(`${path}/_resetPassword`, {
+          new_password,
+          token,
+        });
+        return response.data;
+      },
+
       async logoutFromFolder() {
         const path = this.tokenpath.token_path;
         const auth_infos = {
@@ -599,9 +622,18 @@ export default function () {
         this.$eventHub.$emit("hooks.copyFile", { path });
         return response.data.meta_filename;
       },
-      async copyFolder({ path, new_meta = {}, path_to_destination_type = "" }) {
+      async copyFolder({
+        path,
+        new_meta = {},
+        path_to_destination_type = "",
+        is_copy_or_move = "copy",
+      }) {
         const response = await this.$axios
-          .post(`${path}/_copy`, { new_meta, path_to_destination_type })
+          .post(`${path}/_copy`, {
+            new_meta,
+            path_to_destination_type,
+            is_copy_or_move,
+          })
           .catch((err) => {
             throw this.processError(err);
           });
@@ -667,6 +699,8 @@ export default function () {
         return response.data.remix_folder_path;
       },
       async exportFolder({ path, instructions }) {
+        if (instructions.export_to_parent_folder === undefined)
+          instructions.export_to_parent_folder = true;
         const response = await this.$axios
           .post(`${path}/_export`, instructions)
           .catch((err) => {
@@ -678,6 +712,8 @@ export default function () {
         return task_id;
       },
       async optimizeFile({ path, instructions }) {
+        if (instructions.export_to_parent_folder === undefined)
+          instructions.export_to_parent_folder = false;
         const response = await this.$axios
           .post(`${path}/_optimize`, instructions)
           .catch((err) => {
@@ -777,7 +813,7 @@ export default function () {
               " Mo. Please try again with a smaller file.";
             this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
-          // this.$alertify.delay(4000).error("Message d’erreur : " + code);
+          // this.$alertify.delay(4000).error("Message d'erreur : " + code);
           console.error("processError – " + code);
         } else console.error("processError – NO ERROR CODES");
 

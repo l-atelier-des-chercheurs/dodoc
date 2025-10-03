@@ -42,7 +42,7 @@ const i18n = () => {
     let content = null;
     if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
     else if (lang === "it") content = await import("@/adc-core/lang/it.js");
-    else if (lang === "fon") content = await import("@/adc-core/lang/fon.js");
+    // else if (lang === "fon") content = await import("@/adc-core/lang/fon.js");
     else content = await import("@/adc-core/lang/en.js");
     return content.default;
   };
@@ -69,7 +69,7 @@ const i18n = () => {
 
     // lang fr is always up to date – others, not so much. Load english as default
     if (["it"].includes(new_lang)) await loadLangAsDefault("en");
-    if (["fon"].includes(new_lang)) await loadLangAsDefault("fr");
+    // if (["fon"].includes(new_lang)) await loadLangAsDefault("fr");
   };
   changeLocale(lang_settings.current);
 

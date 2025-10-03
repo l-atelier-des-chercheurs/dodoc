@@ -12,12 +12,28 @@
             :files_to_import="files_to_import"
             :path="project.$path"
             :allow_caption_edition="true"
-            @importedMedias="mediaJustImported($event)"
+            @importedMedias="mediasJustImported($event)"
             @close="files_to_import = []"
+          />
+        </div>
+        <div class="_importCreateTextButtons--importFromUrl">
+          <button
+            class="u-button u-button_bleumarine"
+            @click="show_url_picker = true"
+          >
+            <b-icon icon="globe" />
+            {{ $t("importer depuis un site") }}
+          </button>
+          <UrlPicker
+            v-if="show_url_picker"
+            :path="project.$path"
+            @importedURL="mediasJustImported"
+            @close="show_url_picker = false"
           />
         </div>
         <div class="_importCreateTextButtons--createText">
           <button class="u-button u-button_bleuvert" @click="createText">
+            <b-icon icon="fonts" />
             {{ $t("add_text") }}
           </button>
         </div>
@@ -281,8 +297,21 @@
             v-for="{ label, files } in grouped_medias"
             :key="label"
           >
-            <div class="_mediaLibrary--lib--label">
-              <strong>{{ label }}</strong>
+            <div
+              class="_mediaLibrary--lib--label"
+              :class="{
+                'is--clickable': select_mode !== 'single' && batch_mode,
+              }"
+            >
+              <input
+                v-if="batch_mode"
+                type="checkbox"
+                class="_groupSelectCheckbox"
+                :id="'select_btn_' + label"
+                :checked="groupAllSelected(files)"
+                @click="handleGroupLabelClick(files)"
+              />
+              <label :for="'select_btn_' + label">{{ label }}</label>
               <!-- <div class="u-nut" data-isfilled>
                 {{ files.length }}
               </div> -->
@@ -302,6 +331,11 @@
                 :index="file._index"
                 :file="file"
                 :was_focused="media_just_focused === getFilename(file.$path)"
+                :was_imported="
+                  recently_imported_meta_filenames.includes(
+                    getFilename(file.$path)
+                  )
+                "
                 :is_selectable="mediaTileIsSelectable(file.$path)"
                 :is_selected="selected_medias_paths.includes(file.$path)"
                 :data-filepath="file.$path"
@@ -312,6 +346,34 @@
               />
             </transition-group>
           </div>
+
+          <div class="_binButton" v-if="can_edit_project">
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="show_bin_modal = true"
+            >
+              <b-icon icon="recycle" />
+              {{ $t("bin") }}
+            </button>
+          </div>
+          <BinFolder
+            v-if="show_bin_modal"
+            :modal_title="$t('restore_medias')"
+            :path="project.$path"
+            @close="show_bin_modal = false"
+          >
+            <template v-slot="slotProps">
+              <MediaTile
+                :file="slotProps.project"
+                :index="0"
+                :project_path="project.$path"
+                :tile_mode="tile_mode"
+                :is_selectable="false"
+                :is_selected="false"
+              />
+            </template>
+          </BinFolder>
         </div>
       </transition>
 
@@ -400,6 +462,8 @@ import MediaTile from "@/components/MediaTile.vue";
 import MediaModal from "@/components/MediaModal.vue";
 import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.vue";
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
+import BinFolder from "@/adc-core/fields/BinFolder.vue";
+import UrlPicker from "@/adc-core/modals/UrlPicker.vue";
 
 export default {
   props: {
@@ -409,6 +473,7 @@ export default {
     hide_already_present_medias: Boolean,
     meta_filenames_already_present: [Boolean, Array],
     show_only_media_of_types: [String, Array],
+    can_edit_project: Boolean,
   },
   components: {
     ImportFileZone,
@@ -417,9 +482,12 @@ export default {
     BatchEditInformationsModal,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
     DuplicateMedia,
+    BinFolder,
+    UrlPicker,
   },
   data() {
     return {
+      show_url_picker: false,
       selected_medias_paths: [],
       batch_mode: false,
       show_batch_informations_edit_modal: false,
@@ -430,9 +498,12 @@ export default {
 
       media_just_focused: undefined,
 
+      recently_imported_meta_filenames: [],
+
       hide_dropzone_timeout: undefined,
 
       fav_filter: false,
+      show_bin_modal: false,
 
       group_mode: "day",
       // group_mode: localStorage.getItem("library_group_mode") || "day",
@@ -818,20 +889,18 @@ export default {
         this.$eventHub.$emit("media.enableEditor." + path);
       }, 500);
     },
-    mediaJustImported(list_of_added_metas) {
-      if (!this.select_mode || this.select_mode === "single") return false;
-
-      const new_medias_path = list_of_added_metas.map(
-        (meta_filename) => this.project.$path + "/" + meta_filename
-      );
-
+    mediasJustImported(list_of_added_metas) {
       if (this.select_mode === "multiple") {
+        const new_medias_path = list_of_added_metas.map(
+          (meta_filename) => this.project.$path + "/" + meta_filename
+        );
         this.selected_medias_paths =
           this.selected_medias_paths.concat(new_medias_path);
         this.batch_mode = true;
       }
 
-      // todo add focus ring to indicate medias just sent
+      this.recently_imported_meta_filenames = list_of_added_metas.slice();
+
       // this.$alertify
       //   .closeLogOnClick(true)
       //   .delay(4000)
@@ -886,6 +955,29 @@ export default {
         this.filtered_medias[this.focused_media_index + 1].$path
       );
     },
+    handleGroupLabelClick(files) {
+      if (this.select_mode === "single") return;
+
+      const filePaths = files.map((f) => f.$path);
+      const allSelected = filePaths.every((p) =>
+        this.selected_medias_paths.includes(p)
+      );
+
+      if (allSelected) {
+        this.selected_medias_paths = this.selected_medias_paths.filter(
+          (p) => !filePaths.includes(p)
+        );
+      } else {
+        const newSet = new Set(this.selected_medias_paths.concat(filePaths));
+        this.selected_medias_paths = Array.from(newSet);
+      }
+
+      this.batch_mode = true;
+    },
+    groupAllSelected(files) {
+      const filePaths = files.map((f) => f.$path);
+      return filePaths.every((p) => this.selected_medias_paths.includes(p));
+    },
   },
 };
 </script>
@@ -908,22 +1000,36 @@ export default {
 }
 
 ._mediaLibrary--lib--label {
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2) 0;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   position: sticky;
   top: 0;
   z-index: 10;
   background: var(--c-orange);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 
-  strong {
-    text-transform: capitalize;
-    // padding: 0 calc(var(--spacing) / 2);
-  }
+  text-transform: capitalize;
+  font-weight: bold;
+  // padding: 0 calc(var(--spacing) / 2);
 
   ::v-deep {
     .u-nut {
       background: var(--c-noir);
     }
   }
+
+  &.is--clickable {
+    // padding: var(--spacing);
+
+    label {
+      cursor: pointer;
+    }
+  }
+}
+
+._groupSelectCheckbox {
+  margin: 0;
 }
 
 ._mediaLibrary--lib--grid {
@@ -937,6 +1043,10 @@ export default {
   }
   &[data-tilemode="table"] {
     display: block;
+    // flex-flow: column nowrap;
+    // align-items: stretch;
+    // justify-content: stretch;
+    // overflow-x: auto;
   }
 }
 
@@ -1001,7 +1111,7 @@ export default {
 }
 
 ._gridSection {
-  padding-bottom: calc(var(--spacing) / 2);
+  padding-bottom: calc(var(--spacing) / 1);
 }
 
 ._mediaCount {
@@ -1107,18 +1217,24 @@ export default {
   --dropzone-color2: var(--c-rouge);
   color: white;
 
-  width: 100%;
+  flex: 1 1 auto;
+  // width: 100%;
 }
 
-._importCreateTextButtons--createText {
+._importCreateTextButtons--createText,
+._importCreateTextButtons--importFromUrl {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
 
-  border: 3px dotted var(--c-bleuvert);
+  border: 3px dotted var(--c-bleumarine);
   border-radius: 10px;
   padding: calc(var(--spacing) / 2);
+
+  &._importCreateTextButtons--createText {
+    border-color: var(--c-bleuvert);
+  }
 }
 
 ._tileMode {
@@ -1141,5 +1257,9 @@ export default {
   text-align: center;
   font-weight: bold;
   text-transform: lowercase;
+}
+._binButton {
+  margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
+  text-align: center;
 }
 </style>

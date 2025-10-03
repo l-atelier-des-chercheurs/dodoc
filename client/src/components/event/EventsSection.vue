@@ -48,5 +48,6 @@ export default {
 <style lang="scss" scoped>
 ._eventsSection {
   // background: white;
+  margin: calc(var(--spacing) * 2) auto;
 }
 </style>

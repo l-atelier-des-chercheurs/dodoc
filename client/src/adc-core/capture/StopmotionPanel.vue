@@ -134,8 +134,7 @@
                   class="u-button u-button_small u-button_bleumarine"
                   :title="$t('duration')"
                 >
-                  <b-icon icon="clock" />
-                  {{ duration }}
+                  <b-icon icon="clock" />{{ duration }}
                 </button>
                 <ImageDurationPicker
                   v-if="show_duration_menu && photoIsActive(media.$path)"
@@ -148,6 +147,7 @@
                 />
                 <template v-if="photoIsActive(media.$path)">
                   <RemoveMenu
+                    ref="removeMediaMenu"
                     :modal_title="$t('remove_this_image')"
                     @remove="removeMedia(media.$path)"
                   >
@@ -169,16 +169,37 @@
                   </button>
                   <BaseModal2
                     v-if="show_options_menu"
-                    :title="$t('options')"
+                    :title="$t('photo') + ' ' + (index + 1)"
                     @close="show_options_menu = false"
                   >
-                    <MediaContent :file="media" :resolution="1600" />
-
+                    <MediaContent
+                      class="_previewImage"
+                      :file="media"
+                      :resolution="1600"
+                    />
                     <div class="u-spacingBottom" />
-                    <div class="u-sameRow">
-                      <div>
-                        <DownloadFile :file="media" />
-                      </div>
+                    <div class="u-sameRow _options">
+                      <DownloadFile :file="media">
+                        <b-icon icon="file-earmark-arrow-down" />
+                        {{ $t("download") }}
+                        <template v-if="media.$infos?.size">
+                          ({{ formatBytes(media.$infos.size) }})
+                        </template>
+                      </DownloadFile>
+                    </div>
+
+                    <div></div>
+
+                    <template slot="footer">
+                      <button
+                        type="button"
+                        class="u-button"
+                        @click="show_options_menu = false"
+                      >
+                        <b-icon icon="x-circle" />
+                        {{ $t("cancel") }}
+                      </button>
+
                       <button
                         type="button"
                         class="u-button u-button_orange"
@@ -187,17 +208,17 @@
                         <span class="u-icon" v-html="dodoc_icon_collect" />
                         {{ $t("save_to_project") }}
                       </button>
-                    </div>
 
-                    <div v-if="status_saving_to_project" class="_saveNotice">
-                      <div v-if="status_saving_to_project === 'saving'">
-                        <LoaderSpinner />
-                        {{ $t("saving") }}
+                      <div v-if="status_saving_to_project" class="_saveNotice">
+                        <div v-if="status_saving_to_project === 'saving'">
+                          <LoaderSpinner />
+                          {{ $t("saving") }}
+                        </div>
+                        <div v-else-if="status_saving_to_project === 'saved'">
+                          {{ $t("media_was_saved_to_project") }}
+                        </div>
                       </div>
-                      <div v-else-if="status_saving_to_project === 'saved'">
-                        {{ $t("media_was_saved_to_project") }}
-                      </div>
-                    </div>
+                    </template>
                   </BaseModal2>
                 </template>
               </div>
@@ -323,6 +344,9 @@ export default {
   async mounted() {
     this.$eventHub.$on("stopmotion.addImage", this.appendToStopMotion);
     this.$eventHub.$on("stopmotion.test", this.testStopmotion);
+    this.$eventHub.$on("capture.navigate.next", this.nextImage);
+    this.$eventHub.$on("capture.navigate.previous", this.prevImage);
+    this.$eventHub.$on("capture.remove", this.openRemoveImageMenu);
 
     const stopmotion = await this.$api
       .getFolder({
@@ -337,6 +361,9 @@ export default {
   beforeDestroy() {
     this.$api.leave({ room: this.current_stopmotion_path });
     this.$eventHub.$off("stopmotion.addImage", this.appendToStopMotion);
+    this.$eventHub.$off("capture.navigate.next", this.nextImage);
+    this.$eventHub.$off("capture.navigate.previous", this.prevImage);
+    this.$eventHub.$off("capture.remove", this.openRemoveImageMenu);
   },
 
   watch: {
@@ -399,7 +426,7 @@ export default {
       if (this.stopmotion?.images_list && this.stopmotion?.$files?.length > 0) {
         const medias = this.stopmotion.images_list.reduce((acc, il) => {
           const meta_filename = il.m || il;
-          const duration = il.d || 1;
+          const duration = il.d ? Number(il.d) : 1;
 
           const media = this.stopmotion.$files.find((f) =>
             f.$path.endsWith(meta_filename)
@@ -436,6 +463,10 @@ export default {
     },
   },
   methods: {
+    openRemoveImageMenu() {
+      if (this.$refs.removeMediaMenu?.[0])
+        this.$refs.removeMediaMenu[0].show_confirm_delete = true;
+    },
     async appendToStopMotion({ imageData }) {
       const additional_meta = {};
       additional_meta.$origin = "capture";
@@ -646,7 +677,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .m_stopmotionpanel {
-  --img-width: 120px;
+  --img-width: 125px;
 
   position: relative;
   // height: 100%;
@@ -952,7 +983,7 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
-  padding: calc(var(--spacing) / 4);
+  padding: calc(var(--spacing) / 8);
   display: flex;
   gap: calc(var(--spacing) / 4);
   justify-content: space-between;
@@ -1018,5 +1049,12 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+._options {
+  justify-content: space-between;
+}
+._previewImage {
+  // border-radius: 2px;
+  // overflow: hidden;
 }
 </style>

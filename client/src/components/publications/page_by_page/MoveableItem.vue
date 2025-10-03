@@ -220,11 +220,26 @@ export default {
     is_active() {
       if (!this.is_active) {
         this.contentIsNotEdited();
+
+        if (
+          this.first_media?.$type &&
+          ["pdf", "embed", "url", "audio", "video"].includes(
+            this.first_media.$type
+          )
+        )
+          this.setNewComponentKey();
       } else {
         if (this.first_media.$type !== "text") {
           this.$emit("update:module_being_edited", this.publimodule.$path);
         }
       }
+    },
+    "first_media.$content": {
+      handler() {
+        if (this.first_media?.$type === "text") {
+          this.detectOverflowText();
+        }
+      },
     },
   },
   computed: {
@@ -586,7 +601,8 @@ export default {
 
     ._mediasModule {
       height: 100%;
-      overflow: hidden;
+      // necessary for box-shadows to be visible in page by page
+      overflow: visible;
     }
 
     ._mediaGrid,
@@ -647,6 +663,10 @@ export default {
       border-color: var(--set-outlineColor);
       border-width: var(--set-outlineWidth);
       border-style: solid;
+    }
+
+    ._captionField {
+      pointer-events: none;
     }
 
     ._mediaContent--iframe--content {

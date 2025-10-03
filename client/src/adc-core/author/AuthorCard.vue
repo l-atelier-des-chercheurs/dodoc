@@ -105,7 +105,7 @@
               :path="author.$path"
               :content="author.presentation"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="can_edit"
             />
           </div>

@@ -71,10 +71,7 @@
           "
           class="_item--content--gallery"
         >
-          <div
-            v-for="media in gallery_medias"
-            :key="media.meta_filename_in_project"
-          >
+          <div v-for="media in gallery_medias" :key="media.$path">
             <MediaContent :file="media" />
           </div>
         </div>
@@ -161,7 +158,7 @@ export default {
   background-color: var(--editor-bg);
   padding: calc(var(--spacing) / 1);
   background-color: white;
-  height: 8.5rem;
+  //height: 8.5rem;
   overflow: hidden;
   // border: 1px solid var(--c-gris);
   border-radius: var(--border-radius);
@@ -223,6 +220,11 @@ export default {
   font-size: var(--sl-font-size-x-small);
   color: var(--c-gris_fonce);
 }
+
+._item--title {
+  margin-top: 0;
+}
+
 ._item--title--icon {
 }
 

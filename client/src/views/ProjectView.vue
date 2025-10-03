@@ -34,7 +34,8 @@
             <ProjectPanes
               :projectpanes="projectpanes"
               :project="project"
-              :can_edit_project="
+              :can_edit_project="can_edit_project && !display_as_public"
+              :can_contribute_to_project="
                 can_contribute_to_project && !display_as_public
               "
               @update:projectpanes="projectpanes = $event"
@@ -75,14 +76,6 @@ export default {
     this.$api.updateSelfPath(this.project_path);
     await this.listProject();
     await this.getSpace();
-
-    if (!this.can_edit_project)
-      this.projectpanes = [
-        {
-          type: "publish",
-          size: 100,
-        },
-      ];
 
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);

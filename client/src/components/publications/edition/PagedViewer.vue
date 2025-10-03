@@ -85,10 +85,16 @@ export default {
         }
       );
 
-      if (this.opened_chapter_meta_filename)
-        this.$nextTick(() => {
+      this.$nextTick(() => {
+        if (this.opened_chapter_meta_filename)
           this.zoomToSection(this.opened_chapter_meta_filename);
-        });
+        else {
+          this.infiniteviewer.setZoom(0.6);
+          this.$nextTick(() => {
+            this.zoomToSection("first page");
+          });
+        }
+      });
     }
     this.$eventHub.$on("edition.zoomToSection", this.zoomToSection);
     window.addEventListener("beforeprint", this.beforePrint);
@@ -170,9 +176,16 @@ export default {
     highlight_opened_pages() {
       if (this.can_edit && this.opened_chapter_meta_filename) {
         return `
-        .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"])) 
+        .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"]))
         {
           opacity: .7 !important;
+        }
+        .pagedjs_page:hover:not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"]))
+        {
+          opacity: .85 !important;
+        }
+        .chapter.clickable[data-chapter-meta-filename="${this.opened_chapter_meta_filename}"] {
+          cursor: default !important;
         }
       `;
       }
@@ -263,6 +276,12 @@ export default {
         chapter.appendChild(btn);
         chapter.classList.add("clickable");
         chapter.addEventListener("click", () => {
+          // only if not active
+          if (
+            chapter.getAttribute("data-chapter-meta-filename") ===
+            this.opened_chapter_meta_filename
+          )
+            return;
           this.$emit(
             "openChapter",
             chapter.getAttribute("data-chapter-meta-filename")
@@ -604,14 +623,22 @@ export default {
 
       const bookpreview = this.$refs.bookpreview;
       if (!bookpreview) return;
-      const page = bookpreview.querySelector(
-        `[data-chapter-meta-filename="${meta_filename}"]`
-      );
-      if (!page) return;
-      // const scrollLeft = page.getBoundingClientRect().left;
-      // const scrollTop = page.getBoundingClientRect().top;
-      // this.infiniteviewer.setZoom(1);
 
+      let page;
+
+      if (meta_filename === "first page") {
+        page = bookpreview.querySelector(".pagedjs_first_page");
+      } else {
+        page = bookpreview.querySelector(
+          `[data-chapter-meta-filename="${meta_filename}"]`
+        );
+      }
+
+      if (!page) return;
+
+      this.zoomToPage(page);
+    },
+    zoomToPage(page) {
       const pages_container = this.$refs.bookpreview;
       const container_scrollLeft = pages_container.getBoundingClientRect().left;
       const container_scrollTop = pages_container.getBoundingClientRect().top;
@@ -631,10 +658,6 @@ export default {
           absolute: true,
         }
       );
-      // this.infiniteviewer.scrollTo(100, 100, {
-      //   duration: 1000,
-      //   absolute: true,
-      // });
     },
   },
 };
@@ -709,11 +732,11 @@ export default {
       .chapter.clickable {
         cursor: pointer;
 
-        &:hover {
-          .editChapterBtn {
-            background-color: var(--c-noir);
-          }
-        }
+        // &:hover {
+        //   .editChapterBtn {
+        //     background-color: var(--c-noir);
+        //   }
+        // }
       }
 
       .pagedjs_pages {

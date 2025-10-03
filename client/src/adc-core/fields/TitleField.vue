@@ -36,10 +36,11 @@
           :autofocus="true"
           :autocomplete="input_type === 'email' ? 'email' : undefined"
           :minlength="minlength"
+          :custom_formats="custom_formats"
           :maxlength="maxlength"
           :key="edit_mode + content"
           @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="updateText"
+          @onEnter="input_type !== 'editor' ? updateText() : undefined"
         />
       </component>
 
@@ -54,8 +55,6 @@
   </span>
 </template>
 <script>
-import DOMPurify from "dompurify";
-
 export default {
   props: {
     field_name: String,
@@ -99,6 +98,7 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    custom_formats: Array,
   },
   components: {},
   data() {
@@ -126,7 +126,7 @@ export default {
       return this.new_content !== this.content;
     },
     clean_content() {
-      return DOMPurify.sanitize(this.content);
+      return this.$sanitize(this.content);
     },
   },
   methods: {
@@ -199,6 +199,18 @@ export default {
 
     span {
       white-space: break-spaces;
+    }
+
+    ::v-deep {
+      .ql-align-right {
+        text-align: right;
+      }
+      .ql-align-center {
+        text-align: center;
+      }
+      .ql-align-justify {
+        text-align: justify;
+      }
     }
   }
 

@@ -1,0 +1,16 @@
+module_type = "text"
+page_id = "1pp2hd"
+x = 62
+y = 61
+width = 1_117
+height = 562
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-05-26T21:19:03.457Z
+"$date_uploaded" = 2025-05-26T21:14:42.115Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename = "text-1748294082021.txt.meta.txt"

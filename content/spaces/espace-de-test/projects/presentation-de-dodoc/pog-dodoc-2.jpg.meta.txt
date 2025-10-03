@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2018-01-15T12:48:49.000Z
+"$date_modified" = 2025-09-15T10:13:31.509Z
+"$date_uploaded" = 2025-03-13T08:46:05.286Z
+"$media_filename" = "pog-dodoc-2.jpg"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

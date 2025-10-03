@@ -1,6 +1,6 @@
 <template>
   <div
-    class="_uploadFile"
+    class="u-card2 _uploadFile"
     :class="
       (['is--' + status],
       {
@@ -53,7 +53,11 @@
             <DLabel :str="$t('filename')" />
             <div class="u-filename">{{ file.name }}</div>
           </div>
-          <SizeDisplay v-if="file.size" :size="file.size" />
+          <SizeDisplay
+            class="_sizeDisplay"
+            v-if="file.size"
+            :size="file.size"
+          />
         </div>
 
         <template v-if="sent_file">
@@ -66,7 +70,7 @@
                 :content="sent_file.caption"
                 :path="sent_file.$path"
                 :input_type="'editor'"
-                :custom_formats="['bold', 'italic', 'link']"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
                 :can_edit="true"
               />
             </div>
@@ -77,7 +81,7 @@
                 :content="sent_file.$credits"
                 :path="sent_file.$path"
                 :input_type="'editor'"
-                :custom_formats="['bold', 'italic', 'link']"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
                 :can_edit="true"
               />
             </div>
@@ -103,42 +107,51 @@
         </template>
       </div>
       <div class="_uploadFile--action">
-        <button
+        <transition name="fade" mode="out-in">
+          <!-- <button
           type="button"
           class="u-button u-button_icon u-button_bleuvert"
           v-if="status === 'waiting'"
           @click="uploadFile"
         >
           <b-icon icon="play-fill" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="['waiting', 'sending'].includes(status)"
-          @click="$emit('skip')"
-        >
-          <b-icon icon="x-lg" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="status === 'sent'"
-          @click="$emit('hide')"
-        >
-          <b-icon
-            icon="check-circle-fill
-          "
-            :aria-label="$t('hide')"
+        </button> -->
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="skip"
+            v-if="status === 'waiting'"
+            @click="$emit('skip')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
+          <LoaderSpinner
+            v-else-if="['creating_thumb', 'sending'].includes(status)"
+            key="loading"
           />
-        </button>
-        <button
-          type="button"
-          v-else
-          class="u-button u-button_bleuvert"
-          @click="retrySend"
-        >
-          {{ $t("retry") }}
-        </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="hide"
+            v-else-if="status === 'sent'"
+            @click="$emit('hide')"
+          >
+            <b-icon
+              icon="check-circle-fill
+          "
+              :aria-label="$t('hide')"
+            />
+          </button>
+          <button
+            type="button"
+            v-else
+            key="retry"
+            class="u-button u-button_bleuvert"
+            @click="retrySend"
+          >
+            {{ $t("retry") }}
+          </button>
+        </transition>
       </div>
     </div>
   </div>
@@ -236,7 +249,7 @@ export default {
         );
       }, 500);
 
-      this.$emit("uploaded", meta_filename);
+      this.$emit("uploaded", { filename: this.file.name, meta_filename });
     },
     cancelSend() {},
     retrySend() {
@@ -250,7 +263,9 @@ export default {
   position: relative;
 
   color: var(--c-noir);
+
   // border: 2px solid var(--c-gris_clair);
+  background: white;
 
   // border-radius: 4px;
   overflow: hidden;
@@ -276,6 +291,7 @@ export default {
     flex: 1 1 auto;
     position: relative;
     z-index: 1;
+    overflow: hidden;
   }
 }
 
@@ -283,10 +299,10 @@ export default {
   position: relative;
   width: 100%;
   height: 1.5rem;
-  margin-bottom: 2px;
+  // margin-bottom: 2px;
 
   background: white;
-  // border-radius: 4px;
+  border-radius: 6px 6px 0 0;
   overflow: hidden;
 
   ._uploadFile--progressBar--bar {
@@ -333,7 +349,7 @@ export default {
   place-content: center;
   place-items: center;
   flex: 0 0 auto;
-  width: 200px;
+  width: 140px;
   max-width: 40vw;
   aspect-ratio: 1/1;
   overflow: hidden;
@@ -378,7 +394,7 @@ export default {
 
 ._infos--row {
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: stretch;
   align-items: flex-start;
   gap: calc(var(--spacing) / 2);
@@ -386,6 +402,11 @@ export default {
   > * {
     flex: 1 0 20ch;
     margin-bottom: 0;
+    overflow: hidden;
+
+    &._sizeDisplay {
+      // flex: 0 0 20ch;
+    }
   }
 }
 ._captionEditor {

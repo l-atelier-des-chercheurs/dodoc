@@ -262,6 +262,7 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+    width: 100%;
   }
 
   &.is--singleText {
@@ -278,6 +279,10 @@ export default {
   > ._mediaGrid--item {
     position: relative;
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    ::v-deep ._iframeStylePreview {
+      object-fit: var(--object-fit, cover);
+    }
   }
 
   // ._dzInbetween {
@@ -292,6 +297,9 @@ export default {
     flex: 1 1 calc(100% / var(--number_of_medias));
 
     &[data-mediatype="text"] {
+      aspect-ratio: auto;
+    }
+    &[data-mediatype="audio"] {
       aspect-ratio: auto;
     }
     &:not([data-mediatype="text"]) {

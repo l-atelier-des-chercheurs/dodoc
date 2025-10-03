@@ -1,0 +1,16 @@
+module_type = "text"
+page_id = "4ds7rv"
+x = 60
+y = 269
+width = 1_157
+height = 100
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-08-18T21:54:16.125Z
+"$date_uploaded" = 2025-03-13T09:43:47.298Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename = "text-1741859027055.txt.meta.txt"

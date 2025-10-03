@@ -1,0 +1,6 @@
+"$date_created" = 2025-09-16T14:14:44.379Z
+"$date_modified" = 2025-09-16T14:14:44.379Z
+"$date_uploaded" = 2025-09-16T14:14:44.379Z
+"$media_filename" = "png-2.png"
+"$status" = "private"
+"$type" = "image"

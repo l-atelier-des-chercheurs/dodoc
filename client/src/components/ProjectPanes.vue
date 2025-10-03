@@ -2,8 +2,8 @@
   <div
     class="_projetPanes"
     :class="{
-      'has--multiplePanes': can_edit_project,
-      'is--editable': can_edit_project,
+      'has--multiplePanes': can_contribute_to_project,
+      'is--editable': can_contribute_to_project,
     }"
     @click="scrollToPanes"
   >
@@ -41,7 +41,7 @@
         :style="`--color-type: var(--color-${pane.type});`"
       >
         <InstructionsWindow
-          v-if="can_edit_project && false"
+          v-if="can_contribute_to_project && false"
           :key="pane.type"
           :type="pane.type"
           :path="project.$path"
@@ -60,20 +60,21 @@
           :key="pane.key"
           :project="project"
           :media_focused="pane.focus"
+          :can_edit_project="can_edit_project"
           @update:media_focused="setItem(pane, 'focus', $event)"
         />
         <MakePane
           v-if="pane.type === 'make'"
           :project="project"
           :opened_make_slug="pane.make"
-          :can_edit="can_edit_project"
+          :can_edit="can_contribute_to_project"
           @update:opened_make_slug="setItem(pane, 'make', $event)"
         />
         <PublierPane
           v-if="pane.type === 'publish'"
           :project="project"
           :pane_infos="pane"
-          :can_edit="can_edit_project"
+          :can_edit="can_contribute_to_project"
           @updatePane="($event) => setItem(pane, $event.key, $event.value)"
         />
       </pane>
@@ -93,6 +94,7 @@ export default {
     projectpanes: Array,
     project: Object,
     can_edit_project: Boolean,
+    can_contribute_to_project: Boolean,
   },
   components: {
     Splitpanes,
@@ -106,14 +108,33 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    if (!this.can_contribute_to_project) {
+      // if no project panes, set to publish
+      if (
+        this.projectpanes.length === 0 ||
+        !this.projectpanes.some((p) => p.type === "publish")
+      ) {
+        const _pp = [
+          {
+            type: "publish",
+            size: 100,
+          },
+        ];
+        this.$emit("update:projectpanes", _pp);
+      } else {
+        const _pp = this.projectpanes.filter((p) => p.type === "publish");
+        this.$emit("update:projectpanes", _pp);
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
   computed: {},
   methods: {
     scrollToPanes() {
-      if (this.$route.name === "Projet" && this.can_edit_project)
+      if (this.$route.name === "Projet" && this.can_contribute_to_project)
         // convenient in double scroll mode
         this.$el.scrollIntoView({
           behavior: "smooth",

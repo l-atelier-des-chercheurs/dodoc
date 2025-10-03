@@ -1,29 +1,57 @@
 <template>
   <BaseModal2 :title="$t('markdown_help')" @close="$emit('close')">
-    <p class="u-spacingBottom">
-      Pour renseigner le contenu du chapitre, on peut utiliser le langage de
-      balisage léger <em>markdown</em>, très largement utilisé et documenté
-      partout sur le web.
-    </p>
-    <p class="u-spacingBottom">Voici une brève documentation de son usage.</p>
-
-    <h3>Paragraphes et sauts de ligne</h3>
     <p>
-      Pour créer un paragraphe, laisser une ligne blanche entre deux lignes de
-      texte :
+      Pour renseigner le contenu du chapitre, on peut utiliser le langage de
+      balisage léger <em>markdown</em>, très largement utilisé et documenté sur
+      le web.
+    </p>
+    <p>Voici une brève documentation de son usage.</p>
+
+    <h3>Paragraphes et saut de ligne</h3>
+    <p>Pour retourner à la ligne dans un même paragraphe :</p>
+    <CodeBlock
+      code="Un premier vers. 
+Un deuxième vers."
+    />
+    <p>
+      Pour créer un nouveau paragraphe, laisser une ligne blanche entre deux
+      lignes de texte :
     </p>
     <div class="u-spacingBottom" />
-    <blockquote>
-      <code>Un premier paragraphe.</code> <br />
-      <br />
-      <code>Un deuxième paragraphe.</code>
-    </blockquote>
-    <p>Pour retourner à la ligne dans un même paragraphe :</p>
-    <blockquote>
-      <code>Un premier vers. </code>
-      <br />
-      <code>Un deuxième vers.</code>
-    </blockquote>
+    <CodeBlock
+      code="Un premier paragraphe.
+
+Un deuxième paragraphe."
+    />
+
+    <p>
+      Pour espacer davantage des éléments (paragraphes, titres, images, etc.),
+      ajouter un caractère \ en début de ligne :
+    </p>
+    <div class="u-spacingBottom" />
+    <CodeBlock
+      code="Un premier paragraphe.
+\
+\
+\
+Un deuxième paragraphe."
+    />
+
+    <h3>Saut de page</h3>
+    <p>
+      À n'importe quel endroit, pour interrompre le texte et démarrer en haut
+      d'une nouvelle page, utiliser la balise&nbsp;:
+    </p>
+    <CodeBlock code="(break: page)" />
+
+    <p>
+      Vous pouvez également préciser si vous souhaitez démarrer sur une page de
+      gauche ou de droite en utilisant la balise&nbsp;:
+    </p>
+    <CodeBlock
+      code="(break: left)
+(break: right)"
+    />
 
     <h3>Syntaxe</h3>
     <table class="u-spacingBottom">
@@ -36,35 +64,31 @@
       <tbody>
         <tr v-for="item in markdownSyntax" :key="item.element">
           <td>{{ item.element }} {{ "&nbsp;&nbsp;" }}</td>
-          <td>
+          <td class="syntax-cell">
             <template v-if="Array.isArray(item.syntax)">
-              <template v-for="(syntax, index) in item.syntax">
-                <code>{{ syntax }}</code>
-                <br v-if="index < item.syntax.length - 1" />
-              </template>
+              <CodeBlock :code="item.syntax.join('\n')" />
             </template>
             <template v-else>
-              <code>{{ item.syntax }}</code>
+              <CodeBlock :code="item.syntax" />
               <template v-if="item.warning">
                 ⚠️ <a :href="item.link">{{ item.warning }}</a>
               </template>
             </template>
-            {{ "\n\n" }}
           </td>
         </tr>
       </tbody>
     </table>
 
     <h3>Médias</h3>
-    <p>Pour insérer des médias, vous pouvez utiliser la balise&nbsp;:</p>
-    <blockquote>
-      <code>(image: url.jpg)</code> <br />
-      <code>(video: url.mp4)</code> <br />
-      <code>(audio: url.mp3)</code> <br />
-      <code>(embed: url.com)</code>
-    </blockquote>
+    <p>Pour insérer des médias, vous pouvez utiliser les balises&nbsp;:</p>
+    <CodeBlock
+      code="(image: url.jpg)
+(video: url.mp4)
+(audio: url.mp3)
+(embed: url.com)"
+    />
     <p>
-      Pour plus d’informations, fermez cette fenêtre et cliquez sur le bouton
+      Pour plus d'informations, fermez cette fenêtre et cliquez sur le bouton
       <b>Importer des médias</b>.
     </p>
 
@@ -73,27 +97,21 @@
       Pour mettre en forme une ligne complète, vous pouvez utiliser les balises
       suivantes&nbsp;:
     </p>
-    <blockquote>
-      <code>Grand texte rouge {style="color: red; font-size: 200%;"}</code>
-    </blockquote>
+    <CodeBlock code='Grand texte rouge {style="color: red; font-size: 200%;}' />
     <p>
       Pour mettre en forme seulement un mot, vous pouvez utiliser la balise
       suivante&nbsp;:
     </p>
-    <blockquote>
-      <code>Grand [mot]{style="color: red; font-size: 200%;"} en rouge</code>
-    </blockquote>
+    <CodeBlock
+      code='Grand [mot]{style="color: red; font-size: 200%;"} en rouge'
+    />
     <p>
       Vous pouvez également attribuer une classe ou un identifiant à un mot, une
       ligne ou un média en le renseignant entre accolades&nbsp;:
     </p>
-    <blockquote>
-      <code>
-        <code>Grand texte rouge {class="titre rouge"}</code>
-      </code>
-    </blockquote>
+    <CodeBlock code='Grand texte rouge {class="titre rouge"}' />
     <p>
-      Vous pouvez ensuite lui attribuer des propriétés CSS en ouvrant l’éditeur
+      Vous pouvez ensuite lui attribuer des propriétés CSS en ouvrant l'éditeur
       de styles graphiques, depuis le sommaire de la publication.
     </p>
 
@@ -102,12 +120,25 @@
       Lire la documentation sur
       <a href="https://www.markdownguide.org/">markdownguide.org</a>.
     </p>
+    <p>
+      (Utilisation avancée) Vous pouvez également utiliser les balises HTML
+      directement dans le texte. En combinant avec la fonctionnalité
+      <b>Styles graphiques</b>, vous pouvez appliquer des styles à des éléments
+      spécifiques.
+    </p>
+    <CodeBlock
+      code='<div style="color: red; font-size: 200%;" class="titre rouge">texte en rouge</div>'
+    />
   </BaseModal2>
 </template>
 <script>
+import CodeBlock from "./CodeBlock.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    CodeBlock,
+  },
   data() {
     return {
       markdownSyntax: [
@@ -201,6 +232,7 @@ export default {
 table {
   border: 2px solid var(--c-gris_clair);
   padding: 0;
+  width: 100%;
 }
 th {
   text-align: left;
@@ -214,15 +246,31 @@ tr {
 td {
   vertical-align: top;
   padding: 0.25rem;
+  border: none;
+
   &:first-child {
     font-style: italic;
     user-select: none;
   }
 }
 
+.syntax-cell {
+  padding: 0.25rem 0.25rem 0.25rem 0.25rem !important;
+
+  .code-block {
+    margin: 0;
+  }
+}
+
+h2,
+h3,
+p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 h3 {
   margin-top: 2rem;
-  margin-bottom: 0.5rem;
 }
 
 ._space {

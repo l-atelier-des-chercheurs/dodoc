@@ -89,11 +89,11 @@
         :has_items="$api.other_devices_connected.length"
       >
         <div
-          v-for="device in $api.other_devices_connected"
+          v-for="(device, index) in $api.other_devices_connected"
           :key="device.id"
           class="u-spacingBottom"
         >
-          <!-- <hr /> -->
+          <hr v-if="index !== 0" />
           <div>
             <AuthorTag
               v-if="device.meta.token_path"
@@ -101,9 +101,15 @@
             />
             <span v-else>{{ $t("not_logged_in") }}</span>
           </div>
-          <div>{{ device.meta.user_agent }}</div>
-          <DLabel :str="'emplacement'" />
-          <div>{{ device.meta.path }}</div>
+          <!-- <div>{{ device.meta.user_agent }}</div> -->
+          <DLabel :str="$t('opened_page')" />
+          <router-link
+            v-if="device.meta.path"
+            :to="{ path: createURLFromPath(device.meta.path) }"
+            class="u-buttonLink"
+          >
+            {{ $t("open") }}
+          </router-link>
         </div>
       </DetailsPane>
     </div>

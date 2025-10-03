@@ -23,11 +23,13 @@ module.exports = (function () {
       document_width,
       document_height,
       reportProgress,
+      number_of_pages_to_export,
     }) => {
       dev.logfunction({
         url,
         recipe,
         layout_mode,
+        number_of_pages_to_export,
         document_width,
         document_height,
         reportProgress,
@@ -54,6 +56,7 @@ module.exports = (function () {
           recipe,
           bw_pagesize,
           printToPDF_pagesize,
+          number_of_pages_to_export,
           reportProgress,
         });
       } else {
@@ -64,6 +67,7 @@ module.exports = (function () {
           recipe,
           bw_pagesize,
           printToPDF_pagesize,
+          number_of_pages_to_export,
           reportProgress,
         });
       }

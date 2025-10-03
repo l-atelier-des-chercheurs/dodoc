@@ -192,7 +192,7 @@
               :content="file.caption"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -203,7 +203,7 @@
               :content="file.$credits"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -340,7 +340,12 @@
               @click="show_optimize_modal = true"
             >
               <b-icon :icon="'file-play-fill'" />
-              {{ $t("optimize_resize") }}
+              <template v-if="file.$type === 'image'">
+                {{ $t("optimize_resize") }}
+              </template>
+              <template v-else>
+                {{ $t("convert_shorten") }}
+              </template>
             </button>
 
             <div v-for="make in available_makes" :key="make.type">

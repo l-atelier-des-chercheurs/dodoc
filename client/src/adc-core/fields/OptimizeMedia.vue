@@ -29,11 +29,8 @@
           :audio_bitrate.sync="audio_bitrate"
         />
       </div>
-      <div v-else>
-        <div
-          class="u-spacingBottom _mediaPreview"
-          :data-type="optimized_file.$type"
-        >
+      <div v-else class="_optimizedFilePreview">
+        <div class="_mediaPreview" :data-type="optimized_file.$type">
           <MediaContent
             :file="optimized_file"
             :resolution="1600"
@@ -43,28 +40,29 @@
           />
         </div>
 
-        <div class="u-spacingBottom" />
-
-        <DLabel :str="$t('size')" />
-        <div class="_comp">
-          <span>
-            <template v-if="media.$infos && media.$infos.size">
-              {{ formatBytes(media.$infos.size) }}
-            </template>
-            <template v-else> ? </template>
-          </span>
-          <b-icon icon="arrow-right-circle" />
-          <strong>
-            <template
-              v-if="optimized_file.$infos && optimized_file.$infos.size"
-            >
-              {{ formatBytes(optimized_file.$infos.size) }}
-            </template>
-            <template v-else> ? </template>
-          </strong>
+        <!-- <div class="u-spacingBottom" /> -->
+        <div>
+          <DLabel :str="$t('size')" />
+          <div class="_comp">
+            <span>
+              <template v-if="media.$infos && media.$infos.size">
+                {{ formatBytes(media.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              <template
+                v-if="optimized_file.$infos && optimized_file.$infos.size"
+              >
+                {{ formatBytes(optimized_file.$infos.size) }}
+              </template>
+              <template v-else> ? </template>
+            </strong>
+          </div>
         </div>
 
-        <template
+        <div
           v-if="
             optimized_file.$type === 'image' || optimized_file.$type === 'video'
           "
@@ -97,20 +95,44 @@
               <template v-else> ? </template>
             </strong>
           </div>
-        </template>
-
-        <DLabel :str="$t('filename')" />
-        <div class="_comp">
-          <span>
-            {{ media.$media_filename }}
-          </span>
-          <b-icon icon="arrow-right-circle" />
-          <strong>
-            {{ optimized_file.$media_filename }}
-          </strong>
         </div>
 
-        <div class="u-spacingBottom" />
+        <div v-if="optimized_file.$infos?.duration">
+          <DLabel :str="$t('duration')" />
+          <div class="_comp">
+            <span>
+              <template v-if="media.$infos?.duration">
+                {{
+                  formatDurationToHoursMinutesSecondsDeciseconds(
+                    media.$infos.duration
+                  )
+                }}
+              </template>
+              <template v-else> ? </template>
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              {{
+                formatDurationToHoursMinutesSecondsDeciseconds(
+                  optimized_file.$infos.duration
+                )
+              }}
+            </strong>
+          </div>
+        </div>
+
+        <div>
+          <DLabel :str="$t('filename')" />
+          <div class="_comp">
+            <span>
+              {{ media.$media_filename }}
+            </span>
+            <b-icon icon="arrow-right-circle" />
+            <strong>
+              {{ optimized_file.$media_filename }}
+            </strong>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -401,5 +423,11 @@ export default {
   text-align: center;
   text-transform: lowercase;
   font-size: var(--sl-font-size-small);
+}
+
+._optimizedFilePreview {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 </style>

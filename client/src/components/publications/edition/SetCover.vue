@@ -36,13 +36,22 @@
         <template v-if="cover_image_media">
           <div class="_cover--pickCover--img">
             <MediaContent :file="cover_image_media" :resolution="1600" />
-            <button
-              type="button"
-              class="u-button u-button_bleuvert u-button_small _changeCoverBtn"
-              @click="show_cover_picker = true"
-            >
-              {{ $t("change") }}
-            </button>
+            <div class="_cover--pickCover--img--buttons">
+              <button
+                type="button"
+                class="u-button u-button_bleuvert u-button_small"
+                @click="show_cover_picker = true"
+              >
+                {{ $t("change") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_red u-button_small"
+                @click="removeImage"
+              >
+                {{ $t("remove") }}
+              </button>
+            </div>
           </div>
         </template>
 
@@ -164,6 +173,14 @@ export default {
         },
       });
     },
+    async removeImage() {
+      this.$api.updateMeta({
+        path: this.cover_media.$path,
+        new_meta: {
+          source_medias: [],
+        },
+      });
+    },
   },
 };
 </script>
@@ -183,7 +200,7 @@ export default {
   position: relative;
   overflow: hidden;
   margin-bottom: calc(var(--spacing) / 1);
-  background-color: var(--c-bodybg);
+  background-color: var(--c-gris_clair);
 
   ::v-deep {
     ._mediaContent,
@@ -196,8 +213,11 @@ export default {
   }
 }
 
-._changeCoverBtn {
+._cover--pickCover--img--buttons {
   position: absolute;
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
   bottom: 0;
   right: 0;
   margin: calc(var(--spacing) / 2);

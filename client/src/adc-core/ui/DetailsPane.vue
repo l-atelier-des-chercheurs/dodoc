@@ -165,7 +165,7 @@ export default {
     padding: calc(var(--spacing) / 4);
     cursor: pointer;
     background: white;
-    border-radius: 4px;
+    border-radius: var(--panel-radius);
     line-height: 1.21;
 
     &:hover,

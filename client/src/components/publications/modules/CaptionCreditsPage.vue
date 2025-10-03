@@ -28,7 +28,7 @@
             :field_to_edit="'caption'"
             :content="media.caption"
             :path="media.$path"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="can_edit"
           />
@@ -42,7 +42,7 @@
             :field_to_edit="'$credits'"
             :content="media.$credits"
             :path="media.$path"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="can_edit"
           />

@@ -55,7 +55,9 @@ export default {
     },
     makeMediaFileURL({ $path, $media_filename }) {
       const full_path = this.makeMediaFilePath({ $path, $media_filename });
-      return window.location.origin + full_path;
+      if (!window.app_infos.page_is_standalone_html)
+        return window.location.origin + full_path;
+      else return full_path;
     },
     getSourceMedia({ source_media, folder_path }) {
       // three cases : source_media contains
@@ -82,7 +84,7 @@ export default {
         meta_filename = this.getFilename(source_media.path);
       }
       if (!source_path) {
-        this.$alertify.delay(4000).error("couldnt find media");
+        // this.$alertify.delay(4000).error("couldnt find media");
         return;
       }
       return this.getMediaInFolder({ folder_path: source_path, meta_filename });
@@ -120,7 +122,10 @@ export default {
         return strings.some((s) => url.includes(s));
       }
 
-      if (urlContains(cleaned_up_url, ["peertube.fr"]))
+      if (
+        urlContains(cleaned_up_url, ["peertube."]) &&
+        urlContains(cleaned_up_url, ["/w/"])
+      )
         return {
           type: "peertube",
           src: this.getPeertubeEmbedFromUrl(cleaned_up_url, autoplay),
@@ -180,8 +185,31 @@ export default {
         const match = url.match(regExp);
         return match && match[2].length === 11 ? match[2] : null;
       }
+
+      function getTimestamp(url) {
+        // Handle different timestamp formats: t=123, t=1m23s, #t=123, &t=123
+        const timeRegex = /[?&#]t=([0-9]+h)?([0-9]+m)?([0-9]+s?)?/i;
+        const match = url.match(timeRegex);
+
+        if (!match) return null;
+
+        const hours = match[1] ? parseInt(match[1]) : 0;
+        const minutes = match[2] ? parseInt(match[2]) : 0;
+        const seconds = match[3] ? parseInt(match[3]) : 0;
+
+        return hours * 3600 + minutes * 60 + seconds;
+      }
+
       const video_id = getId(url);
-      return `https://www.youtube.com/embed/${video_id}?autoplay=${autoplay_value}&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`;
+      const timestamp = getTimestamp(url);
+
+      let embedUrl = `https://www.youtube.com/embed/${video_id}?autoplay=${autoplay_value}&iv_load_policy=3&modestbranding=1&playsinline=1&showinfo=0&rel=0&enablejsapi=1`;
+
+      if (timestamp) {
+        embedUrl += `&start=${timestamp}`;
+      }
+
+      return embedUrl;
     },
     getVimeoEmbedURLFromURL(url, autoplay_value) {
       function getId(url) {

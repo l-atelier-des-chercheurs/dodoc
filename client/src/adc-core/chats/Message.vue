@@ -6,12 +6,16 @@
   >
     <div class="_message--header">
       <div class="_message--header--author">
-        <AuthorTag
-          v-if="message_author_path"
-          :key="message_author_path"
-          :path="message_author_path"
-          :size="'small'"
-        />
+        <template v-if="message_author_path">
+          <AuthorTag
+            :key="message_author_path"
+            :path="message_author_path"
+            :size="'small'"
+          />
+        </template>
+        <span v-else class="_message--header--author--anonymous">
+          {{ $t("anonymous_user") }}
+        </span>
         <!-- <span v-else-if="is_self" class="_message--header--author--self">{{
           "Vous"
         }}</span> -->
@@ -62,9 +66,9 @@
               :content="message.$content"
               :path="message.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :minlength="0"
-              :maxlength="300"
+              :maxlength="max_message_length"
               :can_edit="true"
             />
           </BaseModal2>
@@ -103,6 +107,7 @@ export default {
       type: Object,
       required: true,
     },
+    max_message_length: Number,
     can_contribute_to_chat: {
       type: Boolean,
       default: false,
@@ -149,7 +154,7 @@ export default {
       });
     },
     message_author_path() {
-      if (this.message.$authors?.length > 0) return this.message.$authors[0];
+      if (this.message.$authors?.length > 0) return this.message.$authors?.[0];
       return undefined;
     },
     is_self() {
@@ -166,8 +171,7 @@ export default {
   border-radius: var(--border-radius);
   background: white;
   color: var(--c-noir);
-  margin-top: calc(var(--spacing) / 4);
-  margin-bottom: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   &.is--self {
     margin-left: calc(var(--spacing) * 2);
@@ -205,6 +209,11 @@ export default {
     display: flex;
     align-items: center;
     gap: calc(var(--spacing) / 4);
+  }
+
+  ._message--header--author--anonymous {
+    font-style: italic;
+    padding-left: calc(var(--spacing) / 4);
   }
 }
 ._message--content {

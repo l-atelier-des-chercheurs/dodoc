@@ -4,9 +4,15 @@ import router from "./router";
 
 import "./utils/icons";
 
+// Add Bootstrap Vue CSS for icon animations
+import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
+
 Vue.config.productionTip = false;
 
-const publicPath = "/_client/";
+const publicPath =
+  window.app_infos.page_is_standalone_html === true
+    ? "./_client/"
+    : "/_client/";
 
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
@@ -19,8 +25,57 @@ import {
   findMissingTranslations,
 } from "@/adc-core/lang/i18n.js";
 
-import alertify from "alertify.js";
-Vue.prototype.$alertify = alertify;
+// Modern toast notifications
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+Vue.use(Toast, {
+  position: "bottom-left",
+  timeout: 4000,
+  closeOnClick: true,
+  pauseOnFocusLoss: false,
+  closeButton: "button",
+  transition: "Vue-Toastification__fade",
+  maxToasts: 10,
+});
+
+// Create a compatibility layer for the old alertify API
+Vue.prototype.$alertify = {
+  delay: (time) => ({
+    error: (message) => Vue.prototype.$toast.error(message, { timeout: time }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { timeout: time }),
+    log: (message) => Vue.prototype.$toast.info(message, { timeout: time }),
+  }),
+  closeLogOnClick: (enabled) => ({
+    delay: (time) => ({
+      error: (message) =>
+        Vue.prototype.$toast.error(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      success: (message) =>
+        Vue.prototype.$toast.success(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      log: (message) =>
+        Vue.prototype.$toast.info(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+    }),
+    error: (message) =>
+      Vue.prototype.$toast.error(message, { closeOnClick: enabled }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { closeOnClick: enabled }),
+    log: (message) =>
+      Vue.prototype.$toast.info(message, { closeOnClick: enabled }),
+  }),
+  error: (message) => Vue.prototype.$toast.error(message),
+  success: (message) => Vue.prototype.$toast.success(message),
+  log: (message) => Vue.prototype.$toast.info(message),
+};
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
@@ -37,7 +92,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: publicPath + `plyr.svg`,
+    iconUrl: "",
   },
 });
 Vue.directive("uppercase", {
@@ -66,6 +121,10 @@ if (window.app_infos.is_electron)
 
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
+
+// Import DOMPurify for HTML sanitization
+import DOMPurify from "dompurify";
+Vue.prototype.$sanitize = DOMPurify.sanitize;
 
 // globals mainly for non-editing components
 

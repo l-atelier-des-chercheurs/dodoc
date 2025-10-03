@@ -40,11 +40,12 @@
           ref="field"
           :field_to_edit="'field_to_edit'"
           :content="content"
-          :custom_formats="['bold', 'italic', 'link']"
+          :custom_formats="custom_formats"
           :is_collaborative="false"
           :mode="'always_active'"
           :can_edit="true"
           @input="$emit('update:content', $event)"
+          @onEnter="onEnter"
         />
         <slot name="suffix" />
       </div>
@@ -124,6 +125,14 @@ export default {
       type: [Boolean, Number],
       default: false,
     },
+    custom_formats: {
+      type: Array,
+      default: () => ["bold", "italic", "link"],
+    },
+    intercept_enter: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {},
   data() {
@@ -168,7 +177,7 @@ export default {
       // Create a temporary div to parse HTML and get plain text
       const temp = document.createElement("div");
       temp.innerHTML = this.content;
-      return temp.innerText;
+      return this.cleanUpString(temp.innerText);
     },
   },
   methods: {
@@ -233,6 +242,13 @@ export default {
     },
     toggleInputType() {
       this.show_password_in_clear = !this.show_password_in_clear;
+    },
+    onEnter() {
+      if (this.intercept_enter) {
+        this.$emit("onEnter");
+        return false; // Prevent default Enter behavior
+      }
+      return true; // Allow default Enter behavior
     },
   },
 };

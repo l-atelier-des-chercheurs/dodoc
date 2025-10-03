@@ -1,6 +1,10 @@
 <template>
   <div class="_carousel" :class="{}">
-    <FlickityCarousel :key="slider_key" class="_mainCarousel">
+    <FlickityCarousel
+      :key="slider_key"
+      :show_fullscreen_button="true"
+      class="_mainCarousel"
+    >
       <div
         class="carousel-cell"
         :data-mediatype="media_with_linked._linked_media.$type"
@@ -22,7 +26,7 @@
           :file="media_with_linked._linked_media"
           :resolution="context === 'preview' ? 220 : 1600"
           :context="context"
-          :show_fs_button="show_fs_button"
+          :show_fs_button="false"
           :display_credits_caption="true"
           :can_edit_credits_caption="can_edit"
         />

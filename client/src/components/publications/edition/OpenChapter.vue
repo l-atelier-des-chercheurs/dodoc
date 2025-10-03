@@ -11,36 +11,47 @@
     </div> -->
     <div class="_navBtns">
       <div class="_navBtns--content">
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="prev_section"
-            @click="$emit('prev')"
-          >
-            <b-icon icon="arrow-left-short" />
-            <span>
-              {{ prev_section.section_title }}
-            </span>
-          </button>
+        <div class="" />
+        <div
+          class="_navBtns--content--buttons"
+          v-show="next_section || prev_section"
+        >
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="prev_section"
+              @click="$emit('prev')"
+            >
+              <b-icon icon="arrow-left-short" />
+              <span>
+                {{ prev_section.section_title }}
+              </span>
+            </button>
+            <span v-else>–</span>
+          </span>
+
+          <span class="_separator">|</span>
+
+          <span>
+            <button
+              type="button"
+              class="u-linkList"
+              v-if="next_section"
+              @click="$emit('next')"
+            >
+              <span>
+                {{ next_section.section_title }}
+              </span>
+              <b-icon icon="arrow-right-short" />
+            </button>
+            <span v-else>–</span>
+          </span>
         </div>
         <div>
           <button type="button" class="u-linkList" @click="$emit('close')">
             <b-icon icon="x-circle" :label="$t('close')" />
             {{ $t("close") }}
-          </button>
-        </div>
-        <div>
-          <button
-            type="button"
-            class="u-linkList"
-            v-if="next_section"
-            @click="$emit('next')"
-          >
-            <span>
-              {{ next_section.section_title }}
-            </span>
-            <b-icon icon="arrow-right-short" />
           </button>
         </div>
       </div>
@@ -50,7 +61,7 @@
         <TitleField
           :field_name="'section_title'"
           :content="chapter.section_title"
-          :maxlength="40"
+          :maxlength="100"
           :tag="'h1'"
           :path="chapter.$path"
           :can_edit="true"
@@ -111,37 +122,42 @@
             </div>
           </div>
         </transition>
-
-        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
-          <SelectField2
-            :field_name="'section_starts_on_page'"
-            :value="chapter.section_starts_on_page || ''"
-            :path="chapter.$path"
-            size="small"
-            :hide_validation="true"
-            :can_edit="true"
-            :options="starts_on_page_options"
-          />
-        </div>
       </div>
 
-      <fieldset v-if="chapter.section_type === 'text'">
-        <legend>{{ $t("text_image_layout") }}</legend>
-        <div>
-          <DLabel :str="$t('column_count')" />
-          <div class="">
+      <fieldset
+        v-if="chapter.section_type === 'text' && view_mode === 'book'"
+        class="u-spacingBottom _layout"
+      >
+        <legend>{{ $t("layout") }}</legend>
+        <div class="_optionsRow">
+          <div class="_colCount">
+            <DLabel :str="$t('column_count')" />
+            <div class="">
+              <SelectField2
+                :field_name="'column_count'"
+                :value="chapter.column_count || 1"
+                :path="chapter.$path"
+                size="small"
+                :hide_validation="true"
+                :can_edit="true"
+                :options="[
+                  { key: 1, text: '1' },
+                  { key: 2, text: '2' },
+                  { key: 3, text: '3' },
+                ]"
+              />
+            </div>
+          </div>
+          <div class="_selects--starts_on_page">
+            <DLabel :str="$t('starts_on_page')" />
             <SelectField2
-              :field_name="'column_count'"
-              :value="chapter.column_count || 1"
+              :field_name="'section_starts_on_page'"
+              :value="chapter.section_starts_on_page || ''"
               :path="chapter.$path"
               size="small"
               :hide_validation="true"
               :can_edit="true"
-              :options="[
-                { key: 1, text: '1' },
-                { key: 2, text: '2' },
-                { key: 3, text: '3' },
-              ]"
+              :options="starts_on_page_options"
             />
           </div>
         </div>
@@ -359,10 +375,11 @@ export default {
       md.use(markdownItCsc, {
         getMediaSrc: (src) => {
           const folder_path = this.getParent(this.chapter.$path);
+
+          let source_media = this.transformMediaSrc(src);
+
           return this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: src,
-            },
+            source_media,
             folder_path,
           });
         },
@@ -406,16 +423,14 @@ export default {
         if (["image", "video", "audio"].includes(token.tag) && token.content) {
           const meta_src = token.content;
           const folder_path = this.getParent(this.chapter.$path);
+
+          const source_media = this.transformMediaSrc(meta_src);
           const media = this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: meta_src,
-            },
+            source_media,
             folder_path,
           });
           if (media) {
-            source_medias.push({
-              meta_filename_in_project: meta_src,
-            });
+            source_medias.push(source_media);
           }
         }
         // Call the original renderer if it exists, otherwise return empty string
@@ -431,7 +446,9 @@ export default {
         (media, index, self) =>
           index ===
           self.findIndex(
-            (t) => t.meta_filename_in_project === media.meta_filename_in_project
+            (t) =>
+              t.meta_filename_in_project === media.meta_filename_in_project ||
+              t.meta_filename === media.meta_filename
           )
       );
 
@@ -455,6 +472,22 @@ export default {
       const editor = this.$refs.collaborativeEditor;
       if (editor) {
         editor.insertAtCursor(text);
+      }
+    },
+
+    transformMediaSrc(meta_src) {
+      if (meta_src.startsWith("./")) {
+        return {
+          meta_filename: meta_src.substring(2),
+        };
+      } else if (meta_src.startsWith("../")) {
+        return {
+          meta_filename_in_project: meta_src.substring(3),
+        };
+      } else {
+        return {
+          meta_filename_in_project: meta_src,
+        };
       }
     },
 
@@ -527,7 +560,7 @@ export default {
 
   margin: 0 calc(var(--spacing) / 1);
   margin-bottom: 0;
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) * 2);
 }
 
 ._close_button {
@@ -557,6 +590,7 @@ export default {
   // padding-top: calc(var(--spacing) * 4);
   // padding-bottom: calc(var(--spacing) * 4);
 }
+
 ._navBtns--content {
   display: flex;
   align-items: center;
@@ -564,20 +598,52 @@ export default {
   gap: calc(var(--spacing) / 1);
   height: 20px;
 
-  > * {
-    flex: 1 1 0;
-    overflow: hidden;
+  &:first-child,
+  &:last-child {
+    flex: 0 0 10ch;
+  }
 
-    &:nth-child(2) {
-      .u-linkList {
-        justify-content: center;
-      }
+  > * {
+    flex: 0 1 10ch;
+    overflow: hidden;
+  }
+}
+
+._navBtns--content--buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+
+  > * {
+    display: block;
+    flex: 1 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    > * {
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     }
-    &:last-child {
-      .u-linkList {
+
+    &:first-child {
+      text-align: right;
+
+      > * {
         justify-content: flex-end;
       }
     }
+
+    &:last-child > * {
+      text-align: left;
+    }
+  }
+
+  ._separator {
+    flex: 0 0 1ch;
+    margin: 0ch;
+    text-align: center;
   }
 }
 
@@ -682,5 +748,16 @@ export default {
       display: none;
     }
   }
+}
+
+._colCount {
+  max-width: 20ch;
+}
+
+._optionsRow {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  gap: calc(var(--spacing) * 1);
 }
 </style>

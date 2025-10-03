@@ -103,23 +103,25 @@ export default {
   computed: {},
   methods: {
     socketConnected() {
-      if (this.debug_mode)
+      if (this.$root.debug_mode)
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Disconnected ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Connect error ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Connect error ${reason}`);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;
@@ -143,7 +145,7 @@ export default {
   flex-flow: row nowrap;
   justify-content: flex-start;
   flex: 1;
-  overflow: hidden;
+  // overflow: hidden;
 
   transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   // gap: var(--spacing);
