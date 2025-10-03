@@ -1191,6 +1191,11 @@ export default {
     stroke: currentColor;
   }
 
+  .ql-picker-options {
+    max-height: min(21em, 40vh);
+    overflow-y: auto;
+  }
+
   .ql-color-picker .ql-picker-options {
     // to prevent overflow issues with pagemenu overflow
     width: var(--quill-options-size);
