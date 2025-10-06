@@ -1201,6 +1201,7 @@ module.exports = (function () {
   async function _export(req, res, next) {
     const { path_to_folder, path_to_parent_folder, meta_filename, data } =
       utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
 
     const folder_to_export_to =
@@ -1225,6 +1226,17 @@ module.exports = (function () {
     // 4. when task finishes, it notifies client with notifier and also triggers a fileCreated
 
     dev.logpackets(`Successfully started export task ${task_id}`);
+    journal.log({
+      from: "api2",
+      event: "export",
+      details: {
+        outcome: "started",
+        path_to_folder,
+        folder_to_export_to,
+        task_id,
+        author_path: token_path,
+      },
+    });
     res.status(200).json({ task_id });
 
     // wait a bit to make sure that the client has the time to watch task, in case it fails right away
@@ -1234,6 +1246,18 @@ module.exports = (function () {
       const exported_path_to_meta = await task.start();
       const meta = await file.getFile({
         path_to_meta: exported_path_to_meta,
+      });
+      journal.log({
+        from: "api2",
+        event: "export",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          folder_to_export_to,
+          exported_path_to_meta,
+          task_id,
+          author_path: token_path,
+        },
       });
       notifier.emit(
         "fileCreated",
@@ -1245,6 +1269,17 @@ module.exports = (function () {
       );
     } catch (err) {
       dev.error("Failed to export file: " + err);
+      journal.log({
+        from: "api2",
+        event: "export",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: err.message,
+          task_id,
+          author_path: token_path,
+        },
+      });
       notifier.emit("taskEnded", task_id, {
         task_id,
         message: err,
@@ -1254,6 +1289,7 @@ module.exports = (function () {
 
   async function _copyFolder(req, res, next) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_type, path_to_folder, data });
 
     try {
@@ -1289,6 +1325,18 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully copied folder ${path_to_source_folder} to ${copy_folder_path}`
       );
+      journal.log({
+        from: "api2",
+        event: "copy_folder",
+        details: {
+          outcome: "success",
+          path_to_source_folder,
+          path_to_destination_type,
+          copy_folder_path,
+          is_copy_or_move,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ copy_folder_path });
 
       const new_folder_meta = await folder.getFolder({
@@ -1306,6 +1354,16 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
+      journal.log({
+        from: "api2",
+        event: "copy_folder",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({
         code,
         err_infos,
@@ -1444,6 +1502,7 @@ module.exports = (function () {
 
   async function _restoreFolderFromBin(req, res, next) {
     const { path_to_type, path_to_folder_in_bin } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_type, path_to_folder_in_bin });
 
     try {
@@ -1452,6 +1511,16 @@ module.exports = (function () {
         path_to_type,
       });
       dev.logpackets(`Successfully restored folder ${restored_folder_path}`);
+      journal.log({
+        from: "api2",
+        event: "restore_folder_from_bin",
+        details: {
+          outcome: "success",
+          path_to_folder_in_bin,
+          restored_folder_path,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ restored_folder_path });
 
       const new_folder_meta = await folder.getFolder({
@@ -1465,10 +1534,22 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to restore from bin: " + message);
+      journal.log({
+        from: "api2",
+        event: "restore_folder_from_bin",
+        details: {
+          outcome: "error",
+          path_to_folder_in_bin,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
+      res.status(500).send({ code, err_infos });
     }
   }
   async function _removeBinFolder(req, res, next) {
     const { path_to_folder_in_bin } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder_in_bin });
 
     try {
@@ -1478,10 +1559,29 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully removed bin folder ${path_to_folder_in_bin}`
       );
+      journal.log({
+        from: "api2",
+        event: "remove_bin_folder",
+        details: {
+          outcome: "success",
+          path_to_folder_in_bin,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remove bin folder: " + message);
+      journal.log({
+        from: "api2",
+        event: "remove_bin_folder",
+        details: {
+          outcome: "error",
+          path_to_folder_in_bin,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({
         code,
         err_infos,
@@ -1545,6 +1645,7 @@ module.exports = (function () {
 
   async function _restoreFileFromBin(req, res, next) {
     const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder, meta_filename });
 
     try {
@@ -1554,6 +1655,17 @@ module.exports = (function () {
       });
 
       dev.logpackets(`Successfully restored file ${restored_file_path}`);
+      journal.log({
+        from: "api2",
+        event: "restore_file_from_bin",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          meta_filename,
+          restored_file_path,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ restored_file_path });
 
       const restored_file_meta = await file.getFile({
@@ -1567,6 +1679,17 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to restore file from bin: " + message);
+      journal.log({
+        from: "api2",
+        event: "restore_file_from_bin",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          meta_filename,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({
         code,
         err_infos,
@@ -1576,6 +1699,7 @@ module.exports = (function () {
 
   async function _removeBinFile(req, res, next) {
     const { path_to_folder_in_bin } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder_in_bin });
 
     try {
@@ -1585,10 +1709,29 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully removed bin folder ${path_to_folder_in_bin}`
       );
+      journal.log({
+        from: "api2",
+        event: "remove_bin_file",
+        details: {
+          outcome: "success",
+          path_to_folder_in_bin,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ status: "ok" });
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remove bin folder: " + message);
+      journal.log({
+        from: "api2",
+        event: "remove_bin_file",
+        details: {
+          outcome: "error",
+          path_to_folder_in_bin,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({
         code,
         err_infos,
@@ -1598,6 +1741,7 @@ module.exports = (function () {
 
   async function _remixFolder(req, res, next) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_type, path_to_folder, data });
 
     try {
@@ -1643,6 +1787,17 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully remixed folder ${path_to_source_folder} to ${remix_folder_path}`
       );
+      journal.log({
+        from: "api2",
+        event: "remix_folder",
+        details: {
+          outcome: "success",
+          path_to_source_folder,
+          path_to_destination_type,
+          remix_folder_path,
+          author_path: token_path,
+        },
+      });
       res.status(200).json({ remix_folder_path });
 
       await _updateFolderListOfRemixes({
@@ -1666,6 +1821,16 @@ module.exports = (function () {
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remix folder: " + message);
+      journal.log({
+        from: "api2",
+        event: "remix_folder",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({
         code,
         err_infos,
@@ -1709,6 +1874,7 @@ module.exports = (function () {
 
   async function _generatePreview(req, res, next) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder, data });
 
     // TODO : do not move to parent folder, instead use that file as $cover
@@ -1718,6 +1884,16 @@ module.exports = (function () {
       instructions: data,
     });
     const task_id = task.id;
+    journal.log({
+      from: "api2",
+      event: "generate_preview",
+      details: {
+        outcome: "started",
+        path_to_folder,
+        task_id,
+        author_path: token_path,
+      },
+    });
     res.status(200).json({ task_id });
 
     // wait a bit to make sure that the client has the time to watch task, in case it fails right away
@@ -1731,6 +1907,17 @@ module.exports = (function () {
         update_cover_req: true,
       });
 
+      journal.log({
+        from: "api2",
+        event: "generate_preview",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          exported_path_to_meta,
+          task_id,
+          author_path: token_path,
+        },
+      });
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
         path: utils.convertToSlashPath(path_to_folder),
         changed_data,
@@ -1741,6 +1928,17 @@ module.exports = (function () {
       });
     } catch (err) {
       dev.error("Failed to generate preview: " + err);
+      journal.log({
+        from: "api2",
+        event: "generate_preview",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: err.message,
+          task_id,
+          author_path: token_path,
+        },
+      });
       notifier.emit("taskEnded", task_id, {
         task_id,
         message: err,
@@ -2044,7 +2242,17 @@ module.exports = (function () {
   }
 
   async function _restartApp(req, res, next) {
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+    journal.log({
+      from: "api2",
+      event: "restart_app",
+      details: {
+        outcome: "success",
+        author_path: token_path,
+      },
+    });
     notifier.emit("restartApp");
+    res.status(200).json({ status: "ok" });
   }
   async function _getLogs(req, res, next) {
     const logs = await journal.getLogs();
@@ -2057,9 +2265,34 @@ module.exports = (function () {
   }
   async function _setStoragePath(req, res, next) {
     const { data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     const new_path = data.new_path;
-    await settings.updateStoragePath({ new_path });
-    res.status(200).json({ status: "ok" });
+
+    try {
+      await settings.updateStoragePath({ new_path });
+      journal.log({
+        from: "api2",
+        event: "set_storage_path",
+        details: {
+          outcome: "success",
+          new_path,
+          author_path: token_path,
+        },
+      });
+      res.status(200).json({ status: "ok" });
+    } catch (err) {
+      journal.log({
+        from: "api2",
+        event: "set_storage_path",
+        details: {
+          outcome: "error",
+          new_path,
+          error_message: err.message,
+          author_path: token_path,
+        },
+      });
+      res.status(500).send({ code: err.code });
+    }
   }
 
   async function _getAllUsers(req, res, next) {
@@ -2131,6 +2364,7 @@ module.exports = (function () {
 
   async function _recoverPassword(req, res) {
     const { path_to_folder } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder });
 
     try {
@@ -2138,15 +2372,35 @@ module.exports = (function () {
         path_to_folder,
       });
       dev.logpackets(`Successfully recovered password for ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "recover_password",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
       res.status(200).json(result);
     } catch (err) {
       dev.error(err);
+      journal.log({
+        from: "api2",
+        event: "recover_password",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: err.message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({ code: err.code });
     }
   }
 
   async function _resetPassword(req, res) {
     const { path_to_type, path_to_folder, data } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder, data });
 
     try {
@@ -2159,6 +2413,15 @@ module.exports = (function () {
       });
 
       dev.logpackets(`Successfully reset password for ${path_to_folder}`);
+      journal.log({
+        from: "api2",
+        event: "reset_password",
+        details: {
+          outcome: "success",
+          path_to_folder,
+          author_path: token_path,
+        },
+      });
       res.status(200).json(result);
 
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
@@ -2172,6 +2435,16 @@ module.exports = (function () {
         });
     } catch (err) {
       dev.error(err);
+      journal.log({
+        from: "api2",
+        event: "reset_password",
+        details: {
+          outcome: "error",
+          path_to_folder,
+          error_message: err.message,
+          author_path: token_path,
+        },
+      });
       res.status(500).send({ code: err.code });
     }
   }

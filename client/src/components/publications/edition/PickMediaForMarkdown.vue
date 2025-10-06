@@ -17,26 +17,44 @@
         v-if="show_media_picker"
         :publication_path="publication_path"
         :select_mode="'multiple'"
-        :pick_from_types="['image', 'video', 'audio']"
+        :pick_from_types="['image', 'video', 'audio', 'text']"
         @pickMedias="pickMedias"
         @close="show_media_picker = false"
       />
 
-      <div class="u-spacingBottom u-inputGroup" v-if="pick_medias_text">
-        <textarea
-          ref="urlToCopy"
-          class="_textField"
-          v-model="pick_medias_text"
-        />
-        <button
-          type="button"
-          class="u-button u-button_icon u-suffix _clipboardBtn"
-          @click="copyToClipboard"
-        >
-          <b-icon icon="clipboard" v-if="!isCopied" />
-          <b-icon icon="clipboard-check" v-else />
-        </button>
-      </div>
+      <template v-if="pick_medias_text">
+        <div class="u-spacingBottom u-inputGroup">
+          <textarea
+            ref="urlToCopy"
+            class="_textField"
+            v-model="pick_medias_text"
+          />
+          <button
+            type="button"
+            class="u-button u-button_icon u-suffix _clipboardBtn"
+            @click="copyToClipboard"
+          >
+            <b-icon icon="clipboard" v-if="!isCopied" />
+            <b-icon icon="clipboard-check" v-else />
+          </button>
+        </div>
+        <div class="u-spacingBottom" v-if="pick_medias_list.length > 1">
+          <DLabel :str="$t('layout')" />
+          <label class="u-switch u-switch-xs u-switch_twoway">
+            <label class="_switchLabel" for="medias_on_new_line">
+              {{ $t("side_by_side") }} <b-icon icon="three-dots" />
+            </label>
+            <input
+              id="medias_on_new_line"
+              type="checkbox"
+              v-model="medias_on_new_line"
+            />
+            <label class="_switchLabel" for="medias_on_new_line">
+              {{ $t("new_line") }} <b-icon icon="three-dots-vertical" />
+            </label>
+          </label>
+        </div>
+      </template>
 
       <div class="u-spacingBottom" v-else>
         <hr />
@@ -136,8 +154,18 @@ export default {
       show_media_picker: false,
       medias_were_picked: false,
       isCopied: false,
+      pick_medias_list: [],
       pick_medias_text: "",
+      medias_on_new_line: false,
     };
+  },
+  watch: {
+    medias_on_new_line(newVal) {
+      this.pick_medias_text = this.makeStringFromMedias(
+        this.pick_medias_list,
+        this.medias_on_new_line
+      );
+    },
   },
   methods: {
     async pickMedias(medias) {
@@ -152,16 +180,28 @@ export default {
           import_mode,
         });
         new_entry.$type = media.$type;
+        new_entry.$content = media.$content;
         new_entry.caption = media.caption;
         source_medias.push(new_entry);
       }
 
-      this.pick_medias_text = this.makeStringFromMedias(source_medias);
+      this.pick_medias_list = source_medias;
+      this.pick_medias_text = this.makeStringFromMedias(
+        this.pick_medias_list,
+        this.medias_on_new_line
+      );
     },
-    makeStringFromMedias(source_medias) {
+    makeStringFromMedias(source_medias, medias_on_new_line) {
       let html = [];
 
       source_medias.map((m) => {
+        if (m.$type === "text") {
+          debugger;
+          const md_content = this.turnHtmlToMarkdown(m.$content);
+          html.push(md_content);
+          return;
+        }
+
         let media_html = "(";
 
         let src;
@@ -181,15 +221,19 @@ export default {
 
         if (m.caption) {
           const md_caption = this.turnHtmlToMarkdown(m.caption);
-          media_html += ` caption: ${md_caption}`;
+          if (md_caption && md_caption.trim() !== "")
+            media_html += ` caption: ${md_caption}`;
         }
 
         media_html += ")";
-
         html.push(media_html);
       });
 
-      return html.join(" ");
+      if (medias_on_new_line) {
+        return html.join("\n\n");
+      } else {
+        return html.join(" ");
+      }
     },
     turnHtmlToMarkdown(html) {
       // turn <p><strong>Plop</strong></p><p><em>Plip</em></p><p><a href="https://geojson.io" rel="noopener noreferrer" target="_blank">qqq</a></p><p><strong><em>Hehehe</em></strong></p>
@@ -256,12 +300,23 @@ export default {
 <style lang="scss" scoped>
 ._textField {
   resize: vertical;
-  min-height: 8rem;
+  min-height: 12rem;
   width: 100%;
 }
 
 ._clipboardBtn {
   flex-shrink: 0;
+}
+
+._switchLabel {
+  font-size: var(--sl-font-size-small);
+  // font-weight: 500;
+  // text-transform: lowercase;
+  // font-weight: bold;
+  // background: var(--c-bleumarine);
+  // color: white;
+  // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  // border-radius: 4px;
 }
 
 ul {

@@ -1424,4 +1424,6 @@ export default {
   stream_sharing_media_error: "Stream sharing media error",
   today: "Today",
   type: "Type",
+  side_by_side: "Side by side",
+  new_line: "One after the other",
 };

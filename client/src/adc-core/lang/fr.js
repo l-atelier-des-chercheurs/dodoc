@@ -1484,4 +1484,6 @@ export default {
   other_users_connected: "Autres utilisateurs connectés",
   show_cursor: "Afficher le curseur",
   stream_sharing_media_error: "Erreur de média lors du partage de flux",
+  side_by_side: "Côte à côte",
+  new_line: "À la suite",
 };
