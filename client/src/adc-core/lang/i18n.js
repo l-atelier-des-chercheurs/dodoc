@@ -8,7 +8,7 @@ const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: ["fr", "en", "de", "nl", "oc"],
+    available: ["fr", "en", "it", "fon"],
     default: "en",
     current: "",
     init: function () {
@@ -38,20 +38,38 @@ const i18n = () => {
   };
   lang_settings.init();
 
+  const loadLangageFile = async (lang) => {
+    let content = null;
+    if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
+    else if (lang === "it") content = await import("@/adc-core/lang/it.js");
+    // else if (lang === "fon") content = await import("@/adc-core/lang/fon.js");
+    else content = await import("@/adc-core/lang/en.js");
+    return content.default;
+  };
+
   const i18n = new VueI18n({
     locale: lang_settings.current, // set locale
-    fallbackLocale: "en",
-    silentFallbackWarn: true,
+    fallbackLocale: {
+      fon: ["fr"],
+      default: ["en"],
+    },
   });
 
+  const loadLangAsDefault = async (lang) => {
+    const lang_file = await loadLangageFile(lang);
+    i18n.setLocaleMessage(lang, lang_file);
+  };
+
   changeLocale = async (new_lang) => {
-    const messages = await import(
-      /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${new_lang}.js`
-    );
+    const messages = await loadLangageFile(new_lang);
     i18n.locale = new_lang;
     document.querySelector("html").setAttribute("lang", new_lang);
-    i18n.setLocaleMessage(new_lang, messages.default);
+    i18n.setLocaleMessage(new_lang, messages);
     localStorage.setItem("language", new_lang);
+
+    // lang fr is always up to date – others, not so much. Load english as default
+    if (["it"].includes(new_lang)) await loadLangAsDefault("en");
+    // if (["fon"].includes(new_lang)) await loadLangAsDefault("fr");
   };
   changeLocale(lang_settings.current);
 
@@ -59,10 +77,7 @@ const i18n = () => {
     let all_translations = {};
     for (const lang of lang_settings.available) {
       try {
-        const messages = await import(
-          /* webpackChunkName: "lang-[request]" */ `@/adc-core/lang/${lang}.js`
-        );
-        all_translations[lang] = messages.default;
+        all_translations[lang] = await loadLangageFile(lang);
       } catch (e) {
         e;
       }

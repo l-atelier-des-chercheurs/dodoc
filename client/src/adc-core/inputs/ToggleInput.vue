@@ -75,7 +75,7 @@ export default {
 }
 ._inputCb:checked {
   + ._label {
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 </style>

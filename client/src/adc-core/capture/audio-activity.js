@@ -5,7 +5,7 @@ var supported = !!(
   window.ScriptProcessorNode
 );
 
-module.exports = function (media, options, callback) {
+export default function (media, options, callback) {
   if (!callback) {
     callback = options;
     options = null;
@@ -62,6 +62,6 @@ module.exports = function (media, options, callback) {
   }
 
   return that;
-};
+}
 
-module.exports.supported = supported;
+// module.exports.supported = supported;

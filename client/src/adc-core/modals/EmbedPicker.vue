@@ -15,6 +15,7 @@
           :content.sync="full_url"
           :placeholder="'https://'"
           :required="true"
+          :autofocus="true"
           :input_type="'url'"
           @toggleValidity="($event) => (allow_save = $event)"
         />
@@ -43,9 +44,22 @@
                 url: 'https://observablehq.com/embed/@fil/bertin1953-glsl?cells=canvas',
                 label: 'Observable',
               },
+              {
+                url: 'https://soundcloud.com/larieooo/doidoidoi',
+                label: 'SoundCloud',
+              },
+              {
+                url: 'https://scratch.mit.edu/projects/1061783643',
+                label: 'Scratch',
+              },
+              {
+                url: 'https://www.tinkercad.com/things/2FggyQfGlI3',
+                label: 'Tinkercad',
+              },
             ]"
             type="button"
             class="u-buttonLink"
+            :class="{ 'is--active': full_url === url.url }"
             @click="full_url = url.url"
             :key="index"
             v-html="url.label"
@@ -55,12 +69,15 @@
 
       <LoaderSpinner class="_loader" v-if="is_loading" />
       <div v-else-if="url_to_site" class="_previewEmbed" :key="url_to_site.src">
-        <template v-if="url_to_site.type === 'any'">
+        <template
+          v-if="url_to_site.type === 'any' || url_to_site.type === 'youtube'"
+        >
           <iframe
             class="_siteIframe"
             :src="url_to_site.src"
             frameborder="0"
             @load="iframeLoaded"
+            @error="iframeError"
           />
         </template>
         <vue-plyr v-else>
@@ -134,7 +151,8 @@ export default {
       this.$emit("embed", this.full_url);
       this.is_inserting_embed = true;
     },
-    iframeLoaded() {},
+    iframeLoaded(arg) {},
+    iframeError(arg) {},
   },
 };
 </script>
@@ -156,6 +174,7 @@ export default {
 iframe {
   width: 100%;
   aspect-ratio: 4/3;
+  display: block;
 }
 
 ._examples {

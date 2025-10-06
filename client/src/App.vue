@@ -120,13 +120,12 @@ export default {
   methods: {},
 };
 </script>
-<style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
-<style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
+<style src="@node_modules/splitpanes/dist/splitpanes.css"></style>
+<style src="@node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
-@import "@/utils/utils.scss";
-
 :root {
   --spacing: 1rem;
+  --mobile-breakpoint: 767px;
 
   --c-bleumarine: hsl(227, 63%, 41%);
   --c-bleumarine_clair: hsl(227, 63%, 81%);
@@ -144,17 +143,18 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 14%, 83%);
-  --c-gris_clair: hsl(195, 14%, 96%);
-  --c-gris_fonce: hsl(195, 14%, 45%);
+  --c-gris: hsl(195, 0%, 83%);
+  --c-gris_clair: hsl(195, 0%, 96%);
+  --c-gris_fonce: hsl(195, 0%, 45%);
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
   --dropzone-color1: transparent;
   --dropzone-color2: var(--c-orange);
 
+  // --c-bodybg: white;
+  --c-bodybg: hsl(51, 33%, 98%);
   --c-bodybg: white;
-  --c-bodybg: hsl(48, 19%, 95%);
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);
@@ -220,19 +220,6 @@ export default {
 
   $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-success-#{$size}: hsl(174, 60%, #{82% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-warning-#{$size}: hsl(36, 96%, #{90% - $i * 5});
-  }
-  @each $size in $sizes {
-    $i: index($sizes, $size);
-    --sl-color-info-#{$size}: hsl(0, 0%, #{88% - $i * 0.5});
-  }
-
   --sl-font-size-normal: 1rem;
 
   --sl-font-size-large: 1.5rem;
@@ -245,6 +232,7 @@ export default {
   --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
+  --max-column-width-px: 1280px;
   --switch-thumb-border-radius: 4px;
 
   accent-color: var(--c-orange);
@@ -260,8 +248,8 @@ export default {
 html,
 body {
   // background: white;
-  // background-color: var(--c-bodybg);
-  background: linear-gradient(180deg, #fff, var(--c-bodybg));
+  background-color: var(--c-bodybg);
+  // background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
   scroll-behavior: smooth;
 }
@@ -310,12 +298,6 @@ button {
   /* font-family: "Work Sans"; */
 
   min-height: 100%;
-}
-
-hr {
-  border-top: 1px solid var(--c-gris);
-  border-bottom: 0 solid #000;
-  margin: calc(var(--spacing) / 2) 0;
 }
 
 .authorLabel {
@@ -432,12 +414,12 @@ img {
 .splitpanes--vertical > .splitpanes__splitter {
   width: 2px;
   margin-left: -1px;
-  border-right: 2px solid var(--c-noir);
+  border-right: 1px solid var(--c-noir);
 }
 .splitpanes--horizontal > .splitpanes__splitter {
   margin-top: -1px;
   height: 2px;
-  border-bottom: 2px solid var(--c-noir);
+  border-bottom: 1px solid var(--c-noir);
 }
 
 .splitpanes__splitter:before {
@@ -447,7 +429,7 @@ img {
   height: 40px;
 
   left: calc(50% - 20px);
-  top: calc(50% - 20px);
+  bottom: calc(10% - 20px);
 
   transition: opacity 0.4s;
   // background-color: rgba(255, 255, 0, 1);
@@ -477,21 +459,28 @@ img {
 }
 
 .splitpanes__splitter:after {
+  --icon-width: 1.5em;
+
   content: "";
   position: absolute;
+  left: calc(50% - var(--icon-width) / 2 + 1px);
   top: auto;
-  bottom: auto;
-  top: calc(50% - 10px);
+  bottom: calc(10% - var(--icon-width) / 2);
   pointer-events: none;
-  // top: 50%;
 
-  transform: rotate(45deg);
+  width: var(--icon-width);
+  height: var(--icon-width);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  width: 2px;
-  height: 20px;
+  border-radius: 2px;
+  line-height: 1;
+  background-color: var(--c-noir);
+  color: white;
 
   transition: transform 0.4s;
-  background-color: var(--c-noir);
   opacity: 1;
   z-index: 11;
 }
@@ -499,15 +488,18 @@ img {
   border-style: dashed;
 }
 .splitpanes__splitter:hover:after {
-  opacity: 1;
-  transform: rotate(90deg);
+  background-color: white;
+  color: var(--c-noir);
 }
+
+// Vertical splitter (left-right double arrow)
+.splitpanes--vertical > .splitpanes__splitter:after {
+  content: "↔";
+}
+
+// Horizontal splitter (up-down double arrow)
 .splitpanes--horizontal > .splitpanes__splitter:after {
-  transform: rotate(135deg);
-  left: 50%;
-}
-.splitpanes--horizontal > .splitpanes__splitter:hover:after {
-  transform: rotate(180deg);
+  content: "↕";
 }
 
 .fade {
@@ -520,6 +512,18 @@ img {
   &-leave-to {
     opacity: 0;
     transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.pagetransition {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .fade_fast {
@@ -733,8 +737,9 @@ img {
 .listComplete {
   &-move {
     position: relative;
-    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1),
-      opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1) !important;
+    z-index: 1;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+      opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1) !important;
   }
 
   &-leave-active {
@@ -776,5 +781,18 @@ img {
   &-leave-to {
     opacity: 0;
   }
+}
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_fonce) !important;
 }
 </style>

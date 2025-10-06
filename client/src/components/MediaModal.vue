@@ -21,14 +21,20 @@
         </div>
       </div>
 
-      <div class="_preview">
+      <OptimizeMedia
+        v-if="show_optimize_modal"
+        :media="file"
+        @close="show_optimize_modal = false"
+      />
+
+      <div class="_preview" :data-filetype="file.$type">
         <MediaContent
           :file="file"
           :resolution="1600"
           :context="'full'"
           :show_fs_button="true"
           :zoom_on_click="true"
-          :can_edit="false"
+          :can_edit="true"
           @zoomingIn="onZoomingIn"
           @zoomingOut="onZoomingOut"
           @videoPlayed="onVideoPlayed"
@@ -36,8 +42,17 @@
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
-            {{ $t("convert_to_format") }}
-            <OptimizeMedia :media="file" @close="$emit('close')" />
+            <div class="u-instructions">
+              {{ $t("convert_to_format") }}
+            </div>
+            <button
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              {{ $t("convert_shorten") }}
+            </button>
           </div>
         </div>
 
@@ -129,7 +144,7 @@
               />
             </h3>
 
-            <DropDown :right="true">
+            <DropDown :show_label="false" :right="true">
               <ShareFile :file="file">
                 <b-icon icon="box-arrow-up-right" />
                 {{ $t("share") }}
@@ -177,7 +192,7 @@
               :content="file.caption"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -188,7 +203,7 @@
               :content="file.$credits"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -236,6 +251,11 @@
           :icon="'rulers'"
           class="u-spacingBottom"
         >
+          <!-- <div class="u-metaField">
+            <DLabel :str="$t('meta_filename')" />
+            <div class="u-filename">{{ getFilename(file.$path) }}</div>
+          </div> -->
+
           <div class="u-metaField">
             <DLabel :str="$t('filename')" />
             <div class="u-filename">{{ file.$media_filename }}</div>
@@ -293,20 +313,41 @@
           :has_items="tools_available"
           :is_open_initially="false"
         >
-          <div v-if="tools_available.length === 0">
-            <small>{{ $t("nothing_to_show") }}</small>
+          <div v-if="tools_available === 0">
+            <small class="u-instructions">{{ $t("nothing_to_show") }}</small>
           </div>
           <div class="_allModifyButtons">
-            <CropAdjustMedia
+            <button
               v-if="cropadjust_possible"
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_cropadjust_modal = true"
+            >
+              <b-icon icon="bounding-box" />
+              {{ $t("crop_adjust") }}
+            </button>
+            <CropAdjustMedia
+              v-if="show_cropadjust_modal"
               :media="file"
-              @close="$emit('close')"
+              @close="show_cropadjust_modal = false"
+              @closeParentModal="$emit('close')"
             />
-            <OptimizeMedia
+
+            <button
+              type="button"
+              class="u-button u-button_orange"
               v-if="optimization_possible"
-              :media="file"
-              @close="$emit('close')"
-            />
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              <template v-if="file.$type === 'image'">
+                {{ $t("optimize_resize") }}
+              </template>
+              <template v-else>
+                {{ $t("convert_shorten") }}
+              </template>
+            </button>
+
             <div v-for="make in available_makes" :key="make.type">
               <button
                 type="button"
@@ -329,7 +370,6 @@
         </DetailsPane>
       </div>
     </div>
-
     <div class="_selectBtn" v-if="select_mode">
       <button
         type="button"
@@ -350,8 +390,6 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
-import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
-import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
   props: {
@@ -362,16 +400,18 @@ export default {
   },
   components: {
     DuplicateMedia,
-    CropAdjustMedia,
-    OptimizeMedia,
+    CropAdjustMedia: () => import("@/adc-core/fields/CropAdjustMedia.vue"),
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
   },
   data() {
     return {
+      show_cropadjust_modal: false,
       show_nav_btn: false,
       show_meta_sidebar: true,
       is_regenerating: false,
       is_zooming_in: false,
       is_playing_video: false,
+      show_optimize_modal: false,
     };
   },
 
@@ -408,10 +448,12 @@ export default {
       );
     },
     optimization_possible() {
-      return this.fileCanBeOptimized({ path: this.file.$media_filename });
+      return this.fileCanBeOptimized({ filename: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
-      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+      return this.fileShouldBeOptimized({
+        filename: this.file.$media_filename,
+      });
     },
     author_has_location() {
       return (
@@ -554,6 +596,9 @@ export default {
   inset: 0;
   z-index: 10;
   text-align: left;
+
+  display: flex;
+  flex-flow: column nowrap;
   // padding: calc(var(--spacing) / 2);
 
   ._mediaModal--overlay {
@@ -632,11 +677,10 @@ export default {
 
   bottom: 0;
   left: 0;
-  background: none;
   padding: calc(var(--spacing) / 1);
 
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
+  background: white;
+  border: 2px solid var(--c-gris_clair);
 }
 
 ._mediaModal--content {
@@ -650,6 +694,26 @@ export default {
     position: relative;
     background: var(--c-gris_clair);
     overflow: hidden;
+
+    &[data-filetype="text"] {
+      background: var(--c-gris_clair);
+      ::v-deep {
+        ._mediaContent {
+          padding: 0;
+        }
+        ._collaborativeEditor {
+          padding: calc(var(--spacing) * 1);
+
+          .ql-editor {
+            background: white;
+            padding: calc(var(--spacing) / 2);
+          }
+        }
+        ._floatingEditBtn {
+          top: calc(var(--spacing) * 3);
+        }
+      }
+    }
   }
 
   // large view, side by side
@@ -691,6 +755,11 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 ._stickyClose {
@@ -755,7 +824,8 @@ export default {
     padding: calc(var(--spacing) / 2);
     max-width: 320px;
     width: 100%;
-    background: var(--c-bleuvert_clair);
+    background: white;
+    // background: var(--c-bleuvert_clair);
     border-radius: 8px;
     box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
   }
@@ -776,6 +846,7 @@ export default {
 ._allModifyButtons {
   display: flex;
   flex-flow: column nowrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) / 1);
 }
 </style>

@@ -4,10 +4,20 @@ import router from "./router";
 
 import "./utils/icons";
 
+// Add Bootstrap Vue CSS for icon animations
+import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
+
 Vue.config.productionTip = false;
+
+const publicPath =
+  window.app_infos.page_is_standalone_html === true
+    ? "./_client/"
+    : "/_client/";
 
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
+
+import "@/utils/utils.scss";
 
 import {
   i18n,
@@ -15,8 +25,57 @@ import {
   findMissingTranslations,
 } from "@/adc-core/lang/i18n.js";
 
-import alertify from "alertify.js";
-Vue.prototype.$alertify = alertify;
+// Modern toast notifications
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+
+Vue.use(Toast, {
+  position: "bottom-left",
+  timeout: 4000,
+  closeOnClick: true,
+  pauseOnFocusLoss: false,
+  closeButton: "button",
+  transition: "Vue-Toastification__fade",
+  maxToasts: 10,
+});
+
+// Create a compatibility layer for the old alertify API
+Vue.prototype.$alertify = {
+  delay: (time) => ({
+    error: (message) => Vue.prototype.$toast.error(message, { timeout: time }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { timeout: time }),
+    log: (message) => Vue.prototype.$toast.info(message, { timeout: time }),
+  }),
+  closeLogOnClick: (enabled) => ({
+    delay: (time) => ({
+      error: (message) =>
+        Vue.prototype.$toast.error(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      success: (message) =>
+        Vue.prototype.$toast.success(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+      log: (message) =>
+        Vue.prototype.$toast.info(message, {
+          timeout: time,
+          closeOnClick: enabled,
+        }),
+    }),
+    error: (message) =>
+      Vue.prototype.$toast.error(message, { closeOnClick: enabled }),
+    success: (message) =>
+      Vue.prototype.$toast.success(message, { closeOnClick: enabled }),
+    log: (message) =>
+      Vue.prototype.$toast.info(message, { closeOnClick: enabled }),
+  }),
+  error: (message) => Vue.prototype.$toast.error(message),
+  success: (message) => Vue.prototype.$toast.success(message),
+  log: (message) => Vue.prototype.$toast.info(message),
+};
 
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
@@ -33,7 +92,7 @@ Vue.use(VuePlyr, {
       "volume",
       "fullscreen",
     ],
-    iconUrl: `${process.env.BASE_URL}plyr.svg`,
+    iconUrl: "",
   },
 });
 Vue.directive("uppercase", {
@@ -62,6 +121,12 @@ if (window.app_infos.is_electron)
 
 import api from "@/adc-core/api.js";
 Vue.prototype.$api = api();
+
+// Import DOMPurify for HTML sanitization
+import DOMPurify from "dompurify";
+Vue.prototype.$sanitize = DOMPurify.sanitize;
+
+// globals mainly for non-editing components
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
@@ -105,6 +170,8 @@ import DownloadFolder from "@/adc-core/fields/DownloadFolder.vue";
 Vue.component("DownloadFolder", DownloadFolder);
 import RemoveMenu from "@/adc-core/fields/RemoveMenu.vue";
 Vue.component("RemoveMenu", RemoveMenu);
+import RemoveMenu2 from "@/adc-core/fields/RemoveMenu2.vue";
+Vue.component("RemoveMenu2", RemoveMenu2);
 import TagsList from "@/adc-core/ui/TagsList.vue";
 Vue.component("TagsList", TagsList);
 import SingleTag from "@/adc-core/ui/SingleTag.vue";
@@ -145,9 +212,9 @@ import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
 import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
 Vue.component("AuthorPicker", AuthorPicker);
-import CreateFolder from "@/adc-core/modals/CreateFolder";
+import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 Vue.component("CreateFolder", CreateFolder);
-import ImportFolder from "@/adc-core/modals/ImportFolder";
+import ImportFolder from "@/adc-core/modals/ImportFolder.vue";
 Vue.component("ImportFolder", ImportFolder);
 //
 
@@ -164,7 +231,7 @@ Vue.component("DurationDisplay", DurationDisplay);
 
 import DateField from "@/adc-core/fields/DateField.vue";
 Vue.component("DateField", DateField);
-import UploadFiles from "@/adc-core/fields/UploadFiles.vue";
+import UploadFiles from "@/adc-core/modals/UploadFiles.vue";
 Vue.component("UploadFiles", UploadFiles);
 import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
@@ -186,22 +253,12 @@ import ShareFile from "@/adc-core/fields/ShareFile.vue";
 Vue.component("ShareFile", ShareFile);
 import EmbedFile from "@/adc-core/fields/EmbedFile.vue";
 Vue.component("EmbedFile", EmbedFile);
-import ImageSelect from "@/adc-core/fields/ImageSelect.vue";
-Vue.component("ImageSelect", ImageSelect);
 import PickMediaFromProjects from "@/adc-core/fields/PickMediaFromProjects.vue";
 Vue.component("PickMediaFromProjects", PickMediaFromProjects);
-
+import LoaderSpinner from "@/adc-core/fields/LoaderSpinner.vue";
+Vue.component("LoaderSpinner", LoaderSpinner);
 import EditBtn from "@/adc-core/ui/EditBtn.vue";
 Vue.component("EditBtn", EditBtn);
-
-Vue.component("LoaderSpinner", {
-  name: "LoaderSpinner",
-  template: `
-    <div class="u-loader">
-      <div class="_spinner" />
-    </div>
-  `,
-});
 
 document.addEventListener(
   "dragover",
@@ -248,6 +305,8 @@ import Electron from "@/mixins/Electron";
 Vue.mixin(Electron);
 import DodocIcon from "@/mixins/DodocIcon";
 Vue.mixin(DodocIcon);
+import FoldersMixin from "@/mixins/Folders.js";
+Vue.mixin(FoldersMixin);
 
 Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
@@ -263,12 +322,12 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((request) => {
-  if (debug_mode)
-    alertify.delay(4000).log(
-      `⤒ — ${request.method} + ${request.url}
-      ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
-      `
-    );
+  // if (debug_mode)
+  //   alertify.delay(4000).log(
+  //     `⤒ — ${request.method} + ${request.url}
+  //     ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
+  //     `
+  //   );
   return request;
 });
 Vue.prototype.$axios = instance;
@@ -283,10 +342,12 @@ new Vue({
     is_loading: true,
     debug_mode,
 
-    publicPath: process.env.BASE_URL,
+    publicPath,
 
     has_file_dragover_on_window: false,
     opened_modals: 0,
+
+    show_chats_list: false,
 
     current_time: "",
 
@@ -304,6 +365,11 @@ new Vue({
       innerWidth: window.innerWidth,
       innerHeight: window.innerHeight,
     },
+    mobile_breakpoint: parseInt(
+      window
+        .getComputedStyle(document.body)
+        .getPropertyValue("--mobile-breakpoint")
+    ),
 
     dropzones: [],
 
@@ -339,7 +405,7 @@ new Vue({
   computed: {
     is_mobile_view() {
       // return false;
-      return this.window.innerWidth < 1000;
+      return this.window.innerWidth <= this.mobile_breakpoint;
     },
     is_touch_device() {
       return window.matchMedia("(pointer: coarse)").matches;

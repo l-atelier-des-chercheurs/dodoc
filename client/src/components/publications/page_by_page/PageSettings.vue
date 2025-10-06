@@ -28,7 +28,7 @@
   </div>
 </template>
 <script>
-import WidthHeightField from "@/components/publications/page_by_page/WidthHeightField.vue";
+import WidthHeightField from "@/adc-core/fields/WidthHeightField.vue";
 import SetMargins from "@/components/publications/page_by_page/SetMargins.vue";
 import PaginationOption from "@/components/publications/page_by_page/PaginationOption.vue";
 

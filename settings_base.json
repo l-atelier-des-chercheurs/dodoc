@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,
@@ -8,7 +9,6 @@
   "versioning": true,
   "tokenIsValidForXDays": 60,
 
-  "cacheDirname": "dodoc_cache",
   "contentPath": "dodoc",
 
   "privateKeyPath": "",
@@ -26,6 +26,17 @@
   },
 
   "mediaThumbQuality": 90,
+
+  "mailer": {
+    "host": "",
+    "port": "",
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "from": ""
+  },
 
   "schema": {
     "$cover": {
@@ -69,6 +80,9 @@
       "enable_events": {
         "type": "boolean"
       },
+      "enable_chats": {
+        "type": "boolean"
+      },
       "hero_background_color": {
         "type": "string"
       },
@@ -88,6 +102,9 @@
         "type": "string"
       },
       "spaces_pinned": {
+        "type": "array"
+      },
+      "topics_pinned": {
         "type": "array"
       },
       "users_must_accept_terms_to_signup": {
@@ -297,9 +314,6 @@
                     "source_medias": {
                       "type": "array"
                     },
-                    "section_type": {
-                      "type": "string"
-                    },
                     "modules_list": {
                       "type": "array"
                     },
@@ -336,6 +350,7 @@
                       "story",
                       "story_with_sections",
                       "cartography",
+                      "edition",
                       "face_masks",
                       "image_tracking"
                     ],
@@ -407,7 +422,7 @@
                     "module_type": {
                       "type": "string"
                     },
-                    "section_type": {
+                    "content_type": {
                       "type": "string"
                     },
                     "section_color": {
@@ -418,9 +433,6 @@
                     },
                     "all_pins_icon": {
                       "type": "boolean"
-                    },
-                    "zoom_animation": {
-                      "type": "number"
                     },
                     "map_baselayer": {
                       "type": "string"
@@ -445,6 +457,18 @@
                     },
                     "section_title_is_visible": {
                       "type": "boolean"
+                    },
+                    "section_type": {
+                      "type": "string"
+                    },
+                    "section_starts_on_page": {
+                      "type": "string"
+                    },
+                    "column_count": {
+                      "type": "number"
+                    },
+                    "main_text_meta": {
+                      "type": "string"
                     },
                     "section_description": {
                       "type": "string"
@@ -529,6 +553,18 @@
                     },
                     "zoom_level": {
                       "type": "number"
+                    },
+                    "cover_type": {
+                      "type": "string"
+                    },
+                    "cover_layout_mode": {
+                      "type": "string"
+                    },
+                    "is_css_styles": {
+                      "type": "string"
+                    },
+                    "css_title": {
+                      "type": "string"
                     }
                   }
                 }
@@ -565,6 +601,34 @@
           },
           "projects_recently_edited": {
             "type": "array"
+          }
+        },
+        "$files": {
+          "fields": {
+            "chat_read_indexes": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "chats": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "last_message_date": {
+            "type": "string"
+          },
+          "last_message_count": {
+            "type": "number"
+          }
+        },
+        "$files": {
+          "fields": {
+            "content": {
+              "type": "string"
+            }
           }
         }
       },

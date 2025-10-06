@@ -4,7 +4,8 @@
       <LoaderSpinner />
     </div>
     <div v-else-if="fetch_space_error_message" key="err">
-      <div class="u-instructions _errNotice">
+      <NotFound v-if="fetch_space_error_message === 'not_found'" />
+      <div v-else class="u-instructions _errNotice">
         {{ fetch_space_error_message }}
       </div>
     </div>
@@ -54,6 +55,12 @@
           v-if="show_create_modal"
           :modal_name="$t('create_a_project')"
           :path="projects_path"
+          :private_status_explanations="
+            $t('private_status_explanations_projects')
+          "
+          :public_status_explanations="
+            $t('public_status_explanations_projects')
+          "
           :default_folder_status="'draft'"
           @close="show_create_modal = false"
           @openNew="openNewProject"
@@ -73,6 +80,7 @@
 <script>
 import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
+import NotFound from "@/components/NotFound.vue";
 
 export default {
   props: {},
@@ -80,6 +88,7 @@ export default {
     ProjectsListWithFilter,
     SpacePresentation,
     ProjectsTester: () => import("@/adc-core/tests/ProjectsTester.vue"),
+    NotFound,
   },
   data() {
     return {
@@ -174,17 +183,17 @@ export default {
 }
 
 ._spaceView {
-  // max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
+  padding-bottom: calc(var(--spacing) * 4);
 }
 
 ._topSpace {
-  max-width: min(var(--max-column-width), 1080px);
+  // max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 1) auto 0;
 }
 
 ._projectsList {
-  max-width: var(--max-column-width);
   margin: calc(var(--spacing) * 1) auto 0;
   // padding: calc(var(--spacing) * 1);
 }

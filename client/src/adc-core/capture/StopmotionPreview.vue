@@ -1,34 +1,36 @@
 <template>
-  <div class="_preview" v-if="stopmotion">
+  <div class="u-card2 _preview" v-if="stopmotion">
     <div class="_topRow">
       <DateDisplay
         :title="$t('date_created')"
         :date="stopmotion.$date_created"
-        :show_detail_initially="true"
       />
-
-      <div class="_btns">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="$emit('load')"
-        >
-          {{ $t("open") }}
-        </button>
-        <RemoveMenu @remove="$emit('remove')" />
-      </div>
+      <DateDisplay
+        :title="$t('date_modified')"
+        :date="stopmotion.$date_modified"
+      />
     </div>
 
-    <br />
     <div class="_images">
       <label class="u-label">
-        {{ $t("images").toUpperCase() }} = {{ images.length }}
+        {{ $tc("x_images", images.length, { count: images.length }) }}
       </label>
       <div class="_imagesCont">
         <div v-for="image in images" :key="image.$path">
           <MediaContent :file="image" :resolution="240" />
         </div>
       </div>
+    </div>
+
+    <div class="_btns">
+      <RemoveMenu @remove="$emit('remove')" />
+      <button
+        type="button"
+        class="u-button u-button_bleumarine"
+        @click="$emit('load')"
+      >
+        {{ $t("resume") }}
+      </button>
     </div>
   </div>
 </template>
@@ -80,8 +82,14 @@ export default {
 <style lang="scss" scoped>
 ._preview {
   padding: calc(var(--spacing) / 1);
-  background: var(--c-gris);
+  // background: var(--c-gris);
+  background: white;
+  border-radius: 6px;
   margin: 0 0 calc(var(--spacing) / 1) 0;
+
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._topRow {
@@ -98,9 +106,10 @@ export default {
   flex-flow: row nowrap;
   align-items: center;
 
-  background: var(--c-noir);
-  padding: 1px;
-  gap: 1px;
+  background: var(--c-gris);
+  padding: 2px;
+  gap: 2px;
+  border-radius: 4px;
 
   overflow-x: auto;
   overflow-y: hidden;
@@ -109,13 +118,16 @@ export default {
   overscroll-behavior-y: contain;
 
   > * {
-    flex: 0 0 100px;
+    flex: 0 0 80px;
+    border-radius: 4px;
+    overflow: hidden;
   }
 }
 
 ._btns {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
 }

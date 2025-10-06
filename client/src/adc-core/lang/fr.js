@@ -1,3 +1,5 @@
+import { addProjections } from "ol/proj";
+
 export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
@@ -24,6 +26,14 @@ export default {
   save: "Enregistrer",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
+  image_url: "URL vers une image",
+  image_url_instr:
+    "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
+  import_from_url: "Importer depuis une URL",
+  example_image_url: "Exemple d’URL d'image",
+  importing_from_url: "Importation depuis l’URL…",
+  preview_of_image: "Aperçu de l’image",
+  failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
   table: "Tableau",
@@ -61,7 +71,6 @@ export default {
 
   instance_admins_and_admins: "Administrateurs d’instance et contributeurs",
   admins_and_contributors: "Référents et contributeurs",
-  set_admins_and_contributors: "Définir les référents et contributeurs",
   instance_admins_instr:
     "Les comptes listés ici pourront accéder à l’ensemble des contenus, privés ou publics. Ils pourront aussi modifier ou supprimer les comptes utilisateurs, et modifier cdes réglages.",
   instance_contributors_instr:
@@ -172,9 +181,11 @@ export default {
   audiooutput: "Sortie audio",
 
   import: "Importer",
-  waiting: "À venir",
+  send: "Envoyer",
+  waiting: "En attente",
   sending: "En cours",
   sent: "Envoyé",
+  creating_thumb: "Création des miniatures",
   retry: "Réessayer",
   reload_page_to_apply:
     "Après avoir enregistré ces changements, rechargez cette page.",
@@ -184,7 +195,7 @@ export default {
   hide_meta: "Masquer les métadonnées",
   recover_password: "Récupérer le mot de passe",
   please_contact_to_recover:
-    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe",
+    "Veuillez envoyer un courriel à l’adresse suivante en indiquant votre nom d’utilisateur pour récupérer un nouveau mot de passe :",
 
   visibility: "Visibilité",
   visibility_text: `Indiquez ici l’état d’avancement du projet et qui pourra le consulter.`,
@@ -338,6 +349,9 @@ export default {
 
   private_status_explanations_projects:
     "Le projet ne sera pas affiché avec les autres projets, il sera uniquement accessible à ses contributeurs.",
+  public_status_explanations_projects:
+    "Le projet sera affiché avec les autres projets, il sera accessible à tous ceux qui ont accès à son espace.",
+
   finished_status_explanations:
     "Ce projet sera marqué avec un pictogramme ✓ et sera accessible à toutes les personnes qui ont accès à son espace.",
   draft_status_explanations:
@@ -381,15 +395,15 @@ export default {
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
-    "Rafraîchir la fenêtre pour voir les modifications",
-  reveal: "Révéler",
+    "Recharger la fenêtre pour voir les modifications",
+  reveal_pwd: "Révéler le mot de passe",
   choose_a_pane: "Choisissez un panneau ci-dessus pour démarrer !",
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
   download_project: "Télécharger le projet {name}",
   download_project_instr:
-    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11).",
+    "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11 ou 12).",
   download_space:
     "Télécharger l’espace {name} et tous les projets qu’il contient",
   download_ready: "Le téléchargement est prêt",
@@ -418,8 +432,8 @@ export default {
   everyone: "Tout le monde",
   everyone_instr: "Ouvrir à toutes les personnes qui peuvent voir ce contenu.",
   everyone_can_edit:
-    "Contribution, modification et suppression ouverte à tout le monde.",
-  everyone_can_contribute: "Contribution ouverte à tout le monde",
+    "Contribution, modification et suppression ouverte à tous.",
+  everyone_can_contribute: "Contribution ouverte à tous.",
   noone: "Aucun·e",
   noone_instr: "Fermer à tous les comptes.",
   restricted: "Uniquement les comptes de la liste",
@@ -447,8 +461,10 @@ export default {
   fonts: "Police de caractères",
   add_font: "Ajouter une police de caractères",
   font_name: "Nom de la police de caractères",
+  fonts_instr:
+    "Les polices de caractères sont utilisées pour l’affichage des textes dans les blocs de texte et les publications. Les polices de caractères ajoutées sont disponibles pour tous les utilisateurs, sur l’ensemble de l’instance.",
   font_instr:
-    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant.",
+    "Importez d’abord les 4 fichiers nécessaires à l’intégration d’une nouvelle police de caractères au format woff2. Indiquez ensuite pour chaque élément le fichier correspondant. Pour télécharger des familles de caractères, vous pouvez utiliser <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Régulier (400)",
   font_bold: "Gras (700)",
   font_normal: "Normal",
@@ -475,11 +491,11 @@ export default {
   trim_video_summary: "Couper la fin ou le début dans une vidéo",
   trim_instructions:
     "Sélectionnez la zone à extraire en indiquant le temps de début et fin ci-dessous. Vous pouvez aussi cliquer sur le spectrogramme ci-dessus.",
-  start: "début",
+  start: "Début",
   set_start: "Définir le début",
   play_extract: "Jouer l’extrait",
   stop_extract: "Arrêter l’extrait",
-  end: "fin",
+  end: "Fin",
   set_end: "Définir la fin",
   copy: "Copier",
   test_and_export: "Tester et exporter",
@@ -863,9 +879,9 @@ export default {
 
   add_to_instance_admin: "Ajouter comme administrateur d’instance",
   instance_admin_instructions:
-    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
+    "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, sujets de discussion, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
   instance_contrib_instructions:
-    "Peuvent uniquement créer des espaces et les administrer.",
+    "Peuvent uniquement créer des espaces et des sujets de discussion et les administrer.",
 
   space_admin_instructions:
     "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
@@ -894,6 +910,8 @@ export default {
   line: "Ligne",
   arrow: "Flèche",
   click_to_zoom: "Cliquez pour zoomer",
+  zoom_out: "Dézoomer",
+
   for_example: "Par exemple",
   require_signup_to_contribute:
     "Les utilisateurs doivent créer un compte pour contribuer à la plateforme",
@@ -942,7 +960,7 @@ export default {
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
   import_finished:
-    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les aperçus de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
+    "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les miniatures de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
   zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
@@ -969,6 +987,7 @@ export default {
   already_present: "Déjà présent",
 
   current: "Actuel",
+  current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
@@ -992,7 +1011,7 @@ export default {
   make: "Fabriquer",
   publish: "Publier",
 
-  projects_you_edited_last: "Liste des derniers projets que vous avez modifié",
+  projects_you_edited_last: "Derniers projets que vous avez modifiés",
 
   make_list: "Liste des fabrications",
   latitude: "Latitude",
@@ -1007,10 +1026,12 @@ export default {
   feature_not_yet_implemented: "Fonctionnalité en cours de développement",
 
   translate: "Traduire",
+  edit_translation: "Modifier la traduction",
   show_missing_translations: "Afficher les traductions manquantes",
   missing_translations: "Traductions manquantes pour la langue :",
+  already_translated_locally: "Déjà traduit (sur cet appareil uniquement)",
   hide_already_translated: "Masquer les traductions déjà réalisées",
-  "to_translate:": "À traduire :",
+  to_translate: "À traduire",
   publish_on_forum_to_add_to_contribute_to_code:
     "Copiez/collez le contenu du bloc ci-dessus dans un nouveau sujet sur le forum pour l’intégrer au code source : <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum de l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Effacer toutes les traductions proposées",
@@ -1072,7 +1093,6 @@ export default {
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
-  zoom_animation: "Animation zoom",
 
   IGN_max_zoom_limits:
     "Les fonds de carte proposés par l’IGN ne permettent pas d’utiliser un niveau de zoom maximal.",
@@ -1110,7 +1130,6 @@ export default {
   circle: "Cercle",
   polygon: "Polygone",
 
-  mouse_position: "Position de la balise",
   search_for_a_place: "Rechercher un lieu",
   no_results: "Aucun résultat",
 
@@ -1139,14 +1158,14 @@ export default {
   <li>Le code source se trouve ici : <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Code source de do•doc sur Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc/</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+  about_dodoc_contributors: `Contributeurs principaux : Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau, et de nombreux autres personnes dans le cadre d’ateliers, de projets, de forums et de résidences à travers le monde.`,
 
   write: "Écrire",
   real_size: "Taille réelle",
   full_page: "Pleine page",
 
   convert: "Convertir",
-  convert_shorten: "Convertir",
+  convert_shorten: "Convertir/raccourcir",
   convert_shorten_instructions: `
     Convertissez vers un format standard, recoupez le début ou la fin, changez le volume ou supprimez la piste sonore et modifiez la qualité pour alléger le fichier.
     `,
@@ -1233,7 +1252,7 @@ export default {
 
   confirm_save_changes:
     "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
-  close_without_saving: "Fermer sans valider",
+  close_without_saving: "Fermer sans enregistrer",
 
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
   or: "ou",
@@ -1270,11 +1289,11 @@ export default {
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
-  devices_connected: "Appareils connectés actuellement",
+  other_devices_connected: "Autres appareils connectés",
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Non connecté",
+  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1287,11 +1306,184 @@ export default {
   no_content: "Pas de contenu",
   book: "Livre",
   normal: "Normal",
-  graphic_styles: "Style graphiques",
+  graphic_styles: "Styles graphiques",
   edit_default_styles: "Modifier le style par défaut",
   back_to_default_styles: "Revenir au style par défaut",
+  create_custom_stylesheet: "Créer une feuille de style personnalisée",
 
   millimetres: "millimètres",
   parent_space_is_private:
     "L’espace parent est privé, les autres projets de cet espace ne peuvent donc pas être consultés.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copiez/collez dans le contenu pour placer le média dans le bloc texte, ou cliquez sur le bouton ci-dessous pour l’ajouter à l’emplacement du curseur.",
+  next_chapter: "Chapitre suivant",
+
+  show_preview: "Afficher l’aperçu",
+  warning_wont_be_able_to_edit:
+    "Attention ! En modifiant ce règlage, vous ne pourrez plus éditer ce contenu.",
+  markdown_help: "Aide pour l’écriture Markdown",
+  import_medias: "Importer des médias",
+
+  multisupport_embed_img_instr:
+    "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
+  attributes_for_embeds: "Attributs pour les balises :",
+  show_source_html: "Afficher le code source HTML",
+  reset: "Réinitialiser",
+
+  accounts_displayed: "Comptes affichés : {count} / {total}",
+  restore_projects: "Restaurer des projets supprimés",
+  bin: "Corbeille",
+  items_in_bin: "Éléments dans la corbeille",
+  restore: "Restaurer",
+  remove_for_good: "Supprimer définitivement",
+  bin_is_empty: "La corbeille est vide",
+  date_removed: "Date de suppression",
+  current_resolution: "Résolution actuelle",
+  gallery: "Galerie",
+  removed_successfully: "Supprimé avec succès",
+  all_pages: "Toutes les pages",
+  page_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  pages_to_export: "Page(s) à exporter",
+  spreads_to_export: "Planche(s) à exporter",
+  all_spreads: "Toutes les planches",
+  spread_number_or_interval: "Par exemple 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Nombre total de planches dans la publication : {total}",
+  total_number_of_pages_in_publication:
+    "Nombre total de pages dans la publication : {total}",
+  "type:": "Type : {type}",
+
+  failed_to_export: "Échec de l’exportation",
+  default_styles: "Styles par défaut",
+  remove_css_file: "Supprimer la feuille de style",
+  restored_success: "Restauré avec succès",
+  restore_spaces: "Restaurer des espaces supprimés",
+  no_media_selected: "Aucun média sélectionné",
+  forgot_password: "Mot de passe oublié ?",
+  folder_not_public:
+    "Ce contenu n’est pas publique, pour y accéder son auteur doit le rendre publique.",
+  width_alignment_grid_only_non_mobile:
+    "La largeur du module et son alignement (au milieu ou à droite) ne s’appliquent que si la largeur de l’écran le permet (plus de 767 pixels).",
+
+  add_column: "Ajouter une colonne",
+  add_row: "Ajouter une ligne",
+  remove_column: "Supprimer la dernière colonne",
+  remove_row: "Supprimer la dernière ligne",
+  chats: "Discussions",
+  enable_chats: "Activer la fonctionnalité de discussion",
+  enable_chats_instructions:
+    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
+  list_of_topics: "Liste des sujets",
+  create_a_topic: "Créer un sujet",
+  not_allowed_to_post_messages:
+    "Vous n’êtes pas autorisé à poster des messages dans cette discussion.",
+  write_a_message: "Écrivez un message…",
+  participants: "Participants",
+  chat_admin_instructions:
+    "Les référents sont responsables de la gestion de la discussion (suppression d’un message, changement du nom de la discussion, ajout/retrait d’un participant).",
+  chat_contrib_instructions:
+    "Les participants peuvent poster un nouveau message ou éditer/supprimer leurs propres messages.",
+  anonymous_user: "Anonyme",
+
+  no_messages_in_chat: "Aucun message dans cette discussion.",
+  remove_this_message: "Supprimer ce message",
+  load_older_messages: "Afficher les messages plus anciens",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Dernier message le",
+  message_has_been_removed: "Ce message a été supprimé.",
+  unread: "Non lu",
+  remove_chat: "Supprimer la discussion {name}",
+  chat_was_removed: "La discussion a été supprimée.",
+  edit_this_message: "Modifier ce message",
+  new_messages: "{count} nouveau message | {count} nouveaux messages",
+  topics_pinned: "Sujet épinglé | Sujets épinglés",
+
+  no_email_from_folder: "Aucun courriel associé à ce compte.",
+  set_new_password_for_account:
+    "Définir un nouveau mot de passe pour le compte ",
+  reset_password: "Réinitialiser le mot de passe",
+  resetting_password: "Réinitialisation en cours...",
+  invalid_reset_link: "Lien de réinitialisation invalide",
+  loading: "Chargement en cours...",
+  failed_to_reset_password: "Échec de la réinitialisation du mot de passe",
+  no_email_for_account: "Aucun courriel associé à ce compte.",
+  recover_via_email: "M’envoyer un courriel",
+  click_to_send_recovery_mail:
+    "En cliquant sur le bouton ci-dessous, un courriel vous sera envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "Un courriel vous a été envoyé avec un lien de réinitialisation du mot de passe du compte <b>{account_name}</b> sur l’adresse <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "Vous pouvez maintenant fermer cette fenêtre et ouvrir le courriel pour réinitialiser votre mot de passe.",
+  password_reset_successful:
+    "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+  looking_for_gps_coordinates:
+    "Recherche des coordonnées GPS de votre appareil...",
+  gps_coordinates_found: "Coordonnées GPS trouvées.",
+  column_count: "Nombre de colonnes",
+  restore_publications: "Restaurer des publications supprimées",
+  restore_medias: "Restaurer des médias supprimés",
+
+  choose_emoji: "Choisir un emoji",
+  message_too_long:
+    "Le message est trop long, il ne doit pas dépasser {max_length} caractères.",
+  today: "Aujourd’hui",
+  copy_to_clipboard: "Copier dans le presse-papiers",
+  copied: "Copié !",
+
+  debug_logs: "Journaux de débogage",
+  logs_panel_instructions:
+    "Ce panneau affiche les fichiers journaux disponibles du serveur. Ces fichiers contiennent des informations sur l’activité de l’application, de son lancement à son arrêt (et, dans certains cas, des raisons du plantage quand cela arrive).",
+  available_logs: "Journaux disponibles",
+  no_logs_available: "Aucun journal disponible",
+  refresh_logs: "Recharger les journaux",
+
+  session_started: "Session démarrée le",
+  session_ended: "Session arrêtée le",
+  actions: "Actions",
+  session_crashed: "Session plantée",
+  session_running: "Session en cours",
+
+  last_page_reached: "Dernière page atteinte",
+  layout: "Mise en page",
+  starts_on_page: "Démarre sur",
+
+  files_being_sent:
+    "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",
+  opened_page: "Page consultée",
+  launched: "Lancement",
+
+  import_image_from_url_failed:
+    "Le document n’a pas pu être importé, seuls les images peuvent être ajoutées.",
+
+  interrupt: "Interrompre",
+
+  x_images: "Aucune image | {count} image | {count} images",
+  resume: "Reprendre l’animation",
+  compilation_started: "Création en cours…",
+
+  all_content: "Tout le contenu",
+  all_publications: "Toutes les publications",
+  bandwidth_very_low_for_stream_sharing:
+    "Bande passante très faible pour le partage de flux",
+  camera_access_refused: "Accès à la caméra refusé",
+  disconnect_warning: "Avertissement de déconnexion",
+  failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
+  folder_copied: "Dossier copié",
+  "importer depuis un site": "Importer depuis un site",
+  media_type_not_handled: "Type de média non géré",
+  no_padding: "Pas de remplissage",
+  no_page_selected: "Aucune page sélectionnée",
+  no_pinned_publications: "Aucune publication épinglée",
+  no_sound: "Pas de son",
+  no_title: "Pas de titre",
+  not_supported_on_this_device: "Non supporté sur cet appareil",
+  "notifications.failed_to_find_block_line":
+    "Impossible de trouver la ligne du bloc",
+  "notifications.media_type_not_handled": "Type de média non géré",
+  on_this_list: "Sur cette liste",
+  other_users_connected: "Autres utilisateurs connectés",
+  show_cursor: "Afficher le curseur",
+  stream_sharing_media_error: "Erreur de média lors du partage de flux",
+  side_by_side: "Côte à côte",
+  new_line: "À la suite",
 };

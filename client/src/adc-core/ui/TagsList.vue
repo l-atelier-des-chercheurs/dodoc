@@ -2,7 +2,12 @@
   <div class="_tagsList">
     <template v-if="tags.length === 0">
       <small>
-        {{ $t("none") }}
+        <template v-if="Array.isArray(tags)">
+          {{ $t("none") }}
+        </template>
+        <template v-else>
+          {{ $t("not_specified") }}
+        </template>
       </small>
     </template>
 

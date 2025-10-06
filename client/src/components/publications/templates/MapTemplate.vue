@@ -1,10 +1,10 @@
 <template>
-  <div class="_mapTemplate">
+  <div class="_mapTemplate" :data-public-view="!can_edit">
     <MapView
       :publication="publication"
       :opened_view_meta_filename="opened_view_meta_filename"
       :can_edit="can_edit"
-      @toggleView="$emit('toggleView', $event)"
+      @toggleView="$emit('updatePane', { key: 'view', value: $event })"
     />
     <PublicationSettings v-if="can_edit">
       {{ $t("nothing_to_show") }}
@@ -20,7 +20,7 @@ import PublicationSettings from "@/components/publications/PublicationSettings.v
 export default {
   props: {
     publication: Object,
-    opened_view_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -35,7 +35,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    opened_view_meta_filename() {
+      return this.pane_infos.view;
+    },
+  },
   methods: {},
 };
 </script>
@@ -44,5 +48,9 @@ export default {
   position: relative;
   width: 100%;
   height: calc(100vh - 96px);
+
+  &[data-public-view="true"] {
+    height: calc(100vh - 52px);
+  }
 }
 </style>

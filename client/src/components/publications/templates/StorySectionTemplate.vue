@@ -15,7 +15,7 @@
       :publication="publication"
       :opened_section_meta_filename="opened_section_meta_filename"
       :can_edit="can_edit && !display_as_public"
-      @toggleSection="$emit('toggleSection', $event)"
+      @toggleSection="$emit('updatePane', { key: 'section', value: $event })"
     />
     <PublicationSettings v-if="can_edit">
       <StorySettings :publication="publication" />
@@ -30,7 +30,7 @@ import StorySettings from "@/components/publications/story/StorySettings.vue";
 export default {
   props: {
     publication: Object,
-    opened_section_meta_filename: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -47,7 +47,11 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    opened_section_meta_filename() {
+      return this.pane_infos?.section;
+    },
+  },
   methods: {},
 };
 </script>

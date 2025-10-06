@@ -1,0 +1,17 @@
+module_type = "mosaic"
+page_id = "rc7wkh"
+x = 0
+y = 0
+width = 1_280
+height = 720
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-08-19T05:55:39.513Z
+"$date_uploaded" = 2025-08-18T21:50:56.347Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "1090781-1200x801.jpg.meta.txt"
+objectFit = "cover"

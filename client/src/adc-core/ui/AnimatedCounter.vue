@@ -11,10 +11,7 @@
 <script>
 export default {
   props: {
-    value: {
-      type: Number,
-      required: true,
-    },
+    value: Number,
   },
   data() {
     return {
@@ -26,23 +23,15 @@ export default {
   mounted() {
     this.updateValue();
   },
-  watch: {
-    // value(newVal, oldVal) {
-    //   if (newVal !== this.current_value) {
-    //     this.updateValue();
-    //   }
-    // },
-  },
+  watch: {},
 
   methods: {
-    // This is our main logic block. It handles tweening from a start value to an end value.
     updateValue() {
-      // Handles updating the tween on each frame.
       const animate = () => {
+        if (typeof this.value !== "number") this.current_value = 0;
         this.current_value = Math.ceil(
           this.current_value * (1 - this.speed) + this.value * this.speed
         );
-        // if (this.current_value !== this.value)
         requestAnimationFrame(animate);
       };
       requestAnimationFrame(animate);
@@ -52,7 +41,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._animatedCounter {
-  display: flex;
+  display: inline-flex;
   gap: calc(var(--spacing) / 2);
   align-items: center;
 

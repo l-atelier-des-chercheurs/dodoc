@@ -91,7 +91,7 @@
         </div>
 
         <svg
-          v-if="can_edit && l_margins"
+          v-if="can_edit"
           class="_pageBorders"
           width="100%"
           height="100%"
@@ -183,6 +183,14 @@ export default {
   computed: {
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
+      if (
+        this.margins.left === 0 &&
+        this.margins.right === 0 &&
+        this.margins.top === 0 &&
+        this.margins.bottom === 0
+      )
+        return false;
+
       if (this.page_is_left === true)
         return {
           left: this.margins.right,
@@ -255,6 +263,8 @@ export default {
   transform: scale(var(--zoom));
   transform-origin: 0 0;
 
+  contain: size;
+
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   .is--preview & {
@@ -279,7 +289,7 @@ export default {
   background: var(--page-color, white);
 
   overflow: hidden;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.16);
 
   transition: background 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 

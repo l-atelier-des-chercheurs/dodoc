@@ -16,6 +16,7 @@
           class="_cover"
           :context="'full'"
           :cover="event.$cover"
+          :ratio="'3 / 2'"
           :path="event.$path"
           :can_edit="can_edit_event"
         />
@@ -36,6 +37,8 @@
             :path="event.$path"
             :can_edit="can_edit_event"
           />
+
+          <div v-if="can_edit_event" class="u-spacingBottom" />
 
           <div class="u-spacingBottom">
             <TitleField
@@ -82,7 +85,7 @@
               :field_to_edit="'presentation'"
               :content="event.presentation"
               :path="event.$path"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :is_collaborative="false"
               :maxlength="1280"
               :can_edit="can_edit_event"
@@ -157,7 +160,7 @@ export default {
   // background: var(--c-gris_clair);
 
   margin: 0 auto;
-  max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   overflow: hidden;
 
   ._openedEvent--cont {

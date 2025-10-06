@@ -7,10 +7,6 @@
       'u-card2': context === 'list',
     }"
   >
-    <!-- <div class="_topHero"> -->
-    <!-- <img
-        src="https://latelier-des-chercheurs.fr/thumbs/ateliers/chepa-le-journal-pour-tou-te-s/cover-1280x800-q60.jpg"
-      /> -->
     <div class="_spaceCover">
       <CoverField
         :context="context"
@@ -43,11 +39,46 @@
           :can_edit="can_edit"
         />
 
-        <DropDown :right="true">
+        <DropDown :show_label="false" :right="true">
           <DownloadFolder
             :modal_title="$t('download_space', { name: space.title })"
             :path="space.$path"
           />
+
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="show_bin_modal = true"
+          >
+            <b-icon icon="recycle" />
+            {{ $t("bin") }}
+          </button>
+          <BinFolder
+            v-if="show_bin_modal"
+            :modal_title="$t('restore_projects')"
+            :path="space.$path + '/projects'"
+            @close="show_bin_modal = false"
+          >
+            <template v-slot="slotProps">
+              <ProjectPresentation
+                :project="slotProps.project"
+                :context="slotProps.context"
+                :display_original_space="slotProps.display_original_space"
+                :can_edit="slotProps.can_edit"
+              />
+            </template>
+          </BinFolder>
+
+          <button
+            v-if="$root.app_infos.is_electron && is_instance_admin"
+            type="button"
+            class="u-buttonLink"
+            @click="openInFinder({ path: space.$path })"
+          >
+            <b-icon icon="folder-symlink" />
+            {{ $t("open_in_finder") }}
+          </button>
+
           <RemoveMenu
             :modal_title="$t('remove_space', { name: space.title })"
             @remove="removeSpace"
@@ -59,12 +90,13 @@
         <TitleField
           :field_name="'title'"
           :label="context === 'full' ? $t('title') : ''"
+          :show_label="context === 'full' && can_edit"
           class="_title"
           :tag="context === 'full' ? 'h1' : 'h2'"
           :content="space.title"
           :path="space.$path"
           :required="true"
-          :maxlength="280"
+          :maxlength="40"
           :can_edit="can_edit"
         />
         <!-- :label="can_edit ? $t('subtitle') : undefined" -->
@@ -72,7 +104,7 @@
           :field_name="'subtitle'"
           v-if="can_edit || space.subtitle"
           :label="$t('subtitle')"
-          :show_label="context === 'full' && can_edit && !space.subtitle"
+          :show_label="context === 'full' && can_edit"
           class="_subtitle"
           :content="space.subtitle"
           :path="space.$path"
@@ -86,22 +118,21 @@
         :show_label="context === 'full'"
         :field_name="'description'"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :content="space.description"
         :path="space.$path"
         :maxlength="1280"
         :can_edit="can_edit"
       />
 
-      <template v-if="context === 'full'">
-        <AdminsAndContributorsField
-          :folder="space"
-          :can_edit="can_edit"
-          :admin_label="$t('referent')"
-          :admin_instructions="$t('space_admin_instructions')"
-          :contrib_instructions="$t('space_contrib_instructions')"
-        />
-      </template>
+      <AdminsAndContributorsField
+        v-if="context === 'full'"
+        :folder="space"
+        :can_edit="can_edit"
+        :admin_label="$t('referent')"
+        :admin_instructions="$t('space_admin_instructions')"
+        :contrib_instructions="$t('space_contrib_instructions')"
+      />
     </div>
     <!-- <div class="_descriptionField">
     </div> -->
@@ -115,6 +146,9 @@
   </div>
 </template>
 <script>
+import BinFolder from "@/adc-core/fields/BinFolder.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
+
 export default {
   props: {
     space: Object,
@@ -122,9 +156,14 @@ export default {
     position_in_list: String,
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    BinFolder,
+    ProjectPresentation,
+  },
   data() {
-    return {};
+    return {
+      show_bin_modal: false,
+    };
   },
   created() {},
   mounted() {},
@@ -167,21 +206,24 @@ export default {
   // width: 100%;
   // max-width: 120ch;
 
-  padding: calc(var(--spacing) / 4);
+  padding: 0;
   border-radius: 6px;
-
-  border-bottom: 2px solid var(--c-gris);
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   background: white;
+  // padding: calc(var(--spacing) * 1);
 
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &[data-context="full"] {
+    max-width: 800px;
     margin: calc(var(--spacing) * 2) auto;
   }
   &[data-context="list"] {
     flex-flow: row nowrap;
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+    ._spaceCover {
+      max-width: 120px;
+    }
   }
 }
 
@@ -203,20 +245,40 @@ export default {
   // border-radius: var(--panel-radius);
   // margin-right: calc(var(--spacing) / 1);
   // margin-bottom: calc(var(--spacing) / 4);
+
+  > * {
+  }
 }
 ._textBloc {
   // padding: calc(var(--spacing) / 2);
-  flex: 3 1 240px;
+  flex: 1 1 240px;
   overflow: hidden;
 
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
 }
+._title {
+  ::v-deep {
+    h1,
+    h2 {
+      font-weight: 400;
+      font-style: italic;
+    }
+  }
+}
 ._subtitle {
   color: var(--c-gris_fonce);
-  font-size: var(--sl-font-size-medium);
+
+  ._spacePresentation[data-context="list"] & {
+    font-size: var(--sl-font-size-small);
+  }
   // font-weight: 400;
+
+  ::v-deep {
+    ._content {
+    }
+  }
 }
 ._description {
   // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);

@@ -104,10 +104,10 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone @mediaDropped="$emit('addMedias', $event)" />
+      <DropZone @mediaDropped="$emit('pickMedias', [$event])" />
     </div>
   </div>
 </template>

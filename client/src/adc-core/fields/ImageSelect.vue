@@ -89,7 +89,7 @@ export default {
       let blob = null;
       blob = file.data;
 
-      this.crop_mode = true;
+      if (this.ratio) this.crop_mode = true;
       this.picked_image = URL.createObjectURL(blob);
     },
     async fetchURLToFile(url) {
@@ -163,7 +163,8 @@ export default {
   width: 100%;
 
   img {
-    border: 2px solid var(--c-gris);
+    // border: 2px solid var(--c-gris);
+    border-radius: 4px;
 
     &[data-format="square"] {
       width: 100%;

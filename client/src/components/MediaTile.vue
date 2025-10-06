@@ -3,6 +3,7 @@
     class="_mediaTile"
     :class="{
       'was--focused': was_focused,
+      'was--imported': was_imported,
       'is--dragged': is_dragged,
       'is--selected': is_selected,
       'is--own': is_own_media,
@@ -10,6 +11,13 @@
     :data-type="file.$type"
     :data-tilemode="tile_mode"
   >
+    <ToggleInput
+      v-if="is_selectable"
+      class="_selectCb"
+      :content="is_selected"
+      @update:content="$emit('setSelected', $event)"
+    />
+
     <div
       class="u-nut _index"
       :style="`--o-color: var(--color-${file.$origin})`"
@@ -27,11 +35,13 @@
       v-if="tile_mode === 'table'"
       v-html="formatDateToPrecise(file.$date_uploaded)"
     />
-    <div
-      v-if="tile_mode === 'table'"
-      class="u-filename _filename"
-      v-text="file.$media_filename"
-    />
+    <div v-if="tile_mode === 'table'" class="u-filename _filename">
+      <span v-text="file.$media_filename" />
+      <span
+        v-if="file.$infos?.size"
+        v-text="' (' + formatBytes(file.$infos.size) + ')'"
+      />
+    </div>
 
     <!-- top right  -->
     <FavSwitch
@@ -86,13 +96,6 @@
     <div class="_dragFileIcon">
       <DragFile :file="file" :is_dragged.sync="is_dragged" />
     </div>
-
-    <ToggleInput
-      v-if="is_selectable"
-      class="_selectCb"
-      :content="is_selected"
-      @update:content="$emit('setSelected', $event)"
-    />
   </div>
 </template>
 <script>
@@ -102,6 +105,7 @@ export default {
     index: Number,
     project_path: String,
     was_focused: Boolean,
+    was_imported: Boolean,
     is_selectable: Boolean,
     is_selected: Boolean,
     is_already_selected: [Boolean, Object],
@@ -197,9 +201,20 @@ export default {
     }
   }
 
-  &.was--focused {
+  &.was--focused,
+  &.was--imported {
     border: 2px solid var(--c-noir);
-    padding: 2px;
+    margin: 2px;
+    padding: 4px;
+    // background-color: var(--c-noir);
+  }
+  &.was--imported {
+    border-color: var(--c-noir);
+    // border-color: rgba(255, 255, 255, 0.4);
+    animation: fadeImport 0.6s ease-in-out 3 alternate;
+  }
+  &.was--focused {
+    border-color: var(--c-bleuvert);
   }
   &.is--dragged {
     opacity: 0.9;
@@ -216,7 +231,9 @@ export default {
     }
   }
   &[data-type="text"] {
-    font-size: var(--sl-font-size-x-small);
+    ._content {
+      font-size: var(--sl-font-size-x-small);
+    }
     padding: calc(var(--spacing) / 4);
     ::v-deep {
       ._mediaContent {
@@ -263,10 +280,13 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
-    gap: calc(var(--spacing) / 4);
+    width: 100%;
+    gap: calc(var(--spacing) / 2);
     background: transparent;
     border-bottom: 1px solid white;
     font-size: var(--sl-font-size-small);
+
+    overflow: auto;
 
     // margin-top: 2px;
     // margin-bottom: 2px;
@@ -274,6 +294,13 @@ export default {
       border: none;
       // border-left: 3px solid var(--active-color);
       background-color: var(--active-color);
+    }
+    &.is--selected {
+      background-color: hsla(227, 63%, 41%, 0.4);
+
+      &::after {
+        display: none;
+      }
     }
 
     > * {
@@ -286,6 +313,7 @@ export default {
 
       &._filename {
         flex: 0 0 30ch;
+        font-size: var(--sl-font-size-x-small);
       }
 
       &._content,
@@ -309,6 +337,15 @@ export default {
     }
   }
 }
+
+// @keyframes fadeImport {
+//   from {
+//     transform: scale(1.02);
+//   }
+//   to {
+//     transform: scale(1);
+//   }
+// }
 
 ._focusMediaBtn {
   appearance: none;
@@ -491,17 +528,23 @@ export default {
   -webkit-line-clamp: 1;
 }
 
-._selectCb {
+._selectCb._selectCb {
   position: absolute;
   top: 0;
   right: 0;
   z-index: 1;
   line-height: 0;
   border-radius: 50%;
-  font-size: 80%;
+
+  // width: 2rem;
+  // height: 2rem;
   cursor: pointer;
 
-  &:not([data-tilemode="table"]) {
+  ::v-deep ._inputLabel {
+    padding: var(--spacing);
+  }
+
+  ._mediaTile:not([data-tilemode="table"]) & {
     width: 100%;
     height: 100%;
     display: flex;

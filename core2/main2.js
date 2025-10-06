@@ -5,16 +5,27 @@ const portscanner = require("portscanner");
 const server = require("./server"),
   dev = require("./dev-log"),
   cache = require("./cache"),
+  cacheManager = require("./cache-manager"),
   utils = require("./utils"),
   paths = require("./paths"),
-  auth = require("./auth");
+  auth = require("./auth"),
+  mail = require("./mail"),
+  journal = require("./journal");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
 
-  console.log(`App is ${global.is_electron ? "electron" : "node"}`);
-  console.log(`Starting = ${global.appInfos.name}`);
-  console.log(`Node = ${process.versions.node}`);
+  const infos = `Starting ${global.appInfos.name} v${
+    global.appInfos.version
+  }, app is ${global.is_electron ? "electron" : "node"}, node v${
+    process.versions.node
+  }`;
+  console.log(infos);
+  journal.log({ message: infos, from: "main2" });
+
+  // Log all dependencies with their installed versions
+  console.log(utils.getDependenciesWithVersions());
+  journal.log({ message: utils.getDependenciesWithVersions(), from: "main2" });
 
   // setInterval(() => {
   //   const usedHeapSize = process.memoryUsage().heapUsed;
@@ -25,9 +36,15 @@ module.exports = async function () {
 
   const debug = process.argv.length > 0 && process.argv.includes("--debug");
   const verbose = process.argv.length > 0 && process.argv.includes("--verbose");
-  const logToFile = false;
+  const livereload =
+    process.argv.length > 0 && process.argv.includes("--livereload");
 
-  dev.init(debug, verbose, logToFile);
+  // Initialize dev logger
+  dev.init({ debug, verbose, livereload });
+  journal.log({
+    message: `Debug mode: ${debug}, verbose: ${verbose}, livereload: ${livereload}`,
+    from: "main2",
+  });
 
   if (dev.isDebug()) {
     process.traceDeprecation = true;
@@ -51,10 +68,7 @@ module.exports = async function () {
 
     if (global.is_electron) {
       const { dialog } = require("electron");
-      dialog.showErrorBox(
-        `Impossible de démarrer l’application`,
-        `Code erreur: ${err}`
-      );
+      dialog.showErrorBox(`Failed to start the application`, `Error: ${err}`);
     }
 
     throw err;
@@ -67,7 +81,7 @@ module.exports = async function () {
       if (global.is_electron) {
         const { dialog } = require("electron");
         dialog.showErrorBox(
-          `Impossible de démarrer l’application`,
+          `Impossible de démarrer l'application`,
           `Le domaine Bonjour doit être une chaîne de caractères.`
         );
       }
@@ -101,17 +115,11 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  global.pathToCache = path.join(
-    paths.getCacheFolder(global.is_electron),
-    global.settings.cacheDirname
-  );
+  await cacheManager.init();
+
   global.ffmpeg_processes = [];
 
   if (global.settings.cache_content === true) cache.init();
-
-  await cleanCacheFolder().catch((err) => {
-    throw err;
-  });
 
   let full_default_path = path.join(`${global.appRoot}`, `content`);
   if (global.is_electron)
@@ -129,9 +137,28 @@ async function setupApp() {
     throw err;
   });
   dev.log("Will store contents in: " + global.pathToUserContent);
+  journal.log({
+    message: "Will store contents in: " + global.pathToUserContent,
+    from: "main2",
+  });
 
-  // global.session_options = {};
-  // await readsession_metaFile();
+  // Now that content path is available, start file logging if requested
+  journal.init();
+  dev.log("Journal logging started");
+
+  global.can_send_email = mail.canSendMail();
+  journal.log({
+    message: "Can send email: " + global.can_send_email,
+    from: "main2",
+  });
+
+  // Initialize auth module (tokens file creation and cleanup task)
+  await auth.init();
+  journal.log({
+    message: "Auth module initialized",
+    from: "main2",
+  });
+
   auth.createSuperadminToken();
 
   const port = await portscanner
@@ -144,35 +171,42 @@ async function setupApp() {
       throw err;
     });
 
+  if (port === global.settings.desired_port) {
+    dev.log(`Desired port ${port} available`);
+    journal.log({
+      message: `Desired port ${port} available`,
+      from: "main2",
+    });
+  } else {
+    dev.log(
+      `Desired port ${global.settings.desired_port} NOT available, using ${port}`
+    );
+    journal.log({
+      message: `Desired port ${global.settings.desired_port} NOT available, using ${port}`,
+      from: "main2",
+    });
+  }
+
   global.appInfos.port = port;
   global.appInfos.homeURL = `${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
 
-  dev.log(`main.js - Found available port: ${port}`);
   return;
 }
 
 async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
-  const user_dir_path = paths.getDocumentsFolder(global.is_electron);
-
+  const user_dir_path = paths.getDocumentsFolder();
   let full_path_to_content;
-  const path_is_custom =
-    global.settings.contentPath.startsWith("/") ||
-    global.settings.contentPath.includes(path.sep);
 
-  if (path_is_custom) {
-    try {
-      // attempt to use custom path
-      const custom_path = global.settings.contentPath.replaceAll("/", path.sep);
-      await utils.testWriteFileInFolder(custom_path);
-      full_path_to_content = custom_path;
-    } catch (err) {
-      // failed to write to custom path, fallback to default path
-      // todo display error message to user
-      dev.log(`-> failed to write to custom path, fallback to default path`);
-      full_path_to_content = path.join(user_dir_path, "dodoc");
-    }
+  if (
+    global.settings.contentPath.includes("/") ||
+    global.settings.contentPath.includes(path.sep)
+  ) {
+    full_path_to_content = global.settings.contentPath.replaceAll(
+      "/",
+      path.sep
+    );
   } else {
     full_path_to_content = path.join(
       user_dir_path,
@@ -180,9 +214,35 @@ async function copyAndRenameUserFolder(full_default_path) {
     );
   }
 
-  // attempt to write something to dest folder
+  try {
+    // Check write permissions for both custom and default paths
+    await utils.testWriteFileInFolder(full_path_to_content);
+  } catch (err) {
+    dev.error(`-> failed to write to content path`, err);
 
-  // if path to content exists
+    if (global.is_electron) {
+      const { dialog } = require("electron");
+      dialog.showErrorBox(
+        `Failed to write to content path: ${full_path_to_content}`,
+        `Error: ${err}\n\n` +
+          `Please check if the path is correct and if you have the necessary permissions to write to it. do•doc will start with the default Documents/dodoc folder`
+      );
+    }
+
+    // Fallback to default path
+    full_path_to_content = path.join(user_dir_path, "dodoc");
+    dev.log("fallback to default path for content", full_path_to_content);
+
+    // Check write permissions for fallback path
+    try {
+      await utils.testWriteFileInFolder(full_path_to_content);
+    } catch (fallbackErr) {
+      dev.error(`-> failed to write to fallback path`, fallbackErr);
+      throw new Error(
+        `Cannot write to any content directory: ${fallbackErr.message}`
+      );
+    }
+  }
 
   if (await contentFolderIsValid(full_path_to_content)) {
     dev.log(`-> content folder is valid: ${full_path_to_content}`);
@@ -211,60 +271,5 @@ async function contentFolderIsValid(full_path) {
 
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
 
-  // TODO improve here: if folder is not valid, create in a subfolder called dodoc-next
-
   return true;
 }
-
-async function cleanCacheFolder() {
-  let cachePath = utils.getPathToCache();
-  dev.log(`Emptying temp folder ${cachePath}`);
-  await fs.emptyDir(cachePath).catch((err) => {
-    throw err;
-  });
-  return;
-}
-
-async function readAppMeta() {
-  // utils.readMetaFile();
-}
-
-// function readsession_metaFile() {
-//   return new Promise(function (resolve, reject) {
-//     var pathTosession_meta = api.getFolderPath("meta.txt");
-//     try {
-//       const metaFileContent = fs.readFileSync(
-//         pathTosession_meta,
-//         global.settings.textEncoding
-//       );
-//       const parsed_meta = api.parseData(metaFileContent);
-//       _parseSessionMeta(parsed_meta);
-//       return resolve();
-//     } catch (err) {
-//       return resolve();
-//     }
-//   });
-// }
-
-// function _parseSessionMeta(session_meta) {
-//   const { session_password, new_account_default_role } = session_meta;
-
-//   if (session_password) {
-//     const pass = session_password.trim();
-//     dev.log("Found session password in meta.txt set to", pass);
-//     // global.session_password = auth.hashCode(pass);
-//   }
-
-//   if (new_account_default_role) {
-//     dev.log("Found new_account_default_role, set to", new_account_default_role);
-//     global.settings.structure.authors.fields.role.default =
-//       new_account_default_role;
-//   }
-
-//   ["force_login", "simple_login", "require_email", "force_author_password"].map(
-//     (rule) => {
-//       if (session_meta[rule] === "true") global.session_options[rule] = true;
-//       else global.session_options[rule] = false;
-//     }
-//   );
-// }

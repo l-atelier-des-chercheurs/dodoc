@@ -7,20 +7,17 @@ const routes = [
   {
     path: "/",
     name: "Accueil",
-    component: () =>
-      import(/* webpackChunkName: "HomeView" */ "@/views/HomeView.vue"),
+    component: () => import("@/views/HomeView.vue"),
   },
   {
     path: "/+:space_slug",
     name: "Espace",
-    component: () =>
-      import(/* webpackChunkName: "SpaceView" */ "@/views/SpaceView.vue"),
+    component: () => import("@/views/SpaceView.vue"),
   },
   {
     path: "/+:space_slug/:project_slug",
     name: "Projet",
-    component: () =>
-      import(/* webpackChunkName: "ProjectView" */ "@/views/ProjectView.vue"),
+    component: () => import("@/views/ProjectView.vue"),
   },
   {
     path: "/+:space_slug/:project_slug/publications/:publication_slug",
@@ -30,34 +27,27 @@ const routes = [
       /* do not load full UI */
       static: true,
     },
-    component: () =>
-      import(
-        /* webpackChunkName: "PublicationView" */ "@/views/PublicationView.vue"
-      ),
+    component: () => import("@/views/PublicationView.vue"),
   },
   {
     path: "/@",
     name: "Tous les auteurs",
-    component: () =>
-      import(/* webpackChunkName: "AuthorsView" */ "@/views/AuthorsView.vue"),
+    component: () => import("@/views/AuthorsView.vue"),
   },
   {
     path: "/@:author_slug",
     name: "Auteur",
-    component: () =>
-      import(/* webpackChunkName: "AuthorView" */ "@/views/AuthorView.vue"),
+    component: () => import("@/views/AuthorView.vue"),
   },
   {
     path: "/p/:page_slug",
     name: "Page",
-    component: () =>
-      import(/* webpackChunkName: "Page" */ "@/views/PageView.vue"),
+    component: () => import("@/views/PageView.vue"),
   },
   {
     path: "/_ui",
     name: "UI (dev only)",
-    component: () =>
-      import(/* webpackChunkName: "UIView" */ "@/views/UIView.vue"),
+    component: () => import("@/views/UIView.vue"),
   },
   // {
   //   path: "/=:event_slug",
@@ -66,21 +56,25 @@ const routes = [
   //     import(/* webpackChunkName: "AuthorView" */ "@/views/EventView.vue"),
   // },
   {
-    // internal route to generate preview for PDF and STL
+    // route to display a single media with caption/credits and
+    // with qr scan option, and to generate preview for PDF and STL server-side
     path: "/_previewmedia",
     name: "Preview media",
     meta: {
       /* do not load full UI */
       static: true,
     },
-    component: () =>
-      import(/* webpackChunkName: "PreviewMedia" */ "@/views/PreviewMedia.vue"),
+    component: () => import("@/views/PreviewMedia.vue"),
+  },
+  {
+    path: "/reset-password",
+    name: "Reset Password",
+    component: () => import("@/views/ResetPasswordView.vue"),
   },
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: () =>
-      import(/* webpackChunkName: "NotFound" */ "@/views/NotFound.vue"),
+    component: () => import("@/views/NotFound.vue"),
   },
 ];
 
@@ -88,6 +82,20 @@ const router = new VueRouter({
   mode: "history",
   base: "/",
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return new Promise((resolve, reject) => {
+      // only if changing page and not just query or hash
+      if (to.path !== from.path) {
+        setTimeout(() => {
+          if (savedPosition) {
+            return resolve(savedPosition);
+          } else {
+            return resolve({ x: 0, y: 0 });
+          }
+        }, 150);
+      }
+    });
+  },
 });
 
 export default router;

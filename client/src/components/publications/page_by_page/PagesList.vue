@@ -1,6 +1,6 @@
 <template>
   <transition name="slideup">
-    <div v-if="!page_opened_id">
+    <div v-if="!page_opened_id" class="_pagesList">
       <div class="_setPreviewSize">
         <h2>
           <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
@@ -59,7 +59,7 @@
                   :page_height="publication.page_height"
                   :layout_mode="publication.layout_mode"
                   :page_color="page.page_color"
-                  :page_number="index"
+                  :page_number="getCorrectPageNumber(page.id)"
                   :pagination="pagination"
                   :hide_pagination="page.hide_pagination === true"
                   :can_edit="false"
@@ -119,7 +119,7 @@
                       :page_height="publication.page_height"
                       :layout_mode="publication.layout_mode"
                       :page_color="page.page_color"
-                      :page_number="index * 2 + iindex"
+                      :page_number="getCorrectPageNumber(page.id)"
                       :pagination="pagination"
                       :hide_pagination="page.hide_pagination === true"
                       :page_is_left="iindex === 0"
@@ -186,6 +186,7 @@
       :can_edit="can_edit"
       @togglePage="$emit('togglePage', $event)"
       @updatePageOptions="updatePageOptions"
+      @createPage="createPage"
     />
   </transition>
 </template>
@@ -307,6 +308,10 @@ export default {
     },
   },
   methods: {
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
+    },
     async createPage(index) {
       this.is_creating_page = true;
 
@@ -413,6 +418,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._pagesList {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
+}
+
 ._allPages {
   display: flex;
   flex-flow: row wrap;
@@ -463,6 +473,7 @@ export default {
   width: 100%;
   height: 100%;
   background: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 0;
   // background: rgba(0, 0, 0, 0.6) !important;
   color: black;
   opacity: 0;

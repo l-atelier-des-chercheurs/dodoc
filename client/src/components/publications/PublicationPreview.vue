@@ -1,17 +1,19 @@
 <template>
   <div class="_publicationPreview">
     <div class="_publicationPreview--cover">
-      <div v-if="cover_thumb">
+      <template v-if="cover_thumb">
         <img :src="cover_thumb" />
         <span
           v-if="template_icon && false"
           class="_iconPreview"
           v-html="template_icon"
         />
-      </div>
-      <div v-else class="_noPreview">
-        <span v-if="template_icon" v-html="template_icon" />
-      </div>
+      </template>
+      <template v-else>
+        <div class="_noPreview">
+          <span v-if="template_icon" v-html="template_icon" />
+        </div>
+      </template>
       <transition name="toggleLock" mode="out-in">
         <StatusTag
           v-if="
@@ -146,16 +148,18 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._publicationPreview {
+  position: relative;
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
+  box-shadow: none;
+  // padding: calc(var(--spacing) / 2);
 }
 ._publicationPreview--cover {
   position: relative;
   // overflow: hidden;
   background: white;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 ._header {
@@ -208,7 +212,7 @@ export default {
   // border: 2px solid white;
   padding: calc(var(--spacing) / 1);
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 21/29.7;
   min-height: 50px;
 }
 
@@ -231,6 +235,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  padding: 0;
   background: transparent;
 
   &:focus-visible {

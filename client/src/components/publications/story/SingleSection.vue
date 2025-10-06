@@ -37,7 +37,7 @@
             </div>
           </div>
           <div class="_buttons" v-if="can_edit">
-            <DropDown v-if="can_edit" :right="true">
+            <DropDown v-if="can_edit" :show_label="false" :right="true">
               <button
                 type="button"
                 class="u-buttonLink"

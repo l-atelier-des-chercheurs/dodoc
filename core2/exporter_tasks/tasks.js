@@ -8,12 +8,7 @@ const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
   "app.asar.unpacked"
 );
-const ffprobePath = require("ffprobe-static").path.replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
 ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
 
 module.exports = (function () {
   const API = {
@@ -70,6 +65,8 @@ module.exports = (function () {
         });
       }
 
+      await fs.remove(temp_image_path);
+
       return {
         video_path: temp_video_path,
         duration: image_duration,
@@ -116,10 +113,16 @@ module.exports = (function () {
         });
       }
 
-      const { duration } = await utils.getVideoDurationFromMetadata({
-        ffmpeg_cmd,
-        video_path: temp_video_path,
-      });
+      let duration;
+      try {
+        const infos = await utils.getVideoMetaData({
+          ffmpeg_cmd,
+          path: temp_video_path,
+        });
+        if (infos.duration) duration = infos.duration;
+      } catch (err) {
+        dev.error(err);
+      }
 
       return {
         video_path: temp_video_path,
@@ -143,7 +146,7 @@ module.exports = (function () {
         let complexFilters = [];
         let all_video_outputs = [];
         let all_audio_outputs = [];
-        const transition_duration = 0.08;
+        const transition_duration = 0.2;
 
         temp_videos_array.map(
           ({ duration, transition_in, transition_out }, index) => {

@@ -8,7 +8,6 @@
       @update:content="$emit('update:show_toggle', $event)"
     />
     <DLabel v-else-if="label" :str="label" />
-
     <!-- <label :for="id" class="u-label _inputLabel">
       <input
         v-if="can_toggle"
@@ -99,7 +98,8 @@ export default {
     border-left: 3px dotted var(--c-gris_fonce);
     padding-left: calc(var(--spacing) / 2);
     margin-left: calc(var(--spacing) / 2);
-    padding-left: calc(var(--spacing) / 4);
+    padding-left: calc(var(--spacing) / 2);
+    padding-top: calc(var(--spacing) / 4);
   }
 }
 </style>

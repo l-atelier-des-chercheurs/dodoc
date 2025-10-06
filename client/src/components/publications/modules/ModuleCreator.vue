@@ -41,7 +41,7 @@
           :publication_path="publication_path"
           :select_mode="select_mode"
           :pick_from_types="pick_from_types"
-          @addMedias="createMosaic"
+          @pickMedias="pickMedias"
           @close="show_media_picker = false"
         />
 
@@ -116,12 +116,29 @@
       />
     </transition>
     <DropZone class="_dropZone" @mediaDropped="mediaDropped" />
+
+    <template v-if="enable_clipboard_paste">
+      <ImportFileZone
+        v-show="false"
+        :multiple="true"
+        :files_to_import.sync="files_to_import"
+      />
+      <UploadFiles
+        v-if="files_to_import.length > 0"
+        :files_to_import="files_to_import"
+        :path="project_path"
+        :allow_caption_edition="true"
+        @importedMedias="mediaJustImported($event)"
+        @close="files_to_import = []"
+      />
+    </template>
   </div>
 </template>
 <script>
 import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
 export default {
   props: {
@@ -144,11 +161,16 @@ export default {
       type: Boolean,
       default: true,
     },
+    enable_clipboard_paste: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CaptureModal,
     MediaPicker,
     EmbedPicker,
+    ImportFileZone,
   },
   data() {
     return {
@@ -157,6 +179,8 @@ export default {
       show_media_picker: false,
       show_file_picker: false,
       show_link_picker: false,
+
+      files_to_import: [],
 
       shapes: [
         {
@@ -221,8 +245,18 @@ export default {
     },
   },
   methods: {
-    async mediaDropped({ path_to_source_media_metas }) {
+    pickMedias(medias) {
+      const path_to_source_media_metas = medias.map((m) => m.$path);
+      this.createMosaic({ path_to_source_media_metas });
+    },
+    async mediaDropped({ $path }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library
+      this.createMosaic({ path_to_source_media_metas: [$path] });
+    },
+    async mediaJustImported(list_of_added_metas) {
+      const path_to_source_media_metas = list_of_added_metas.map(
+        (meta_filename) => this.project_path + "/" + meta_filename
+      );
       this.createMosaic({ path_to_source_media_metas });
     },
     async createMosaic({ meta_filename, path_to_source_media_metas }) {

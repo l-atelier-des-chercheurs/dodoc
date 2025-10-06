@@ -1,0 +1,6 @@
+title = "Espace de test / test here"
+"$status" = "public"
+"$admins" = [ "authors/admin" ]
+"$contributors" = "everyone"
+"$date_modified" = 2025-10-02T13:31:36.846Z
+"$date_created" = 2025-09-11T14:01:11.068Z

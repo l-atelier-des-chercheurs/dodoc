@@ -107,12 +107,12 @@ export default {
   },
   created() {},
   mounted() {
-    this.$eventHub.$on("mode.set.previous", this.previousMode);
-    this.$eventHub.$on("mode.set.next", this.nextMode);
+    this.$eventHub.$on("capture.navigate.previous", this.previousMode);
+    this.$eventHub.$on("capture.navigate.next", this.nextMode);
   },
   beforeDestroy() {
-    this.$eventHub.$off("mode.set.previous", this.previousMode);
-    this.$eventHub.$off("mode.set.next", this.nextMode);
+    this.$eventHub.$off("capture.navigate.previous", this.previousMode);
+    this.$eventHub.$off("capture.navigate.next", this.nextMode);
   },
   watch: {},
   computed: {},

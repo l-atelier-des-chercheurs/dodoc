@@ -7,25 +7,23 @@
     }"
   >
     <span label="Panneaux" class="_paneList2">
-      <div
+      <button
+        type="button"
         class="_projectTitle"
         v-if="!$root.is_mobile_view"
         :class="{
           'is--shown': is_stickied_to_top,
         }"
+        @click="scrollToTop"
       >
-        <button
-          type="button"
-          class="u-button u-button_transparent"
-          @click="scrollToTop"
-        >
-          <b-icon icon="arrow-up" />
-          <!-- <img v-if="cover_thumb" :src="cover_thumb" /> -->
-          <span>
-            {{ project.title }}
-          </span>
-        </button>
-      </div>
+        <span style="font-size: 2em">
+          <b-icon icon="arrow-up-short" />
+        </span>
+        <img v-if="cover_thumb" :src="cover_thumb" />
+        <span>
+          {{ project.title }}
+        </span>
+      </button>
       <span placement="top" class="_projectPanes" ref="drawer">
         <SlickList
           v-if="can_edit"
@@ -48,7 +46,7 @@
             <div
               class="_btn"
               :ref="`pane_${pane.type}`"
-              @click="replacePane(pane)"
+              @click="togglePane(pane)"
             >
               <span
                 class="u-icon"
@@ -62,7 +60,8 @@
                 key="'name'"
                 v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view"
               >
-                {{ index + 1 }} • {{ $t(pane.type) }}
+                <!-- {{ index + 1 }} •  -->
+                {{ $t(pane.type) }}
               </span>
 
               <transition name="fade" mode="out-in">
@@ -218,16 +217,12 @@ export default {
       this.project_panes = [];
       this.addPane(pane);
     },
+    togglePane(pane) {
+      if (this.paneIsEnabled(pane.type)) this.removePane(pane.type);
+      else this.replacePane(pane);
+    },
     addPane(pane) {
       console.log(`PaneList2 / addPane`);
-
-      this.$nextTick(() => {
-        this.$el.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-          inline: "nearest",
-        });
-      });
 
       let pp = JSON.parse(JSON.stringify(this.project_panes));
       pp.push(pane);
@@ -242,6 +237,14 @@ export default {
       });
 
       this.project_panes = pp;
+
+      setTimeout(() => {
+        this.$el.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest",
+        });
+      }, 100);
     },
     getIcon(type) {
       if (type === "capture") return this.dodoc_icon_capture;
@@ -276,7 +279,7 @@ export default {
   margin: 0 auto;
   background-color: #fff;
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-  border-top: 1px solid var(--c-gris);
+  // border-top: 1px solid var(--c-gris);
   // border-bottom: 0;
 
   background: var(--panel-color);
@@ -285,7 +288,7 @@ export default {
   // border-radius: var(--panel-radius);
 
   &.has--noPanes {
-    border-bottom: 1px solid var(--c-gris);
+    // border-bottom: 1px solid var(--c-gris);
   }
 }
 
@@ -363,16 +366,16 @@ export default {
     color: white;
     background-color: var(--color-active);
   }
-
-  &.is--enabled {
+  &.is--enabled,
+  &.is--animating {
     color: white;
     background-color: var(--color-active);
   }
-  &.is--animating {
-    // transform: scale(0.8);
-    // z-index: 10;
-    color: white;
-    background-color: var(--color-active);
+  &.is--enabled {
+    &:hover,
+    &:focus {
+      color: var(--c-noir);
+    }
   }
 }
 
@@ -383,6 +386,7 @@ export default {
 
   line-height: 0;
   padding: calc(var(--spacing) / 4);
+  font-size: 120%;
   border-radius: 50%;
   transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
 }
@@ -417,6 +421,8 @@ export default {
   .u-icon {
     width: 2rem;
     height: 2rem;
+    overflow: visible;
+
     svg {
       width: 2rem;
       height: 2rem;
@@ -436,20 +442,19 @@ export default {
   font-weight: 700;
   opacity: 0;
   transform: translateY(-100%);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  background: transparent;
 
   transition: 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &.is--shown {
     opacity: 1;
     transform: translateY(0);
-  }
-
-  > button {
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: calc(var(--spacing) / 2);
   }
 
   img {
@@ -459,11 +464,13 @@ export default {
   }
   span {
     min-height: 2rem;
+    max-width: 20ch;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     display: flex;
     align-items: center;
+    // background: var(--c-gris);
   }
 }
 </style>

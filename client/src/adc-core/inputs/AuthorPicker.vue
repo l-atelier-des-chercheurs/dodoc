@@ -52,6 +52,10 @@ export default {
     },
     sorted_authors() {
       return this.all_authors_except_current.slice().sort((a, b) => {
+        if (this.connected_as?.$path && a.$path === this.connected_as?.$path)
+          return -1;
+        if (this.connected_as?.$path && b.$path === this.connected_as?.$path)
+          return 1;
         return a.name.localeCompare(b.name);
       });
     },

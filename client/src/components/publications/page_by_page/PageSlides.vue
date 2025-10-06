@@ -4,13 +4,14 @@
     :class="{
       'is--slides': display_mode === 'slides',
       'is--serversidepreview': is_serversidepreview,
+      'is--nightmode': night_mode,
     }"
   >
     <div class="_pages" :style="pages_style">
       <template v-if="!is_spread">
         <template v-if="display_mode !== 'slides'">
           <div
-            v-for="(page, page_number) in pages_to_show"
+            v-for="page in pages_to_show"
             class="_page"
             :key="'page-' + page.id"
           >
@@ -20,7 +21,7 @@
               :page_color="page.page_color"
               :layout_mode="publication.layout_mode"
               :hide_pagination="page.hide_pagination === true"
-              :page_number="page_number"
+              :page_number="getCorrectPageNumber(page.id)"
               :pagination="pagination"
               :can_edit="false"
             />
@@ -44,7 +45,7 @@
                 :page_color="slide_current_page.page_color"
                 :layout_mode="publication.layout_mode"
                 :hide_pagination="slide_current_page.hide_pagination === true"
-                :page_number="slides_current_page_or_spread_index - 1"
+                :page_number="getCorrectPageNumber(slide_current_page.id)"
                 :pagination="pagination"
                 :can_edit="false"
               />
@@ -54,6 +55,7 @@
       </template>
       <template v-else>
         <template v-if="display_mode !== 'slides'">
+          <!-- print mode with ?display=print -->
           <div
             class="_spread"
             :key="s_index"
@@ -73,7 +75,7 @@
                   :page_color="page.page_color"
                   :layout_mode="publication.layout_mode"
                   :hide_pagination="page.hide_pagination === true"
-                  :page_number="s_index * 2 + index"
+                  :page_number="getCorrectPageNumber(page.id)"
                   :pagination="pagination"
                   :can_edit="false"
                 />
@@ -83,7 +85,8 @@
           </div>
         </template>
         <template v-else>
-          <transition name="fade" mode="out-in">
+          <!-- presentation mode with ?display=slides -->
+          <transition name="fade_fast" mode="out-in">
             <div
               class="_spread"
               :key="'spread-' + slides_current_page_or_spread_index"
@@ -103,9 +106,7 @@
                     :page_color="page.page_color"
                     :layout_mode="publication.layout_mode"
                     :hide_pagination="page.hide_pagination === true"
-                    :page_number="
-                      (slides_current_page_or_spread_index - 1) * 2 + index
-                    "
+                    :page_number="getCorrectPageNumber(page.id)"
                     :pagination="pagination"
                     :can_edit="false"
                   />
@@ -142,25 +143,28 @@
       </span>
       <span class="_pageInd">
         <b>
-          <select
-            class=""
-            :value="slides_current_page_or_spread_index"
-            @change="
-              updatePageQuery({
-                prop: 'page',
-                val: $event.target.value,
-              })
-            "
-          >
-            <option
-              v-for="(o, page_number) in is_spread
-                ? spreads.length
-                : pages.length"
-              :key="page_number"
-              :value="page_number + 1"
-              v-text="page_number + 1"
-            />
-          </select>
+          <transition name="pagechange" mode="out-in">
+            <select
+              class=""
+              :value="slides_current_page_or_spread_index"
+              :key="slides_current_page_or_spread_index"
+              @change="
+                updatePageQuery({
+                  prop: 'page',
+                  val: $event.target.value,
+                })
+              "
+            >
+              <option
+                v-for="(o, page_number) in is_spread
+                  ? spreads.length
+                  : pages.length"
+                :key="page_number"
+                :value="page_number + 1"
+                v-text="page_number + 1"
+              />
+            </select>
+          </transition>
           <div
             v-for="(o, page_number) in is_spread
               ? spreads.length
@@ -226,6 +230,7 @@ export default {
     return {
       display_mode: "print",
       page_zoom: 100,
+      night_mode: false,
     };
   },
   created() {
@@ -240,7 +245,7 @@ export default {
     else if (this.publication.layout_mode === "print")
       document.body.style = `
           --page-width: ${this.publication.page_width}mm;
-          --page-height: calc(${this.publication.page_height}mm - 0.4mm);
+          --page-height: calc(${this.publication.page_height}mm - 0mm);
         `;
     document.addEventListener("keydown", this.keyPressed);
 
@@ -295,9 +300,14 @@ export default {
       return this.spreads[this.slides_current_page_or_spread_index - 1];
     },
     pages_to_show() {
-      const page_to_display = +this.$route.query?.page;
-      if (page_to_display)
-        return this.pages.slice(page_to_display - 1, page_to_display);
+      const pages_to_display = this.$route.query?.page;
+      if (pages_to_display && pages_to_display.includes("-")) {
+        const [start, end] = pages_to_display.split("-");
+        return this.pages.slice(start - 1, end);
+      } else if (pages_to_display && !pages_to_display.includes("-")) {
+        return this.pages.slice(+pages_to_display - 1, +pages_to_display);
+      }
+
       return this.pages;
     },
     has_multiple_pages() {
@@ -321,9 +331,13 @@ export default {
       });
     },
     spreads_to_show() {
-      const spread_to_display = +this.$route.query?.page;
-      if (spread_to_display)
-        return this.spreads.slice(spread_to_display - 1, spread_to_display);
+      const spreads_to_display = this.$route.query?.page;
+      if (spreads_to_display && spreads_to_display.includes("-")) {
+        const [start, end] = spreads_to_display.split("-");
+        return this.spreads.slice(start - 1, end);
+      } else if (spreads_to_display) {
+        return this.spreads.slice(+spreads_to_display - 1, +spreads_to_display);
+      }
       return this.spreads;
     },
   },
@@ -387,6 +401,9 @@ export default {
         case "f":
           this.$emit("toggleFs");
           break;
+        case "n":
+          this.night_mode = !this.night_mode;
+          break;
       }
     },
     togglePage(page_id) {
@@ -401,6 +418,10 @@ export default {
         this.$alertify.error(this.$t("page_not_found"));
       }
     },
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
+    },
   },
 };
 </script>
@@ -412,6 +433,10 @@ export default {
 
   &:not(:last-child) {
     page-break-after: always;
+  }
+
+  &:last-child {
+    page-break-after: avoid !important;
   }
 
   ::v-deep {
@@ -456,6 +481,14 @@ export default {
 
 ._pageSlides {
   &.is--slides {
+    background-color: var(--c-bodybg);
+    overflow: hidden;
+
+    transition: all 2s cubic-bezier(0.19, 1, 0.22, 1);
+    &.is--nightmode {
+      background-color: var(--c-noir);
+    }
+
     ._pages {
       display: flex;
       justify-content: center;
@@ -486,14 +519,22 @@ export default {
   gap: calc(var(--spacing) / 2);
   border-radius: 8px;
   color: black;
-
   background-color: rgba(255, 255, 255, 1);
 
   transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover {
-    background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    box-shadow: 0 0px 6px rgba(0, 0, 0, 0.06), 0 0px 6px rgba(0, 0, 0, 0.13);
+  }
+
+  ._pageSlides.is--nightmode & {
+    background-color: var(--c-noir);
+    color: white;
+
+    &:hover {
+      box-shadow: 0 0px 6px rgba(255, 255, 255, 0.06),
+        0 0px 6px rgba(255, 255, 255, 0.13);
+    }
   }
 }
 ._pageInd {
@@ -505,12 +546,16 @@ export default {
   align-items: center;
 
   select {
-    background-color: rgba(205, 205, 205, 0.5);
-    width: 6ch;
+    background-color: rgba(205, 205, 205, 0.3);
+    // width: 6ch;
+    color: inherit;
+    padding-top: calc(var(--spacing) / 4);
+    padding-bottom: calc(var(--spacing) / 4);
   }
 }
 </style>
 <style lang="scss">
+html,
 body {
   @media print {
     width: var(--page-width);

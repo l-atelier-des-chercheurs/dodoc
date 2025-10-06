@@ -1,0 +1,12 @@
+"$authors" = [ "authors/admin" ]
+"$date_created" = 2023-12-04T12:58:52.000Z
+"$date_modified" = 2025-09-16T13:59:57.037Z
+"$date_uploaded" = 2025-09-16T13:59:57.037Z
+"$media_filename" = "moulinette2.JPG"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+
+["$location"]
+latitude = 48.549058333333335
+longitude = -3.7349

@@ -7,7 +7,7 @@
       @click="$emit('close')"
     >
       <b-icon
-        icon="arrow-left-circle-fill"
+        icon="arrow-left-circle"
         :aria-label="$t('back_to_publications')"
       />
     </button>
@@ -17,7 +17,7 @@
         :label="$t('title')"
         :show_label="false"
         :field_name="'title'"
-        :tag="'h2'"
+        :tag="'h3'"
         :maxlength="40"
         :required="true"
         :content="publication.title"
@@ -54,10 +54,10 @@
 
       <button
         type="button"
-        v-if="can_edit && publication.template !== 'cartography'"
+        v-if="can_edit && !['cartography'].includes(publication.template)"
         @click="openSettings"
         caret
-        class="u-button u-button_small u-button_transparent"
+        class="u-button u-button_transparent"
       >
         <b-icon icon="gear" slot="prefix" :aria-label="$t('settings')" />
         {{ $t("settings") }}
@@ -95,7 +95,7 @@
           v-if="show_export_pdf_modal"
           :modal_title="$t('export_publi', { name: publication.title })"
           :publication="publication"
-          :page_opened_id="page_opened_id"
+          :pane_infos="pane_infos"
           @close="show_export_pdf_modal = false"
         />
         <div>
@@ -152,7 +152,7 @@ import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 export default {
   props: {
     publication: Object,
-    page_opened_id: String,
+    pane_infos: Object,
     no_back_button: Boolean,
     can_edit: Boolean,
   },
@@ -226,15 +226,17 @@ export default {
 ._topbar {
   display: flex;
   flex-flow: row wrap;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   align-items: center;
   width: 100%;
   background: white;
 
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   margin: 0;
   // border-top: 1px solid var(--c-gris);
-  border-bottom: 1px solid var(--c-gris);
+  border-bottom: 2px solid var(--c-gris_clair);
+  // border-bottom: 1px solid var(--c-noir);
+  // background: var(--c-gris_clair);
 }
 
 ._publiTitle {

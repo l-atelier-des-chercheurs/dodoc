@@ -30,7 +30,6 @@
     <div class="u-spacingBottom"></div>
 
     <template slot="footer">
-      <div />
       <SaveCancelButtons
         class="_scb"
         :allow_save="true"

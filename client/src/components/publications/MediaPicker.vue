@@ -1,17 +1,11 @@
 <template>
   <div class="_mediaPicker">
-    <!-- OPTIONS -->
-    <!-- create a text -->
-    <!-- <button type="button" @click="createText">
-        {{ $t("create_text") }}
-      </button> -->
-    <!-- select from this or another project library -->
     <PickMediaFromProjects
       :title="select_mode === 'single' ? $t('pick_media') : $t('pick_medias')"
       :path="current_project_path"
       :select_mode="select_mode"
       :pick_from_types="pick_from_types"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @close="$emit('close')"
     />
   </div>

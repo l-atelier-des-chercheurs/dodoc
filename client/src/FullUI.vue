@@ -7,7 +7,7 @@
     <TrackAuthorChanges />
     <DynamicCursor v-if="!$root.is_touch_device" />
 
-    <transition name="fade_fast" mode="out-in">
+    <transition name="pagetransition" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>
@@ -18,12 +18,23 @@
         />
         <template v-else>
           <TopBar />
-          <transition name="pagechange" mode="out-in">
-            <router-view v-slot="{ Component }" :key="$route.path">
-              <component :is="Component" />
-            </router-view>
-          </transition>
-          <TaskTracker />
+
+          <div class="_mainContent">
+            <transition name="pagetransition" mode="out-in">
+              <div class="_routerView" :key="$route.path">
+                <router-view class="" v-slot="{ Component }">
+                  <component :is="Component" />
+                </router-view>
+              </div>
+            </transition>
+            <div
+              class="_chatsListContainer"
+              :class="{ 'is--shown': $root.show_chats_list }"
+            >
+              <ChatsList v-if="$root.show_chats_list" />
+            </div>
+          </div>
+          <!-- <TaskTracker /> -->
         </template>
       </div>
     </transition>
@@ -36,6 +47,7 @@ import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import ChatsList from "@/adc-core/chats/ChatsList.vue";
 
 export default {
   props: {},
@@ -46,6 +58,7 @@ export default {
     TrackAuthorChanges,
     TaskTracker,
     DisconnectModal,
+    ChatsList,
   },
   data() {
     return {
@@ -90,23 +103,25 @@ export default {
   computed: {},
   methods: {
     socketConnected() {
-      if (this.debug_mode)
+      if (this.$root.debug_mode)
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Disconnected ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .error(`Connect error ${reason}`);
+      if (this.$root.debug_mode)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(`Connect error ${reason}`);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;
@@ -123,5 +138,39 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._fullUI {
+}
+
+._mainContent {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  flex: 1;
+  // overflow: hidden;
+
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  // gap: var(--spacing);
+
+  > * {
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  ._routerView {
+    flex: 1 1 auto;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+
+  ._chatsListContainer {
+    position: relative;
+    flex: 0 0 0;
+    width: 0;
+    overflow: hidden;
+
+    --chats-list-width: 320px;
+    --chats-list-padding: 4px;
+
+    &.is--shown {
+      flex: 0 0 var(--chats-list-width);
+    }
+  }
 }
 </style>

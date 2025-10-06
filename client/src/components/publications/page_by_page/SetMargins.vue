@@ -7,6 +7,13 @@
       </div>
 
       <br />
+      <EditBtn
+        v-if="can_edit && !edit_mode"
+        :is_unfolded="true"
+        @click="enableEditMode"
+      />
+      <br />
+      <br />
 
       <div class="u-sameRow">
         <div class="">
@@ -50,9 +57,6 @@
           </div>
         </div>
       </div>
-
-      <br />
-      <EditBtn v-if="can_edit && !edit_mode" @click="enableEditMode" />
 
       <div class="_footer" v-if="edit_mode">
         <SaveCancelButtons

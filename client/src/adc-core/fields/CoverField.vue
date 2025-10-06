@@ -65,7 +65,6 @@ export default {
     context: String,
     ratio: {
       type: String,
-      default: "3 / 2",
     },
     preview_format: String,
     placeholder: {
@@ -78,7 +77,9 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    ImageSelect: () => import("@/adc-core/fields/ImageSelect.vue"),
+  },
   data() {
     return {
       selected_file: [],
@@ -135,10 +136,10 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
-  overflow: visible;
+  overflow: hidden;
 
-  --color1: white;
-  --color2: var(--c-gris);
+  --color1: var(--c-gris_clair);
+  --color2: white;
   // --color2: var(--c-gris_fonce);
 }
 
@@ -159,7 +160,7 @@ export default {
     position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: scale-down;
   }
 }
 
@@ -206,7 +207,7 @@ export default {
 
   container-type: inline-size;
   ._noImage--letter {
-    font-weight: 200;
+    font-weight: 300;
     font-size: 1.5em;
     color: var(--c-bleumarine);
     user-select: none;

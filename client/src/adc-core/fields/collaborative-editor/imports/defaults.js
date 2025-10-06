@@ -14,7 +14,9 @@ export const fonts = [
   "Karla",
   "IBM Plex Serif",
   "IBM Plex Sans",
+  "IBM Plex Mono",
   "Raleway",
+  "Rubik",
   "Volkhov",
   "Archivo",
   "Spectral",
@@ -69,6 +71,7 @@ export const formats = [
   "background",
   "font",
   "align",
+  "code",
   "code-block",
   "divider",
 ];

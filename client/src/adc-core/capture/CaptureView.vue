@@ -593,7 +593,7 @@
                   @mousedown.stop.prevent="stopStopmotion()"
                   @touchstart.stop.prevent="stopStopmotion()"
                 >
-                  {{ $t("back") }}
+                  <span class>‹ {{ $t("back") }}</span>
                 </button>
               </div>
               <div>
@@ -1551,17 +1551,21 @@ export default {
         case "w":
         case "z":
         case "ArrowLeft":
-          this.$eventHub.$emit("mode.set.previous");
+          this.$eventHub.$emit("capture.navigate.previous");
           break;
         case "s":
         case "ArrowRight":
-          this.$eventHub.$emit("mode.set.next");
+          this.$eventHub.$emit("capture.navigate.next");
           break;
         case "a":
         case "q":
         case " ":
           if (!this.is_recording) this.setCaptureInit();
           else this.stopRecording();
+          break;
+        case "Backspace":
+        case "Delete":
+          this.$eventHub.$emit("capture.remove");
           break;
       }
     },
@@ -1861,7 +1865,7 @@ export default {
           this.$alertify
             .closeLogOnClick(true)
             .delay(4000)
-            .error(this.$t("failed_to_start_record") + "<br>" + err.message);
+            .error(this.$t("failed_to_start_recording") + "<br>" + err.message);
         }
       });
     },

@@ -1,10 +1,9 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('levels_and_competences')"
     :icon="'bookmark-star'"
-    :has_items="!!project.level"
-    :is_open_initially="true"
-    :can_be_toggled="false"
+    :has_items="has_items"
   >
     <div class="u-spacingBottom">
       <!-- <DLabel :str="$t('skill_level')" /> -->
@@ -96,7 +95,7 @@ export default {
       basic_competences: [
         {
           key: "",
-          label: "–",
+          label: this.$t("not_specified"),
         },
         {
           key: "beginner",
@@ -217,7 +216,22 @@ export default {
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
+  computed: {
+    items_count() {
+      return (
+        (this.project.level ? 1 : 0) +
+        (this.project.target_audience?.length > 0
+          ? this.project.target_audience.length
+          : 0) +
+        (this.project.disciplines?.length > 0
+          ? this.project.disciplines.length
+          : 0)
+      );
+    },
+    has_items() {
+      return this.items_count > 0 ? this.items_count : false;
+    },
+  },
   methods: {},
 };
 </script>

@@ -13,13 +13,15 @@
     />
     <div>
       <slot name="preview" v-if="input_type === 'radio'" :item="current_option">
-        <template v-if="current_option && current_option.key">
+        <template v-if="current_option && current_option.hasOwnProperty('key')">
           <img
             v-if="current_option.thumb_src"
             :src="current_option.thumb_src"
             class="_option_preview"
           />
-          {{ current_option.label }}
+          <span :class="{ _emptyOption: current_option.key === '' }">
+            {{ current_option.label }}
+          </span>
         </template>
       </slot>
       <slot
@@ -175,5 +177,8 @@ export default {
   height: 1em;
   aspect-ratio: 1;
   object-fit: cover;
+}
+._emptyOption {
+  font-size: var(--sl-font-size-small);
 }
 </style>

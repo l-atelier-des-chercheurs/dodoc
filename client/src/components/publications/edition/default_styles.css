@@ -1,0 +1,292 @@
+:root {
+  --main-color: #0040eb;
+  --main-color-opacity: rgba(0, 64, 235, 0.7);
+  --second-color: orange;
+  --text-font: "Source Sans Pro", sans-serif;
+  --title-font: "Karla", sans-serif;
+  --font-size: 12pt;
+  --line-height: 1.4;
+}
+
+/****************************************************
+ * 
+ *  Blue template styles
+ *  styles template Bleu
+ * 
+ ****************************************************/
+
+/* applies to book + web */
+.edition {
+  font-size: var(--font-size);
+  font-family: var(--text-font);
+  line-height: var(--line-height);
+  color: var(--main-color);
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  .media,
+  h1,
+  h2,
+  h3, 
+  figure {
+    margin-bottom: 1em;
+  }
+
+  h1 {
+    font-size: calc(var(--font-size) * 2);
+    font-family: var(--title-font);
+    font-weight: bold;
+    text-align: center;
+  }
+  h2 {
+    font-size: calc(var(--font-size) * 1.4);
+    font-family: var(--title-font);
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  h3 {
+    font-family: var(--title-font);
+    font-weight: bold;
+  }
+
+  ol li,
+  ul li {
+    color: var(--main-color);
+    list-style: none;
+    margin-bottom: calc(var(--font-size) * var(--line-height) / 2);
+  }
+
+  ul, ol {
+    margin-left: 1rem;
+  }
+  li::marker {
+    font-size: 10pt;
+    font-weight: 700;
+    font-family: var(--title-font);
+  }
+  ul li::marker {
+    content: "— ";
+  }
+  ol {
+    counter-reset: item;
+    li {
+      counter-increment: item;
+      &::marker {
+        content: counter(item) ". ";
+      }
+    }
+  }
+
+
+  .media {
+  }
+
+  .mediaCaption {
+    margin: auto;
+    padding-top: 0mm;
+    text-align: center;
+    font-size: smaller;
+  }
+  .mediaCaption span {
+  }
+
+  blockquote {
+    margin-left: .75cm;
+    padding-left: .25cm;
+    border-left: 2px solid var(--main-color);
+    font-family: var(--title-font);
+  }
+
+  hr {
+    border-color: var(--main-color);
+  }
+
+  /* cover design */
+  .coverTitle p {
+    font-family: var(--title-font);
+    font-size: 40pt;
+    font-weight: bold;
+    text-align: center;
+    background: white;
+    border-radius: 30px;
+    margin-top: 0.5cm;
+    box-shadow: 0px 0px 10px var(--main-color);
+  }
+
+  .coverImage {
+    background: var(--main-color);
+
+    img {
+      mix-blend-mode: screen;
+      filter: grayscale(100%) contrast(120%);
+    }
+  }
+}
+
+/* --------------------------------------------------- */
+
+/* applies to paged book */
+.book {
+  .media {
+    /* background: var(--main-color); */
+    img {
+      /* mix-blend-mode: screen;	
+  		filter: grayscale(100%) contrast(120%);
+	  	vertical-align: top; */
+    }
+  }
+
+  .mediaCaption {
+  }
+}
+
+@page {
+  margin-top: 18mm;
+  margin-bottom: 24mm;
+}
+
+@page:left {
+  margin-left: 13mm;
+  margin-right: 20mm;
+  @bottom-left {
+    content: counter(page);
+    font-size: 10pt;
+    font-family: var(--title-font);
+    text-align: left;
+    color: var(--main-color);
+  }
+  @left-middle {
+    font-family: var(--title-font);
+    font-size: 8pt;
+    content: string(title);
+    writing-mode: vertical-lr;
+    margin-top: 3mm;
+    margin-left: 4mm;
+    color: var(--main-color);
+  }
+}
+
+@page:right {
+  margin-left: 20mm;
+  margin-right: 13mm;
+  @right-middle {
+    font-family: var(--title-font);
+    font-size: 8pt;
+    content: string(title);
+    writing-mode: vertical-lr;
+    margin-top: 3mm;
+    margin-left: 4mm;
+    color: var(--main-color);
+  }
+  @bottom-right {
+    content: counter(page);
+    font-size: 10pt;
+    font-family: var(--title-font);
+    text-align: right;
+    color: var(--main-color);
+  }
+}
+
+/* SHOW CHAPTER NAME ON EACH PAGE */
+/* 
+  Note: string-set and page should not be in a specific selector such as .book .chapter or body .chapter
+  looks like a bug in paged.js
+*/
+.chapter {
+  string-set: title attr(data-chapter-title);
+  page: chapters;
+}
+.chapter {
+  > *:first-child {
+    margin-top: 0;
+  }
+}
+
+/* --------------------------------------------------- */
+
+/* applies to web pages */
+.web {
+  margin: 0 auto;
+  max-width: 120ch;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+
+  gap: calc(var(--spacing) * 2);
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 2);
+
+  nav {
+    position: sticky;
+    top: 0;
+    flex: 1 0 16ch;
+    margin-top: 3.5rem;
+
+    ol {
+      margin-left: calc(var(--spacing));
+      li {
+        margin: 0;
+      }
+    }
+    button {
+      display: inline-block;
+      vertical-align: top;
+      text-align: left;
+      color: currentColor;
+      background: transparent;
+      padding: 0.25em 0.5em;
+      border-radius: 0.5em;
+      cursor: pointer;
+      font-size: inherit;
+
+      &:hover,
+      &:focus-visible {
+      }
+  
+    }
+    button.active {
+      background: var(--main-color);
+      color: white;
+    }
+  }
+
+  .chapter, .cover {
+    flex: 10 1 0;
+
+    h1 {
+    }
+    .content {
+    }
+  }
+
+  p,
+  li {
+    /* font-size: 20px; */
+  }
+  h1 {
+    font-size: 2em;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 1.4em;
+  }
+
+  h3 {
+    font-size: 1.1em;
+  }
+
+  .media {
+  }
+
+
+  .mediaCaption {
+    text-align: left;
+  }
+
+
+}

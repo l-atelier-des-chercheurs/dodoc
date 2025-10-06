@@ -1,19 +1,18 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('authors_and_license')"
     :icon="'people'"
-    :has_items="!!project.license"
-    :is_open_initially="true"
-    :can_be_toggled="false"
+    :has_items="has_items"
   >
-    <div class="u-spacingBottom">
+    <div class="u-spacingBottom" v-if="can_edit || project.authors_list">
       <TitleField
         :label="$t('authors')"
         :field_name="'authors_list'"
         :content="project.authors_list"
         :path="project.$path"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :can_edit="can_edit"
       />
     </div>
@@ -46,7 +45,6 @@
         :options="license_options"
       />
       <DLabel v-else :str="$t('license')" />
-
       <TitleField
         v-if="project.license === 'custom_license'"
         ref="custom_license_field"
@@ -56,7 +54,7 @@
         :content="project.custom_license || $t('fill_out_your_license')"
         :path="project.$path"
         :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link']"
+        :custom_formats="['bold', 'italic', 'link', 'emoji']"
         :can_edit="can_edit"
       />
     </div>
@@ -80,7 +78,7 @@ export default {
       license_options: [
         {
           key: "",
-          label: this.$t("none_f"),
+          label: this.$t("not_specified"),
         },
         {
           key: "creativecommons_by_sa",
@@ -115,7 +113,15 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    has_items() {
+      return !!(
+        this.project.license ||
+        this.project.authors_list ||
+        this.project.$can_be_remixed
+      );
+    },
+  },
   methods: {},
 };
 </script>

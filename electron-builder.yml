@@ -1,18 +1,35 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "33.3.0"
+electronVersion: "37.5.1"
 asar: true
+# asar disabled for now, because it's not working with the content folder
+# paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
+# into a temporary folder, but this is not very straightforward.
 asarUnpack:
-  - "content/"
-  - "./node_modules/sharp/**/*"
-  - "./node_modules/@img/**/*"
-  - "./client/dist/"
+  - "content/**"
+  - "client/dist/**"
+  - "node_modules/sharp"
+  - "node_modules/@img"
+  # not needed, only useful in the web version (js modules, while website export uses a bundle)
+  - "!client/dist/assets/**"
 icon: build/icon.png
+
+# Exclude problematic directories to prevent pattern length issues
+files:
+  - "!client/node_modules/**"
+  - "!tokens.json"
+  - "!settings.json"
+  - "!**/*.log"
+  - "!**/.DS_Store"
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
-  target: nsis
+  icon: build/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+    # appx target for Windows Store - use npm run dist:win-store to build separately
 
 nsis:
   oneClick: true
@@ -20,18 +37,35 @@ nsis:
   createDesktopShortcut: always
   shortcutName: "do•doc"
 
+appx:
+  applicationId: "AtelierDesChercheurs.DoDoc"
+  displayName: "do•doc"
+  publisherDisplayName: "L'Atelier des Chercheurs"
+  # Replace these with actual values from Microsoft Partner Center:
+  # Go to Partner Center > Your App > Product Identity
+  identityName: "dodoc" # Package/Identity name from Partner Center
+  publisher: "CN=21DC51D1-C93D-4F1C-8596-0ADF25BB5216" # Publisher from Partner Center
+  backgroundColor: "#ffffff"
+  languages: ["en-US", "fr-FR", "it-IT"]
+  showNameOnTiles: true
+  electronUpdaterAware: false
+  setBuildNumber: true
+  # Note: Capabilities are automatically set by electron-builder based on your app's needs
+  # If you need custom capabilities, you'll need to provide a custom appxmanifest.xml template
+
 mac:
   artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
+  icon: build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
   provisioningProfile: build/dodoc.provisionprofile
   extendInfo:
-    NSMicrophoneUsageDescription: Merci d’accorder l’accès au micro pour réaliser des enregistrements.
-    NSCameraUsageDescription: Merci d’accorder l’accès à la caméra pour réaliser des enregistrements.
-    NSScreenCaptureDescription: Merci d’accorder l’accès à l’affichage pour réaliser des enregistrements.
+    NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.
+    NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.
+    NSScreenCaptureDescription: Merci d'accorder l'accès à l'affichage pour réaliser des enregistrements.
     com.apple.security.device.audio-input: true
     com.apple.security.device.camera: true
 
@@ -39,12 +73,11 @@ linux:
   artifactName: dodoc-${version}-linux.${ext}
   target: AppImage
   category: Education
-  icon: build/icons/512x512.png
-  executableName: do•doc
+  icon: build/icons
+  executableName: dodoc
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
 
 appImage:
   synopsis: A documentation tool for creativity.
-  category: Game
-  desktop: dodoc-linux-desktop-entry.desktop
+  category: Education

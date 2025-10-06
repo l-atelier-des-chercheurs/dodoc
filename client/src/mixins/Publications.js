@@ -53,8 +53,8 @@ export default {
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;
       return {
-        right: publication.pagn_right || 2,
-        bottom: publication.pagn_bottom || 2,
+        right: publication.pagn_right || 10,
+        bottom: publication.pagn_bottom || 10,
         pagination_start_on_page: publication.pagn_starts_on_page - 1 || 0,
       };
     },
@@ -163,13 +163,12 @@ export default {
         return acc;
       }, []);
     },
-    async createSection2({ publication, type, group, title, index }) {
-      let additional_meta = {
-        section_type: "-",
-        section_title: title,
-        requested_slug: type,
-      };
-
+    async createSection2({
+      publication,
+      group = "sections_list",
+      index,
+      additional_meta = {},
+    }) {
       const { meta_filename } = await this.$api
         .uploadFile({
           path: publication.$path,
@@ -201,15 +200,15 @@ export default {
         group: "sections_list",
       }).findIndex((s) => s.meta_filename === this.getFilename(section.$path));
 
-      const new_title = this.$t("copy_of") + " " + section.section_title;
       const new_section_meta = await this.createSection2({
         publication: this.publication,
         type: "section",
         group: "sections_list",
-        title: new_title,
+        additional_meta: {
+          section_title: this.$t("copy_of") + " " + section.section_title,
+        },
         index: section_index + 1,
       });
-
       const new_modules_meta = [];
       for (const og_module of og_modules) {
         const new_module_meta = await this.duplicateModuleWithSourceMedias({

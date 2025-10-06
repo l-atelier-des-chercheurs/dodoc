@@ -14,14 +14,13 @@
         <div v-if="modal_instructions" class="u-spacingBottom">
           {{ modal_instructions }}
         </div>
-        <SizeDisplay
-          v-if="folder_size"
-          class="u-spacingBottom"
-          :size="folder_size"
-        />
+        <ShowFolderSize :path="path" />
+      </div>
 
+      <template slot="footer">
+        <div />
         <button
-          class="u-button u-button_red"
+          class="u-button u-button_bleuvert"
           type="button"
           autofocus
           v-if="!download_started"
@@ -29,7 +28,6 @@
         >
           {{ $t("download") }}
         </button>
-
         <template v-else>
           <div class="_spinner" v-if="is_downloading" key="loader">
             <LoaderSpinner />
@@ -43,11 +41,13 @@
             </template>
           </template>
         </template>
-      </div>
+      </template>
     </BaseModal2>
   </div>
 </template>
 <script>
+import ShowFolderSize from "@/adc-core/ui/ShowFolderSize.vue";
+
 export default {
   props: {
     button_text: String,
@@ -55,7 +55,9 @@ export default {
     modal_instructions: String,
     path: String,
   },
-  components: {},
+  components: {
+    ShowFolderSize,
+  },
   data() {
     return {
       show_download_modal: false,
@@ -63,40 +65,19 @@ export default {
       download_started: false,
       is_downloading: false,
       err_code: "",
-
-      folder_size: undefined,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    archive_name() {
-      return this.getFilename(this.path) + ".zip";
-    },
-  },
+  computed: {},
   methods: {
     showDownloadModal() {
       this.show_download_modal = true;
       this.download_started = false;
       this.is_downloading = false;
       this.err_code = "";
-      this.folder_size = "";
-
-      this.getFolderSize();
-    },
-    async getFolderSize() {
-      const project = await this.$api
-        .getFolder({
-          path: `${this.path}`,
-          detailed_infos: true,
-        })
-        .catch((err) => {
-          err;
-          // this.fetch_publication_error = err.response;
-        });
-      this.folder_size = project.$infos?.size;
     },
     async startDownload() {
       this.download_started = true;
@@ -105,7 +86,6 @@ export default {
       await this.$api
         .downloadFolder({
           path: this.path,
-          filename: this.archive_name,
         })
         .catch((err) => {
           err;

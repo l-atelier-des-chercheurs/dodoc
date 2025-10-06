@@ -20,54 +20,24 @@ module.exports = (function () {
       let extracted_meta = {};
       let meta_filename = undefined;
 
-      // if req.body has content, this means there is no files to process
-      if (Object.keys(req.body) && Object.keys(req.body).length) {
-        additional_meta = req.body;
-        extracted_meta = await _initMeta({
-          additional_meta,
-        });
+      // Determine import type and get file data
+      const {
+        fileData,
+        additional_meta: _additional_meta,
+        importType,
+      } = await _determineImportType({
+        req,
+        path_to_folder,
+      });
 
-        const prefix = additional_meta.requested_slug
-          ? utils.slug(additional_meta.requested_slug)
-          : "infos";
-        meta_filename =
-          prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
-      } else {
-        const { upload_max_file_size_in_mo } =
-          await require("./settings").get();
+      additional_meta = _additional_meta;
 
-        const {
-          originalFilename,
-          path_to_temp_file,
-          user_additional_meta: _additional_meta,
-        } = await utils
-          .handleForm({
-            path_to_folder,
-            req,
-            upload_max_file_size_in_mo,
-          })
-          .catch((err) => {
-            if (err === "file_size_limit_exceeded") {
-              const err = new Error("File size limit exceeded");
-              err.code = "file_size_limit_exceeded";
-              err.err_infos = {
-                upload_max_file_size_in_mo,
-              };
-              throw err;
-            } else {
-              dev.error(`Failed to handle form`, err);
-              const err = new Error("Failed to save file");
-              err.code = "failed_to_save_file";
-              throw err;
-            }
-          });
-
-        additional_meta = _additional_meta;
-
-        let { new_path, new_filename } = await _convertOrRenameUploadedFile({
+      if (fileData) {
+        // File-based import (URL download or regular upload)
+        const { new_path, new_filename } = await _convertOrRenameUploadedFile({
           path_to_folder,
-          originalFilename,
-          path_to_temp_file,
+          originalFilename: fileData.originalFilename,
+          path_to_temp_file: fileData.path_to_temp_file,
         }).catch((err) => {
           throw err;
         });
@@ -83,13 +53,24 @@ module.exports = (function () {
           original_filename: new_filename + ".meta.txt",
         });
 
-        dev.log(`New file uploaded to`, { path_to_folder });
+        dev.log(`New file ${importType} to`, { path_to_folder });
         dev.logverbose({
           new_filename,
           new_path,
           additional_meta,
           meta_filename,
         });
+      } else {
+        // Meta-only import
+        extracted_meta = await _initMeta({
+          additional_meta,
+        });
+
+        const prefix = additional_meta.requested_slug
+          ? utils.slug(additional_meta.requested_slug)
+          : "infos";
+        meta_filename =
+          prefix + "-" + +extracted_meta.$date_uploaded + ".meta.txt";
       }
 
       // user added meta
@@ -99,11 +80,6 @@ module.exports = (function () {
       });
       const meta = Object.assign({}, validated_meta, extracted_meta);
 
-      // let new_meta_filename = await _preventFileOverride({
-      //   path_to_folder,
-      //   original_filename: meta_filename,
-      // });
-
       await utils.saveMetaAtPath({
         relative_path: path_to_folder,
         file_slug: meta_filename,
@@ -112,7 +88,6 @@ module.exports = (function () {
 
       return { meta, meta_filename };
     },
-
     getFiles: async ({ path_to_folder, embed_source }) => {
       dev.logfunction({ path_to_folder, embed_source });
 
@@ -123,7 +98,7 @@ module.exports = (function () {
       let metas = [];
       for (const meta_filename of meta_filenames) {
         try {
-          dev.logverbose(`reading ${meta_filename}`);
+          // dev.logverbose(`reading ${meta_filename}`);
 
           const path_to_meta = path.join(path_to_folder, meta_filename);
           let meta = await API.getFile({
@@ -140,6 +115,11 @@ module.exports = (function () {
       }
 
       return metas;
+    },
+    getFilesCount: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+      const meta_filenames = await _getMetasInFolder({ path_to_folder });
+      return meta_filenames.length;
     },
     getFile: async ({ path_to_meta }) => {
       dev.logfunction({ path_to_meta });
@@ -159,7 +139,7 @@ module.exports = (function () {
 
       if (
         media_filename &&
-        [".txt", ".md", ".json", ".csv", ".js", ".ino"].includes(
+        [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
           path.extname(media_filename)
         )
       )
@@ -277,6 +257,52 @@ module.exports = (function () {
 
       return changed_data;
     },
+
+    getFilesBin: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+
+      const bin_folder_path = _getBinFolderPath(path_to_folder);
+
+      const bin_files = await API.getFiles({
+        path_to_folder: bin_folder_path,
+      });
+
+      const bin_size = await utils.getFolderSize(bin_folder_path);
+
+      return {
+        size: bin_size,
+        items: bin_files,
+      };
+    },
+
+    restoreFileFromBin: async ({ path_to_folder, meta_filename }) => {
+      dev.logfunction({ path_to_folder, meta_filename });
+
+      const bin_folder_path = _getBinFolderPath(path_to_folder);
+      const path_to_file_in_bin = path.join(bin_folder_path, meta_filename);
+
+      const restored_file_path = await API.copyFile({
+        path_to_folder: bin_folder_path,
+        path_to_destination_folder: path_to_folder,
+        meta_filename: meta_filename,
+        path_to_meta: path_to_file_in_bin,
+        new_meta: {},
+      });
+
+      // Remove the file from bin after successful restore
+      await _removeFileForGood({ path_to_meta: path_to_file_in_bin });
+
+      return restored_file_path;
+    },
+
+    removeBinFile: async ({ path_to_folder, meta_filename }) => {
+      dev.logfunction({ path_to_folder, meta_filename });
+
+      const bin_folder_path = _getBinFolderPath(path_to_folder);
+      const path_to_file_in_bin = path.join(bin_folder_path, meta_filename);
+      await _removeFileForGood({ path_to_meta: path_to_file_in_bin });
+    },
+
     _regenerateThumbs: async ({
       path_to_folder,
       path_to_meta,
@@ -329,9 +355,9 @@ module.exports = (function () {
             if (remove_permanently === true)
               await fs.remove(full_path_to_file_or_folder);
             else {
+              const bin_folder_path = _getBinFolderPath(path_to_folder);
               const dest_path = utils.getPathToUserContent(
-                path_to_folder,
-                global.settings.deletedFolderName,
+                bin_folder_path,
                 file_folder_names
               );
               await fs.move(full_path_to_file_or_folder, dest_path, {
@@ -496,6 +522,7 @@ module.exports = (function () {
     const full_path_to_folder = utils.getPathToUserContent(path_to_folder);
 
     const parseFilename = (filename) => {
+      if (!filename.includes(".")) return { name: filename, ext: "" };
       const name = filename.substring(0, filename.indexOf("."));
       const ext = filename.substring(filename.indexOf("."), filename.length);
       return { name, ext };
@@ -586,6 +613,7 @@ module.exports = (function () {
         case ".csv":
         case ".js":
         case ".ino":
+        case ".css":
           new_meta.$type = "text";
           break;
         case ".pdf":
@@ -699,43 +727,161 @@ module.exports = (function () {
   }
 
   async function _embedSourceMedias({ meta }) {
-    if (
-      !["source_medias", "map_base_media_filename"].some((key) =>
-        meta.hasOwnProperty(key)
-      )
-    )
-      return meta;
+    // if (
+    //   !["source_medias", "map_base_media_filename", "cover_meta_filename"].some(
+    //     (key) => meta.hasOwnProperty(key)
+    //   )
+    // )
+    //   return meta;
 
     const source_folder = utils.getFolderParent(
       utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
+    const findSourceMedia = async (source_media, key) => {
+      if (source_media.hasOwnProperty(key)) {
+        const path_to_meta = path.join(source_folder, source_media[key]);
+        const source_media_meta = await API.getFile({
+          path_to_meta,
+        });
+        return source_media_meta;
+      }
+    };
+
     if (meta.source_medias)
       for (const [index, source_media] of meta.source_medias.entries()) {
-        if (source_media.hasOwnProperty("meta_filename_in_project")) {
-          const path_to_meta = path.join(
-            source_folder,
-            source_media.meta_filename_in_project
-          );
-          const source_media_meta = await API.getFile({
-            path_to_meta,
-          });
+        const source_media_meta = await findSourceMedia(
+          source_media,
+          "meta_filename_in_project"
+        );
+        if (source_media_meta)
           meta.source_medias[index]._media = source_media_meta;
-        }
       }
 
-    if (meta.map_base_media_filename) {
-      const path_to_meta = path.join(
-        source_folder,
-        meta.map_base_media_filename
-      );
-      const source_media_meta = await API.getFile({
-        path_to_meta,
-      });
-      meta._map_base_media = source_media_meta;
-    }
+    const _map = await findSourceMedia(meta, "map_base_media_filename");
+    if (_map) meta["_map_base_media"] = _map;
 
     return meta;
+  }
+
+  async function _removeFileForGood({ path_to_meta }) {
+    dev.logfunction({ path_to_meta });
+
+    const path_to_folder = utils.getContainingFolder(path_to_meta);
+    const meta_filename = path.basename(path_to_meta);
+
+    try {
+      await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+      await archives.removeFileArchives({ path_to_folder, meta_filename });
+
+      const _all_files_and_folders = await _getAllFilesAndFolders({
+        path_to_folder,
+        meta_filename,
+      });
+
+      for (const file_folder_names of _all_files_and_folders) {
+        const full_path_to_file_or_folder = utils.getPathToUserContent(
+          path_to_folder,
+          file_folder_names
+        );
+        await fs.remove(full_path_to_file_or_folder);
+      }
+
+      cache.delete({
+        key: `${path_to_meta}`,
+      });
+
+      return;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  function _getBinFolderPath(path_to_folder) {
+    return path.join(path_to_folder, global.settings.deletedFolderName);
+  }
+
+  async function _determineImportType({ req, path_to_folder }) {
+    dev.logfunction({ path_to_folder });
+
+    const { upload_max_file_size_in_mo } = await require("./settings").get();
+
+    // Check if req.body has content (meta-only or URL import)
+    if (req.body && Object.keys(req.body).length) {
+      const additional_meta = req.body;
+
+      // Check if this is a URL import
+      if (additional_meta.url) {
+        const destination_full_folder_path =
+          utils.getPathToUserContent(path_to_folder);
+        const tempFilename = `temp_${Date.now()}_downloaded-file`;
+        const path_to_temp_file = path.join(
+          destination_full_folder_path,
+          tempFilename
+        );
+
+        const downloadResult = await utils.downloadFileFromUrl({
+          url: additional_meta.url,
+          destination_path: path_to_temp_file,
+          max_file_size_in_mo: upload_max_file_size_in_mo,
+        });
+
+        const fileData = {
+          originalFilename: downloadResult.filename,
+          path_to_temp_file: downloadResult.path,
+        };
+
+        return {
+          fileData,
+          additional_meta,
+          importType: "downloaded from URL",
+        };
+      } else {
+        // Regular meta-only import
+        return {
+          fileData: null,
+          additional_meta,
+          importType: null,
+        };
+      }
+    } else {
+      // Regular file upload
+
+      const {
+        originalFilename,
+        path_to_temp_file,
+        user_additional_meta: _additional_meta,
+      } = await utils
+        .handleForm({
+          path_to_folder,
+          req,
+          upload_max_file_size_in_mo,
+        })
+        .catch((err) => {
+          if (err === "file_size_limit_exceeded") {
+            const err = new Error("File size limit exceeded");
+            err.code = "file_size_limit_exceeded";
+            err.err_infos = {
+              upload_max_file_size_in_mo,
+            };
+            throw err;
+          } else {
+            dev.error(`Failed to handle form`, err);
+            const err = new Error("Failed to save file");
+            err.code = "failed_to_save_file";
+            throw err;
+          }
+        });
+
+      return {
+        fileData: {
+          originalFilename,
+          path_to_temp_file,
+        },
+        additional_meta: _additional_meta,
+        importType: "uploaded",
+      };
+    }
   }
 
   return API;

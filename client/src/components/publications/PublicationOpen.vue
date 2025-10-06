@@ -8,7 +8,7 @@
       <PublicationTopbar
         class="_publicationOpen--topbar"
         :publication="publication"
-        :page_opened_id="page_opened_id"
+        :pane_infos="pane_infos"
         :can_edit="can_edit"
         @close="$emit('close')"
       />
@@ -22,26 +22,37 @@
         v-else-if="publication.template === 'story_with_sections'"
         class="_publicationOpen--content"
         :publication="publication"
-        :opened_section_meta_filename="page_opened_id"
+        :pane_infos="pane_infos"
         :can_edit="can_edit"
-        @toggleSection="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
       <PageTemplate
         v-else-if="publication.template === 'page_by_page'"
         class="_publicationOpen--content"
         :publication="publication"
         :can_edit="can_edit"
-        :page_opened_id="page_opened_id"
-        @togglePage="$emit('togglePage', $event)"
+        :pane_infos="pane_infos"
+        @updatePane="$emit('updatePane', $event)"
       />
       <MapTemplate
         v-else-if="publication.template === 'cartography'"
         class="_publicationOpen--content"
         :publication="publication"
-        :opened_view_meta_filename="page_opened_id"
+        :pane_infos="pane_infos"
         :can_edit="can_edit"
-        @toggleView="$emit('togglePage', $event)"
+        @updatePane="$emit('updatePane', $event)"
       />
+      <EditionTemplate
+        v-else-if="publication.template === 'edition'"
+        class="_publicationOpen--content"
+        :publication="publication"
+        :pane_infos="pane_infos"
+        :can_edit="can_edit"
+        @updatePane="$emit('updatePane', $event)"
+      />
+      <div v-else class="u-instructions _noTemplateNotice">
+        Ce template n’existe pas : {{ publication.template }}
+      </div>
     </template>
   </div>
 </template>
@@ -52,7 +63,7 @@ export default {
   props: {
     project_path: String,
     publication_slug: String,
-    page_opened_id: String,
+    pane_infos: Object,
     can_edit: Boolean,
   },
   components: {
@@ -65,6 +76,8 @@ export default {
       import("@/components/publications/templates/PageTemplate.vue"),
     MapTemplate: () =>
       import("@/components/publications/templates/MapTemplate.vue"),
+    EditionTemplate: () =>
+      import("@/components/publications/templates/EditionTemplate.vue"),
   },
   data() {
     return {
@@ -110,7 +123,7 @@ export default {
 <style lang="scss" scoped>
 ._publicationOpen {
   position: relative;
-  min-height: calc(100vh - 45px);
+  min-height: calc(100vh - 44px);
 
   display: flex;
   flex-flow: column nowrap;
@@ -124,5 +137,9 @@ export default {
 
 ._publicationOpen--content {
   flex: 1 1 auto;
+}
+
+._noTemplateNotice {
+  padding: calc(var(--spacing) / 1);
 }
 </style>

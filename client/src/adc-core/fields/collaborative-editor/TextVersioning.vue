@@ -15,20 +15,22 @@
           {{ $t("recent") }}
         </button>
 
-        <select v-model="selected_archive_filename">
-          <option
-            v-for="(archive, index) in archives"
-            :value="archive.filename"
-            :key="archive.filename"
-            v-text="
-              archive.filename === 'current'
-                ? $t('current')
-                : formatDateTimeToPrecise(archive.date) +
-                  ' - version ' +
-                  (archives.length - index)
-            "
-          />
-        </select>
+        <div>
+          <select v-model="selected_archive_filename">
+            <option
+              v-for="(archive, index) in archives"
+              :value="archive.filename"
+              :key="archive.filename"
+              v-text="
+                archive.filename === 'current'
+                  ? $t('current')
+                  : formatDateTimeToPrecise(archive.date) +
+                    ' - version ' +
+                    (archives.length - index)
+              "
+            />
+          </select>
+        </div>
 
         <button
           class="u-button u-button_small"
@@ -174,7 +176,26 @@ export default {
   // overflow: auto;
 
   ::v-deep {
-    @import "./imports/mainText.scss";
+    > * {
+      padding: 0;
+      margin: 0;
+    }
+    > img {
+      max-width: 30ch;
+    }
+
+    blockquote {
+      padding: calc(var(--spacing) * 1) calc(var(--spacing) * 2);
+      border-radius: 5px;
+      border: none;
+      border-left: 2px solid var(--c-gris);
+      background-color: var(--c-gris_clair);
+    }
+
+    pre.ql-syntax {
+      font-family: Fira Mono;
+      padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

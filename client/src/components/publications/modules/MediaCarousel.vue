@@ -1,100 +1,13 @@
 <template>
   <div class="_carousel" :class="{}">
-    <transition name="fade" mode="out-in">
-      <flickity
-        ref="flickity"
-        class="_mainCarousel"
-        :options="flickityOptions"
-        :key="slider_key"
-      >
-        <div
-          class="carousel-cell"
-          :data-mediatype="media_with_linked._linked_media.$type"
-          v-for="(media_with_linked, index) in medias_with_linked"
-          :key="
-            (media_with_linked._linked_media &&
-              media_with_linked._linked_media.$path) ||
-            'no_media_' + index
-          "
-          :style="itemStyle({ media_with_linked })"
-        >
-          <span
-            v-if="!media_with_linked._linked_media"
-            class="_noSourceMedia u-instructions"
-            v-text="$t('source_media_missing')"
-          />
-          <MediaContent
-            v-else
-            :file="media_with_linked._linked_media"
-            :resolution="context === 'preview' ? 220 : 1600"
-            :context="context"
-            :show_fs_button="show_fs_button"
-            :display_credits_caption="true"
-            :can_edit_credits_caption="can_edit"
-          />
-          <CaptionCreditsPage
-            :media="media_with_linked._linked_media"
-            :publication_path="publication_path"
-            :can_edit="can_edit"
-          />
-
-          <div class="_btnRow" v-if="edit_mode">
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_small"
-              @click="show_change_order_modal = true"
-            >
-              <b-icon icon="arrow-left-right" />
-            </button>
-            <template v-if="showObjectFitFor(media_with_linked)">
-              <button
-                type="button"
-                class="u-button u-button_icon u-button_small"
-                v-if="
-                  !(
-                    !media_with_linked.objectFit ||
-                    media_with_linked.objectFit === 'cover'
-                  )
-                "
-                @click="
-                  $emit('updateMediaOpt', {
-                    index,
-                    opt: { objectFit: 'cover' },
-                  })
-                "
-              >
-                <b-icon icon="aspect-ratio" />
-                <!-- {{ $t("object_fit_cover") }} -->
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_icon u-button_small"
-                v-if="media_with_linked.objectFit !== 'contain'"
-                @click="
-                  $emit('updateMediaOpt', {
-                    index,
-                    opt: { objectFit: 'contain' },
-                  })
-                "
-              >
-                <b-icon icon="aspect-ratio-fill" />
-              </button>
-            </template>
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="$emit('removeMediaAtIndex', { index })"
-            >
-              <b-icon icon="trash" />
-              <!-- v-if="is_multiple_medias" -->
-              <!-- {{ $t("remove") }} -->
-            </button>
-          </div>
-        </div>
-      </flickity>
-      <!-- <flickity ref="nav" class="_navCarousel" :options="navOptions">
+    <FlickityCarousel
+      :key="slider_key"
+      :show_fullscreen_button="true"
+      class="_mainCarousel"
+    >
       <div
         class="carousel-cell"
+        :data-mediatype="media_with_linked._linked_media.$type"
         v-for="(media_with_linked, index) in medias_with_linked"
         :key="
           (media_with_linked._linked_media &&
@@ -113,17 +26,76 @@
           :file="media_with_linked._linked_media"
           :resolution="context === 'preview' ? 220 : 1600"
           :context="context"
-          :show_fs_button="show_fs_button"
+          :show_fs_button="false"
+          :display_credits_caption="true"
+          :can_edit_credits_caption="can_edit"
         />
+        <CaptionCreditsPage
+          :media="media_with_linked._linked_media"
+          :publication_path="publication_path"
+          :can_edit="can_edit"
+        />
+
+        <div class="_btnRow" v-if="edit_mode">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_small"
+            @click="show_change_order_modal = true"
+          >
+            <b-icon icon="arrow-left-right" />
+          </button>
+          <template v-if="showObjectFitFor(media_with_linked)">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              v-if="
+                !(
+                  !media_with_linked.objectFit ||
+                  media_with_linked.objectFit === 'cover'
+                )
+              "
+              @click="
+                $emit('updateMediaOpt', {
+                  index,
+                  opt: { objectFit: 'cover' },
+                })
+              "
+            >
+              <b-icon icon="aspect-ratio" />
+              <!-- {{ $t("object_fit_cover") }} -->
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              v-if="media_with_linked.objectFit !== 'contain'"
+              @click="
+                $emit('updateMediaOpt', {
+                  index,
+                  opt: { objectFit: 'contain' },
+                })
+              "
+            >
+              <b-icon icon="aspect-ratio-fill" />
+            </button>
+          </template>
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="$emit('removeMediaAtIndex', { index })"
+          >
+            <b-icon icon="trash" />
+            <!-- v-if="is_multiple_medias" -->
+            <!-- {{ $t("remove") }} -->
+          </button>
+        </div>
       </div>
-    </flickity> -->
-    </transition>
+    </FlickityCarousel>
 
     <ChangeOrderModal
       v-if="show_change_order_modal"
       :medias_with_linked="medias_with_linked"
       :publication_path="publication_path"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
       @close="show_change_order_modal = false"
@@ -138,18 +110,18 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
+      <DropZone
+        class="_dzAfter"
+        @mediaDropped="$emit('pickMedias', [$event])"
+      />
     </div>
   </div>
 </template>
 <script>
-import Flickity from "vue-flickity";
-// import "flickity-as-nav-for";
-import "flickity-imagesloaded";
-
+import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
 import ChangeOrderModal from "@/components/publications/modules/ChangeOrderModal.vue";
@@ -167,7 +139,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    Flickity,
+    FlickityCarousel,
     MediaPicker,
     CaptionCreditsPage,
     ChangeOrderModal,
@@ -175,20 +147,7 @@ export default {
   data() {
     return {
       show_media_picker: false,
-      observer: null,
       show_change_order_modal: false,
-
-      flickityOptions: {
-        initialIndex: 0,
-        groupCells: false,
-        imagesLoaded: true,
-        pageDots: true,
-        selectedAttraction: 0.2,
-        percentPosition: false,
-        friction: 0.8,
-        cellAlign: "left",
-        contain: true,
-      },
       // navOptions: {
       //   asNavFor: "._mainCarousel",
       //   contain: true,
@@ -196,25 +155,9 @@ export default {
     };
   },
   created() {},
-  mounted() {
-    this.observer = new ResizeObserver(() => {
-      if (this.$refs.flickity) this.$refs.flickity.resize();
-    });
-    this.observer.observe(this.$el);
-  },
-  beforeDestroy() {
-    this.observer.disconnect();
-  },
-  watch: {
-    // medias_with_linked() {
-    // if (this.$refs.flickity) this.$refs.flickity.reloadCells();
-    // },
-    publi_width() {
-      setTimeout(() => {
-        if (this.$refs.flickity) this.$refs.flickity.resize();
-      }, 250);
-    },
-  },
+  mounted() {},
+  beforeDestroy() {},
+  watch: {},
   computed: {
     slider_key() {
       const key = this.medias_with_linked.map(
@@ -248,8 +191,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._mainCarousel,
-._navCarousel {
+._mainCarousel {
   position: relative;
   width: 100%;
 
@@ -272,86 +214,13 @@ export default {
       width: 100%;
       object-fit: var(--object-fit, cover);
       background-size: var(--object-fit, cover);
+      background-color: var(--c-gris_clair);
     }
   }
 }
 
 ._carousel {
   background: var(--c-gris_clair);
-  page-break-inside: avoid;
-  -webkit-region-break-inside: avoid;
-
-  // padding: calc(var(--spacing) / 4);
-}
-
-._mainCarousel {
-  // padding: calc(var(--spacing) / 4);
-  .carousel-cell {
-    width: 100%;
-    aspect-ratio: 3/2;
-    margin-right: calc(var(--spacing) * 1);
-
-    &[data-mediatype="text"] {
-      padding: min(calc(var(--spacing) * 3), 15%);
-    }
-  }
-
-  ::v-deep .flickity-prev-next-button {
-    // top: auto;
-    // bottom: calc(var(--spacing) * 1);
-
-    &.flickity-prev-next-button.previous {
-      left: calc(var(--spacing) / 2);
-    }
-    &.flickity-prev-next-button.next {
-      right: calc(var(--spacing) / 2);
-    }
-  }
-  ::v-deep ._mediaContent .plyr__controls {
-    padding-right: calc(var(--spacing) * 3);
-  }
-
-  ::v-deep .flickity-page-dots {
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    flex-flow: row nowrap;
-    gap: calc(var(--spacing) / 3);
-    padding: calc(var(--spacing) / 2);
-    pointer-events: none;
-
-    .dot {
-      background: rgba(255, 255, 255, 0.5);
-      border: none;
-      opacity: 1;
-      margin: 0;
-      padding: calc(var(--spacing) / 4);
-      border: 2px solid transparent;
-      pointer-events: auto;
-
-      transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-
-      &:hover,
-      &:active,
-      &:focus-visible {
-        border-color: var(--active-color);
-      }
-
-      &.is-selected {
-        background: var(--active-color);
-        border-color: var(--active-color);
-      }
-    }
-  }
-}
-._navCarousel {
-  margin-top: calc(var(--spacing) / 2);
-
-  .carousel-cell {
-    width: 160px;
-    height: 90px;
-    margin-right: calc(var(--spacing) / 2);
-  }
 }
 
 ._mediaPickerTile {

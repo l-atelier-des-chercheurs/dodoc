@@ -5,9 +5,14 @@
     :type="component_tag === 'button' ? 'button' : ''"
     :to="author_url"
     :title="author.name"
-    class="u-card2 _author"
+    :class="{
+      'u-card2': !show_image_only && !!mode,
+    }"
+    class="_author"
+    :data-size="size"
     :data-isself="is_self"
     :data-imageonly="show_image_only"
+    :data-connected="is_connected"
     @click="$emit('click')"
   >
     <div class="_cover">
@@ -23,6 +28,7 @@
     </div>
     <div v-if="!show_image_only" class="_infos">
       <span class="_name">
+        {{ author.name }}
         <b-icon
           v-if="
             authorIsInstance({
@@ -31,9 +37,15 @@
             })
           "
           icon="shield-check"
-          :aria-label="$t('admin')"
+          :title="$t('admin')"
         />
-        {{ author.name }}
+        <div class="_connected" v-if="is_connected && !is_self">
+          <b-icon
+            icon="people-fill"
+            class=""
+            :title="$t('connected_currently')"
+          />
+        </div>
       </span>
     </div>
 
@@ -64,13 +76,14 @@
       />
     </transition>
   </component>
+  <span v-else class="" />
 </template>
 <script>
 export default {
   props: {
     path: String,
     mode: String,
-
+    size: String,
     show_image_only: {
       type: Boolean,
       default: false,
@@ -102,6 +115,11 @@ export default {
       if (this.mode === "link") return this.createURLFromPath(this.path);
       return false;
     },
+    is_connected() {
+      return this.$api.other_devices_connected.some(
+        (u) => u.meta?.token_path === this.author.$path
+      );
+    },
   },
   methods: {},
 };
@@ -119,7 +137,6 @@ export default {
   gap: calc(var(--spacing) / 2);
   background: transparent;
   text-align: left;
-  background-color: white;
 
   &:where(button, a) {
     border: 1px solid var(--c-gris);
@@ -127,8 +144,8 @@ export default {
   &:where(button) {
     &:hover,
     &:focus-visible {
-      font-weight: 800;
-      background-color: var(--c-gris_clair);
+      font-weight: 600;
+      // background-color: var(--c-gris_clair);
     }
   }
 
@@ -153,9 +170,18 @@ export default {
   //   }
   // }
 
+  &:not([data-imageonly]) {
+    background-color: white;
+  }
+
   &[data-isself]:not([data-imageonly]) {
     border-color: var(--c-bleumarine);
     background-color: var(--c-bleumarine_clair);
+  }
+
+  &[data-connected]:not([data-isself]):not([data-imageonly]) {
+    // border-color: var(--c-bleumarine);
+    // background-color: var(--c-bleumarine_clair);
   }
 
   &[data-imageonly] {
@@ -178,6 +204,11 @@ export default {
     width: 30px;
     height: 30px;
   }
+  &[data-size="small"] ._cover {
+    width: 15px;
+    height: 15px;
+  }
+
   &[data-imageonly] ._cover {
     border-radius: 50%;
   }
@@ -192,7 +223,7 @@ export default {
     //   calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
     ._name {
-      font-size: var(--sl-font-size-normal);
+      font-size: var(--sl-font-size-small);
       font-weight: 500;
 
       display: flex;
@@ -205,6 +236,12 @@ export default {
       // color: var(--c-bleumarine);
     }
   }
+}
+._connected {
+  border-color: var(--c-bleumarine);
+  background-color: var(--c-bleumarine_clair);
+  padding: 0 calc(var(--spacing) / 8);
+  border-radius: 4px;
 }
 
 a {

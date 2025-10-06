@@ -1,19 +1,9 @@
 <template>
   <div class="_cropAdjustMedia">
-    <button
-      type="button"
-      class="u-button u-button_orange"
-      @click="show_modal = true"
-    >
-      <b-icon icon="bounding-box" />
-      {{ $t("crop_adjust") }}
-    </button>
-
     <BaseModal2
-      v-if="show_modal"
       :title="$t('crop_adjust')"
       :size="'full'"
-      @close="closeModal"
+      @close="$emit('close')"
     >
       <div class="_cont">
         <div class="_steps">
@@ -114,8 +104,6 @@ export default {
   },
   data() {
     return {
-      show_modal: false,
-
       is_saving: false,
       media_being_sent_percent: 0,
 
@@ -159,7 +147,7 @@ export default {
     },
     async buttonSaveAsNew() {
       await this.saveAsNew();
-      this.closeModal();
+      this.$emit("closeParentModal");
     },
     async saveAsNew() {
       console.log("saveAsNew");
@@ -167,10 +155,14 @@ export default {
 
       const path = this.getParent(this.media.$path);
 
-      // todo – get original caption, credits, geolocation, etc. for new
-      const additional_meta = {
-        $origin: "collect",
-      };
+      // copy over caption, $credits, keywords, $authors, $location if exists
+      let additional_meta = { $origin: "collect" };
+      if (this.media.caption) additional_meta.caption = this.media.caption;
+      if (this.media.$credits) additional_meta.$credits = this.media.$credits;
+      if (this.media.keywords) additional_meta.keywords = this.media.keywords;
+      if (this.media.$authors) additional_meta.$authors = this.media.$authors;
+      if (this.media.$location)
+        additional_meta.$location = this.media.$location;
 
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(
@@ -178,7 +170,7 @@ export default {
         );
       };
 
-      const { saved_meta, meta_filename } = await this.$api
+      const { uploaded_meta, meta_filename } = await this.$api
         .uploadFile({
           path,
           filename: this.final_image_filename,
@@ -195,15 +187,15 @@ export default {
         });
 
       this.is_saving = false;
-      return { saved_meta, meta_filename };
+      return { uploaded_meta, meta_filename };
     },
     async replaceOriginal() {
       // not very clean… Should rework with specific API route ? $api.updateContent ?
-      const { saved_meta, meta_filename } = await this.saveAsNew();
+      const { uploaded_meta, meta_filename } = await this.saveAsNew();
       const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
 
       const old_media_filename = this.media.$media_filename;
-      const new_media_filename = saved_meta.$media_filename;
+      const new_media_filename = uploaded_meta.$media_filename;
 
       // set $media_filename from temp to the new filename
       await this.$api.updateMeta({
@@ -225,11 +217,7 @@ export default {
         path: temp_path,
       });
 
-      this.closeModal();
-    },
-    closeModal() {
-      this.show_modal = false;
-      this.current_step = "crop";
+      this.$emit("closeParentModal");
     },
   },
 };

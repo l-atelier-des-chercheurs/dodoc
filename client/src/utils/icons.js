@@ -7,6 +7,7 @@ import {
   BIconPersonCircle,
   BIconExclamationTriangleFill,
   BIconArrowLeftShort,
+  BIconX,
   BIconXLg,
   BIconPinMap,
   BIconPinMapFill,
@@ -149,14 +150,28 @@ import {
   BIconClock,
   BIconFilter,
   BIconThreeDots,
+  BIconThreeDotsVertical,
   BIconFilePlayFill,
   BIconGripVertical,
+  BIconHouse,
+  BIconRecycle,
+  BIconMarkdown,
+  BIconWindowSidebar,
+  BIconList,
+  BIconFileCode,
+  BIconFolderSymlink,
+  BIconChatDots,
+  BIconChatDotsFill,
+  BIconArrowUpRightSquare,
+  BIconArrowUpRightSquareFill,
+  BIconGlobe,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
 Vue.component("BIconPersonCircle", BIconPersonCircle);
 Vue.component("BIconExclamationTriangleFill", BIconExclamationTriangleFill);
 Vue.component("BIconArrowLeftShort", BIconArrowLeftShort);
+Vue.component("BIconX", BIconX);
 Vue.component("BIconXLg", BIconXLg);
 Vue.component("BIconPinMap", BIconPinMap);
 Vue.component("BIconPinMapFill", BIconPinMapFill);
@@ -299,5 +314,19 @@ Vue.component("BIconRulers", BIconRulers);
 Vue.component("BIconClock", BIconClock);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);
+Vue.component("BIconThreeDotsVertical", BIconThreeDotsVertical);
 Vue.component("BIconFilePlayFill", BIconFilePlayFill);
 Vue.component("BIconGripVertical", BIconGripVertical);
+Vue.component("BIconHouse", BIconHouse);
+Vue.component("BIconRecycle", BIconRecycle);
+Vue.component("BIconMarkdown", BIconMarkdown);
+Vue.component("BIconWindowSidebar", BIconWindowSidebar);
+Vue.component("BIconBook", BIconBook);
+Vue.component("BIconList", BIconList);
+Vue.component("BIconFileCode", BIconFileCode);
+Vue.component("BIconFolderSymlink", BIconFolderSymlink);
+Vue.component("BIconChatDots", BIconChatDots);
+Vue.component("BIconChatDotsFill", BIconChatDotsFill);
+Vue.component("BIconArrowUpRightSquare", BIconArrowUpRightSquare);
+Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);
+Vue.component("BIconGlobe", BIconGlobe);

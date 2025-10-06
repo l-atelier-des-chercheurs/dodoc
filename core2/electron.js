@@ -9,21 +9,27 @@ const {
 const path = require("path");
 const writeFileAtomic = require("write-file-atomic");
 
-const utils = require("./utils");
-const notifier = require("./notifier");
+const utils = require("./utils"),
+  notifier = require("./notifier"),
+  cacheManager = require("./cache-manager"),
+  journal = require("./journal");
 
-app.commandLine.appendSwitch("ignore-certificate-errors", "true");
-app.commandLine.appendSwitch("allow-insecure-localhost", "true");
-app.commandLine.appendSwitch("disable-http-cache", "true");
-
-const electronPDFWindow = require("electron-pdf-window");
+// Set command line switches before app is ready
+try {
+  app.commandLine.appendSwitch("ignore-certificate-errors", "true");
+  app.commandLine.appendSwitch("allow-insecure-localhost", "true");
+  app.commandLine.appendSwitch("disable-http-cache", "true");
+} catch (err) {
+  console.warn("Could not set command line switches:", err.message);
+}
 
 const windowStateKeeper = require("electron-window-state");
-const Store = require("electron-store");
+const Store = require("electron-store").default;
 
 module.exports = (function () {
-  const store = new Store();
+  const store = new Store({ name: "dodoc" });
   let win;
+  let aboutModalOpening = false; // Flag to prevent multiple rapid clicks
 
   return {
     init: () => {
@@ -33,14 +39,18 @@ module.exports = (function () {
           // if sharp reports its version number, it means it's version > 0.32.0
           // because of a memory cage instability issue with sharp > 0.31.3, we show an error
           const found_sharp_version = require("sharp").versions?.sharp;
+          journal.log({
+            message: `ELECTRON — init : sharp version ${found_sharp_version}`,
+            from: "electron",
+          });
           if (found_sharp_version) {
-            const err = new Error(
-              `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
-            );
-            err.code = "sharp_version_mismatch";
-            dev.error(err);
-            dialog.showErrorBox("Could not start application", err.message);
-            app.exit(0);
+            // const err = new Error(
+            //   `Can't start application, please install sharp 0.31.3 (current version ${found_sharp_version}, see readme)`
+            // );
+            // err.code = "sharp_version_mismatch";
+            // dev.error(err);
+            // dialog.showErrorBox("Could not start application", err.message);
+            // app.exit(0);
           }
         }
 
@@ -52,6 +62,10 @@ module.exports = (function () {
           dev.log(
             `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`
           );
+          journal.log({
+            message: `ELECTRON — custom storage path is detected and will be used ${custom_storage_path}`,
+            from: "electron",
+          });
         }
 
         notifier.on("restartApp", () => {
@@ -65,6 +79,10 @@ module.exports = (function () {
         // Some APIs can only be used after this event occurs.
         app.on("ready", () => {
           dev.log(`ELECTRON — init : ready`);
+          journal.log({
+            message: "ELECTRON — init : ready",
+            from: "electron",
+          });
 
           _createWindow().then((_win) => {
             dev.logfunction(`ELECTRON — init : ready / window created`);
@@ -100,13 +118,22 @@ module.exports = (function () {
         app.on(
           "certificate-error",
           (event, webContents, url, error, certificate, callback) => {
-            dev.logfunction(`ELECTRON — init : certificate-error`);
+            dev.logfunction(`ELECTRON — init : certificate-error for ${url}`);
             // On certificate error we disable default behaviour (stop loading the page)
             // and we then say "it is all fine - true" to the callback
             event.preventDefault();
             callback(true);
           }
         );
+
+        // Add cleanup on app quit
+        app.on("before-quit", async () => {
+          try {
+            cacheManager.handleExit();
+          } catch (err) {
+            dev.error("Error during cache cleanup on quit:", err);
+          }
+        });
       });
     },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
@@ -120,23 +147,28 @@ module.exports = (function () {
         win = null;
       }
 
-      let page_timeout = setTimeout(async () => {
-        closeWin();
-        const err = new Error("Failed to capture screenshot");
-        err.code = "timeout";
-        throw err;
-      }, 10_000);
-
       try {
-        win = await _loadWebpage({ url });
-        const image = await win.webContents.capturePage();
-        closeWin();
-        clearTimeout(page_timeout);
-        await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+        await Promise.race([
+          (async () => {
+            win = await _loadWebpage({ url });
+            const image = await win.webContents.capturePage();
+            closeWin();
+            await writeFileAtomic(full_path_to_thumb, image.toPNG(1.0));
+          })(),
+          new Promise((_, reject) => {
+            setTimeout(() => {
+              closeWin();
+              dev.error("Failed to capture screenshot: timeout");
+              const err = new Error("Failed to capture screenshot");
+              err.code = "timeout";
+              reject(err);
+            }, 10_000);
+          }),
+        ]);
         return;
       } catch (err) {
         closeWin();
-        clearTimeout(page_timeout);
+        dev.error("Failed to capture screenshot: " + err.message);
         throw err;
       }
     },
@@ -145,9 +177,12 @@ module.exports = (function () {
       recipe,
       bw_pagesize,
       printToPDF_pagesize,
+      number_of_pages_to_export,
       reportProgress,
     }) => {
       let win;
+
+      reportProgress(10);
 
       win = await _loadWebpage({
         url,
@@ -155,7 +190,7 @@ module.exports = (function () {
         height: bw_pagesize.height,
       });
 
-      reportProgress(5);
+      reportProgress(20);
 
       if (recipe === "pdf") {
         const pageSize = {
@@ -163,7 +198,7 @@ module.exports = (function () {
           height: printToPDF_pagesize.height / 10 / 2.54,
         };
 
-        const data = await win.webContents.printToPDF({
+        const options = {
           margins: {
             top: 0,
             bottom: 0,
@@ -172,30 +207,37 @@ module.exports = (function () {
           },
           pageSize,
           printBackground: true,
-          printSelectionOnly: false,
-        });
+        };
 
-        reportProgress(90);
+        if (number_of_pages_to_export) {
+          options.pageRanges = `1-${number_of_pages_to_export}`;
+        }
+
+        const pdf_data = await win.webContents.printToPDF(options);
+
+        reportProgress(80);
 
         const full_path_to_pdf = await utils.createUniqueFilenameInCache("pdf");
-        await writeFileAtomic(full_path_to_pdf, data);
+        await writeFileAtomic(full_path_to_pdf, pdf_data);
 
-        reportProgress(95);
+        reportProgress(90);
         return full_path_to_pdf;
       } else if (recipe === "png") {
-        const data = await win.webContents.capturePage();
+        const png_data = await win.webContents.capturePage();
 
-        reportProgress(95);
+        reportProgress(80);
 
         const full_path_to_image = await utils.createUniqueFilenameInCache(
           "png"
         );
         await utils.convertAndCopyImage({
-          source: data.toPNG(1.0),
+          source: png_data.toPNG(1.0),
           destination: full_path_to_image,
           width: bw_pagesize.width,
           height: bw_pagesize.height,
         });
+
+        reportProgress(90);
 
         return full_path_to_image;
       }
@@ -234,13 +276,13 @@ module.exports = (function () {
       });
 
       mainWindowState.manage(win);
-      electronPDFWindow.addSupport(win);
 
       if (process.platform == "darwin") {
         app.setAboutPanelOptions({
-          applicationName: global.appInfos.name,
+          applicationName: global.appInfos.productName,
           applicationVersion: app.getVersion(),
-          copyright: "Released under the free software GNU AGPL license.",
+          copyright:
+            "do•doc est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL. \n\n do•doc is a documentation tool for creativity. Released under the free software GNU AGPL license.",
         });
       }
 
@@ -297,18 +339,23 @@ module.exports = (function () {
       userAgent: "facebookexternalhit/1.1",
     });
     win.webContents.setAudioMuted(true);
+    win.webContents.setZoomLevel(1);
 
-    await new Promise((resolve, reject) => {
-      win.webContents.once("did-finish-load", async () => {
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        return resolve();
+    try {
+      await new Promise((resolve, reject) => {
+        win.webContents.once("did-finish-load", async () => {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          return resolve();
+        });
+        win.webContents.on("did-fail-load", (event, error) => {
+          dev.log(`Failed to load webpage content: ${error}`);
+          return reject(new Error("Failed to load webpage content: " + error));
+        });
       });
-      win.webContents.on("did-fail-load", (event, error) => {
-        return reject(error);
-      });
-    }).catch((error) => {
-      throw error;
-    });
+    } catch (error) {
+      dev.error(`Error loading webpage: ${error}`);
+      throw new Error("Failed to load webpage: " + error);
+    }
 
     return win;
   }
@@ -335,38 +382,109 @@ module.exports = (function () {
         submenu: [
           {
             label: `À propos ${global.appInfos.productName}`,
-            selector: "orderFrontStandardAboutPanel:",
+            click: () => {
+              // Prevent multiple rapid clicks
+              if (aboutModalOpening) {
+                return;
+              }
+
+              // Check if the page is ready before executing JavaScript
+              if (!win || !win.webContents) {
+                return;
+              }
+
+              aboutModalOpening = true;
+
+              // Trigger the existing About modal in the app
+              win.webContents
+                .executeJavaScript(
+                  `
+                try {
+                  // Wait for DOM to be ready
+                  if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', function() {
+                      setTimeout(openAboutModal, 100);
+                    });
+                  } else {
+                    openAboutModal();
+                  }
+                  
+                  function openAboutModal() {
+                    // Find the help button and click it to open the About modal
+                    const helpBtn = document.querySelector('.u-button._helpBtn');
+                    if (helpBtn && !helpBtn.disabled) {
+                      helpBtn.click();
+                    } else {
+                      // Fallback: try to trigger the modal directly
+                      const event = new CustomEvent('show-about-modal');
+                      window.dispatchEvent(event);
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error opening About modal:', error);
+                }
+              `
+                )
+                .catch((error) => {
+                  console.error("Failed to execute JavaScript:", error);
+                  // Fallback to native dialog if JavaScript execution fails
+                  dialog.showMessageBox(win, {
+                    type: "info",
+                    title: `À propos ${global.appInfos.productName}`,
+                    message: global.appInfos.productName,
+                    detail: `Version ${app.getVersion()}\n\n${
+                      global.appInfos.productName
+                    } est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL.\n\n${
+                      global.appInfos.productName
+                    } is a documentation tool for creativity. Released under the free software GNU AGPL license.`,
+                    buttons: ["OK"],
+                  });
+                })
+                .finally(() => {
+                  // Reset the flag after a short delay
+                  setTimeout(() => {
+                    aboutModalOpening = false;
+                  }, 1000);
+                });
+            },
+            ...(process.platform === "darwin" && {
+              selector: "orderFrontStandardAboutPanel:",
+            }),
           },
           {
             type: "separator",
           },
-          {
-            label: "Services",
-            submenu: [],
-          },
-          {
-            type: "separator",
-          },
-          {
-            label: `Cacher ${global.appInfos.productName}`,
-            accelerator: "Command+H",
-            selector: "hide:",
-          },
-          {
-            label: "Cacher les autres",
-            accelerator: "Command+Shift+H",
-            selector: "hideOtherApplications:",
-          },
-          {
-            label: "Montrer tout",
-            selector: "unhideAllApplications:",
-          },
-          {
-            type: "separator",
-          },
+          ...(process.platform === "darwin"
+            ? [
+                {
+                  label: "Services",
+                  submenu: [],
+                },
+                {
+                  type: "separator",
+                },
+                {
+                  label: `Cacher ${global.appInfos.productName}`,
+                  accelerator: "Command+H",
+                  selector: "hide:",
+                },
+                {
+                  label: "Cacher les autres",
+                  accelerator: "Command+Shift+H",
+                  selector: "hideOtherApplications:",
+                },
+                {
+                  label: "Montrer tout",
+                  selector: "unhideAllApplications:",
+                },
+                {
+                  type: "separator",
+                },
+              ]
+            : []),
           {
             label: "Quitter",
-            accelerator: "Command+Q",
+            accelerator: process.platform === "darwin" ? "Command+Q" : "Ctrl+Q",
             click: function () {
               global.ffmpeg_processes.map((f) => f.kill());
               app.quit();
@@ -379,36 +497,37 @@ module.exports = (function () {
         submenu: [
           {
             label: "Annuler",
-            accelerator: "Command+Z",
-            selector: "undo:",
+            accelerator: process.platform === "darwin" ? "Command+Z" : "Ctrl+Z",
+            role: "undo",
           },
           {
             label: "Rétablir",
-            accelerator: "Shift+Command+Z",
-            selector: "redo:",
+            accelerator:
+              process.platform === "darwin" ? "Shift+Command+Z" : "Ctrl+Y",
+            role: "redo",
           },
           {
             type: "separator",
           },
           {
             label: "Couper",
-            accelerator: "Command+X",
-            selector: "cut:",
+            accelerator: process.platform === "darwin" ? "Command+X" : "Ctrl+X",
+            role: "cut",
           },
           {
             label: "Copier",
-            accelerator: "Command+C",
-            selector: "copy:",
+            accelerator: process.platform === "darwin" ? "Command+C" : "Ctrl+C",
+            role: "copy",
           },
           {
             label: "Coller",
-            accelerator: "Command+V",
-            selector: "paste:",
+            accelerator: process.platform === "darwin" ? "Command+V" : "Ctrl+V",
+            role: "paste",
           },
           {
             label: "Sélectionner tout",
-            accelerator: "Command+A",
-            selector: "selectAll:",
+            accelerator: process.platform === "darwin" ? "Command+A" : "Ctrl+A",
+            role: "selectall",
           },
         ],
       },
@@ -417,42 +536,47 @@ module.exports = (function () {
         submenu: [
           {
             label: "Recharger",
-            accelerator: "Command+R",
+            accelerator: process.platform === "darwin" ? "Command+R" : "Ctrl+R",
             click: function () {
-              BrowserWindow.getFocusedWindow().reload();
+              BrowserWindow.getFocusedWindow()?.reload();
             },
           },
           {
             label: "Afficher les outils de développement",
-            accelerator: "Alt+Command+I",
+            accelerator:
+              process.platform === "darwin" ? "Alt+Command+I" : "F12",
             click: function () {
-              BrowserWindow.getFocusedWindow().toggleDevTools();
+              BrowserWindow.getFocusedWindow()?.toggleDevTools();
             },
           },
         ],
       },
-      {
-        label: "Fenêtre",
-        submenu: [
-          {
-            label: "Réduire",
-            accelerator: "Command+M",
-            selector: "performMiniaturize:",
-          },
-          {
-            label: "Fermer",
-            accelerator: "Command+W",
-            selector: "performClose:",
-          },
-          {
-            type: "separator",
-          },
-          {
-            label: "Mettre tout au premier plan",
-            selector: "arrangeInFront:",
-          },
-        ],
-      },
+      ...(process.platform === "darwin"
+        ? [
+            {
+              label: "Fenêtre",
+              submenu: [
+                {
+                  label: "Réduire",
+                  accelerator: "Command+M",
+                  role: "minimize",
+                },
+                {
+                  label: "Fermer",
+                  accelerator: "Command+W",
+                  role: "close",
+                },
+                {
+                  type: "separator",
+                },
+                {
+                  label: "Mettre tout au premier plan",
+                  role: "front",
+                },
+              ],
+            },
+          ]
+        : []),
       {
         label: "Aide",
         submenu: [],

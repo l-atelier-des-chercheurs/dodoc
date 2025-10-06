@@ -3,6 +3,7 @@
     <svg
       v-if="is_loaded"
       class="_dodocLogo"
+      :class="{ 'has--animation': can_animate }"
       enable-background="new 0 0 515 168"
       viewBox="10 0 515 168"
       xmlns="http://www.w3.org/2000/svg"
@@ -42,7 +43,12 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    can_animate: {
+      type: Boolean,
+      default: true,
+    },
+  },
   components: {},
   data() {
     return {
@@ -72,14 +78,16 @@ export default {
     transition: fill 1s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
   }
 
-  &:hover {
-    --color1: var(--c-orange);
-    --color2: var(--c-bleuvert);
+  &.has--animation {
+    &:hover {
+      --color1: var(--c-orange);
+      --color2: var(--c-bleuvert);
 
-    path,
-    ellipse,
-    circle {
-      transition: fill 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+      path,
+      ellipse,
+      circle {
+        transition: fill 0.15s cubic-bezier(0.19, 1, 0.22, 1);
+      }
     }
   }
 }

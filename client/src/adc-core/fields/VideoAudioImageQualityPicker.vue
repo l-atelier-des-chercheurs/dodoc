@@ -6,6 +6,13 @@
         :show_toggle.sync="enable_image"
         :can_toggle="media_type === 'video'"
       >
+        <ResolutionDisplay
+          v-if="media_width || media_height"
+          :label="$t('current_resolution')"
+          :width="media_width"
+          :height="media_height"
+        />
+
         <DLabel :str="$t('image_quality')" />
         <div class="">
           <SelectField2

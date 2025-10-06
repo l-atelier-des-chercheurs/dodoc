@@ -18,8 +18,8 @@
           :content.sync="new_publication_is_private"
           :label="$t('private')"
           :options="{
-            true: $t('private_status_explanations'),
-            false: $t('public_status_explanations'),
+            true: $t('private_status_explanations_publis'),
+            false: $t('public_status_explanations_publis'),
           }"
         />
       </div>
@@ -141,6 +141,9 @@ export default {
         additional_meta.page_width = 210;
         additional_meta.page_height = 297;
         additional_meta.pages = [{ id: "first_page" }];
+      } else if (this.new_publication_template === "edition") {
+        additional_meta.page_width = 210;
+        additional_meta.page_height = 297;
       }
 
       try {

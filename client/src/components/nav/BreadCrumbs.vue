@@ -1,5 +1,5 @@
 <template>
-  <nav aria-label="Fil d’ariane" class="_breadcrumb">
+  <nav aria-label="Fil d'ariane" class="_breadcrumb">
     <button
       type="button"
       class="u-button u-button_icon _backButton"
@@ -9,6 +9,9 @@
     >
       <b-icon icon="chevron-left" />
     </button>
+    <template v-else>
+      <div class="_emptySpace" />
+    </template>
 
     <div class="_logo">
       <component
@@ -16,46 +19,33 @@
         :to="`/`"
         :title="$t('home')"
       >
-        <DodocLogo class="_dodocLogo" v-if="instance_logo === 'dodoc'" />
+        <DodocLogo
+          class="_dodocLogo"
+          v-if="instance_logo === 'dodoc'"
+          :can_animate="$route.name !== 'Accueil'"
+        />
         <img class="_customLogo" v-else :src="instance_logo" />
       </component>
     </div>
 
-    <transition name="fade" mode="out-in">
-      <div v-if="show_space_name">
+    <template v-for="(item, index) in breadcrumbItems">
+      <div :key="index">
         <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
         &nbsp;
         <component
-          :is="$route.name === 'Projet' ? 'router-link' : 'span'"
+          :is="item.isLink ? 'router-link' : 'span'"
           class="_spaceName"
-          :to="{ path: '/+' + $route.params.space_slug }"
-          :disabled="$route.name === 'Espace'"
+          :to="item.to"
         >
-          <div class="u-label">
-            {{ $t("space") }}
+          <div class="u-label" v-if="item.label">
+            {{ item.label }}
           </div>
-          <div class="_name">{{ (space && space.title) || "–" }}</div>
+          <div class="">
+            {{ item.title }}
+          </div>
         </component>
       </div>
-    </transition>
-
-    <transition name="fade" mode="out-in">
-      <div v-if="show_project_name">
-        <b-icon icon="arrow-right-short" label="" class="_arrowRight" />
-        &nbsp;
-        <component
-          :is="false ? 'router-link' : 'span'"
-          class="_spaceName"
-          :to="{ path: '/+' + $route.params.space_slug }"
-          :disabled="$route.name === 'Espace'"
-        >
-          <div class="u-label">
-            {{ $t("project") }}
-          </div>
-          <div class="_name">{{ (project && project.title) || "–" }}</div>
-        </component>
-      </div>
-    </transition>
+    </template>
   </nav>
 </template>
 <script>
@@ -70,16 +60,19 @@ export default {
     return {
       space: undefined,
       project: undefined,
+      author: undefined,
     };
   },
   created() {},
   mounted() {
     this.$eventHub.$on("received.project", this.setProject);
     this.$eventHub.$on("received.space", this.setSpace);
+    this.$eventHub.$on("received.author", this.setAuthor);
   },
   beforeDestroy() {
     this.$eventHub.$off("received.project", this.setProject);
     this.$eventHub.$off("received.space", this.setSpace);
+    this.$eventHub.$off("received.author", this.setAuthor);
   },
   watch: {
     show_space_name() {
@@ -87,6 +80,9 @@ export default {
     },
     show_project_name() {
       if (!this.show_project_name) this.project = undefined;
+    },
+    show_author_page() {
+      if (!this.show_author_page) this.author = undefined;
     },
   },
   computed: {
@@ -99,6 +95,49 @@ export default {
     show_project_name() {
       return this.$route.name === "Projet";
     },
+    show_authors_page() {
+      return this.$route.path.includes("/@");
+    },
+    show_author_page() {
+      return this.$route.name === "Auteur";
+    },
+    breadcrumbItems() {
+      const items = [];
+
+      if (this.show_space_name) {
+        items.push({
+          label: this.$t("space"),
+          title: (this.space && this.space.title) || "–",
+          isLink: this.$route.name === "Projet",
+          to: { path: "/+" + this.$route.params.space_slug },
+        });
+      }
+
+      if (this.show_project_name) {
+        items.push({
+          label: this.$t("project"),
+          title: (this.project && this.project.title) || "–",
+          isLink: false,
+        });
+      }
+
+      if (this.show_authors_page) {
+        items.push({
+          title: this.$t("list_of_accounts"),
+          isLink: this.$route.name === "Auteur",
+          to: { path: "/@" },
+        });
+      }
+
+      if (this.show_author_page && this.author) {
+        items.push({
+          title: this.author.name,
+          isLink: false,
+        });
+      }
+
+      return items;
+    },
   },
   methods: {
     setSpace(space) {
@@ -110,6 +149,9 @@ export default {
     goBack() {
       window.history.back();
     },
+    setAuthor(author) {
+      this.author = author;
+    },
   },
 };
 </script>
@@ -117,32 +159,34 @@ export default {
 ._breadcrumb {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
-  padding: 0 calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 2);
+  align-items: stretch;
+  padding: 0 calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
   line-height: 1.1;
 
   > * {
+    flex: 0 0 auto;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     overflow: hidden;
   }
 }
 
-._backButton {
+._emptySpace {
+  width: 5px;
 }
 
-._name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+._backButton {
+  // background: var(--c-gris_clair);
+  // border-radius: 10px;
+  // padding: 4px;
 }
 
 ._logo {
   flex: 0 0 auto;
 
   svg {
-    width: 120px;
+    width: 105px;
   }
 
   img {
@@ -152,7 +196,7 @@ export default {
 
   svg,
   img {
-    height: 40px;
+    height: 35px;
     object-fit: scale-down;
     object-position: 0 0;
   }
@@ -175,17 +219,32 @@ export default {
   }
 }
 
-a._spaceName {
+._spaceName {
   color: inherit;
-  // text-decoration: none;
 
-  &:hover {
-    font-weight: 500;
+  // font-weight: 500;
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  // align-items: center;
+}
+
+a._spaceName {
+  text-decoration: none;
+
+  > *:not(.u-label) {
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
 .u-label {
   text-decoration: none;
+  margin-bottom: calc(var(--spacing) / 4);
 }
 
 ._arrowRight {

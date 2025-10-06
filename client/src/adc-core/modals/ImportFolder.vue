@@ -35,7 +35,7 @@
   </BaseModal2>
 </template>
 <script>
-import ImportFileZone from "@/adc-core/ui/ImportFileZone";
+import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
 export default {
   props: {

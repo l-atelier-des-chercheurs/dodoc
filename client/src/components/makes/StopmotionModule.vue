@@ -38,7 +38,7 @@
       <div class="_options">
         <RemoveMenu
           :path="makemodule.$path"
-          :modal_title="$t('remove')"
+          :modal_title="$t('remove_this_image')"
           :show_button_text="false"
           @remove="removeModule"
         >

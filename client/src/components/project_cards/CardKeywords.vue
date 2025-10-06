@@ -1,10 +1,9 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="keywords_title"
     :icon="'tag'"
-    :has_items="!!project.keywords"
-    :is_open_initially="true"
-    :can_be_toggled="false"
+    :has_items="has_items"
   >
     <div class="">
       <TagsField
@@ -37,6 +36,11 @@ export default {
       // if (this.project.keywords && this.project.keywords.length > 0)
       //   return this.$t("keywords") + ` (${this.project.keywords.length})`;
       return this.$t("keywords");
+    },
+    has_items() {
+      return this.project.keywords?.length > 0
+        ? this.project.keywords.length
+        : false;
     },
   },
   methods: {},

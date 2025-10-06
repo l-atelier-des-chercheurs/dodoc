@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "h4fzyl"
+x = 691
+y = 44
+width = 403
+height = 290
+rotation = 13
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 1
+"$date_modified" = 2025-09-11T14:16:43.390Z
+"$date_uploaded" = 2025-08-19T06:26:57.553Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "image-8.png.meta.txt"
+objectFit = "contain"

@@ -18,13 +18,14 @@
         </button>
         <div class="_baseModal--content">
           <header v-if="title">
-            <h3>{{ title }}</h3>
+            <h2>{{ title }}</h2>
           </header>
           <div
             class="_content"
             v-if="$slots.hasOwnProperty('default')"
             :class="{
               has_nofooter: !$slots.hasOwnProperty('footer'),
+              has_nopadding: nopadding,
             }"
           >
             <slot />
@@ -62,6 +63,10 @@ export default {
   props: {
     title: String,
     size: String,
+    nopadding: {
+      type: Boolean,
+      default: false,
+    },
     is_closable: {
       type: Boolean,
       default: true,
@@ -143,14 +148,14 @@ export default {
 ._baseModal {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 9998;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
   border: none;
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 
   // background: rgba(53, 53, 53, 0.7);
   // background: rgba(255, 255, 255, 0.7);
@@ -172,15 +177,16 @@ export default {
     position: relative;
     background: var(--panel-color);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
 
     width: 100%;
     max-width: 480px;
-    max-height: 100vh;
-    max-height: 100dvh;
+    max-height: 95vh;
+    max-height: 95dvh;
 
     margin: 0 auto;
     padding: 0;
+    overflow: hidden;
 
     transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   }
@@ -244,16 +250,19 @@ header {
   position: relative;
   padding: 0 calc(var(--spacing) * 1);
 
-  &:first-child {
+  &:first-child:not(.has_nopadding) {
     margin-top: calc(var(--spacing) * 1);
   }
 
   ._baseModal[data-size="full"] & {
-    padding: 0;
+    // padding: 0;
   }
 
   &.has_nofooter {
     padding-bottom: calc(var(--spacing) * 1);
+  }
+  &.has_nopadding {
+    padding: 0;
   }
 }
 ._footer {
@@ -261,6 +270,10 @@ header {
   flex-flow: row wrap;
   justify-content: space-between;
   gap: calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  // margin-top: calc(var(--spacing) * 1);
+  // padding: calc(var(--spacing) / 1);
+  // border-top: 1px solid var(--c-gris_clair);
   margin: calc(var(--spacing) * 1);
 }
 

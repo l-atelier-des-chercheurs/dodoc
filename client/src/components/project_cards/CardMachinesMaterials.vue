@@ -1,14 +1,9 @@
 <template>
   <DetailsPane
+    v-if="can_edit || has_items"
     :header="$t('machines_and_materials')"
     :icon="'tools'"
-    :has_items="
-      machines_materials_items_length > 0
-        ? machines_materials_items_length
-        : false
-    "
-    :is_open_initially="true"
-    :can_be_toggled="false"
+    :has_items="has_items"
   >
     <div class="u-spacingBottom">
       <TagsField
@@ -56,6 +51,11 @@ export default {
         count += this.project.machines.length;
 
       return count;
+    },
+    has_items() {
+      return this.machines_materials_items_length > 0
+        ? this.machines_materials_items_length
+        : false;
     },
   },
   methods: {},

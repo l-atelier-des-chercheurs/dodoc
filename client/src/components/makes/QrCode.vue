@@ -76,7 +76,7 @@ export default {
         caption: this.$t("qr_code_content") + " : " + this.qrcode_text,
       };
 
-      const { saved_meta, meta_filename } = await this.$api
+      const { meta_filename } = await this.$api
         .uploadFile({
           path: parent_project_path,
           filename: "qrcode.png",
@@ -108,7 +108,9 @@ export default {
   position: relative;
 
   background-color: white;
+  border-radius: var(--border-radius);
   max-width: 500px;
+  padding: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 1) auto;
 }
 

@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2016-03-28T15:17:18.000Z
+"$date_modified" = 2025-09-15T10:13:31.521Z
+"$date_uploaded" = 2025-03-13T08:46:04.861Z
+"$media_filename" = "pog-cairn.jpg"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

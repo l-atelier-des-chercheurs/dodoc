@@ -42,17 +42,18 @@
     </div>
 
     <div class="_lineCont"><div class="_line" /></div>
-    <flickity
-      class="_flickity"
-      ref="flickity"
-      :options="flickityOptions"
+    <FlickityCarousel
       v-if="sorted_events.length > 0"
+      :key="slider_key"
+      :options="flickityOptions"
+      class="_eventsCarousel"
+      ref="flickity"
     >
-      <!-- <div class="_slide">A</div>
-      <div class="_slide">B</div>
-      <div class="_slide">C</div>
-      <div class="_slide">D</div> -->
-      <div v-for="event in sorted_events" :key="event.$path" class="_slide">
+      <div
+        v-for="event in sorted_events"
+        :key="event.$path"
+        class="carousel-cell"
+      >
         <div class="_eventsDate">
           <template v-if="event.start_date">
             {{ formatDateToPrecise(event.start_date) }}
@@ -67,6 +68,7 @@
             class="_cover"
             :context="'preview'"
             :cover="event.$cover"
+            :ratio="'3 / 2'"
             :path="event.$path"
             :can_edit="false"
           />
@@ -89,16 +91,16 @@
           </div>
         </div>
       </div>
-    </flickity>
+    </FlickityCarousel>
   </div>
 </template>
 <script>
-import Flickity from "vue-flickity";
+import FlickityCarousel from "@/adc-core/ui/FlickityCarousel.vue";
 
 export default {
   props: {},
   components: {
-    Flickity,
+    FlickityCarousel,
   },
   data() {
     return {
@@ -110,11 +112,8 @@ export default {
       flickityOptions: {
         initialIndex: 0,
         groupCells: false,
-        imagesLoaded: true,
         pageDots: false,
         resize: true,
-        // arrowShape:
-        //   "M87.46,49.46,73.39,64.77a65.3,65.3,0,0,1-6.15,6.15A47.8,47.8,0,0,1,61,75.29H131.6V91.14H61A39.1,39.1,0,0,1,67,95.51q2.81,2.46,6.36,6.15L87.46,117,74.48,128,34.17,83.21,74.48,38.39Z",
         selectedAttraction: 0.2,
         percentPosition: false,
         friction: 0.8,
@@ -154,6 +153,11 @@ export default {
       return _sorted_events;
       // return _sorted_events.concat(_sorted_events).concat(_sorted_events);
     },
+    slider_key() {
+      const all_paths = this.sorted_events.map((e) => e.$path);
+      if (all_paths) return JSON.stringify(all_paths);
+      return "none";
+    },
   },
   methods: {
     openNewEvent(new_folder_slug) {
@@ -162,7 +166,14 @@ export default {
       this.$router.push(url);
     },
     sliderClick(evt) {
-      if (this.$refs.flickity.$flickity.isPreventingClicks) return false;
+      // Access Flickity instance
+      const flickity = this.$refs.flickity && this.$refs.flickity.flickity;
+
+      if (flickity && flickity.isPreventingClicks) {
+        // Prevent click if dragging
+        evt.preventDefault();
+        return;
+      }
       this.$router.push(evt.currentTarget.getAttribute("href"));
     },
   },
@@ -170,75 +181,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._eventsList {
-  margin: 0 auto;
-  // max-width: var(--max-column-width);
+  overflow: visible;
   padding: calc(var(--spacing) * 2) 0;
 }
 
-._list {
-  // display: grid;
-  // grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  // gap: calc(var(--spacing) / 1);
-}
-._flickity {
-  width: 100%;
-  height: 100%;
+._eventsCarousel {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
-  max-width: var(--max-column-width);
-  // overflow: hidden;
-  // padding: 0 calc(var(--spacing) * 1);
 
-  ::v-deep {
-    .flickity-button {
-      background: transparent;
-      background: rgba(255, 255, 255, 1);
-    }
-    .flickity-button:hover {
-      background: var(--c-gris);
-    }
-
-    .flickity-prev-next-button {
-      overflow: hidden;
-    }
-    .flickity-button:disabled {
-      display: none;
-    }
-
-    .flickity-prev-next-button .flickity-button-icon {
-      // left: -68%;
-      // top: -75%;
-      // width: 150%;
-      // height: 150%;
-    }
-
-    .flickity-prev-next-button.previous {
-      left: -10px;
-    }
-    .flickity-prev-next-button.next {
-      right: -10px;
-    }
-  }
-}
-
-._slide {
-  position: relative;
-  width: 280px;
-  min-height: 100px;
-  padding: 0 calc(var(--spacing) * 1);
-
-  max-width: 56ch;
-  width: 100%;
-
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &:hover,
-  &:focus-visible {
-    // transform: translateY(-4px);
-    // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
-
-    ._eventsDate::after {
-      background: var(--active-color);
-    }
+  :deep(.flickity-viewport) {
+    overflow: visible;
   }
 }
 
@@ -258,10 +210,10 @@ export default {
     content: "";
     width: 10px;
     height: 10px;
-    background: var(--c-bleuvert);
+    background: var(--c-gris_fonce);
     position: absolute;
     top: 17px;
-    left: 5px;
+    left: -10px;
     border-radius: 50%;
     border: 4px solid white;
   }
@@ -282,9 +234,11 @@ export default {
   position: absolute;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: var(--c-gris);
-  top: 25px;
+  height: 4px;
+  background: var(--c-gris_clair);
+  // background: var(--c-gris_fonce);
+  // background: var(--c-bleuvert);
+  top: 24px;
 }
 
 ._openEvent {
@@ -304,6 +258,21 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+  }
+}
+
+.carousel-cell.carousel-cell {
+  width: clamp(280px, 30vw, 380px);
+  aspect-ratio: auto !important;
+  margin-right: calc(var(--spacing) * 2);
+
+  &:hover,
+  &:focus-visible {
+    ._eventsDate {
+      &::after {
+        background: var(--active-color);
+      }
+    }
   }
 }
 </style>

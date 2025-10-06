@@ -20,13 +20,7 @@ const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
   "app.asar.unpacked"
 );
-const ffprobePath = require("ffprobe-static").path.replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-
 ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
 
 class Exporter {
   constructor({ path_to_folder, folder_to_export_to, instructions }) {
@@ -35,6 +29,7 @@ class Exporter {
     this.folder_to_export_to = folder_to_export_to;
     this.ffmpeg_cmd = null;
 
+    this.last_progress = 0;
     this.instructions = instructions;
     this.status = "ready";
   }
@@ -181,11 +176,19 @@ class Exporter {
       if (!output_height) output_height = images[0].$infos.height || 720;
       if (!video_bitrate) video_bitrate = 4000;
 
+      const reportProgress = (progress) => {
+        const progress_percent = Math.round(
+          utils.remap(progress, 0, 100, 6, 19)
+        );
+        this._notifyProgress(progress_percent);
+      };
+
       const full_path_to_folder_in_cache =
         await this._copyToCacheAndRenameImages({
           images,
           output_width,
           output_height,
+          reportProgress,
         });
 
       const file_ext = output_format === "gif" ? ".gif" : ".mp4";
@@ -195,12 +198,7 @@ class Exporter {
         new_video_name
       );
 
-      const _removeAllImages = async () => {
-        // todo implement this
-        // await fs.remove(path.join(full_path_to_folder_in_cache, "*.jpeg"));
-      };
-
-      this._notifyProgress(10);
+      this._notifyProgress(20);
 
       const frame_rate = this.instructions.frame_rate || 4;
       const output_frame_rate = 30;
@@ -238,7 +236,7 @@ class Exporter {
               ((images.length / frame_rate) * output_frame_rate)) *
             100;
 
-          const progress_percent = Math.round(utils.remap(adv, 0, 100, 15, 90));
+          const progress_percent = Math.round(utils.remap(adv, 0, 100, 21, 90));
 
           this._notifyProgress(progress_percent);
         })
@@ -247,14 +245,14 @@ class Exporter {
 
           this._notifyProgress(95);
 
-          await _removeAllImages();
+          await this._removeAllImages(full_path_to_folder_in_cache);
           return resolve(full_path_to_new_video);
         })
         .on("error", async (err, stdout, stderr) => {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
-          await _removeAllImages();
+          await this._removeAllImages(full_path_to_folder_in_cache);
           this._notifyEnded({
             event: "failed",
             info: err.message,
@@ -267,10 +265,13 @@ class Exporter {
   }
   _notifyProgress(progress) {
     dev.logverbose("Task " + this.id + " progress = " + progress);
-    notifier.emit("taskStatus", "task_" + this.id, {
-      task_id: this.id,
-      progress,
-    });
+    if (progress !== this.last_progress) {
+      this.last_progress = progress;
+      notifier.emit("taskStatus", "task_" + this.id, {
+        task_id: this.id,
+        progress,
+      });
+    }
   }
   _notifyEnded(message) {
     dev.logverbose("Task " + this.id + " end");
@@ -280,7 +281,21 @@ class Exporter {
     });
   }
 
-  async _copyToCacheAndRenameImages({ images, output_width, output_height }) {
+  async _removeAllImages(full_path_to_folder_in_cache) {
+    const files = await fs.readdir(full_path_to_folder_in_cache);
+    for (const file of files) {
+      if (file.endsWith(".jpeg")) {
+        await fs.remove(path.join(full_path_to_folder_in_cache, file));
+      }
+    }
+  }
+
+  async _copyToCacheAndRenameImages({
+    images,
+    output_width,
+    output_height,
+    reportProgress,
+  }) {
     let full_path_to_folder_in_cache = await utils.createUniqueFolderInCache(
       "stopmotion"
     );
@@ -303,7 +318,13 @@ class Exporter {
         width: output_width,
         height: output_height,
       });
+
       // await fs.copy(source, destination);
+      reportProgress(Math.round((index / images.length) * 100));
+
+      // allow for some time before moving to the next image
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       index++;
     }
 
@@ -313,18 +334,16 @@ class Exporter {
   async _loadPageAndPrint() {
     try {
       dev.logfunction();
-      const path_without_space = this.path_to_folder
-        .replace("spaces" + path.sep, "/+")
-        .replace("projects" + path.sep, "");
-      let url = global.appInfos.homeURL + path_without_space;
+
+      let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
       if (this.instructions.page) {
         query.page = this.instructions.page;
         query.make_preview = true;
       }
-      if (this.instructions.superadmintoken)
-        query.sat = this.instructions.superadmintoken;
+      const superadmintoken = auth.getSuperadminToken();
+      query.superadmintoken = superadmintoken;
 
       const searchParams = new URLSearchParams(query);
       url += "?" + searchParams.toString();
@@ -332,6 +351,20 @@ class Exporter {
       const layout_mode = this.instructions.layout_mode || "print";
       const document_width = this.instructions.page_width || 210;
       const document_height = this.instructions.page_height || 297;
+
+      let number_of_pages_to_export = undefined;
+      if (this.instructions.page) {
+        if (
+          typeof this.instructions.page === "string" &&
+          this.instructions.page.includes("-")
+        ) {
+          const [start, end] = this.instructions.page.split("-");
+          number_of_pages_to_export = end - start + 1;
+        } else {
+          number_of_pages_to_export = 1;
+        }
+      }
+
       const recipe = this.instructions.recipe;
 
       const reportProgress = (progress) => {
@@ -345,6 +378,7 @@ class Exporter {
         layout_mode,
         document_width,
         document_height,
+        number_of_pages_to_export,
         reportProgress,
       });
 
@@ -366,11 +400,7 @@ class Exporter {
       // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
 
-      const path_without_space = this.path_to_folder
-        .replace("spaces" + path.sep, "/+")
-        .replace("projects" + path.sep, "");
-
-      let url = global.appInfos.homeURL + path_without_space;
+      let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
       if (this.instructions.page) {
@@ -378,9 +408,9 @@ class Exporter {
         query.make_preview = true;
       }
 
-      // use superamdin token
-      const sat = auth.getSuperadminToken();
-      query.sat = sat;
+      // use superadmin token
+      const superadmintoken = auth.getSuperadminToken();
+      query.superadmintoken = superadmintoken;
 
       if (Object.keys(query).length > 0) {
         const searchParams = new URLSearchParams(query);
@@ -405,51 +435,65 @@ class Exporter {
 
       const length = folder_data.$files.length;
 
+      // Helper function to copy media and thumbs
+      const copyMediaAndThumbs = async (
+        media_filename,
+        media_path,
+        thumbs_data
+      ) => {
+        if (!media_filename) return;
+
+        // copy necessary medias from the project to the cache
+        const parent_folder_path = utils.getContainingFolder(media_path);
+        const parent_folder_full_path =
+          utils.getPathToUserContent(parent_folder_path);
+        const source = path.join(parent_folder_full_path, media_filename);
+        const destination = path.join(
+          full_path_to_folder_in_cache,
+          "medias",
+          media_filename
+        );
+        await fs.copy(source, destination);
+
+        // copy necessary thumbs from the project to the cache
+        if (thumbs_data && typeof thumbs_data === "object") {
+          const full_path_to_thumb = await utils.getPathToUserContent(
+            await thumbs.getThumbFolderPath(parent_folder_path)
+          );
+
+          await thumbs.copyAllThumbsForFile({
+            full_path_to_thumb,
+            full_path_to_new_thumb: path.join(
+              full_path_to_folder_in_cache,
+              "thumbs"
+            ),
+            media_filename,
+          });
+        }
+      };
+
       for (const [index, file] of folder_data.$files.entries()) {
         this._notifyProgress(25 + Math.round((index / length) * 50));
 
-        if (!file.source_medias) continue;
-
         try {
-          for (const source_media of file.source_medias) {
-            if (!source_media._media?.$media_filename) continue;
+          // Handle files with source_medias
+          if (file.source_medias) {
+            for (const source_media of file.source_medias) {
+              await copyMediaAndThumbs(
+                source_media._media?.$media_filename,
+                source_media._media?.$path,
+                source_media._media?.$thumbs
+              );
+            }
+          }
 
-            // copy necessary medias from the project to the cache
-            const parent_folder_path = utils.getContainingFolder(
-              source_media._media.$path
+          // Handle files with their own $media_filename
+          if (file.$media_filename) {
+            await copyMediaAndThumbs(
+              file.$media_filename,
+              file.$path,
+              file.$thumbs
             );
-            const parent_folder_full_path =
-              utils.getPathToUserContent(parent_folder_path);
-            const source = path.join(
-              parent_folder_full_path,
-              source_media._media.$media_filename
-            );
-            const destination = path.join(
-              full_path_to_folder_in_cache,
-              "medias",
-              source_media._media.$media_filename
-            );
-            await fs.copy(source, destination);
-
-            // copy necessary thumbs from the project to the cache
-            if (
-              !source_media._media?.$thumbs ||
-              typeof source_media._media.$thumbs !== "object"
-            )
-              continue;
-
-            const full_path_to_thumb = await utils.getPathToUserContent(
-              await thumbs.getThumbFolderPath(parent_folder_path)
-            );
-
-            await thumbs.copyAllThumbsForFile({
-              full_path_to_thumb,
-              full_path_to_new_thumb: path.join(
-                full_path_to_folder_in_cache,
-                "thumbs"
-              ),
-              media_filename: source_media._media.$media_filename,
-            });
           }
         } catch (error) {
           dev.error(error.message);
@@ -786,6 +830,11 @@ class Exporter {
         full_path_to_new_video,
       });
 
+      // cleanup temp
+      temp_videos_array.forEach(async (e) => {
+        await fs.remove(e.video_path);
+      });
+
       dev.logverbose("Video created");
       this._notifyProgress(95);
       return full_path_to_new_video;
@@ -825,7 +874,7 @@ class Exporter {
         task: "convertCameraRAW",
       },
       {
-        exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg"],
+        exts: [".tif", ".tiff", ".webp", ".jpeg", ".jpg", ".png"],
         task: "convertImage",
       },
       {
@@ -1004,6 +1053,13 @@ class Exporter {
       : 4000;
     const output_format = instructions.output_format || "mp4";
     return { output_width, output_height, video_bitrate, output_format };
+  }
+
+  _createURLFromPath(path_to_folder) {
+    const path_without_space = path_to_folder
+      .replace("spaces" + path.sep, "+")
+      .replace("projects" + path.sep, "");
+    return global.appInfos.homeURL + "/" + path_without_space;
   }
 }
 

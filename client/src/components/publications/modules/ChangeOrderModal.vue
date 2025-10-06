@@ -5,14 +5,14 @@
       :medias_with_linked="medias_with_linked"
       :publication_path="publication_path"
       :edit_mode="true"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
     />
 
     <template #footer>
       <div />
-      <button type="button" class="u-button" @click="$emit('closeModal')">
+      <button type="button" class="u-button" @click="$emit('close')">
         {{ $t("close") }}
       </button>
     </template>

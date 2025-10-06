@@ -1,7 +1,7 @@
 <template>
   <section class="_projectsListWithFilter">
     <div class="_filterSortBar">
-      <div class="u-sameRow">
+      <div class="_filterSortBar--leftSide">
         <slot />
 
         <template v-if="sorted_projects.length > 0">
@@ -17,7 +17,7 @@
               v-text="!show_sidebar ? $t('filter') : $t('hide')"
             />
           </div>
-          <div class="">
+          <div class="_searchField">
             <SearchInput
               v-model="search_project"
               :search_placeholder="$t('search_in_title_desc_kw')"
@@ -497,6 +497,7 @@ export default {
 }
 ._listOfProjects {
   flex: 1 1 0;
+  max-width: 100%;
   margin-top: 0;
 }
 ._tagList {
@@ -514,10 +515,20 @@ export default {
 
 ._filterSortBar {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+}
+._filterSortBar--leftSide {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+._searchField {
+  width: 45ch;
 }
 
 ._statusList {

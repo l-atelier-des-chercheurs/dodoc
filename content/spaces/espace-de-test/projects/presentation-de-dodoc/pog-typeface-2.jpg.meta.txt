@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2018-01-15T18:57:58.000Z
+"$date_modified" = 2025-09-15T10:13:31.427Z
+"$date_uploaded" = 2025-03-13T08:46:09.194Z
+"$media_filename" = "pog-typeface-2.jpg"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

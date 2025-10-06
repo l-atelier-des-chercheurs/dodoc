@@ -22,16 +22,19 @@
         :value="height"
         @input="adjustHeight"
       />
-      {{ $t("pixels") }}
+      {{ unit_i18n }}
     </div>
     <div v-if="is_video">
-      <small class="u-instructions">
+      <small
+        class="u-instructions"
+        :class="{ 'is--invalid': width % 2 !== 0 || height % 2 !== 0 }"
+      >
         {{ $t("video_resolution_even") }}
       </small>
     </div>
     <div class="_mb" />
     <ToggleInput
-      v-if="ratio !== undefined"
+      v-if="typeof ratio === 'number' && !isNaN(ratio)"
       :label="$t('keep_ratio')"
       :content.sync="keep_ratio"
     />
@@ -42,25 +45,28 @@ export default {
   props: {
     width: {
       type: Number,
-      default: 0,
+      default: 1280,
     },
     height: {
       type: Number,
-      default: 0,
+      default: 720,
     },
     ratio: {
       type: Number,
-      default: 0,
     },
     is_video: {
       type: Boolean,
       default: false,
     },
+    unit: {
+      type: String,
+      default: "px",
+    },
   },
   components: {},
   data() {
     return {
-      keep_ratio: true,
+      keep_ratio: typeof this.ratio === "number",
     };
   },
   created() {},
@@ -73,20 +79,29 @@ export default {
       }
     },
   },
-  computed: {},
+  computed: {
+    unit_i18n() {
+      if (this.unit === "px") return this.$t("pixels");
+      else if (this.unit === "mm") return this.$t("millimetres");
+    },
+  },
   methods: {
     adjustWidth(e) {
-      const value = Math.round(Number(e.target.value));
+      let value = Math.round(Number(e.target.value));
       this.$emit("update:width", value);
       if (this.keep_ratio) {
-        this.$emit("update:height", Math.round(value * this.ratio));
+        let h = Math.round(value * this.ratio);
+        if (this.is_video) h = Math.round(h / 2) * 2;
+        this.$emit("update:height", h);
       }
     },
     adjustHeight(e) {
-      const value = Math.round(Number(e.target.value));
+      let value = Math.round(Number(e.target.value));
       this.$emit("update:height", value);
       if (this.keep_ratio) {
-        this.$emit("update:width", Math.round(value / this.ratio));
+        let w = Math.round(value / this.ratio);
+        if (this.is_video) w = Math.round(w / 2) * 2;
+        this.$emit("update:width", w);
       }
     },
   },
@@ -109,9 +124,16 @@ export default {
   }
 }
 ._customResolutionX {
+  font-size: 140%;
+  font-weight: 300;
 }
 
 ._mb {
   margin-bottom: calc(var(--spacing) / 2);
+}
+
+.is--invalid {
+  color: var(--c-rouge);
+  font-weight: bold;
 }
 </style>

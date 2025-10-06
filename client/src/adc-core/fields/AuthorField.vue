@@ -1,6 +1,11 @@
 <template>
   <div>
-    <DLabel v-if="label" :str="label" :tag="tag" :instructions="instructions" />
+    <DLabel
+      v-if="label && show_label"
+      :str="label"
+      :tag="tag"
+      :instructions="instructions"
+    />
 
     <transition-group tag="div" class="_authors" name="listComplete" appear>
       <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
@@ -44,25 +49,28 @@
         />
 
         <div v-if="Array.isArray(new_authors_paths)" class="_listOfAuthors">
-          <template v-if="new_authors_paths.length > 0">
-            <DLabel class="_label" :str="$t('list_of_accounts')" />
-            <transition-group
-              tag="div"
-              class="_authors"
-              name="listComplete"
-              appear
-            >
-              <AuthorTag
-                v-for="author_path in new_authors_paths"
-                :path="author_path"
-                :key="author_path"
-                :edit_mode="edit_mode"
-                :mode="'remove'"
-                @click="removeAuthor(author_path)"
-              />
-            </transition-group>
-            <br />
-          </template>
+          <DLabel class="_label" :str="$t('list_of_accounts')" />
+          <div v-if="new_authors_paths.length === 0" class="u-instructions">
+            {{ $t("noone") }}
+          </div>
+          <transition-group
+            v-else
+            tag="div"
+            class="_authors"
+            name="listComplete"
+            appear
+          >
+            <AuthorTag
+              v-for="author_path in new_authors_paths"
+              :path="author_path"
+              :key="author_path"
+              :edit_mode="edit_mode"
+              :mode="'remove'"
+              @click="removeAuthor(author_path)"
+            />
+          </transition-group>
+
+          <div class="u-spacingBottom" />
 
           <DLabel class="_label" :str="$t('add_accounts')" />
           <AuthorPicker
@@ -73,8 +81,11 @@
 
         <div class="u-spacingBottom" />
 
+        <div v-if="warning_wont_be_able_to_edit" class="u-warning">
+          {{ $t("warning_wont_be_able_to_edit") }}
+        </div>
+
         <template slot="footer">
-          <div />
           <SaveCancelButtons
             :is_saving="is_saving"
             :allow_save="allow_save"
@@ -92,6 +103,10 @@ export default {
     label: {
       type: String,
       default: "",
+    },
+    show_label: {
+      type: Boolean,
+      default: true,
     },
     field: {
       type: String,
@@ -155,6 +170,15 @@ export default {
         JSON.stringify(this.new_authors_paths) !==
         JSON.stringify(this.authors_paths)
       );
+    },
+    warning_wont_be_able_to_edit() {
+      if (this.field === "$admins") {
+        const folder = {
+          $admins: this.new_authors_paths,
+        };
+        return this.canLoggedinEditFolder({ folder }) === false;
+      }
+      return false;
     },
     editing_options() {
       if (this.no_options)
@@ -281,6 +305,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+  padding-bottom: calc(var(--spacing) / 4);
 }
 
 ._footer {

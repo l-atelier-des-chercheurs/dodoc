@@ -1,6 +1,10 @@
 const path = require("path");
-const packagejson = require("./package.json");
-const base_settings = require("./settings_base.json");
+
+// Configure Node.js to accept self-signed certificates
+process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
+
+const packagejson = require("./package.json"),
+  base_settings = require("./settings_base.json");
 
 global.appRoot = path.resolve(__dirname);
 global.appInfos = {

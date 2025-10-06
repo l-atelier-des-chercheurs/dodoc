@@ -16,7 +16,7 @@
         enable-background="new 0 0 77.606 87.035"
         xml:space="preserve"
       >
-        <polygon points="49.211,80.542 49.211,80.542 49.211,80.542  " />
+        <!-- <polygon points="49.211,80.542 49.211,80.542 49.211,80.542  " /> -->
         <path
           d="M52.213,87.035l-3.002-6.492l14.787-6.828C35.431,66.492,19.22,52.515,10.437,38.567C1.11,23.804,0.007,9.387,0,3.198   C0,1.249,0.112,0.106,0.123,0L7.24,0.724v0.002c0,0-0.002,0.009-0.01,0.105C7.207,1.12,7.153,1.945,7.153,3.198   c-0.006,5.347,1,18.401,9.328,31.544c7.895,12.421,22.246,25.197,49.435,32.07l-6.592-14.583l6.52-2.947l11.762,26.025   L52.213,87.035z"
         />
@@ -82,15 +82,21 @@ export default {
   width: 40px;
   height: 40px;
   pointer-events: none;
-  transform-origin: center center;
+  transform-origin: top left;
 
-  transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+  transition: transform 1s cubic-bezier(0.19, 1, 0.22, 1),
     opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
 
   svg {
     position: absolute;
     transform: translate(-50%, -50%) rotate(-55deg);
     background: var(--active-color);
+    // border: 2px solid black;
+    box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+      0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+      0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+      0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+
     border-radius: 50%;
     width: 100%;
     height: 100%;
@@ -107,7 +113,7 @@ export default {
   &-enter,
   &-leave-to {
     opacity: 0;
-    transform: scale(0.5) rotate(-35deg);
+    transform: scale(0.3) rotate(95deg);
   }
 }
 </style>

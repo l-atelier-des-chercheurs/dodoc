@@ -17,6 +17,7 @@
               :pages="pages"
               :active_page_number="active_page_number"
               :active_spread_index="active_spread_index"
+              :is_spread="is_spread"
               :page_width="page_width"
               :page_height="page_height"
               :scale="scale"
@@ -38,12 +39,18 @@
               @update:scale="scale = $event"
               @prevPage="prevPage()"
               @nextPage="nextPage()"
+              @createPage="$emit('createPage')"
               @close="setPageActive(false)"
             />
           </div>
         </div>
         <div class="_pagePan">
-          <PanZoom2 :scale.sync="scale">
+          <PanZoom2
+            :scale.sync="scale"
+            :content-width="page_width"
+            :content-height="page_height"
+            :magnification="current_page_magnification"
+          >
             <transition name="pagechange" mode="out-in">
               <div
                 class="_pageCont"
@@ -104,7 +111,7 @@
                         :grid_z_index="page_settings.grid_z_index"
                         :gridstep_in_mm="page_settings.gridstep_in_mm"
                         :margins="margins"
-                        :page_number="active_spread_index * 2 + index"
+                        :page_number="getCorrectPageNumber(page.id)"
                         :pagination="pagination"
                         :hide_pagination="current_page.hide_pagination === true"
                         :active_module="active_module"
@@ -253,6 +260,10 @@ export default {
         )
       );
     },
+    current_page_magnification() {
+      if (this.layout_mode === "screen") return 1;
+      return this.$root.page_magnification;
+    },
   },
   methods: {
     loadSettings() {
@@ -329,6 +340,10 @@ export default {
       const next_spread = this.spreads[this.active_spread_index + 1];
       const next_spread_first_page = next_spread[0].id;
       this.setPageActive(next_spread_first_page);
+    },
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
     },
   },
 };

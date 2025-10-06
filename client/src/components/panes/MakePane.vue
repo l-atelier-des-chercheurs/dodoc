@@ -412,7 +412,6 @@ export default {
 }
 ._makePane--content {
   width: 100%;
-  // max-width: var(--max-column-width);
   margin: 0 auto;
   padding: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 10);
