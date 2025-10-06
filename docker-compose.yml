@@ -1,0 +1,11 @@
+services:
+  dodoc-node:
+    image: registry.gitlab.com/l-atelier-des-chercheurs/dodoc2-node:12.0.7-0
+    ports:
+      - "8080:8080"
+    volumes:
+      - dodoc-data:/home/node/Documents/dodoc
+    restart: always
+
+volumes:
+  dodoc-data:
