@@ -56,7 +56,8 @@ const routes = [
   //     import(/* webpackChunkName: "AuthorView" */ "@/views/EventView.vue"),
   // },
   {
-    // internal route to generate preview for PDF and STL
+    // route to display a single media with caption/credits and
+    // with qr scan option, and to generate preview for PDF and STL server-side
     path: "/_previewmedia",
     name: "Preview media",
     meta: {
@@ -64,6 +65,11 @@ const routes = [
       static: true,
     },
     component: () => import("@/views/PreviewMedia.vue"),
+  },
+  {
+    path: "/reset-password",
+    name: "Reset Password",
+    component: () => import("@/views/ResetPasswordView.vue"),
   },
   {
     path: "/:pathMatch(.*)*",
@@ -76,6 +82,20 @@ const router = new VueRouter({
   mode: "history",
   base: "/",
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return new Promise((resolve, reject) => {
+      // only if changing page and not just query or hash
+      if (to.path !== from.path) {
+        setTimeout(() => {
+          if (savedPosition) {
+            return resolve(savedPosition);
+          } else {
+            return resolve({ x: 0, y: 0 });
+          }
+        }, 150);
+      }
+    });
+  },
 });
 
 export default router;

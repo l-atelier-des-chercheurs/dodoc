@@ -18,8 +18,8 @@
           :content.sync="new_publication_is_private"
           :label="$t('private')"
           :options="{
-            true: $t('private_status_explanations'),
-            false: $t('public_status_explanations'),
+            true: $t('private_status_explanations_publis'),
+            false: $t('public_status_explanations_publis'),
           }"
         />
       </div>

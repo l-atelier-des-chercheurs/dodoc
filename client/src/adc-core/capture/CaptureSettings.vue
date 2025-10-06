@@ -700,19 +700,17 @@ export default {
 
         navigator.mediaDevices
           .enumerateDevices()
-          .then((devices) => {
+          .then(async (devices) => {
+            try {
+              // Get desktop capture sources
+              const desktopSources = await this.getDesktopCapturer();
+              devices = devices.concat(desktopSources);
+            } catch (error) {
+              console.warn("Failed to get desktop sources:", error);
+              // Continue with regular devices even if desktop capture fails
+            }
             return resolve(devices);
           })
-          // .then((devices) => {
-          //   this.getDesktopCapturer()
-          //     .then((sources) => {
-          //       devices = devices.concat(sources);
-          //     })
-          //     .catch(() => {})
-          //     .then(() => {
-          //       return resolve(devices);
-          //     });
-          // })
           .catch((err) => {
             return reject(err);
           });
@@ -921,8 +919,14 @@ export default {
     //   });
     // },
     getDesktopCapturer() {
-      return new Promise((resolve, reject) => {
-        if (!window.electronAPI.desktopCapturer) return;
+      return new Promise((resolve) => {
+        // Check if we're in Electron and desktopCapturer is available
+        if (!window.electronAPI || !window.electronAPI.desktopCapturer) {
+          console.log(
+            "Desktop capture not available (not in Electron or API missing)"
+          );
+          return resolve([]);
+        }
 
         if (this.$root.debug_mode === true)
           console.log(`CaptureSettings • METHODS : getDesktopCapturer`);
@@ -930,19 +934,28 @@ export default {
         window.electronAPI
           .desktopCapturer({ types: ["window", "screen"] })
           .then((sources) => {
-            sources = sources.map((s) => {
+            if (!sources || !Array.isArray(sources)) {
+              console.log("No desktop sources available");
+              return resolve([]);
+            }
+
+            const desktopSources = sources.map((s) => {
               return {
                 chromeMediaSource: "desktop",
                 deviceId: s.id,
                 kind: "videoinput",
                 label: "🖥️ " + s.name,
+                thumbnail: s.thumbnail, // Include thumbnail for preview
               };
             });
 
-            return resolve(sources);
+            console.log(`Found ${desktopSources.length} desktop sources`);
+            return resolve(desktopSources);
           })
-          .catch((err) => reject(err));
-        // .catch((err) => reject(err));
+          .catch((err) => {
+            console.error("Desktop capture error:", err);
+            resolve([]); // Return empty array instead of rejecting
+          });
       });
     },
     refreshAvailableDevices() {

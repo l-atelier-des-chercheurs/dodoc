@@ -2,7 +2,7 @@
   <div
     class="_mediaGrid"
     :class="{
-      'is--multipleMedias': is_multiple_medias,
+      'is--multipleMedias': is_multiple_medias && !$root.is_mobile_view,
       'is--singleText': is_single_text,
     }"
   >
@@ -14,7 +14,7 @@
         "
         :key="'dz-' + index"
         class="_dzInbetween"
-        @mediaDropped="$emit('addMedias', $event)"
+        @mediaDropped="$emit('pickMedias', $event)"
       /> -->
       <div
         class="_mediaGrid--item"
@@ -132,7 +132,7 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
       <template
@@ -141,7 +141,11 @@
           medias_with_linked.length < number_of_max_medias
         "
       >
-        <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
+        <DropZone
+          class="_dzAfter"
+          :rotate="-90"
+          @mediaDropped="$emit('pickMedias', [$event])"
+        />
       </template>
     </div>
   </div>
@@ -258,6 +262,7 @@ export default {
 
   ::v-deep ._mediaContent .plyr__controls {
     padding-right: calc(var(--spacing) * 3);
+    width: 100%;
   }
 
   &.is--singleText {
@@ -274,6 +279,10 @@ export default {
   > ._mediaGrid--item {
     position: relative;
     transition: flex 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    ::v-deep ._iframeStylePreview {
+      object-fit: var(--object-fit, cover);
+    }
   }
 
   // ._dzInbetween {
@@ -288,6 +297,9 @@ export default {
     flex: 1 1 calc(100% / var(--number_of_medias));
 
     &[data-mediatype="text"] {
+      aspect-ratio: auto;
+    }
+    &[data-mediatype="audio"] {
       aspect-ratio: auto;
     }
     &:not([data-mediatype="text"]) {

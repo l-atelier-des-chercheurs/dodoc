@@ -13,11 +13,6 @@
       :to="author_url"
       @click.native="context !== 'full' ? $emit('navToPage') : ''"
     >
-      <div v-if="is_connected && !is_self" class="_connected">
-        <b-icon icon="people" />
-        {{ $t("connected_currently") }}
-      </div>
-
       <div class="_topbar">
         <div class="_cover">
           <CoverField
@@ -32,7 +27,13 @@
             :can_edit="can_edit"
           />
         </div>
-
+        <div class="indicators">
+          <b-icon
+            v-if="author_has_location && context !== 'full'"
+            class=""
+            icon="pin-map-fill"
+          />
+        </div>
         <div class="_text">
           <div class="">
             <TitleField
@@ -60,6 +61,14 @@
                 <b-icon icon="shield-check" :aria-label="$t('admin')" />
                 {{ $t("admin") }}
               </small>
+            </div>
+            <div class="_connected" v-if="is_connected && !is_self">
+              <b-icon
+                :title="$t('connected_currently')"
+                class=""
+                icon="people-fill"
+              />
+              {{ $t("connected_currently") }}
             </div>
           </div>
 
@@ -96,7 +105,7 @@
               :path="author.$path"
               :content="author.presentation"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="can_edit"
             />
           </div>
@@ -283,9 +292,14 @@ export default {
       flex-flow: column nowrap;
       align-items: stretch;
       gap: calc(var(--spacing) / 1);
+      padding: 0;
 
       ._cover {
         flex: 0 0 auto;
+      }
+
+      ._text {
+        gap: calc(var(--spacing) / 1);
       }
     }
   }
@@ -308,7 +322,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   // padding-bottom: calc(var(--spacing) / 2);
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
 
   ::v-deep {
     a {
@@ -324,13 +338,25 @@ export default {
 }
 
 ._connected {
-  display: flex;
+  display: inline-flex;
   gap: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   background-color: var(--c-bleumarine_clair);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
   color: var(--c-bleumarine_fonce);
   border-radius: 3px;
 
   font-weight: 500;
   justify-content: center;
+}
+
+.indicators {
+  position: absolute;
+  top: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) / 2);
+  color: var(--c-bleumarine_fonce);
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 4);
 }
 </style>

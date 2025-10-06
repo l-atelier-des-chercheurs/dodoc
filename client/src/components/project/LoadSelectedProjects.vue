@@ -44,11 +44,11 @@ export default {
             no_files: true,
           })
           .catch((err) => {
-            this.fetch_err = err.response;
+            // this.fetch_err = err.response;
           });
-        if (project) this.projects.push(project);
-        this.is_loading = false;
+        if (project && project.$path) this.projects.push(project);
       }
+      this.is_loading = false;
     },
   },
 };
@@ -60,8 +60,8 @@ export default {
 
   display: grid;
   grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
+  grid-gap: calc(var(--spacing) / 2);
   align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
 }
 </style>

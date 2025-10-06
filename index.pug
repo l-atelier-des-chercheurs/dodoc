@@ -37,6 +37,7 @@ html
           text_background_color: `#{text_background_color || ""}`,
           text_image_layout: `#{text_image_layout || ""}`,
           has_general_password: !{has_general_password || false},
+          can_send_email: !{can_send_email || false},
           signup_password_hashed: `!{signup_password_hashed || ""}`,
           require_signup_to_contribute: !{require_signup_to_contribute || false},
           require_mail_to_signup: !{require_mail_to_signup || false},
@@ -44,6 +45,7 @@ html
           terms_in_footer: !{terms_in_footer || false},
           confidentiality_in_footer: !{confidentiality_in_footer || false},
           enable_events: !{enable_events || false},
+          enable_chats: !{enable_chats || false},
           $admins: !{$admins ? JSON.stringify($admins) : "[]"},
           $contributors: !{$contributors ? JSON.stringify($contributors) : "[]"},
 
@@ -60,9 +62,15 @@ html
   body(data-mode=mode)
     #app
 
+    div(style="display: none;")
+      include client/src/plyr.svg
+
 
     if is_livereload
       script(type="module" src="https://localhost:5173/src/main.js")
+    else if page_is_standalone_html
+      script
+        include client/dist/bundle.js
     else
       script(type="module" src="_client/build.js")
 

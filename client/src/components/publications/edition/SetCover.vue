@@ -1,6 +1,6 @@
 <template>
   <div class="_cover">
-    <div class="u-spacingBottom" v-if="!cover_media">
+    <div class="" v-if="!cover_media">
       <DLabel :str="$t('cover')" />
       <button
         type="button"
@@ -28,7 +28,7 @@
           :path="cover_media.$path"
           :custom_formats="[]"
           :save_format="'raw'"
-          :can_edit="can_edit"
+          :can_edit="true"
         />
       </div>
 
@@ -36,13 +36,22 @@
         <template v-if="cover_image_media">
           <div class="_cover--pickCover--img">
             <MediaContent :file="cover_image_media" :resolution="1600" />
-            <button
-              type="button"
-              class="u-button u-button_bleuvert u-button_small _changeCoverBtn"
-              @click="show_cover_picker = true"
-            >
-              {{ $t("change") }}
-            </button>
+            <div class="_cover--pickCover--img--buttons">
+              <button
+                type="button"
+                class="u-button u-button_bleuvert u-button_small"
+                @click="show_cover_picker = true"
+              >
+                {{ $t("change") }}
+              </button>
+              <button
+                type="button"
+                class="u-button u-button_red u-button_small"
+                @click="removeImage"
+              >
+                {{ $t("remove") }}
+              </button>
+            </div>
           </div>
         </template>
 
@@ -60,7 +69,7 @@
           :publication_path="publication.$path"
           :select_mode="'single'"
           :pick_from_types="['image']"
-          @addMedias="pickCover"
+          @pickMedias="pickCover"
           @close="show_cover_picker = false"
         />
       </div>
@@ -71,9 +80,11 @@
         :value="cover_media.cover_layout_mode"
         :path="cover_media.$path"
         :hide_validation="true"
-        :can_edit="can_edit"
+        :can_edit="true"
         :options="cover_layout_mode_options"
       />
+
+      <RemoveMenu @remove="removeCover" />
     </template>
   </div>
 </template>
@@ -85,7 +96,6 @@ export default {
       type: Object,
       required: true,
     },
-    can_edit: Boolean,
   },
   components: { MediaPicker },
   data() {
@@ -149,9 +159,10 @@ export default {
       });
     },
 
-    async pickCover({ path_to_source_media_metas }) {
+    async pickCover(medias) {
+      const media = medias[0];
       const new_entry = await this.prepareMediaForPublication({
-        path_to_source_media_meta: path_to_source_media_metas[0],
+        path_to_source_media_meta: media.$path,
         publication_path: this.publication.$path,
       });
 
@@ -159,6 +170,14 @@ export default {
         path: this.cover_media.$path,
         new_meta: {
           source_medias: [new_entry],
+        },
+      });
+    },
+    async removeImage() {
+      this.$api.updateMeta({
+        path: this.cover_media.$path,
+        new_meta: {
+          source_medias: [],
         },
       });
     },
@@ -181,7 +200,7 @@ export default {
   position: relative;
   overflow: hidden;
   margin-bottom: calc(var(--spacing) / 1);
-  background-color: var(--c-bodybg);
+  background-color: var(--c-gris_clair);
 
   ::v-deep {
     ._mediaContent,
@@ -194,8 +213,11 @@ export default {
   }
 }
 
-._changeCoverBtn {
+._cover--pickCover--img--buttons {
   position: absolute;
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
   bottom: 0;
   right: 0;
   margin: calc(var(--spacing) / 2);

@@ -3,9 +3,7 @@
     <div class="_pageMenu--pane">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
         <b-icon icon="grid-fill" />
-        <template v-if="!active_spread_index">{{
-          $t("list_of_pages")
-        }}</template>
+        <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
         <template v-else>{{ $t("list_of_spreads") }}</template>
       </button>
       <div class="_titleRow">
@@ -24,12 +22,15 @@
             </div>
           </transition>
           <transition name="slideupFade" mode="out-in">
-            <span v-if="active_spread_index" :key="active_spread_index">
-              <template v-if="active_page_number === 0">
+            <span
+              v-if="active_spread_index !== false"
+              :key="active_spread_index"
+            >
+              <template v-if="active_spread_index === 0">
                 ({{ $t("cover") }})
               </template>
               <template v-else>
-                ({{ $t("spread").toLowerCase() }} {{ active_spread_index }})
+                ({{ $t("spread").toLowerCase() }} {{ active_spread_index + 1 }})
               </template>
             </span>
           </transition>
@@ -38,10 +39,34 @@
           type="button"
           class="u-button u-button_transparent u-button_icon"
           @click="$emit('nextPage')"
-          :disabled="active_page_number >= pages.length - 1"
+          :disabled="is_last_page"
         >
           <b-icon icon="arrow-right-square" />
         </button>
+      </div>
+
+      <div v-if="is_last_page" class="u-spacingBottom">
+        <div class="u-instructions">
+          {{ $t("last_page_reached") }}
+        </div>
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert u-button_small"
+          @click="createPageAndOpen"
+        >
+          <b-icon icon="plus-square" />
+          {{ $t("create_page") }}
+        </button>
+        <!-- <EditBtn
+          :btn_type="'create_page'"
+          :is_unfolded="true"
+          :label_position="'left'"
+          :key="'createPage' + index"
+          @click="createPageAndOpen"
+        /> -->
+
+        <hr />
       </div>
 
       <div class="_scale">
@@ -60,7 +85,7 @@
         />
       </div>
 
-      <div class="" v-if="can_edit">
+      <div class="u-displayAsPublic" v-if="can_edit">
         <ToggleInput
           :content="display_as_public"
           @update:content="$emit('update:display_as_public', $event)"
@@ -72,6 +97,7 @@
     <template v-if="can_edit && !display_as_public">
       <div
         class="_pageMenu--pane"
+        :key="active_page_number"
         v-show="!has_editor_toolbar && !active_module"
       >
         <div class="">
@@ -338,7 +364,7 @@
             :label="!active_module.caption ? $t('add_caption') : $t('caption')"
             :field_name="'caption'"
             :input_type="'editor'"
-            :custom_formats="['bold', 'italic', 'link']"
+            :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :content="active_module.caption"
             :path="active_module.$path"
             :maxlength="640"
@@ -548,7 +574,7 @@
           :min="0"
           :max="50"
           :step="1"
-          :default_value="0"
+          :default_value="15"
           :suffix="unit"
           @save="
             updateMediaPubliMeta({
@@ -687,6 +713,7 @@ export default {
     pages: Array,
     active_page_number: Number,
     active_spread_index: [Boolean, Number],
+    is_spread: Boolean,
     page_width: Number,
     page_height: Number,
     scale: Number,
@@ -741,6 +768,9 @@ export default {
   },
   watch: {},
   computed: {
+    is_last_page() {
+      return this.active_page_number === this.pages.length - 1;
+    },
     module_meta_filename() {
       if (!this.active_module) return "";
       return this.active_module.$path.substring(
@@ -827,6 +857,12 @@ export default {
     },
   },
   methods: {
+    createPageAndOpen() {
+      this.$emit("createPage");
+      setTimeout(() => {
+        this.$emit("nextPage");
+      }, 500);
+    },
     moveToAnotherPage($event) {
       this.show_move_to_page_modal = false;
       this.updateMediaPubliMeta({ page_id: $event });
@@ -1042,6 +1078,11 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
+}
+
+._createPageBtn {
+  display: flex;
+  justify-content: flex-end;
 }
 
 ._setSizeBtn {

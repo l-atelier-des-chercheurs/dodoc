@@ -1,6 +1,11 @@
 <template>
   <div>
-    <DLabel v-if="label" :str="label" :tag="tag" :instructions="instructions" />
+    <DLabel
+      v-if="label && show_label"
+      :str="label"
+      :tag="tag"
+      :instructions="instructions"
+    />
 
     <transition-group tag="div" class="_authors" name="listComplete" appear>
       <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
@@ -98,6 +103,10 @@ export default {
     label: {
       type: String,
       default: "",
+    },
+    show_label: {
+      type: Boolean,
+      default: true,
     },
     field: {
       type: String,
@@ -296,6 +305,7 @@ export default {
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+  padding-bottom: calc(var(--spacing) / 4);
 }
 
 ._footer {

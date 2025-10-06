@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2020-12-10T14:35:40.000Z
+"$date_modified" = 2025-09-15T10:13:31.299Z
+"$date_uploaded" = 2025-03-13T09:30:18.026Z
+"$media_filename" = "ftw-cairn-photo01.jpg"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

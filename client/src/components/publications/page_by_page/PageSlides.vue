@@ -11,7 +11,7 @@
       <template v-if="!is_spread">
         <template v-if="display_mode !== 'slides'">
           <div
-            v-for="(page, page_number) in pages_to_show"
+            v-for="page in pages_to_show"
             class="_page"
             :key="'page-' + page.id"
           >
@@ -21,7 +21,7 @@
               :page_color="page.page_color"
               :layout_mode="publication.layout_mode"
               :hide_pagination="page.hide_pagination === true"
-              :page_number="page_number"
+              :page_number="getCorrectPageNumber(page.id)"
               :pagination="pagination"
               :can_edit="false"
             />
@@ -45,7 +45,7 @@
                 :page_color="slide_current_page.page_color"
                 :layout_mode="publication.layout_mode"
                 :hide_pagination="slide_current_page.hide_pagination === true"
-                :page_number="slides_current_page_or_spread_index - 1"
+                :page_number="getCorrectPageNumber(slide_current_page.id)"
                 :pagination="pagination"
                 :can_edit="false"
               />
@@ -55,6 +55,7 @@
       </template>
       <template v-else>
         <template v-if="display_mode !== 'slides'">
+          <!-- print mode with ?display=print -->
           <div
             class="_spread"
             :key="s_index"
@@ -74,7 +75,7 @@
                   :page_color="page.page_color"
                   :layout_mode="publication.layout_mode"
                   :hide_pagination="page.hide_pagination === true"
-                  :page_number="s_index * 2 + index"
+                  :page_number="getCorrectPageNumber(page.id)"
                   :pagination="pagination"
                   :can_edit="false"
                 />
@@ -84,6 +85,7 @@
           </div>
         </template>
         <template v-else>
+          <!-- presentation mode with ?display=slides -->
           <transition name="fade_fast" mode="out-in">
             <div
               class="_spread"
@@ -104,9 +106,7 @@
                     :page_color="page.page_color"
                     :layout_mode="publication.layout_mode"
                     :hide_pagination="page.hide_pagination === true"
-                    :page_number="
-                      (slides_current_page_or_spread_index - 1) * 2 + index
-                    "
+                    :page_number="getCorrectPageNumber(page.id)"
                     :pagination="pagination"
                     :can_edit="false"
                   />
@@ -222,17 +222,13 @@ export default {
   props: {
     publication: Object,
     is_serversidepreview: Boolean,
-    defaut_display_mode: {
-      type: String,
-      default: "print",
-    },
   },
   components: {
     SinglePage,
   },
   data() {
     return {
-      display_mode: this.defaut_display_mode,
+      display_mode: "print",
       page_zoom: 100,
       night_mode: false,
     };
@@ -249,7 +245,7 @@ export default {
     else if (this.publication.layout_mode === "print")
       document.body.style = `
           --page-width: ${this.publication.page_width}mm;
-          --page-height: calc(${this.publication.page_height}mm - 0.4mm);
+          --page-height: calc(${this.publication.page_height}mm - 0mm);
         `;
     document.addEventListener("keydown", this.keyPressed);
 
@@ -304,9 +300,14 @@ export default {
       return this.spreads[this.slides_current_page_or_spread_index - 1];
     },
     pages_to_show() {
-      const page_to_display = +this.$route.query?.page;
-      if (page_to_display)
-        return this.pages.slice(page_to_display - 1, page_to_display);
+      const pages_to_display = this.$route.query?.page;
+      if (pages_to_display && pages_to_display.includes("-")) {
+        const [start, end] = pages_to_display.split("-");
+        return this.pages.slice(start - 1, end);
+      } else if (pages_to_display && !pages_to_display.includes("-")) {
+        return this.pages.slice(+pages_to_display - 1, +pages_to_display);
+      }
+
       return this.pages;
     },
     has_multiple_pages() {
@@ -330,9 +331,13 @@ export default {
       });
     },
     spreads_to_show() {
-      const spread_to_display = +this.$route.query?.page;
-      if (spread_to_display)
-        return this.spreads.slice(spread_to_display - 1, spread_to_display);
+      const spreads_to_display = this.$route.query?.page;
+      if (spreads_to_display && spreads_to_display.includes("-")) {
+        const [start, end] = spreads_to_display.split("-");
+        return this.spreads.slice(start - 1, end);
+      } else if (spreads_to_display) {
+        return this.spreads.slice(+spreads_to_display - 1, +spreads_to_display);
+      }
       return this.spreads;
     },
   },
@@ -413,6 +418,10 @@ export default {
         this.$alertify.error(this.$t("page_not_found"));
       }
     },
+    getCorrectPageNumber(page_id) {
+      const page_index = this.pages.findIndex((p) => p.id === page_id);
+      return page_index;
+    },
   },
 };
 </script>
@@ -424,6 +433,10 @@ export default {
 
   &:not(:last-child) {
     page-break-after: always;
+  }
+
+  &:last-child {
+    page-break-after: avoid !important;
   }
 
   ::v-deep {
@@ -542,6 +555,7 @@ export default {
 }
 </style>
 <style lang="scss">
+html,
 body {
   @media print {
     width: var(--page-width);

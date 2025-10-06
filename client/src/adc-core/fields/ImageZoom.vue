@@ -19,15 +19,26 @@
         :key="'zoom-' + is_zoomed"
       />
     </transition>
+
     <transition name="slideupFade" mode="out-in">
-      <div class="_clickToZoomBtn" v-if="!is_zoomed">
+      <div class="_clickToZoomBtn" :key="is_zoomed">
         <button
+          v-if="!is_zoomed"
           type="button"
           class="u-button u-button_white u-button_small"
           @click.stop="toggleZoom"
         >
           <b-icon icon="zoom-in" />
           {{ $t("click_to_zoom") }}
+        </button>
+        <button
+          v-else
+          type="button"
+          class="u-button u-button_white u-button_small"
+          @click.stop="toggleZoom"
+        >
+          <b-icon icon="zoom-out" />
+          {{ $t("zoom_out") }}
         </button>
       </div>
     </transition>
@@ -51,8 +62,6 @@ export default {
       cont_height: undefined,
       pos_x: undefined,
       pos_y: undefined,
-
-      padding: 100,
     };
   },
 
@@ -77,6 +86,9 @@ export default {
     },
     pos_y_percent() {
       return this.pos_y / this.cont_height;
+    },
+    padding() {
+      return this.$root.window.innerWidth * 0.2;
     },
     image_styles() {
       if (this.is_zoomed) {

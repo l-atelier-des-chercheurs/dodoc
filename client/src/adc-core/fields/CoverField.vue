@@ -77,7 +77,9 @@ export default {
     },
     can_edit: Boolean,
   },
-  components: {},
+  components: {
+    ImageSelect: () => import("@/adc-core/fields/ImageSelect.vue"),
+  },
   data() {
     return {
       selected_file: [],
@@ -134,7 +136,7 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
-  overflow: visible;
+  overflow: hidden;
 
   --color1: var(--c-gris_clair);
   --color2: white;
@@ -205,7 +207,7 @@ export default {
 
   container-type: inline-size;
   ._noImage--letter {
-    font-weight: 200;
+    font-weight: 300;
     font-size: 1.5em;
     color: var(--c-bleumarine);
     user-select: none;

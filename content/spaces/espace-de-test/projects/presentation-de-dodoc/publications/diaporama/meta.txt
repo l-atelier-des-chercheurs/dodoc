@@ -1,0 +1,62 @@
+title = "Diaporama"
+template = "page_by_page"
+layout_mode = "screen"
+page_width = 1_280
+page_height = 720
+"$status" = "public"
+"$admins" = "parent_contributors"
+"$date_modified" = 2025-09-16T14:14:44.472Z
+"$date_created" = 2025-08-18T20:55:56.105Z
+page_margin_top = 60
+page_margin_bottom = 60
+page_margin_left = 60
+page_margin_right = 60
+"$files_count" = 45
+"$date_last_file" = 2025-09-16T14:00:00.893Z
+
+[[pages]]
+id = "f16o0z"
+page_color = "white"
+
+[[pages]]
+id = "xg3ify"
+page_color = "white"
+
+[[pages]]
+id = "ug320l"
+page_color = "white"
+
+[[pages]]
+id = "rc7wkh"
+page_color = "white"
+
+[[pages]]
+id = "first_page"
+
+[[pages]]
+id = "o3l4rj"
+page_color = "white"
+
+[[pages]]
+id = "h4fzyl"
+page_color = "white"
+
+[[pages]]
+id = "fdnuu9"
+page_color = "white"
+
+[[pages]]
+id = "lh0qon"
+page_color = "white"
+
+[[pages]]
+id = "us5vmu"
+page_color = "white"
+
+[[pages]]
+id = "1pp2hd"
+page_color = "white"
+
+[[pages]]
+id = "4ds7rv"
+page_color = "white"

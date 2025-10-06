@@ -152,6 +152,17 @@ import {
   BIconFilePlayFill,
   BIconGripVertical,
   BIconHouse,
+  BIconRecycle,
+  BIconMarkdown,
+  BIconWindowSidebar,
+  BIconList,
+  BIconFileCode,
+  BIconFolderSymlink,
+  BIconChatDots,
+  BIconChatDotsFill,
+  BIconArrowUpRightSquare,
+  BIconArrowUpRightSquareFill,
+  BIconGlobe,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -303,3 +314,15 @@ Vue.component("BIconThreeDots", BIconThreeDots);
 Vue.component("BIconFilePlayFill", BIconFilePlayFill);
 Vue.component("BIconGripVertical", BIconGripVertical);
 Vue.component("BIconHouse", BIconHouse);
+Vue.component("BIconRecycle", BIconRecycle);
+Vue.component("BIconMarkdown", BIconMarkdown);
+Vue.component("BIconWindowSidebar", BIconWindowSidebar);
+Vue.component("BIconBook", BIconBook);
+Vue.component("BIconList", BIconList);
+Vue.component("BIconFileCode", BIconFileCode);
+Vue.component("BIconFolderSymlink", BIconFolderSymlink);
+Vue.component("BIconChatDots", BIconChatDots);
+Vue.component("BIconChatDotsFill", BIconChatDotsFill);
+Vue.component("BIconArrowUpRightSquare", BIconArrowUpRightSquare);
+Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);
+Vue.component("BIconGlobe", BIconGlobe);

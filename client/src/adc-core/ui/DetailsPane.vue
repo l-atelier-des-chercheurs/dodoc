@@ -14,11 +14,7 @@
       <span class="_name">
         {{ header }}
       </span>
-      <div
-        class="u-nut"
-        v-if="has_items !== undefined"
-        :data-isfilled="has_items"
-      >
+      <div class="u-nut" v-if="has_items" :data-isfilled="has_items">
         <template v-if="typeof has_items === 'number'">
           {{ has_items }}
         </template>
@@ -28,15 +24,13 @@
         <template v-else>–</template>
       </div>
 
-      <transition name="fade_fast" mode="out-in">
-        <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
-          <b-icon
-            :icon="
-              !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
-            "
-          />
-        </div>
-      </transition>
+      <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
+        <b-icon
+          :icon="
+            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+          "
+        />
+      </div>
     </summary>
     <div class="">
       <transition name="fade_fast" mode="out-in">
@@ -85,6 +79,7 @@ export default {
     animateDetails(start, end) {
       // Start a WAAPI animation
 
+      this.$refs.content.style.overflow = "hidden";
       const animation = this.$refs.content.animate(
         {
           height: [start, end],
@@ -96,10 +91,16 @@ export default {
       );
 
       animation.onfinish = () => {
-        if (this.$refs.content) this.$refs.content.style.height = "";
+        if (this.$refs.content) {
+          this.$refs.content.style.overflow = "auto";
+          this.$refs.content.style.height = "";
+        }
       };
       animation.oncancel = () => {
-        if (this.$refs.content) this.$refs.content.style.height = "";
+        if (this.$refs.content) {
+          this.$refs.content.style.overflow = "auto";
+          this.$refs.content.style.height = "";
+        }
       };
     },
   },
@@ -164,7 +165,7 @@ export default {
     padding: calc(var(--spacing) / 4);
     cursor: pointer;
     background: white;
-    border-radius: 4px;
+    border-radius: var(--panel-radius);
     line-height: 1.21;
 
     &:hover,
@@ -192,6 +193,7 @@ export default {
 
     ._content {
       padding: calc(var(--spacing) / 2);
+      padding-top: 0;
       // border: 2px solid var(--c-gris);
       border-top: none;
 

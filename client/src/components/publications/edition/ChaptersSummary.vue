@@ -9,29 +9,45 @@
         appear
         key="allpages"
       >
-        <SetCover
-          :key="'cover'"
-          :publication="publication"
-          :can_edit="can_edit"
-        />
+        <SetCover :key="'cover'" :publication="publication" />
         <ChapterPreview
           v-for="(section, index) in sections"
           :key="section.$path"
           :section="section"
           :index="index"
           :number_of_sections="sections.length"
-          :can_edit="can_edit"
+          :view_mode="view_mode"
+          :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
+          @remove="$emit('removeChapter', section)"
         />
 
         <div key="'add'" class="_addSection">
-          <EditBtn
-            v-if="can_edit"
-            :btn_type="'create_chapter'"
-            :is_unfolded="true"
-            @click="createSection"
-          />
+          <button
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'text' })"
+          >
+            <b-icon icon="plus" />
+            {{ $t("text") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'gallery' })"
+          >
+            <b-icon icon="plus" />
+            {{ $t("gallery") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'story' })"
+          >
+            <b-icon icon="plus" />
+            {{ $t("story") }}
+          </button>
         </div>
       </transition-group>
     </div>
@@ -46,7 +62,8 @@ export default {
     publication: Object,
     sections: Array,
     opened_section_meta_filename: String,
-    can_edit: Boolean,
+    view_mode: String,
+    chapters_positions: Object,
   },
   components: { ChapterPreview, SetCover },
   data() {
@@ -54,7 +71,7 @@ export default {
   },
   created() {},
   mounted() {
-    if (this.can_edit && this.sections.length === 0) this.createSection();
+    // if (this.sections.length === 0) this.createSection({ type: "text" });
   },
   beforeDestroy() {},
   watch: {
@@ -66,16 +83,18 @@ export default {
     is_associated_to_map() {
       return this.$getMapOptions;
     },
-    new_section_title() {
+    new_section_index() {
       let idx = this.sections.length + 1;
-      const makeTitle = (i) => this.$t("section") + " " + i;
+      const makeTitle = (i) => " " + i;
 
-      let new_section_title = makeTitle(idx);
-      while (this.sections.some((s) => s.section_title === new_section_title)) {
+      let new_section_index = makeTitle(idx);
+      while (
+        this.sections.some((s) => s.section_title.endsWith(new_section_index))
+      ) {
         idx++;
-        new_section_title = makeTitle(idx);
+        new_section_index = makeTitle(idx);
       }
-      return new_section_title;
+      return new_section_index;
     },
     opened_section() {
       return this.sections.find(
@@ -92,28 +111,49 @@ export default {
     //     this.$emit("openFirstSection");
     //   }
     // },
-    async createSection() {
-      const filename = this.new_section_title + " text.txt";
-      const { meta_filename } = await this.$api.uploadText({
-        path: this.publication.$path,
-        filename,
-        content: "",
-        additional_meta: {
-          content_type: "markdown",
-        },
-      });
+    async createSection({ type = "text" } = {}) {
+      let additional_meta = {
+        section_starts_on_page: "right",
+      };
+
+      if (type === "text") {
+        const filename = this.new_section_title + " text.txt";
+        const { meta_filename } = await this.$api.uploadText({
+          path: this.publication.$path,
+          filename,
+          content: "",
+          additional_meta: {
+            content_type: "markdown",
+          },
+        });
+        additional_meta.section_title =
+          this.$t("section") + " " + this.new_section_index;
+        additional_meta.section_type = "text";
+        additional_meta.main_text_meta = meta_filename;
+      } else if (type === "gallery") {
+        additional_meta.section_title =
+          this.$t("gallery") + " " + this.new_section_index;
+        additional_meta.section_type = "gallery";
+      } else if (type === "story") {
+        additional_meta.section_title =
+          this.$t("story") + " " + this.new_section_index;
+        additional_meta.section_type = "story";
+      }
 
       const new_section_meta = await this.createSection2({
         publication: this.publication,
-        additional_meta: {
-          section_title: this.new_section_title,
-          main_text_meta: meta_filename,
-          section_starts_on_page: "right",
-        },
+        additional_meta,
       });
-      // this.$emit("toggleSection", new_section_meta);
+      setTimeout(() => {
+        this.$emit("toggleSection", new_section_meta);
+      }, 100);
+
+      // this.openSection(new_section_meta);
     },
     async moveSection({ old_position, new_position }) {
+      const section_meta_filename = this.getFilename(
+        this.sections[old_position].$path
+      );
       let sections_meta = this.sections.map((s) => ({
         meta_filename: this.getFilename(s.$path),
       }));
@@ -131,12 +171,20 @@ export default {
 
       array_move(sections_meta, old_position, new_position);
 
-      return await this.$api.updateMeta({
+      await this.$api.updateMeta({
         path: this.publication.$path,
         new_meta: {
           sections_list: sections_meta,
         },
       });
+
+      setTimeout(() => {
+        this.$eventHub.$emit("edition.zoomToSection", section_meta_filename);
+      }, 500);
+    },
+    getPagesPositions(path) {
+      const section_meta_filename = this.getFilename(path);
+      return this.chapters_positions[section_meta_filename];
     },
   },
 };
@@ -147,7 +195,7 @@ export default {
 }
 
 ._content {
-  margin-bottom: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 4);
 }
 
 ._createSection {
@@ -156,17 +204,28 @@ export default {
 
 ._allChapters {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  // grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   // grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+  gap: calc(var(--spacing) * 1) calc(var(--spacing) * 1);
 }
 
 ._addSection {
   display: flex;
-  // justify-content: center;
+  flex-flow: row wrap;
+  justify-content: center;
   align-items: center;
   // background-color: white;
+  gap: calc(var(--spacing) / 2);
+  // justify-content: center;
+  // align-items: center;
+  // background-color: white;
   padding: calc(var(--spacing) / 1) calc(var(--spacing) * 2);
-  padding: 0;
+  // padding: 0;
+
+  // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
+  //   0 0.3px 0.4px hsla(230, 13%, 9%, 0.02),
+  //   0 0.9px 1.5px hsla(230, 13%, 9%, 0.025),
+  //   0 3.5px 6px hsla(230, 13%, 9%, 0.09);
+  border-radius: var(--border-radius);
 }
 </style>

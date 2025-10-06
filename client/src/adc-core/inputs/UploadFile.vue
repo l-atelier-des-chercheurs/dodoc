@@ -1,6 +1,6 @@
 <template>
   <div
-    class="_uploadFile"
+    class="u-card2 _uploadFile"
     :class="
       (['is--' + status],
       {
@@ -48,74 +48,110 @@
       </div>
 
       <div :title="file.name" class="_uploadFile--infos">
-        <div class="u-metaField">
-          <DLabel :str="$t('filename')" />
-          <div class="u-filename">{{ file.name }}</div>
-        </div>
-        <SizeDisplay v-if="file.size" :size="file.size" />
-        <div v-if="allow_caption_edition && sent_file" class="_captionEditor">
-          <!-- <hr /> -->
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('caption')"
-              :field_name="'caption'"
-              :content="sent_file.caption"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
+        <div class="_infos--row">
+          <div class="u-metaField">
+            <DLabel :str="$t('filename')" />
+            <div class="u-filename">{{ file.name }}</div>
           </div>
-          <div class="u-spacingBottom">
-            <TitleField
-              :label="$t('credit/reference')"
-              :field_name="'$credits'"
-              :content="sent_file.$credits"
-              :path="sent_file.$path"
-              :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
-              :can_edit="true"
-            />
-          </div>
+          <SizeDisplay
+            class="_sizeDisplay"
+            v-if="file.size"
+            :size="file.size"
+          />
         </div>
+
+        <template v-if="sent_file">
+          <hr />
+          <div v-if="allow_caption_edition" class="_infos--row _captionEditor">
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('caption')"
+                :field_name="'caption'"
+                :content="sent_file.caption"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
+                :can_edit="true"
+              />
+            </div>
+            <div class="u-spacingBottom">
+              <TitleField
+                :label="$t('credit/reference')"
+                :field_name="'$credits'"
+                :content="sent_file.$credits"
+                :path="sent_file.$path"
+                :input_type="'editor'"
+                :custom_formats="['bold', 'italic', 'link', 'emoji']"
+                :can_edit="true"
+              />
+            </div>
+          </div>
+          <div v-if="optimization_strongly_recommended" class="u-instructions">
+            <div class="u-spacingBottom">
+              {{ $t("convert_to_format") }}
+              <button
+                type="button"
+                class="u-button u-button_orange"
+                @click="show_optimize_modal = true"
+              >
+                <b-icon :icon="'file-play-fill'" />
+                {{ $t("convert_shorten") }}
+              </button>
+            </div>
+          </div>
+          <OptimizeMedia
+            v-if="show_optimize_modal"
+            :media="sent_file"
+            @close="show_optimize_modal = false"
+          />
+        </template>
       </div>
       <div class="_uploadFile--action">
-        <button
+        <transition name="fade" mode="out-in">
+          <!-- <button
           type="button"
           class="u-button u-button_icon u-button_bleuvert"
           v-if="status === 'waiting'"
           @click="uploadFile"
         >
           <b-icon icon="play-fill" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="['waiting', 'sending'].includes(status)"
-          @click="$emit('skip')"
-        >
-          <b-icon icon="x-lg" />
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_icon"
-          v-else-if="status === 'sent'"
-          @click="$emit('hide')"
-        >
-          <b-icon
-            icon="check"
-            style="font-size: 1.5em"
-            :aria-label="$t('hide')"
+        </button> -->
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="skip"
+            v-if="status === 'waiting'"
+            @click="$emit('skip')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
+          <LoaderSpinner
+            v-else-if="['creating_thumb', 'sending'].includes(status)"
+            key="loading"
           />
-        </button>
-        <button
-          type="button"
-          v-else
-          class="u-button u-button_bleuvert"
-          @click="retrySend"
-        >
-          {{ $t("retry") }}
-        </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="hide"
+            v-else-if="status === 'sent'"
+            @click="$emit('hide')"
+          >
+            <b-icon
+              icon="check-circle-fill
+          "
+              :aria-label="$t('hide')"
+            />
+          </button>
+          <button
+            type="button"
+            v-else
+            key="retry"
+            class="u-button u-button_bleuvert"
+            @click="retrySend"
+          >
+            {{ $t("retry") }}
+          </button>
+        </transition>
       </div>
     </div>
   </div>
@@ -130,7 +166,9 @@ export default {
     path: String,
     allow_caption_edition: Boolean,
   },
-  components: {},
+  components: {
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
+  },
   data() {
     return {
       status: "waiting",
@@ -142,6 +180,8 @@ export default {
 
       file_caption: "",
       file_credits: "",
+
+      show_optimize_modal: false,
     };
   },
   created() {
@@ -156,6 +196,11 @@ export default {
     file_type() {
       if (this.file.type?.includes("image")) return "image";
       return undefined;
+    },
+    optimization_strongly_recommended() {
+      return this.fileShouldBeOptimized({
+        filename: this.sent_file.$media_filename,
+      });
     },
   },
   methods: {
@@ -204,7 +249,7 @@ export default {
         );
       }, 500);
 
-      this.$emit("uploaded", meta_filename);
+      this.$emit("uploaded", { filename: this.file.name, meta_filename });
     },
     cancelSend() {},
     retrySend() {
@@ -217,13 +262,18 @@ export default {
 ._uploadFile {
   position: relative;
 
-  background-color: var(--c-gris_clair);
-
   color: var(--c-noir);
-  border: 2px solid var(--c-gris_clair);
 
-  border-radius: 4px;
+  // border: 2px solid var(--c-gris_clair);
+  background: white;
+
+  // border-radius: 4px;
   overflow: hidden;
+
+  &:not(:last-child) {
+    // border-bottom: 4px solid var(--c-gris_clair);
+    // margin-bottom: calc(var(--spacing));
+  }
 }
 
 ._uploadFile--row {
@@ -241,16 +291,18 @@ export default {
     flex: 1 1 auto;
     position: relative;
     z-index: 1;
+    overflow: hidden;
   }
 }
 
 ._uploadFile--progressBar {
   position: relative;
   width: 100%;
-  height: 1rem;
+  height: 1.5rem;
+  // margin-bottom: 2px;
 
   background: white;
-  // border-radius: 4px;
+  border-radius: 6px 6px 0 0;
   overflow: hidden;
 
   ._uploadFile--progressBar--bar {
@@ -267,17 +319,19 @@ export default {
   ._uploadFile--progressBar--percent {
     position: absolute;
     width: 100%;
+    height: 100%;
     // top: -0.1rem;
     // right: 0.25rem;
     padding: 0 calc(var(--spacing) / 2);
     text-align: right;
     font-size: var(--sl-font-size-x-small);
     font-family: var(--sl-font-mono);
-    font-weight: 700;
+    font-weight: 500;
 
     display: flex;
     flex-flow: row nowrap;
     justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -295,12 +349,12 @@ export default {
   place-content: center;
   place-items: center;
   flex: 0 0 auto;
-  width: 200px;
+  width: 140px;
   max-width: 40vw;
   aspect-ratio: 1/1;
   overflow: hidden;
   height: auto;
-  background-color: white;
+  background-color: var(--c-gris_clair);
 
   .is--mobileView & {
     max-width: none;
@@ -338,6 +392,23 @@ export default {
   align-items: center;
 }
 
+._infos--row {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: stretch;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 2);
+
+  > * {
+    flex: 1 0 20ch;
+    margin-bottom: 0;
+    overflow: hidden;
+
+    &._sizeDisplay {
+      // flex: 0 0 20ch;
+    }
+  }
+}
 ._captionEditor {
   ::v-deep ._collaborativeEditor._collaborativeEditor {
     // background-color: white;

@@ -1,64 +1,29 @@
 <template>
   <div class="_homeView" :style="customStyling">
-    <section class="_homeView--container">
-      <div class="_homeView--content" :data-layout="text_image_layout">
-        <template v-for="layout in custom_layout">
-          <div v-if="layout === 'text'" :key="layout" class="_textBlock">
-            <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
-            <div class="">
-              <CollaborativeEditor2 v-if="description" :content="description" />
-              <template v-else>
-                <template v-if="!is_instance_admin">
-                  <p v-html="$t('admins_edit_text_here')" />
-                </template>
-                <template v-else>
-                  <p v-html="$t('admins_edit_text_below')" />
-                </template>
-              </template>
-            </div>
-            <template v-if="$root.app_infos.instance_meta.contactmail">
-              <div class="u-spacingBottom" />
-              <p>
-                <b>{{ $t("contactmail_of_instance") }}</b
-                >&nbsp;
-                <a
-                  :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-                  target="_blank"
-                  >{{ $root.app_infos.instance_meta.contactmail }}</a
-                >
-              </p>
-            </template>
-            <EditBtn
-              v-if="is_instance_admin"
-              class="_editAdminText"
-              @click="editPresentationText"
-            />
-          </div>
-          <div
-            v-if="layout === 'image' && hero_thumb"
-            :key="layout"
-            class="_imageBlock"
-          >
-            <img :src="hero_thumb" role="presentation" />
-          </div>
-        </template>
-        <EditBtn
-          v-if="is_instance_admin"
-          class="_editAdminImg"
-          :label_position="'left'"
-          @click="editHeroImage"
-        />
-      </div>
-    </section>
-
-    <AdminSettings
-      v-if="show_settings_modal"
-      :starting_tab="settings_modal_starting_tab"
-      @close="closeAdminSettings"
-    />
+    <HomeTopHero />
 
     <template v-if="load_whole_page === true">
-      <RecentlyEdited v-if="connected_as" class="_recentlyEdited" />
+      <RecentlyEdited v-if="connected_as" />
+
+      <!-- <div class="_slashProject_content">
+        <p>
+          Praesent consectetur dolor non massa laoreet, sit amet condimentum
+          ligula fringilla. Praesent in vulputate neque. Lorem ipsum dolor sit
+          amet, consectetur adipiscing elit. Nulla erat metus, ultrices in
+          ultrices non, placerat in tortor. Praesent tempor consectetur
+          lobortis. Sed id massa eget diam bibendum accumsan. Aliquam dictum
+          ornare scelerisque. Vestibulum id pellentesque ligula. Vestibulum
+          semper lectus ante, eget luctus risus laoreet ut. Nulla cursus massa
+          quis ex commodo, ornare varius turpis fringilla. Fusce quis dolor a
+          ipsum fermentum pulvinar. Suspendisse tincidunt posuere ex. Nulla
+          lobortis ex congue mauris vulputate placerat. Nulla felis turpis,
+          fringilla eu interdum eget, ultricies vitae elit. Nam nec lorem ut
+          ante euismod pharetra a eget purus. Duis at quam turpis.
+        </p>
+      </div> -->
+
+      <!-- <AllContent /> -->
+      <!-- <AllPublications /> -->
 
       <section v-if="$root.app_infos.instance_meta.enable_events">
         <EventsSection />
@@ -79,7 +44,6 @@
                 <div class="u-instructions _content">
                   <small v-html="$t('spaces_instr')" />
                 </div>
-
                 <SpacesList />
               </template>
               <template v-else-if="current_mode === 'projects'">
@@ -161,24 +125,26 @@
 import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
+import HomeTopHero from "@/components/home/HomeTopHero.vue";
+import AllPublications from "@/components/home/AllPublications.vue";
+// import AllContent from "@/components/home/AllContent.vue";
 
 export default {
   props: {},
   components: {
+    HomeTopHero,
     EventsSection: () => import("@/components/event/EventsSection.vue"),
     SpacesList,
     AllProjects,
     DodocLogo,
-    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
+    AllPublications,
+    // AllContent,
   },
   data() {
     return {
       load_whole_page: false,
       current_mode: "spaces",
-
-      settings_modal_starting_tab: undefined,
-      show_settings_modal: false,
     };
   },
   created() {
@@ -271,18 +237,6 @@ export default {
     showCredits() {
       this.$eventHub.$emit(`toolbar.openCredits`);
     },
-    editHeroImage() {
-      this.settings_modal_starting_tab = "logo_and_images";
-      this.show_settings_modal = true;
-    },
-    editPresentationText() {
-      this.settings_modal_starting_tab = "informations";
-      this.show_settings_modal = true;
-    },
-    closeAdminSettings() {
-      this.show_settings_modal = false;
-      this.settings_modal_starting_tab = undefined;
-    },
   },
 };
 </script>
@@ -290,82 +244,8 @@ export default {
 ._homeView {
   position: relative;
   min-height: calc(100vh - 60px);
-  max-height: -webkit-fill-available;
-}
-
-._homeView--container {
-  // position: sticky;
-  // top: 60px;
-  width: 100%;
-  background: var(--hero-bg, var(--c-gris_clair));
-
-  ._homeCover {
-    background: white;
-
-    ::v-deep img {
-      object-fit: scale-down !important;
-    }
-  }
-}
-
-._homeView--content {
-  position: relative;
-  width: 100%;
   margin: 0 auto;
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border-bottom: 1px solid var(--c-gris);
-
-  > * {
-    flex: 1 1 320px;
-  }
-
-  &[data-layout="image_text_overlay"] {
-    min-height: 50vh;
-    justify-content: flex-start;
-  }
-
-  ._textBlock {
-    position: relative;
-    z-index: 1;
-    flex: 1 1 250px;
-    max-width: 350px;
-    margin: 0 auto;
-
-    border-radius: var(--panel-radius);
-    box-shadow: var(--panel-shadows);
-    padding: calc(var(--spacing) / 1);
-    margin: 5%;
-
-    background: var(--text-bg, white);
-  }
-  &[data-layout="image_text_overlay"] ._textBlock {
-  }
-  ._imageBlock {
-    position: relative;
-    flex: 4 1 620px;
-    width: 100%;
-
-    img {
-      width: auto;
-      max-height: 90vh;
-    }
-  }
-  &[data-layout="image_text_overlay"] ._imageBlock {
-    position: absolute;
-    height: 100%;
-    img {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      max-height: none;
-    }
-  }
+  max-height: -webkit-fill-available;
 }
 
 ._content {
@@ -449,18 +329,13 @@ export default {
   z-index: 1;
   flex: 1;
 
-  max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 2) auto;
 
   min-height: 80vh;
 }
 ._switch {
   margin-bottom: calc(var(--spacing) * 1);
-}
-
-._recentlyEdited {
-  max-width: var(--max-column-width);
-  margin: calc(var(--spacing) * 2) auto;
 }
 
 ._editAdminText {
@@ -472,5 +347,11 @@ export default {
   position: absolute;
   bottom: calc(var(--spacing) / 2);
   right: calc(var(--spacing) / 2);
+}
+
+._slashProject_content {
+  max-width: 86ch;
+  width: 100%;
+  margin: calc(var(--spacing) * 1) auto;
 }
 </style>

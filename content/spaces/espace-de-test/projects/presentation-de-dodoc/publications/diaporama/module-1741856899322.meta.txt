@@ -1,0 +1,18 @@
+module_type = "mosaic"
+page_id = "f16o0z"
+x = 537
+y = 13
+width = 1_011
+height = 720
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 1
+"$date_modified" = 2025-09-16T14:14:31.997Z
+"$date_uploaded" = 2025-03-13T09:08:19.322Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "capture-de-cran-2025-03-10-a-15-39-04.png.meta.txt"
+objectFit = "contain"

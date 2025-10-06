@@ -120,8 +120,8 @@ export default {
   methods: {},
 };
 </script>
-<style src="../node_modules/splitpanes/dist/splitpanes.css"></style>
-<style src="../node_modules/vue-plyr/dist/vue-plyr.css"></style>
+<style src="@node_modules/splitpanes/dist/splitpanes.css"></style>
+<style src="@node_modules/vue-plyr/dist/vue-plyr.css"></style>
 <style lang="scss">
 :root {
   --spacing: 1rem;
@@ -153,7 +153,8 @@ export default {
   --dropzone-color2: var(--c-orange);
 
   // --c-bodybg: white;
-  --c-bodybg: hsl(48, 19%, 95%);
+  --c-bodybg: hsl(51, 33%, 98%);
+  --c-bodybg: white;
 
   // --c-bodybg: hsl(48, 19%, 98%);
   --body-bg-pattern-color: hsl(48, 19%, 96%);
@@ -231,6 +232,7 @@ export default {
   --font-verysmall: var(--sl-font-size-x-small);
 
   --max-column-width: 90%;
+  --max-column-width-px: 1280px;
   --switch-thumb-border-radius: 4px;
 
   accent-color: var(--c-orange);
@@ -246,9 +248,8 @@ export default {
 html,
 body {
   // background: white;
-  // background-color: var(--c-bodybg);
-  // background: linear-gradient(180deg, #fff, var(--c-bodybg));
-  background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
+  background-color: var(--c-bodybg);
+  // background: linear-gradient(to top, var(--c-bodybg) 0, white 50vh);
   // background: linear-gradient(180deg, var(--c-bodybg), var(--c-gris));
   scroll-behavior: smooth;
 }
@@ -501,6 +502,18 @@ img {
   &-leave-to {
     opacity: 0;
     transition: opacity 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+}
+.pagetransition {
+  &-enter-active,
+  &-leave-active {
+    opacity: 1;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  &-enter,
+  &-leave-to {
+    opacity: 0;
+    transition: opacity 0.05s cubic-bezier(0.19, 1, 0.22, 1);
   }
 }
 .fade_fast {
@@ -758,5 +771,18 @@ img {
   &-leave-to {
     opacity: 0;
   }
+}
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_fonce) !important;
 }
 </style>

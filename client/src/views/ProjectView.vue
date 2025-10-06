@@ -4,27 +4,19 @@
       <div class="u-divCentered" v-if="is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else-if="fetch_project_error_message" key="err">
-        <div class="u-instructions _errNotice">
+      <div class="_errNotice" v-else-if="fetch_project_error_message" key="err">
+        <NotFound v-if="fetch_project_error_message === 'not_found'" />
+        <div v-else class="u-instructions _errNotice">
           {{ fetch_project_error_message }}
         </div>
       </div>
       <div v-else key="project">
         <div class="_topContent">
-          <div class="u-displayAsPublic" v-if="can_contribute_to_project">
-            <div class="_sticky">
-              <div class="_content">
-                <ToggleInput
-                  :content.sync="display_as_public"
-                  :label="$t('display_as_public')"
-                />
-              </div>
-            </div>
-          </div>
-
           <ProjectPresentation
             :project="project"
             context="full"
+            :display_as_public.sync="display_as_public"
+            :can_contribute_to_project="can_contribute_to_project"
             :can_edit="can_edit_project && !display_as_public"
           />
         </div>
@@ -37,12 +29,13 @@
             :project="project"
             :panes.sync="projectpanes"
           />
-          <hr v-else class="_separator" />
+          <!-- <hr v-else class="_separator" /> -->
           <div class="_panes">
             <ProjectPanes
               :projectpanes="projectpanes"
               :project="project"
-              :can_edit_project="
+              :can_edit_project="can_edit_project && !display_as_public"
+              :can_contribute_to_project="
                 can_contribute_to_project && !display_as_public
               "
               @update:projectpanes="projectpanes = $event"
@@ -58,6 +51,7 @@
 import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
+import NotFound from "@/components/NotFound.vue";
 
 export default {
   props: {},
@@ -65,6 +59,7 @@ export default {
     ProjectPresentation,
     PaneList2,
     ProjectPanes,
+    NotFound,
   },
   data() {
     return {
@@ -81,14 +76,6 @@ export default {
     this.$api.updateSelfPath(this.project_path);
     await this.listProject();
     await this.getSpace();
-
-    if (!this.can_edit_project)
-      this.projectpanes = [
-        {
-          type: "publish",
-          size: 100,
-        },
-      ];
 
     this.$eventHub.$emit("received.project", this.project);
     this.$eventHub.$on("folder.removed", this.closeOnRemove);
@@ -240,9 +227,18 @@ export default {
     // -webkit-overflow-scrolling: touch;
   }
 }
+._errNotice {
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  margin: 0 auto;
+}
 
 ._topContent {
   position: relative;
+}
+
+._publicView {
+  text-align: right;
+  margin: 0 auto;
 }
 
 ._tabButton {

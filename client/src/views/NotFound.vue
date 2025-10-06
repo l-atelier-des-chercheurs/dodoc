@@ -1,15 +1,15 @@
 <template>
   <div class="_notFound">
-    <h2>{{ $t("page_not_found") }}</h2>
-    <router-link :to="'/'" class="u-buttonLink">
-      {{ $t("go_home") }}
-    </router-link>
+    <NotFound />
   </div>
 </template>
 <script>
+import NotFound from "@/components/NotFound.vue";
 export default {
   props: {},
-  components: {},
+  components: {
+    NotFound,
+  },
   data() {
     return {};
   },

@@ -263,6 +263,8 @@ export default {
   transform: scale(var(--zoom));
   transform-origin: 0 0;
 
+  contain: size;
+
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 
   .is--preview & {

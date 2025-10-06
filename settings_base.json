@@ -1,4 +1,5 @@
 {
+  "domain": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,
@@ -25,6 +26,17 @@
   },
 
   "mediaThumbQuality": 90,
+
+  "mailer": {
+    "host": "",
+    "port": "",
+    "secure": false,
+    "auth": {
+      "user": "",
+      "pass": ""
+    },
+    "from": ""
+  },
 
   "schema": {
     "$cover": {
@@ -68,6 +80,9 @@
       "enable_events": {
         "type": "boolean"
       },
+      "enable_chats": {
+        "type": "boolean"
+      },
       "hero_background_color": {
         "type": "string"
       },
@@ -87,6 +102,9 @@
         "type": "string"
       },
       "spaces_pinned": {
+        "type": "array"
+      },
+      "topics_pinned": {
         "type": "array"
       },
       "users_must_accept_terms_to_signup": {
@@ -332,6 +350,7 @@
                       "story",
                       "story_with_sections",
                       "cartography",
+                      "edition",
                       "face_masks",
                       "image_tracking"
                     ],
@@ -415,9 +434,6 @@
                     "all_pins_icon": {
                       "type": "boolean"
                     },
-                    "zoom_animation": {
-                      "type": "number"
-                    },
                     "map_baselayer": {
                       "type": "string"
                     },
@@ -442,8 +458,14 @@
                     "section_title_is_visible": {
                       "type": "boolean"
                     },
+                    "section_type": {
+                      "type": "string"
+                    },
                     "section_starts_on_page": {
                       "type": "string"
+                    },
+                    "column_count": {
+                      "type": "number"
                     },
                     "main_text_meta": {
                       "type": "string"
@@ -579,6 +601,34 @@
           },
           "projects_recently_edited": {
             "type": "array"
+          }
+        },
+        "$files": {
+          "fields": {
+            "chat_read_indexes": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "chats": {
+        "fields": {
+          "title": {
+            "type": "string",
+            "unique": true
+          },
+          "last_message_date": {
+            "type": "string"
+          },
+          "last_message_count": {
+            "type": "number"
+          }
+        },
+        "$files": {
+          "fields": {
+            "content": {
+              "type": "string"
+            }
           }
         }
       },

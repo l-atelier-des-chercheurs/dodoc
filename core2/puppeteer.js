@@ -72,6 +72,7 @@ module.exports = (function () {
       url,
       recipe,
       bw_pagesize,
+      number_of_pages_to_export,
       printToPDF_pagesize,
       reportProgress,
     }) => {
@@ -145,7 +146,8 @@ module.exports = (function () {
 
         if (recipe === "pdf") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("pdf");
-          await page.pdf({
+
+          const options = {
             path: path_to_temp_file,
             printBackground: true,
             width: `${printToPDF_pagesize.width}mm`,
@@ -156,7 +158,11 @@ module.exports = (function () {
               bottom: 0,
               left: 0,
             },
-          });
+          };
+          if (number_of_pages_to_export) {
+            options.pageRanges = `1-${number_of_pages_to_export}`;
+          }
+          await page.pdf(options);
         } else if (recipe === "png") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("png");
           await page.screenshot({

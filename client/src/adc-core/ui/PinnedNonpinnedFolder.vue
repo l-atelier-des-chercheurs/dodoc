@@ -15,6 +15,10 @@
             v-else
             tag="section"
             class="_list _list_pinned"
+            :class="{
+              'is--mobileView': $root.is_mobile_view,
+              'is--grid': direction === 'horizontal',
+            }"
             name="listComplete"
             appear
           >
@@ -27,7 +31,7 @@
               <div class="_pinSpace" v-if="can_edit">
                 <button
                   type="button"
-                  class="u-button u-button_icon"
+                  class="u-button u-button_icon u-button_small"
                   :disabled="
                     ['alone', 'first'].includes(positionInPinned(folder.$path))
                   "
@@ -35,19 +39,20 @@
                 >
                   <b-icon
                     icon="arrow-left-circle-fill"
+                    :rotate="direction === 'vertical' ? '90' : ''"
                     :aria-label="$t('move_left')"
                   />
                 </button>
                 <button
                   type="button"
-                  class="u-button u-button_icon"
+                  class="u-button u-button_icon u-button_small"
                   @click="removeFromPins(folder.$path)"
                 >
                   <b-icon icon="pin-fill" :aria-label="$t('unpin')" />
                 </button>
                 <button
                   type="button"
-                  class="u-button u-button_icon"
+                  class="u-button u-button_icon u-button_small"
                   :disabled="
                     ['alone', 'last'].includes(positionInPinned(folder.$path))
                   "
@@ -55,6 +60,7 @@
                 >
                   <b-icon
                     icon="arrow-right-circle-fill"
+                    :rotate="direction === 'vertical' ? '90' : ''"
                     :aria-label="$t('move_right')"
                   />
                 </button>
@@ -71,6 +77,10 @@
     <transition-group
       tag="section"
       class="_nonpinned _list"
+      :class="{
+        'is--mobileView': $root.is_mobile_view,
+        'is--grid': direction === 'horizontal',
+      }"
       name="listComplete"
       appear
     >
@@ -83,7 +93,7 @@
         <div class="_pinSpace" v-if="can_edit">
           <button
             type="button"
-            class="u-button u-button_icon"
+            class="u-button u-button_icon u-button_small"
             @click="addSpaceToPins(folder.$path)"
           >
             <b-icon icon="pin" :aria-label="$t('pin')" />
@@ -105,6 +115,10 @@ export default {
     path: String,
     folders: Array,
     can_edit: Boolean,
+    direction: {
+      default: "horizontal",
+      type: String,
+    },
   },
   components: {},
   data() {
@@ -211,14 +225,24 @@ export default {
 }
 
 ._list {
-  display: grid;
-  grid-auto-rows: max-content;
-  grid-gap: calc(var(--spacing) / 1);
-  align-items: stretch;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(var(--item-width, 320px), 1fr)
-  );
+  &.is--grid {
+    display: grid;
+    // width: 100%;
+    grid-auto-rows: max-content;
+    grid-gap: var(--item-gap, calc(var(--spacing) / 1));
+    align-items: stretch;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(min(100%, var(--item-width, 320px)), 1fr)
+    );
+  }
+  &:not(.is--grid) > * {
+    margin-bottom: calc(var(--spacing) / 2);
+  }
+
+  &.is--mobileView {
+    // display: block;
+  }
 }
 ._list_pinned {
   // border-radius: 3px;

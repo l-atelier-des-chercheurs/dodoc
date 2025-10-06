@@ -8,7 +8,7 @@ const i18n = () => {
   Vue.use(VueI18n);
 
   let lang_settings = {
-    available: ["fr", "en", "it"],
+    available: ["fr", "en", "it", "fon"],
     default: "en",
     current: "",
     init: function () {
@@ -42,18 +42,22 @@ const i18n = () => {
     let content = null;
     if (lang === "fr") content = await import("@/adc-core/lang/fr.js");
     else if (lang === "it") content = await import("@/adc-core/lang/it.js");
+    // else if (lang === "fon") content = await import("@/adc-core/lang/fon.js");
     else content = await import("@/adc-core/lang/en.js");
     return content.default;
   };
 
   const i18n = new VueI18n({
     locale: lang_settings.current, // set locale
-    fallbackLocale: "en",
+    fallbackLocale: {
+      fon: ["fr"],
+      default: ["en"],
+    },
   });
 
-  const loadEnglishAsDefault = async () => {
-    const english = await loadLangageFile("en");
-    i18n.setLocaleMessage("en", english);
+  const loadLangAsDefault = async (lang) => {
+    const lang_file = await loadLangageFile(lang);
+    i18n.setLocaleMessage(lang, lang_file);
   };
 
   changeLocale = async (new_lang) => {
@@ -64,7 +68,8 @@ const i18n = () => {
     localStorage.setItem("language", new_lang);
 
     // lang fr is always up to date – others, not so much. Load english as default
-    if (!["en", "fr"].includes(new_lang)) await loadEnglishAsDefault();
+    if (["it"].includes(new_lang)) await loadLangAsDefault("en");
+    // if (["fon"].includes(new_lang)) await loadLangAsDefault("fr");
   };
   changeLocale(lang_settings.current);
 

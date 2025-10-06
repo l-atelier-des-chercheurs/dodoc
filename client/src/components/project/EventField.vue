@@ -1,9 +1,6 @@
 <template>
-  <div class="">
-    <DLabel
-      :str="$t('created_during')"
-      v-if="can_edit || project.event_linked_slug"
-    />
+  <div class="" v-if="can_edit || project.event_linked_slug">
+    <DLabel :str="$t('created_during')" />
     <template v-if="!is_loading">
       <RadioCheckboxField
         :field_name="'event_linked_slug'"
@@ -46,7 +43,7 @@ export default {
       const _events_options = [
         {
           key: "",
-          label: "–",
+          label: "",
         },
       ];
 

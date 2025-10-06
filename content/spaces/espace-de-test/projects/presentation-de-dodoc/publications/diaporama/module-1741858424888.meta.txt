@@ -1,0 +1,17 @@
+module_type = "mosaic"
+page_id = "o3l4rj"
+x = 0
+y = 0
+width = 1_280
+height = 720
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-03-13T09:33:46.688Z
+"$date_uploaded" = 2025-03-13T09:33:44.888Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "frise-chrono-versions-site.png.meta.txt"
+objectFit = "contain"

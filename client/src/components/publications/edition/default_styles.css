@@ -2,9 +2,9 @@
   --main-color: #0040eb;
   --main-color-opacity: rgba(0, 64, 235, 0.7);
   --second-color: orange;
-  --text-font: "Helvetica", sans-serif;
+  --text-font: "Source Sans Pro", sans-serif;
   --title-font: "Karla", sans-serif;
-  --font-size: 11pt;
+  --font-size: 12pt;
   --line-height: 1.4;
 }
 
@@ -23,11 +23,15 @@
   color: var(--main-color);
 
   p,
+  ul,
+  ol,
+  blockquote,
   .media,
   h1,
   h2,
-  h3 {
-    margin-bottom: 0.5cm;
+  h3, 
+  figure {
+    margin-bottom: 1em;
   }
 
   h1 {
@@ -57,7 +61,7 @@
   }
 
   ul, ol {
-    margin-left: 1cm;
+    margin-left: 1rem;
   }
   li::marker {
     font-size: 10pt;
@@ -77,6 +81,10 @@
     }
   }
 
+
+  .media {
+  }
+
   .mediaCaption {
     margin: auto;
     padding-top: 0mm;
@@ -87,11 +95,9 @@
   }
 
   blockquote {
-    margin-left: 1cm;
-  }
-
-  blockquote p {
-    font-size: 10pt;
+    margin-left: .75cm;
+    padding-left: .25cm;
+    border-left: 2px solid var(--main-color);
     font-family: var(--title-font);
   }
 
@@ -227,12 +233,15 @@
       }
     }
     button {
+      display: inline-block;
+      vertical-align: top;
       text-align: left;
       color: currentColor;
       background: transparent;
       padding: 0.25em 0.5em;
       border-radius: 0.5em;
       cursor: pointer;
+      font-size: inherit;
 
       &:hover,
       &:focus-visible {
@@ -279,12 +288,5 @@
     text-align: left;
   }
 
-  blockquote {
-    margin-left: calc(var(--spacing) * 2);
-  }
 
-  blockquote,
-  blockquote p {
-    font-size: 18px;
-  }
 }

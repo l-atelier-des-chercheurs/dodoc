@@ -1,46 +1,44 @@
 <template>
-  <BaseModal2
-    :title="$t('connection_lost')"
-    :is_closable="false"
-    :hide_modal="hide_disconnect_modal"
-  >
+  <div class="_disconnectModal">
     <template v-if="!$api.connected">
-      <p class="u-spacingBottom">
-        <span v-html="$t('connection_lost_in')" /><br />
-        <template v-if="!is_reconnecting">
-          <span v-html="$t('attempting_to_reconnect_in')" />&nbsp;<strong>
-            <span :key="reconnecting_in"> {{ reconnecting_in }}s </span>
-          </strong>
-        </template>
+      <p class="" v-if="!is_reconnecting">
+        <span v-html="$t('connection_lost_in')" />&nbsp;
+        <span v-html="$t('attempting_to_reconnect_in')" />&nbsp;<strong>
+          <span :key="reconnecting_in"> {{ reconnecting_in }}s </span>
+        </strong>
       </p>
 
-      <div class="u-spacingBottom">
+      <div class="_reconnectButton">
         <button
-          v-if="!is_reconnecting"
           type="button"
-          class="u-button u-button_bleumarine"
+          class="u-button u-button_bleumarine u-button_small"
           @click="reconnectSocket"
+          :disabled="is_reconnecting"
         >
-          {{ $t("try_reconnect_now") }}
+          <template v-if="!is_reconnecting">
+            {{ $t("try_reconnect_now") }}
+          </template>
+          <template v-else>
+            {{ $t("reconnecting") }}
+            <LoaderSpinner class="_spinner" />
+          </template>
         </button>
-        <div class="_reconnectingMsg" v-else>
-          <LoaderSpinner />
-          {{ $t("reconnecting") }}
-        </div>
       </div>
 
-      <p v-if="$root.app_infos.instance_meta.contactmail">
-        {{ $t("if_issues_contact") }}
-        <br />
-        <a
-          :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
-          target="_blank"
-        >
-          {{ $root.app_infos.instance_meta.contactmail }}
-        </a>
+      <p v-if="$root.app_infos.instance_meta.contactmail && !is_reconnecting">
+        <small>
+          {{ $t("if_issues_contact") }}
+
+          <a
+            :href="'mailto:' + $root.app_infos.instance_meta.contactmail"
+            target="_blank"
+          >
+            {{ $root.app_infos.instance_meta.contactmail }} </a
+          >.
+        </small>
       </p>
     </template>
-  </BaseModal2>
+  </div>
 </template>
 <script>
 export default {
@@ -53,14 +51,12 @@ export default {
 
       is_reconnecting: false,
       countdown: undefined,
-      hide_disconnect_modal: true,
     };
   },
   async created() {
     // try to reconnect first
     this.$api.reconnectSocket();
     await new Promise((r) => setTimeout(r, 1000));
-    this.hide_disconnect_modal = false;
 
     (this.countdown = async () => {
       if (this.reconnecting_in > 1) this.reconnecting_in--;
@@ -76,10 +72,10 @@ export default {
     "$api.connected": function () {
       if (this.$api.connected) {
         this.$emit("close");
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t("connection_back"));
+        // this.$alertify
+        //   .closeLogOnClick(true)
+        //   .delay(4000)
+        //   .success(this.$t("connection_back"));
       }
     },
   },
@@ -97,7 +93,36 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._disconnectModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  flex-flow: row wrap;
+  background-color: var(--c-gris);
+  background-color: var(--c-rouge);
+  // color: white;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing);
+  padding: calc(var(--spacing) / 2);
+}
 ._reconnectingMsg {
   position: relative;
+}
+._spinner {
+  position: relative;
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: transparent;
+
+  ::v-deep ._spinner {
+    width: 1.25rem;
+    height: 1.25rem;
+    // border-width: 2px;
+  }
 }
 </style>

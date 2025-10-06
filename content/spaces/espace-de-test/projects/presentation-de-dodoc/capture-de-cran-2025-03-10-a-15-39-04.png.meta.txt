@@ -1,0 +1,9 @@
+"$authors" = [ "authors/louis" ]
+"$date_created" = 2025-03-13T09:08:05.998Z
+"$date_modified" = 2025-09-15T10:13:31.363Z
+"$date_uploaded" = 2025-03-13T09:08:17.201Z
+"$media_filename" = "capture-de-cran-2025-03-10-a-15-39-04.png"
+"$status" = "private"
+"$origin" = "collect"
+"$type" = "image"
+caption = '<p class=""> </p>'

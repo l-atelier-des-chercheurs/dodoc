@@ -6,6 +6,14 @@
       size="large"
       @close="$emit('close')"
     >
+      <DLabel
+        :str="
+          $tc('files_being_sent', number_of_files_not_yet_sent, {
+            count: number_of_files_not_yet_sent,
+          })
+        "
+      />
+
       <transition-group class="_uploadFiles" name="listComplete" appear>
         <UploadFile
           v-for="(file, index) in files_to_upload"
@@ -23,12 +31,19 @@
 
       <template #footer>
         <div />
-        <button type="button" class="u-button" @click="$emit('close')">
+        <button
+          type="button"
+          class="u-button"
+          @click="$emit('close')"
+          :class="{
+            'u-button_red': confirm_before_closing,
+          }"
+        >
           <!-- <template v-if="files_to_upload.length > 0">
             {{ $t("cancel") }}
           </template>
           <template v-else> -->
-          {{ $t("close") }}
+          {{ confirm_before_closing ? $t("interrupt") : $t("close") }}
           <!-- </template> -->
         </button>
       </template>
@@ -52,6 +67,7 @@ export default {
       files_to_upload: this.files_to_import || [],
       upload_percentages: 0,
       list_of_added_metas: [],
+      list_of_added_files: [],
     };
   },
   watch: {
@@ -68,14 +84,19 @@ export default {
   mounted() {
     setTimeout(() => {
       this.uploadAllFiles();
-    }, 1000);
+    }, 500);
   },
   beforeDestroy() {
     this.$emit("importedMedias", this.list_of_added_metas);
   },
   computed: {
     confirm_before_closing() {
-      return this.files_to_upload.some((file) => file.status === "sending");
+      return this.number_of_files_not_yet_sent > 0;
+    },
+    number_of_files_not_yet_sent() {
+      return this.files_to_upload.filter(
+        (file) => !this.list_of_added_files.includes(file.name)
+      ).length;
     },
   },
   methods: {
@@ -89,8 +110,9 @@ export default {
         }
       }
     },
-    fileUploaded(meta_filename) {
+    fileUploaded({ filename, meta_filename }) {
       if (meta_filename) this.list_of_added_metas.push(meta_filename);
+      if (filename) this.list_of_added_files.push(filename);
     },
     abortFile(index) {
       this.files_to_upload.splice(index, 1);
@@ -106,5 +128,6 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 4) 0;
 }
 </style>

@@ -10,7 +10,10 @@ const path = require("path"),
   md5File = require("md5-file"),
   exifr = require("exifr"),
   crypto = require("crypto"),
-  archiver = require("archiver");
+  archiver = require("archiver"),
+  { promisify } = require("util"),
+  fastFolderSize = require("fast-folder-size"),
+  fetch = require("node-fetch");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -182,7 +185,19 @@ module.exports = (function () {
       };
       fields = Object.assign({}, fields, predefined_fields);
 
-      if (fields)
+      // Check for fields in new_meta that don't exist in schema
+      for (const field_name in new_meta) {
+        if (!fields.hasOwnProperty(field_name)) {
+          // dev.error(`Field "${field_name}" is not defined in schema`);
+          // const err = new Error(
+          //   `Field "${field_name}" is not defined in schema`
+          // );
+          // err.code = "undefined_field";
+          // throw err;
+        }
+      }
+
+      if (fields) {
         Object.entries(fields).map(([field_name, opt]) => {
           if (
             new_meta.hasOwnProperty(field_name) &&
@@ -193,6 +208,7 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+            // todo if has options, check that the value is in the options
           } else if (
             new_meta.hasOwnProperty(field_name) &&
             opt.type === "array" &&
@@ -235,6 +251,7 @@ module.exports = (function () {
             }
           }
         });
+      }
       // see cleanNewMeta
 
       return meta;
@@ -317,6 +334,8 @@ module.exports = (function () {
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
+          allowEmptyFiles: true,
+          minFileSize: 0,
           maxFileSize: upload_max_file_size_in_mo * 1024 * 1024,
         });
 
@@ -441,6 +460,76 @@ module.exports = (function () {
       return await sharp(image_buffer).toFile(full_path_to_thumb);
     },
 
+    async downloadFileFromUrl({
+      url: fileUrl,
+      destination_path,
+      max_file_size_in_mo = 100,
+      timeout_ms = 30000,
+      base_url = null,
+    }) {
+      dev.logfunction({ fileUrl, destination_path });
+
+      // Handle relative URLs by combining with base_url
+      if (base_url && !fileUrl.startsWith("http")) {
+        fileUrl = new URL(fileUrl, base_url).href;
+      } else if (!fileUrl.startsWith("http")) {
+        fileUrl = utils.addhttp(fileUrl);
+      }
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const response = await fetch(fileUrl, {
+            timeout: timeout_ms,
+            headers: {
+              "User-Agent": "Mozilla/5.0 (compatible; DodocBot/1.0)",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          // Check content length
+          const contentLength = response.headers.get("content-length");
+          if (
+            contentLength &&
+            parseInt(contentLength, 10) > max_file_size_in_mo * 1024 * 1024
+          ) {
+            throw new Error("File size limit exceeded");
+          }
+
+          // Get filename from URL or use default
+          const parsedUrl = new URL(fileUrl);
+          let filename = path.basename(parsedUrl.pathname);
+          if (!filename || filename === "/") {
+            filename = "downloaded-file";
+          }
+
+          // Download the file
+          const buffer = await response.buffer();
+
+          // Check actual downloaded size
+          if (buffer.length > max_file_size_in_mo * 1024 * 1024) {
+            throw new Error("File size limit exceeded");
+          }
+
+          // Ensure destination directory exists
+          await fs.ensureDir(path.dirname(destination_path));
+
+          // Write file
+          await fs.writeFile(destination_path, buffer);
+
+          resolve({
+            filename,
+            size: buffer.length,
+            path: destination_path,
+          });
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+
     async md5FromFile({ full_media_path }) {
       return await md5File(full_media_path);
     },
@@ -448,6 +537,15 @@ module.exports = (function () {
       dev.logfunction({ relative_path });
 
       const schema = global.settings.schema;
+
+      if (
+        relative_path.includes(path.sep + global.settings.deletedFolderName)
+      ) {
+        relative_path = relative_path.slice(
+          0,
+          relative_path.indexOf(path.sep + global.settings.deletedFolderName)
+        );
+      }
 
       let items_in_path =
         relative_path.length === 0 ? [] : relative_path.split(path.sep);
@@ -514,6 +612,7 @@ module.exports = (function () {
         sub_folder_slug,
         subsub_folder_type,
         subsub_folder_slug,
+        bin_folder_slug,
         meta_filename,
       } = req.params;
 
@@ -554,6 +653,13 @@ module.exports = (function () {
         obj.path_to_meta = path.join(obj.path_to_folder, meta_filename);
       }
 
+      if (bin_folder_slug) {
+        obj.path_to_folder_in_bin = path.join(
+          obj.path_to_type,
+          global.settings.deletedFolderName,
+          bin_folder_slug
+        );
+      }
       if (req.body) obj.data = req.body;
 
       return obj;
@@ -638,15 +744,11 @@ module.exports = (function () {
       return new Promise(async (resolve, reject) => {
         ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
 
-        // https://stackoverflow.com/a/70899710
-        let totalTime;
-
         ffmpeg_cmd.input(source);
 
         try {
-          const { duration, streams } = await API.getVideoDurationFromMetadata({
-            ffmpeg_cmd,
-            video_path: source,
+          const { duration, streams } = await API.getVideoMetaData({
+            path: source,
           });
           if (trim_start !== undefined && trim_end !== undefined)
             ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
@@ -705,6 +807,8 @@ module.exports = (function () {
           }
         }
 
+        // https://stackoverflow.com/a/70899710
+        let totalTime;
         ffmpeg_cmd
           .native()
           .outputFPS(30)
@@ -713,11 +817,13 @@ module.exports = (function () {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("codecData", (data) => {
-            totalTime = parseInt(data.duration.replace(/:/g, ""));
+            if (data.duration && data.duration !== "N/A")
+              totalTime = parseInt(data.duration.replace(/:/g, ""));
           })
           .on("progress", (progress) => {
             if (reportProgress) {
               const time = parseInt(progress.timemark.replace(/:/g, ""));
+              if (!totalTime) return reportProgress(time);
               if (time < 0 || time > totalTime) return;
               const percent = (time / totalTime) * 100;
               reportProgress(percent);
@@ -775,10 +881,13 @@ module.exports = (function () {
       });
     },
     async hasAudioTrack({ ffmpeg_cmd, video_path }) {
-      const { streams } = await API.getVideoMetaData({ path: video_path });
-      return resolve(
-        streams?.filter((s) => s.codec_type === "audio").length > 0
-      );
+      try {
+        const { streams } = await API.getVideoMetaData({ path: video_path });
+        return streams?.some((s) => s.codec_type === "audio");
+      } catch (err) {
+        dev.error("Error getting video metadata in hasAudioTrack:", err);
+        return false;
+      }
     },
 
     makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
@@ -823,6 +932,79 @@ module.exports = (function () {
     addhttp(url) {
       if (!/^(?:f|ht)tps?\:\/\//.test(url)) url = "http://" + url;
       return url;
+    },
+
+    async getFolderSize(...paths) {
+      const full_folder_path = API.getPathToUserContent(...paths);
+      const fastFolderSizeAsync = promisify(fastFolderSize);
+      try {
+        const bin_size = await fastFolderSizeAsync(full_folder_path);
+        return bin_size;
+      } catch (err) {
+        dev.error(err);
+        return 0;
+      }
+    },
+    getZipFolderFilename({ path_to_folder, path_to_type }) {
+      try {
+        const folder_slug = API.getFilename(path_to_folder);
+        const type_slug = API.getFilename(path_to_type);
+        const appname = global.appInfos.name;
+        const version_number = global.appInfos.version.split(".")[0];
+        return `${appname}_v${version_number}_${type_slug}_${folder_slug}.zip`;
+      } catch (err) {
+        dev.error(err);
+        return "download.zip";
+      }
+    },
+
+    getDependenciesWithVersions() {
+      try {
+        const packageJsonPath = path.join(global.appRoot, "package.json");
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath, "utf8")
+        );
+
+        const allDependencies = {
+          ...packageJson.dependencies,
+          ...packageJson.devDependencies,
+          ...packageJson.optionalDependencies,
+        };
+
+        // Get actual installed versions from node_modules
+        const installedVersions = [];
+        for (const [depName, requiredVersion] of Object.entries(
+          allDependencies
+        )) {
+          try {
+            const depPackageJsonPath = path.join(
+              global.appRoot,
+              "node_modules",
+              depName,
+              "package.json"
+            );
+            if (fs.existsSync(depPackageJsonPath)) {
+              const depPackageJson = JSON.parse(
+                fs.readFileSync(depPackageJsonPath, "utf8")
+              );
+              installedVersions.push(`${depName}:${depPackageJson.version}`);
+            } else {
+              installedVersions.push(`${depName}:NOT_INSTALLED`);
+            }
+          } catch (err) {
+            installedVersions.push(`${depName}:ERROR_READING`);
+          }
+        }
+
+        // Sort dependencies alphabetically
+        installedVersions.sort((a, b) =>
+          a.split(":")[0].localeCompare(b.split(":")[0])
+        );
+
+        return installedVersions.join(", ");
+      } catch (err) {
+        return `Error reading dependencies: ${err.message}`;
+      }
     },
   };
 

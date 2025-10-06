@@ -30,7 +30,30 @@
       class="_TEbtnContainer"
       v-show="can_edit && editor_is_enabled"
     >
-      <div class="">
+      <button
+        type="button"
+        class="u-button _markdownHelpBtn"
+        v-if="content_type === 'markdown'"
+        @click="show_markdown_help = !show_markdown_help"
+      >
+        <b-icon icon="patch-question" />
+        <span>{{ $t("markdown_help") }}</span>
+      </button>
+      <MarkdownHelpModal
+        v-if="show_markdown_help"
+        :title="$t('markdown_help')"
+        @close="show_markdown_help = false"
+      />
+
+      <EmojiPicker
+        v-if="show_emoji_picker"
+        @select="onEmojiSelect"
+        @close="closeEmojiPicker"
+      />
+
+      <slot name="custom_buttons" />
+
+      <div class="_archiveSaveContainer">
         <template v-if="editor_is_enabled && !is_disabling_editor">
           <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
@@ -102,6 +125,7 @@ import richText from "rich-text";
 ShareDB.types.register(richText.type);
 
 import TextVersioning from "./TextVersioning.vue";
+import MarkdownHelpModal from "./MarkdownHelpModal.vue";
 import ReconnectingWebSocket from "reconnectingwebsocket";
 
 import {
@@ -180,6 +204,7 @@ export default {
       type: String,
       default: "html",
     },
+    content_type: String,
     mode: {
       type: String,
       default: "normal",
@@ -189,6 +214,8 @@ export default {
   },
   components: {
     TextVersioning,
+    MarkdownHelpModal,
+    EmojiPicker: () => import("./EmojiPicker.vue"),
   },
   data() {
     return {
@@ -203,6 +230,8 @@ export default {
       },
 
       show_archives: false,
+      show_markdown_help: false,
+      show_emoji_picker: false,
 
       debounce_textUpdate: undefined,
 
@@ -227,9 +256,14 @@ export default {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
-    if (this.mode === "always_active") this.enableEditor();
+    if (this.can_edit && this.mode === "always_active") this.enableEditor();
+
+    this.$eventHub.$on("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$on("media.disableEditor." + this.path, this.disableEditor);
   },
   beforeDestroy() {
+    this.$eventHub.$off("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$off("media.disableEditor." + this.path, this.disableEditor);
     this.disableEditor();
   },
   watch: {
@@ -240,7 +274,8 @@ export default {
       ) {
         this.$nextTick(() => {
           if (this.content !== this.editor.root.innerHTML)
-            this.editor.root.innerHTML = this.content;
+            // this.editor.root.innerHTML = (this.content);
+            this.editor.root.innerHTML = this.$sanitize(this.content);
         });
       }
     },
@@ -273,6 +308,21 @@ export default {
         modules: {
           cardEditable: true,
           toolbar,
+          keyboard: {
+            bindings: {
+              enter: {
+                key: "Enter",
+                handler: (range, context) => {
+                  if (this.$listeners.onEnter) {
+                    return this.$listeners.onEnter(range, context);
+                  }
+                  // Return true to allow default Enter behavior
+                  // Return false to prevent default behavior
+                  return true;
+                },
+              },
+            },
+          },
           // syntax: { hljs },
         },
         bounds: this.$refs.editor,
@@ -282,7 +332,25 @@ export default {
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
       });
-      if (this.content) this.editor.root.innerHTML = this.content;
+
+      if (this.content) {
+        if (this.save_format === "raw") {
+          // const _content = this.$sanitize(this.content);
+          // this.editor.root.innerHTML = _content;
+          // this.editor.clipboard.dangerouslyPasteHTML(_content);
+          // this.editor.setContents(this.editor.getContents(), "init");
+          const normalized = this.content.replace(/\r\n?/g, "\n");
+          const text = normalized.endsWith("\n")
+            ? normalized
+            : normalized + "\n";
+          this.editor.setContents([{ insert: text }], "init");
+        } else {
+          // this.editor.setText(this.content);
+          // this.editor.root.innerHTML = this.content;
+          const delta = this.editor.clipboard.convert({ html: this.content });
+          this.editor.setContents(delta, "silent");
+        }
+      }
 
       this.setStatusButton();
     },
@@ -311,6 +379,7 @@ export default {
         "underline",
         "strike",
         "link",
+        "emoji",
         "blockquote",
       ];
       basic_formatting.map((bf) => {
@@ -387,6 +456,9 @@ export default {
       if (reference_formats.length > 0) container.push(["clean"]);
 
       let handlers = {
+        emoji: () => {
+          this.toggleEmojiPicker();
+        },
         divider: function () {
           var range = this.quill.getSelection();
           if (range) {
@@ -435,6 +507,16 @@ export default {
         .querySelectorAll(".is--selected")
         .forEach((el) => el.classList && el.classList.remove("is--selected"));
       return t.innerHTML;
+    },
+    insertAtCursor(text) {
+      var index = this.editor.getSelection(true)?.index;
+      if (index !== undefined) {
+        this.editor.insertText(index, text, Quill.sources.USER);
+        this.editor.scrollSelectionIntoView();
+        setTimeout(() => {
+          this.editor.setSelection(index + text.length, Quill.sources.SILENT);
+        }, 100);
+      }
     },
 
     setStatusButton() {
@@ -641,6 +723,22 @@ export default {
         // const { font } = this.editor.getFormat();
         // localStorage.setItem("fontLastUsed", font);
       }, 2000);
+    },
+
+    toggleEmojiPicker() {
+      this.show_emoji_picker = !this.show_emoji_picker;
+    },
+
+    onEmojiSelect(emoji) {
+      if (emoji.native) {
+        this.insertAtCursor(emoji.native);
+      } else if (emoji.colons) {
+        this.insertAtCursor(emoji.colons);
+      }
+    },
+
+    closeEmojiPicker() {
+      this.show_emoji_picker = false;
     },
   },
 };
@@ -944,6 +1042,16 @@ export default {
     width: var(--quill-options-size);
   }
 
+  // Emoji button styling
+  .ql-emoji {
+    &:after {
+      content: "😀";
+      font-size: var(--quill-buttons-size);
+      line-height: 1;
+      filter: grayscale(1);
+    }
+  }
+
   .ql-formats {
     // margin-right: calc(var(--spacing) / 2);
     // margin-bottom: calc(var(--spacing) / 2);
@@ -1151,7 +1259,7 @@ select.ql-ui {
   justify-content: center;
   align-items: center;
 
-  > * {
+  ._archiveSaveContainer {
     border: 2px solid var(--toolbar-bg);
     border-radius: var(--input-border-radius);
     overflow: hidden;
@@ -1167,6 +1275,14 @@ select.ql-ui {
     }
   }
 
+  ._markdownHelpBtn {
+    margin-right: calc(var(--spacing) / 4);
+    border-radius: var(--input-border-radius) !important;
+
+    &:not(:hover) {
+      background: #fff !important;
+    }
+  }
   // background-color: var(--editor-bg);
 }
 </style>

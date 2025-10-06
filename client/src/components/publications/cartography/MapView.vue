@@ -1,59 +1,81 @@
 <template>
-  <div class="_mapView" :data-display="display">
+  <div
+    class="_mapView"
+    :data-display="display"
+    :data-viewpane-hidden="!viewpane_visible"
+  >
     <component :is="display === 'adjacent' ? 'splitpanes' : 'div'">
       <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
-        <DisplayOnMap
-          :key="opened_view_meta_filename"
-          class="_mapContainer"
-          :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
-          :map_baselayer_bw="
-            opened_view ? opened_view.map_baselayer_bw : undefined
-          "
-          :map_baselayer_opacity="
-            opened_view ? opened_view.map_baselayer_opacity : undefined
-          "
-          :map_baselayer_color="
-            opened_view ? opened_view.map_baselayer_color : undefined
-          "
-          :zoom_animation="opened_view ? opened_view.zoom_animation : undefined"
-          :map_base_media="base_media"
-          :pins="pins"
-          :lines="lines"
-          :geometries="geometries"
-          :is_small="false"
-          :opened_view_color="getViewColor(opened_view)"
-          :opened_pin_path.sync="opened_pin_path"
-          :can_edit="can_edit && !!opened_view_meta_filename"
-          @newPositionClicked="newPositionClicked"
-          @saveGeom="
-            updateOpenedView({
-              field: 'map_geom_features',
-              value: $event,
-            })
-          "
-        >
-          <div class="" slot="popup_message" v-if="can_edit">
-            <div v-if="!opened_view_meta_filename">
-              {{ $t("to_add_media_here_open_matching_layer") }}
+        <div class="_mapContainerWrapper">
+          <DisplayOnMap
+            :key="opened_view_meta_filename"
+            class="_mapContainer"
+            :map_baselayer="opened_view ? opened_view.map_baselayer : undefined"
+            :map_baselayer_bw="
+              opened_view ? opened_view.map_baselayer_bw : undefined
+            "
+            :map_baselayer_opacity="
+              opened_view ? opened_view.map_baselayer_opacity : undefined
+            "
+            :map_baselayer_color="
+              opened_view ? opened_view.map_baselayer_color : undefined
+            "
+            :map_base_media="base_media"
+            :pins="pins"
+            :lines="lines"
+            :geometries="geometries"
+            :is_small="false"
+            :opened_view_color="getViewColor(opened_view)"
+            :opened_pin_path.sync="opened_pin_path"
+            :can_edit="can_edit && !!opened_view_meta_filename"
+            @newPositionClicked="newPositionClicked"
+            @saveGeom="
+              updateOpenedView({
+                field: 'map_geom_features',
+                value: $event,
+              })
+            "
+          >
+            <div class="" slot="popup_message" v-if="can_edit">
+              <div v-if="!opened_view_meta_filename">
+                {{ $t("to_add_media_here_open_matching_layer") }}
+              </div>
+              <div v-else>
+                <ModuleCreator
+                  :publication_path="publication.$path"
+                  :start_collapsed="false"
+                  :select_mode="'single'"
+                  :types_available="[
+                    'capture',
+                    'import',
+                    'write',
+                    'embed',
+                    'table',
+                  ]"
+                  :post_addtl_meta="new_module_meta"
+                  @addModules="addModules"
+                />
+              </div>
             </div>
-            <div v-else>
-              <ModuleCreator
-                :publication_path="publication.$path"
-                :start_collapsed="false"
-                :select_mode="'single'"
-                :types_available="[
-                  'capture',
-                  'import',
-                  'write',
-                  'embed',
-                  'table',
-                ]"
-                :post_addtl_meta="new_module_meta"
-                @addModules="addModules"
-              />
-            </div>
-          </div>
-        </DisplayOnMap>
+          </DisplayOnMap>
+
+          <!-- Toggle Button positioned on the border -->
+          <button
+            class="u-button u-button_icon _viewpaneToggle _navBtn"
+            @click="toggleViewpane"
+            :title="
+              viewpane_visible ? $t('hide_viewpane') : $t('show_viewpane')
+            "
+          >
+            <b-icon
+              :icon="
+                viewpane_visible
+                  ? 'chevron-double-right'
+                  : 'chevron-double-left'
+              "
+            />
+          </button>
+        </div>
         <transition name="pagechange" mode="out-in">
           <ViewOptions
             v-if="opened_view && can_edit"
@@ -63,18 +85,24 @@
           />
         </transition>
       </component>
-      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
-        <ViewPane
-          :publication="publication"
-          :opened_view_meta_filename="opened_view_meta_filename"
-          :default_view_color="default_view_color"
-          :opened_pin_path="opened_pin_path"
-          :pins="pins"
-          :can_edit="can_edit"
-          @toggleView="toggleView"
-          @togglePin="opened_pin_path = $event"
-        />
-      </component>
+      <transition name="viewpane-slide" mode="out-in">
+        <component
+          v-if="viewpane_visible"
+          :is="display === 'adjacent' ? 'pane' : 'div'"
+          min-size="5"
+        >
+          <ViewPane
+            :publication="publication"
+            :opened_view_meta_filename="opened_view_meta_filename"
+            :default_view_color="default_view_color"
+            :opened_pin_path="opened_pin_path"
+            :pins="pins"
+            :can_edit="can_edit"
+            @toggleView="toggleView"
+            @togglePin="opened_pin_path = $event"
+          />
+        </component>
+      </transition>
     </component>
   </div>
 </template>
@@ -118,6 +146,7 @@ export default {
       },
       opened_pin_path: undefined,
       default_view_color: "#fc4b60",
+      viewpane_visible: true,
     };
   },
   created() {},
@@ -346,6 +375,9 @@ export default {
         },
       });
     },
+    toggleViewpane() {
+      this.viewpane_visible = !this.viewpane_visible;
+    },
   },
 };
 </script>
@@ -358,8 +390,28 @@ export default {
   border-radius: 4px;
   overflow: hidden;
 
+  ._mapContainerWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
   ._mapContainer {
     width: 100%;
+  }
+
+  // When viewpane is hidden, hide the second pane but keep splitpane structure
+  &[data-viewpane-hidden="true"] {
+    ::v-deep .splitpanes__pane:last-child {
+      display: none;
+    }
+    ::v-deep .splitpanes__splitter {
+      display: none;
+    }
+
+    ::v-deep .splitpanes__pane:first-child {
+      width: 100% !important;
+    }
   }
 
   &[data-display="linear"] {
@@ -379,5 +431,41 @@ export default {
       }
     }
   }
+
+  // Toggle Button positioned on the vertical border
+  ._viewpaneToggle {
+    position: absolute;
+    top: calc(var(--spacing) / 2);
+    right: calc(var(--spacing) / 2);
+
+    background: rgba(255, 255, 255, 0.4) !important;
+    backdrop-filter: blur(5px) !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 1) !important;
+    }
+  }
+
+  // When viewpane is hidden, position button on the right edge
+  &[data-viewpane-hidden="true"] {
+    ._viewpaneToggle {
+    }
+  }
+}
+
+// Viewpane transition animations
+.viewpane-slide-enter-active,
+.viewpane-slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.viewpane-slide-enter {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.viewpane-slide-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
 }
 </style>

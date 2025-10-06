@@ -231,10 +231,12 @@ export default {
   width: 100%;
   background: white;
 
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
   margin: 0;
   // border-top: 1px solid var(--c-gris);
-  border-bottom: 1px solid var(--c-gris);
+  border-bottom: 2px solid var(--c-gris_clair);
+  // border-bottom: 1px solid var(--c-noir);
+  // background: var(--c-gris_clair);
 }
 
 ._publiTitle {

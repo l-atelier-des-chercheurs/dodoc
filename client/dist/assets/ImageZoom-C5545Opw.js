@@ -1,0 +1,12 @@
+import{n}from"../build.js";const a={props:{small_img:String,large_img:String,width:Number,ratio:Number},components:{},data(){return{is_zoomed:!1,ro:void 0,cont_width:void 0,cont_height:void 0,pos_x:void 0,pos_y:void 0}},created(){},mounted(){this.updateContSize(),this.ro=new ResizeObserver(this.updateContSize),this.ro.observe(this.$el)},beforeDestroy(){this.ro.unobserve(this.$el)},watch:{is_zoomed(e){e?this.$emit("zoomingIn"):this.$emit("zoomingOut")}},computed:{pos_x_percent(){return this.pos_x/this.cont_width},pos_y_percent(){return this.pos_y/this.cont_height},padding(){return this.$root.window.innerWidth*.2},image_styles(){if(this.is_zoomed){const e=this.width?Math.max(2,this.width/this.cont_width/2):2,t=this.cont_width*e,o=t*this.ratio,i=this.pos_x_percent*-1*(t-this.cont_width+this.padding)+this.padding/2,s=this.pos_y_percent*-1*(o-this.cont_height+this.padding)+this.padding/2;return`
+        max-width: none;
+        width: ${t}px;
+        height: ${o}px;
+        transform: translate(${i}px, ${s}px);
+        pointer-events: none;
+        `}return`
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+`}},methods:{toggleZoom(){this.is_zoomed=!this.is_zoomed},updateContSize(){this.cont_width=this.$el.offsetWidth,this.cont_height=this.$el.offsetHeight},mouseMoved(e){let{offsetX:t,offsetY:o}=e.touches?e.touches[0]:e;this.pos_x=t,this.pos_y=o}}};var r=function(){var t=this,o=t._self._c;return o("div",{staticClass:"_imageZoom",attrs:{"data-zoomed":t.is_zoomed},on:{click:t.toggleZoom,mousemove:t.mouseMoved}},[o("transition",{attrs:{name:"fade_fast",mode:"in-out"}},[t.is_zoomed?o("img",{key:"zoom-"+t.is_zoomed,style:t.image_styles,attrs:{src:t.large_img}}):o("img",{key:"zoom-"+t.is_zoomed,style:t.image_styles,attrs:{src:t.small_img}})]),o("transition",{attrs:{name:"slideupFade",mode:"out-in"}},[o("div",{key:t.is_zoomed,staticClass:"_clickToZoomBtn"},[t.is_zoomed?o("button",{staticClass:"u-button u-button_white u-button_small",attrs:{type:"button"},on:{click:function(i){return i.stopPropagation(),t.toggleZoom.apply(null,arguments)}}},[o("b-icon",{attrs:{icon:"zoom-out"}}),t._v(" "+t._s(t.$t("zoom_out"))+" ")],1):o("button",{staticClass:"u-button u-button_white u-button_small",attrs:{type:"button"},on:{click:function(i){return i.stopPropagation(),t.toggleZoom.apply(null,arguments)}}},[o("b-icon",{attrs:{icon:"zoom-in"}}),t._v(" "+t._s(t.$t("click_to_zoom"))+" ")],1)])])],1)},_=[],h=n(a,r,_,!1,null,"e094d3d6");const m=h.exports;export{m as default};

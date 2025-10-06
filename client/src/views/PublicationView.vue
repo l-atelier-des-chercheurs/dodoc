@@ -12,8 +12,11 @@
       <div class="u-divCentered" v-if="$root.is_loading" key="loader">
         <LoaderSpinner />
       </div>
-      <div v-else-if="fetch_publication_error">
-        {{ fetch_publication_error }}
+      <div v-else-if="fetch_publication_error" class="_errorMessage">
+        <span
+          class="u-warning"
+          v-html="$t('error:') + ' ' + fetch_publication_error"
+        />
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
         <template v-if="!is_serversidepreview && !is_fullscreen">
@@ -41,7 +44,6 @@
           <PageExport
             :publication="publication"
             :is_serversidepreview="is_serversidepreview"
-            @toggleFs="toggleFs"
           />
         </template>
         <div v-else-if="publication.template === 'story'">
@@ -116,7 +118,11 @@ export default {
           superadmintoken,
         })
         .catch((err) => {
-          this.fetch_publication_error = err.code;
+          if (err.code === "folder_not_public") {
+            this.fetch_publication_error = this.$t("folder_not_public");
+          } else {
+            this.fetch_publication_error = err.code;
+          }
         });
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
@@ -160,24 +166,16 @@ export default {
       `;
     },
   },
-  methods: {
-    async openFs() {
-      await screenfull.request(this.$refs.fsContainer);
-      this.is_fullscreen = true;
-      screenfull.onchange(() => {
-        if (!screenfull.isFullscreen) this.is_fullscreen = false;
-      });
-    },
-    async closeFs() {
-      await screenfull.exit();
-      this.is_fullscreen = false;
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
 ._publicationView {
   background: white;
+
+  @media screen {
+    // margin: 0 calc(var(--spacing) * 2);
+  }
 }
 </style>
 <style lang="scss">
@@ -228,5 +226,12 @@ body {
   @media print {
     box-shadow: none !important;
   }
+}
+
+._errorMessage {
+  padding: calc(var(--spacing) * 2);
+  text-align: center;
+  max-width: 86ch;
+  margin: 0 auto;
 }
 </style>

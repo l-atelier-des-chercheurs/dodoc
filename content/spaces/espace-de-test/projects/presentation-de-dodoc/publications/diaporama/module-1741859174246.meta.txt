@@ -1,0 +1,22 @@
+module_type = "mosaic"
+page_id = "lh0qon"
+x = 62
+y = 62
+width = 388
+height = 388
+rotation = 0
+opacity = 1
+margins = 24
+outline_width = 0
+z_index = 1
+"$date_modified" = 2025-09-16T13:59:01.424Z
+"$date_uploaded" = 2025-03-13T09:46:14.246Z
+"$status" = "private"
+drop_shadow = 0.1
+background_color = ""
+show_fs_button = false
+border_radius = 0
+
+[[source_medias]]
+meta_filename_in_project = "icon.png.meta.txt"
+objectFit = "contain"

@@ -8,11 +8,12 @@
     />
 
     <div class="_container">
-      <div class="_content" v-if="content && content.length > 0">
-        <component v-if="input_type !== 'editor'" :is="tag" v-text="content" />
-        <CollaborativeEditor3 v-else :content="content" :can_edit="false" />
+      <div class="_content">
+        <component :is="tag">
+          <span v-if="content && content.length > 0" v-html="clean_content" />
+          <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
+        </component>
       </div>
-      <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
     </div>
 
     <BaseModal2
@@ -35,10 +36,11 @@
           :autofocus="true"
           :autocomplete="input_type === 'email' ? 'email' : undefined"
           :minlength="minlength"
+          :custom_formats="custom_formats"
           :maxlength="maxlength"
           :key="edit_mode + content"
           @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="updateText"
+          @onEnter="input_type !== 'editor' ? updateText() : undefined"
         />
       </component>
 
@@ -96,6 +98,7 @@ export default {
     can_edit: {
       type: Boolean,
     },
+    custom_formats: Array,
   },
   components: {},
   data() {
@@ -121,6 +124,9 @@ export default {
   computed: {
     content_is_changed() {
       return this.new_content !== this.content;
+    },
+    clean_content() {
+      return this.$sanitize(this.content);
     },
   },
   methods: {
@@ -183,8 +189,9 @@ export default {
   // width: 100%;
 
   ._content {
-    display: inline-block;
+    display: block;
     margin-right: calc(var(--spacing) / 2);
+    overflow-wrap: break-word;
 
     > * {
       margin: 0;
@@ -192,6 +199,18 @@ export default {
 
     span {
       white-space: break-spaces;
+    }
+
+    ::v-deep {
+      .ql-align-right {
+        text-align: right;
+      }
+      .ql-align-center {
+        text-align: center;
+      }
+      .ql-align-justify {
+        text-align: justify;
+      }
     }
   }
 

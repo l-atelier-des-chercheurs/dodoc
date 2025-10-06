@@ -2,8 +2,8 @@
   <div
     class="_projetPanes"
     :class="{
-      'has--multiplePanes': can_edit_project,
-      'is--editable': can_edit_project,
+      'has--multiplePanes': can_contribute_to_project,
+      'is--editable': can_contribute_to_project,
     }"
     @click="scrollToPanes"
   >
@@ -19,38 +19,6 @@
             <br />
             <br />
             <br />
-            <div class="u-spacingBottom">
-              <DateDisplay
-                :title="$t('date_created')"
-                :date="project.$date_created"
-              />
-              <DateDisplay
-                :title="$t('date_modified')"
-                :date="project.$date_modified"
-              />
-            </div>
-
-            <div
-              class=""
-              v-if="$root.app_infos.is_electron && is_instance_admin"
-            >
-              <div class="u-spacingBottom" />
-              <DLabel :str="$t('open_in_finder')" />
-              <button
-                type="button"
-                class="u-button u-button_bleumarine u-button_small"
-                @click="openInFinder({ path: project.$path })"
-                v-html="project_path_wrappable"
-              />
-            </div>
-
-            <br />
-            <DLabel :str="$t('latest_changes_to_project')" />
-            <div class="u-instructions">
-              <small>
-                {{ $t("waiting") }}
-              </small>
-            </div>
 
             <!-- <div class="_devNotes">
               <div class="u-wips" />
@@ -73,7 +41,7 @@
         :style="`--color-type: var(--color-${pane.type});`"
       >
         <InstructionsWindow
-          v-if="can_edit_project && false"
+          v-if="can_contribute_to_project && false"
           :key="pane.type"
           :type="pane.type"
           :path="project.$path"
@@ -92,20 +60,21 @@
           :key="pane.key"
           :project="project"
           :media_focused="pane.focus"
+          :can_edit_project="can_edit_project"
           @update:media_focused="setItem(pane, 'focus', $event)"
         />
         <MakePane
           v-if="pane.type === 'make'"
           :project="project"
           :opened_make_slug="pane.make"
-          :can_edit="can_edit_project"
+          :can_edit="can_contribute_to_project"
           @update:opened_make_slug="setItem(pane, 'make', $event)"
         />
         <PublierPane
           v-if="pane.type === 'publish'"
           :project="project"
           :pane_infos="pane"
-          :can_edit="can_edit_project"
+          :can_edit="can_contribute_to_project"
           @updatePane="($event) => setItem(pane, $event.key, $event.value)"
         />
       </pane>
@@ -125,6 +94,7 @@ export default {
     projectpanes: Array,
     project: Object,
     can_edit_project: Boolean,
+    can_contribute_to_project: Boolean,
   },
   components: {
     Splitpanes,
@@ -138,18 +108,33 @@ export default {
   data() {
     return {};
   },
-  created() {},
+  created() {
+    if (!this.can_contribute_to_project) {
+      // if no project panes, set to publish
+      if (
+        this.projectpanes.length === 0 ||
+        !this.projectpanes.some((p) => p.type === "publish")
+      ) {
+        const _pp = [
+          {
+            type: "publish",
+            size: 100,
+          },
+        ];
+        this.$emit("update:projectpanes", _pp);
+      } else {
+        const _pp = this.projectpanes.filter((p) => p.type === "publish");
+        this.$emit("update:projectpanes", _pp);
+      }
+    }
+  },
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {
-    project_path_wrappable() {
-      return this.project.$path.replaceAll("/", "/<wbr>");
-    },
-  },
+  computed: {},
   methods: {
     scrollToPanes() {
-      if (this.$route.name === "Projet" && this.can_edit_project)
+      if (this.$route.name === "Projet" && this.can_contribute_to_project)
         // convenient in double scroll mode
         this.$el.scrollIntoView({
           behavior: "smooth",
@@ -207,6 +192,7 @@ export default {
   margin: 0 auto;
 
   padding: calc(var(--spacing) * 2);
+  margin-bottom: 20vh;
 
   ::v-deep ._labelLine {
     justify-content: center;

@@ -21,6 +21,12 @@
         </div>
       </div>
 
+      <OptimizeMedia
+        v-if="show_optimize_modal"
+        :media="file"
+        @close="show_optimize_modal = false"
+      />
+
       <div class="_preview" :data-filetype="file.$type">
         <MediaContent
           :file="file"
@@ -36,8 +42,17 @@
         />
         <div v-if="optimization_strongly_recommended" class="_optimizeNotice">
           <div class="">
-            {{ $t("convert_to_format") }}
-            <OptimizeMedia :media="file" @close="$emit('close')" />
+            <div class="u-instructions">
+              {{ $t("convert_to_format") }}
+            </div>
+            <button
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              {{ $t("convert_shorten") }}
+            </button>
           </div>
         </div>
 
@@ -177,7 +192,7 @@
               :content="file.caption"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -188,7 +203,7 @@
               :content="file.$credits"
               :path="file.$path"
               :input_type="'editor'"
-              :custom_formats="['bold', 'italic', 'link']"
+              :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :can_edit="true"
             />
           </div>
@@ -302,17 +317,37 @@
             <small class="u-instructions">{{ $t("nothing_to_show") }}</small>
           </div>
           <div class="_allModifyButtons">
-            <CropAdjustMedia
+            <button
               v-if="cropadjust_possible"
+              type="button"
+              class="u-button u-button_orange"
+              @click="show_cropadjust_modal = true"
+            >
+              <b-icon icon="bounding-box" />
+              {{ $t("crop_adjust") }}
+            </button>
+            <CropAdjustMedia
+              v-if="show_cropadjust_modal"
               :media="file"
-              @close="$emit('close')"
+              @close="show_cropadjust_modal = false"
+              @closeParentModal="$emit('close')"
             />
 
-            <OptimizeMedia
+            <button
+              type="button"
+              class="u-button u-button_orange"
               v-if="optimization_possible"
-              :media="file"
-              @close="$emit('close')"
-            />
+              @click="show_optimize_modal = true"
+            >
+              <b-icon :icon="'file-play-fill'" />
+              <template v-if="file.$type === 'image'">
+                {{ $t("optimize_resize") }}
+              </template>
+              <template v-else>
+                {{ $t("convert_shorten") }}
+              </template>
+            </button>
+
             <div v-for="make in available_makes" :key="make.type">
               <button
                 type="button"
@@ -355,8 +390,6 @@
 </template>
 <script>
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
-import CropAdjustMedia from "@/adc-core/fields/CropAdjustMedia.vue";
-import OptimizeMedia from "@/adc-core/fields/OptimizeMedia.vue";
 
 export default {
   props: {
@@ -367,16 +400,18 @@ export default {
   },
   components: {
     DuplicateMedia,
-    CropAdjustMedia,
-    OptimizeMedia,
+    CropAdjustMedia: () => import("@/adc-core/fields/CropAdjustMedia.vue"),
+    OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
   },
   data() {
     return {
+      show_cropadjust_modal: false,
       show_nav_btn: false,
       show_meta_sidebar: true,
       is_regenerating: false,
       is_zooming_in: false,
       is_playing_video: false,
+      show_optimize_modal: false,
     };
   },
 
@@ -413,10 +448,12 @@ export default {
       );
     },
     optimization_possible() {
-      return this.fileCanBeOptimized({ path: this.file.$media_filename });
+      return this.fileCanBeOptimized({ filename: this.file.$media_filename });
     },
     optimization_strongly_recommended() {
-      return this.fileShouldBeOptimized({ path: this.file.$media_filename });
+      return this.fileShouldBeOptimized({
+        filename: this.file.$media_filename,
+      });
     },
     author_has_location() {
       return (
@@ -809,6 +846,7 @@ export default {
 ._allModifyButtons {
   display: flex;
   flex-flow: column nowrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) / 1);
 }
 </style>

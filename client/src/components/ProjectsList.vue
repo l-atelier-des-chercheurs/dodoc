@@ -60,8 +60,10 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+._projectsList {
+}
 ._noProjects {
   margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
-  text-align: center;
+  text-align: left;
 }
 </style>

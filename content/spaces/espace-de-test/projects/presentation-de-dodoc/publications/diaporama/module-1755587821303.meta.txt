@@ -1,0 +1,17 @@
+module_type = "mosaic"
+page_id = "fdnuu9"
+x = 60
+y = 60
+width = 419
+height = 279
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-09-16T13:57:32.389Z
+"$date_uploaded" = 2025-08-19T07:17:01.303Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "image-11.png.meta.txt"
+objectFit = "contain"

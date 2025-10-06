@@ -2,27 +2,32 @@
   <div
     class="_pagedViewer edition book"
     :class="{
-      'is--infiniteViewer': viewer_type === 'vue-infinite-viewer',
+      'is--infiniteViewer': viewer_type === 'infinite-viewer',
       'is--editable': can_edit,
     }"
   >
+    <component :is="'style'" v-html="highlight_opened_pages" />
     <div ref="bookrender" style="opacity: 0; pointer-events: none" />
-    <vue-infinite-viewer
-      v-if="viewer_type === 'vue-infinite-viewer'"
-      ref="vueinfiniteviewer"
+    <div
+      v-if="viewer_type === 'infinite-viewer'"
+      ref="infiniteviewer"
       class="_infiniteViewer"
-      v-bind="viewerOptions"
     >
       <div class="" ref="bookpreview" />
-    </vue-infinite-viewer>
+    </div>
     <template v-else>
       <div ref="bookpreview" />
     </template>
     <LoaderSpinner v-if="is_loading" />
+    <ShowSourceHTML
+      v-if="show_source_html"
+      :content_html="content_html"
+      :opened_chapter_meta_filename="opened_chapter_meta_filename"
+    />
   </div>
 </template>
 <script>
-import VueInfiniteViewer from "vue-infinite-viewer";
+import InfiniteViewer from "infinite-viewer";
 import { Handler, Previewer } from "pagedjs";
 
 export default {
@@ -43,49 +48,74 @@ export default {
       type: String,
       required: true,
     },
+    show_source_html: Boolean,
     can_edit: Boolean,
+    opened_chapter_meta_filename: String,
   },
   components: {
-    VueInfiniteViewer,
+    InfiniteViewer,
+    ShowSourceHTML: () =>
+      import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
   data() {
     return {
       is_loading: true,
-
-      viewerOptions: {
-        useMouseDrag: true,
-        useWheelScroll: true,
-        useAutoZoom: true,
-
-        margin: 0,
-        zoomRange: [0.4, 10],
-        maxPinchWheel: 10,
-        displayVerticalScroll: true,
-        displayHorizontalScroll: true,
-        rangeX: [-100, 2000],
-        rangeY: [0, Infinity],
-      },
+      infiniteviewer: null,
+      is_generating_book: false,
     };
   },
   created() {},
-  mounted() {
-    this.generateBook();
-    if (this.$refs.vueinfiniteviewer) this.$refs.vueinfiniteviewer.setZoom(0.6);
+  async mounted() {
+    await this.generateBook();
+
+    if (this.$refs.infiniteviewer) {
+      this.infiniteviewer = new InfiniteViewer(
+        this.$refs.infiniteviewer,
+        this.$refs.bookpreview,
+        {
+          useMouseDrag: true,
+          useWheelScroll: true,
+          useAutoZoom: true,
+
+          margin: 0,
+          zoomRange: [0.4, 10],
+          maxPinchWheel: 10,
+          displayVerticalScroll: true,
+          displayHorizontalScroll: true,
+        }
+      );
+
+      this.$nextTick(() => {
+        if (this.opened_chapter_meta_filename)
+          this.zoomToSection(this.opened_chapter_meta_filename);
+        else {
+          this.infiniteviewer.setZoom(0.6);
+          this.$nextTick(() => {
+            this.zoomToSection("first page");
+          });
+        }
+      });
+    }
+    this.$eventHub.$on("edition.zoomToSection", this.zoomToSection);
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
     this.removeExistingStyles();
+    this.$eventHub.$off("edition.zoomToSection", this.zoomToSection);
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
-    content_html() {
-      this.generateBook();
+    async content_html() {
+      await this.generateBook();
     },
-    format_mode() {
-      this.generateBook();
+    async format_mode() {
+      await this.generateBook();
     },
-    css_styles() {
-      this.generateBook();
+    async css_styles() {
+      await this.generateBook();
+    },
+    opened_chapter_meta_filename() {
+      this.zoomToSection(this.opened_chapter_meta_filename);
     },
   },
   computed: {
@@ -97,88 +127,139 @@ export default {
       //   nodes.chapters = [this.opened_chapter];
       // }
 
-      let html = "<div>";
+      let html = "";
 
       if (nodes.cover) {
+        html = `<!-- ${this.$t("cover")} -->`;
         html += `<section class="cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
         if (nodes.cover.title)
           html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
           html += `<div class="coverImage"><img src="${nodes.cover.image_url}" /></div>`;
-        html += `</section>`;
+        html += `</section>\n\n`;
       }
 
       nodes.chapters.forEach((chapter) => {
-        html += `<section class="chapter" data-starts-on-page="${chapter.starts_on_page}" data-chapter-meta-filename="${chapter.meta_filename}" data-chapter-title="${chapter.title}" >`;
-        if (chapter.title)
+        html += `
+          <!-- ${chapter.title} -->`;
+        html += `<section class="chapter"
+          data-starts-on-page="${chapter.starts_on_page}"
+          data-column-count="${chapter.column_count}"
+          data-chapter-meta-filename="${chapter.meta_filename}"
+          data-chapter-title="${chapter.title}"
+          data-chapter-type="${chapter.section_type}"
+        >`;
+        if (chapter.title && chapter.section_type !== "gallery")
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
-        if (chapter.content) html += `${chapter.content}`;
+        if (chapter.content)
+          html += `<div class="chapterContent">${chapter.content}</div>`;
         html += `</section>`;
       });
 
-      html += `</div>`;
+      html += ``;
 
       return html;
+    },
+    pages_to_show() {
+      const pages_to_display = this.$route.query?.page;
+      if (pages_to_display && pages_to_display.includes("-")) {
+        const [start, end] = pages_to_display.split("-");
+        return {
+          start: +start,
+          end: +end,
+        };
+      } else if (pages_to_display && !pages_to_display.includes("-")) {
+        return +pages_to_display;
+      }
+      return false;
+    },
+    highlight_opened_pages() {
+      if (this.can_edit && this.opened_chapter_meta_filename) {
+        return `
+        .pagedjs_page:not(:hover):not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"]))
+        {
+          opacity: .7 !important;
+        }
+        .pagedjs_page:hover:not(:has([data-chapter-meta-filename="${this.opened_chapter_meta_filename}"]))
+        {
+          opacity: .85 !important;
+        }
+        .chapter.clickable[data-chapter-meta-filename="${this.opened_chapter_meta_filename}"] {
+          cursor: default !important;
+        }
+      `;
+      }
+      return "";
     },
   },
   methods: {
     async generateBook() {
-      console.log("generateBook");
+      await new Promise((resolve) => {
+        console.log("generateBook");
 
-      this.removeExistingStyles();
+        this.is_generating_book = true;
 
-      const bookrender = this.$refs.bookrender;
-      if (!bookrender) {
-        console.log("no bookrender div");
-        return;
-      }
+        this.removeExistingStyles();
 
-      let paged = new Previewer();
+        const bookrender = this.$refs.bookrender;
+        if (!bookrender) {
+          console.log("no bookrender div");
+          return;
+        }
 
-      let pagedjs_html = this.content_html;
-      if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
+        let paged = new Previewer();
 
-      let pagedjs_styles = `
+        let pagedjs_html = this.content_html;
+        if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
+
+        let pagedjs_styles = `
         @page {
           size: ${this.format_mode};
         }
       `;
-      // --paged-layout: booklet;
-      pagedjs_styles += this.css_styles;
-      pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
+        // --paged-layout: booklet;
+        pagedjs_styles += this.css_styles;
+        pagedjs_styles += `.makertoidentfyendofcustomcss{}`;
 
-      const theme_styles = [
-        {
-          pagedjs_styles,
-        },
-      ];
+        const theme_styles = [
+          {
+            pagedjs_styles,
+          },
+        ];
 
-      paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
-        bookrender.innerHTML = "";
-        const bookpreview = this.$refs.bookpreview;
-        bookpreview.innerHTML = "";
-        const pagesOutput = flow.pagesArea;
-        bookpreview.appendChild(pagesOutput);
+        paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
+          bookrender.innerHTML = "";
+          const bookpreview = this.$refs.bookpreview;
+          bookpreview.innerHTML = "";
+          const pagesOutput = flow.pagesArea;
+          bookpreview.appendChild(pagesOutput);
 
-        // const custom_styles_el = document.querySelectorAll(
-        //   "[data-pagedjs-inserted-styles]"
-        // )[1];
-        // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
-        //   ".makertoidentfyendofcustomcss{}"
-        // );
+          // const custom_styles_el = document.querySelectorAll(
+          //   "[data-pagedjs-inserted-styles]"
+          // )[1];
+          // const [custom_css, paged_css] = custom_styles_el.innerHTML.split(
+          //   ".makertoidentfyendofcustomcss{}"
+          // );
 
-        // const wrap_custom_styles = `
-        //   ._pagedViewer {
-        //     ${custom_css}
-        //   }
-        // `;
-        // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
+          // const wrap_custom_styles = `
+          //   ._pagedViewer {
+          //     ${custom_css}
+          //   }
+          // `;
+          // custom_styles_el.innerHTML = wrap_custom_styles + paged_css;
 
-        this.$nextTick(() => {
-          this.addChapterShortcuts();
-          setTimeout(() => {
-            this.is_loading = false;
-          }, 100);
+          this.$nextTick(() => {
+            this.showOnlyPages();
+            if (this.can_edit) {
+              this.addChapterShortcuts();
+              this.reportChapterPositions();
+            }
+            setTimeout(() => {
+              this.is_loading = false;
+              this.is_generating_book = false;
+              resolve();
+            }, 100);
+          });
         });
       });
     },
@@ -193,7 +274,14 @@ export default {
         btn.classList.add("editChapterBtn");
         btn.textContent = chapter.getAttribute("data-chapter-title");
         chapter.appendChild(btn);
+        chapter.classList.add("clickable");
         chapter.addEventListener("click", () => {
+          // only if not active
+          if (
+            chapter.getAttribute("data-chapter-meta-filename") ===
+            this.opened_chapter_meta_filename
+          )
+            return;
           this.$emit(
             "openChapter",
             chapter.getAttribute("data-chapter-meta-filename")
@@ -207,6 +295,78 @@ export default {
         .forEach((styleElement) => {
           styleElement.parentNode.removeChild(styleElement);
         });
+    },
+    showOnlyPages() {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview || !this.pages_to_show) return;
+      const pages = bookpreview.querySelectorAll(".pagedjs_page");
+
+      /* Reset page counter */
+      let reset = parseInt(this.pages_to_show.start) - 1;
+      let containerPages = document.querySelector(".pagedjs_pages");
+      containerPages.style.counterReset = "page " + reset;
+
+      if (this.pages_to_show.start && this.pages_to_show.end) {
+        pages.forEach((page, index) => {
+          if (
+            index + 1 >= this.pages_to_show.start &&
+            index + 1 <= this.pages_to_show.end
+          ) {
+            page.style.display = "block";
+          } else {
+            page.style.display = "none";
+          }
+        });
+      } else {
+        pages.forEach((page, index) => {
+          if (index + 1 === this.pages_to_show) {
+            page.style.display = "block";
+          } else {
+            page.style.display = "none";
+          }
+        });
+      }
+    },
+    reportChapterPositions() {
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
+
+      const total_number_of_pages =
+        bookpreview.querySelectorAll(".pagedjs_page").length;
+      const pages_with_chapters = bookpreview.querySelectorAll(
+        ".chapter[data-chapter-meta-filename]"
+      );
+
+      // list for each page the chapter it belongs to
+      const pages_with_chapters_list = [];
+      pages_with_chapters.forEach((page) => {
+        const chapter_meta_filename = page.getAttribute(
+          "data-chapter-meta-filename"
+        );
+        const number = +page
+          .closest(".pagedjs_page")
+          .getAttribute("data-page-number");
+        pages_with_chapters_list.push({
+          number,
+          chapter_meta_filename,
+        });
+      });
+
+      // transform this list to a list of chapters with the start and end page
+      const chapters_positions = {};
+      pages_with_chapters_list.map((page) => {
+        if (!chapters_positions[page.chapter_meta_filename]) {
+          chapters_positions[page.chapter_meta_filename] = {
+            first_page: page.number,
+            last_page: page.number,
+          };
+        } else {
+          chapters_positions[page.chapter_meta_filename].last_page =
+            page.number;
+        }
+      });
+
+      this.$emit("updateChaptersPositions", chapters_positions);
     },
     beforePrint() {
       // this.impositionPage();
@@ -309,7 +469,6 @@ export default {
         max-height: 100%;
         min-height: 100%;
         height: 100% !important;
-
       }
 
       .pagedjs_sheet {
@@ -450,6 +609,56 @@ export default {
         document.querySelector(`#page-${folio}`).style.order = i;
       });
     },
+    async waitForBookGeneration() {
+      while (this.is_generating_book) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+    },
+    async zoomToSection(meta_filename) {
+      if (!meta_filename) return;
+
+      if (this.is_generating_book) {
+        await this.waitForBookGeneration();
+      }
+
+      const bookpreview = this.$refs.bookpreview;
+      if (!bookpreview) return;
+
+      let page;
+
+      if (meta_filename === "first page") {
+        page = bookpreview.querySelector(".pagedjs_first_page");
+      } else {
+        page = bookpreview.querySelector(
+          `[data-chapter-meta-filename="${meta_filename}"]`
+        );
+      }
+
+      if (!page) return;
+
+      this.zoomToPage(page);
+    },
+    zoomToPage(page) {
+      const pages_container = this.$refs.bookpreview;
+      const container_scrollLeft = pages_container.getBoundingClientRect().left;
+      const container_scrollTop = pages_container.getBoundingClientRect().top;
+
+      const page_scrollLeft = page.getBoundingClientRect().left;
+      const page_scrollTop = page.getBoundingClientRect().top;
+      console.log("-");
+      console.log(container_scrollLeft, container_scrollTop);
+      console.log(page_scrollLeft, page_scrollTop);
+
+      const padding = 200;
+      this.infiniteviewer.scrollTo(
+        page_scrollLeft - container_scrollLeft - padding,
+        page_scrollTop - container_scrollTop - padding,
+        {
+          duration: 1000,
+          absolute: true,
+        }
+      );
+    },
   },
 };
 </script>
@@ -470,7 +679,6 @@ export default {
     height: 100%;
     overflow: auto;
     height: 100%;
-    cursor: move;
     background-color: var(--c-gris_fonce);
   }
   ._infiniteViewer {
@@ -479,6 +687,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
+    cursor: move;
   }
 
   &.is--editable {
@@ -514,6 +723,20 @@ export default {
         background-color: var(--color-pageContent);
         font-size: 0.8rem;
         color: white;
+
+        &:hover {
+          background-color: var(--c-noir);
+        }
+      }
+
+      .chapter.clickable {
+        cursor: pointer;
+
+        // &:hover {
+        //   .editChapterBtn {
+        //     background-color: var(--c-noir);
+        //   }
+        // }
       }
 
       .pagedjs_pages {
@@ -549,7 +772,9 @@ export default {
         margin: 0;
         flex-shrink: 0;
         flex-grow: 0;
+
         margin-top: 10mm;
+        transition: opacity 0.3s cubic-bezier(0.19, 1, 0.22, 1);
       }
       .pagedjs_page_content {
         box-shadow: 0 0 0 1px var(--color-pageContent);

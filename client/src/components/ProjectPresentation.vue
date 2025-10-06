@@ -5,19 +5,21 @@
       'is--list': ['list', 'tiny'].includes(context),
       'is--own': is_own_project,
       'u-card2': context !== 'full',
+      'is--mobileView': $root.is_mobile_view,
     }"
     :data-context="context"
   >
     <div class="_projectInfos--topContent">
       <div class="_projectInfos--cover">
-        <CoverField
-          class="_cover"
-          :context="context"
-          :ratio="'3 / 2'"
-          :cover="project.$cover"
-          :path="project.$path"
-          :can_edit="can_edit"
-        />
+        <div class="_cover">
+          <CoverField
+            :context="context"
+            :ratio="'3 / 2'"
+            :cover="project.$cover"
+            :path="project.$path"
+            :can_edit="can_edit"
+          />
+        </div>
 
         <transition name="toggleLock" mode="out-in">
           <StatusTag
@@ -39,7 +41,10 @@
           />
         </transition>
 
-        <div v-if="display_original_space" class="_originalSpace">
+        <div
+          v-if="display_original_space && original_space_name"
+          class="_originalSpace"
+        >
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
@@ -56,7 +61,6 @@
             :path="project.$path"
             :can_edit="can_edit"
           />
-
           <DropDown v-if="can_edit" :show_label="false" :right="true">
             <DownloadFolder
               :modal_title="$t('download_project', { name: project.title })"
@@ -79,16 +83,41 @@
                 @close="show_dup_modal = false"
               />
             </div>
-            <RemoveMenu
+
+            <button
+              v-if="$root.app_infos.is_electron && is_instance_admin"
+              type="button"
+              class="u-buttonLink"
+              @click="openInFinder({ path: project.$path })"
+            >
+              <b-icon icon="folder-symlink" />
+              {{ $t("open_in_finder") }}
+            </button>
+
+            <button
+              type="button"
+              class="u-buttonLink u-buttonLink_red"
+              @click="show_remove_modal = true"
+            >
+              <b-icon icon="trash" />
+              {{ $t("remove") }}
+            </button>
+
+            <RemoveMenu2
+              v-if="show_remove_modal"
               :modal_title="$t('remove_project', { name: project.title })"
-              @remove="removeProject"
+              :success_notification="$t('project_was_removed')"
+              :path="project.$path"
+              @removedSuccessfully="show_remove_modal = false"
+              @close="show_remove_modal = false"
             />
           </DropDown>
         </div>
 
         <TitleField
           :field_name="'title'"
-          :label="context === 'full' ? $t('title') : ''"
+          :label="$t('title')"
+          :show_label="false"
           class="_title"
           :content="project.title"
           :path="project.$path"
@@ -107,9 +136,10 @@
             (context === 'full' && (project.description || can_edit))
           "
           :field_name="'description'"
-          :label="context === 'full' ? $t('description') : ''"
+          :label="$t('description')"
+          :show_label="context === 'full'"
           :input_type="'editor'"
-          :custom_formats="['bold', 'italic', 'link']"
+          :custom_formats="['bold', 'italic', 'link', 'emoji']"
           :content="project.description"
           :path="project.$path"
           :maxlength="1280"
@@ -124,6 +154,18 @@
           :admin_instructions="$t('project_admin_instructions')"
           :contrib_instructions="$t('project_contrib_instructions')"
         />
+
+        <div v-if="context === 'full' && can_contribute_to_project">
+          <div class="u-displayAsPublic">
+            <ToggleInput
+              :content="display_as_public"
+              :label="$t('display_as_public')"
+              @update:content="
+                $emit('update:display_as_public', !display_as_public)
+              "
+            />
+          </div>
+        </div>
 
         <div
           class="_allTags"
@@ -173,6 +215,7 @@
         :can_edit="can_edit"
       />
       <CardKeywords class="_card" :project="project" :can_edit="can_edit" />
+      <CardInformations class="_card" :project="project" :can_edit="can_edit" />
       <!-- <CardAuthor :project="project" :can_edit="can_edit" /> -->
     </div>
 
@@ -193,6 +236,7 @@ import CardMachinesMaterials from "@/components/project_cards/CardMachinesMateri
 // import CardStatus from "@/components/project_cards/CardStatus.vue";
 import CardLicense from "@/components/project_cards/CardLicense.vue";
 import CardFiles from "@/components/project_cards/CardFiles.vue";
+import CardInformations from "@/components/project_cards/CardInformations.vue";
 
 import DuplicateOrRemixProject from "@/components/project/DuplicateOrRemixProject.vue";
 
@@ -201,7 +245,9 @@ export default {
     project: Object,
     context: String,
     can_edit: Boolean,
+    can_contribute_to_project: Boolean,
     display_original_space: Boolean,
+    display_as_public: Boolean,
     // show_more_informations: Boolean,
   },
   components: {
@@ -215,16 +261,14 @@ export default {
     // CardStatus,
     CardLicense,
     CardFiles,
+    CardInformations,
   },
   data() {
     return {
-      fetch_status: null,
-      fetch_error: null,
-      response: null,
-
       show_meta: true,
       show_dup_modal: false,
       short_project_view: true,
+      show_remove_modal: false,
     };
   },
   created() {},
@@ -237,6 +281,7 @@ export default {
   },
   computed: {
     original_space_name() {
+      if (!this.project.$path) return;
       let { space_slug } = this.decomposePath(this.project.$path);
       const space_path = this.createPath({ space_slug });
       const space = this.getFromCache(space_path);
@@ -283,22 +328,6 @@ export default {
         ? this.project[type]
         : [];
     },
-    async removeProject() {
-      this.fetch_status = "pending";
-      this.fetch_error = null;
-
-      try {
-        const response = await this.$api.deleteItem({
-          path: this.project.$path,
-        });
-        this.response = response.data;
-        this.fetch_status = "success";
-        // this.$router.push("/projects");
-      } catch (e) {
-        this.fetch_status = "error";
-        this.fetch_error = e.response.data;
-      }
-    },
     toggleCompacted() {
       this.short_project_view = !this.short_project_view;
     },
@@ -311,7 +340,7 @@ export default {
 
   width: 100%;
 
-  background: white;
+  // background: white;
 
   // width: 100%;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
@@ -346,7 +375,7 @@ export default {
   &.is--list {
     display: block;
     ._projectInfos--infos {
-      padding: calc(var(--spacing) / 2);
+      padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
       width: 100%;
       place-content: flex-start;
       // max-height: 12rem;
@@ -375,13 +404,24 @@ export default {
       }
     }
   }
+
+  &:not(.is--list) {
+    // ._projectInfos--cover {
+    //   order: 1;
+    // }
+    // ._projectInfos--infos {
+    //   order: 0;
+    // }
+  }
 }
 
 ._projectInfos--topContent {
-  max-width: min(var(--max-column-width), 1180px);
-  // max-width: var(--max-column-width);
+  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: 1000px;
 
-  margin: calc(var(--spacing) * 1) auto;
+  // border: 2px solid var(--c-gris_clair);
+  margin: var(--spacing) auto;
+  padding: 0;
   overflow: hidden;
 
   display: flex;
@@ -389,6 +429,14 @@ export default {
   justify-content: center;
   align-items: center;
   gap: calc(var(--spacing) * 2);
+
+  .is--mobileView & {
+    display: block;
+
+    > * {
+      flex: 0 0 auto;
+    }
+  }
 
   > * {
     flex: 1 1 320px;
@@ -445,20 +493,20 @@ export default {
   align-items: flex-end;
 }
 
-._imageSelect {
-  background: white;
-  position: relative;
-}
-
 ._projectInfos--cover {
   position: relative;
   width: 100%;
-  max-width: 480px;
+  // max-width: 520px;
+  overflow: hidden;
+  max-height: 100%;
 
   .is--list & {
     // padding: 2px;
-    width: 100%;
-    height: auto;
+    // width: 100%;
+    // height: auto;
+
+    // temporary fix for firefox, which hides project titles in list when an aspect ratio is set on _cover
+    opacity: 0.95;
   }
 
   .is--mobileView & {

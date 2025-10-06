@@ -3,10 +3,7 @@ const path = require("path"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https"),
-  writeFileAtomic = require("write-file-atomic"),
-  { promisify } = require("util"),
-  fastFolderSize = require("fast-folder-size");
+  https = require("https");
 
 const utils = require("./utils"),
   webpreview = require("./webpreview");
@@ -131,7 +128,6 @@ module.exports = (function () {
       const infos_filename = media_filename + ".infos.txt";
 
       const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
-
       try {
         const infos = await utils.readMetaFile(
           path_to_thumb_folder,
@@ -143,22 +139,23 @@ module.exports = (function () {
         // dev.error(err);
       }
 
-      const hrstart = process.hrtime();
+      dev.logverbose(`Creating infos file for`, full_media_path);
 
       let infos = {};
-      if (media_type === "image")
-        infos = await _readImageExif({ full_media_path });
-      else if (media_type === "video" || media_type === "audio")
-        infos = await utils.getVideoMetaData({ path: full_media_path });
+      try {
+        if (media_type === "image")
+          infos = await _readImageExif({ full_media_path });
+        else if (media_type === "video" || media_type === "audio")
+          infos = await utils.getVideoMetaData({ path: full_media_path });
+      } catch (err) {
+        dev.error(err);
+      }
 
       // read file infos
       const { size, mtimems, hash } = await _readFileInfos({ full_media_path });
       if (size !== undefined) infos.size = size;
       if (mtimems !== undefined) infos.mtimems = mtimems;
       if (hash !== undefined) infos.hash = hash;
-
-      let hrend = process.hrtime(hrstart);
-      dev.performance(`${hrend[0]}s ${hrend[1] / 1000000}ms`);
 
       if (infos) {
         const path_to_infos_file = utils.getPathToUserContent(
@@ -176,13 +173,7 @@ module.exports = (function () {
       });
 
       let infos = {};
-      const full_folder_path = utils.getPathToUserContent(path_to_folder);
-
-      const fastFolderSizeAsync = promisify(fastFolderSize);
-      const size = await fastFolderSizeAsync(full_folder_path);
-      if (size) infos.size = size;
-
-      // TODO also get quantity of medias
+      infos.size = await utils.getFolderSize(path_to_folder);
 
       return infos;
     },
@@ -686,7 +677,13 @@ module.exports = (function () {
       encoded_full_media_path +
       "&previewing_for=node";
 
-    await webpreview.captureScreenshot({ url, full_path_to_thumb });
+    try {
+      await webpreview.captureScreenshot({ url, full_path_to_thumb });
+      return;
+    } catch (err) {
+      dev.error(err);
+      throw new Error("failed to capture screenshot");
+    }
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -699,7 +696,12 @@ module.exports = (function () {
     const { image } = await _getPageMetadata({ url });
     if (image) {
       try {
-        await _fetchImageAndSave({ url, image, full_path_to_thumb });
+        await utils.downloadFileFromUrl({
+          url: image,
+          destination_path: full_path_to_thumb,
+          base_url: url,
+          max_file_size_in_mo: 50, // Smaller limit for thumbnails
+        });
         return;
       } catch (err) {
         dev.error(err);
@@ -778,6 +780,7 @@ module.exports = (function () {
     const image =
       $('meta[property="og:image"]').attr("content") ||
       $('meta[property="og:image:url"]').attr("content") ||
+      $('meta[property="image"]').attr("content") ||
       $('meta[name="og:image"]').attr("content") ||
       $('link[rel="shortcut icon"]').attr("href") ||
       $('link[rel="icon"]').attr("href");
@@ -785,26 +788,6 @@ module.exports = (function () {
     if (image) page_meta.image = image;
 
     return page_meta;
-  }
-
-  async function _fetchImageAndSave({ url, image, full_path_to_thumb }) {
-    dev.logfunction({ url, image, full_path_to_thumb });
-
-    url = utils.addhttp(url);
-    const full_url = new URL(image, url).href;
-    dev.logfunction({ full_url });
-
-    let headers = {};
-    if (url.includes("https://"))
-      headers.agent = new https.Agent({
-        rejectUnauthorized: false,
-      });
-
-    const _image = await fetch(full_url);
-    const image_buffer = await _image.buffer();
-
-    await utils.imageBufferToFile({ image_buffer, full_path_to_thumb });
-    return;
   }
 
   return API;

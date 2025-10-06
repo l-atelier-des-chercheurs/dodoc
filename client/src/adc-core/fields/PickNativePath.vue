@@ -5,13 +5,20 @@
       :instructions="$t('path_to_content_instructions')"
     />
 
-    <div class="u-spacingBottom _sameLine">
-      <input type="text" required readonly v-model="new_path" />
+    <div class="_sameLine">
+      <div class="u-filename">
+        <span :style="{ textDecoration: new_path ? 'line-through' : 'none' }">{{
+          path_to_storage
+        }}</span>
+      </div>
       <EditBtn
         v-if="can_edit && !edit_mode"
         :label_position="'left'"
         @click="changeStorage"
       />
+    </div>
+    <div class="u-filename" v-if="new_path">
+      {{ new_path }}
     </div>
 
     <template v-if="can_edit">
@@ -53,7 +60,7 @@
             <button
               type="button"
               class="u-button u-button_bleumarine u-button_small"
-              @click="openInFinder({ absolute_path: new_path })"
+              @click="openInFinder({ absolute_path: path_to_storage })"
             >
               {{ $t("open_in_finder") }}
             </button>
@@ -77,7 +84,7 @@ export default {
       edit_mode: false,
       is_saving: false,
       path_to_storage: undefined,
-      new_path: this.path_to_storage,
+      new_path: undefined,
 
       current_character_count: undefined,
       allow_save: true,
@@ -92,7 +99,8 @@ export default {
   beforeDestroy() {},
   watch: {
     path_to_storage() {
-      this.new_path = this.path_to_storage;
+      // this.new_path = this.path_to_storage;
+      // this.current_path = this.path_to_storage;
     },
   },
   computed: {},
@@ -111,7 +119,7 @@ export default {
     cancel() {
       this.edit_mode = false;
       this.is_saving = false;
-      this.new_path = this.path_to_storage;
+      this.new_path = undefined;
 
       this.$nextTick(() => {
         // this.content = "";
@@ -164,11 +172,12 @@ export default {
 }
 
 ._footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-flow: row wrap;
-  font-size: 1rem;
+  // display: flex;
+  // justify-content: flex-start;
+  // align-items: center;
+  // flex-flow: row wrap;
+  // font-size: 1rem;
+  width: 250px;
   font-weight: 400;
   margin: 0;
   padding: calc(var(--spacing) / 4) 0;

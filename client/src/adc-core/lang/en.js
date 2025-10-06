@@ -24,6 +24,14 @@ export default {
   back: "Back",
   save: "Save",
   input_url: "URL of the website to embed",
+  image_url: "URL of an image",
+  image_url_instr:
+    "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
+  import_from_url: "Import from URL",
+  example_image_url: "Example image URL",
+  importing_from_url: "Importing from URL...",
+  preview_of_image: "Preview of the image",
+  failed_to_import_from_url: "Failed to import image from URL",
   embed: "Embed",
   table: "Table",
   from_project: "From project",
@@ -53,7 +61,6 @@ export default {
 
   instance_admins_and_admins: "Instance admins and contributors",
   admins_and_contributors: "Admins and contributors",
-  set_admins_and_contributors: "Set admins and contributors",
   instance_admins_instr:
     "The accounts listed here will be able to access all content, private or public. They will also be able to modify or delete user accounts, and modify settings.",
   instance_contributors_instr:
@@ -115,7 +122,7 @@ export default {
   show_projects: "Show projects",
   all_projects: "All projects",
   all_projects_instr:
-    "This list shows all the projects documented, amongst all public spaces.",
+    "This list shows all the projects documented, regardless of the spaces they are in.",
   event_projects_instr:
     "This list show all projects documented during a specific event.",
   create: "Create",
@@ -142,7 +149,7 @@ export default {
   signup_password: "signup password",
   signup_password_instructions: "Require a password to create an account.",
   signup_password_users_instructions:
-    "If you don’t know this password, you can request it in a mail to",
+    "If you don't know this password, you can request it in a mail to",
   more_informations: "More informations",
 
   already_added: "Already added",
@@ -181,6 +188,8 @@ export default {
   sort: "Sort",
 
   click_to_zoom: "Click to zoom",
+  zoom_out: "Zoom out",
+
   close_to_source: "Similar to source media",
   very_high: "Very high",
   high: "High",
@@ -214,14 +223,14 @@ export default {
   restart: "Close and restart",
 
   refresh_window_to_see_changes: "Refresh the window to see the changes",
-  reveal: "Reveal",
+  reveal_pwd: "Reveal password",
   choose_a_pane: "Choose a pane to start!",
   latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
   download_project: "Download project {name}",
   download_project_instr:
-    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11).",
+    "You will be able to import it to any other do•doc (offline or online, as long as it is version 11 or 12).",
   download_space: "Download space {name} and all the projects it contains",
   download_ready: "The download is ready",
   download_image: "Download image",
@@ -284,7 +293,7 @@ export default {
   hide_already_translated: "Hide translations already made",
   to_translate: "To translate",
   publish_on_forum_to_add_to_contribute_to_code:
-    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l’Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
+    "Copy/paste the content of the block above into a new topic on the forum to integrate it into the source code: <a href='https://forum.latelier-des-chercheurs.fr/' title='Forum of l'Atelier des chercheurs' target='_blank'>forum.latelier-des-chercheurs.fr</a>.",
   erase_translations: "Erase all proposed translations",
 
   no_coordinates: "No coordinates available",
@@ -334,6 +343,8 @@ export default {
   create_a_module: "Create a module",
   list_of_versions: "List of versions",
   restore_this_version: "Restore this version",
+  restored_success: "Restored successfully",
+  restore_spaces: "Restore spaces",
   version: "Version",
 
   panes: "Panes",
@@ -354,7 +365,7 @@ export default {
   add_font: "Add a typeface",
   font_name: "Typeface name",
   font_instr:
-    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant.",
+    "First import the 4 files necessary for the integration of a new character typeface in woff2 format. Then indicate the corresponding file for each variant. To download font families, you can use <a href='https://gwfh.mranftl.com/fonts' target='_blank'>google-webfonts-helper</a>.",
   font_regular: "Regular (400)",
   font_bold: "Bold (700)",
   font_normal: "Normal",
@@ -504,7 +515,7 @@ export default {
   hide_meta: "Hide metadata",
   recover_password: "Recover password",
   please_contact_to_recover:
-    "Please send an email to the following address indicating your username to retrieve a new password",
+    "Please send an email to the following address indicating your username to recover a new password:",
   visibility: "Visibility",
   visibility_text:
     "Indicate here the progress of the project and who will be able to consult it.",
@@ -623,14 +634,17 @@ export default {
   visible: "Visible",
   public_status_explanations: "Will be visible on the home page.",
   private_status_explanations: "Will only be visible to its contributors.",
+  public_status_explanations_projects:
+    "The project will be visible to everyone who has access to this space.",
+
   private_status_explanations_projects:
-    "The project will not be displayed with other projects, it will only be accessible to its contributors.",
+    "This project will not be displayed with other projects, it will only be accessible to its contributors.",
   finished_status_explanations:
     "This project will be marked with a pictogram ✓ and will be accessible to all people who have access to its space.",
   draft_status_explanations:
     "This project will be accessible to all people who have access to its space.",
   public_status_explanations_publis:
-    "The post will be visible to everyone who accesses the project.",
+    "The publication will be visible to everyone who accesses the project.",
   private_status_explanations_publis:
     "The publication will only be visible to project contributors.",
 
@@ -663,7 +677,7 @@ export default {
   trim_video_summary: "Cut the end or start of a video",
   trim_instructions:
     "Select the area to extract by indicating the start and end time below. You can also click on the spectrogram above.",
-  start: "start",
+  start: "Start",
   set_start: "Set start",
   play_extract: "Play extract",
   stop_extract: "Stop extract",
@@ -707,7 +721,7 @@ export default {
   failed_to_start_recording: "Failed to start recording",
   new_user_connected_to_stream: "New user connected to the stream",
   no_stream_found_while_sharing: "No stream found while sharing",
-  media_couldnt_be_sent: "Media couldn’t be sent",
+  media_couldnt_be_sent: "Media couldn't be sent",
 
   watermark: "Dressing",
   watermark_instructions:
@@ -920,8 +934,9 @@ export default {
 
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
-    "Can access, modify and delete all content (spaces, projects, accounts, etc.). They have access to these settings and can modify them.",
-  instance_contrib_instructions: "Can only create spaces and adsminister.",
+    "Can access, modify and delete all content (spaces, projects, accounts, discussion topics). They also have access to these settings and can modify them.",
+  instance_contrib_instructions:
+    "Can only create spaces and discussion topics and manage them.",
   space_admin_instructions:
     "The referrers of a space can modify or delete it, as well as all its contents (including those which are private). They can also modify the list of referrers and contributors.",
   space_contrib_instructions:
@@ -959,7 +974,7 @@ export default {
   action_not_allowed: "This action is not allowed",
   account_created: "Your account has been created",
   logged_in: "Account connection is active, page reloading…",
-  informations: "informations",
+  informations: "Informations",
   metadatas: "Metadatas",
 
   duplicate: "Duplicate",
@@ -1013,7 +1028,6 @@ export default {
   bw_filter: "Black and white filter",
   failed_loading_tiles:
     "Failed loading the baselayer, you can try to zoom out.",
-  zoom_animation: "Zoom animation",
 
   IGN_max_zoom_limits:
     "Maps provided by the French IGN organization only work in France and with a limited max zoom level.",
@@ -1073,7 +1087,7 @@ export default {
   about_dodoc_txt: `do•doc is a free and open-source digital tool created to document projects and powered by a diverse community of designers, teachers, artists, trainers, creators and documentation enthusiasts in general.
   It is used in a multitude of contexts, whether in the classroom, in fablabs, in third places, as well as as an engine for resource platforms accessible online.<br><br>
   The design and development of this tool is managed by the collective <a href="https://latelier-des-chercheurs.fr" title="Atelier des chercheurs" target="_blank">l'Atelier des chercheurs</a> since its beginnings, in 2014,
-  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l’Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
+  but everyone has the opportunity to follow or participate in this work through the forum: <a href="https://forum.latelier-des-chercheurs.fr" title="Forum de l'Atelier des chercheurs" target="_blank">https://forum.latelier-des-chercheurs.fr</a>.`,
   about_dodoc_links: `
   Here are some other links:
   <ul>
@@ -1081,7 +1095,7 @@ export default {
   <li>The source code can be found here: <a href="https://github.com/l-atelier-des-chercheurs/dodoc/" title="Source code of do•doc on Github" target="_blank">https://github.com/l-atelier-des-chercheurs/dodoc</a></li>
   </ul>
   `,
-  about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau`,
+  about_dodoc_contributors: `Main contributors: Louis Eveillard, Pauline Gourlet, Sarah Garcin, Julien Bonhomme, Catherine Villeret, Erwan Vappereau, and many other participants in workshops, projects, forums and residencies around the world.`,
 
   write: "Write",
   real_size: "Real size",
@@ -1105,9 +1119,9 @@ export default {
   change: "Change",
   transition_fade: "Transition: fade",
 
-  couldntbesaved: "Value couldn’t be saved",
+  couldntbesaved: "Value couldn't be saved",
 
-  dont_zoom: "Don’t zoom",
+  dont_zoom: "Don't zoom",
   very_far: "Very far",
   very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
@@ -1213,7 +1227,7 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "Not logged in",
+  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1234,10 +1248,180 @@ export default {
   millimetres: "millimetres",
   parent_space_is_private:
     "The parent space is private, so other projects in this space cannot be viewed.",
-  copy_paste_to_include_media: "Copy and paste to include this media.",
+  copy_paste_to_include_media_or_click_to_add_at_cursor:
+    "Copy and paste to include this media, or click to add it at the cursor position.",
   next_chapter: "Next chapter",
 
   show_preview: "Show preview",
   warning_wont_be_able_to_edit:
     "Warning! By changing this setting, you will no longer be able to edit this content.",
+  markdown_help: "Text formatting (markdown) help",
+  choose_emoji: "Choose emoji",
+  import_medias: "Import medias",
+
+  multisupport_embed_img_instr:
+    "To add media from the internet, you can also copy and paste the following tags:",
+  attributes_for_embeds: "Attributes for the tags:",
+  show_source_html: "Show source HTML",
+  forgot_password: "Forgot password?",
+  current_f: "Current",
+  reset: "Reset",
+  accounts_displayed: "Accounts displayed: {count} / {total}",
+  restore_projects: "Restore projects",
+  bin: "Trash",
+  items_in_bin: "Items in the trash",
+  all_pages: "All pages",
+  all_spreads: "All spreads",
+  spreads_to_export: "Spreads to export",
+  page_number_or_interval: "For example 2-6, 9, 12-16",
+  pages_to_export: "Pages to export",
+  spread_number_or_interval: "For example 2-6, 9, 12-16",
+  total_number_of_spreads_in_publication:
+    "Total number of spreads in publication: {total}",
+  total_number_of_pages_in_publication:
+    "Total number of pages in publication: {total}",
+  "type:": "Type: {type}",
+  failed_to_export: "Failed to export",
+  default_styles: "Default styles",
+  restore: "Restore",
+  remove_for_good: "Remove for good",
+  bin_is_empty: "The trash is empty",
+  date_removed: "Date removed",
+  current_resolution: "Current resolution",
+  gallery: "Gallery",
+  removed_successfully: "Removed successfully",
+  remove_css_file: "Remove stylesheet",
+  no_media_selected: "No media selected",
+  folder_not_public:
+    "This content is not public, to access it its author must make it public.",
+
+  other_devices_connected: "Other devices connected",
+  width_alignment_grid_only_non_mobile:
+    "The width and alignment of this module (when centered or right-aligned) will only be used if the window width is larger than 767 pixels.",
+  add_column: "Add column",
+  add_row: "Add row",
+  remove_column: "Remove column",
+  remove_row: "Remove row",
+  chats: "Discussion topics",
+  enable_chats: "Enable the discussion feature",
+  enable_chats_instructions:
+    "The discussion feature allows you to create topics where selected users can exchange messages. Once enabled, click on the bubble in the top right of the screen to access it.",
+  list_of_topics: "List of topics",
+  create_a_topic: "Create a topic",
+  not_allowed_to_post_messages:
+    "You are not allowed to post messages to this topic.",
+  write_a_message: "Write a message…",
+  participants: "Participants",
+
+  chat_admin_instructions:
+    "Topic referents are responsible for managing the discussion (changing its name, deleting a message, adding/removing a participant or removing it with all its contents).",
+  chat_contrib_instructions:
+    "Participants can post a new message or edit/delete their own messages.",
+  anonymous_user: "Anonymous",
+
+  no_messages_in_chat: "No messages in this topic.",
+  remove_this_message: "Delete this message",
+  load_older_messages: "Show older messages",
+  message_count: "{count} message | {count} messages",
+  last_message_date: "Last message on",
+  message_has_been_removed: "This message has been removed.",
+  unread: "Unread",
+  remove_chat: "Delete topic {name}",
+  chat_was_removed: "The topic has been removed.",
+  edit_this_message: "Edit this message",
+  new_messages: "{count} new message | {count} new messages",
+  topics_pinned: "Pinned topic | Pinned topics",
+
+  set_new_password_for_account: "Set new password for account",
+  reset_password: "Reset Password",
+  resetting_password: "Resetting...",
+  invalid_reset_link: "Invalid reset link",
+  loading: "Loading...",
+  failed_to_reset_password: "Failed to reset password",
+  no_email_for_account: "No email associated with this account.",
+  recover_via_email: "Send me an email",
+  click_to_send_recovery_mail:
+    "By clicking on the button below, an email will be sent to you with a link to reset the password of the account <b>{account_name}</b>.",
+  recovery_mail_sent_to:
+    "An email has been sent to you with a link to reset the password of the account <b>{account_name}</b> on the address <b>{email}</b>.",
+  recovery_mail_sent_to_instructions:
+    "You can now close this window and open the email to reset your password.",
+  password_reset_successful:
+    "Password reset successfully. You can now log in with your new password.",
+  looking_for_gps_coordinates: "Looking for GPS coordinates...",
+  gps_coordinates_found: "GPS coordinates found.",
+  column_count: "Column count",
+  restore_publications: "Restore deleted publications",
+
+  debug_logs: "Debug logs",
+  logs_panel_instructions:
+    "This panel shows the available log files from the server. These files contain information about the activity of the application, from its launch to its shutdown (and, in some cases, the reasons for the crash when it happens).",
+  available_logs: "Available logs",
+  no_logs_available: "No logs available",
+  refresh_logs: "Refresh logs",
+
+  session_started: "Session started",
+  session_ended: "Session ended",
+  actions: "Actions",
+  session_crashed: "Session crashed",
+  session_running: "Session running",
+
+  last_page_reached: "Last page reached",
+  fonts_instr:
+    "Fonts are used to display texts in text blocks and publications. Fonts added are available to all users, on the entire instance.",
+
+  files_being_sent:
+    "All medias have been imported | {count} media being imported | {count} medias being imported",
+  opened_page: "Opened page",
+  launched: "Launched on",
+
+  interrupt: "Interrupt",
+  x_images: "No image | {count} image | {count} images",
+  resume: "Resume animation",
+  compilation_started: "Creation in progress…",
+
+  // Missing translations found in codebase
+  A4_landscape_explanations: "A4 landscape format",
+  A4_portrait_explanations: "A4 portrait format",
+  A5_landscape_explanations: "A5 landscape format",
+  A5_portrait_explanations: "A5 portrait format",
+  admins_and_contributors_instr:
+    "Instructions for administrators and contributors",
+  all_content: "All content",
+  all_publications: "All publications",
+  anonymous: "Anonymous",
+  bandwidth_very_low_for_stream_sharing:
+    "Very low bandwidth for stream sharing",
+  camera_access_refused: "Camera access refused",
+  change_base_media: "Change base media",
+  change_page: "Change page",
+  "click_in_video…": "Click in the video…",
+  disconnect_warning: "Disconnect warning",
+  failed_to_find_block_line: "Failed to find block line",
+  folder_copied: "Folder copied",
+  import_image_from_url_failed: "Failed to import image from URL",
+  "importer depuis un site": "Import from a site",
+  layout: "Layout",
+  level: "Level",
+  media_type_not_handled: "Media type not handled",
+  message_too_long:
+    "Message too long, it must not exceed {max_length} characters.",
+  meta_filename: "Metadata filename",
+  no_email_from_folder: "No email from folder",
+  no_padding: "No padding",
+  no_page_selected: "No page selected",
+  no_pinned_publications: "No pinned publications",
+  no_sound: "No sound",
+  no_title: "No title",
+  not_supported_on_this_device: "Not supported on this device",
+  "notifications.failed_to_find_block_line": "Failed to find block line",
+  "notifications.media_type_not_handled": "Media type not handled",
+  on_this_list: "On this list",
+  other_users_connected: "Other users connected",
+  restore_medias: "Restore medias",
+  show_cursor: "Show cursor",
+  starts_on_page: "Starts on page",
+  stream_sharing_media_error: "Stream sharing media error",
+  today: "Today",
+  type: "Type",
 };

@@ -63,7 +63,21 @@
       <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
         <!-- hidden if electron, need to find alternative strategy -->
         <button type="button" class="u-button" @click="getCurrentPosition">
-          <b-icon class="inlineSVG" icon="disc-fill" />
+          <span class="u-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle fill="transparent" cx="12" cy="12" r="8" />
+              <circle fill="currentColor" cx="12" cy="12" r="4" />
+              <line x1="0" y1="12" x2="24" y2="12" />
+              <line x1="12" y1="0" x2="12" y2="24" />
+            </svg>
+          </span>
         </button>
       </div>
 
@@ -105,7 +119,7 @@
             class="inlineSVG"
             :icon="draw_mode.icon"
           />
-          <span v-else v-html="draw_mode.svg" />
+          <span class="u-icon" v-else v-html="draw_mode.svg" />
           <template v-if="draw_mode.key === current_draw_mode">
             {{ draw_mode.label }}
           </template>
@@ -147,6 +161,7 @@
         <PrintMap
           v-if="start_map_print"
           :map="map"
+          :map_baselayer_bw="map_baselayer_bw"
           @close="start_map_print = false"
         />
       </div>
@@ -322,10 +337,6 @@ export default {
       type: Number,
       default: 1,
     },
-    zoom_animation: {
-      type: Number,
-      default: 0,
-    },
     map_baselayer_color: String,
     map_base_media: Object,
     is_small: {
@@ -406,7 +417,7 @@ export default {
           svg: `
           <svg
             viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"
-            style="stroke-width: 1px; stroke: currentColor; width: 1.35em; height: 1.35em;"
+            style="stroke-width: 1px; stroke: currentColor; width: 1.5em; height: 1.5em;"
           >
             <line
               x1="0"
@@ -885,9 +896,13 @@ export default {
         timeout: 5000,
         maximumAge: 0,
       };
+
+      this.$alertify.delay(4000).log(this.$t("looking_for_gps_coordinates"));
+
       const success = async (pos) => {
         var crd = pos.coords;
         this.is_looking_for_gps_coords = false;
+        this.$alertify.delay(4000).success(this.$t("gps_coordinates_found"));
         await this.setClickBtn({
           longitude: crd.longitude,
           latitude: crd.latitude,
@@ -1107,18 +1122,18 @@ export default {
       // see https://openlayers.org/en/latest/examples/vector-labels.html
       resolution;
       let style = {};
+      if (feature?.get("fill_color")) {
+        fill_color = feature.get("fill_color");
+      }
       if (feature?.get("label")) {
         style.text = new olText({
-          fill: new olFill({ color: "#000" }),
+          fill: new olFill({ color: fill_color }),
           font: this.makeDefaultFontString(),
           text: "" + feature.get("label"),
           textAlign: "center",
           textBaseline: "bottom",
           offsetY: -9,
         });
-      }
-      if (feature?.get("fill_color")) {
-        fill_color = feature.get("fill_color");
       }
 
       const pin_preview = feature.get("pin_preview");
@@ -1159,7 +1174,7 @@ export default {
       return new olStyle(style);
     },
     makeDefaultFontString() {
-      return "12px/1.2 Fira Mono,sans-serif";
+      return "bold 14px/1.2 Fira Mono,sans-serif";
     },
     makeLineStyle({ feature, resolution }) {
       resolution;
@@ -1322,22 +1337,6 @@ export default {
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
       const duration = 1400;
-
-      // if (this.zoom_animation && this.zoom_animation > 0)
-      //   this.view.animate(
-      //     {
-      //       zoom: zoom - this.zoom_animation,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   this.view.animate(
-      //     {
-
-      //       zoom: zoom,
-      //       duration: duration / 2,
-      //     },
-      //   );
-      //   else
       this.view.animate({
         center,
         duration,
@@ -1846,7 +1845,8 @@ export default {
         event.target.tagName.toLowerCase() === "input" ||
         event.target.tagName.toLowerCase() === "textarea" ||
         event.target.className.includes("ql-editor") ||
-        event.target.hasAttribute("contenteditable")
+        event.target.hasAttribute("contenteditable") ||
+        this.can_edit === false
       )
         return;
 
@@ -1868,7 +1868,7 @@ export default {
   },
 };
 </script>
-<style src="../../../node_modules/ol/ol.css"></style>
+<style src="@node_modules/ol/ol.css"></style>
 <style lang="scss" scoped>
 .m_displayOnMap {
   position: relative;
@@ -2141,6 +2141,11 @@ export default {
     &:last-child {
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
+    }
+
+    > span {
+      width: 1.35em;
+      height: 1.35em;
     }
   }
 }

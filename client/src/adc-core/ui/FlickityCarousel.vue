@@ -1,12 +1,27 @@
 <template>
-  <div class="_flickityCarousel" ref="flickity">
-    <slot></slot>
+  <div class="_flickityCarousel">
+    <div
+      class="_flickityCarousel--inner"
+      :class="{ 'is-fullscreen': is_fullscreen }"
+      ref="flickity"
+    >
+      <slot></slot>
+    </div>
+
+    <!-- Fullscreen button -->
+    <div class="_fsButton" v-if="show_fullscreen_button">
+      <EditBtn
+        :btn_type="is_fullscreen ? 'fullscreen-exit' : 'fullscreen'"
+        @click="toggleFullscreen"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import Flickity from "flickity";
 import "flickity-imagesloaded";
+import screenfull from "screenfull";
 
 export default {
   name: "FlickityCarousel",
@@ -25,11 +40,16 @@ export default {
         contain: true,
       }),
     },
+    show_fullscreen_button: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       flickity: null,
       observer: null,
+      is_fullscreen: false,
     };
   },
   mounted() {
@@ -59,8 +79,41 @@ export default {
     },
     resize() {
       if (this.flickity?.resize) {
+        console.log("resize");
         this.flickity.resize();
       }
+    },
+    async toggleFullscreen() {
+      if (this.is_fullscreen) {
+        await this.exitFullscreen();
+      } else {
+        await this.enterFullscreen();
+      }
+    },
+    async enterFullscreen() {
+      if (!screenfull.isEnabled) return;
+
+      await screenfull.request(this.$el);
+      this.is_fullscreen = true;
+
+      screenfull.onchange(() => {
+        if (!screenfull.isFullscreen) {
+          this.is_fullscreen = false;
+          this.$emit("fullscreen-exit");
+          setTimeout(() => {
+            this.resize();
+          }, 1000);
+        }
+      });
+
+      this.$emit("fullscreen-enter");
+    },
+    async exitFullscreen() {
+      if (!screenfull.isEnabled) return;
+
+      await screenfull.exit();
+      this.is_fullscreen = false;
+      this.$emit("fullscreen-exit");
     },
   },
 };
@@ -74,6 +127,19 @@ export default {
   page-break-inside: avoid;
   -webkit-region-break-inside: avoid;
 
+  ._flickityCarousel--inner {
+    width: 100%;
+    height: 100%;
+
+    &.is-fullscreen {
+      .carousel-cell {
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: initial;
+      }
+    }
+  }
+
   .carousel-cell {
     width: 100%;
     aspect-ratio: 3/2;
@@ -82,6 +148,13 @@ export default {
     &[data-mediatype="text"] {
       padding: min(calc(var(--spacing) * 3), 15%);
     }
+  }
+
+  ._fsButton {
+    position: absolute;
+    bottom: calc(var(--spacing) / 1);
+    left: calc(var(--spacing) / 1);
+    z-index: 10;
   }
 
   ::v-deep {

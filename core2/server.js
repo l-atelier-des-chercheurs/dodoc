@@ -6,11 +6,14 @@ var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
+const slowDown = require("express-slow-down").default;
 
 const sockets = require("./sockets"),
   api2 = require("./api2"),
-  // cors_for_ressources = require("./cors_for_ressources"),
-  serverRTC = require("./serverRTC.js");
+  journal = require("./journal"),
+  serverRTC = require("./serverRTC.js"),
+  dev = require("./dev-log");
+// cors_for_ressources = require("./cors_for_ressources"),
 
 module.exports = function () {
   dev.logverbose("Starting server 1");
@@ -26,6 +29,20 @@ module.exports = function () {
       crossOriginResourcePolicy: false,
     })
   );
+
+  // Rate limiting middleware, slow down API requests after the limit is reached
+  const apiSpeedLimiter = slowDown({
+    windowMs: 1 * 60 * 1000,
+    delayAfter: 60,
+    delayMs: () => 100,
+    maxDelayMs: 1000,
+    // keyGenerator: (req) => {
+    //   // Use the proper IP address extraction for IPv6 compatibility
+    //   return req.ip || req.connection.remoteAddress || req.socket.remoteAddress;
+    // },
+  });
+  // Apply rate limiting only to _api2 endpoints
+  app.use("/_api2", apiSpeedLimiter);
 
   // only for HTTPS, works without asking for a certificate
   const options = {
@@ -85,20 +102,32 @@ module.exports = function () {
     express.static(path.join(global.appRoot, "client", "dist"))
   );
 
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json()); // To parse the incoming requests with JSON payloads
+  // app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: "1mb" })); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
+  journal.log({
+    message: "Server up and running",
+    from: "server",
+  });
+
   serverRTC(server);
+
+  journal.log({
+    message: "Server RTC initialized",
+    from: "server",
+  });
+
   api2.init(app);
 
-  dev.logverbose("Starting server 3");
+  dev.logverbose("API ready");
 
   server.listen(app.get("port"), () => {
-    dev.log(
-      `Server up and running. ` +
-        `Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`
-    );
-    dev.log(` `);
+    const message = `Server up and running. Go to ${global.settings.protocol}://${global.settings.host}:${global.appInfos.port}`;
+    dev.log(message);
+    journal.log({
+      message,
+      from: "server",
+    });
   });
 };

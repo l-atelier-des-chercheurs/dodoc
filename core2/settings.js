@@ -16,19 +16,33 @@ module.exports = (function () {
     getFiles: async () => {
       return await file.getFiles({ path_to_folder: "." });
     },
-    updatePath({ new_path }) {
+    updateStoragePath: async ({ new_path }) => {
       dev.logfunction();
-      _saveNewPathToUserContent({ path: new_path });
+      await _saveNewPathToUserContent({ path: new_path });
+    },
+    getStoragePath: async () => {
+      return await _getStoragePath();
     },
   };
 
   return API;
 })();
 
-function _saveNewPathToUserContent({ path }) {
+async function _getStoragePath() {
+  dev.logfunction();
+  // if (global.is_electron) {
+  //   const Store = require("electron-store").default;
+  //   const store = new Store({ name: "dodoc" });
+  //   return store.get("custom_content_path");
+  // }
+  return global.pathToUserContent;
+}
+
+async function _saveNewPathToUserContent({ path }) {
+  dev.logfunction({ path });
   try {
-    const Store = require("electron-store");
-    const store = new Store();
+    const Store = require("electron-store").default;
+    const store = new Store({ name: "dodoc" });
     store.set("custom_content_path", path);
   } catch (err) {
     throw new Error(`option_only_available_in_electron`);

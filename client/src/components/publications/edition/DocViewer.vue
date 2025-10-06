@@ -37,7 +37,21 @@
         :key="opened_chapter?.meta_filename"
       >
         <h1>{{ opened_chapter.title }}</h1>
-        <div class="content" v-html="opened_chapter.content" />
+        <div
+          class="content"
+          v-if="opened_chapter.section_type === 'text'"
+          v-html="opened_chapter.content"
+        />
+        <div
+          class="gallery"
+          v-else-if="opened_chapter.section_type === 'gallery'"
+          v-html="opened_chapter.content"
+        />
+        <div
+          class="story"
+          v-else-if="opened_chapter.section_type === 'story'"
+          v-html="opened_chapter.content"
+        />
       </section>
     </transition>
   </div>

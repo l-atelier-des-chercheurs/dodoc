@@ -1,4 +1,16 @@
 {
+  "url": "https://domain-to-your-dodoc.com",
   "desired_port": 8080,
-  "contentPath": "dodoc"
+  "contentPath": "dodoc",
+
+  "mailer": {
+    "host": "smtp.example.com",
+    "port": 587,
+    "secure": false,
+    "auth": {
+      "user": "your@email.com",
+      "pass": "yourpassword"
+    },
+    "from": "do•doc <your@email.com>"
+  }
 }

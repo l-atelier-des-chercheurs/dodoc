@@ -1,6 +1,10 @@
 <template>
   <div class="_carousel" :class="{}">
-    <FlickityCarousel :key="slider_key" class="_mainCarousel">
+    <FlickityCarousel
+      :key="slider_key"
+      :show_fullscreen_button="true"
+      class="_mainCarousel"
+    >
       <div
         class="carousel-cell"
         :data-mediatype="media_with_linked._linked_media.$type"
@@ -22,7 +26,7 @@
           :file="media_with_linked._linked_media"
           :resolution="context === 'preview' ? 220 : 1600"
           :context="context"
-          :show_fs_button="show_fs_button"
+          :show_fs_button="false"
           :display_credits_caption="true"
           :can_edit_credits_caption="can_edit"
         />
@@ -91,7 +95,7 @@
       v-if="show_change_order_modal"
       :medias_with_linked="medias_with_linked"
       :publication_path="publication_path"
-      @addMedias="$emit('addMedias', $event)"
+      @pickMedias="$emit('pickMedias', $event)"
       @reorderMedias="$emit('reorderMedias', $event)"
       @removeMediaAtIndex="$emit('removeMediaAtIndex', $event)"
       @close="show_change_order_modal = false"
@@ -106,10 +110,13 @@
       <MediaPicker
         v-if="show_media_picker"
         :publication_path="publication_path"
-        @addMedias="$emit('addMedias', $event)"
+        @pickMedias="$emit('pickMedias', $event)"
         @close="show_media_picker = false"
       />
-      <DropZone class="_dzAfter" @mediaDropped="$emit('addMedias', $event)" />
+      <DropZone
+        class="_dzAfter"
+        @mediaDropped="$emit('pickMedias', [$event])"
+      />
     </div>
   </div>
 </template>

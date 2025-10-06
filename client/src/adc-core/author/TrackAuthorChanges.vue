@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       projects_recently_edited: [],
-      max_items_in_memory: 5,
+      max_items_in_memory: 3,
     };
   },
 
@@ -83,8 +83,6 @@ export default {
         JSON.stringify(this.projects_recently_edited)
       )
         return false;
-
-      console.log("UPDATE RECENTLY EDITED");
 
       await this.$api.updateMeta({
         path: this.connected_as.$path,

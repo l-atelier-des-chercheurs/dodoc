@@ -154,8 +154,12 @@ export default {
           label: "Texte + image",
         },
         {
+          key: "text_image_overlay",
+          label: "Texte et image superposés",
+        },
+        {
           key: "image_text_overlay",
-          label: "Image et texte superposés",
+          label: "Image et texte superposés",
         },
       ],
     };
@@ -208,10 +212,6 @@ export default {
     updateInputFiles($event) {
       this.selected_files = Array.from($event.target.files);
       $event.target.value = "";
-    },
-    imageSelected(key) {
-      return this.settings[key];
-      // return path of select image
     },
     async updateImageField(new_path, key) {
       await this.$api.updateMeta({

@@ -1,0 +1,17 @@
+module_type = "text"
+page_id = "xg3ify"
+x = 1_410
+y = 340
+width = 224.01325031434286
+height = 452
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+z_index = 6
+"$date_modified" = 2025-09-12T10:05:02.451Z
+"$date_uploaded" = 2025-09-12T10:04:46.109Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename = "text-1757671486060.txt.meta.txt"

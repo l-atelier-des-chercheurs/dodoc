@@ -1,0 +1,17 @@
+module_type = "mosaic"
+page_id = "ug320l"
+x = 70
+y = 62
+width = 280
+height = 278
+rotation = 0
+opacity = 1
+margins = 0
+outline_width = 0
+"$date_modified" = 2025-08-19T07:24:06.458Z
+"$date_uploaded" = 2025-08-19T07:20:19.433Z
+"$status" = "private"
+
+[[source_medias]]
+meta_filename_in_project = "image-15.png.meta.txt"
+objectFit = "contain"
