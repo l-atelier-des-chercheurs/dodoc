@@ -1,9 +1,9 @@
 :root {
-  --main-color: #0040eb;
+  --main-color: #87221D;
   --main-color-opacity: rgba(0, 64, 235, 0.7);
-  --second-color: orange;
-  --text-font: "Source Sans Pro", sans-serif;
-  --title-font: "Karla", sans-serif;
+  --second-color: #4980c8;
+  --text-font: "Rubik", sans-serif;
+  --title-font: "Rubik", sans-serif;
   --font-size: 12pt;
   --line-height: 1.4;
 }
@@ -31,25 +31,26 @@
   h2,
   h3, 
   figure {
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
   }
 
   h1 {
-    font-size: calc(var(--font-size) * 2);
+    font-size: calc(var(--font-size) * 4);
     font-family: var(--title-font);
-    font-weight: bold;
+    font-weight: normal;
     text-align: center;
   }
   h2 {
-    font-size: calc(var(--font-size) * 1.4);
+    font-size: calc(var(--font-size) * 2);
     font-family: var(--title-font);
+    color: var(--second-color);
     text-transform: uppercase;
-    font-weight: bold;
     text-align: center;
+    font-weight: normal;
   }
 
   h3 {
-    font-family: var(--title-font);
+    font-size: calc(var(--font-size) * 1.4);
     font-weight: bold;
   }
 
@@ -145,8 +146,23 @@
 }
 
 @page {
-  margin-top: 18mm;
-  margin-bottom: 24mm;
+  margin-top: 28mm;
+  margin-bottom: 34mm;
+
+  @top-center {
+    content: '';
+    width: 120px;
+    height: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+	background-image: url(https://slash.dodoc.fr/spaces/local-hubs/projects/instructions/slashtransition-logo-transition.svg);
+  }
+
+  @bottom-center {
+	content: 'https://slash-platform.eu/';
+    font-size:50%;
+    font-weight: bold;
+  }
 }
 
 @page:left {
