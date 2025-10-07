@@ -10,7 +10,10 @@
     <div class="_container">
       <div class="_content">
         <component :is="tag">
-          <span v-if="content && content.length > 0" v-html="clean_content" />
+          <span
+            v-if="content && clean_content.length > 0"
+            v-html="clean_content"
+          />
           <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
         </component>
       </div>

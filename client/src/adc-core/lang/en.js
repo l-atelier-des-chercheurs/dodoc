@@ -1155,7 +1155,7 @@ export default {
     "The contents will be moved to a subfolder (like a trash).",
 
   upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
-  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
+  umo_instructions: "In megabytes (by default 10 000, so about 10 Go).",
 
   scan_qr_code: "Scan QR code",
   opening_link_in: "Opening link in",

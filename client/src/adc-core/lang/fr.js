@@ -1219,7 +1219,7 @@ export default {
     "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
 
   upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
-  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
+  umo_instructions: "En mégaoctets (par défaut 10 000, soit environ 10 Go).",
 
   scan_qr_code: "Scanner un code QR",
   opening_link_in: "Ouverture du lien dans",
