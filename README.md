@@ -89,6 +89,40 @@ npm i
 npm run dev
 ```
 
+## Method 4 — the docker way
+
+This method makes the installation of do•doc a bit simpler.
+You need to have `docker` installed on your machine.
+
+### The docker compose way
+
+Run `docker compose up`, wait for it to initialize completely, and visit `https://localhost:8080`.
+Your data is persistent (in ./dodoc-data directory).
+
+### Or the docker manual way
+
+If you prefer to customise the container, the basic pattern for starting a do•doc instance is:
+
+```
+$ docker run --name my-dodoc -p 8080:8080 -v ./dodoc-data:/home/node/Documents -d registry.gitlab.com/l-atelier-des-chercheurs/dodoc2-node:12.0.7-0
+```
+
+Your data is persistent (in ./dodoc-data directory).
+Then, access it via `https://localhost:8080`.
+
+### On Ubuntu
+
+Because of recent security changes on Ubuntu, you may encount the following error on npm start or debug:
+`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
+
+To fix, use the following commands:
+
+```
+cd ./node_modules/ electron/dist/
+sudo chown root chrome-sandbox
+chmod 4755 chrome-sandbox
+```
+
 # After installation
 
 When starting the app for the first time, a message will tell you about an admin account that is created by default. Its password is "dodoc". Connect to this account and change the password by opening that account's page and clicking Options, and editing the password field. It is recommended to open the admin settings afterwards (the gear icon in the top bar) and read/adapt all settings.
