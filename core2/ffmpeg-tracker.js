@@ -42,7 +42,9 @@ module.exports = (function () {
 
       reportingInterval = setInterval(() => {
         const count = trackedProcesses.length;
-        dev.log(`FFMPEG-TRACKER • ${count} active process(es) running`);
+        if (count > 0) {
+          dev.log(`FFMPEG-TRACKER • ${count} active process(es) running`);
+        }
       }, 1000);
     },
 
