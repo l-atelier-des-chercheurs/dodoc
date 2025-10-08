@@ -1490,4 +1490,7 @@ export default {
 
   check_out_dodocfr:
     "Impossible de récupérer la dernière version disponible. Veuillez vous rendre sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "Une mise à jour est disponible (version {version}). Rendez-vous sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> pour la télécharger.",
+  up_to_date: "Vous utilisez la dernière version",
 };

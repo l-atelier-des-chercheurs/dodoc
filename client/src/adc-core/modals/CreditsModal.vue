@@ -67,10 +67,16 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
 
     > * {
-      flex: 0 0 50%;
+      &:first-child {
+        flex: 0 0 33%;
+      }
+
+      &:last-child {
+        flex: 0 0 66%;
+      }
     }
   }
   ::v-deep {

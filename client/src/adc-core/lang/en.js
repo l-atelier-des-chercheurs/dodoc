@@ -1429,4 +1429,9 @@ export default {
   latest_version_available: "Latest version available",
   latest_version_available_instructions:
     "Search automatically the latest version available on dodoc.fr",
+  check_out_dodocfr:
+    "Unable to retrieve the latest version available. Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "An update is available (version {version}). Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> to download it.",
+  up_to_date: "You are using the latest version",
 };

@@ -19,7 +19,22 @@
         <span v-html="$t('check_out_dodocfr')"></span>
       </div>
       <div v-else-if="latest_version_info.version">
-        {{ latest_version_info.version }}
+        <template
+          v-if="latest_version_info.version === $root.app_infos.version"
+        >
+          <b-icon icon="check-circle-fill" />
+          {{ $t("up_to_date") }}
+        </template>
+        <template v-else>
+          <b-icon icon="exclamation-triangle-fill" />&nbsp;
+          <span
+            v-html="
+              $tc('update_available_go_to_dodocfr', null, {
+                version: latest_version_info.version,
+              })
+            "
+          ></span>
+        </template>
       </div>
     </template>
   </div>
@@ -36,7 +51,9 @@ export default {
         loading: false,
         error: false,
       },
-      fetch_url: "https://latelier-des-chercheurs.fr/appversions/dodoc.json",
+      fetch_url:
+        "https://latelier-deschercheurs.fr/appversions/dodoc.json?lang=" +
+        this.$i18n.locale,
     };
   },
   mounted() {
