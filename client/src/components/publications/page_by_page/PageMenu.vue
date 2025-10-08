@@ -607,7 +607,7 @@
           :min="1"
           :max="100"
           :step="1"
-          :ticks="[1, 100]"
+          :ticks="[1, 25, 50, 75, 100]"
           :default_value="100"
           :suffix="'%'"
           @save="updateMediaPubliMeta({ opacity: $event / 100 })"
@@ -629,7 +629,7 @@
           :min="0"
           :max="20"
           :step="1"
-          :ticks="[0, 10, 20]"
+          :ticks="[0, 5, 10, 15, 20]"
           :default_value="0"
           :suffix="unit"
           @save="
@@ -981,7 +981,7 @@ export default {
   text-align: left;
 }
 ._pageMenu--pane {
-  padding: calc(var(--spacing) / 1);
+  padding: calc(var(--spacing) / 2);
 
   &:not(:first-child) {
     margin-top: calc(var(--spacing) / 2);

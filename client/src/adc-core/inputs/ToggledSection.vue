@@ -72,6 +72,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._toggledSection {
+  &:hover {
+    ._toggled {
+      border-color: var(--c-gris_fonce);
+    }
+  }
 }
 ._inputLabel {
   display: flex;
@@ -95,7 +100,7 @@ export default {
   padding-top: 0px;
 
   &.can--toggle {
-    border-left: 3px dotted var(--c-gris_fonce);
+    border-left: 3px dotted var(--c-gris);
     padding-left: calc(var(--spacing) / 2);
     margin-left: calc(var(--spacing) / 2);
     padding-left: calc(var(--spacing) / 2);
