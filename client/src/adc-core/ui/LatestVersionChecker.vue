@@ -52,7 +52,7 @@ export default {
         error: false,
       },
       fetch_url:
-        "https://latelier-deschercheurs.fr/appversions/dodoc.json?lang=" +
+        "https://latelier-des-chercheurs.fr/appversions/dodoc.json?lang=" +
         this.$i18n.locale,
     };
   },
