@@ -34,7 +34,7 @@
         :style="styles"
         @mouseleave="startTimer"
         @mouseenter="stopTimer"
-        @click.stop
+        @click.stop="show_dropdown = false"
         ref="dropdown"
       >
         <slot />
