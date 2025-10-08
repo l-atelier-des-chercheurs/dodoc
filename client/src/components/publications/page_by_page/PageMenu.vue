@@ -574,7 +574,7 @@
           :min="0"
           :max="50"
           :step="1"
-          :default_value="15"
+          :default_value="0"
           :suffix="unit"
           @save="
             updateMediaPubliMeta({
