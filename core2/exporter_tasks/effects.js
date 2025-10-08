@@ -1,14 +1,8 @@
 const path = require("path"),
-  fs = require("fs-extra"),
-  ffmpeg = require("fluent-ffmpeg");
+  fs = require("fs-extra");
 
-const utils = require("../utils");
-
-const ffmpegPath = require("ffmpeg-static").replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-ffmpeg.setFfmpegPath(ffmpegPath);
+const utils = require("../utils"),
+  ffmpegTracker = require("../ffmpeg-tracker");
 
 module.exports = (function () {
   const API = {
@@ -21,14 +15,12 @@ module.exports = (function () {
       keep_audio_track,
       effect_type,
       effect_opts,
-      ffmpeg_cmd,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options).input(source);
+        const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg().input(source);
 
         const has_no_audio_track = !(await utils.hasAudioTrack({
-          ffmpeg_cmd,
           video_path: source,
         }));
 
@@ -252,7 +244,7 @@ module.exports = (function () {
             .complexFilter(complexFilters, "output")
             .addOptions(["-crf 22", "-preset fast"])
             .toFormat("mp4")
-            .on("start", function (commandLine) {
+            .on("start", (commandLine) => {
               dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
             })
             .on("codecData", (data) => {
@@ -269,7 +261,7 @@ module.exports = (function () {
             .on("end", () => {
               return resolve();
             })
-            .on("error", function (err, stdout, stderr) {
+            .on("error", (err, stdout, stderr) => {
               dev.error("An error happened: " + err.message);
               dev.error("ffmpeg standard output:\n" + stdout);
               dev.error("ffmpeg standard error:\n" + stderr);

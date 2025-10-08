@@ -10,7 +10,8 @@ const server = require("./server"),
   paths = require("./paths"),
   auth = require("./auth"),
   mail = require("./mail"),
-  journal = require("./journal");
+  journal = require("./journal"),
+  ffmpegTracker = require("./ffmpeg-tracker");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
@@ -117,7 +118,8 @@ async function setupApp() {
 
   await cacheManager.init();
 
-  global.ffmpeg_processes = [];
+  // Initialize ffmpeg tracker for process management
+  ffmpegTracker.init();
 
   if (global.settings.cache_content === true) cache.init();
 

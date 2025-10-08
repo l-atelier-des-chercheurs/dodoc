@@ -2,7 +2,6 @@ const path = require("path"),
   TOML = require("@iarna/toml"),
   slugg = require("slugg"),
   fs = require("fs-extra"),
-  ffmpeg = require("fluent-ffmpeg"),
   writeFileAtomic = require("write-file-atomic"),
   { networkInterfaces } = require("os"),
   sharp = require("sharp"),
@@ -13,19 +12,8 @@ const path = require("path"),
   archiver = require("archiver"),
   { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size"),
-  fetch = require("node-fetch");
-
-const ffmpegPath = require("ffmpeg-static").replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-const ffprobePath = require("ffprobe-static").path.replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-
-ffmpeg.setFfmpegPath(ffmpegPath);
-ffmpeg.setFfprobePath(ffprobePath);
+  fetch = require("node-fetch"),
+  ffmpegTracker = require("./ffmpeg-tracker");
 
 sharp.cache(false);
 
@@ -729,7 +717,6 @@ module.exports = (function () {
     },
 
     convertVideoToStandardFormat({
-      ffmpeg_cmd,
       source,
       destination,
       format = "mp4",
@@ -742,7 +729,7 @@ module.exports = (function () {
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
         ffmpeg_cmd.input(source);
 
@@ -813,7 +800,7 @@ module.exports = (function () {
           .native()
           .outputFPS(30)
           .addOptions(flags)
-          .on("start", function (commandLine) {
+          .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("codecData", (data) => {
@@ -832,7 +819,7 @@ module.exports = (function () {
           .on("end", () => {
             return resolve();
           })
-          .on("error", function (err, stdout, stderr) {
+          .on("error", (err, stdout, stderr) => {
             dev.error("An error happened: " + err.message);
             dev.error("ffmpeg standard output:\n" + stdout);
             dev.error("ffmpeg standard error:\n" + stderr);
@@ -843,7 +830,7 @@ module.exports = (function () {
     },
     getVideoMetaData({ path }) {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = ffmpeg.ffprobe(path, (err, metadata) => {
+        const ffprobe_cmd = ffmpegTracker.ffprobe(path, (err, metadata) => {
           if (err || typeof metadata === "undefined") return reject(err);
 
           let duration;
@@ -880,7 +867,7 @@ module.exports = (function () {
         });
       });
     },
-    async hasAudioTrack({ ffmpeg_cmd, video_path }) {
+    async hasAudioTrack({ video_path }) {
       try {
         const { streams } = await API.getVideoMetaData({ path: video_path });
         return streams?.some((s) => s.codec_type === "audio");
