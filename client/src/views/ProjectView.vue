@@ -4,7 +4,10 @@
       <div class="u-divCentered" v-if="is_loading" key="loader">
         <div class="u-loader">
           <div class="_spinner"></div>
-          &nbsp;{{ $t("creating_thumb").toLowerCase() }}
+          <span v-if="has_been_loading_for_a_while">
+            &nbsp;
+            {{ $t("creating_thumb").toLowerCase() }}
+          </span>
         </div>
       </div>
       <div class="_errNotice" v-else-if="fetch_project_error_message" key="err">
@@ -67,6 +70,8 @@ export default {
   data() {
     return {
       is_loading: true,
+      has_been_loading_for_a_while: false,
+
       fetch_project_error_message: null,
       project: null,
 
@@ -85,7 +90,11 @@ export default {
     this.$api.join({ room: this.project.$path });
     //
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.has_been_loading_for_a_while = true;
+    }, 2000);
+  },
   beforeDestroy() {
     this.$eventHub.$off("folder.removed", this.closeOnRemove);
     this.$api.leave({ room: this.project.$path });
