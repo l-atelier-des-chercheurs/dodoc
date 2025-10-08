@@ -2,7 +2,10 @@
   <div class="_projectView">
     <transition name="fade_fast" mode="out-in">
       <div class="u-divCentered" v-if="is_loading" key="loader">
-        <LoaderSpinner />
+        <div class="u-loader">
+          <div class="_spinner"></div>
+          &nbsp;{{ $t("creating_thumb").toLowerCase() }}
+        </div>
       </div>
       <div class="_errNotice" v-else-if="fetch_project_error_message" key="err">
         <NotFound v-if="fetch_project_error_message === 'not_found'" />
