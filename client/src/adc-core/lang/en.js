@@ -1426,4 +1426,7 @@ export default {
   type: "Type",
   side_by_side: "Side by side",
   new_line: "One after the other",
+  latest_version_available: "Latest version available",
+  latest_version_available_instructions:
+    "Search automatically the latest version available on dodoc.fr",
 };
