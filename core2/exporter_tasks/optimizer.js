@@ -133,10 +133,10 @@ module.exports = (function () {
           trim_end,
           reportProgress,
         });
-        return resolve(destination);
+        return destination;
       } catch (err) {
         dev.error(err);
-        return reject(err);
+        throw err;
       }
     },
   };
