@@ -6,7 +6,7 @@
           <DLabel :str="$t('version')" />
           {{ $root.app_infos.version }}
         </div>
-        <LatestVersionChecker />
+        <LatestVersionChecker v-if="is_instance_admin" />
       </div>
       <div class="u-spacingBottom">
         <DLabel :str="$t('ui_lang_select')" />
