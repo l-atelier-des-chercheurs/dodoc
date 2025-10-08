@@ -341,17 +341,17 @@ export default {
         addtl_meta,
       });
     },
-    async createText() {
+    async createText(content = "") {
       const filename = "text-" + +new Date() + ".txt";
       const { meta_filename } = await this.$api.uploadText({
         path: this.publication_path,
         filename,
-        content: "",
+        content,
       });
       const source_medias = [{ meta_filename }];
 
       const module_type = this.context === "page_by_page" ? "text" : "mosaic";
-      await this.createModule({
+      return await this.createModule({
         module_type,
         source_medias,
       });
@@ -411,12 +411,17 @@ export default {
             addtl_meta.height = this.pre_addtl_meta.width * media.$infos.ratio;
         if (media?.$location) addtl_meta.location = media.$location;
 
-        const meta_filename = await this.createMetaForModule({
-          module_type,
-          source_medias: [source_media],
-          addtl_meta,
-        });
-        meta_filenames.push(meta_filename);
+        if (media.$type === "text") {
+          const meta_filename = await this.createText(media.$content);
+          meta_filenames.push(meta_filename);
+        } else {
+          const meta_filename = await this.createMetaForModule({
+            module_type,
+            source_medias: [source_media],
+            addtl_meta,
+          });
+          meta_filenames.push(meta_filename);
+        }
       }
 
       this.show_module_selector = false;
