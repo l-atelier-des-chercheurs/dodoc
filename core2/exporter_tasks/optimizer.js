@@ -1,18 +1,12 @@
 const { promisify } = require("util"),
   fs = require("fs"),
   heicdecode = require("heic-decode"),
-  sharp = require("sharp"),
-  ffmpeg = require("fluent-ffmpeg");
+  sharp = require("sharp");
 
-const utils = require("../utils");
+const utils = require("../utils"),
+  ffmpegTracker = require("../ffmpeg-tracker");
 
 sharp.cache(false);
-
-const ffmpegPath = require("ffmpeg-static").replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-ffmpeg.setFfmpegPath(ffmpegPath);
 
 module.exports = (function () {
   const API = {
@@ -70,11 +64,10 @@ module.exports = (function () {
       audio_bitrate,
       trim_start,
       trim_end,
-      ffmpeg_cmd,
       reportProgress,
     }) {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
         // https://stackoverflow.com/a/70899710
         let totalTime;
@@ -123,34 +116,28 @@ module.exports = (function () {
       audio_bitrate,
       trim_start,
       trim_end,
-      ffmpeg_cmd,
       reportProgress,
     }) {
-      return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+      try {
+        if (video_bitrate === "no_video") destination = destination + ".aac";
+        else destination = destination + ".mp4";
 
-        try {
-          if (video_bitrate === "no_video") destination = destination + ".aac";
-          else destination = destination + ".mp4";
-
-          await utils.convertVideoToStandardFormat({
-            source,
-            destination,
-            image_width,
-            image_height,
-            video_bitrate,
-            audio_bitrate,
-            trim_start,
-            trim_end,
-            ffmpeg_cmd,
-            reportProgress,
-          });
-          return resolve(destination);
-        } catch (err) {
-          dev.error(err);
-          return reject(err);
-        }
-      });
+        await utils.convertVideoToStandardFormat({
+          source,
+          destination,
+          image_width,
+          image_height,
+          video_bitrate,
+          audio_bitrate,
+          trim_start,
+          trim_end,
+          reportProgress,
+        });
+        return destination;
+      } catch (err) {
+        dev.error(err);
+        throw err;
+      }
     },
   };
 
