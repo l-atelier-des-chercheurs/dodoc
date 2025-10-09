@@ -112,7 +112,26 @@ export default {
   },
   methods: {
     async pickMedias(medias) {
-      const new_files = medias.map((m) => this.getFilename(m.$path));
+      let new_files = [];
+
+      // for each media, check if it's already in project
+      // if not, copy it to project
+      for (const m of medias) {
+        const media_already_in_project = this.listed_files.some(
+          (lf) => this.getParent(medias[0].$path) === this.project_path
+        );
+        if (!media_already_in_project) {
+          const new_file = await this.$api.copyFile({
+            path: m.$path,
+            path_to_destination_folder: this.project_path,
+          });
+          new_files.push(new_file);
+        } else {
+          new_files.push(this.getFilename(m.$path));
+        }
+      }
+
+      // const new_files = medias.map((m) => this.getFilename(m.$path));
       const files = this.content.slice() || [];
       const new_files_list = files.concat(new_files);
       this.updateFiles(new_files_list);

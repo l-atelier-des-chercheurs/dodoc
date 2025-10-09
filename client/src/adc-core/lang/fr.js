@@ -1,5 +1,3 @@
-import { addProjections } from "ol/proj";
-
 export default {
   welcome_to_dodoc: "Bienvenue sur do•doc !",
   current_lang_name: "Français",
@@ -1219,7 +1217,7 @@ export default {
     "Les médias supprimés seront déplacés dans un sous-dossier (comme une corbeille).",
 
   upload_max_file_size_in_mo: "Taille maximale des fichiers importés ou captés",
-  umo_instructions: "En mégaoctets (par défaut, 10 000, soit environ 10 Go).",
+  umo_instructions: "En mégaoctets (par défaut 10 000, soit environ 10 Go).",
 
   scan_qr_code: "Scanner un code QR",
   opening_link_in: "Ouverture du lien dans",
@@ -1486,4 +1484,13 @@ export default {
   stream_sharing_media_error: "Erreur de média lors du partage de flux",
   side_by_side: "Côte à côte",
   new_line: "À la suite",
+  latest_version_available: "Dernière version disponible",
+  latest_version_available_instructions:
+    "Recherche automatiquement la dernière version disponible sur le site dodoc.fr",
+
+  check_out_dodocfr:
+    "Impossible de récupérer la dernière version disponible. Veuillez vous rendre sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "Une mise à jour est disponible (version {version}). Rendez-vous sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> pour la télécharger.",
+  up_to_date: "Vous utilisez la dernière version",
 };

@@ -482,7 +482,7 @@
             class="u-button_icon"
             :title="$t('real_size')"
             v-if="/* layout_mode === 'screen' && */ first_media_ratio"
-            @click="setRealSize"
+            @click="setSize('real_size')"
           >
             <b-icon
               icon="slash-square-fill"
@@ -574,7 +574,7 @@
           :min="0"
           :max="50"
           :step="1"
-          :default_value="15"
+          :default_value="0"
           :suffix="unit"
           @save="
             updateMediaPubliMeta({
@@ -607,7 +607,7 @@
           :min="1"
           :max="100"
           :step="1"
-          :ticks="[1, 100]"
+          :ticks="[1, 25, 50, 75, 100]"
           :default_value="100"
           :suffix="'%'"
           @save="updateMediaPubliMeta({ opacity: $event / 100 })"
@@ -629,7 +629,7 @@
           :min="0"
           :max="20"
           :step="1"
-          :ticks="[0, 10, 20]"
+          :ticks="[0, 5, 10, 15, 20]"
           :default_value="0"
           :suffix="unit"
           @save="
@@ -898,19 +898,19 @@ export default {
         this.$eventHub.$emit(`module.panTo.${meta_filename}`);
       }, 150);
     },
-    async setRealSize() {
-      const height = this.active_module.width * this.first_media_ratio;
-      await this.updateMediaPubliMeta({
-        height,
-      });
-    },
     async setSize(type) {
-      if (type === "full")
+      if (type === "real_size") {
+        const height = this.active_module.width * this.first_media_ratio;
+        await this.updateMediaPubliMeta({
+          height,
+        });
+      } else if (type === "full")
         await this.updateMediaPubliMeta({
           width: this.page_width,
           height: this.page_height,
           x: 0,
           y: 0,
+          rotation: 0,
         });
       else if (type === "half_left")
         await this.updateMediaPubliMeta({
@@ -918,6 +918,7 @@ export default {
           height: this.page_height,
           x: 0,
           y: 0,
+          rotation: 0,
         });
       else if (type === "half_right")
         await this.updateMediaPubliMeta({
@@ -925,6 +926,7 @@ export default {
           height: this.page_height,
           x: this.page_width / 2,
           y: 0,
+          rotation: 0,
         });
       else if (type === "half_top")
         await this.updateMediaPubliMeta({
@@ -932,6 +934,7 @@ export default {
           height: this.page_height / 2,
           x: 0,
           y: 0,
+          rotation: 0,
         });
       else if (type === "half_bottom")
         await this.updateMediaPubliMeta({
@@ -939,6 +942,7 @@ export default {
           height: this.page_height / 2,
           x: 0,
           y: this.page_height / 2,
+          rotation: 0,
         });
     },
     changeModulePage() {
@@ -985,7 +989,7 @@ export default {
 
   &:not(:first-child) {
     margin-top: calc(var(--spacing) / 2);
-    border-top: 2px solid var(--c-gris);
+    border-top: 2px solid var(--c-gris_clair);
   }
 }
 
@@ -1022,7 +1026,7 @@ export default {
     }
 
     &:not(:last-child) {
-      border-bottom: 2px solid var(--c-gris);
+      border-bottom: 2px solid var(--c-gris_clair);
     }
 
     ._preview {

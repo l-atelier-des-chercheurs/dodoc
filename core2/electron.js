@@ -12,7 +12,8 @@ const writeFileAtomic = require("write-file-atomic");
 const utils = require("./utils"),
   notifier = require("./notifier"),
   cacheManager = require("./cache-manager"),
-  journal = require("./journal");
+  journal = require("./journal"),
+  ffmpegTracker = require("./ffmpeg-tracker");
 
 // Set command line switches before app is ready
 try {
@@ -97,7 +98,7 @@ module.exports = (function () {
           // On macOS it is common for applications and their menu bar
           // to stay active until the user quits explicitly with Cmd + Q
           // if (process.platform !== 'darwin') {
-          global.ffmpeg_processes.map((f) => f.kill());
+          ffmpegTracker.killAllProcesses();
           app.quit();
           // }
         });
@@ -129,6 +130,8 @@ module.exports = (function () {
         // Add cleanup on app quit
         app.on("before-quit", async () => {
           try {
+            // Kill any running ffmpeg processes
+            ffmpegTracker.killAllProcesses();
             cacheManager.handleExit();
           } catch (err) {
             dev.error("Error during cache cleanup on quit:", err);
@@ -486,7 +489,7 @@ module.exports = (function () {
             label: "Quitter",
             accelerator: process.platform === "darwin" ? "Command+Q" : "Ctrl+Q",
             click: function () {
-              global.ffmpeg_processes.map((f) => f.kill());
+              ffmpegTracker.killAllProcesses();
               app.quit();
             },
           },

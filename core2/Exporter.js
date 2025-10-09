@@ -1,6 +1,5 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  ffmpeg = require("fluent-ffmpeg"),
   pad = require("pad-left"),
   writeFileAtomic = require("write-file-atomic"),
   { v4: uuidv4 } = require("uuid");
@@ -14,13 +13,8 @@ const utils = require("./utils"),
   webpreview = require("./webpreview"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
-  optimizer = require("./exporter_tasks/optimizer");
-
-const ffmpegPath = require("ffmpeg-static").replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-ffmpeg.setFfmpegPath(ffmpegPath);
+  optimizer = require("./exporter_tasks/optimizer"),
+  ffmpegTracker = require("./ffmpeg-tracker");
 
 class Exporter {
   constructor({ path_to_folder, folder_to_export_to, instructions }) {
@@ -203,7 +197,8 @@ class Exporter {
       const frame_rate = this.instructions.frame_rate || 4;
       const output_frame_rate = 30;
 
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      this.ffmpeg_cmd = ffmpegTracker
+        .createTrackedFfmpeg()
         .input(path.join(full_path_to_folder_in_cache, "img-%04d.jpeg"))
         .inputFPS(frame_rate);
 
@@ -223,9 +218,7 @@ class Exporter {
         .outputFPS(output_frame_rate)
         .autopad()
         .addOptions(["-preset slow", "-tune animation"])
-        .toFormat(output_format === "gif" ? "gif" : "mp4");
-
-      this.ffmpeg_cmd
+        .toFormat(output_format === "gif" ? "gif" : "mp4")
         .on("start", (commandLine) => {
           dev.log("Spawned Ffmpeg with command: \n" + commandLine);
         })
@@ -242,7 +235,6 @@ class Exporter {
         })
         .on("end", async () => {
           dev.logverbose("Video ended");
-
           this._notifyProgress(95);
 
           await this._removeAllImages(full_path_to_folder_in_cache);
@@ -252,6 +244,7 @@ class Exporter {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
+
           await this._removeAllImages(full_path_to_folder_in_cache);
           this._notifyEnded({
             event: "failed",
@@ -568,7 +561,8 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      this.ffmpeg_cmd = ffmpegTracker
+        .createTrackedFfmpeg()
         .input(base_media_path)
         .inputOptions([`-ss ${start}`, `-to ${end}`])
         .withVideoCodec("libx264")
@@ -594,6 +588,7 @@ class Exporter {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
+
           this._notifyEnded({
             event: "failed",
             info: err.message,
@@ -626,7 +621,8 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      this.ffmpeg_cmd = ffmpegTracker
+        .createTrackedFfmpeg()
         .input(base_image_path)
         .loop()
         .input(base_audio_path)
@@ -661,6 +657,7 @@ class Exporter {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
+
           this._notifyEnded({
             event: "failed",
             info: err.message,
@@ -693,7 +690,8 @@ class Exporter {
 
       this._notifyProgress(10);
 
-      this.ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      this.ffmpeg_cmd = ffmpegTracker
+        .createTrackedFfmpeg()
         .input(base_video_path)
         .input(base_audio_path)
         .duration(duration)
@@ -727,6 +725,7 @@ class Exporter {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
+
           this._notifyEnded({
             event: "failed",
             info: err.message,
@@ -797,7 +796,6 @@ class Exporter {
             output_height,
             video_bitrate,
             image_duration: media.image_duration,
-            ffmpeg_cmd: this.ffmpeg_cmd,
           }));
         } else if (media_type === "video") {
           ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
@@ -806,7 +804,6 @@ class Exporter {
             output_width,
             output_height,
             video_bitrate,
-            ffmpeg_cmd: this.ffmpeg_cmd,
             reportProgress,
           }));
         } else {
@@ -826,7 +823,6 @@ class Exporter {
       await tasks.mergeAllVideos({
         temp_videos_array,
         video_bitrate,
-        ffmpeg_cmd: this.ffmpeg_cmd,
         full_path_to_new_video,
       });
 
@@ -941,7 +937,6 @@ class Exporter {
         audio_bitrate,
         trim_start,
         trim_end,
-        ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });
       this._notifyProgress(95);
@@ -995,7 +990,6 @@ class Exporter {
         keep_audio_track,
         effect_type,
         effect_opts,
-        ffmpeg_cmd: this.ffmpeg_cmd,
         reportProgress,
       });
       this._notifyProgress(95);

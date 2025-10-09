@@ -95,7 +95,7 @@
     <div v-if="edit_mode" class="_addBtnSection">
       <button
         type="button"
-        class="u-button u-button_transparent u-addBtn"
+        class="u-button u-button_bleuvert u-button_small"
         @click="show_media_picker = true"
       >
         <b-icon icon="plus-circle" />
@@ -275,8 +275,8 @@ export default {
   }
 }
 ._addBtnSection {
-  padding: calc(var(--spacing) / 4);
-  text-align: left;
+  padding-top: calc(var(--spacing) / 4);
+  // text-align: left;
 }
 
 ._removeItem,

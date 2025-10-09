@@ -1,14 +1,8 @@
 const path = require("path"),
-  fs = require("fs-extra"),
-  ffmpeg = require("fluent-ffmpeg");
+  fs = require("fs-extra");
 
-const utils = require("../utils");
-
-const ffmpegPath = require("ffmpeg-static").replace(
-  "app.asar",
-  "app.asar.unpacked"
-);
-ffmpeg.setFfmpegPath(ffmpegPath);
+const utils = require("../utils"),
+  ffmpegTracker = require("../ffmpeg-tracker");
 
 module.exports = (function () {
   const API = {
@@ -19,7 +13,6 @@ module.exports = (function () {
       output_height,
       video_bitrate,
       image_duration = 2,
-      ffmpeg_cmd,
     }) => {
       // used to process videos / images before merging them
       dev.logfunction();
@@ -55,7 +48,6 @@ module.exports = (function () {
           height: output_height,
         });
         await _makeVideoFromImage({
-          ffmpeg_cmd,
           temp_image_path,
           image_duration,
           temp_video_path,
@@ -78,7 +70,6 @@ module.exports = (function () {
       output_width,
       output_height,
       video_bitrate,
-      ffmpeg_cmd,
       reportProgress,
     }) => {
       const temp_video_volume = 100;
@@ -102,7 +93,6 @@ module.exports = (function () {
 
       if (!(await fs.pathExists(temp_video_path))) {
         await utils.convertVideoToStandardFormat({
-          ffmpeg_cmd,
           source: media_full_path,
           destination: temp_video_path,
           format: "mpegts",
@@ -116,7 +106,6 @@ module.exports = (function () {
       let duration;
       try {
         const infos = await utils.getVideoMetaData({
-          ffmpeg_cmd,
           path: temp_video_path,
         });
         if (infos.duration) duration = infos.duration;
@@ -133,11 +122,10 @@ module.exports = (function () {
     mergeAllVideos: async ({
       temp_videos_array,
       video_bitrate,
-      ffmpeg_cmd,
       full_path_to_new_video,
     }) => {
       return new Promise(async (resolve, reject) => {
-        ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options);
+        const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
         temp_videos_array.map(({ video_path }) => {
           ffmpeg_cmd.addInput(video_path);
@@ -409,7 +397,7 @@ module.exports = (function () {
         // let time_since_last_report = 0;
         ffmpeg_cmd
           // .complexFilter(['gltransition'])
-          .on("start", function (commandLine) {
+          .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("progress", (progress) => {})
@@ -417,7 +405,7 @@ module.exports = (function () {
             dev.logverbose(`Video has been created`);
             return resolve();
           })
-          .on("error", function (err, stdout, stderr) {
+          .on("error", (err, stdout, stderr) => {
             dev.error("An error happened: " + err.message);
             dev.error("ffmpeg standard output:\n" + stdout);
             dev.error("ffmpeg standard error:\n" + stderr);
@@ -435,7 +423,6 @@ module.exports = (function () {
   };
 
   function _makeVideoFromImage({
-    ffmpeg_cmd,
     temp_image_path,
     image_duration,
     temp_video_path,
@@ -444,7 +431,8 @@ module.exports = (function () {
     video_bitrate,
   }) {
     return new Promise(async (resolve, reject) => {
-      ffmpeg_cmd = new ffmpeg(global.settings.ffmpeg_options)
+      ffmpegTracker
+        .createTrackedFfmpeg()
         .input(temp_image_path)
         .duration(image_duration)
         .loop()
@@ -459,13 +447,13 @@ module.exports = (function () {
         .videoFilter(["setsar=1/1"])
         .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
         .toFormat("mp4")
-        .on("start", function (commandLine) {
+        .on("start", (commandLine) => {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
         })
         .on("end", () => {
           return resolve();
         })
-        .on("error", function (err, stdout, stderr) {
+        .on("error", (err, stdout, stderr) => {
           dev.error("An error happened: " + err.message);
           dev.error("ffmpeg standard output:\n" + stdout);
           dev.error("ffmpeg standard error:\n" + stderr);
