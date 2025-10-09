@@ -133,19 +133,21 @@
             <div class="u-spacingBottom" />
           </template>
 
-          <button
-            slot="footer"
-            :loading="is_creating_author"
-            :disabled="
-              $root.app_infos.instance_meta
-                .users_must_accept_terms_to_signup === true &&
-              terms_accepted === false
-            "
-            class="u-button u-button_bleuvert"
-            type="submit"
-          >
-            {{ $t("create") }}
-          </button>
+          <div slot="footer">
+            <div />
+            <button
+              :loading="is_creating_author"
+              :disabled="
+                $root.app_infos.instance_meta
+                  .users_must_accept_terms_to_signup === true &&
+                terms_accepted === false
+              "
+              class="u-button u-button_bleuvert"
+              type="submit"
+            >
+              {{ $t("create") }}
+            </button>
+          </div>
         </fieldset>
       </form>
       <div v-else-if="account_created_notice" class="u-successMsg">

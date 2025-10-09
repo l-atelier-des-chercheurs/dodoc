@@ -49,7 +49,7 @@
           type="button"
           class="u-button u-button_bleuvert"
           v-if="types_available.includes('write')"
-          @click="createText"
+          @click="createText('')"
         >
           <b-icon icon="fonts" style="font-size: var(--icon-size)" />
           <template v-if="show_labels">{{ $t("write") }}</template>
@@ -263,6 +263,7 @@ export default {
       // if meta_filename, file is stored in publication
       // if path_to_source_media, we get metafilename
       let source_medias = [];
+      let meta_filenames = [];
 
       // each meta gets it own mosaic
       if (meta_filename) {
@@ -271,33 +272,50 @@ export default {
         });
       } else if (path_to_source_media_metas) {
         for (const path_to_source_media_meta of path_to_source_media_metas) {
-          const import_mode = this.$root.publication_include_mode;
+          let import_mode = this.$root.publication_include_mode;
+
+          // if path_to_source_media_meta matches a text, we copy it and never link it
+          const source_media = await this.getSourceMedia({
+            source_media: { path: path_to_source_media_meta },
+            folder_path: this.publication_path,
+          });
+          if (source_media.$type === "text") {
+            import_mode = "copy";
+          }
+
           const new_entry = await this.prepareMediaForPublication({
             path_to_source_media_meta,
             publication_path: this.publication_path,
             import_mode,
           });
-          source_medias.push(new_entry);
+
+          if (["page_by_page", "montage"].includes(this.context)) {
+            let addtl_meta = {};
+            if (source_media?.$infos?.ratio && this.pre_addtl_meta?.width) {
+              addtl_meta.height =
+                this.pre_addtl_meta.width * source_media.$infos.ratio;
+            }
+            const meta_filename = await this.createMetaForModule({
+              module_type: source_media.$type === "text" ? "text" : "mosaic",
+              source_medias: [new_entry],
+              addtl_meta,
+            });
+            meta_filenames.push(meta_filename);
+          } else {
+            source_medias.push(new_entry);
+          }
         }
       }
-      if (this.context === "page_by_page") {
-        source_medias = source_medias.map((sm) => {
-          sm.objectFit = "contain";
-          return sm;
-        });
-      }
 
-      if (["page_by_page", "montage"].includes(this.context)) {
-        await this.createMultipleModules({
+      if (source_medias.length > 0) {
+        const meta_filename = await this.createModule({
           module_type: "mosaic",
           source_medias,
         });
-      } else {
-        await this.createModule({
-          module_type: "mosaic",
-          source_medias,
-        });
+        meta_filenames.push(meta_filename);
       }
+      this.$emit("addModules", { meta_filenames });
+      this.show_module_selector = false;
 
       this.show_media_picker = false;
     },
@@ -312,7 +330,11 @@ export default {
           $type: "url",
         },
       });
+
+      debugger;
+
       this.createMosaic({ meta_filename });
+
       this.show_link_picker = false;
     },
     async createFiles({ path_to_source_media_metas }) {
@@ -396,36 +418,6 @@ export default {
       this.$emit("addModules", { meta_filenames: [meta_filename] });
       this.show_module_selector = false;
       return meta_filename;
-    },
-    async createMultipleModules({ module_type, source_medias = [] }) {
-      let meta_filenames = [];
-      for (const source_media of source_medias) {
-        const media = this.getSourceMedia({
-          source_media,
-          folder_path: this.publication_path,
-        });
-
-        let addtl_meta = {};
-        if (["page_by_page", "montage"].includes(this.context))
-          if (media?.$infos?.ratio && this.pre_addtl_meta?.width)
-            addtl_meta.height = this.pre_addtl_meta.width * media.$infos.ratio;
-        if (media?.$location) addtl_meta.location = media.$location;
-
-        if (media.$type === "text") {
-          const meta_filename = await this.createText(media.$content);
-          meta_filenames.push(meta_filename);
-        } else {
-          const meta_filename = await this.createMetaForModule({
-            module_type,
-            source_medias: [source_media],
-            addtl_meta,
-          });
-          meta_filenames.push(meta_filename);
-        }
-      }
-
-      this.show_module_selector = false;
-      this.$emit("addModules", { meta_filenames });
     },
     async createMetaForModule({ module_type, source_medias, addtl_meta }) {
       let additional_meta = {
