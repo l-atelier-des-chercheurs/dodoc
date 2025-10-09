@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=do•doc
-Comment=A documentation tool for creativity.
-Exec=dodoc
-Icon=./build/icon.png
-Terminal=false
-Categories=Education;AudioVideo;Graphics;

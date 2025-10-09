@@ -74,9 +74,13 @@ linux:
   target: AppImage
   category: Education
   icon: build/icons
-  executableName: dodoc
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
+  desktop:
+    Name: do•doc
+    Comment: A documentation tool for creativity.
+    Terminal: false
+    Categories: Education;AudioVideo;Graphics;
 
 appImage:
   synopsis: A documentation tool for creativity.
