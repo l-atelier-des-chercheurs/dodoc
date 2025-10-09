@@ -981,11 +981,11 @@ export default {
   text-align: left;
 }
 ._pageMenu--pane {
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 1);
 
   &:not(:first-child) {
     margin-top: calc(var(--spacing) / 2);
-    border-top: 2px solid var(--c-gris);
+    border-top: 2px solid var(--c-gris_clair);
   }
 }
 
@@ -1022,7 +1022,7 @@ export default {
     }
 
     &:not(:last-child) {
-      border-bottom: 2px solid var(--c-gris);
+      border-bottom: 2px solid var(--c-gris_clair);
     }
 
     ._preview {

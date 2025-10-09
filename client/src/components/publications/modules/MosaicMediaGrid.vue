@@ -303,7 +303,7 @@ export default {
       aspect-ratio: auto;
     }
     &:not([data-mediatype="text"]) {
-      background: var(--c-gris_clair);
+      // background: var(--c-gris_clair);
     }
   }
 
