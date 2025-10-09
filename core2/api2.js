@@ -1698,23 +1698,25 @@ module.exports = (function () {
   }
 
   async function _removeBinFile(req, res, next) {
-    const { path_to_folder_in_bin } = utils.makePathFromReq(req);
+    const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder_in_bin });
 
     try {
-      await folder.removeBinFolder({
-        path_to_folder_in_bin,
+      await file.removeBinFile({
+        path_to_folder,
+        meta_filename,
       });
       dev.logpackets(
-        `Successfully removed bin folder ${path_to_folder_in_bin}`
+        `Successfully removed bin file ${path_to_folder} ${meta_filename}`
       );
       journal.log({
         from: "api2",
         event: "remove_bin_file",
         details: {
           outcome: "success",
-          path_to_folder_in_bin,
+          path_to_folder,
+          meta_filename,
           author_path: token_path,
         },
       });
@@ -1727,7 +1729,8 @@ module.exports = (function () {
         event: "remove_bin_file",
         details: {
           outcome: "error",
-          path_to_folder_in_bin,
+          path_to_folder,
+          meta_filename,
           error_message: message,
           author_path: token_path,
         },

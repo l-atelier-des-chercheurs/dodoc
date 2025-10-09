@@ -1155,7 +1155,7 @@ export default {
     "The contents will be moved to a subfolder (like a trash).",
 
   upload_max_file_size_in_mo: "Maximum file size for uploads or captures",
-  umo_instructions: "In megabytes (by default, 10 000, so about 10 Go).",
+  umo_instructions: "In megabytes (by default 10 000, so about 10 Go).",
 
   scan_qr_code: "Scan QR code",
   opening_link_in: "Opening link in",
@@ -1426,4 +1426,12 @@ export default {
   type: "Type",
   side_by_side: "Side by side",
   new_line: "One after the other",
+  latest_version_available: "Latest version available",
+  latest_version_available_instructions:
+    "Search automatically the latest version available on dodoc.fr",
+  check_out_dodocfr:
+    "Unable to retrieve the latest version available. Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a>.",
+  update_available_go_to_dodocfr:
+    "An update is available (version {version}). Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> to download it.",
+  up_to_date: "You are using the latest version",
 };

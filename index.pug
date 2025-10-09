@@ -30,15 +30,15 @@ html
         page_is_standalone_html: !{page_is_standalone_html || false},
       
         instance_meta: {
-          name: `#{name_of_instance || ""}`,
-          presentation: `!{presentation_of_instance || ""}`,
-          contactmail: `#{contactmail_of_instance || ""}`,
-          hero_background_color: `#{hero_background_color || ""}`,
-          text_background_color: `#{text_background_color || ""}`,
-          text_image_layout: `#{text_image_layout || ""}`,
+          name: !{JSON.stringify(name_of_instance || "")},
+          presentation: !{JSON.stringify(presentation_of_instance || "")},
+          contactmail: !{JSON.stringify(contactmail_of_instance || "")},
+          hero_background_color: !{JSON.stringify(hero_background_color || "")},
+          text_background_color: !{JSON.stringify(text_background_color || "")},
+          text_image_layout: !{JSON.stringify(text_image_layout || "")},
           has_general_password: !{has_general_password || false},
           can_send_email: !{can_send_email || false},
-          signup_password_hashed: `!{signup_password_hashed || ""}`,
+          signup_password_hashed: !{JSON.stringify(signup_password_hashed || "")},
           require_signup_to_contribute: !{require_signup_to_contribute || false},
           require_mail_to_signup: !{require_mail_to_signup || false},
           users_must_accept_terms_to_signup: !{users_must_accept_terms_to_signup || false},
@@ -49,8 +49,8 @@ html
           $admins: !{$admins ? JSON.stringify($admins) : "[]"},
           $contributors: !{$contributors ? JSON.stringify($contributors) : "[]"},
 
-          topbar_thumb: '!{topbar_thumb || ""}',
-          hero_thumb: '!{hero_thumb || ""}'
+          topbar_thumb: !{JSON.stringify(topbar_thumb || "")},
+          hero_thumb: !{JSON.stringify(hero_thumb || "")}
         },
 
         custom_fonts: !{custom_fonts ? JSON.stringify(custom_fonts, null, 4) : "[]"},

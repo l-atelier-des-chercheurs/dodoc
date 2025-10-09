@@ -149,7 +149,7 @@
                   :field_name="'upload_max_file_size_in_mo'"
                   :label="$t('upload_max_file_size_in_mo')"
                   :instructions="$t('umo_instructions')"
-                  :content="settings.upload_max_file_size_in_mo"
+                  :content="settings.upload_max_file_size_in_mo || 10_000"
                   :path="settings.$path"
                   :input_type="'number'"
                   :required="false"

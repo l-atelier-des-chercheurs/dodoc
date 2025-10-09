@@ -1,7 +1,7 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "37.5.1"
+electronVersion: "37.6.1"
 asar: true
 # asar disabled for now, because it's not working with the content folder
 # paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
@@ -74,9 +74,14 @@ linux:
   target: AppImage
   category: Education
   icon: build/icons
-  executableName: dodoc
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
+  desktop:
+    entry:
+      Name: do•doc
+      Comment: A documentation tool for creativity.
+      Terminal: false
+      Categories: Education;AudioVideo;Graphics;
 
 appImage:
   synopsis: A documentation tool for creativity.
