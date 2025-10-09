@@ -601,6 +601,7 @@ module.exports = (function () {
         subsub_folder_type,
         subsub_folder_slug,
         bin_folder_slug,
+        bin_meta_filename,
         meta_filename,
       } = req.params;
 
@@ -648,6 +649,7 @@ module.exports = (function () {
           bin_folder_slug
         );
       }
+
       if (req.body) obj.data = req.body;
 
       return obj;
