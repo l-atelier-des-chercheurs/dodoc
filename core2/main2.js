@@ -57,7 +57,7 @@ module.exports = async function () {
   let win;
   if (global.is_electron) {
     try {
-      win = await require("./electron").init();
+      win = await require("../electron/electron").init();
     } catch (err) {
       dev.error(err);
       throw err;

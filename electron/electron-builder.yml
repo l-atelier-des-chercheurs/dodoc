@@ -15,13 +15,21 @@ asarUnpack:
   - "!client/dist/assets/**"
 icon: build/icon.png
 
+directories:
+  app: ../
+  output: dist
+
 # Exclude problematic directories to prevent pattern length issues
 files:
+  - "**/*"
   - "!client/node_modules/**"
   - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"
+  - "!electron/node_modules/**"
+  - "!.git/**"
+  - "!dist/**"
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
