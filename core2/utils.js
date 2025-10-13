@@ -785,15 +785,16 @@ module.exports = (function () {
         if (video_bitrate === "no_video") {
           ffmpeg_cmd.noVideo();
         } else {
-          ffmpeg_cmd
-            .withVideoCodec("libx264")
-            .withVideoBitrate(video_bitrate)
-            .videoFilter(["setsar=1/1"]);
+          ffmpeg_cmd.withVideoCodec("libx264").withVideoBitrate(video_bitrate);
+
+          // Combine all video filters into a single array to avoid reinitializing filters
+          const videoFilters = ["setsar=1/1"];
           if (image_width && image_height) {
-            ffmpeg_cmd.videoFilter([
-              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`,
-            ]);
+            videoFilters.push(
+              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`
+            );
           }
+          ffmpeg_cmd.videoFilter(videoFilters);
         }
 
         // https://stackoverflow.com/a/70899710
