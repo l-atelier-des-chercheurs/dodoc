@@ -123,8 +123,6 @@ export default {
       this.processing_file_index = 0;
       this.processing_file_count = medias.length;
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       // for each media, check if it's already in project
       // if not, copy it to project
       for (const m of medias) {
