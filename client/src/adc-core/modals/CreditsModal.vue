@@ -1,11 +1,13 @@
 <template>
   <BaseModal2 :title="$t('about_dodoc')" @close="$emit('close')">
     <div class="_creditsModal">
-      <div class="u-spacingBottom">
-        <DLabel :str="$t('version')" />
-        {{ $root.app_infos.version }}
+      <div class="_versionChecker">
+        <div class="u-spacingBottom">
+          <DLabel :str="$t('version')" />
+          {{ $root.app_infos.version }}
+        </div>
+        <LatestVersionChecker v-if="is_instance_admin" />
       </div>
-
       <div class="u-spacingBottom">
         <DLabel :str="$t('ui_lang_select')" />
 
@@ -33,11 +35,13 @@
 </template>
 <script>
 import LangModal from "@/adc-core/lang/LangModal.vue";
+import LatestVersionChecker from "@/adc-core/ui/LatestVersionChecker.vue";
 
 export default {
   props: {},
   components: {
     LangModal,
+    LatestVersionChecker,
   },
   data() {
     return {
@@ -59,6 +63,22 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._creditsModal {
+  ._versionChecker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    > * {
+      &:first-child {
+        flex: 0 0 33%;
+      }
+
+      &:last-child {
+        flex: 0 0 66%;
+      }
+    }
+  }
   ::v-deep {
     li {
       margin-left: 1.5em;

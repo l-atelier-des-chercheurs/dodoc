@@ -1,6 +1,6 @@
 <template>
   <div
-    class="u-card2 _uploadFile"
+    class="_uploadFile"
     :class="
       (['is--' + status],
       {
@@ -263,6 +263,9 @@ export default {
   position: relative;
 
   color: var(--c-noir);
+  // border-radius: 4px;
+  overflow: hidden;
+  border: 2px solid var(--c-gris_clair);
 
   // border: 2px solid var(--c-gris_clair);
   background: white;
@@ -302,7 +305,7 @@ export default {
   // margin-bottom: 2px;
 
   background: white;
-  border-radius: 6px 6px 0 0;
+  // border-radius: 6px 6px 0 0;
   overflow: hidden;
 
   ._uploadFile--progressBar--bar {

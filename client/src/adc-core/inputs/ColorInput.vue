@@ -93,11 +93,11 @@ export default {
         "#000000",
         "#637B83",
         "#ffffff",
-        "transparent",
         "#1d327f",
         "#52c5b9",
         "#ffbe32",
         "#fc4b60",
+        "transparent",
       ],
     },
     allow_transparent: {
@@ -181,8 +181,8 @@ export default {
 
 ._colorPatch {
   display: block;
-  width: 2rem;
-  height: 2rem;
+  width: 1.9rem;
+  height: 1.9rem;
 
   &::before {
     content: "";

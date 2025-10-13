@@ -495,6 +495,9 @@ module.exports = (function () {
       });
 
       await _removeFolderForGood({ path_to_folder: path_to_folder_in_bin });
+      await thumbs.removeFolderThumbs({
+        path_to_folder: path_to_folder_in_bin,
+      });
 
       return restored_folder_path;
     },
