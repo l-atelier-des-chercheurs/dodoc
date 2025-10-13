@@ -9,9 +9,9 @@
     "start": "electron .",
     "debug": "electron --inspect=5858 . -- --debug --verbose",
     "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:win-store": "electron-builder --win appx",
+    "pack": "cd .. && npm uninstall puppeteer platform-folders --no-save && cd electron && electron-builder --dir",
+    "dist": "cd .. && npm uninstall puppeteer platform-folders --no-save && cd electron && electron-builder",
+    "dist:win-store": "cd .. && npm uninstall puppeteer platform-folders --no-save && cd electron && electron-builder --win appx",
     "postinstall": "electron-builder install-app-deps"
   },
   "engines": {
@@ -24,10 +24,7 @@
       "!../tokens.json"
     ]
   },
-  "dependencies": {
-    "electron-store": "^10.1.0",
-    "electron-window-state": "^5.0.3"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
     "electron": "^37.6.1",

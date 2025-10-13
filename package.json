@@ -73,6 +73,8 @@
   "optionalDependencies": {
     "bufferutil": "4.0.9",
     "extractd": "^2.1.2",
-    "@img/sharp-linuxmusl-arm64v8": "^0.34.4"
+    "@img/sharp-linuxmusl-arm64v8": "^0.34.4",
+    "electron-store": "^10.1.0",
+    "electron-window-state": "^5.0.3"
   }
 }

@@ -13,27 +13,28 @@ asarUnpack:
   - "node_modules/@img"
   # not needed, only useful in the web version (js modules, while website export uses a bundle)
   - "!client/dist/assets/**"
-icon: build/icon.png
 
 directories:
   app: ../
   output: dist
+  buildResources: electron/build
 
 # Exclude problematic directories to prevent pattern length issues
 files:
   - "**/*"
   - "!client/node_modules/**"
+  - "!electron/node_modules/**"
   - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"
-  - "!electron/node_modules/**"
   - "!.git/**"
   - "!dist/**"
+  # Note: puppeteer and platform-folders are uninstalled before building (see package.json dist script)
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
-  icon: build/icon.png
+  icon: icon.png
   target:
     - target: nsis
       arch: [x64]
@@ -64,12 +65,12 @@ appx:
 mac:
   artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
-  icon: build/icon.icns
+  icon: electron/build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
-  entitlements: build/entitlements.mac.plist
-  entitlementsInherit: build/entitlements.mac.plist
-  provisioningProfile: build/dodoc.provisionprofile
+  entitlements: entitlements.mac.plist
+  entitlementsInherit: entitlements.mac.plist
+  provisioningProfile: dodoc.provisionprofile
   extendInfo:
     NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.
     NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.
@@ -81,7 +82,7 @@ linux:
   artifactName: dodoc-${version}-linux.${ext}
   target: AppImage
   category: Education
-  icon: build/icons
+  icon: icons
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
   desktop:

@@ -56,7 +56,7 @@ To install do•doc in dev mode, you need to have Node.js and npm installed. Clo
 
 ### Node version (for servers/VPS)
 
-For running do•doc on a server without Electron dependencies:
+For running do•doc on a server with Puppeteer (for PDF/screenshot generation):
 
 ```bash
 npm install
@@ -73,16 +73,13 @@ Available scripts for Node mode:
 For running do•doc as a desktop application with Electron:
 
 ```bash
-# Install base dependencies
 npm install
-
-# Install Electron dependencies
 cd electron
 npm install
-
-# Run Electron app
 npm start
 ```
+
+**Note:** When building Electron app (`npm run dist`), puppeteer and platform-folders are removed to reduce app size. Run `npm install` at the root to reinstall them if you need Node mode again.
 
 Available scripts for Electron mode (run from `/electron` folder):
 
