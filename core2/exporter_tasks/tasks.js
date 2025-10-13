@@ -125,8 +125,11 @@ module.exports = (function () {
       full_path_to_new_video,
     }) => {
       return new Promise(async (resolve, reject) => {
+        dev.log("mergeAllVideos with transitions enabled");
+
         const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
+        // Add all inputs
         temp_videos_array.map(({ video_path }) => {
           ffmpeg_cmd.addInput(video_path);
         });
@@ -136,241 +139,281 @@ module.exports = (function () {
         let all_audio_outputs = [];
         const transition_duration = 0.2;
 
-        temp_videos_array.map(
+        temp_videos_array.forEach(
           ({ duration, transition_in, transition_out }, index) => {
-            // pour chaque extrait, créer plusieurs pistes :
-            // une piste du début, TRIM +
-            /* 
-  [0:v]trim=start=0:end=9,setpts=PTS-STARTPTS[firstclip]; \
-  [1:v]trim=start=1,setpts=PTS-STARTPTS[secondclip]; \
-  [0:v]trim=start=9:end=10,setpts=PTS-STARTPTS[fadeoutsrc]; \
-  [1:v]trim=start=0:end=1,setpts=PTS-STARTPTS[fadeinsrc]; \
-  [fadeinsrc]format=pix_fmts=yuva420p,fade=t=in:st=0:d=1:alpha=1[fadein]; \
-  [fadeoutsrc]format=pix_fmts=yuva420p,fade=t=out:st=0:d=1:alpha=1[fadeout]; \
-  [fadein]fifo[fadeinfifo]; \
-  [fadeout]fifo[fadeoutfifo]; \
-  [fadeoutfifo][fadeinfifo]overlay[crossfade]; \
-  [firstclip][crossfade][secondclip]concat=n=3[output] \
-        */
+            // Ensure transition_duration doesn't exceed video duration
+            const safe_transition_duration = Math.min(
+              transition_duration,
+              duration / 3
+            );
 
-            // si vidéo est la première
-            // -- on créé deux flux : de 0 à (duration - 1) et de (duration - 1) à duration
-            // si vidéo est pas la première ni la dernière
-            // -- on créé trois flux : de 0 à 1
-
-            // on créé trois flux : de 0 à 1, de 1 à duration - 1, de duration - 1 à 1
+            // STEP 1: Normalize video/audio inputs to ensure consistency
             complexFilters.push(
-              // video
               {
-                filter: "split=3",
-                inputs: index + ":v",
-                outputs: [
-                  "v_start_" + index,
-                  "v_mid_" + index,
-                  "v_end_" + index,
-                ],
+                filter: "scale",
+                options: "1920:1080:force_original_aspect_ratio=decrease",
+                inputs: `${index}:v:0`,
+                outputs: `v_scaled_${index}`,
               },
               {
-                filter: `trim=start=${0}:end=${transition_duration},setpts=PTS-STARTPTS`,
-                inputs: "v_start_" + index,
-                outputs: "vtrim_start_" + index,
+                filter: "pad",
+                options: "1920:1080:(ow-iw)/2:(oh-ih)/2",
+                inputs: `v_scaled_${index}`,
+                outputs: `v_padded_${index}`,
               },
               {
-                filter: `trim=start=${transition_duration}:end=${
-                  duration - transition_duration
-                },setpts=PTS-STARTPTS`,
-                inputs: "v_mid_" + index,
-                outputs: "vtrim_mid_" + index,
+                filter: "setsar",
+                options: "1",
+                inputs: `v_padded_${index}`,
+                outputs: `v_sar_${index}`,
               },
               {
-                filter: `trim=start=${
-                  duration - transition_duration
-                }:end=${duration},setpts=PTS-STARTPTS`,
-                inputs: "v_end_" + index,
-                outputs: "vtrim_end_" + index,
-              },
-
-              // audio
-              {
-                filter: "asplit=3",
-                inputs: index + ":a",
-                outputs: [
-                  "a_start_" + index,
-                  "a_mid_" + index,
-                  "a_end_" + index,
-                ],
+                filter: "fps",
+                options: "fps=30",
+                inputs: `v_sar_${index}`,
+                outputs: `v_fps_${index}`,
               },
               {
-                filter: `atrim=start=${0}:end=${transition_duration},asetpts=PTS-STARTPTS`,
-                inputs: "a_start_" + index,
-                outputs: "atrim_start_" + index,
-              },
-              {
-                filter: `atrim=start=${transition_duration}:end=${
-                  duration - transition_duration
-                },asetpts=PTS-STARTPTS`,
-                inputs: "a_mid_" + index,
-                outputs: "atrim_mid_" + index,
-              },
-              {
-                filter: `atrim=start=${
-                  duration - transition_duration
-                }:end=${duration},asetpts=PTS-STARTPTS`,
-                inputs: "a_end_" + index,
-                outputs: "atrim_end_" + index,
+                filter: "format",
+                options: "pix_fmts=yuv420p",
+                inputs: `v_fps_${index}`,
+                outputs: `v_normalized_${index}`,
               }
             );
 
+            complexFilters.push(
+              {
+                filter: "aresample",
+                options: "44100",
+                inputs: `${index}:a:0`,
+                outputs: `a_resampled_${index}`,
+              },
+              {
+                filter: "aformat",
+                options: "channel_layouts=stereo",
+                inputs: `a_resampled_${index}`,
+                outputs: `a_normalized_${index}`,
+              }
+            );
+
+            // STEP 2: Split normalized streams into 3 parts for transitions
+            complexFilters.push(
+              {
+                filter: "split=3",
+                inputs: `v_normalized_${index}`,
+                outputs: [
+                  `v_start_${index}`,
+                  `v_mid_${index}`,
+                  `v_end_${index}`,
+                ],
+              },
+              {
+                filter: `trim=start=${0}:end=${safe_transition_duration},setpts=PTS-STARTPTS`,
+                inputs: `v_start_${index}`,
+                outputs: `vtrim_start_${index}`,
+              },
+              {
+                filter: `trim=start=${safe_transition_duration}:end=${
+                  duration - safe_transition_duration
+                },setpts=PTS-STARTPTS`,
+                inputs: `v_mid_${index}`,
+                outputs: `vtrim_mid_${index}`,
+              },
+              {
+                filter: `trim=start=${
+                  duration - safe_transition_duration
+                }:end=${duration},setpts=PTS-STARTPTS`,
+                inputs: `v_end_${index}`,
+                outputs: `vtrim_end_${index}`,
+              }
+            );
+
+            complexFilters.push(
+              {
+                filter: "asplit=3",
+                inputs: `a_normalized_${index}`,
+                outputs: [
+                  `a_start_${index}`,
+                  `a_mid_${index}`,
+                  `a_end_${index}`,
+                ],
+              },
+              {
+                filter: `atrim=start=${0}:end=${safe_transition_duration},asetpts=PTS-STARTPTS`,
+                inputs: `a_start_${index}`,
+                outputs: `atrim_start_${index}`,
+              },
+              {
+                filter: `atrim=start=${safe_transition_duration}:end=${
+                  duration - safe_transition_duration
+                },asetpts=PTS-STARTPTS`,
+                inputs: `a_mid_${index}`,
+                outputs: `atrim_mid_${index}`,
+              },
+              {
+                filter: `atrim=start=${
+                  duration - safe_transition_duration
+                }:end=${duration},asetpts=PTS-STARTPTS`,
+                inputs: `a_end_${index}`,
+                outputs: `atrim_end_${index}`,
+              }
+            );
+
+            // STEP 3: Apply transitions
             if (index === 0) {
+              // First video - fade in if requested
               if (transition_in === "fade") {
                 complexFilters.push(
-                  // video
                   {
-                    filter: `fade`,
+                    filter: "fade",
                     options: {
                       type: "in",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "vtrim_start_" + index,
-                    outputs: "fadein_start_" + index,
+                    inputs: `vtrim_start_${index}`,
+                    outputs: `fadein_start_${index}`,
                   },
-                  // audio
                   {
                     filter: "afade",
                     options: {
                       type: "in",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "atrim_start_" + index,
-                    outputs: "afade_start_" + index,
+                    inputs: `atrim_start_${index}`,
+                    outputs: `afade_start_${index}`,
                   }
                 );
-                all_video_outputs.push("fadein_start_" + index);
-                all_audio_outputs.push("afade_start_" + index);
+                all_video_outputs.push(`fadein_start_${index}`);
+                all_audio_outputs.push(`afade_start_${index}`);
               } else {
-                all_video_outputs.push("vtrim_start_" + index);
-                all_audio_outputs.push("atrim_start_" + index);
+                all_video_outputs.push(`vtrim_start_${index}`);
+                all_audio_outputs.push(`atrim_start_${index}`);
               }
             } else {
-              // if there are videos before
-              // we get vtrim_end_(index - 1) and vtrim_start_(index) and merge them
-
-              // some great docs :
-              // -- https://superuser.com/questions/1001039/what-is-an-efficient-way-to-do-a-video-crossfade-with-ffmpeg
-              // -- https://video.stackexchange.com/questions/23006/how-to-concatenate-multiple-videos-with-fades-from-and-to-black-in-between
-
+              // Not the first video - check for crossfade
               if (transition_in === "fade") {
-                // we grab the previous media and crossfade with it
                 complexFilters.push(
-                  // video
+                  // Video crossfade
                   {
-                    filter: `format=pix_fmts=yuva420p,fade=t=in:st=0:d=${transition_duration}:alpha=1`,
-                    inputs: "vtrim_start_" + index,
-                    outputs: "fadein_" + index,
+                    filter: "format",
+                    options: "pix_fmts=yuva420p",
+                    inputs: `vtrim_start_${index}`,
+                    outputs: `v_alpha_start_${index}`,
                   },
                   {
-                    filter: `format=pix_fmts=yuva420p,fade=t=out:st=0:d=${transition_duration}:alpha=1`,
-                    inputs: "vtrim_end_" + (index - 1),
-                    outputs: "fadeout_" + index,
+                    filter: "fade",
+                    options: {
+                      type: "in",
+                      start_time: 0,
+                      duration: safe_transition_duration,
+                      alpha: 1,
+                    },
+                    inputs: `v_alpha_start_${index}`,
+                    outputs: `fadein_${index}`,
                   },
                   {
-                    filter: `fifo`,
-                    inputs: "fadein_" + index,
-                    outputs: "fadeinfifo_" + index,
+                    filter: "format",
+                    options: "pix_fmts=yuva420p",
+                    inputs: `vtrim_end_${index - 1}`,
+                    outputs: `v_alpha_end_${index - 1}`,
                   },
                   {
-                    filter: `fifo`,
-                    inputs: "fadeout_" + index,
-                    outputs: "fadeoutfifo_" + index,
+                    filter: "fade",
+                    options: {
+                      type: "out",
+                      start_time: 0,
+                      duration: safe_transition_duration,
+                      alpha: 1,
+                    },
+                    inputs: `v_alpha_end_${index - 1}`,
+                    outputs: `fadeout_${index}`,
                   },
                   {
                     filter: "overlay",
-                    inputs: ["fadeinfifo_" + index, "fadeoutfifo_" + index],
-                    outputs: "vcrossfade_" + index,
+                    inputs: [`fadeout_${index}`, `fadein_${index}`],
+                    outputs: `vcrossfade_${index}`,
                   },
-
-                  // audio
+                  // Audio crossfade
                   {
                     filter: "afade",
                     options: {
                       type: "in",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "atrim_start_" + index,
-                    outputs: "afade_start_" + index,
+                    inputs: `atrim_start_${index}`,
+                    outputs: `afade_start_${index}`,
                   },
                   {
                     filter: "afade",
                     options: {
                       type: "out",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "atrim_end_" + (index - 1),
-                    outputs: "afade_end_" + (index - 1),
+                    inputs: `atrim_end_${index - 1}`,
+                    outputs: `afade_end_${index - 1}`,
                   },
                   {
-                    filter: "amix=inputs=2",
-                    inputs: [
-                      "afade_start_" + index,
-                      "afade_end_" + (index - 1),
-                    ],
-                    outputs: "acrossfade_" + index,
+                    filter: "amix",
+                    options: "inputs=2",
+                    inputs: [`afade_end_${index - 1}`, `afade_start_${index}`],
+                    outputs: `acrossfade_${index}`,
                   }
                 );
-                all_video_outputs.push("vcrossfade_" + index);
-                all_audio_outputs.push("acrossfade_" + index);
+                all_video_outputs.push(`vcrossfade_${index}`);
+                all_audio_outputs.push(`acrossfade_${index}`);
               } else {
-                all_video_outputs.push("vtrim_end_" + (index - 1));
-                all_audio_outputs.push("atrim_end_" + (index - 1));
-                all_video_outputs.push("vtrim_start_" + index);
-                all_audio_outputs.push("atrim_start_" + index);
+                // No transition - add previous end and current start separately
+                all_video_outputs.push(`vtrim_end_${index - 1}`);
+                all_audio_outputs.push(`atrim_end_${index - 1}`);
+                all_video_outputs.push(`vtrim_start_${index}`);
+                all_audio_outputs.push(`atrim_start_${index}`);
               }
             }
 
-            all_video_outputs.push("vtrim_mid_" + index);
-            all_audio_outputs.push("atrim_mid_" + index);
+            // Always add the middle section
+            all_video_outputs.push(`vtrim_mid_${index}`);
+            all_audio_outputs.push(`atrim_mid_${index}`);
 
+            // Last video - fade out if requested
             if (index === temp_videos_array.length - 1) {
               if (transition_out === "fade") {
                 complexFilters.push(
                   {
-                    filter: `fade`,
+                    filter: "fade",
                     options: {
                       type: "out",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "vtrim_end_" + index,
-                    outputs: "fadeout_end_" + index,
+                    inputs: `vtrim_end_${index}`,
+                    outputs: `fadeout_end_${index}`,
                   },
                   {
                     filter: "afade",
                     options: {
                       type: "out",
                       start_time: 0,
-                      duration: transition_duration,
+                      duration: safe_transition_duration,
                     },
-                    inputs: "atrim_end_" + index,
-                    outputs: "afadeout_end_" + index,
+                    inputs: `atrim_end_${index}`,
+                    outputs: `afadeout_end_${index}`,
                   }
                 );
-                all_video_outputs.push("fadeout_end_" + index);
-                all_audio_outputs.push("afadeout_end_" + index);
+                all_video_outputs.push(`fadeout_end_${index}`);
+                all_audio_outputs.push(`afadeout_end_${index}`);
               } else {
-                all_video_outputs.push("vtrim_end_" + index);
-                all_audio_outputs.push("atrim_end_" + index);
+                all_video_outputs.push(`vtrim_end_${index}`);
+                all_audio_outputs.push(`atrim_end_${index}`);
               }
             }
           }
         );
 
-        ffmpeg_cmd.withVideoBitrate(video_bitrate);
-
-        // todo set https://trac.ffmpeg.org/wiki/Encode/H.264#Profile ?
+        // STEP 4: Concat all segments
         complexFilters.push(
           {
             filter: "concat",
@@ -394,15 +437,20 @@ module.exports = (function () {
           }
         );
 
-        // let time_since_last_report = 0;
         ffmpeg_cmd
-          // .complexFilter(['gltransition'])
+          .complexFilter(complexFilters)
+          .addOptions(["-map [outv]", "-map [outa]"])
+          .withVideoCodec("libx264")
+          .withVideoBitrate(video_bitrate)
+          .withAudioCodec("aac")
+          .withAudioBitrate("192k")
+          .toFormat("mp4")
           .on("start", (commandLine) => {
-            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
+            dev.log("Spawned Ffmpeg with command: \n" + commandLine);
           })
           .on("progress", (progress) => {})
           .on("end", () => {
-            dev.logverbose(`Video has been created`);
+            dev.log(`Video has been created`);
             return resolve();
           })
           .on("error", (err, stdout, stderr) => {
@@ -411,13 +459,7 @@ module.exports = (function () {
             dev.error("ffmpeg standard error:\n" + stderr);
             return reject(err);
           })
-          // .mergeToFile(videoPath, cachePath);
-          .complexFilter(complexFilters)
-          .addOptions(["-map [outv]", "-map [outa]"])
           .save(full_path_to_new_video);
-
-        // does not work that well with -f concat
-        // reconverting with mergeToFile might seem overkill but yields much much better results
       });
     },
   };
@@ -442,9 +484,11 @@ module.exports = (function () {
         .withVideoCodec("libx264")
         .withVideoBitrate(video_bitrate)
         .addOptions(["-af apad", "-tune stillimage"])
-        .size(`${output_width}x${output_height}`)
-        .autopad()
-        .videoFilter(["setsar=1/1"])
+        .videoFilter([
+          `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=decrease`,
+          `pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
+          "setsar=1/1",
+        ])
         .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
         .toFormat("mp4")
         .on("start", (commandLine) => {
