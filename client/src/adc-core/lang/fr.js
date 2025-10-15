@@ -278,6 +278,7 @@ export default {
   add_category: "Ajouter une catégorie",
 
   opacity: "Opacité",
+  fill_opacity: "Opacité de remplissage",
   page_spreads: "Pages en vis-à-vis",
   page: "Page",
   page_content: "Contenu de la page…",

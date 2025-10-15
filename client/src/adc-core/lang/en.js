@@ -586,6 +586,7 @@ export default {
   add_category: "Add category",
 
   opacity: "Opacity",
+  fill_opacity: "Fill opacity",
   page_spreads: "Facing pages",
   page: "Page",
   page_content: "Page content…",

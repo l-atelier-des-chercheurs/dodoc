@@ -227,6 +227,25 @@
               />
 
               <RangeValueInput
+                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                class="u-spacingBottom"
+                :can_toggle="false"
+                :label="$t('fill_opacity')"
+                :value="selected_feature.get('fill_opacity')"
+                :min="0"
+                :max="1"
+                :step="0.1"
+                :ticks="[0, 0.2, 0.4, 0.6, 0.8, 1]"
+                :default_value="0.2"
+                @save="
+                  updateDrawing({
+                    prop: 'fill_opacity',
+                    val: $event,
+                  })
+                "
+              />
+
+              <RangeValueInput
                 class="u-spacingBottom _strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
@@ -1259,8 +1278,12 @@ export default {
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
-      if (fill_color !== "transparent")
-        fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
+      if (fill_color !== "transparent") {
+        const fill_opacity = feature.get("fill_opacity") || 0.2;
+        fill_color = asString(
+          asArray(fill_color).slice(0, 3).concat(fill_opacity)
+        );
+      }
 
       if (is_selected) {
         const style = new olStyle({
@@ -1520,10 +1543,18 @@ export default {
 
     formatDistance(distanceInMeters) {
       if (distanceInMeters >= 1000) {
-        return `${(distanceInMeters / 1000).toFixed(2)} km`;
+        const km = distanceInMeters / 1000;
+        return `${this.formatDecimal(km, 1)} km`;
       } else {
         return `${Math.round(distanceInMeters)} m`;
       }
+    },
+
+    formatDecimal(value, decimals = 1) {
+      return Number(value).toLocaleString(this.$i18n.locale, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      });
     },
 
     // styleFunction(feature, segments, drawType, tip) {
@@ -1741,6 +1772,8 @@ export default {
         if (stroke_color) obj.stroke_color = stroke_color;
         const fill_color = f.get("fill_color");
         if (fill_color) obj.fill_color = fill_color;
+        const fill_opacity = f.get("fill_opacity");
+        if (fill_opacity !== undefined) obj.fill_opacity = fill_opacity;
 
         const id = f.getId();
         if (id) obj.id = id;
@@ -1827,6 +1860,8 @@ export default {
           if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
           if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
           if (p.fill_color) feature_cont.fill_color = p.fill_color;
+          if (p.fill_opacity !== undefined)
+            feature_cont.fill_opacity = p.fill_opacity;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
