@@ -49,7 +49,7 @@
         />
         <div
           class="_popupMessage"
-          v-if="
+          v-else-if="
             !clicked_location.module && $slots.hasOwnProperty('popup_message')
           "
         >
@@ -450,7 +450,7 @@ export default {
           olType: "Circle",
           freehand: false,
           idleTip: this.$t("click_to_place_center"),
-          activeTip: this.$t("click_to_define_circle_radius"),
+          activeTip: "",
         },
       ],
       map_select_mode: undefined,
@@ -458,6 +458,11 @@ export default {
       map_translate: undefined,
 
       start_map_print: false,
+
+      // Circle drawing state
+      circle_center: null,
+      is_drawing_circle: false,
+      current_radius_text: "",
     };
   },
   created() {
@@ -1400,8 +1405,17 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature, resolution) =>
-          this.makeGeomStyle({ feature, resolution, tip }),
+        style: (feature, resolution) => {
+          // For circle drawing, use radius text if available
+          if (
+            this.current_draw_mode === "Circle" &&
+            this.is_drawing_circle &&
+            this.current_radius_text
+          ) {
+            tip = this.current_radius_text;
+          }
+          return this.makeGeomStyle({ feature, resolution, tip });
+        },
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1412,14 +1426,24 @@ export default {
         // },
       });
       this.map.addInteraction(this.map_draw);
-      this.map_draw.on("drawstart", () => {
+      this.map_draw.on("drawstart", (event) => {
         tip = activeTip;
         if (["LineString", "Polygon"].includes(this.current_draw_mode))
           this.draw_can_be_finished = true;
+
+        // Store circle center for radius tooltip
+        if (this.current_draw_mode === "Circle") {
+          this.circle_center = event.feature.getGeometry().getCenter();
+          this.is_drawing_circle = true;
+        }
       });
       this.map_draw.on("drawabort", () => {
         tip = idleTip;
         this.draw_can_be_finished = false;
+        this.is_drawing_circle = false;
+        this.circle_center = null;
+        this.current_radius_text = "";
+        this.closePopup();
       });
       this.map_draw.on("drawend", (event) => {
         const new_feature = event.feature;
@@ -1433,10 +1457,73 @@ export default {
         });
         tip = idleTip;
         this.draw_can_be_finished = false;
+        this.is_drawing_circle = false;
+        this.circle_center = null;
+        this.current_radius_text = "";
+        this.closePopup();
       });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
+
+      // Add mouse tracking for circle radius tooltip
+      if (this.current_draw_mode === "Circle") {
+        this.addCircleMouseTracking();
+      }
+    },
+
+    addCircleMouseTracking() {
+      this.map.on("pointermove", this.handleCircleMouseMove);
+    },
+
+    removeCircleMouseTracking() {
+      this.map.un("pointermove", this.handleCircleMouseMove);
+    },
+
+    handleCircleMouseMove(event) {
+      if (!this.is_drawing_circle || !this.circle_center) {
+        return;
+      }
+
+      const mouseCoordinate = event.coordinate;
+      const distance = this.calculateDistance(
+        this.circle_center,
+        mouseCoordinate
+      );
+
+      // Update radius text for tooltip
+      if (distance < 1) {
+        this.current_radius_text = "";
+      } else {
+        this.current_radius_text = this.formatDistance(distance);
+      }
+    },
+
+    calculateDistance(coord1, coord2) {
+      // Calculate distance between two coordinates in meters
+      const R = 6371000; // Earth's radius in meters
+      const lat1 = (coord1[1] * Math.PI) / 180;
+      const lat2 = (coord2[1] * Math.PI) / 180;
+      const deltaLat = ((coord2[1] - coord1[1]) * Math.PI) / 180;
+      const deltaLon = ((coord2[0] - coord1[0]) * Math.PI) / 180;
+
+      const a =
+        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(deltaLon / 2) *
+          Math.sin(deltaLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    },
+
+    formatDistance(distanceInMeters) {
+      if (distanceInMeters >= 1000) {
+        return `${(distanceInMeters / 1000).toFixed(2)} km`;
+      } else {
+        return `${Math.round(distanceInMeters)} m`;
+      }
     },
 
     // styleFunction(feature, segments, drawType, tip) {
@@ -1764,6 +1851,10 @@ export default {
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);
+      this.removeCircleMouseTracking();
+      this.is_drawing_circle = false;
+      this.circle_center = null;
+      this.current_radius_text = "";
     },
     startSelectMode() {
       this.selected_feature_id = undefined;
