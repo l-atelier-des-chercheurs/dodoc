@@ -11,6 +11,7 @@
           class="_colorPatch"
           :data-color="local_value"
           :style="`--patch-color: ${local_value}`"
+          :title="local_value"
         />
         <EditBtn @click="edit_mode = true" />
       </div>
@@ -27,25 +28,22 @@
             :key="color"
             :style="`--patch-color: ${color}`"
             @click="saveColor(color)"
+            :title="color"
           />
-        </div>
-        <div class="">
           <div
-            class="_inputField"
+            class="_inputField _colorPatch_isButton _customColorButton"
             :class="{
               'has--novalue': local_value === '',
+              'is--active': is_custom_color,
             }"
           >
             <label
               :for="'_input_' + label"
-              class="u-button u-button_verysmall _customCol"
+              class="_customColorLabel"
               :style="`--patch-color: ${local_value}`"
+              :title="$t('custom_color')"
             >
-              <span
-                class="_colorPatch _colorPatch_isButton is--active"
-                v-if="is_custom_color"
-              />
-              <span class="_customCol--label">{{ $t("custom_color") }}</span>
+              <b-icon class="_customColorIcon" icon="palette-fill" />
               <input
                 ref="field"
                 type="color"
@@ -262,6 +260,59 @@ export default {
     background-blend-mode: normal, difference, normal;
     background-size: 2em 2em;
   }
+
+  &._customColorButton {
+    margin: 0;
+    padding: 0.3rem;
+    width: 1.9rem;
+    height: 1.9rem;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+  }
+}
+
+._customColorLabel {
+  position: relative;
+  display: block;
+  cursor: pointer;
+
+  width: 100%;
+  height: 100%;
+
+  &::before {
+    content: "";
+    display: block;
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: var(--patch-color);
+    outline: 2px solid var(--c-gris);
+    border: 1px solid white;
+  }
+
+  &:hover,
+  &:focus-visible {
+    &::before {
+      outline-color: var(--active-color);
+    }
+  }
+
+  &.is--active::before {
+    outline-color: var(--c-noir);
+  }
+}
+
+._customColorIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  z-index: 1;
+  pointer-events: none;
+  color: white;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.7));
 }
 
 ._customCol {
