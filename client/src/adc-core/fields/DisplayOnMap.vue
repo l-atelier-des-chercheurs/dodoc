@@ -1338,15 +1338,25 @@ export default {
       }
 
       if (is_selected) {
-        const style = new olStyle({
+        // Create a white glow effect
+        const glowStyle = new olStyle({
           stroke: new olStroke({
-            color: "white",
+            color: "rgba(128, 128, 128, 0.6)", // Semi-transparent white glow
+            width: stroke_width + 8,
+            lineDash: [10, 5],
+          }),
+        });
+        styles.push(glowStyle);
+
+        const innerStyle = new olStyle({
+          stroke: new olStroke({
+            color: "white", // Solid white
             width: stroke_width + 4,
-            // lineDash: line_dash,
+            lineDash: [8, 4],
           }),
           image: this.makePointerStyle(),
         });
-        styles.push(style);
+        styles.push(innerStyle);
       }
 
       const style = new olStyle({
