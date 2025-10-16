@@ -196,18 +196,27 @@
                 </small>
               </div> -->
 
-              <!-- Circle radius and area display -->
+              <!-- Shape info display -->
               <div
-                v-if="selected_feature_type === 'Circle'"
+                v-if="['Circle', 'Polygon'].includes(selected_feature_type)"
                 class="_circleInfo"
               >
-                <div class="u-metaField">
+                <div
+                  v-if="selected_feature_type === 'Circle'"
+                  class="u-metaField"
+                >
                   <DLabel :str="$t('radius')" />
                   <div>{{ selected_circle_radius }}</div>
                 </div>
                 <div class="u-metaField">
                   <DLabel :str="$t('area')" />
-                  <div>{{ selected_circle_area }}</div>
+                  <div>
+                    {{
+                      selected_feature_type === "Circle"
+                        ? selected_circle_area
+                        : selected_polygon_area
+                    }}
+                  </div>
                 </div>
               </div>
 
@@ -610,6 +619,13 @@ export default {
       const edgePoint = [center[0] + radiusInDegrees, center[1]];
       const radiusInMeters = this.calculateDistance(center, edgePoint);
       const areaInSquareMeters = Math.PI * radiusInMeters * radiusInMeters;
+      return this.formatArea(areaInSquareMeters);
+    },
+    selected_polygon_area() {
+      if (!this.selected_feature || this.selected_feature_type !== "Polygon")
+        return undefined;
+      const polygon = this.selected_feature.getGeometry();
+      const areaInSquareMeters = this.calculatePolygonArea(polygon);
       return this.formatArea(areaInSquareMeters);
     },
     has_module_content_to_show() {
@@ -1513,6 +1529,12 @@ export default {
 
         this.$nextTick(() => {
           this.saveGeom();
+          // Automatically select the newly created shape
+          this.selected_feature_id = id;
+          // Switch to select mode to show the selection UI
+          this.toggleTool({
+            draw_mode: { key: "Select" },
+          });
         });
         tip = idleTip;
         this.draw_can_be_finished = false;
@@ -1593,6 +1615,33 @@ export default {
       } else {
         return `${Math.round(areaInSquareMeters)} m²`;
       }
+    },
+
+    calculatePolygonArea(polygon) {
+      // Use the Shoelace formula for polygon area calculation
+      const coordinates = polygon.getCoordinates()[0]; // Get the outer ring
+      let area = 0;
+
+      for (let i = 0; i < coordinates.length - 1; i++) {
+        const j = (i + 1) % (coordinates.length - 1);
+        area += coordinates[i][0] * coordinates[j][1];
+        area -= coordinates[j][0] * coordinates[i][1];
+      }
+
+      // Convert from square degrees to square meters using a rough approximation
+      // This is not perfectly accurate but gives a reasonable estimate
+      const areaInSquareDegrees = Math.abs(area) / 2;
+
+      // Convert to square meters using the average latitude
+      const avgLat =
+        coordinates.reduce((sum, coord) => sum + coord[1], 0) /
+        coordinates.length;
+      const latRad = (avgLat * Math.PI) / 180;
+      const metersPerDegree = 111320 * Math.cos(latRad); // Approximate meters per degree at this latitude
+      const areaInSquareMeters =
+        areaInSquareDegrees * metersPerDegree * metersPerDegree;
+
+      return areaInSquareMeters;
     },
 
     formatDecimal(value, decimals = 1) {
