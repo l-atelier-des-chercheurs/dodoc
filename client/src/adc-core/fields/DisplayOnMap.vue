@@ -1944,6 +1944,7 @@ export default {
         this.selected_feature_id
       );
       this.draw_vector_source.removeFeature(f);
+      this.selected_feature_id = undefined;
       this.$nextTick(() => {
         this.saveGeom();
       });
