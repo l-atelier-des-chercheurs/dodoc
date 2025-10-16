@@ -31,16 +31,18 @@
             :title="color"
           />
           <div
-            class="_inputField _colorPatch_isButton _customColorButton"
+            class="_inputField _colorPatch _colorPatch_isButton _customColorButton"
             :class="{
               'has--novalue': local_value === '',
               'is--active': is_custom_color,
             }"
+            :style="`--patch-color: ${
+              is_custom_color ? local_value : '#808080'
+            }`"
           >
             <label
               :for="'_input_' + label"
               class="_customColorLabel"
-              :style="`--patch-color: ${local_value}`"
               :title="$t('custom_color')"
             >
               <b-icon class="_customColorIcon" icon="palette-fill" />
@@ -140,7 +142,7 @@ export default {
   },
   computed: {
     is_custom_color() {
-      return !this.default_colors.includes(this.local_value);
+      return !this.computed_default_colors.includes(this.local_value);
     },
     computed_default_colors() {
       return this.default_colors.filter(
@@ -211,7 +213,7 @@ export default {
   }
 
   &.is--active {
-    pointer-events: none;
+    // pointer-events: none;
     &::before {
       outline-color: var(--c-noir);
     }
@@ -231,6 +233,7 @@ export default {
 ._inputField {
   position: relative;
   display: flex;
+  display: block;
 
   input {
     width: 1px;
@@ -277,19 +280,8 @@ export default {
   display: block;
   cursor: pointer;
 
-  width: 100%;
-  height: 100%;
-
-  &::before {
-    content: "";
-    display: block;
-    border-radius: 50%;
-    width: 100%;
-    height: 100%;
-    background-color: var(--patch-color);
-    outline: 2px solid var(--c-gris);
-    border: 1px solid white;
-  }
+  position: absolute;
+  inset: 0;
 
   &:hover,
   &:focus-visible {
