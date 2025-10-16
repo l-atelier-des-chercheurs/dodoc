@@ -228,7 +228,6 @@
 
               <RangeValueInput
                 v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
-                class="u-spacingBottom"
                 :can_toggle="false"
                 :label="$t('fill_opacity')"
                 :value="selected_feature.get('fill_opacity')"
@@ -246,7 +245,6 @@
               />
 
               <RangeValueInput
-                class="u-spacingBottom _strokeWidth"
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -264,7 +262,7 @@
               />
               <button
                 type="button"
-                class="u-button u-button_bleumarine"
+                class="u-button u-button_red"
                 @click="removeSelected"
               >
                 {{ $t("remove") }}
@@ -2300,6 +2298,7 @@ export default {
 
     display: flex;
     flex-flow: column nowrap;
+    gap: calc(var(--spacing) / 4);
 
     &::before {
       position: absolute;
