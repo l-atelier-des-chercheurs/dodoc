@@ -478,7 +478,11 @@ module.exports = (function () {
           .on("start", (commandLine) => {
             dev.log("Spawned Ffmpeg with command: \n" + commandLine);
           })
-          .on("progress", (progress) => {})
+          .on("progress", (progress) => {
+            if (reportProgress && progress.percent) {
+              reportProgress(progress.percent);
+            }
+          })
           .on("end", () => {
             dev.log(`Video has been created`);
             return resolve();
