@@ -108,10 +108,26 @@ module.exports = (function () {
         const infos = await utils.getVideoMetaData({
           path: temp_video_path,
         });
-        if (infos.duration) duration = infos.duration;
+        if (
+          infos.duration &&
+          typeof infos.duration === "number" &&
+          infos.duration > 0
+        ) {
+          duration = infos.duration;
+        } else {
+          dev.error(
+            `Invalid duration for video: ${temp_video_path}, duration: ${infos.duration}`
+          );
+          duration = undefined;
+        }
       } catch (err) {
-        dev.error(err);
+        dev.error(`Failed to get video metadata for ${temp_video_path}:`, err);
+        duration = undefined;
       }
+
+      dev.logverbose(
+        `Video duration for ${temp_video_path}: ${duration} seconds`
+      );
 
       return {
         video_path: temp_video_path,
@@ -123,6 +139,7 @@ module.exports = (function () {
       temp_videos_array,
       video_bitrate,
       full_path_to_new_video,
+      reportProgress,
     }) => {
       return new Promise(async (resolve, reject) => {
         dev.log("mergeAllVideos with transitions enabled");
@@ -141,10 +158,23 @@ module.exports = (function () {
 
         temp_videos_array.forEach(
           ({ duration, transition_in, transition_out }, index) => {
+            // Process videos even without valid duration
+            let effective_duration = duration;
+            if (!duration || typeof duration !== "number" || duration <= 0) {
+              dev.error(
+                `Invalid duration for video ${index}: ${duration}, processing anyway`
+              );
+              effective_duration = 2; // Use default for calculations but keep original undefined
+            }
+
             // Ensure transition_duration doesn't exceed video duration
             const safe_transition_duration = Math.min(
               transition_duration,
-              duration / 3
+              effective_duration / 3
+            );
+
+            dev.logverbose(
+              `Video ${index}: duration=${duration}s (effective=${effective_duration}s), safe_transition_duration=${safe_transition_duration}s`
             );
 
             // STEP 1: Normalize video/audio inputs to ensure consistency
@@ -214,15 +244,15 @@ module.exports = (function () {
               },
               {
                 filter: `trim=start=${safe_transition_duration}:end=${
-                  duration - safe_transition_duration
+                  effective_duration - safe_transition_duration
                 },setpts=PTS-STARTPTS`,
                 inputs: `v_mid_${index}`,
                 outputs: `vtrim_mid_${index}`,
               },
               {
                 filter: `trim=start=${
-                  duration - safe_transition_duration
-                }:end=${duration},setpts=PTS-STARTPTS`,
+                  effective_duration - safe_transition_duration
+                }:end=${effective_duration},setpts=PTS-STARTPTS`,
                 inputs: `v_end_${index}`,
                 outputs: `vtrim_end_${index}`,
               }
@@ -245,15 +275,15 @@ module.exports = (function () {
               },
               {
                 filter: `atrim=start=${safe_transition_duration}:end=${
-                  duration - safe_transition_duration
+                  effective_duration - safe_transition_duration
                 },asetpts=PTS-STARTPTS`,
                 inputs: `a_mid_${index}`,
                 outputs: `atrim_mid_${index}`,
               },
               {
                 filter: `atrim=start=${
-                  duration - safe_transition_duration
-                }:end=${duration},asetpts=PTS-STARTPTS`,
+                  effective_duration - safe_transition_duration
+                }:end=${effective_duration},asetpts=PTS-STARTPTS`,
                 inputs: `a_end_${index}`,
                 outputs: `atrim_end_${index}`,
               }

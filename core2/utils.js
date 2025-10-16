@@ -837,8 +837,20 @@ module.exports = (function () {
           if (err || typeof metadata === "undefined") return reject(err);
 
           let duration;
-          if (typeof metadata.format?.duration === "number")
+          if (
+            typeof metadata.format?.duration === "number" &&
+            metadata.format.duration > 0
+          ) {
             duration = +metadata.format.duration.toPrecision(3);
+            // Additional validation to ensure duration is reasonable
+            if (duration <= 0 || duration > 86400) {
+              // More than 24 hours seems unreasonable
+              dev.error(
+                `Suspicious duration value: ${duration} seconds for file: ${path}`
+              );
+              duration = undefined;
+            }
+          }
 
           let location;
           if (metadata.format?.tags?.location)

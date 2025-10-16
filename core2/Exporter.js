@@ -810,6 +810,14 @@ class Exporter {
           continue;
         }
 
+        // Process videos even without valid duration
+        if (!duration || typeof duration !== "number" || duration <= 0) {
+          dev.error(
+            `Invalid duration for media ${index}: ${duration}, processing anyway`
+          );
+          // Keep duration as undefined, but still process the video
+        }
+
         temp_videos_array.push({
           video_path,
           duration,
@@ -817,6 +825,15 @@ class Exporter {
           transition_out,
         });
       }
+
+      // Check if we have any videos to merge
+      if (temp_videos_array.length === 0) {
+        throw new Error("No videos to merge");
+      }
+
+      dev.logverbose(
+        `Processing ${temp_videos_array.length} videos for merging`
+      );
 
       this._notifyProgress(75);
 
