@@ -1318,6 +1318,9 @@ export default {
     makeGeomStyle({ feature, resolution, tip, is_selected }) {
       const styles = [];
 
+      // Get the stored z-index for this feature
+      const zIndex = feature.get("z_index") || 1; // Default to 1 if no z-index set
+
       // const line_dash = !is_selected ? undefined : [10, 5];
       let stroke_width = feature.get("stroke_width") || 3;
       resolution;
@@ -1345,6 +1348,7 @@ export default {
             width: stroke_width + 8,
             lineDash: [10, 5],
           }),
+          zIndex: zIndex, // Ensure selected features are always on top
         });
         styles.push(glowStyle);
 
@@ -1355,6 +1359,7 @@ export default {
             lineDash: [8, 4],
           }),
           image: this.makePointerStyle(),
+          zIndex: zIndex, // Even higher for the inner stroke
         });
         styles.push(innerStyle);
       }
@@ -1369,6 +1374,7 @@ export default {
           // lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
+        zIndex: zIndex, // Use the feature's z-index for proper layering
       });
       styles.push(style);
 
@@ -1536,6 +1542,15 @@ export default {
         var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
         new_feature.set("type_of_pin", "geometry");
+
+        // Assign a z-index higher than all existing features
+        const existingFeatures = this.draw_vector_source.getFeatures();
+        let maxZIndex = 0;
+        existingFeatures.forEach((feature) => {
+          const zIndex = feature.get("z_index") || 0;
+          if (zIndex > maxZIndex) maxZIndex = zIndex;
+        });
+        new_feature.set("z_index", maxZIndex + 1);
 
         this.$nextTick(() => {
           this.saveGeom();
@@ -1882,6 +1897,9 @@ export default {
         const id = f.getId();
         if (id) obj.id = id;
 
+        const z_index = f.get("z_index");
+        if (z_index) obj.z_index = z_index;
+
         acc.push(obj);
 
         return acc;
@@ -1966,16 +1984,24 @@ export default {
           if (p.fill_color) feature_cont.fill_color = p.fill_color;
           if (p.fill_opacity !== undefined)
             feature_cont.fill_opacity = p.fill_opacity;
+          if (p.z_index !== undefined) feature_cont.z_index = p.z_index;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
           else feature.setId(this.makeRandomIdForShape(p.type));
           feature.set("type_of_pin", "geometry");
 
+          // Set z-index if not present (for existing features)
+          if (!feature.get("z_index")) {
+            feature.set("z_index", features.length + 1); // Assign based on order in array
+          }
+
           features.push(feature);
         });
 
-        if (features.length > 0) this.draw_vector_source.addFeatures(features);
+        if (features.length > 0) {
+          this.draw_vector_source.addFeatures(features);
+        }
         this.draw_vector_source.changed();
 
         if (this.selected_feature_id && !this.selected_feature)
