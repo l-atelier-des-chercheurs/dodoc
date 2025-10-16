@@ -196,6 +196,21 @@
                 </small>
               </div> -->
 
+              <!-- Circle radius and area display -->
+              <div
+                v-if="selected_feature_type === 'Circle'"
+                class="_circleInfo"
+              >
+                <div class="u-metaField">
+                  <DLabel :str="$t('radius')" />
+                  <div>{{ selected_circle_radius }}</div>
+                </div>
+                <div class="u-metaField">
+                  <DLabel :str="$t('area')" />
+                  <div>{{ selected_circle_area }}</div>
+                </div>
+              </div>
+
               <ColorInput
                 :can_toggle="false"
                 :live_editing="true"
@@ -573,6 +588,29 @@ export default {
     selected_feature_type() {
       if (!this.selected_feature) return undefined;
       return this.selected_feature.getGeometry().getType();
+    },
+    selected_circle_radius() {
+      if (!this.selected_feature || this.selected_feature_type !== "Circle")
+        return undefined;
+      const circle = this.selected_feature.getGeometry();
+      const center = circle.getCenter();
+      const radiusInDegrees = circle.getRadius();
+      // Calculate actual radius in meters by measuring distance from center to edge
+      const edgePoint = [center[0] + radiusInDegrees, center[1]];
+      const radiusInMeters = this.calculateDistance(center, edgePoint);
+      return this.formatDistance(radiusInMeters);
+    },
+    selected_circle_area() {
+      if (!this.selected_feature || this.selected_feature_type !== "Circle")
+        return undefined;
+      const circle = this.selected_feature.getGeometry();
+      const center = circle.getCenter();
+      const radiusInDegrees = circle.getRadius();
+      // Calculate actual radius in meters by measuring distance from center to edge
+      const edgePoint = [center[0] + radiusInDegrees, center[1]];
+      const radiusInMeters = this.calculateDistance(center, edgePoint);
+      const areaInSquareMeters = Math.PI * radiusInMeters * radiusInMeters;
+      return this.formatArea(areaInSquareMeters);
     },
     has_module_content_to_show() {
       if (!this.clicked_location.module)
@@ -1548,6 +1586,15 @@ export default {
       }
     },
 
+    formatArea(areaInSquareMeters) {
+      if (areaInSquareMeters >= 1000000) {
+        const km2 = areaInSquareMeters / 1000000;
+        return `${this.formatDecimal(km2, 2)} km²`;
+      } else {
+        return `${Math.round(areaInSquareMeters)} m²`;
+      }
+    },
+
     formatDecimal(value, decimals = 1) {
       return Number(value).toLocaleString(this.$i18n.locale, {
         minimumFractionDigits: decimals,
@@ -2000,7 +2047,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris_clair);
-  font-size: 150%;
 
   flex: 1 1 320px;
 
@@ -2277,12 +2323,9 @@ export default {
 
 ._bottomMenu {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  text-align: center;
+  bottom: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) * 2.5);
   pointer-events: none;
-  padding: calc(var(--spacing) / 2);
 
   display: flex;
 
@@ -2312,6 +2355,20 @@ export default {
       border: 1px solid black;
       pointer-events: none;
     }
+  }
+}
+
+._circleInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 4);
+  // background: rgba(0, 0, 0, 0.05);
+  // border-radius: 3px;
+  // border: 1px solid rgba(0, 0, 0, 0.1);
+
+  .u-metaField {
+    margin-bottom: 0;
   }
 }
 </style>
