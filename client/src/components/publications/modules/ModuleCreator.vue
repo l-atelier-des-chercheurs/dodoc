@@ -331,8 +331,6 @@ export default {
         },
       });
 
-      debugger;
-
       this.createMosaic({ meta_filename });
 
       this.show_link_picker = false;

@@ -297,20 +297,20 @@ export default {
       };
       this.$eventHub.$on("task.status", updateProgress);
 
-      const checkIfEnded = ({ task_id, message }) => {
+      const checkIfEnded = ({ task_id, event, message }) => {
         if (task_id !== current_task_id) return;
         this.is_optimizing = false;
+
         this.$eventHub.$off("task.ended", checkIfEnded);
         this.$api.leave({ room: "task_" + current_task_id });
 
-        if (message.event === "completed") {
+        if (event === "completed") {
           this.progress_percent = 100;
           this.optimized_file = message.file;
-        } else if (message.event === "aborted") {
+        } else if (event === "aborted") {
           //
-        } else if (message.event === "failed") {
-          this.$alertify.delay(4000).error(message.event);
-          //
+        } else if (event === "failed") {
+          this.$alertify.delay(4000).error(message.info);
         }
       };
       this.$eventHub.$on("task.ended", checkIfEnded);
@@ -332,15 +332,15 @@ export default {
       this.$emit("close");
     },
     async replaceOriginal() {
-      const old_source_file = this.media.$media_filename;
-      const new_source_file = this.optimized_file.$media_filename;
+      const old_source_file = JSON.parse(JSON.stringify(this.media));
+      const new_source_file = JSON.parse(JSON.stringify(this.optimized_file));
 
       // set original media to new source file
       await this.$api.updateMeta({
         path: this.media.$path,
         new_meta: {
-          $media_filename: new_source_file,
-          $type: this.optimized_file.$type,
+          $media_filename: new_source_file.$media_filename,
+          $type: new_source_file.$type,
           $optimized: true,
         },
       });
@@ -348,14 +348,14 @@ export default {
       // CLEAN UP
       // set optimized media to old source file
       await this.$api.updateMeta({
-        path: this.optimized_file.$path,
+        path: old_source_file.$path,
         new_meta: {
-          $media_filename: old_source_file,
+          $media_filename: old_source_file.$media_filename,
         },
       });
       // remove optimized media
       await this.$api.deleteItem({
-        path: this.optimized_file.$path,
+        path: old_source_file.$path,
       });
 
       this.optimized_file = undefined;

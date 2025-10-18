@@ -733,100 +733,82 @@ module.exports = (function () {
       return new Promise(async (resolve, reject) => {
         const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
-        ffmpeg_cmd.input(source);
+        // Add input with trim options if specified
+        if (trim_start !== undefined && trim_end !== undefined) {
+          ffmpeg_cmd
+            .input(source)
+            .inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
+        } else {
+          ffmpeg_cmd.input(source);
+        }
 
-        try {
-          const { duration, streams } = await API.getVideoMetaData({
-            path: source,
-          });
-          if (trim_start !== undefined && trim_end !== undefined)
-            ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
-          else if (duration) ffmpeg_cmd.duration(duration);
+        // Configure video or audio based on requirements
+        if (video_bitrate === "no_video") {
+          // Audio-only export
+          ffmpeg_cmd.noVideo();
+          if (audio_bitrate !== "no_audio") {
+            ffmpeg_cmd
+              .withAudioCodec("aac")
+              .withAudioBitrate(audio_bitrate)
+              .audioFilter("aresample=44100");
+          }
+        } else {
+          // Video export (with optional audio)
+          const videoFilters = [];
+          if (image_width && image_height) {
+            videoFilters.push(
+              `scale=${image_width}:${image_height}:force_original_aspect_ratio=decrease`,
+              `pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2:black`
+            );
+          }
+          videoFilters.push("setsar=1", "fps=30", "format=yuv420p");
 
+          ffmpeg_cmd
+            .withVideoCodec("libx264")
+            .withVideoBitrate(video_bitrate)
+            .videoFilter(videoFilters);
+
+          // Configure audio for video export
           if (audio_bitrate === "no_audio") {
             ffmpeg_cmd.noAudio();
           } else {
-            if (streams?.some((s) => s.codec_type === "audio")) {
-              ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
-            } else ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
-
-            if (streams) {
-              const filter = API.makeFilterToPadMatchDurationAudioVideo({
-                streams,
-              });
-              if (filter) ffmpeg_cmd.addOptions([filter]);
-            }
+            ffmpeg_cmd
+              .withAudioCodec("aac")
+              .withAudioBitrate(audio_bitrate)
+              .audioFilter("aresample=44100");
           }
-        } catch (err) {
-          dev.error(err);
-          ffmpeg_cmd.input("anullsrc").inputFormat("lavfi");
         }
 
-        // if (streams?.some((s) => s.codec_type === "audio"))
-        // if (temp_video_volume) {
-        //   ffmpeg_cmd.addOptions(["-af volume=" + temp_video_volume + ",apad"]);
-        // } else {
-        // }
-
-        let flags = [
-          "-crf 22",
-          "-preset medium",
-          "-shortest",
-          "-bsf:v h264_mp4toannexb",
-          "-pix_fmt yuv420p",
-        ];
-        if (format === "mp4") {
-          flags.push("-movflags +faststart");
-          ffmpeg_cmd.toFormat("mp4");
-        } else if (format === "mpegts") {
-          ffmpeg_cmd.toFormat("mpegts");
-        }
-
+        // Set output format and options
         if (video_bitrate === "no_video") {
-          ffmpeg_cmd.noVideo();
-        } else {
-          ffmpeg_cmd.withVideoCodec("libx264").withVideoBitrate(video_bitrate);
-
-          // Combine all video filters into a single array to avoid reinitializing filters
-          const videoFilters = ["setsar=1/1"];
-          if (image_width && image_height) {
-            videoFilters.push(
-              `scale=w=${image_width}:h=${image_height}:force_original_aspect_ratio=1,pad=${image_width}:${image_height}:(ow-iw)/2:(oh-ih)/2`
-            );
-          }
-          ffmpeg_cmd.videoFilter(videoFilters);
+          // Audio-only export - use ADTS AAC format
+          ffmpeg_cmd.toFormat("adts");
+        } else if (format === "mp4") {
+          ffmpeg_cmd
+            .toFormat("mp4")
+            .addOptions(["-movflags +faststart", "-preset fast", "-crf 23"]);
+        } else if (format === "mpegts") {
+          ffmpeg_cmd.toFormat("mpegts").addOptions(["-preset fast", "-crf 23"]);
         }
 
-        // https://stackoverflow.com/a/70899710
-        let totalTime;
+        // Execute
         ffmpeg_cmd
-          .native()
-          .outputFPS(30)
-          .addOptions(flags)
           .on("start", (commandLine) => {
-            dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
-          })
-          .on("codecData", (data) => {
-            if (data.duration && data.duration !== "N/A")
-              totalTime = parseInt(data.duration.replace(/:/g, ""));
+            dev.logverbose("FFmpeg command: " + commandLine);
           })
           .on("progress", (progress) => {
-            if (reportProgress) {
-              const time = parseInt(progress.timemark.replace(/:/g, ""));
-              if (!totalTime) return reportProgress(time);
-              if (time < 0 || time > totalTime) return;
-              const percent = (time / totalTime) * 100;
-              reportProgress(percent);
+            if (reportProgress && progress.percent) {
+              reportProgress(progress.percent);
             }
           })
           .on("end", () => {
-            return resolve();
+            dev.logverbose("Video conversion completed");
+            resolve();
           })
           .on("error", (err, stdout, stderr) => {
-            dev.error("An error happened: " + err.message);
-            dev.error("ffmpeg standard output:\n" + stdout);
-            dev.error("ffmpeg standard error:\n" + stderr);
-            return reject(err);
+            dev.error("FFmpeg error: " + err.message);
+            dev.error("stderr: " + stderr);
+            reject(err);
           })
           .save(destination);
       });

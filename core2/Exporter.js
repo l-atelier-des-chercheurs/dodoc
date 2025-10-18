@@ -266,10 +266,11 @@ class Exporter {
       });
     }
   }
-  _notifyEnded(message) {
+  _notifyEnded({ event, ...message }) {
     dev.logverbose("Task " + this.id + " end");
     notifier.emit("taskEnded", "task_" + this.id, {
       task_id: this.id,
+      event,
       message,
     });
   }
@@ -765,30 +766,21 @@ class Exporter {
         const transition_in = media.transition_in;
         const transition_out = media.transition_out;
 
+        // Check if the media file exists before processing
+        if (!(await fs.pathExists(media_full_path))) {
+          const error_msg = `Missing media file at position ${
+            index + 1
+          }. Please check if the file exists and try again.`;
+          dev.error(
+            `Missing media file at position ${index + 1}: ${media_full_path}`
+          );
+          throw new Error(error_msg);
+        }
+
         let video_path, duration;
 
-        const that = this;
-        const total_number_of_items_to_process =
-          this.instructions.montage.length;
-        // 50
-        const intval = 100 / total_number_of_items_to_process;
-        const reportProgress = (ffmpeg_progress) => {
-          let progress_percent = Math.round(
-            utils.remap(
-              ffmpeg_progress,
-              0,
-              100,
-              index * intval,
-              index * intval + intval
-            )
-          );
-          progress_percent = Math.round(
-            utils.remap(progress_percent, 0, 100, 15, 75)
-          );
-          that._notifyProgress(progress_percent);
-        };
-
         if (media_type === "image") {
+          // Still need to prepare images as videos
           ({ video_path, duration } = await tasks.prepareImageForMontageAndWeb({
             media_full_path,
             full_path_to_folder_in_cache,
@@ -798,14 +790,33 @@ class Exporter {
             image_duration: media.image_duration,
           }));
         } else if (media_type === "video") {
-          ({ video_path, duration } = await tasks.prepareVideoForMontageAndWeb({
-            media_full_path,
-            full_path_to_folder_in_cache,
-            output_width,
-            output_height,
-            video_bitrate,
-            reportProgress,
-          }));
+          // Use original video path directly - no preparation needed
+          video_path = media_full_path;
+
+          // Get duration from original video
+          try {
+            const infos = await utils.getVideoMetaData({
+              path: media_full_path,
+            });
+            if (
+              infos.duration &&
+              typeof infos.duration === "number" &&
+              infos.duration > 0
+            ) {
+              duration = infos.duration;
+            } else {
+              dev.error(
+                `Invalid duration for video: ${media_full_path}, duration: ${infos.duration}`
+              );
+              duration = undefined;
+            }
+          } catch (err) {
+            dev.error(
+              `Failed to get video metadata for ${media_full_path}:`,
+              err
+            );
+            duration = undefined;
+          }
         } else {
           continue;
         }
@@ -850,12 +861,9 @@ class Exporter {
         temp_videos_array,
         video_bitrate,
         full_path_to_new_video,
+        output_width,
+        output_height,
         reportProgress,
-      });
-
-      // cleanup temp
-      temp_videos_array.forEach(async (e) => {
-        await fs.remove(e.video_path);
       });
 
       dev.logverbose("Video created");

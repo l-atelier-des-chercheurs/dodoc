@@ -139,32 +139,36 @@ module.exports = (function () {
       temp_videos_array,
       video_bitrate,
       full_path_to_new_video,
+      output_width,
+      output_height,
       reportProgress,
     }) => {
       return new Promise(async (resolve, reject) => {
-        dev.log("mergeAllVideos with transitions enabled");
+        dev.log(
+          "mergeAllVideos - direct merge with normalization and transitions"
+        );
 
         const ffmpeg_cmd = ffmpegTracker.createTrackedFfmpeg();
 
         // Add all inputs
-        temp_videos_array.map(({ video_path }) => {
+        temp_videos_array.forEach(({ video_path }) => {
           ffmpeg_cmd.addInput(video_path);
         });
 
-        let complexFilters = [];
-        let all_video_outputs = [];
-        let all_audio_outputs = [];
+        // Build normalization and transition filters
+        const normalizationFilters = [];
+        const concatInputs = [];
         const transition_duration = 0.2;
 
         temp_videos_array.forEach(
           ({ duration, transition_in, transition_out }, index) => {
-            // Process videos even without valid duration
+            // Use default duration for videos without valid duration
             let effective_duration = duration;
             if (!duration || typeof duration !== "number" || duration <= 0) {
               dev.error(
-                `Invalid duration for video ${index}: ${duration}, processing anyway`
+                `Invalid duration for video ${index}: ${duration}, using default duration`
               );
-              effective_duration = 2; // Use default for calculations but keep original undefined
+              effective_duration = 2; // Use default for calculations
             }
 
             // Ensure transition_duration doesn't exceed video duration
@@ -174,20 +178,20 @@ module.exports = (function () {
             );
 
             dev.logverbose(
-              `Video ${index}: duration=${duration}s (effective=${effective_duration}s), safe_transition_duration=${safe_transition_duration}s`
+              `Video ${index}: duration=${effective_duration}s, safe_transition_duration=${safe_transition_duration}s`
             );
 
             // STEP 1: Normalize video/audio inputs to ensure consistency
-            complexFilters.push(
+            normalizationFilters.push(
               {
                 filter: "scale",
-                options: "1920:1080:force_original_aspect_ratio=decrease",
+                options: `${output_width}:${output_height}:force_original_aspect_ratio=decrease`,
                 inputs: `${index}:v:0`,
                 outputs: `v_scaled_${index}`,
               },
               {
                 filter: "pad",
-                options: "1920:1080:(ow-iw)/2:(oh-ih)/2",
+                options: `${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2:black`,
                 inputs: `v_scaled_${index}`,
                 outputs: `v_padded_${index}`,
               },
@@ -211,7 +215,7 @@ module.exports = (function () {
               }
             );
 
-            complexFilters.push(
+            normalizationFilters.push(
               {
                 filter: "aresample",
                 options: "44100",
@@ -220,14 +224,14 @@ module.exports = (function () {
               },
               {
                 filter: "aformat",
-                options: "channel_layouts=stereo",
+                options: "channel_layouts=stereo:sample_fmts=s16",
                 inputs: `a_resampled_${index}`,
                 outputs: `a_normalized_${index}`,
               }
             );
 
             // STEP 2: Split normalized streams into 3 parts for transitions
-            complexFilters.push(
+            normalizationFilters.push(
               {
                 filter: "split=3",
                 inputs: `v_normalized_${index}`,
@@ -258,7 +262,7 @@ module.exports = (function () {
               }
             );
 
-            complexFilters.push(
+            normalizationFilters.push(
               {
                 filter: "asplit=3",
                 inputs: `a_normalized_${index}`,
@@ -293,7 +297,7 @@ module.exports = (function () {
             if (index === 0) {
               // First video - fade in if requested
               if (transition_in === "fade") {
-                complexFilters.push(
+                normalizationFilters.push(
                   {
                     filter: "fade",
                     options: {
@@ -315,16 +319,20 @@ module.exports = (function () {
                     outputs: `afade_start_${index}`,
                   }
                 );
-                all_video_outputs.push(`fadein_start_${index}`);
-                all_audio_outputs.push(`afade_start_${index}`);
+                concatInputs.push(
+                  `fadein_start_${index}`,
+                  `afade_start_${index}`
+                );
               } else {
-                all_video_outputs.push(`vtrim_start_${index}`);
-                all_audio_outputs.push(`atrim_start_${index}`);
+                concatInputs.push(
+                  `vtrim_start_${index}`,
+                  `atrim_start_${index}`
+                );
               }
             } else {
               // Not the first video - check for crossfade
               if (transition_in === "fade") {
-                complexFilters.push(
+                normalizationFilters.push(
                   // Video crossfade
                   {
                     filter: "format",
@@ -393,25 +401,27 @@ module.exports = (function () {
                     outputs: `acrossfade_${index}`,
                   }
                 );
-                all_video_outputs.push(`vcrossfade_${index}`);
-                all_audio_outputs.push(`acrossfade_${index}`);
+                concatInputs.push(`vcrossfade_${index}`, `acrossfade_${index}`);
               } else {
                 // No transition - add previous end and current start separately
-                all_video_outputs.push(`vtrim_end_${index - 1}`);
-                all_audio_outputs.push(`atrim_end_${index - 1}`);
-                all_video_outputs.push(`vtrim_start_${index}`);
-                all_audio_outputs.push(`atrim_start_${index}`);
+                concatInputs.push(
+                  `vtrim_end_${index - 1}`,
+                  `atrim_end_${index - 1}`
+                );
+                concatInputs.push(
+                  `vtrim_start_${index}`,
+                  `atrim_start_${index}`
+                );
               }
             }
 
             // Always add the middle section
-            all_video_outputs.push(`vtrim_mid_${index}`);
-            all_audio_outputs.push(`atrim_mid_${index}`);
+            concatInputs.push(`vtrim_mid_${index}`, `atrim_mid_${index}`);
 
             // Last video - fade out if requested
             if (index === temp_videos_array.length - 1) {
               if (transition_out === "fade") {
-                complexFilters.push(
+                normalizationFilters.push(
                   {
                     filter: "fade",
                     options: {
@@ -433,42 +443,31 @@ module.exports = (function () {
                     outputs: `afadeout_end_${index}`,
                   }
                 );
-                all_video_outputs.push(`fadeout_end_${index}`);
-                all_audio_outputs.push(`afadeout_end_${index}`);
+                concatInputs.push(
+                  `fadeout_end_${index}`,
+                  `afadeout_end_${index}`
+                );
               } else {
-                all_video_outputs.push(`vtrim_end_${index}`);
-                all_audio_outputs.push(`atrim_end_${index}`);
+                concatInputs.push(`vtrim_end_${index}`, `atrim_end_${index}`);
               }
             }
           }
         );
 
         // STEP 4: Concat all segments
-        complexFilters.push(
-          {
-            filter: "concat",
-            options: {
-              n: all_video_outputs.length,
-              v: 1,
-              a: 0,
-            },
-            inputs: all_video_outputs,
-            outputs: "outv",
+        normalizationFilters.push({
+          filter: "concat",
+          options: {
+            n: concatInputs.length / 2, // Divide by 2 because we have video and audio pairs
+            v: 1,
+            a: 1,
           },
-          {
-            filter: "concat",
-            options: {
-              n: all_audio_outputs.length,
-              v: 0,
-              a: 1,
-            },
-            inputs: all_audio_outputs,
-            outputs: "outa",
-          }
-        );
+          inputs: concatInputs,
+          outputs: "[outv][outa]",
+        });
 
         ffmpeg_cmd
-          .complexFilter(complexFilters)
+          .complexFilter(normalizationFilters)
           .addOptions(["-map [outv]", "-map [outa]"])
           .withVideoCodec("libx264")
           .withVideoBitrate(video_bitrate)
