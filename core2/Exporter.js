@@ -846,13 +846,13 @@ class Exporter {
         `Processing ${temp_videos_array.length} videos for merging`
       );
 
-      this._notifyProgress(75);
+      this._notifyProgress(35);
 
       const that = this;
       const reportProgress = (ffmpeg_progress) => {
         // Map ffmpeg progress (0-100) to the final stage of video assemblage (75-95)
         const progress_percent = Math.round(
-          utils.remap(ffmpeg_progress, 0, 100, 75, 95)
+          utils.remap(ffmpeg_progress, 0, 100, 36, 94)
         );
         that._notifyProgress(progress_percent);
       };
