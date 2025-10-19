@@ -909,7 +909,7 @@ class Exporter {
         task: "convertImage",
       },
       {
-        exts: [".flv", ".mov", ".avi", ".webm", ".mp4"],
+        exts: [".flv", ".mov", ".avi", ".webm", ".mp4", ".mkv", ".wmv"],
         task: "convertVideo",
       },
       {
