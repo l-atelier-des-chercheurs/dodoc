@@ -115,18 +115,17 @@ export default {
 
       this.$eventHub.$on("task.status", checkProgress);
 
-      const checkIfEnded = ({ task_id, message }) => {
+      const checkIfEnded = ({ task_id, event, message }) => {
         if (task_id !== current_task_id) return;
         this.$eventHub.$off("task.ended", checkIfEnded);
         this.$api.leave({ room: "task_" + current_task_id });
-        if (message.event === "completed") {
+        if (event === "completed") {
           this.created_doc = message.file;
-        } else if (message.event === "aborted") {
+        } else if (event === "aborted") {
           this.fail_message = this.$t("failed_to_export");
           //
-        } else if (message.event === "failed") {
-          this.fail_message =
-            this.$t("failed_to_export") + " : " + message.info;
+        } else if (event === "failed") {
+          this.fail_message = this.$t("failed_to_export") + " : " + message;
         }
         this.is_exporting = false;
       };

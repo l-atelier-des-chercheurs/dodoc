@@ -200,6 +200,11 @@ export default {
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:
     "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+  optimization_in_progress: "Optimization in progress...",
+  optimization_completed: "Optimization completed",
+  optimization_started: "Optimization started",
+  optimization_aborted: "Optimization aborted",
+  optimization_failed: "Optimization failed",
 
   from_the_first_media: "From the first media",
 
@@ -586,6 +591,7 @@ export default {
   add_category: "Add category",
 
   opacity: "Opacity",
+  fill_opacity: "Fill opacity",
   page_spreads: "Facing pages",
   page: "Page",
   page_content: "Page content…",
@@ -1434,4 +1440,6 @@ export default {
   update_available_go_to_dodocfr:
     "An update is available (version {version}). Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> to download it.",
   up_to_date: "You are using the latest version",
+  radius: "Radius",
+  area: "Area",
 };

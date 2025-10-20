@@ -119,21 +119,41 @@ module.exports = (function () {
       reportProgress,
     }) {
       try {
-        if (video_bitrate === "no_video") destination = destination + ".aac";
-        else destination = destination + ".mp4";
+        if (video_bitrate === "no_video") {
+          // For audio-only, just extract audio and rename to .aac
+          const audioDestination = destination + ".aac";
 
-        await utils.convertVideoToStandardFormat({
-          source,
-          destination,
-          image_width,
-          image_height,
-          video_bitrate,
-          audio_bitrate,
-          trim_start,
-          trim_end,
-          reportProgress,
-        });
-        return destination;
+          await utils.convertVideoToStandardFormat({
+            source,
+            destination: audioDestination,
+            image_width,
+            image_height,
+            video_bitrate,
+            audio_bitrate,
+            trim_start,
+            trim_end,
+            reportProgress,
+          });
+
+          return audioDestination;
+        } else {
+          // For video, use normal processing
+          const videoDestination = destination + ".mp4";
+
+          await utils.convertVideoToStandardFormat({
+            source,
+            destination: videoDestination,
+            image_width,
+            image_height,
+            video_bitrate,
+            audio_bitrate,
+            trim_start,
+            trim_end,
+            reportProgress,
+          });
+
+          return videoDestination;
+        }
       } catch (err) {
         dev.error(err);
         throw err;

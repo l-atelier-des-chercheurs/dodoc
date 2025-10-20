@@ -382,8 +382,8 @@ export default function () {
       taskStatus({ task_id, progress }) {
         this.$eventHub.$emit("task.status", { task_id, progress });
       },
-      taskEnded({ task_id, message }) {
-        this.$eventHub.$emit("task.ended", { task_id, message });
+      taskEnded({ task_id, event, message }) {
+        this.$eventHub.$emit("task.ended", { task_id, event, message });
       },
       async restartDodoc() {
         return await this.$axios.post(`_admin`);
