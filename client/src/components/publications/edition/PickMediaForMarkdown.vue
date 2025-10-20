@@ -196,7 +196,6 @@ export default {
 
       source_medias.map((m) => {
         if (m.$type === "text") {
-          debugger;
           const md_content = this.turnHtmlToMarkdown(m.$content);
           html.push(md_content);
           return;

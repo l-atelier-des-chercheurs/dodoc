@@ -63,9 +63,7 @@
           <button
             class="u-button u-button_icon _viewpaneToggle _navBtn"
             @click="toggleViewpane"
-            :title="
-              viewpane_visible ? $t('hide_viewpane') : $t('show_viewpane')
-            "
+            :title="viewpane_visible ? $t('hide') : $t('show')"
           >
             <b-icon
               :icon="

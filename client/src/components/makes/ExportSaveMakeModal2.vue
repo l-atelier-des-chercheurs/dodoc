@@ -281,12 +281,12 @@ export default {
       };
       this.$eventHub.$on("task.status", updateProgress);
 
-      const checkIfEnded = ({ task_id, message }) => {
+      const checkIfEnded = ({ task_id, event, message }) => {
         if (task_id !== current_task_id) return;
         this.$eventHub.$off("task.ended", checkIfEnded);
         this.$api.leave({ room: "task_" + current_task_id });
 
-        if (message.event === "completed") {
+        if (event === "completed") {
           this.created_video = message.file;
 
           //
@@ -294,10 +294,10 @@ export default {
             const video = this.$el.querySelector("video");
             if (video) video.volume = 1;
           });
-        } else if (message.event === "aborted") {
+        } else if (event === "aborted") {
           //
-        } else if (message.event === "failed") {
-          message.info;
+        } else if (event === "failed") {
+          this.$alertify.delay(4000).error(message.info);
         }
 
         this.progress_percent = 100;

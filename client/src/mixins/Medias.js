@@ -318,10 +318,17 @@ export default {
         ".wma",
         ".aif",
         ".flac",
+        ".ac3",
+        ".opus",
+        ".m4r",
+        ".m4a",
+        ".alac",
 
         ".flv",
         ".mov",
         ".avi",
+        ".mkv",
+        ".wmv",
       ];
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
@@ -337,7 +344,6 @@ export default {
         ".png",
 
         ".wav",
-        ".m4a",
         ".ogg",
         ".mp3",
         ".aac",

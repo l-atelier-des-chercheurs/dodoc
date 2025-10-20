@@ -1282,7 +1282,8 @@ module.exports = (function () {
       });
       notifier.emit("taskEnded", task_id, {
         task_id,
-        message: err,
+        event: "failed",
+        message: err.message,
       });
     }
   }
