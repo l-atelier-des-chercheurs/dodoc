@@ -200,6 +200,11 @@ export default {
   convert_instructions: "Convert to standard format",
   optimize_resize_instructions:
     "Convert to standard format, trim the beginning or the end, remove the audio track or modify the quality to reduce the file size.",
+  optimization_in_progress: "Optimization in progress...",
+  optimization_completed: "Optimization completed",
+  optimization_started: "Optimization started",
+  optimization_aborted: "Optimization aborted",
+  optimization_failed: "Optimization failed",
 
   from_the_first_media: "From the first media",
 

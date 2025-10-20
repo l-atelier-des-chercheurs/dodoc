@@ -816,6 +816,11 @@ export default {
   convert_instructions: "Convertir vers un format standard",
   optimize_resize_instructions:
     "Convertir vers un format standard, recouper le début ou la fin, supprimer la piste sonore ou modifier la qualité pour alléger le fichier.",
+  optimization_in_progress: "Optimisation en cours...",
+  optimization_completed: "Optimisation terminée",
+  optimization_started: "Optimisation démarrée",
+  optimization_aborted: "Optimisation annulée",
+  optimization_failed: "Échec de l'optimisation",
   from_the_first_media: "À partir du premier média",
 
   name_of_stream: "Nom du flux",
