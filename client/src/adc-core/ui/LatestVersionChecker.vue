@@ -19,13 +19,11 @@
         <span v-html="$t('check_out_dodocfr')"></span>
       </div>
       <div v-else-if="latest_version_info.version">
-        <template
-          v-if="latest_version_info.version === $root.app_infos.version"
-        >
+        <template v-if="isUpToDate">
           <b-icon icon="check-circle-fill" />
           {{ $t("up_to_date") }}
         </template>
-        <template v-else>
+        <template v-else-if="isNewerVersionAvailable">
           <b-icon icon="exclamation-triangle-fill" />&nbsp;
           <span
             v-html="
@@ -34,6 +32,14 @@
               })
             "
           ></span>
+        </template>
+        <template v-else>
+          <b-icon icon="info-circle-fill" />&nbsp;
+          {{
+            $tc("running_newer_version", null, {
+              version: latest_version_info.version,
+            })
+          }}
         </template>
       </div>
     </template>
@@ -59,8 +65,48 @@ export default {
   mounted() {
     this.is_checking = false;
   },
-
+  computed: {
+    current_version() {
+      return this.$root.app_infos.version;
+    },
+    isUpToDate() {
+      if (!this.latest_version_info.version) return false;
+      return (
+        this.compareSemver(
+          this.current_version,
+          this.latest_version_info.version
+        ) === 0
+      );
+    },
+    isNewerVersionAvailable() {
+      if (!this.latest_version_info.version) return false;
+      return (
+        this.compareSemver(
+          this.current_version,
+          this.latest_version_info.version
+        ) < 0
+      );
+    },
+    isRunningNewerVersion() {
+      if (!this.latest_version_info.version) return false;
+      return (
+        this.compareSemver(
+          this.current_version,
+          this.latest_version_info.version
+        ) > 0
+      );
+    },
+  },
   methods: {
+    compareSemver(a, b) {
+      const parse = (v) => v.split(".").map(Number);
+      const [a1, a2, a3] = parse(a);
+      const [b1, b2, b3] = parse(b);
+
+      if (a1 !== b1) return a1 - b1;
+      if (a2 !== b2) return a2 - b2;
+      return a3 - b3;
+    },
     async checkLatestVersion() {
       this.is_checking = true;
       this.latest_version_info.loading = true;
