@@ -1406,7 +1406,15 @@ export default {
   failed_to_find_block_line: "Failed to find block line",
   folder_copied: "Folder copied",
   import_image_from_url_failed: "Failed to import image from URL",
-  "importer depuis un site": "Import from a site",
+  from_website: "From a website",
+  resources: "Resources",
+  free_resources: "Free resources",
+  resources_picker: "Resources Picker",
+  loading_resources: "Loading resources…",
+  downloading: "Downloading…",
+  failed_to_load_resources: "Failed to load resources",
+  resource_imported_successfully: "Resource imported successfully",
+  failed_to_import_resource: "Failed to import resource",
   layout: "Layout",
   level: "Level",
   media_type_not_handled: "Media type not handled",
@@ -1440,6 +1448,8 @@ export default {
   update_available_go_to_dodocfr:
     "An update is available (version {version}). Please go to <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> to download it.",
   up_to_date: "You are using the latest version",
+  running_newer_version:
+    "You are running a newer version than the latest version available ({version}).",
   radius: "Radius",
   area: "Area",
 };

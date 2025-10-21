@@ -1473,7 +1473,16 @@ export default {
   disconnect_warning: "Avertissement de déconnexion",
   failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
   folder_copied: "Dossier copié",
-  "importer depuis un site": "Importer depuis un site",
+  from_website: "Depuis un site",
+  resources: "Ressources",
+  free_resources: "Ressources libres",
+  resources_picker: "Sélecteur de ressources",
+  loading_resources: "Chargement des ressources…",
+  downloading: "Téléchargement…",
+  failed_to_load_resources: "Échec du chargement des ressources",
+  resource_imported_successfully: "Ressource importée avec succès",
+  failed_to_import_resource: "Échec de l'importation de la ressource",
+
   media_type_not_handled: "Type de média non géré",
   no_padding: "Pas de remplissage",
   no_page_selected: "Aucune page sélectionnée",
@@ -1499,6 +1508,8 @@ export default {
   update_available_go_to_dodocfr:
     "Une mise à jour est disponible (version {version}). Rendez-vous sur <a href='https://dodoc.fr' target='_blank'>dodoc.fr</a> pour la télécharger.",
   up_to_date: "Vous utilisez la dernière version",
+  running_newer_version:
+    "Vous utilisez une version plus récente que la dernière version disponible ({version}).",
   radius: "Rayon",
   area: "Surface",
 };

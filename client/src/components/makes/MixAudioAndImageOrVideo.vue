@@ -59,6 +59,17 @@
               :media_type_to_pick="'audio'"
             />
             {{ $t("or") }}
+            <div class="_resourcesPickerBtn">
+              <button
+                type="button"
+                class="u-button u-button_orange"
+                @click="show_resources_picker = true"
+              >
+                <b-icon icon="collection" />
+                {{ $t("resources") }}
+              </button>
+            </div>
+            {{ $t("or") }}
             <div class="_liveDubbingBtn">
               <button
                 type="button"
@@ -146,18 +157,32 @@
       :reference_media="reference_media"
       @close="show_render_modal = false"
     />
+
+    <ResourcesPicker
+      v-if="show_resources_picker"
+      :project_path="project_path"
+      :pick_from_types="['audio']"
+      @pickResources="handleResourcesPick"
+      @close="show_resources_picker = false"
+    />
   </div>
 </template>
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
 import CaptureView from "@/adc-core/capture/CaptureView.vue";
+import ResourcesPicker from "@/components/publications/modules/ResourcesPicker.vue";
 
 export default {
   props: {
     make: Object,
   },
-  components: { SingleBaseMediaPicker, ExportSaveMakeModal2, CaptureView },
+  components: {
+    SingleBaseMediaPicker,
+    ExportSaveMakeModal2,
+    CaptureView,
+    ResourcesPicker,
+  },
   data() {
     return {
       show_render_modal: false,
@@ -167,6 +192,7 @@ export default {
 
       record_audio_live: false,
       stop_recording_with_video: true,
+      show_resources_picker: false,
     };
   },
 
@@ -252,6 +278,14 @@ export default {
         new_meta,
       });
       this.record_audio_live = false;
+    },
+    async handleResourcesPick(resources) {
+      if (resources && resources.length > 0) {
+        const selectedResource = resources[0];
+        const meta_filename = this.getFilename(selectedResource.$path);
+        await this.setAudioMetaFilename(meta_filename);
+        this.show_resources_picker = false;
+      }
     },
     getMediaFromFilename(meta_filename_in_project) {
       if (meta_filename_in_project)
@@ -373,6 +407,9 @@ export default {
   gap: calc(var(--spacing) * 1);
 }
 ._liveDubbingBtn {
+  padding: calc(var(--spacing) / 4);
+}
+._resourcesPickerBtn {
   padding: calc(var(--spacing) / 4);
 }
 </style>
