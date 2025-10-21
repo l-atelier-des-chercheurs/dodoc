@@ -11,7 +11,7 @@
         <div class="_spacer" :key="'mc_' + index">
           <ModuleCreator
             :publication_path="make.$path"
-            :types_available="['capture', 'import']"
+            :types_available="['capture', 'import', 'resources']"
             :pick_from_types="['image', 'video']"
             :available_modes="['photo', 'video']"
             :context="'montage'"
@@ -49,7 +49,7 @@
       <ModuleCreator
         :publication_path="make.$path"
         :start_collapsed="false"
-        :types_available="['capture', 'import']"
+        :types_available="['capture', 'import', 'resources']"
         :pick_from_types="['image', 'video']"
         :available_modes="['photo', 'video']"
         :context="'montage'"

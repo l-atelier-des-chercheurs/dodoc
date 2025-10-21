@@ -48,6 +48,24 @@
         <button
           type="button"
           class="u-button u-button_bleuvert"
+          v-if="types_available.includes('resources')"
+          @click="show_resources_picker = true"
+        >
+          <b-icon icon="collection" style="font-size: var(--icon-size)" />
+          <template v-if="show_labels">{{ $t("resources") }}</template>
+        </button>
+        <ResourcesPicker
+          v-if="show_resources_picker"
+          :project_path="project_path"
+          :select_mode="select_mode"
+          :pick_from_types="pick_from_types"
+          @pickResources="pickResources"
+          @close="show_resources_picker = false"
+        />
+
+        <button
+          type="button"
+          class="u-button u-button_bleuvert"
           v-if="types_available.includes('write')"
           @click="createText('')"
         >
@@ -137,6 +155,7 @@
 <script>
 import CaptureModal from "@/components/publications/CaptureModal.vue";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import ResourcesPicker from "@/components/publications/modules/ResourcesPicker.vue";
 import EmbedPicker from "@/adc-core/modals/EmbedPicker.vue";
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
@@ -155,7 +174,15 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["capture", "import", "write", "embed", "table", "shapes"],
+      default: () => [
+        "capture",
+        "import",
+        "resources",
+        "write",
+        "embed",
+        "table",
+        "shapes",
+      ],
     },
     start_collapsed: {
       type: Boolean,
@@ -169,6 +196,7 @@ export default {
   components: {
     CaptureModal,
     MediaPicker,
+    ResourcesPicker,
     EmbedPicker,
     ImportFileZone,
   },
@@ -179,6 +207,7 @@ export default {
       show_media_picker: false,
       show_file_picker: false,
       show_link_picker: false,
+      show_resources_picker: false,
 
       files_to_import: [],
 
@@ -248,6 +277,13 @@ export default {
     pickMedias(medias) {
       const path_to_source_media_metas = medias.map((m) => m.$path);
       this.createMosaic({ path_to_source_media_metas });
+    },
+    pickResources(resources) {
+      // const path_to_source_media_metas = resources.map((r) => r.$path);
+      // this.createMosaic({ path_to_source_media_metas });
+      const path_to_source_media_metas = resources.map((r) => r.$path);
+      this.createMosaic({ path_to_source_media_metas });
+      this.show_resources_picker = false;
     },
     async mediaDropped({ $path }) {
       // todo multiple cases here : if drag/drop media already in a publication, drag drop media from library

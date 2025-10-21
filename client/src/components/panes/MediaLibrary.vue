@@ -21,8 +21,7 @@
             class="u-button u-button_bleumarine"
             @click="show_url_picker = true"
           >
-            <b-icon icon="globe" />
-            {{ $t("from_website") }}
+            <b-icon icon="globe" />{{ $t("from_website") }}
           </button>
           <UrlPicker
             v-if="show_url_picker"
@@ -31,10 +30,13 @@
             @close="show_url_picker = false"
           />
         </div>
-        <div class="_importCreateTextButtons--createText">
+        <!-- only show inside collect pane -->
+        <div
+          v-if="!show_only_media_of_types"
+          class="_importCreateTextButtons--createText"
+        >
           <button class="u-button u-button_bleuvert" @click="createText">
-            <b-icon icon="fonts" />
-            {{ $t("add_text") }}
+            <b-icon icon="fonts" />{{ $t("add_text") }}
           </button>
         </div>
       </div>

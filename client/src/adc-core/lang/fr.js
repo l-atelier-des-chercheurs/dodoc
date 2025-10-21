@@ -1475,6 +1475,12 @@ export default {
   folder_copied: "Dossier copié",
   from_website: "Depuis un site",
   resources: "Ressources",
+  resources_picker: "Sélecteur de ressources",
+  loading_resources: "Chargement des ressources…",
+  downloading: "Téléchargement…",
+  failed_to_load_resources: "Échec du chargement des ressources",
+  resource_imported_successfully: "Ressource importée avec succès",
+  failed_to_import_resource: "Échec de l'importation de la ressource",
 
   media_type_not_handled: "Type de média non géré",
   no_padding: "Pas de remplissage",
