@@ -22,7 +22,7 @@
             @click="show_url_picker = true"
           >
             <b-icon icon="globe" />
-            {{ $t("importer depuis un site") }}
+            {{ $t("from_website") }}
           </button>
           <UrlPicker
             v-if="show_url_picker"

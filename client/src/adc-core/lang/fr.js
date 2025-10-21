@@ -1473,7 +1473,9 @@ export default {
   disconnect_warning: "Avertissement de déconnexion",
   failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
   folder_copied: "Dossier copié",
-  "importer depuis un site": "Importer depuis un site",
+  from_website: "Depuis un site",
+  resources: "Ressources",
+
   media_type_not_handled: "Type de média non géré",
   no_padding: "Pas de remplissage",
   no_page_selected: "Aucune page sélectionnée",
