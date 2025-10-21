@@ -1,6 +1,6 @@
 <template>
   <BaseModal2
-    :title="$t('resources_picker')"
+    :title="$t('free_resources')"
     size="large"
     @close="$emit('close')"
   >
@@ -111,7 +111,7 @@
           <div
             v-for="(audio, index) in resources.sons"
             :key="`aud-${index}`"
-            class="u-card2 _resourceCard"
+            class="_resourceCard"
           >
             <div class="_preview">
               <audio :src="getFullUrl(audio.src)" controls preload="metadata" />
@@ -384,7 +384,7 @@ export default {
     border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
-    background: var(--color-background-secondary);
+    background: var(--c-gris_clair);
 
     ._preview {
       aspect-ratio: 16/9;

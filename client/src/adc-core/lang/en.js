@@ -1408,6 +1408,7 @@ export default {
   import_image_from_url_failed: "Failed to import image from URL",
   from_website: "From a website",
   resources: "Resources",
+  free_resources: "Free resources",
   resources_picker: "Resources Picker",
   loading_resources: "Loading resources…",
   downloading: "Downloading…",

@@ -1475,6 +1475,7 @@ export default {
   folder_copied: "Dossier copié",
   from_website: "Depuis un site",
   resources: "Ressources",
+  free_resources: "Ressources libres",
   resources_picker: "Sélecteur de ressources",
   loading_resources: "Chargement des ressources…",
   downloading: "Téléchargement…",
