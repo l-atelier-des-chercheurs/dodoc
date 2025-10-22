@@ -41,7 +41,6 @@
           class="_reorderableList"
           axis="y"
           :value="local_items"
-          :useDragHandle="true"
           @input="updateOrder($event)"
         >
           <SlickItem
@@ -203,21 +202,22 @@ export default {
   min-height: 2em;
   background: white;
 
-  border: 1px solid var(--c-gris);
+  background: var(--c-gris_clair);
+  border-radius: var(--input-border-radius);
+  margin-bottom: calc(var(--spacing) / 4);
+  // border: 1px solid var(--c-gris);
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+  cursor: grab;
 
-  &:has(._dragHandle:hover) {
-    z-index: 1;
-    background: var(--c-gris);
-    box-shadow: var(--panel-shadows);
+  &:hover {
+    color: var(--active-color);
   }
 
-  // only target item dragged
-}
-
-._dragHandle {
-  cursor: grab;
+  &:hover ._dragHandle {
+    z-index: 1;
+    color: var(--active-color);
+  }
 }
 </style>
