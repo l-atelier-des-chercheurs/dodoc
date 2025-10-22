@@ -67,19 +67,14 @@
           @click="show_change_order_modal = false"
           :disabled="save_status === 'saving'"
         >
-          <transition name="fade" mode="out-in">
-            <b-icon
-              v-if="save_status === 'saving'"
-              key="saving"
-              icon="stopwatch"
-            />
-            <b-icon
-              v-else-if="save_status === 'saved'"
-              key="saved"
-              icon="check"
-            />
-          </transition>
-          <b-icon icon="x" />
+          <b-icon
+            v-if="save_status === 'saving'"
+            key="saving"
+            icon="arrow-repeat"
+            animation="spin"
+          />
+          <b-icon v-else icon="check" />
+
           {{ $t("close") }}
         </button>
       </template>
@@ -166,9 +161,6 @@ export default {
       });
       await new Promise((r) => setTimeout(r, 150));
 
-      this.save_status = "saved";
-
-      await new Promise((r) => setTimeout(r, 1000));
       this.save_status = undefined;
     },
   },
@@ -205,6 +197,8 @@ export default {
   background: var(--c-gris_clair);
   border-radius: var(--input-border-radius);
   margin-bottom: calc(var(--spacing) / 4);
+
+  user-select: none;
   // border: 1px solid var(--c-gris);
   display: flex;
   align-items: center;
