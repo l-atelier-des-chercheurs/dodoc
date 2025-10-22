@@ -167,6 +167,7 @@ import {
   BIconGlobe,
   BIconPaletteFill,
   BIconCollection,
+  BIconEnvelope,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -334,3 +335,4 @@ Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);
 Vue.component("BIconGlobe", BIconGlobe);
 Vue.component("BIconPaletteFill", BIconPaletteFill);
 Vue.component("BIconCollection", BIconCollection);
+Vue.component("BIconEnvelope", BIconEnvelope);

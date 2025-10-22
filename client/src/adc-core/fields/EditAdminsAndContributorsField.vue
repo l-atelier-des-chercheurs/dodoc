@@ -44,6 +44,7 @@
     <template #footer>
       <div />
       <button type="button" class="u-button" @click="$emit('closeModal')">
+        <b-icon icon="x" />
         {{ $t("close") }}
       </button>
     </template>

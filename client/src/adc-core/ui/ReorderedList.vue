@@ -80,6 +80,7 @@
               icon="check"
             />
           </transition>
+          <b-icon icon="x" />
           {{ $t("close") }}
         </button>
       </template>

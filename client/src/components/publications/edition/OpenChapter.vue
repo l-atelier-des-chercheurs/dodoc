@@ -50,7 +50,7 @@
         </div>
         <div>
           <button type="button" class="u-linkList" @click="$emit('close')">
-            <b-icon icon="x-circle" :label="$t('close')" />
+            <b-icon icon="x" :label="$t('close')" />
             {{ $t("close") }}
           </button>
         </div>

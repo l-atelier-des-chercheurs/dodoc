@@ -13,6 +13,7 @@
     <template #footer>
       <div />
       <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x" />
         {{ $t("close") }}
       </button>
     </template>
