@@ -930,7 +930,7 @@ export default {
   not_allowed_to_contribute_contact_referent:
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
-  or_paste_an_image: "Ou coller une image depuis le presse-papier",
+  or_paste_an_image: "Ou collez une image depuis le presse-papier",
   media_was_saved: "Média enregistré",
   no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
   project_was_removed: "Ce projet vient d’être supprimé",

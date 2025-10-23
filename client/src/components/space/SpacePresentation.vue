@@ -237,7 +237,7 @@ export default {
   aspect-ratio: 1/1;
   align-self: flex-start;
   // border: 1px solid var(--c-gris);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   flex: 1 2 240px;
   // max-width: 120px;

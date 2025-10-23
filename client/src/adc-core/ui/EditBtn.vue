@@ -10,9 +10,8 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span class="_label" :data-position="label_position">
-      <template v-if="label">{{ label }}</template>
-      <template v-else>{{ btn_props.label }}</template>
+    <span class="_label" v-if="button_label" :data-position="label_position">
+      {{ button_label }}
     </span>
     <b-icon class="_icon" :icon="btn_props.icon" />
   </button>
@@ -55,6 +54,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    button_label() {
+      if (this.label !== undefined) return this.label;
+      return this.btn_props.label;
+    },
     btn_props() {
       if (this.btn_type === "fullscreen")
         return {
