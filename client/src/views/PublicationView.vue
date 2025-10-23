@@ -71,9 +71,11 @@
 import screenfull from "screenfull";
 
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     PublicationTopbar,
     PageExport: () =>
@@ -124,6 +126,11 @@ export default {
             this.fetch_publication_error = err.code;
           }
         });
+
+    // Update document title with actual publication name
+    if (this.publication) {
+      this.updateDocumentTitle(this.publication.title);
+    }
 
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });

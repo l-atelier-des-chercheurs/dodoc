@@ -127,10 +127,12 @@ import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
 import AllPublications from "@/components/home/AllPublications.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 // import AllContent from "@/components/home/AllContent.vue";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     HomeTopHero,
     EventsSection: () => import("@/components/event/EventsSection.vue"),
@@ -153,6 +155,9 @@ export default {
     this.$api.updateSelfPath("/");
   },
   mounted() {
+    // Set the home page title
+    this.updateDocumentTitle();
+
     setTimeout(() => {
       this.load_whole_page = true;
     }, 100);
