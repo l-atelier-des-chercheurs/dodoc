@@ -107,9 +107,9 @@ a:focus-visible {
 }
 
 .u-card2 {
-  // border-bottom: 2px solid var(--c-gris);
+  border: 2px solid var(--c-gris_clair);
   // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
+  // filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 
   transform-origin: center top;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -117,7 +117,7 @@ a:focus-visible {
   &:hover,
   &:focus-visible {
     transform: translateY(-2px) scale(1.02) rotate(-0deg);
-    filter: drop-shadow(0 0 15px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
     // box-shadow: 0 0 0 1px hsla(230, 13%, 9%, 0.05),
     //   0 0.9px 1.25px hsla(230, 13%, 9%, 0.025),
     //   0 3px 5px hsla(230, 13%, 9%, 0.05), 0 12px 20px hsla(230, 13%, 9%, 0.09);

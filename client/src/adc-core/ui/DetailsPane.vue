@@ -109,7 +109,7 @@ export default {
 <style lang="scss" scoped>
 ._detailsPane {
   background: white;
-  border-bottom: none;
+  // border-bottom: none;
   border-radius: 8px;
   overflow: hidden;
 
