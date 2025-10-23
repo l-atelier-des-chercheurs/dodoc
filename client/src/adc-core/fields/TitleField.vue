@@ -14,7 +14,12 @@
             v-if="content && clean_content.length > 0"
             v-html="clean_content"
           />
-          <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
+          <EditBtn
+            v-if="can_edit"
+            class="_edit"
+            :label="clean_content.length > 0 ? $t('edit') : $t('add')"
+            @click="enableEditMode"
+          />
         </component>
       </div>
     </div>
@@ -266,5 +271,23 @@ export default {
 
 ._edit {
   margin-top: -4px;
+
+  /* Hide edit button by default on devices that support hover */
+  @media (hover: hover) {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Always show on touch devices */
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+/* Show edit button on hover for devices that support hover */
+._titleField:hover ._edit {
+  @media (hover: hover) {
+    opacity: 1;
+  }
 }
 </style>
