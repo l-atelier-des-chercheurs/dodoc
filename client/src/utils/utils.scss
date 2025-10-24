@@ -204,10 +204,10 @@ button,
   gap: calc(var(--spacing) / 4);
   align-items: center;
   justify-content: center;
-  text-transform: uppercase;
+  // text-transform: uppercase;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  font-size: var(--input-font-size-small);
+  // letter-spacing: 0.02em;
+  font-size: var(--input-font-size);
   text-decoration: none;
   color: inherit;
   white-space: nowrap;
@@ -388,7 +388,6 @@ button,
   }
 }
 .u-button_small {
-  font-size: var(--input-font-size-small);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
 
   b-icon {

@@ -207,7 +207,7 @@ export default {
   // max-width: 120ch;
 
   padding: 0;
-  border-radius: 6px;
+  border-radius: 10px;
   background: white;
   // padding: calc(var(--spacing) * 1);
 
@@ -295,6 +295,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
 ._icon {

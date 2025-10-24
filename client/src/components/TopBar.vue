@@ -324,10 +324,10 @@ export default {
 
   z-index: 5;
 
-  max-width: calc(
-    min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
-      3
-  );
+  // max-width: calc(
+  //   min(var(--max-column-width), var(--max-column-width-px)) + var(--spacing) *
+  //     3
+  // );
   // margin: var(--spacing) auto;
   // margin: 0 auto;
   margin: 0 auto;
