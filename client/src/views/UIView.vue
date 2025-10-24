@@ -1,5 +1,44 @@
 <template>
   <div class="_uiView">
+    <!-- INSERT_YOUR_CODE -->
+    <div class="_buttonsDemo">
+      <button class="u-button">Default Button</button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="plus" /> Icon Button
+      </button>
+      <button class="u-button u-button_small">Small</button>
+      <button class="u-button u-button_verysmall">Very Small</button>
+      <button class="u-button u-button_big">Big Button</button>
+      <button class="u-button u-button_floating">Floating</button>
+      <button class="u-button u-button_wide">Wide</button>
+      <button class="u-button u-button_black">Black</button>
+      <button class="u-button u-button_white">White</button>
+      <button class="u-button u-button_red">Red</button>
+      <button class="u-button u-button_bleuvert">Bleuvert</button>
+      <button class="u-button u-button_bleuvert_fonce">Bleuvert Foncé</button>
+      <button class="u-button u-button_orange">Orange</button>
+      <button class="u-button u-button_bleumarine">Bleumarine</button>
+      <button class="u-button u-button_transparent">Transparent</button>
+      <button class="u-button u-button_inline">
+        Inline <b-icon icon="arrow-right" />
+      </button>
+      <button class="u-button" disabled>Disabled</button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="star" />
+      </button>
+      <button
+        class="u-button u-button_transparent"
+        :class="{ 'is--active': true }"
+      >
+        Active Transparent
+      </button>
+      <button class="u-button u-button_red u-button_floating">
+        <b-icon icon="trash" /> Delete (Floating Red)
+      </button>
+    </div>
+
+    <hr />
+
     <div class="_authors">
       <AuthorTag
         v-for="{ $path } in authors_sublist"

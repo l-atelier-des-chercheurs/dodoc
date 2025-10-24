@@ -240,12 +240,14 @@ button,
 
   &:hover,
   &:active,
-  &:focus-visible,
-  &.is--active {
+  &:focus-visible {
     &:not([disabled]) {
       outline: 0;
-      background: var(--c-gris);
+      background-color: var(--c-gris);
     }
+  }
+  &.is--active {
+    background: var(--active-color);
   }
 }
 
@@ -267,7 +269,7 @@ button,
   &.is--active {
     &:not([disabled]) {
       color: var(--active-color);
-      background: transparent;
+      background-color: rgba(0, 0, 0, 0.1);
     }
   }
 
@@ -290,25 +292,25 @@ button,
 .u-button_transparent {
   background-color: transparent;
 
+  &:hover,
+  &:focus-visible,
+  &.is--active {
+    &:not([disabled]) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+
   &[disabled] {
     &:hover,
     &:focus-visible,
     &.is--active {
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: transparent;
     }
   }
 }
 .u-button_black {
   background-color: var(--c-noir);
   color: white;
-
-  &:hover,
-  &:focus-visible,
-  &.is--active {
-    &:not([disabled]) {
-      background-color: var(--c-gris_fonce);
-    }
-  }
 }
 .u-button_white {
   background-color: white;
@@ -395,9 +397,8 @@ button,
   }
 }
 .u-button_verysmall {
-  font-size: var(--input-font-size-x-small);
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
   font-size: var(--sl-font-size-x-small);
+  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4);
 }
 .u-button_big {
   font-size: var(--input-font-size-big);
