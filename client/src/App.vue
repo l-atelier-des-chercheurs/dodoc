@@ -188,7 +188,7 @@ export default {
   --input-height: 2.5em;
   --input-height-large: 3em;
   // --input-height-big: 3em;
-  --input-height-small: 1.6rem;
+  --input-height-small: 1.85rem;
 
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
