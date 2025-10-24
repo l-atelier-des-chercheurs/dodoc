@@ -707,7 +707,7 @@ export default {
             padding: calc(var(--spacing) / 2);
           }
         }
-        ._floatingEditBtn {
+        ._editText {
           top: calc(var(--spacing) * 3);
         }
       }
