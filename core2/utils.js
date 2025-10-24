@@ -164,6 +164,7 @@ module.exports = (function () {
         $preview: { type: "string" },
         $credits: { type: "string" },
         $location: { type: "object" },
+        $origin: { type: "string" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },
@@ -176,7 +177,7 @@ module.exports = (function () {
       // Check for fields in new_meta that don't exist in schema
       for (const field_name in new_meta) {
         if (!fields.hasOwnProperty(field_name)) {
-          // dev.error(`Field "${field_name}" is not defined in schema`);
+          dev.error(`Field "${field_name}" is not defined in schema`);
           // const err = new Error(
           //   `Field "${field_name}" is not defined in schema`
           // );
@@ -240,20 +241,8 @@ module.exports = (function () {
           }
         });
       }
-      // see cleanNewMeta
 
       return meta;
-    },
-    async cleanNewMeta({ relative_path, new_meta }) {
-      dev.logfunction({ relative_path, new_meta });
-      // todo check fields in schema, make sure user added fields are allowed and with the right formatting
-      // merge with validateMeta ?
-      const item_in_schema = API.parseAndCheckSchema({
-        relative_path,
-      });
-      item_in_schema;
-
-      return new_meta;
     },
 
     getLocalIPs() {
