@@ -28,6 +28,9 @@ export default {
   image_url_instr:
     "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
   import_from_url: "Import from URL",
+  file_url: "URL of a file",
+  file_url_instr:
+    "Enter the URL of a file (images, videos, audio, PDF documents, text files, etc.).",
   example_image_url: "Example image URL",
   importing_from_url: "Importing from URL...",
   preview_of_image: "Preview of the image",
