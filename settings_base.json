@@ -539,6 +539,9 @@
                     "drop_shadow": {
                       "type": "number"
                     },
+                    "blur": {
+                      "type": "number"
+                    },
                     "locked": {
                       "type": "boolean"
                     },

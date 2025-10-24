@@ -291,6 +291,7 @@ export default {
         "--set-borderRadius":
           (this.turnCMtoPX(this.publimodule.border_radius) || 0) + "px",
         "--set-dropShadow": this.publimodule.drop_shadow,
+        "--set-blur": (this.turnCMtoPX(this.publimodule.blur) || 0) + "px",
         "--set-backgroundColor":
           this.publimodule.background_color || "transparent",
         "--set-outlineColor": this.publimodule.outline_color || "black",
@@ -656,7 +657,8 @@ export default {
 
       border-radius: var(--set-borderRadius);
 
-      filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+      filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+        blur(var(--set-blur, 0px));
       overflow: hidden;
 
       background: var(--set-backgroundColor);

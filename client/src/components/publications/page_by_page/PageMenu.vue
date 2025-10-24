@@ -613,6 +613,19 @@
           @save="updateMediaPubliMeta({ opacity: $event / 100 })"
         />
 
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('blur')"
+          :value="active_module.blur || 0"
+          :min="0"
+          :max="10"
+          :step="0.5"
+          :ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+          :default_value="0"
+          :suffix="unit"
+          @save="updateMediaPubliMeta({ blur: $event })"
+        />
+
         <ColorInput
           class="u-spacingBottom"
           :label="$t('background_color')"
