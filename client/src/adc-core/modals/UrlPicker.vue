@@ -186,13 +186,23 @@ export default {
 
         if (uploaded_meta) {
           this.$emit("importedURL", uploaded_meta);
-          this.$emit("close");
         } else {
           throw new Error("Invalid response from server");
         }
       } catch (error) {
         console.error("Error importing from URL:", error);
-        this.$alertify.delay(4000).error(this.$t("failed_to_import_from_url"));
+
+        // Handle specific error cases
+        if (error.code === "file_size_limit_exceeded") {
+          const maxSize = error.err_infos?.upload_max_file_size_in_mo || 10000;
+          this.$alertify
+            .delay(6000)
+            .error(this.$t("file_size_limit_exceeded", { maxSize }));
+        } else {
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("failed_to_import_from_url"));
+        }
       } finally {
         this.is_importing_url = false;
       }

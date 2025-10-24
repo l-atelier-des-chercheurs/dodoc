@@ -42,6 +42,8 @@ export default {
     "⚠️ Fichier exécutable - Soyez prudent lors de l'exécution",
   code_file: "Fichier de code",
   archive_file: "Fichier d'archive",
+  file_size_limit_exceeded:
+    "Fichier trop volumineux - Taille maximale : {maxSize} MB",
   failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
