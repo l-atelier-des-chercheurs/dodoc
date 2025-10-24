@@ -61,7 +61,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.similarity"
                   min="0"
-                  max="1"
+                  max="0.2"
                   step="0.001"
                 />
               </div>
@@ -73,7 +73,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.smoothness"
                   min="0"
-                  max="1"
+                  max="0.3"
                   step="0.001"
                 />
               </div>
@@ -85,7 +85,7 @@
                   type="range"
                   v-model.number="chroma_key_settings.spill"
                   min="0"
-                  max="1"
+                  max="0.5"
                   step="0.001"
                   value="0.1"
                 />
@@ -196,9 +196,9 @@ export default {
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.02, // 0 -> 1 by 0.001
-        smoothness: 0.08, // 0 -> 1 by 0.001
-        spill: 0.1, // 0 -> 1 by 0.001
+        similarity: 0.05, // 0 -> 0.2 by 0.001 (better default)
+        smoothness: 0.12, // 0 -> 0.3 by 0.001 (better default)
+        spill: 0.2, // 0 -> 0.5 by 0.001 (better default)
         replacement_color: {
           r: 252,
           g: 75,
