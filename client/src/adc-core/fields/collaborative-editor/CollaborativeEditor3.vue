@@ -59,6 +59,7 @@
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
           </button> -->
+
           <transition name="pagechange" mode="out-in">
             <div
               class="u-button _savingStatus"
@@ -91,7 +92,9 @@
           </transition>
           <EditBtn
             class="_editBtn"
-            v-if="is_collaborative && !is_loading_or_saving"
+            v-if="
+              (is_collaborative && !is_loading_or_saving) || path !== undefined
+            "
             :btn_type="'check'"
             :label_position="'left'"
             @click="saveContent"
@@ -104,7 +107,12 @@
       <EditBtn key="editbtn" :label_position="'left'" @click="toggleEdit" />
     </div> -->
 
-    <div class="_toolbarAndEditorContainer">
+    <div
+      class="_toolbarAndEditorContainer"
+      :class="{
+        'is--editing_is_enabled': editor_is_enabled,
+      }"
+    >
       <div class="_editText">
         <EditBtn
           v-if="can_edit && !editor_is_enabled"
@@ -884,7 +892,6 @@ export default {
   }
 }
 ._collaborativeEditor.is--editing_is_enabled {
-  background-color: var(--c-gris_clair);
   ::v-deep {
     .ql-editor {
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
@@ -921,6 +928,10 @@ export default {
 
 ._toolbarAndEditorContainer {
   position: relative;
+  &.is--editing_is_enabled {
+    background-color: var(--c-gris_clair);
+    border-radius: var(--input-border-radius);
+  }
 }
 ._editText {
   position: sticky;
