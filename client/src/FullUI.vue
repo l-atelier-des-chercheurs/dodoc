@@ -5,7 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
-    <DynamicCursor v-if="!$root.is_touch_device" />
+    <!-- <DynamicCursor v-if="!$root.is_touch_device" /> -->
 
     <transition name="pagetransition" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
