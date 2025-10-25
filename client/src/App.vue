@@ -180,10 +180,10 @@ export default {
   --border-radius: 6px;
 
   --input-font-family: inherit;
-  --input-font-size: 1rem;
-  --input-font-size-x-small: 0.6rem;
-  --input-font-size-small: 0.8rem;
-  --input-font-size-big: 1.2rem;
+  --input-font-size: var(--sl-font-size-medium);
+  --input-font-size-x-small: var(--sl-font-size-x-small);
+  --input-font-size-small: var(--sl-font-size-small);
+  --input-font-size-big: var(--sl-font-size-large);
   --input-font-weight: inherit;
   --input-height: 2.5em;
   --input-height-large: 3em;
