@@ -77,7 +77,7 @@
                   class="_inlineBtn _removePaneBtn"
                 >
                   <b-icon
-                    icon="x-circle-fill"
+                    icon="x"
                     :label="$t('close')"
                     @click.stop="removePane(pane.type)"
                   />
@@ -374,7 +374,7 @@ export default {
   &.is--enabled {
     &:hover,
     &:focus {
-      color: var(--c-noir);
+      // color: var(--c-noir);
     }
   }
 }
