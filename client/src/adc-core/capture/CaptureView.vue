@@ -1110,7 +1110,7 @@ export default {
 
     // Handle page visibility changes to release camera when tab is hidden
   },
-  beforeDestroy() {
+  async beforeDestroy() {
     console.log("CaptureView: beforeDestroy - cleaning up camera resources");
 
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
@@ -1131,7 +1131,7 @@ export default {
     this.stopTimelapseInterval();
     this.cancelDelay();
     this.eraseTimer();
-    this.stopStream();
+    await this.stopStream();
 
     if (this.update_last_video_imageData)
       window.cancelAnimationFrame(this.update_last_video_imageData);
@@ -1253,7 +1253,7 @@ export default {
     },
   },
   methods: {
-    stopStream() {
+    async stopStream() {
       console.log("CaptureView: METHODS • stopStream");
 
       // Stop all tracks in the current stream
