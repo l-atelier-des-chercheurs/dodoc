@@ -47,46 +47,52 @@
       @openNew="openNewSpace"
     />
 
-    <PinnedNonpinnedFolder
-      v-if="!is_loading"
-      :field_name="'spaces_pinned'"
-      :label="$t('spaces_pinned')"
-      :content="settings.spaces_pinned"
-      :path="''"
-      :folders="filtered_spaces"
-      :can_edit="is_instance_admin"
-      v-slot="slotProps"
-    >
-      <SpacePresentation
-        :space="slotProps.item"
-        :context="'list'"
-        :can_edit="false"
-      />
-    </PinnedNonpinnedFolder>
+    <!-- Loading spinner while fetching spaces -->
+    <div v-if="is_loading" class="_loadingContainer">
+      <LoaderSpinner />
+    </div>
 
-    <button
-      type="button"
-      class="u-buttonLink"
-      v-if="is_instance_admin"
-      @click="show_bin_modal = true"
-    >
-      <b-icon icon="recycle" />
-      {{ $t("bin") }}
-    </button>
-    <BinFolder
-      v-if="show_bin_modal"
-      :modal_title="$t('restore_spaces')"
-      :path="'spaces'"
-      @close="show_bin_modal = false"
-    >
-      <template v-slot="slotProps">
+    <template v-else>
+      <PinnedNonpinnedFolder
+        :field_name="'spaces_pinned'"
+        :label="$t('spaces_pinned')"
+        :content="settings.spaces_pinned"
+        :path="''"
+        :folders="filtered_spaces"
+        :can_edit="is_instance_admin"
+        v-slot="slotProps"
+      >
         <SpacePresentation
-          :space="slotProps.project"
-          :context="slotProps.context"
-          :can_edit="slotProps.can_edit"
+          :space="slotProps.item"
+          :context="'list'"
+          :can_edit="false"
         />
-      </template>
-    </BinFolder>
+      </PinnedNonpinnedFolder>
+
+      <button
+        type="button"
+        class="u-buttonLink"
+        v-if="is_instance_admin"
+        @click="show_bin_modal = true"
+      >
+        <b-icon icon="recycle" />
+        {{ $t("bin") }}
+      </button>
+      <BinFolder
+        v-if="show_bin_modal"
+        :modal_title="$t('restore_spaces')"
+        :path="'spaces'"
+        @close="show_bin_modal = false"
+      >
+        <template v-slot="slotProps">
+          <SpacePresentation
+            :space="slotProps.project"
+            :context="slotProps.context"
+            :can_edit="slotProps.can_edit"
+          />
+        </template>
+      </BinFolder>
+    </template>
   </div>
 </template>
 <script>
@@ -252,5 +258,13 @@ export default {
   justify-content: flex-start;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+}
+
+._loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  padding: calc(var(--spacing) * 2);
 }
 </style>
