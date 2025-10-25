@@ -266,7 +266,7 @@
           "
           class="u-textEllipsis u-textEllipsis_3 _textExtract"
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             ref="textBloc"
             :path="active_module_first_media.$path"
             :content="active_module_first_media.$content"
@@ -370,8 +370,6 @@
             :maxlength="640"
             :can_edit="can_edit"
           />
-
-          <div class="u-spacingBottom" />
 
           <div
             class=""

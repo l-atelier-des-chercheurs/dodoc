@@ -14,6 +14,9 @@
             v-if="content && clean_content.length > 0"
             v-html="clean_content"
           />
+          <span v-else class="u-instructions">
+            {{ $t("none") }}
+          </span>
           <EditBtn
             v-if="can_edit"
             class="_edit"
