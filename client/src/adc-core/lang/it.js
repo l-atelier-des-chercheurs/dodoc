@@ -516,12 +516,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   couldnt_load_getusermedia:
     "Impossibile caricare la fotocamera o il microfono",
   failed_listing_devices: "Impossibile elencare i dispositivi",
-  failed_to_start_stream_sharing:
-    "Avvio della condivisione delllo streaming non riuscito",
   failed_to_start_recording: "Avvio della registrazione non riuscito",
   new_user_connected_to_stream: "Nuovo utente connesso allo streaming",
-  no_stream_found_while_sharing:
-    "Nessuno streaming  trovato durante la condivisione",
   media_couldnt_be_sent: "Salvataggio del media non riuscito",
 
   space: "Spazio",
@@ -806,13 +802,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   name_of_stream: "Nome dello stream",
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
-  failed_to_share_stream: "Non è stato possibile condividere il feed",
   stream_local_mode: "su questo dispositivo",
   stream_remote_mode: "do•doc remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
-  share_stream: "Condividi questo stream",
-  "stream_currently_shared_with_name:":
-    "Stream video/audio condiviso con il nome&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",

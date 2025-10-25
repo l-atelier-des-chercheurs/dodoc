@@ -546,10 +546,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
   failed_listing_devices: "Impossible de lister les appareils",
-  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
   failed_to_start_recording: "Échec du démarrage de l’enregistrement",
   new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
-  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
   media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
@@ -839,13 +837,9 @@ export default {
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
-  failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
   stream_local_mode: "sur cet appareil",
   stream_remote_mode: "do•doc distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
-  share_stream: "Partager ce flux",
-  "stream_currently_shared_with_name:":
-    "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
@@ -1480,8 +1474,6 @@ export default {
 
   all_content: "Tout le contenu",
   all_publications: "Toutes les publications",
-  bandwidth_very_low_for_stream_sharing:
-    "Bande passante très faible pour le partage de flux",
   camera_access_refused: "Accès à la caméra refusé",
   disconnect_warning: "Avertissement de déconnexion",
   failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
@@ -1509,7 +1501,6 @@ export default {
   on_this_list: "Sur cette liste",
   other_users_connected: "Autres utilisateurs connectés",
   show_cursor: "Afficher le curseur",
-  stream_sharing_media_error: "Erreur de média lors du partage de flux",
   side_by_side: "Côte à côte",
   new_line: "À la suite",
   latest_version_available: "Dernière version disponible",

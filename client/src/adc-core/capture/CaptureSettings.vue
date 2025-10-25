@@ -22,7 +22,7 @@
     /> -->
 
     <div class="m_captureSettings--settings">
-      <div v-if="current_mode === 'LocalSources'" class>
+      <div class>
         <div v-if="status === 'not_allowed'">
           <div class="padding-top-verysmall">
             {{ $t("camera_access_refused") }}
@@ -34,7 +34,7 @@
           <button
             type="button"
             class="u-buttonLink margin-none margin-left padding-bottom-none"
-            @click="refreshAvailableDevices"
+            @click="manualRefreshDevices"
           >
             {{ $t("reload") }}
           </button>
@@ -274,71 +274,11 @@
           </div>
         </div>
       </div>
-      <div v-else-if="current_mode === 'RemoteSources'">
-        <div>
-          {{ $t("feature_not_yet_implemented") }}
-        </div>
-
-        <div class="u-disabled">
-          <!-- <label>{{ $t("remote_access") }}</label> -->
-
-          <small>{{ $t("connect_to_other_users") }}</small>
-          <div class="padding-vert-small padding-bottom-small">
-            <label class="u-label" v-html="$t('name_of_stream')" />
-            <input
-              type="text"
-              v-model.trim="access_distant_stream.callee"
-              required
-              v-uppercase
-              :disabled="access_distant_stream.status.enabled"
-              autofocus="autofocus"
-              onfocus="this.select()"
-              @keydown.enter.prevent="callStream"
-            />
-          </div>
-        </div>
-      </div>
     </div>
     <div class="m_captureSettings--updateButton" v-if="false">
       <!-- <small v-if="!desired_camera_resolution">
           Select a camera resolution first
         </small> -->
-
-      <div
-        class="m_captureSettings--updateButton--shareStreamToggle"
-        v-if="current_mode === 'LocalSources'"
-      >
-        <transition name="fade_fast" :duration="150">
-          <LoaderSpinner v-if="share_this_stream.status.loading" />
-        </transition>
-
-        <!-- <div class="u-switch u-switch-xs">
-          <input
-            id="shareStream"
-            type="checkbox"
-            v-model="share_this_stream.enabled"
-          />
-          <label class="u-label" for="shareStream">{{
-            $t("share_stream")
-          }}</label>
-        </div> -->
-
-        <div
-          v-if="share_this_stream.enabled"
-          class="padding-sides-small padding-bottom-small"
-        >
-          <label class="u-label" v-html="$t('name_of_stream')" />
-          <input
-            type="text"
-            v-model.trim="share_this_stream.name"
-            required
-            v-uppercase
-            autofocus="autofocus"
-            onfocus="this.select()"
-            @keydown.enter.prevent="setCameraStreamFromDefaults"
-          />
-        </div>
-      </div>
 
       <div class="m_captureSettings--updateButton--buttons">
         <template v-if="current_mode === 'LocalSources'">
@@ -350,35 +290,6 @@
           >
             {{ $t("update") }}
           </button> -->
-        </template>
-        <template v-else-if="current_mode === 'RemoteSources'">
-          <transition name="fade_fast" :duration="150">
-            <LoaderSpinner v-if="access_distant_stream.calling" />
-          </transition>
-          <button
-            type="button"
-            class="u-button u-button_red u-button_wide"
-            v-if="!access_distant_stream.status.enabled"
-            :disabled="
-              access_distant_stream.callee.length === 0 ||
-              access_distant_stream.calling
-            "
-            @click="callStream"
-          >
-            {{ $t("connect") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red u-button_wide"
-            v-if="access_distant_stream.status.enabled"
-            :disabled="
-              access_distant_stream.callee.length === 0 ||
-              access_distant_stream.calling
-            "
-            @click="hangupStream"
-          >
-            {{ $t("hangup") }}
-          </button>
         </template>
 
         <!-- <button
@@ -393,8 +304,6 @@
   </div>
 </template>
 <script>
-import RTCMultiConnection from "rtcmulticonnection";
-
 export default {
   props: {
     audio_output_deviceId: String,
@@ -406,11 +315,7 @@ export default {
       is_loading_feed: false,
       status: undefined,
 
-      current_mode: "LocalSources",
-
-      current_stream: undefined,
       local_stream: undefined,
-      remote_stream: undefined,
 
       stream_current_settings: undefined,
       desired_camera_resolution: undefined,
@@ -477,141 +382,55 @@ export default {
           enabled: false,
         },
       },
-
-      rtcmulti_connection: undefined,
-
-      share_this_stream: {
-        enabled: false,
-        name: `DODOC-${(Math.random().toString(36) + "00000000000000000").slice(
-          2,
-          3 + 2
-        )}`,
-        status: {
-          loading: false,
-          enabled: undefined,
-          name: undefined,
-          peers_connected: [],
-        },
-      },
-
-      access_distant_stream: {
-        calling: false,
-        callee: "",
-        status: {
-          enabled: false,
-          callee: undefined,
-        },
-      },
     };
   },
   created() {},
-  mounted() {
-    if (!navigator.mediaDevices.getUserMedia) {
-      alert("You need a browser that supports getUserMedia");
-      return;
+  async mounted() {
+    try {
+      await this.initializeCaptureSettings();
+    } catch (error) {
+      console.error("Failed to initialize capture settings:", error);
+      this.handleInitializationError(error);
+
+      // Fallback: try to at least show the UI with basic functionality
+      this.is_loading_feed = false;
+      this.is_loading_available_devices = false;
+      this.$emit("hasFinishedLoading");
     }
-
-    this.is_loading_feed = true;
-    this.is_loading_available_devices = true;
-
-    //Call gUM early to force user gesture and allow device enumeration
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
-      .then((stream) => {
-        this.local_stream = stream;
-        // if ("srcObject" in this.$refs.videoElement) {
-        //   this.$refs.videoElement.srcObject = stream;
-        // } else {
-        //   // Avoid using this in new browsers, as it is going away.
-        //   this.$refs.videoElement.src = window.URL.createObjectURL(stream);
-        // }
-        return;
-      })
-      .catch((err) => {
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("couldnt_load_getusermedia") +
-              "<br>" +
-              err.name +
-              ": " +
-              err.message
-          );
-        // if (err.message === "Could not start audio source") {
-        // }
-        this.is_loading_feed = false;
-        this.$emit("hasFinishedLoading");
-        this.$emit("show");
-        return;
-      })
-      .then(this.refreshAvailableDevices)
-      .then(() => {
-        this.setDefaultInputsAndOutputs();
-      })
-      .catch((err) => {
-        this.is_loading_feed = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(
-            this.$t("failed_listing_devices") +
-              "<br>" +
-              err.name +
-              ": " +
-              err.message
-          );
-      })
-      .then(() => this.setCameraStreamFromDefaults())
-      .then(() => {
-        this.is_loading_feed = false;
-        this.$emit("hasFinishedLoading");
-      })
-      .catch(() => {
-        this.is_loading_feed = false;
-        this.$emit("hasFinishedLoading");
-      });
   },
-  beforeDestroy() {
-    if (this.local_stream)
-      this.local_stream.getTracks().forEach((track) => track.stop());
-    if (this.remote_stream)
-      this.remote_stream.getTracks().forEach((track) => track.stop());
-    this.closeMultiRTC();
+  async beforeDestroy() {
+    try {
+      await this.cleanupStream();
+    } catch (error) {
+      console.warn("Error during component cleanup:", error);
+    }
   },
   watch: {
     "selected_devices.video_input_device": function () {
       this.unavailable_camera_resolutions = [];
       this.last_working_resolution = false;
     },
-    local_stream: function () {
-      this.setCurrentStream();
-    },
-    remote_stream: function () {
-      this.setCurrentStream();
-    },
-    current_mode: function () {
-      this.setCurrentStream();
-    },
-    current_stream: function () {
-      this.$emit("setStream", {
-        stream: this.current_stream,
-        type: this.current_mode,
-      });
-    },
     selected_devices: {
-      handler() {
-        localStorage.setItem(
-          "selected_devices",
-          JSON.stringify(this.selected_devices)
-        );
-        this.setCameraStreamFromDefaults();
+      async handler() {
+        try {
+          localStorage.setItem(
+            "selected_devices",
+            JSON.stringify(this.selected_devices)
+          );
+          await this.setCameraStreamFromDefaults();
+        } catch (error) {
+          console.error("Error in selected_devices watcher:", error);
+        }
       },
       deep: true,
     },
     desired_camera_resolution: {
-      handler() {
-        this.setCameraStreamFromDefaults();
+      async handler() {
+        try {
+          await this.setCameraStreamFromDefaults();
+        } catch (error) {
+          console.error("Error in desired_camera_resolution watcher:", error);
+        }
       },
       deep: true,
     },
@@ -622,24 +441,6 @@ export default {
         //   this.$root.settings.capture_options.last_working_resolution = false;
         // this.$root.settings.capture_options.last_working_resolution =
         //   JSON.parse(JSON.stringify(this.last_working_resolution));
-      },
-      deep: true,
-    },
-    share_this_stream: {
-      handler() {
-        this.$eventHub.$emit(
-          `stream.newSharingInformations`,
-          this.share_this_stream.status
-        );
-      },
-      deep: true,
-    },
-    access_distant_stream: {
-      handler() {
-        this.$eventHub.$emit(
-          `stream.newDistantAccessInformations`,
-          this.access_distant_stream.status
-        );
       },
       deep: true,
     },
@@ -679,12 +480,11 @@ export default {
 
       if (this.selected_devices.audio_input_device) {
         _settings += this.selected_devices.audio_input_device.deviceId + "-";
-        _settings += this.noiseSuppression + "-";
-        _settings += this.echoCancellation + "-";
+        _settings +=
+          this.advanced_capture_options.noiseSuppression.enabled + "-";
+        _settings +=
+          this.advanced_capture_options.echoCancellation.enabled + "-";
       }
-
-      if (this.share_this_stream.enabled)
-        _settings += this.share_this_stream.name + "-";
 
       if (this.selected_devices.audio_output_device)
         _settings += this.selected_devices.audio_output_device.deviceId + "-";
@@ -693,37 +493,164 @@ export default {
     },
   },
   methods: {
-    listDevices() {
-      return new Promise((resolve, reject) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : listDevices`);
+    async initializeCaptureSettings() {
+      console.log("Starting capture settings initialization...");
 
-        navigator.mediaDevices
-          .enumerateDevices()
-          .then(async (devices) => {
-            try {
-              // Get desktop capture sources
-              const desktopSources = await this.getDesktopCapturer();
-              devices = devices.concat(desktopSources);
-            } catch (error) {
-              console.warn("Failed to get desktop sources:", error);
-              // Continue with regular devices even if desktop capture fails
-            }
-            return resolve(devices);
-          })
-          .catch((err) => {
-            return reject(err);
-          });
-      });
+      // Check browser compatibility first
+      if (!this.checkBrowserCompatibility()) {
+        console.log("Browser compatibility check failed");
+        return;
+      }
+
+      this.is_loading_feed = true;
+      this.is_loading_available_devices = true;
+
+      try {
+        console.log("Requesting initial permissions...");
+        // Request initial permissions
+        await this.requestInitialPermissions();
+
+        console.log("Refreshing available devices...");
+        // Refresh available devices
+        await this.refreshAvailableDevices();
+
+        console.log("Setting default inputs and outputs...");
+        // Set default inputs and outputs
+        this.setDefaultInputsAndOutputs();
+
+        console.log("Setting up camera stream...");
+        // Set up camera stream
+        await this.setCameraStreamFromDefaults();
+
+        console.log("Initialization completed successfully");
+        this.is_loading_feed = false;
+        this.$emit("hasFinishedLoading");
+      } catch (error) {
+        console.error("Initialization failed:", error);
+        this.is_loading_feed = false;
+        this.$emit("hasFinishedLoading");
+        throw error;
+      }
     },
-    setCurrentStream() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : setCurrentStream`);
 
-      if (this.current_mode === "RemoteSources") {
-        this.current_stream = this.remote_stream;
-      } else if (this.current_mode === "LocalSources") {
-        this.current_stream = this.local_stream;
+    async manualRefreshDevices() {
+      try {
+        console.log("Manual device refresh requested");
+        await this.refreshAvailableDevices();
+        this.setDefaultInputsAndOutputs();
+        await this.setCameraStreamFromDefaults();
+      } catch (error) {
+        console.error("Manual refresh failed:", error);
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            "Failed to refresh devices. Please check your permissions and try again."
+          );
+      }
+    },
+
+    checkBrowserCompatibility() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            this.$t("browser_not_supported") ||
+              "Your browser doesn't support media capture"
+          );
+        return false;
+      }
+      return true;
+    },
+
+    async requestInitialPermissions() {
+      try {
+        console.log("Requesting getUserMedia permissions...");
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+
+        console.log("Permissions granted, stream created:", stream);
+
+        // Store the stream temporarily for device enumeration
+        this.local_stream = stream;
+      } catch (error) {
+        console.error("Permission request failed:", error);
+        this.handlePermissionError(error);
+        throw error;
+      }
+    },
+
+    handlePermissionError(error) {
+      let errorMessage =
+        this.$t("couldnt_load_getusermedia") ||
+        "Could not access media devices";
+
+      switch (error.name) {
+        case "NotAllowedError":
+          errorMessage +=
+            "<br>" + (this.$t("permission_denied") || "Permission denied");
+          this.status = "not_allowed";
+          break;
+        case "NotFoundError":
+          errorMessage +=
+            "<br>" + (this.$t("no_media_devices") || "No media devices found");
+          break;
+        case "NotReadableError":
+          errorMessage +=
+            "<br>" + (this.$t("device_in_use") || "Device is already in use");
+          break;
+        default:
+          errorMessage += "<br>" + error.name + ": " + error.message;
+      }
+
+      this.$alertify.closeLogOnClick(true).delay(4000).error(errorMessage);
+    },
+
+    handleInitializationError(error) {
+      console.error("Initialization error:", error);
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(
+          (this.$t("failed_to_initialize_capture") ||
+            "Failed to initialize capture settings") +
+            "<br>" +
+            error.message
+        );
+      this.$emit("show");
+    },
+
+    async listDevices() {
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : listDevices`);
+      }
+
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+
+        // Validate devices array
+        if (!Array.isArray(devices)) {
+          throw new Error("Invalid devices response from browser");
+        }
+
+        try {
+          // Get desktop capture sources
+          const desktopSources = await this.getDesktopCapturer();
+          if (Array.isArray(desktopSources)) {
+            return devices.concat(desktopSources);
+          }
+        } catch (error) {
+          console.warn("Failed to get desktop sources:", error);
+          // Continue with regular devices even if desktop capture fails
+        }
+
+        return devices;
+      } catch (error) {
+        console.error("Failed to enumerate devices:", error);
+        throw new Error(`Device enumeration failed: ${error.message}`);
       }
     },
     resInstructions(res) {
@@ -733,21 +660,30 @@ export default {
       } ${this.$t("pixels")}`;
     },
     setSupportedConstraints() {
-      return new Promise((resolve) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : setSupportedConstraints`);
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : setSupportedConstraints`);
+      }
 
+      try {
         const supported_constraints =
           navigator.mediaDevices.getSupportedConstraints();
-        if (!supported_constraints) return resolve();
+        if (!supported_constraints) {
+          console.warn("getSupportedConstraints not available");
+          return;
+        }
 
-        Object.entries(this.advanced_capture_options).map(([prop]) => {
-          this.advanced_capture_options[prop].supported =
-            this.advanced_capture_options[prop].enabled =
-              supported_constraints[prop] === true;
+        // Safely update constraint support
+        Object.keys(this.advanced_capture_options).forEach((prop) => {
+          const isSupported = supported_constraints[prop] === true;
+          this.advanced_capture_options[prop].supported = isSupported;
+          // Only enable if supported, otherwise keep current state
+          if (isSupported) {
+            this.advanced_capture_options[prop].enabled = true;
+          }
         });
-        return resolve();
-      });
+      } catch (error) {
+        console.error("Failed to set supported constraints:", error);
+      }
     },
     setDefaultInputsAndOutputs() {
       if (this.$root.debug_mode === true)
@@ -793,101 +729,152 @@ export default {
       // }
     },
     getDefaultDevice({ key, option_preference, devices_list }) {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : getDefaultDevice`);
+      if (this.$root.debug_mode === true) {
+        console.log(
+          `CaptureSettings • METHODS : getDefaultDevice ${key} ${option_preference} ${devices_list}`
+        );
+      }
 
-      let previously_used = false;
+      // Validate input parameters
+      if (!key || !Array.isArray(devices_list) || devices_list.length === 0) {
+        console.warn("Invalid parameters for getDefaultDevice");
+        return devices_list[0] || null;
+      }
 
-      if (localStorage.getItem("selected_devices")) {
-        try {
-          previously_used = JSON.parse(
-            localStorage.getItem("selected_devices")
-          );
-          if (previously_used?.[key]) {
+      let previously_used = null;
+
+      // Try to restore previously used device
+      try {
+        const storedDevices = localStorage.getItem("selected_devices");
+        if (storedDevices) {
+          previously_used = JSON.parse(storedDevices);
+
+          if (previously_used?.[key]?.deviceId) {
             const found_device = devices_list.find(
               (d) => d.deviceId === previously_used[key].deviceId
             );
-            if (found_device) return found_device;
+            if (found_device) {
+              return found_device;
+            }
           }
-        } catch (e) {
-          /**/
         }
+      } catch (error) {
+        console.warn("Failed to parse stored devices:", error);
+        // Clear corrupted data
+        localStorage.removeItem("selected_devices");
       }
 
-      if (option_preference) {
+      // Try to find device with preferred option
+      if (option_preference?.key && option_preference?.value) {
         const found_device = devices_list.find(
           (d) => d[option_preference.key] === option_preference.value
         );
-        if (found_device) return found_device;
+        if (found_device) {
+          return found_device;
+        }
       }
 
-      if (this.$root.debug_mode === true)
+      if (this.$root.debug_mode === true) {
         console.log(
-          `CaptureSettings • METHODS : getDefaultDevice — settings first available device for ` +
-            key
+          `CaptureSettings • METHODS : getDefaultDevice — setting first available device for ${key}`
         );
+      }
 
       return devices_list[0];
     },
-    startMediaDeviceFeed(constraints) {
-      return new Promise((resolve, reject) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : startMediaDeviceFeed`);
+    async startMediaDeviceFeed(constraints) {
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : startMediaDeviceFeed`);
+      }
 
-        let processFeeds = [];
+      // Validate constraints
+      if (!constraints || typeof constraints !== "object") {
+        throw new Error("Invalid constraints provided");
+      }
 
-        // start video feed
-        processFeeds.push(
-          new Promise((resolve, reject) => {
-            if (!constraints.video) return resolve();
-            if (constraints._is_webrtc_screen_capture === true) {
-              navigator.mediaDevices
-                .getDisplayMedia({ video: constraints.video, audio: false })
-                .then((stream) => resolve({ type: "videoStream", stream }))
-                .catch((err) => reject(err));
-            } else {
-              navigator.mediaDevices
-                .getUserMedia({ video: constraints.video, audio: false })
-                .then((stream) => resolve({ type: "videoStream", stream }))
-                .catch((err) => reject(err));
-            }
-          })
-        );
+      try {
+        const streams = await Promise.allSettled([
+          this.startVideoFeed(constraints),
+          this.startAudioFeed(constraints),
+        ]);
 
-        // start audio feed
-        processFeeds.push(
-          new Promise((resolve, reject) => {
-            if (!constraints.audio) return resolve();
-            navigator.mediaDevices
-              .getUserMedia({ video: false, audio: constraints.audio })
-              .then((stream) => resolve({ type: "audioStream", stream }))
-              .catch((err) => reject(err));
-          })
-        );
+        const tracks = [];
+        const errors = [];
 
-        Promise.all(processFeeds)
-          .then((streams) => {
-            if (!streams) reject("no feed available");
+        // Process video stream
+        if (streams[0].status === "fulfilled" && streams[0].value) {
+          const videoStream = streams[0].value;
+          if (videoStream.stream) {
+            tracks.push(...videoStream.stream.getTracks());
+          }
+        } else if (streams[0].status === "rejected") {
+          errors.push(`Video: ${streams[0].reason.message}`);
+        }
 
-            let tracks = [];
+        // Process audio stream
+        if (streams[1].status === "fulfilled" && streams[1].value) {
+          const audioStream = streams[1].value;
+          if (audioStream.stream) {
+            tracks.push(...audioStream.stream.getAudioTracks());
+          }
+        } else if (streams[1].status === "rejected") {
+          errors.push(`Audio: ${streams[1].reason.message}`);
+        }
 
-            const video_stream = streams.find(
-              (s) => s && s.type === "videoStream"
-            );
-            if (video_stream) tracks.push(...video_stream.stream.getTracks());
+        // Check if we have any tracks
+        if (tracks.length === 0) {
+          throw new Error(`No media tracks available. ${errors.join("; ")}`);
+        }
 
-            const audio_stream = streams.find(
-              (s) => s && s.type === "audioStream"
-            );
-            if (audio_stream)
-              tracks.push(...audio_stream.stream.getAudioTracks());
+        return new MediaStream(tracks);
+      } catch (error) {
+        console.error("Failed to start media device feed:", error);
+        throw error;
+      }
+    },
 
-            let stream = new MediaStream(tracks);
+    async startVideoFeed(constraints) {
+      if (!constraints.video) {
+        return null;
+      }
 
-            resolve(stream);
-          })
-          .catch((err) => reject(err));
-      });
+      try {
+        let stream;
+        if (constraints._is_webrtc_screen_capture === true) {
+          stream = await navigator.mediaDevices.getDisplayMedia({
+            video: constraints.video,
+            audio: false,
+          });
+        } else {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: constraints.video,
+            audio: false,
+          });
+        }
+
+        return { type: "videoStream", stream };
+      } catch (error) {
+        console.error("Failed to start video feed:", error);
+        throw error;
+      }
+    },
+
+    async startAudioFeed(constraints) {
+      if (!constraints.audio) {
+        return null;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: false,
+          audio: constraints.audio,
+        });
+
+        return { type: "audioStream", stream };
+      } catch (error) {
+        console.error("Failed to start audio feed:", error);
+        throw error;
+      }
     },
     // getAllAvailableResolutions() {
     //   const all_resolutions = [];
@@ -918,480 +905,315 @@ export default {
     //     // this.$refs.videoElement.play();
     //   });
     // },
-    getDesktopCapturer() {
-      return new Promise((resolve) => {
-        // Check if we're in Electron and desktopCapturer is available
-        if (!window.electronAPI || !window.electronAPI.desktopCapturer) {
+    async getDesktopCapturer() {
+      // Check if we're in Electron and desktopCapturer is available
+      if (!window.electronAPI || !window.electronAPI.desktopCapturer) {
+        if (this.$root.debug_mode === true) {
           console.log(
             "Desktop capture not available (not in Electron or API missing)"
           );
-          return resolve([]);
+        }
+        return [];
+      }
+
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : getDesktopCapturer`);
+      }
+
+      try {
+        const sources = await window.electronAPI.desktopCapturer({
+          types: ["window", "screen"],
+        });
+
+        if (!sources || !Array.isArray(sources)) {
+          console.log("No desktop sources available");
+          return [];
         }
 
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : getDesktopCapturer`);
+        const desktopSources = sources.map((s) => {
+          return {
+            chromeMediaSource: "desktop",
+            deviceId: s.id,
+            kind: "videoinput",
+            label: "🖥️ " + s.name,
+            thumbnail: s.thumbnail, // Include thumbnail for preview
+          };
+        });
 
-        window.electronAPI
-          .desktopCapturer({ types: ["window", "screen"] })
-          .then((sources) => {
-            if (!sources || !Array.isArray(sources)) {
-              console.log("No desktop sources available");
-              return resolve([]);
-            }
-
-            const desktopSources = sources.map((s) => {
-              return {
-                chromeMediaSource: "desktop",
-                deviceId: s.id,
-                kind: "videoinput",
-                label: "🖥️ " + s.name,
-                thumbnail: s.thumbnail, // Include thumbnail for preview
-              };
-            });
-
-            console.log(`Found ${desktopSources.length} desktop sources`);
-            return resolve(desktopSources);
-          })
-          .catch((err) => {
-            console.error("Desktop capture error:", err);
-            resolve([]); // Return empty array instead of rejecting
-          });
-      });
+        console.log(`Found ${desktopSources.length} desktop sources`);
+        return desktopSources;
+      } catch (error) {
+        console.error("Desktop capture error:", error);
+        return []; // Return empty array instead of rejecting
+      }
     },
-    refreshAvailableDevices() {
-      return new Promise((resolve) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : refreshAvailableDevices`);
+    async refreshAvailableDevices() {
+      console.log("Refreshing available devices...");
 
-        this.connected_devices = [];
-        this.is_loading_available_devices = true;
-        this.setSupportedConstraints()
-          .then(() => this.listDevices())
-          .then((devices) => {
-            this.connected_devices = devices.map((d) => {
-              const { label, kind, deviceId, chromeMediaSource = false } = d;
-              let facingMode = {};
-              try {
-                facingMode = d.getCapabilities()?.facingMode?.[0];
-              } catch (e) {
-                /**/
-              }
+      this.connected_devices = [];
+      this.is_loading_available_devices = true;
 
-              return {
-                label,
-                kind,
-                deviceId,
-                facingMode,
-                chromeMediaSource,
-              };
-            });
+      try {
+        // Set supported constraints first
+        console.log("Setting supported constraints...");
+        this.setSupportedConstraints();
 
-            // if (!this.$root.is_electron) {
-            this.connected_devices.push({
-              deviceId: "screen_capture",
-              kind: "videoinput",
-              label: "🖥️ " + this.$t("screen_capture"),
-            });
-            // }
+        // Get device list
+        console.log("Enumerating devices...");
+        const devices = await this.listDevices();
+        console.log("Found devices:", devices.length);
 
-            this.is_loading_available_devices = false;
-            return resolve();
-          });
-      });
-    },
-    setCameraStreamFromDefaults() {
-      return new Promise((resolve, reject) => {
-        if (this.$root.debug_mode === true)
-          console.log(
-            `CaptureSettings • METHODS : setCameraStreamFromDefaults`
+        // Process and validate devices
+        this.connected_devices = devices.map((d) => {
+          const { label, kind, deviceId, chromeMediaSource = false } = d;
+          let facingMode = {};
+
+          try {
+            const capabilities = d.getCapabilities?.();
+            facingMode = capabilities?.facingMode?.[0] || {};
+          } catch (error) {
+            // Capabilities not available, continue with empty facingMode
+            console.warn("Could not get device capabilities:", error);
+          }
+
+          return {
+            label: label || `Unknown ${kind}`,
+            kind,
+            deviceId,
+            facingMode,
+            chromeMediaSource,
+          };
+        });
+
+        // Add screen capture option for non-Electron environments
+        this.connected_devices.push({
+          deviceId: "screen_capture",
+          kind: "videoinput",
+          label: "🖥️ " + this.$t("screen_capture"),
+        });
+
+        console.log("Processed devices:", this.connected_devices.length);
+        this.is_loading_available_devices = false;
+      } catch (error) {
+        console.error("Failed to refresh available devices:", error);
+        this.is_loading_available_devices = false;
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            (this.$t("failed_listing_devices") || "Failed to list devices") +
+              "<br>" +
+              error.message
           );
 
-        this.is_loading_feed = true;
+        throw error;
+      }
+    },
+    async setCameraStreamFromDefaults() {
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : setCameraStreamFromDefaults`);
+      }
 
-        if (this.selected_devices.audio_output_device)
+      this.is_loading_feed = true;
+
+      try {
+        // Update audio output device if selected
+        if (this.selected_devices.audio_output_device) {
           this.$emit(
             "update:audio_output_deviceId",
             this.selected_devices.audio_output_device.deviceId
           );
+        }
 
-        this.startLocalStream()
-          .then(() => {
-            this.stream_current_settings = this.current_settings;
-            this.last_working_resolution = this.desired_camera_resolution;
-            this.is_loading_feed = false;
-            return;
-          })
-          .catch((error) => {
-            this.is_loading_feed = false;
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(
-                this.$t("failed_to_start_streams_change_source_or_res") +
-                  "<br>" +
-                  error.name
-              );
-            if (this.desired_camera_resolution.type !== "custom") {
-              this.unavailable_camera_resolutions.push(
-                this.desired_camera_resolution.label
-              );
-              if (this.last_working_resolution) {
-                this.desired_camera_resolution = this.last_working_resolution;
-                this.last_working_resolution = false;
-                setTimeout(() => {
-                  this.setCameraStreamFromDefaults()
-                    .then(() => resolve())
-                    .catch(() => reject());
-                }, 500);
-              } else {
-                return reject();
-              }
+        await this.startLocalStream();
+
+        this.stream_current_settings = this.current_settings;
+        this.last_working_resolution = this.desired_camera_resolution;
+        this.is_loading_feed = false;
+      } catch (error) {
+        this.is_loading_feed = false;
+
+        console.error("Failed to set camera stream:", error);
+
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(
+            (this.$t("failed_to_start_streams_change_source_or_res") ||
+              "Failed to start streams. Try changing source or resolution") +
+              "<br>" +
+              error.name
+          );
+
+        // Try to recover with last working resolution
+        if (
+          this.desired_camera_resolution?.type !== "custom" &&
+          this.last_working_resolution
+        ) {
+          this.unavailable_camera_resolutions.push(
+            this.desired_camera_resolution.label
+          );
+          this.desired_camera_resolution = this.last_working_resolution;
+          this.last_working_resolution = false;
+
+          // Retry after a short delay
+          setTimeout(async () => {
+            try {
+              await this.setCameraStreamFromDefaults();
+            } catch (retryError) {
+              console.error("Retry failed:", retryError);
             }
-          })
-          .then(() => {
-            this.share_this_stream.status.loading = true;
-            return this.setStreamSharing();
-          })
-          .then(() => {
-            this.share_this_stream.status.loading = false;
-            this.is_loading_feed = false;
-            return resolve();
-          })
-          .catch((error) => {
-            this.share_this_stream.status.loading = false;
-            this.is_loading_feed = false;
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(this.$t("failed_to_share_stream") + "<br>" + error.name);
-          });
-      });
+          }, 500);
+        } else {
+          throw error;
+        }
+      }
     },
-    startLocalStream() {
-      return new Promise((resolve, reject) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : startLocalStream`);
+    async startLocalStream() {
+      if (this.$root.debug_mode === true) {
+        console.log(`CaptureSettings • METHODS : startLocalStream`);
+      }
 
-        //Kill any running streams;
-        if (this.local_stream)
+      try {
+        // Clean up any existing stream
+        await this.cleanupStream();
+
+        // Create constraints from selected devices
+        const constraints = this.createConstraintsFromSelected();
+
+        // Validate constraints before attempting to create stream
+        this.validateConstraints(constraints);
+
+        // Start the media device feed
+        const stream = await this.startMediaDeviceFeed(constraints);
+
+        this.local_stream = stream;
+
+        // Emit the stream directly to the parent component
+        this.$emit("setStream", stream);
+
+        return stream;
+      } catch (error) {
+        console.error("getUserMedia error:", error);
+        this.$emit("show");
+
+        if (error.name === "NotAllowedError") {
+          this.status = "not_allowed";
+        }
+
+        throw error;
+      }
+    },
+
+    async cleanupStream() {
+      if (this.local_stream) {
+        try {
           this.local_stream.getTracks().forEach((track) => track.stop());
+          this.local_stream = undefined;
+          // Wait a bit for cleanup to complete
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        } catch (error) {
+          console.warn("Error during stream cleanup:", error);
+        }
+      }
+    },
 
-        let constraints = this.createConstraintsFromSelected();
+    validateConstraints(constraints) {
+      if (!constraints || typeof constraints !== "object") {
+        throw new Error("Invalid constraints object");
+      }
 
-        setTimeout(
-          () => {
-            this.startMediaDeviceFeed(constraints)
-              .then((stream) => {
-                this.local_stream = stream;
-                return resolve();
-              })
-              .catch((error) => {
-                console.log("getUserMedia error : ", error);
-                this.$emit("show");
-                if (error.name === "NotAllowedError") {
-                  this.status = "not_allowed";
-                }
-                return reject(error);
-              });
-          },
-          this.local_stream ? 200 : 0
-        ); //official examples had this at 200
-      });
+      // Validate video constraints if present
+      if (constraints.video && typeof constraints.video === "object") {
+        if (constraints.video.width && constraints.video.height) {
+          if (constraints.video.width < 1 || constraints.video.height < 1) {
+            throw new Error("Invalid video dimensions");
+          }
+        }
+      }
+
+      // Validate audio constraints if present
+      if (constraints.audio && typeof constraints.audio === "object") {
+        if (constraints.audio.deviceId && !constraints.audio.deviceId.exact) {
+          console.warn("Audio deviceId should use exact constraint");
+        }
+      }
     },
     createConstraintsFromSelected() {
-      if (this.$root.debug_mode === true)
+      if (this.$root.debug_mode === true) {
         console.log(
           `CaptureSettings • METHODS : createConstraintsFromSelected`
         );
+      }
 
-      let _constraints = {
+      const constraints = {
         audio: false,
         video: false,
       };
 
-      _constraints.audio = {
-        deviceId: this.selected_devices.audio_input_device.deviceId
-          ? { exact: this.selected_devices.audio_input_device.deviceId }
-          : undefined,
-        echoCancellation:
-          this.advanced_capture_options.echoCancellation.enabled,
-        noiseSuppression:
-          this.advanced_capture_options.noiseSuppression.enabled,
-      };
-
-      // IF ELECTRON DESKTOP CAPTURER AND VIDEO ENABLED
-      if (this.selected_devices.video_input_device?.chromeMediaSource) {
-        // screen capture devices
-        _constraints._is_electron_screen_capture = true;
-        _constraints.video = {
-          mandatory: {
-            chromeMediaSource:
-              this.selected_devices.video_input_device.chromeMediaSource,
-            chromeMediaSourceId:
-              this.selected_devices.video_input_device.deviceId,
-            // minWidth: this.desired_camera_resolution.width,
-            // maxWidth: this.desired_camera_resolution.width,
-            // minHeight: this.desired_camera_resolution.height,
-            // maxHeight: this.desired_camera_resolution.height,
-          },
+      // Audio constraints
+      if (this.selected_devices.audio_input_device) {
+        constraints.audio = {
+          deviceId: this.selected_devices.audio_input_device.deviceId
+            ? { exact: this.selected_devices.audio_input_device.deviceId }
+            : undefined,
+          echoCancellation:
+            this.advanced_capture_options.echoCancellation.enabled,
+          noiseSuppression:
+            this.advanced_capture_options.noiseSuppression.enabled,
         };
-      } else {
-        // IF BROWSER SCREEN CAPTURE
-        // IF BROWSER OR ELECTRON CAMERA FEED
-        if (
-          this.selected_devices.video_input_device &&
-          this.selected_devices.video_input_device.deviceId === "screen_capture"
-        ) {
-          _constraints._is_webrtc_screen_capture = true;
-          _constraints.video = {
+      }
+
+      // Video constraints
+      if (this.selected_devices.video_input_device) {
+        const videoDevice = this.selected_devices.video_input_device;
+
+        // Electron desktop capturer
+        if (videoDevice.chromeMediaSource) {
+          constraints._is_electron_screen_capture = true;
+          constraints.video = {
+            mandatory: {
+              chromeMediaSource: videoDevice.chromeMediaSource,
+              chromeMediaSourceId: videoDevice.deviceId,
+            },
+          };
+        }
+        // Browser screen capture
+        else if (videoDevice.deviceId === "screen_capture") {
+          constraints._is_webrtc_screen_capture = true;
+          constraints.video = {
             cursor: this.advanced_capture_options.cursor.enabled,
           };
-        } else {
-          _constraints.video = {
-            deviceId: this.selected_devices.video_input_device.deviceId
-              ? {
-                  exact: this.selected_devices.video_input_device.deviceId,
-                }
+        }
+        // Regular camera
+        else {
+          constraints.video = {
+            deviceId: videoDevice.deviceId
+              ? { exact: videoDevice.deviceId }
               : undefined,
-            width: { exact: this.desired_camera_resolution.width }, //new syntax
-            height: { exact: this.desired_camera_resolution.height }, //new syntax
           };
+
+          // Add resolution constraints if available and valid
+          if (
+            this.desired_camera_resolution?.width &&
+            this.desired_camera_resolution?.height
+          ) {
+            constraints.video.width = {
+              exact: this.desired_camera_resolution.width,
+            };
+            constraints.video.height = {
+              exact: this.desired_camera_resolution.height,
+            };
+          }
         }
       }
 
-      console.log("Constraints = " + JSON.stringify(_constraints, null, 4));
+      if (this.$root.debug_mode === true) {
+        console.log("Constraints = " + JSON.stringify(constraints, null, 4));
+      }
 
-      return _constraints;
-    },
-    setStreamSharing() {
-      return new Promise((resolve, reject) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : setStreamSharing`);
-
-        if (!this.share_this_stream.enabled) {
-          this.stopSharingStream();
-          return resolve();
-        }
-
-        if (this.share_this_stream.name.length === 0)
-          return reject("missing_stream_name");
-
-        if (!this.local_stream)
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("no_stream_found_while_sharing"));
-
-        if (!this.rtcmulti_connection) {
-          this.initRTCMulti();
-        }
-
-        this.rtcmulti_connection.addStream(this.local_stream);
-
-        this.rtcmulti_connection.open(
-          this.share_this_stream.name,
-          (isRoomOpened, roomid, error) => {
-            if (this.$root.debug_mode === true)
-              console.log(
-                `CaptureSettings • METHODS : setStreamSharing • opened room ${roomid}`
-              );
-
-            this.share_this_stream.status.enabled = true;
-            this.share_this_stream.status.name = roomid;
-
-            this.rtcmulti_connection.onNewParticipant = (
-              participantId,
-              userPreferences
-            ) =>
-              this.newParticipantOnStream({ participantId, userPreferences });
-
-            this.rtcmulti_connection.onleave = (participantId) =>
-              this.onParticipantLeave({ participantId });
-
-            if (error) {
-              this.$alertify
-                .closeLogOnClick(true)
-                .delay(4000)
-                .error(
-                  this.$t("failed_to_start_stream_sharing") +
-                    " " +
-                    error.message
-                );
-            }
-          }
-        );
-
-        return resolve();
-      });
-    },
-    newParticipantOnStream({ participantId, userPreferences }) {
-      this.share_this_stream.status.peers_connected.push(participantId);
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(8000)
-        .success(this.$t("new_user_connected_to_stream"));
-
-      this.rtcmulti_connection.acceptParticipationRequest(
-        participantId,
-        userPreferences
-      );
-    },
-    onParticipantLeave(participantId) {
-      if (this.$root.debug_mode === true)
-        console.log(
-          `CaptureSettings • METHODS : onParticipantLeave ${participantId}`
-        );
-
-      this.share_this_stream.status.peers_connected.filter(
-        (id) => id !== participantId
-      );
-    },
-    callStream() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : callStream`);
-
-      this.access_distant_stream.calling = true;
-
-      if (!this.rtcmulti_connection) this.initRTCMulti();
-
-      const call_timeout = setTimeout(() => {
-        this.access_distant_stream.calling = false;
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error("Failed to call timeout");
-      }, 5000);
-
-      this.rtcmulti_connection.onstream = (event) => {
-        if (this.$root.debug_mode === true)
-          console.log(`CaptureSettings • METHODS : callStream • onstream`);
-
-        event.mediaElement.removeAttribute("src");
-        event.mediaElement.removeAttribute("srcObject");
-        event.mediaElement.muted = true;
-        event.mediaElement.volume = 0;
-
-        if (this.access_distant_stream.calling) {
-          this.remote_stream = event.stream;
-          this.access_distant_stream.calling = false;
-          this.access_distant_stream.status.enabled = true;
-          clearTimeout(call_timeout);
-        }
-      };
-
-      this.rtcmulti_connection.checkPresence(
-        this.access_distant_stream.callee,
-        (isOnline, username) => {
-          if (this.$root.debug_mode === true)
-            console.log(
-              `CaptureSettings • METHODS : username • for ${username} and ${isOnline}`
-            );
-          if (!isOnline) {
-            this.$alertify
-              .closeLogOnClick(true)
-              .delay(4000)
-              .error(username + " is not online.");
-
-            this.access_distant_stream.calling = false;
-            clearTimeout(call_timeout);
-            return;
-          }
-
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(username + " is online.");
-          this.access_distant_stream.status.callee = username;
-          this.rtcmulti_connection.join(username);
-        }
-      );
-    },
-    hangupStream() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : hangupStream`);
-
-      this.rtcmulti_connection.leave();
-      this.access_distant_stream.status.enabled = false;
-    },
-    initRTCMulti() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : initRTCMulti`);
-
-      if (!window.rtcmulti_connection)
-        window.rtcmulti_connection = new RTCMultiConnection();
-      this.rtcmulti_connection = window.rtcmulti_connection;
-
-      this.rtcmulti_connection.iceServers = [
-        {
-          urls: [
-            "stun:stun.l.google.com:19302",
-            "stun:stun1.l.google.com:19302",
-            "stun:stun2.l.google.com:19302",
-            "stun:stun.l.google.com:19302?transport=udp",
-          ],
-        },
-      ];
-
-      // detect 2G
-      if (
-        navigator.connection &&
-        navigator.connection.type === "cellular" &&
-        navigator.connection.downlinkMax <= 0.115
-      )
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("bandwidth_very_low_for_stream_sharing"));
-
-      this.rtcmulti_connection.socketURL =
-        "https://rtcmulticonnection.herokuapp.com:443/";
-
-      this.rtcmulti_connection.dontCaptureUserMedia = true;
-
-      this.rtcmulti_connection.session = {
-        video: true,
-        audio: true,
-        oneway: true,
-      };
-
-      this.rtcmulti_connection.onstream = (event) => {
-        console.log("CaptureSettings: onstream");
-        event.mediaElement.volume = 0;
-      };
-      this.rtcmulti_connection.onstreamended = () => {
-        console.log("CaptureSettings: onstreamended");
-        this.$alertify.closeLogOnClick(true).delay(4000).error("onstreamended");
-        // this.share_this_stream.status.enabled = false;
-      };
-      this.rtcmulti_connection.onMediaError = (e) => {
-        console.log("CaptureSettings: onMediaError");
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("stream_sharing_media_error") + e.message);
-      };
-    },
-    stopSharingStream() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : stopSharingStream`);
-
-      if (!this.rtcmulti_connection) return;
-
-      // only disconnect peers connected to this stream
-
-      this.share_this_stream.status.peers_connected.map((pid) => {
-        this.rtcmulti_connection.disconnectWith(pid);
-      });
-    },
-    closeMultiRTC() {
-      if (this.$root.debug_mode === true)
-        console.log(`CaptureSettings • METHODS : closeMultiRTC`);
-
-      if (!this.rtcmulti_connection) return;
-
-      this.stopSharingStream();
-      this.rtcmulti_connection.closeSocket();
+      return constraints;
     },
   },
 };
@@ -1513,12 +1335,6 @@ export default {
   padding: calc(var(--spacing) / 2);
   display: flex;
   justify-content: center;
-}
-.m_captureSettings--updateButton--shareStreamToggle {
-  position: relative;
-  background-color: var(--c-rouge_fonce);
-  color: white;
-  text-align: center;
 }
 
 ._close_button {
