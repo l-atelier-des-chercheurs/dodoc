@@ -180,7 +180,7 @@ export default {
   --color-text: white;
 
   position: relative;
-  display: inline-flex;
+  // display: inline-flex;
   background: var(--color1);
   color: var(--color2);
   // border: 1px solid var(--color1);
@@ -189,9 +189,10 @@ export default {
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  // width: 24px;
+  // height: 24px;
+  // flex: 0 0 24px;
+  padding: calc(var(--spacing) / 4);
 
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);

@@ -27,7 +27,7 @@
           class="u-instructions _noSourceMedia"
           v-text="$t('source_media_missing')"
         />
-        <CollaborativeEditor2
+        <CollaborativeEditor3
           v-else-if="media_with_linked._linked_media.$type === 'text'"
           class="_mediaContent--collabEditor"
           :key="edit_mode"

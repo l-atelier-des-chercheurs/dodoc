@@ -392,9 +392,8 @@
                   caption: active_module_first_media.caption,
                 })
               "
-            >
-              {{ active_module_first_media.caption }}
-            </button>
+              v-html="$sanitize(active_module_first_media.caption)"
+            />
           </div>
 
           <div class="u-spacingBottom" />

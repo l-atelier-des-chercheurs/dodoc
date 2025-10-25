@@ -59,17 +59,6 @@
           :context="'full'"
           :show_fs_button="true"
         />
-        <CollaborativeEditor2
-          v-else
-          ref="textBloc"
-          :path="first_media.$path"
-          :content="first_media.$content"
-          :line_selected="false"
-          :can_edit="true"
-          @lineClicked="$emit('lineClicked', $event)"
-          @contentIsEdited="$emit('contentIsEdited', $event)"
-          @contentIsNotEdited="$emit('contentIsNotEdited', $event)"
-        />
         <div class="_imageDurationPicker" v-if="first_media.$type === 'image'">
           <NumberInput
             :value="makemodule.image_duration || default_image_duration"

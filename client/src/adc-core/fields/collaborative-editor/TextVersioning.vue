@@ -51,7 +51,7 @@
           :key="selected_archive_filename"
         >
           <div class="_archiveText">
-            <CollaborativeEditor2
+            <CollaborativeEditor3
               :content="archive_shown.content"
               :can_edit="false"
             />

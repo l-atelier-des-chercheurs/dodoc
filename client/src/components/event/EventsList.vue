@@ -29,7 +29,7 @@
 		73.6,73.4 73.6,35.7 94.6,35.7 94.6,73.4 		"
           />
         </svg>
-        &nbsp;
+
         {{ $t("create") }}
       </button>
       <CreateFolder

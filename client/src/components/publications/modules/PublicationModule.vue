@@ -301,7 +301,7 @@
         @remove="removeModule"
       />
       <!-- // specific to page by page -->
-      <CollaborativeEditor2
+      <CollaborativeEditor3
         v-else-if="publimodule.module_type === 'text' && first_media"
         ref="textBloc"
         :path="first_media.$path"
@@ -400,7 +400,7 @@
       <small v-else>{{ $t("nothing_to_show") }}</small>
 
       <div class="_captionField" v-if="show_caption">
-        <CollaborativeEditor2
+        <CollaborativeEditor3
           class="_caption"
           :label="
             edit_mode &&
@@ -437,9 +437,8 @@
                 caption: first_media.caption,
               })
             "
-          >
-            {{ first_media.caption }}
-          </button>
+            v-html="$sanitize(first_media.caption)"
+          />
         </div>
       </div>
     </div>

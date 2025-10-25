@@ -23,7 +23,7 @@
           class="u-spacingBottom"
           v-if="media.caption || canEditLinkedMedia(media.$path) !== false"
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             :label="$t('caption')"
             :field_to_edit="'caption'"
             :content="media.caption"
@@ -37,7 +37,7 @@
           class="u-spacingBottom"
           v-if="media.$credits || canEditLinkedMedia(media.$path) !== false"
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
             :content="media.$credits"
