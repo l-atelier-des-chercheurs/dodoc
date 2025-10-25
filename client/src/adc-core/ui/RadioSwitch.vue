@@ -125,16 +125,20 @@ menu {
   // padding: calc(var(--spacing) / 4);
   // margin: -1px;
 
+  .radio-switch__label {
+    border-radius: 0;
+  }
+
   &:first-child {
     .radio-switch__label {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
+      border-top-left-radius: var(--radio-switch-radius);
+      border-bottom-left-radius: var(--radio-switch-radius);
     }
   }
   &:last-child {
     .radio-switch__label {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
+      border-top-right-radius: var(--radio-switch-radius);
+      border-bottom-right-radius: var(--radio-switch-radius);
     }
   }
 }

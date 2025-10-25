@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="u-button u-button_verysmall _editBtn"
+    class="u-button _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
       'is--spinning': is_spinning,
