@@ -51,6 +51,7 @@
         <div class="m_captureview--videoPane--top--videoContainer">
           <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
+              v-if="showVideoElement"
               ref="videoElement"
               autoplay
               playsinline
@@ -1025,6 +1026,7 @@ export default {
       // },
 
       stream: undefined,
+      showVideoElement: true, // Control video element visibility for proper cleanup
 
       audio_output_deviceId: undefined,
 
@@ -1132,6 +1134,9 @@ export default {
     this.cancelDelay();
     this.eraseTimer();
     await this.stopStream();
+
+    // Ensure video element is removed
+    this.showVideoElement = false;
 
     if (this.update_last_video_imageData)
       window.cancelAnimationFrame(this.update_last_video_imageData);
@@ -1269,12 +1274,9 @@ export default {
         this.stream = null;
       }
 
-      // Clear video element srcObject to fully release camera
-      if (this.$refs.videoElement) {
-        console.log("CaptureView: Clearing video element srcObject");
-        this.$refs.videoElement.srcObject = null;
-        this.$refs.videoElement.src = "";
-      }
+      // Remove video element from DOM to fully release camera
+      console.log("CaptureView: Removing video element from DOM");
+      this.showVideoElement = false;
 
       // Stop any active recorder
       if (this.recorder) {
@@ -1299,7 +1301,12 @@ export default {
     setStream(stream) {
       console.log("CaptureView: METHODS • setStream", stream);
       this.stream = stream;
-      this.$refs.videoElement.volume = 0;
+      this.showVideoElement = true;
+      this.$nextTick(() => {
+        if (this.$refs.videoElement) {
+          this.$refs.videoElement.volume = 0;
+        }
+      });
       this.enable_effects = false;
     },
     updateSelectedColor({ e, type }) {
