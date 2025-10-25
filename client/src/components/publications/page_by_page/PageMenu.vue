@@ -1086,7 +1086,7 @@ export default {
   }
 
   button {
-    font-size: var(--sl-font-size-medium);
+    font-size: var(--sl-font-size-normal);
   }
 }
 

@@ -367,7 +367,7 @@ export default {
 
     ._title {
       h3 {
-        font-size: var(--sl-font-size-medium);
+        font-size: var(--sl-font-size-normal);
       }
     }
   }
