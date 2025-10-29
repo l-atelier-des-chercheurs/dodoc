@@ -51,12 +51,10 @@
             gridRowEnd: area.row_end,
           }"
           @click="selectArea(area.id)"
+          @mousedown="startDrag(area.id, $event)"
         >
-          <!-- Area label (drag handle) -->
-          <div
-            class="_gridArea--label"
-            @mousedown.stop="startDrag(area.id, $event)"
-          >
+          <!-- Area label -->
+          <div class="_gridArea--label">
             {{ area.id }}
           </div>
 
@@ -380,6 +378,7 @@ export default {
 
     ._gridCell--addIcon {
       opacity: 0.7;
+      color: var(--active-color);
     }
   }
 
@@ -408,7 +407,7 @@ export default {
   position: relative;
   border: 2px solid var(--c-gris);
   background: white;
-  cursor: pointer;
+  cursor: move;
   transition: border-color 0.15s ease;
   display: flex;
   align-items: center;
@@ -438,19 +437,7 @@ export default {
     align-items: center;
     font-weight: 600;
     user-select: none;
-    cursor: move;
-
-    svg {
-      opacity: 0.3;
-    }
-
-    &:hover {
-      color: var(--c-noir);
-
-      svg {
-        opacity: 0.5;
-      }
-    }
+    pointer-events: none;
   }
 }
 
@@ -468,6 +455,7 @@ export default {
   padding: 2px;
   opacity: 0;
   transition: opacity 0.15s ease;
+  z-index: 10;
 
   ._gridArea:hover &,
   ._gridArea._gridArea--selected & {
