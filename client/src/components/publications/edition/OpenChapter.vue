@@ -100,6 +100,10 @@
             <b-icon icon="image" />
             {{ $t("gallery") }}
           </template>
+          <template v-else-if="chapter.section_type === 'grid'">
+            <b-icon icon="grid" />
+            {{ $t("grid") }}
+          </template>
           <template v-else-if="chapter.section_type === 'story'">
             <b-icon icon="list" />
             {{ $t("story") }}
@@ -204,6 +208,9 @@
         <template v-if="chapter.section_type === 'gallery'">
           <GalleryChapter :chapter="chapter" :publication="publication" />
         </template>
+        <template v-if="chapter.section_type === 'grid'">
+          <GridChapter :chapter="chapter" :publication="publication" />
+        </template>
         <template v-if="chapter.section_type === 'story'">
           <SingleSection
             class="_singleSection"
@@ -223,6 +230,7 @@ import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 
 import PickMediaForMarkdown from "@/components/publications/edition/PickMediaForMarkdown.vue";
 import GalleryChapter from "@/components/publications/edition/GalleryChapter.vue";
+import GridChapter from "@/components/publications/edition/GridChapter.vue";
 
 export default {
   props: {
@@ -238,6 +246,7 @@ export default {
     // MarkdownEditor,
     PickMediaForMarkdown,
     GalleryChapter,
+    GridChapter,
     SingleSection: () =>
       import("@/components/publications/story/SingleSection.vue"),
   },
