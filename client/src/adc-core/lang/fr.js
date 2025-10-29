@@ -1481,6 +1481,10 @@ export default {
   from_website: "Depuis un site",
   resources: "Ressources",
   free_resources: "Ressources libres",
+  free_resources_description:
+    "Accéder à des médias libres depuis des collections en ligne (nécessite une connexion internet)",
+  import_from_project: "Importer depuis un projet",
+  import_from_project_description: "Utiliser des médias de vos projets",
   resources_picker: "Sélecteur de ressources",
   loading_resources: "Chargement des ressources…",
   downloading: "Téléchargement…",
