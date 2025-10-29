@@ -349,7 +349,7 @@ export default {
   position: relative;
   background: var(--c-gris_clair);
   padding: calc(var(--spacing) / 4);
-  min-height: 300px;
+  // min-height: 300px;
 }
 
 ._gridBackground {
@@ -359,7 +359,8 @@ export default {
 
 ._gridCell--background {
   background: var(--c-blanc);
-  border: 1px dashed var(--c-gris);
+  outline: 1px dashed var(--c-gris);
+  outline-offset: -1px;
   height: 64px;
   cursor: pointer;
   position: relative;
@@ -370,7 +371,7 @@ export default {
 
   &:not(._gridCell--occupied):hover {
     background: var(--c-gris_clair);
-    border-color: var(--c-bleuvert);
+    outline-color: var(--c-bleuvert);
 
     ._gridCell--addIcon {
       opacity: 1;
@@ -407,7 +408,7 @@ export default {
 ._gridArea {
   position: relative;
   border: 2px solid var(--c-bleuvert);
-  background: var(--c-blanc);
+  background: rgba(255, 255, 255, 0.95);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -415,6 +416,8 @@ export default {
   justify-content: center;
   overflow: hidden;
   pointer-events: auto;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
@@ -423,7 +426,7 @@ export default {
 
   &._gridArea--selected {
     border-color: var(--c-bleumarine);
-    border-width: 3px;
+    // border-width: 3px;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
   }
 
