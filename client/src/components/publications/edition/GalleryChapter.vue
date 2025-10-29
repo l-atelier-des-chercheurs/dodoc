@@ -1,5 +1,6 @@
 <template>
   <div class="_galleryChapter">
+    {{ chapter.source_medias }}
     <transition-group tag="div" class="_gallery" name="StoryModules" appear>
       <div
         class="_gallery--item"

@@ -81,6 +81,8 @@
       </div>
     </div>
 
+    {{ chapter.grid_areas }}
+
     <!-- Add new area button (optional fallback) -->
     <div v-if="grid_areas.length === 0" class="_addAreaButton">
       <p class="u-instructions">

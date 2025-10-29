@@ -219,6 +219,8 @@ export default {
           _chapter.content = this.parseGallery(chapter.source_medias);
         } else if (chapter.section_type === "story") {
           _chapter.content = this.parseStory(chapter);
+        } else if (chapter.section_type === "grid") {
+          _chapter.content = this.parseGrid(chapter);
         }
 
         nodes.chapters.push(_chapter);
@@ -409,9 +411,9 @@ export default {
         )}</i></div>`;
 
       const medias = source_medias
-        .map((media) => {
+        .map((source_media) => {
           return this.getSourceMedia({
-            source_media: media,
+            source_media,
             folder_path: this.publication.$path,
           });
         })
@@ -479,6 +481,32 @@ export default {
       );
 
       return html;
+    },
+
+    parseGrid(chapter) {
+      let grid_html = "<div class='grid'>";
+
+      chapter.grid_areas.forEach((area) => {
+        const text_meta = this.publication.$files.find(
+          (f) => f.grid_area_id === area.id
+        );
+        if (text_meta) {
+          const text = this.parseMarkdownWithMarkedownIt(
+            text_meta.$content,
+            text_meta.source_medias
+          );
+
+          // here we will generate the HTML for that grid, for example when area has column_start": 1, "column_end": 2, "row_start": 1, "row_end": 2
+          const grid_html = `
+<div class="grid">
+  <div class="grid-cell" style="grid-column-start: ${area.column_start}; grid-column-end: ${area.column_end}; grid-row-start: ${area.row_start}; grid-row-end: ${area.row_end};">${text}</div>
+</div>
+`;
+          return grid_html;
+        }
+      });
+
+      return chapter_areas;
     },
 
     getMediaSrc(meta_src, source_medias) {

@@ -33,14 +33,21 @@
 
     <hr />
 
-    <pre
-      >{{ chapter.grid_areas }}
-    </pre>
+    <div class="_gridItems">
+      <GridItem
+        v-for="area in chapter.grid_areas"
+        :key="area.id"
+        :area="area"
+        :area_text_meta="getAreaTextMeta(area)"
+        @createText="createText"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 import GridAreas from "./GridAreas.vue";
+import GridItem from "./GridItem.vue";
 
 export default {
   props: {
@@ -49,6 +56,7 @@ export default {
   },
   components: {
     GridAreas,
+    GridItem,
   },
   data() {
     return {};
@@ -61,6 +69,21 @@ export default {
         new_meta,
       });
     },
+    async createText(areaId) {
+      const filename = areaId + "_text.md";
+      const { meta_filename } = await this.$api.uploadText({
+        path: this.publication.$path,
+        filename,
+        content: "",
+        additional_meta: {
+          content_type: "markdown",
+          grid_area_id: areaId,
+        },
+      });
+    },
+    getAreaTextMeta(area) {
+      return this.publication.$files.find((f) => f.grid_area_id === area.id);
+    },
   },
 };
 </script>
@@ -68,12 +91,6 @@ export default {
 <style lang="scss" scoped>
 ._gridChapter {
   padding-bottom: calc(var(--spacing) * 1);
-}
-
-._gridAreas {
-  // display: flex;
-  // flex-direction: row nowrap;
-  // gap: calc(var(--spacing) * 1);
 }
 ._gridInputs {
   display: flex;
@@ -83,5 +100,11 @@ export default {
   > * {
     flex: 1 1 0;
   }
+}
+
+._gridItems {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) * 1);
 }
 </style>
