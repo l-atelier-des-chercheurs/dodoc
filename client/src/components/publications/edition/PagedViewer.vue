@@ -149,7 +149,11 @@ export default {
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
         >`;
-        if (chapter.title && chapter.section_type !== "gallery")
+        if (
+          chapter.title &&
+          chapter.section_type !== "gallery" &&
+          chapter.section_type !== "grid"
+        )
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content)
           html += `<div class="chapterContent">${chapter.content}</div>`;

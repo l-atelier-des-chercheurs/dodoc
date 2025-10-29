@@ -184,15 +184,18 @@ hr {
   }
 }
 
-.book .gallery {
+.book .gallery,
+.book .grid {
   height: var(--pagedjs-height);
 }
-.book .gallery-content {
+.book .gallery-content,
+.book .grid-content {
   position: absolute;
   top: calc(var(--pagedjs-margin-top) * -1);
   left: calc(var(--pagedjs-margin-left) * -1);
   width: var(--pagedjs-width);
   height: var(--pagedjs-height);
+  overflow: hidden;
 
   &:after {
     content: "";
@@ -204,6 +207,37 @@ hr {
 
 .web .gallery-content {
   height: 80vh;
+}
+
+/* GRID LAYOUT */
+.edition .grid {
+  position: relative;
+  break-after: page;
+  
+}
+
+.edition .grid-content {
+  display: grid;
+  grid-template-columns: repeat(var(--col-count, 12), 1fr);
+  grid-template-rows: repeat(var(--row-count, 1), 1fr);
+  gap: var(--spacing);
+  height: 100%;
+}
+
+.edition .grid-cell {
+  /* Grid positioning is set via inline styles */
+  /* e.g. grid-column-start, grid-column-end, grid-row-start, grid-row-end */
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+}
+
+.edition .grid-cell > *:first-child {
+  margin-top: 0;
+}
+
+.edition .grid-cell > *:last-child {
+  margin-bottom: 0;
 }
 
 .media-container {
