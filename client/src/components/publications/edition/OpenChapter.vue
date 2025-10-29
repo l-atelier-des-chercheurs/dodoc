@@ -101,7 +101,7 @@
             {{ $t("gallery") }}
           </template>
           <template v-else-if="chapter.section_type === 'grid'">
-            <b-icon icon="grid" />
+            <b-icon icon="grid-fill" />
             {{ $t("grid") }}
           </template>
           <template v-else-if="chapter.section_type === 'story'">
@@ -580,9 +580,7 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
-  .b-icon {
-    vertical-align: middle;
-  }
+  font-weight: 500;
 }
 
 ._infos {

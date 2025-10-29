@@ -1,37 +1,44 @@
 <template>
   <div class="_gridChapter">
-    <transition-group tag="div" class="_grid" name="StoryModules" appear>
-      <div class="_grid--item" v-for="media in grid_medias" :key="media.$path">
-        <MediaContent :file="media" :context="'full'" />
-        <div class="_remove_media">
-          <RemoveMenu :show_button_text="false" @remove="removeMedia(media)" />
-        </div>
-      </div>
+    <!-- Première étape : choisir le nbre de colonnes et rangées. Ici un
+    diagramme colonne/ligne du contenu (voir https://cssgridgenerator.io/)
+    En-dessous > chaque zone correspond à une cellule, dans laquelle on peut
+    mettre un média ou un texte markdown (faisant référence à des médias).
+ -->
 
-      <div class="_add_medias" key="add_medias">
-        <button
-          type="button"
-          class="u-button u-button_bleuvert"
-          @click="show_media_picker = true"
-        >
-          {{ $t("add_medias") }}
-        </button>
-      </div>
-    </transition-group>
+    <div class="_gridInputs">
+      <NumberInput
+        :label="$t('column_count')"
+        :value="chapter.column_count || 1"
+        :suffix="$t('columns')"
+        :size="'medium'"
+        :min="1"
+        :max="12"
+        @save="updateChapter({ column_count: $event })"
+      />
+      <NumberInput
+        :label="$t('row_count')"
+        :value="chapter.row_count || 1"
+        :suffix="$t('rows')"
+        :size="'medium'"
+        :min="1"
+        :max="12"
+        @save="updateChapter({ row_count: $event })"
+      />
+    </div>
 
-    <MediaPicker
-      v-if="show_media_picker"
-      :publication_path="publication.$path"
-      :select_mode="'multiple'"
-      :pick_from_types="['image']"
-      @pickMedias="pickMediasForGrid"
-      @close="show_media_picker = false"
-    />
+    <GridAreas :chapter="chapter" />
+
+    <hr />
+
+    <pre
+      >{{ chapter }}
+    </pre>
   </div>
 </template>
 
 <script>
-import MediaPicker from "@/components/publications/MediaPicker.vue";
+import GridAreas from "./GridAreas.vue";
 
 export default {
   props: {
@@ -39,59 +46,17 @@ export default {
     publication: Object,
   },
   components: {
-    MediaPicker,
+    GridAreas,
   },
   data() {
-    return {
-      show_media_picker: false,
-    };
+    return {};
   },
-  computed: {
-    grid_medias() {
-      const medias = [];
-      if (this.chapter.section_type !== "grid" || !this.chapter.source_medias)
-        return [];
-      for (const source_media of this.chapter.source_medias) {
-        const folder_path = this.getParent(this.chapter.$path);
-        const media = this.getSourceMedia({
-          source_media,
-          folder_path,
-        });
-        if (media) medias.push(media);
-      }
-      return medias;
-    },
-  },
+  computed: {},
   methods: {
-    async pickMediasForGrid(medias) {
-      const new_entries = [];
-      for (const media of medias) {
-        const import_mode = this.$root.publication_include_mode;
-        const new_entry = await this.prepareMediaForPublication({
-          path_to_source_media_meta: media.$path,
-          publication_path: this.publication.$path,
-          import_mode,
-        });
-        new_entries.push(new_entry);
-      }
-
-      const existing_source_medias = this.chapter.source_medias || [];
-      const source_medias = [...existing_source_medias, ...new_entries];
-
+    updateChapter(new_meta) {
       this.$api.updateMeta({
         path: this.chapter.$path,
-        new_meta: {
-          source_medias,
-        },
-      });
-    },
-    removeMedia(media) {
-      const source_medias = this.chapter.source_medias.filter(
-        (sm) => sm.meta_filename_in_project !== this.getFilename(media.$path)
-      );
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: { source_medias },
+        new_meta,
       });
     },
   },
@@ -103,53 +68,9 @@ export default {
   padding-bottom: calc(var(--spacing) * 1);
 }
 
-._grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+._gridInputs {
+  display: flex;
   gap: calc(var(--spacing) * 1);
-
-  ._add_medias {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
-  ._grid--item {
-    position: relative;
-    aspect-ratio: 1/1;
-
-    border: 2px solid var(--c-gris_clair);
-    overflow: hidden;
-
-    ::v-deep {
-      ._mediaContent {
-        width: 100%;
-        height: 100%;
-      }
-
-      ._mediaContent--image,
-      .plyr--video,
-      .plyr__poster,
-      ._mediaContent--iframe,
-      ._iframeStylePreview {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        left: 0;
-        object-fit: scale-down;
-        background-size: scale-down;
-        background-color: var(--c-gris_clair);
-      }
-    }
-  }
-}
-
-._remove_media {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) * 1);
 }
 </style>

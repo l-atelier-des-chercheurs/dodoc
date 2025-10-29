@@ -467,6 +467,12 @@
                     "column_count": {
                       "type": "number"
                     },
+                    "row_count": {
+                      "type": "number"
+                    },
+                    "grid_areas": {
+                      "type": "array"
+                    },
                     "main_text_meta": {
                       "type": "string"
                     },

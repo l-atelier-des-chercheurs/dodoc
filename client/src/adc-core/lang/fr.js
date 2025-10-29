@@ -867,6 +867,9 @@ export default {
 
   add_media: "Ajouter un média",
   add_medias: "Ajouter des médias",
+  add_grid_area: "Ajouter une zone de grille",
+  click_empty_cell_to_add_area:
+    "Cliquez sur une cellule vide pour ajouter une zone",
   add_link: "Ajouter un lien",
   add_text: "Ajouter du texte",
 
@@ -1431,6 +1434,10 @@ export default {
     "Recherche des coordonnées GPS de votre appareil...",
   gps_coordinates_found: "Coordonnées GPS trouvées.",
   column_count: "Nombre de colonnes",
+  row_count: "Nombre de lignes",
+  columns: "colonnes",
+  rows: "lignes",
+  grid_dimensions: "Dimensions de la grille",
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
 
