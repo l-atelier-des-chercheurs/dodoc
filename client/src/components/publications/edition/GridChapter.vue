@@ -6,33 +6,35 @@
     mettre un média ou un texte markdown (faisant référence à des médias).
  -->
 
-    <div class="_gridInputs">
-      <NumberInput
-        :label="$t('column_count')"
-        :value="chapter.column_count || 1"
-        :suffix="$t('columns')"
-        :size="'medium'"
-        :min="1"
-        :max="12"
-        @save="updateChapter({ column_count: $event })"
-      />
-      <NumberInput
-        :label="$t('row_count')"
-        :value="chapter.row_count || 1"
-        :suffix="$t('rows')"
-        :size="'medium'"
-        :min="1"
-        :max="12"
-        @save="updateChapter({ row_count: $event })"
-      />
-    </div>
+    <div class="_gridAreas">
+      <div class="_gridInputs">
+        <NumberInput
+          :label="$t('column_count')"
+          :value="chapter.column_count || 1"
+          :suffix="$t('columns')"
+          :size="'medium'"
+          :min="1"
+          :max="12"
+          @save="updateChapter({ column_count: $event })"
+        />
+        <NumberInput
+          :label="$t('row_count')"
+          :value="chapter.row_count || 1"
+          :suffix="$t('rows')"
+          :size="'medium'"
+          :min="1"
+          :max="12"
+          @save="updateChapter({ row_count: $event })"
+        />
+      </div>
 
-    <GridAreas :chapter="chapter" />
+      <GridAreas :chapter="chapter" />
+    </div>
 
     <hr />
 
     <pre
-      >{{ chapter }}
+      >{{ chapter.grid_areas }}
     </pre>
   </div>
 </template>
@@ -68,9 +70,18 @@ export default {
   padding-bottom: calc(var(--spacing) * 1);
 }
 
+._gridAreas {
+  // display: flex;
+  // flex-direction: row nowrap;
+  // gap: calc(var(--spacing) * 1);
+}
 ._gridInputs {
   display: flex;
   gap: calc(var(--spacing) * 1);
   margin-bottom: calc(var(--spacing) * 1);
+
+  > * {
+    flex: 1 1 0;
+  }
 }
 </style>
