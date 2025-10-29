@@ -57,7 +57,7 @@
             class="_gridArea--label"
             @mousedown.stop="startDrag(area.id, $event)"
           >
-            {{ index + 1 }}
+            {{ area.id }}
           </div>
 
           <!-- Resize handle -->
@@ -123,9 +123,19 @@ export default {
     },
   },
   methods: {
-    generateUniqueId() {
-      // Generate a unique ID using timestamp + random string
-      return `area_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    generateNextLetterId() {
+      // Find the next available letter ID
+      const existingLetters = this.grid_areas.map((area) => area.id);
+      let index = 0;
+      let letter = this.getAreaLetter(index);
+
+      // Keep incrementing until we find an unused letter
+      while (existingLetters.includes(letter)) {
+        index++;
+        letter = this.getAreaLetter(index);
+      }
+
+      return letter;
     },
     updateChapter(new_meta) {
       this.$api.updateMeta({
@@ -142,6 +152,16 @@ export default {
     },
     findAreaById(areaId) {
       return this.grid_areas.find((area) => area.id === areaId);
+    },
+    getAreaLetter(index) {
+      // Convert index to letter (A, B, C, ..., Z, AA, AB, ...)
+      let letter = "";
+      let num = index;
+      while (num >= 0) {
+        letter = String.fromCharCode(65 + (num % 26)) + letter;
+        num = Math.floor(num / 26) - 1;
+      }
+      return letter;
     },
     getCellPosition(cellIndex) {
       // Convert 1-based cellIndex to column and row (1-based for CSS Grid)
@@ -165,7 +185,7 @@ export default {
 
       const { col, row } = this.getCellPosition(cellIndex);
       const new_area = {
-        id: this.generateUniqueId(),
+        id: this.generateNextLetterId(),
         column_start: col,
         column_end: col + 1,
         row_start: row,
