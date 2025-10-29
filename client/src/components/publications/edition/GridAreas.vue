@@ -20,7 +20,7 @@
           @click="addAreaAtCell(cellIndex)"
         >
           <div v-if="!isCellOccupied(cellIndex)" class="_gridCell--addIcon">
-            +
+            <b-icon icon="plus-lg" />
           </div>
         </div>
       </div>
@@ -57,23 +57,7 @@
             class="_gridArea--label"
             @mousedown.stop="startDrag(area.id, $event)"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              style="margin-right: 4px"
-            >
-              <circle cx="4" cy="4" r="1.5" fill="currentColor" />
-              <circle cx="4" cy="8" r="1.5" fill="currentColor" />
-              <circle cx="4" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="8" cy="4" r="1.5" fill="currentColor" />
-              <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-              <circle cx="8" cy="12" r="1.5" fill="currentColor" />
-              <circle cx="12" cy="4" r="1.5" fill="currentColor" />
-              <circle cx="12" cy="8" r="1.5" fill="currentColor" />
-              <circle cx="12" cy="12" r="1.5" fill="currentColor" />
-            </svg>
-            Area {{ index + 1 }}
+            {{ index + 1 }}
           </div>
 
           <!-- Resize handle -->
@@ -347,9 +331,8 @@ export default {
 
 ._gridWrapper {
   position: relative;
-  background: var(--c-gris_clair);
-  padding: calc(var(--spacing) / 4);
-  // min-height: 300px;
+  background: transparent;
+  padding: 0;
 }
 
 ._gridBackground {
@@ -358,98 +341,95 @@ export default {
 }
 
 ._gridCell--background {
-  background: var(--c-blanc);
+  background: transparent;
   outline: 1px dashed var(--c-gris);
+  background: var(--c-gris);
   outline-offset: -1px;
-  height: 64px;
+  height: 80px;
+  border-radius: var(--input-border-radius);
   cursor: pointer;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease;
 
   &:not(._gridCell--occupied):hover {
-    background: var(--c-gris_clair);
-    outline-color: var(--c-bleuvert);
+    background: rgba(0, 0, 0, 0.02);
+    outline-color: var(--c-gris);
 
     ._gridCell--addIcon {
-      opacity: 1;
-      transform: scale(1);
+      opacity: 0.7;
     }
   }
 
   &._gridCell--occupied {
     cursor: default;
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 
 ._gridCell--addIcon {
-  font-size: 24px;
-  color: var(--c-bleuvert);
-  font-weight: 300;
-  opacity: 0.3;
-  transform: scale(0.8);
-  transition: all 0.2s ease;
-  pointer-events: none;
+  font-size: 20px;
+  color: white;
 }
 
 ._gridOverlay {
   position: absolute;
-  top: calc(var(--spacing) / 4);
-  left: calc(var(--spacing) / 4);
-  right: calc(var(--spacing) / 4);
-  bottom: calc(var(--spacing) / 4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 2;
   pointer-events: none;
 }
 
 ._gridArea {
   position: relative;
-  border: 2px solid var(--c-bleuvert);
-  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--c-gris);
+  background: white;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   pointer-events: auto;
   box-sizing: border-box;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    border-color: var(--c-bleumarine);
+    border-color: var(--active-color);
   }
 
   &._gridArea--selected {
-    border-color: var(--c-bleumarine);
-    // border-width: 3px;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    border-color: var(--c-bleuvert);
+    box-shadow: 0 0 0 2px rgba(94, 185, 196, 0.15);
   }
 
   &._gridArea--dragging {
-    opacity: 0.7;
+    opacity: 0.8;
     cursor: move !important;
+    border-style: dashed;
   }
 
   ._gridArea--label {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    min-height: 64px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--c-gris);
+    font-weight: 600;
     user-select: none;
     cursor: move;
 
+    svg {
+      opacity: 0.3;
+    }
+
     &:hover {
-      color: var(--c-bleuvert);
+      color: var(--c-noir);
+
+      svg {
+        opacity: 0.5;
+      }
     }
   }
 }
@@ -458,19 +438,25 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   cursor: nwse-resize;
-  color: var(--c-bleuvert);
+  color: var(--c-gris);
   display: flex;
   align-items: flex-end;
   justify-content: flex-end;
   padding: 2px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  ._gridArea:hover &,
+  ._gridArea._gridArea--selected & {
+    opacity: 0.5;
+  }
 
   &:hover {
-    opacity: 1;
+    opacity: 1 !important;
+    color: var(--c-noir);
   }
 
   svg {
@@ -481,28 +467,29 @@ export default {
 ._deleteArea {
   position: absolute;
   top: 4px;
-  left: 4px;
-  width: 24px;
-  height: 24px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
   border: none;
-  background: var(--c-rouge);
-  color: white;
-  border-radius: 4px;
+  background: transparent;
+  color: var(--c-gris);
   cursor: pointer;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: all 0.15s ease;
   z-index: 10;
 
   &:hover {
-    background: darkred;
+    color: var(--c-rouge);
+    transform: scale(1.1);
   }
 
-  ._gridArea:hover & {
+  ._gridArea:hover &,
+  ._gridArea._gridArea--selected & {
     opacity: 1;
   }
 }
