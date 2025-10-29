@@ -107,8 +107,8 @@ a:focus-visible {
 }
 
 .u-card2 {
-  border: 2px solid var(--c-gris_clair);
-  // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   // filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1));
 
   transform-origin: center center;
@@ -118,7 +118,7 @@ a:focus-visible {
   &:focus-visible {
     transform: translateY(-2px) rotate(-0deg);
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-    border-color: var(--c-gris);
+    border-color: var(--active-color);
   }
 }
 

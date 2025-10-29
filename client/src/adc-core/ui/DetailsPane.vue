@@ -110,7 +110,7 @@ export default {
 ._detailsPane {
   background: white;
   // border-bottom: none;
-  border-radius: 8px;
+  border-radius: var(--panel-radius);
   overflow: hidden;
 
   &:hover,
