@@ -115,7 +115,7 @@ export default {
 ._sourceSelector {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   gap: calc(var(--spacing) / 2);
   // padding: 1rem 0;

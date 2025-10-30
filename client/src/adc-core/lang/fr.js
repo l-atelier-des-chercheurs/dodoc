@@ -1484,7 +1484,8 @@ export default {
   free_resources_description:
     "Accéder à des médias libres depuis des collections en ligne (nécessite une connexion internet)",
   import_from_project: "Importer depuis un projet",
-  import_from_project_description: "Utiliser des médias de vos projets",
+  import_from_project_description:
+    "Utiliser des médias de ce projet ou d’un autre du même espace",
   resources_picker: "Sélecteur de ressources",
   loading_resources: "Chargement des ressources…",
   downloading: "Téléchargement…",

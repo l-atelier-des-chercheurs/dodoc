@@ -26,7 +26,7 @@
         "
         class="_section"
       >
-        <h3>{{ $t("images") }}</h3>
+        <strong>{{ $t("images") }}</strong>
         <div class="_grid">
           <div
             v-for="(image, index) in resources.images"
