@@ -17,118 +17,43 @@
     </div>
 
     <div v-else class="_resourcesGrid">
-      <!-- Images Section -->
       <div
-        v-if="
-          normalizedPickFromTypes.includes('image') &&
-          resources.images &&
-          resources.images.length > 0
-        "
+        v-for="section in resourceSections"
+        :key="section.key"
         class="_section"
       >
-        <strong>{{ $t("images") }}</strong>
+        <h3>{{ section.label }}</h3>
         <div class="_grid">
           <div
-            v-for="(image, index) in resources.images"
-            :key="`img-${index}`"
+            v-for="(resource, index) in section.items"
+            :key="`${section.key}-${index}`"
             class="_resourceCard"
           >
             <div class="_preview">
-              <img
-                :src="getFullUrl(image.src)"
-                :alt="image.credits || 'Image'"
-                @error="handleImageError"
+              <component
+                :is="section.tag"
+                :src="getFullUrl(resource.src)"
+                :alt="
+                  section.tag === 'img'
+                    ? resource.credits || section.label
+                    : null
+                "
+                :controls="section.tag !== 'img'"
+                :preload="section.tag !== 'img' ? 'metadata' : null"
+                @error="section.tag === 'img' ? handleImageError : null"
               />
             </div>
             <div class="_info">
-              <p class="_credits" v-if="image.credits">{{ image.credits }}</p>
+              <p class="_credits" v-if="resource.credits">
+                {{ resource.credits }}
+              </p>
               <button
                 class="u-button u-button_small"
-                @click="downloadResource(image.src, 'image')"
-                :disabled="downloading.includes(image.src)"
+                @click="downloadResource(resource.src, section.type)"
+                :disabled="downloading.includes(resource.src)"
               >
                 <b-icon icon="download" />
-                {{
-                  downloading.includes(image.src)
-                    ? $t("downloading")
-                    : $t("download")
-                }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Videos Section -->
-      <div
-        v-if="
-          normalizedPickFromTypes.includes('video') &&
-          resources.videos &&
-          resources.videos.length > 0
-        "
-        class="_section"
-      >
-        <h3>{{ $t("videos") }}</h3>
-        <div class="_grid">
-          <div
-            v-for="(video, index) in resources.videos"
-            :key="`vid-${index}`"
-            class="_resourceCard"
-          >
-            <div class="_preview">
-              <video :src="getFullUrl(video.src)" controls preload="metadata" />
-            </div>
-            <div class="_info">
-              <p class="_credits" v-if="video.credits">{{ video.credits }}</p>
-              <button
-                class="u-button u-button_small"
-                @click="downloadResource(video.src, 'video')"
-                :disabled="downloading.includes(video.src)"
-              >
-                <b-icon icon="download" />
-                {{
-                  downloading.includes(video.src)
-                    ? $t("downloading")
-                    : $t("download")
-                }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Audio Section -->
-      <div
-        v-if="
-          normalizedPickFromTypes.includes('audio') &&
-          resources.sons &&
-          resources.sons.length > 0
-        "
-        class="_section"
-      >
-        <h3>{{ $t("audio") }}</h3>
-        <div class="_grid">
-          <div
-            v-for="(audio, index) in resources.sons"
-            :key="`aud-${index}`"
-            class="_resourceCard"
-          >
-            <div class="_preview">
-              <audio :src="getFullUrl(audio.src)" controls preload="metadata" />
-            </div>
-            <div class="_info">
-              <p class="_credits" v-if="audio.credits">{{ audio.credits }}</p>
-              <button
-                class="u-button u-button_small"
-                @click="downloadResource(audio.src, 'audio')"
-                :disabled="downloading.includes(audio.src)"
-              >
-                <b-icon icon="download" />
-                {{
-                  downloading.includes(audio.src)
-                    ? $t("downloading")
-                    : $t("download")
-                }}
+                {{ getDownloadButtonText(resource.src) }}
               </button>
             </div>
           </div>
@@ -187,8 +112,43 @@ export default {
         ? this.pick_from_types
         : ["image", "video", "audio"];
     },
+    resourceSections() {
+      return [
+        {
+          type: "image",
+          key: "images",
+          label: this.$t("images"),
+          items: this.resources.images,
+          tag: "img",
+        },
+        {
+          type: "video",
+          key: "videos",
+          label: this.$t("videos"),
+          items: this.resources.videos,
+          tag: "video",
+        },
+        {
+          type: "audio",
+          key: "sons",
+          label: this.$t("audio"),
+          items: this.resources.sons,
+          tag: "audio",
+        },
+      ].filter(
+        (section) =>
+          this.normalizedPickFromTypes.includes(section.type) &&
+          section.items &&
+          section.items.length > 0
+      );
+    },
   },
   methods: {
+    getDownloadButtonText(src) {
+      return this.downloading.includes(src)
+        ? this.$t("downloading")
+        : this.$t("download");
+    },
     async loadResources() {
       this.is_loading = true;
       this.error = null;
