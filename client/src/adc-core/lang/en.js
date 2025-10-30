@@ -1407,7 +1407,8 @@ export default {
   free_resources: "Free resources",
   free_resources_description: "Access free media from online collections",
   import_from_project: "Import from project",
-  import_from_project_description: "Use media from your projects",
+  import_from_project_description:
+    "Use media from this project or another from the same space",
   resources_picker: "Resources Picker",
   loading_resources: "Loading resources…",
   downloading: "Downloading…",
