@@ -20,7 +20,6 @@
           :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
-          @remove="$emit('removeChapter', section)"
         />
 
         <div key="'add'" class="_addSection">
