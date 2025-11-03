@@ -817,7 +817,7 @@ export default {
       }
       .pagedjs_page_content {
         box-shadow: 0 0 0 1px var(--color-pageContent);
-        /* Remove box-shadow from .pagedjs_page if it contains a grid chapter */
+        /* Remove margin from .pagedjs_page if it contains a grid chapter */
         &:has(.chapter[data-chapter-type="grid"]) {
           box-shadow: none !important;
         }
