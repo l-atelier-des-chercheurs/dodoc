@@ -62,7 +62,7 @@ a:focus-visible {
   align-items: center;
   color: var(--c-rouge);
   // font-weight: bold;
-  border: 1px solid var(--c-rouge_clair);
+  border: 1px solid var(--c-rouge);
   border-top-width: 4px;
   max-width: 50ch;
   // background-color: var(--c-rouge_clair);
@@ -261,12 +261,15 @@ button,
 
   &:hover,
   &:active,
-  &:focus-visible,
-  &.is--active {
+  &:focus-visible {
     &:not([disabled]) {
-      color: var(--active-color);
+      // color: var(--active-color);
       background-color: rgba(0, 0, 0, 0.1);
     }
+  }
+  &.is--active {
+    background-color: var(--active-color);
+    color: white;
   }
 
   &.u-button_small {

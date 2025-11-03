@@ -1296,4 +1296,18 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
   forgot_password: "Hai dimenticato la password?",
+
+  from_website: "Da un sito web",
+  resources: "Risorse",
+  free_resources: "Risorse gratuite",
+  free_resources_description: "Accedi a media gratuiti da collezioni online",
+  import_from_project: "Importa dal progetto",
+  import_from_project_description:
+    "Usa media dai tuoi progetti o da un altro progetto del tuo spazio",
+  resources_picker: "Selettore di risorse",
+  loading_resources: "Caricamento delle risorse…",
+  downloading: "Download in corso…",
+  failed_to_load_resources: "Impossibile caricare le risorse",
+  resource_imported_successfully: "Risorsa importata con successo",
+  failed_to_import_resource: "Impossibile importare la risorsa",
 };

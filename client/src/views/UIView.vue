@@ -1,16 +1,23 @@
 <template>
   <div class="_uiView">
     <!-- INSERT_YOUR_CODE -->
+
+    <h2>Buttons Demo</h2>
+
+    <h3>Standard Buttons</h3>
     <div class="_buttonsDemo">
       <button class="u-button">Default Button</button>
-      <button class="u-button u-button_icon">
-        <b-icon icon="plus" /> Icon Button
-      </button>
-      <button class="u-button u-button_small">Small</button>
-      <button class="u-button u-button_verysmall">Very Small</button>
       <button class="u-button u-button_big">Big Button</button>
       <button class="u-button u-button_floating">Floating</button>
       <button class="u-button u-button_wide">Wide</button>
+      <button class="u-button u-button_inline">
+        Inline <b-icon icon="arrow-right" />
+      </button>
+      <button class="u-button" disabled>Disabled</button>
+    </div>
+
+    <h3>Colored Buttons</h3>
+    <div class="_buttonsDemo">
       <button class="u-button u-button_black">Black</button>
       <button class="u-button u-button_white">White</button>
       <button class="u-button u-button_red">Red</button>
@@ -19,21 +26,165 @@
       <button class="u-button u-button_orange">Orange</button>
       <button class="u-button u-button_bleumarine">Bleumarine</button>
       <button class="u-button u-button_transparent">Transparent</button>
-      <button class="u-button u-button_inline">
-        Inline <b-icon icon="arrow-right" />
-      </button>
-      <button class="u-button" disabled>Disabled</button>
-      <button class="u-button u-button_icon u-button_small">
-        <b-icon icon="star" />
-      </button>
       <button
         class="u-button u-button_transparent"
         :class="{ 'is--active': true }"
       >
         Active Transparent
       </button>
+    </div>
+
+    <h3>Buttons with Icons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button"><b-icon icon="plus" /> Add</button>
+      <button class="u-button"><b-icon icon="trash" /> Delete</button>
+      <button class="u-button"><b-icon icon="pencil" /> Edit</button>
+      <button class="u-button"><b-icon icon="download" /> Download</button>
+      <button class="u-button"><b-icon icon="upload" /> Upload</button>
+      <button class="u-button u-button_red">
+        <b-icon icon="trash" /> Delete
+      </button>
+      <button class="u-button u-button_bleuvert">
+        <b-icon icon="check" /> Validate
+      </button>
+      <button class="u-button u-button_orange">
+        <b-icon icon="exclamation-triangle" /> Warning
+      </button>
       <button class="u-button u-button_red u-button_floating">
-        <b-icon icon="trash" /> Delete (Floating Red)
+        <b-icon icon="trash" /> Delete (Floating)
+      </button>
+    </div>
+
+    <h3>Icon-Only Buttons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_icon">
+        <b-icon icon="plus" />
+      </button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="trash" />
+      </button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="pencil" />
+      </button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="star" />
+      </button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="heart" />
+      </button>
+      <button class="u-button u-button_icon">
+        <b-icon icon="settings" />
+      </button>
+      <button class="u-button u-button_icon" :class="{ 'is--active': true }">
+        <b-icon icon="heart" />
+      </button>
+    </div>
+
+    <h3>Small Buttons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_small">Small</button>
+      <button class="u-button u-button_small u-button_red">Small Red</button>
+      <button class="u-button u-button_small u-button_bleuvert">
+        Small Bleuvert
+      </button>
+      <button class="u-button u-button_small u-button_orange">
+        Small Orange
+      </button>
+      <button class="u-button u-button_small u-button_bleumarine">
+        Small Bleumarine
+      </button>
+      <button class="u-button u-button_small u-button_black">
+        Small Black
+      </button>
+      <button class="u-button u-button_small u-button_white">
+        Small White
+      </button>
+      <button class="u-button u-button_small u-button_transparent">
+        Small Transparent
+      </button>
+      <button class="u-button u-button_small" disabled>Small Disabled</button>
+    </div>
+
+    <h3>Small Buttons with Icons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_small">
+        <b-icon icon="plus" /> Add
+      </button>
+      <button class="u-button u-button_small">
+        <b-icon icon="trash" /> Delete
+      </button>
+      <button class="u-button u-button_small">
+        <b-icon icon="pencil" /> Edit
+      </button>
+      <button class="u-button u-button_small u-button_red">
+        <b-icon icon="trash" /> Delete
+      </button>
+      <button class="u-button u-button_small u-button_bleuvert">
+        <b-icon icon="check" /> Validate
+      </button>
+      <button class="u-button u-button_small u-button_orange">
+        <b-icon icon="download" /> Download
+      </button>
+    </div>
+
+    <h3>Small Icon-Only Buttons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="plus" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="trash" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="pencil" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="star" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="heart" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="settings" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="eye" />
+      </button>
+      <button class="u-button u-button_icon u-button_small">
+        <b-icon icon="download" />
+      </button>
+    </div>
+
+    <h3>Very Small Buttons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_verysmall">Very Small</button>
+      <button class="u-button u-button_verysmall u-button_red">
+        Very Small Red
+      </button>
+      <button class="u-button u-button_verysmall u-button_bleuvert">
+        Very Small Bleuvert
+      </button>
+      <button class="u-button u-button_verysmall u-button_orange">
+        Very Small Orange
+      </button>
+      <button class="u-button u-button_verysmall u-button_bleumarine">
+        Very Small Bleumarine
+      </button>
+    </div>
+
+    <h3>Very Small Buttons with Icons</h3>
+    <div class="_buttonsDemo">
+      <button class="u-button u-button_verysmall">
+        <b-icon icon="plus" /> Add
+      </button>
+      <button class="u-button u-button_verysmall">
+        <b-icon icon="trash" /> Delete
+      </button>
+      <button class="u-button u-button_verysmall u-button_red">
+        <b-icon icon="x" /> Close
+      </button>
+      <button class="u-button u-button_verysmall u-button_bleuvert">
+        <b-icon icon="check" /> OK
       </button>
     </div>
 
@@ -327,5 +478,25 @@ export default {
   background: var(--c-noir);
   color: white;
   padding: calc(var(--spacing) / 2);
+}
+
+._buttonsDemo {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+h2 {
+  margin-top: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) / 2);
+}
+
+h3 {
+  margin-top: calc(var(--spacing) * 1);
+  margin-bottom: calc(var(--spacing) / 4);
+  font-size: var(--sl-font-size-medium);
+  color: var(--c-gris_fonce);
 }
 </style>

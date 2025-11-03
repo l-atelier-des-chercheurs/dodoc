@@ -223,18 +223,6 @@ export default {
   }
 }
 
-._addCoverBtn {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 200%;
-  color: var(--c-gris);
-}
 ._editCoverBtn {
   position: absolute;
   right: 0;
@@ -247,5 +235,24 @@ export default {
   left: 0;
   bottom: 0;
   margin: calc(var(--spacing) / 1);
+}
+
+._addCoverBtn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 200%;
+  color: var(--c-gris);
+
+  ::v-deep {
+    .u-button_icon {
+      font-size: 2rem;
+    }
+  }
 }
 </style>

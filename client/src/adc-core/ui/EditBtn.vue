@@ -13,7 +13,11 @@
     <span class="_label" v-if="button_label" :data-position="label_position">
       {{ button_label }}
     </span>
-    <b-icon class="_icon" :icon="btn_props.icon" />
+    <b-icon
+      class="_icon"
+      :icon="btn_props.icon"
+      :scale="btn_props.icon_size ? btn_props.icon_size : 1"
+    />
   </button>
 </template>
 <script>
@@ -72,7 +76,8 @@ export default {
       else if (this.btn_type === "add")
         return {
           label: this.$t("add"),
-          icon: "plus-lg",
+          icon: "plus",
+          icon_size: 1.5,
         };
       else if (this.btn_type === "order")
         return {
@@ -126,7 +131,7 @@ export default {
         };
       return {
         label: this.$t("edit"),
-        icon: "pencil",
+        icon: "pencil-fill",
       };
     },
     btn_styles() {
