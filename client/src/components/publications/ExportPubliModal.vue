@@ -12,7 +12,8 @@
     <template
       v-if="
         export_mode === 'pdf' &&
-        ['page_by_page', 'edition'].includes(publication.template)
+        ['page_by_page', 'edition'].includes(publication.template) &&
+        publication.pages.length > 1
       "
     >
       <DLabel
@@ -69,7 +70,7 @@
       </div>
     </template>
 
-    <template v-if="export_mode === 'png'">
+    <template v-if="export_mode === 'png' && publication.pages.length > 1">
       <template v-if="publication.template === 'page_by_page'">
         <div class="u-spacingBottom" />
 

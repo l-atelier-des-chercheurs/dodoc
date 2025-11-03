@@ -19,7 +19,13 @@
         />
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
-        <template v-if="!is_serversidepreview && !is_fullscreen">
+        <template
+          v-if="
+            !is_serversidepreview &&
+            !is_fullscreen &&
+            !is_server_making_pdf_or_png_preview
+          "
+        >
           <transition name="pagechange" mode="out-in">
             <div class="_pubTopbar" v-if="show_topbar">
               <PublicationTopbar
@@ -155,6 +161,9 @@ export default {
         space_slug: this.$route.params.space_slug,
         project_slug: this.$route.params.project_slug,
       });
+    },
+    is_server_making_pdf_or_png_preview() {
+      return this.$route.query?.superadmintoken !== undefined;
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
