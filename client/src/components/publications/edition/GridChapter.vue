@@ -10,7 +10,7 @@
       <div class="_gridInputs">
         <NumberInput
           :label="$t('column_count')"
-          :value="chapter.column_count || 1"
+          :value="chapter.column_count || 6"
           :suffix="$t('columns')"
           :size="'medium'"
           :min="1"
@@ -19,7 +19,7 @@
         />
         <NumberInput
           :label="$t('row_count')"
-          :value="chapter.row_count || 1"
+          :value="chapter.row_count || 6"
           :suffix="$t('rows')"
           :size="'medium'"
           :min="1"

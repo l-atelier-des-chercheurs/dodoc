@@ -7,13 +7,13 @@
         class="_gridBackground"
         :style="{
           display: 'grid',
-          gridTemplateColumns: `repeat(${column_count || 1}, 1fr)`,
-          gridTemplateRows: `repeat(${row_count || 1}, 1fr)`,
+          gridTemplateColumns: `repeat(${column_count}, 1fr)`,
+          gridTemplateRows: `repeat(${row_count}, 1fr)`,
           gap: 'calc(var(--spacing) / 2)',
         }"
       >
         <div
-          v-for="cellIndex in (column_count || 1) * (row_count || 1)"
+          v-for="cellIndex in column_count * row_count"
           :key="'bg-' + cellIndex"
           class="_gridCell--background"
           :class="{ '_gridCell--occupied': isCellOccupied(cellIndex) }"
@@ -111,10 +111,10 @@ export default {
   },
   computed: {
     column_count() {
-      return this.chapter.column_count || 1;
+      return this.chapter.column_count || 6;
     },
     row_count() {
-      return this.chapter.row_count || 1;
+      return this.chapter.row_count || 6;
     },
     grid_areas() {
       return this.chapter.grid_areas || [];

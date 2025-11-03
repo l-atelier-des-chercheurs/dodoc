@@ -1527,5 +1527,6 @@ export default {
   running_newer_version:
     "Vous utilisez une version plus récente que la dernière version disponible ({version}).",
   radius: "Rayon",
-  area: "Surface",
+  area: "Zone",
+  no_areas_defined: "Aucune zone de grille définie",
 };

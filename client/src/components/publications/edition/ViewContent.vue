@@ -488,8 +488,8 @@ export default {
         return `<div class="grid"><i>${this.$t("no_areas_defined")}</i></div>`;
 
       // Use row_count and column_count from chapter
-      const col_count = chapter.column_count || 12;
-      const row_count = chapter.row_count || 1;
+      const col_count = chapter.column_count || 6;
+      const row_count = chapter.row_count || 6;
 
       let html = `<div class="grid"><div class="grid-content" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
 
