@@ -1457,4 +1457,5 @@ export default {
     "You are running a newer version than the latest version available ({version}).",
   radius: "Radius",
   area: "Area",
+  no_areas_defined: "No areas defined",
 };

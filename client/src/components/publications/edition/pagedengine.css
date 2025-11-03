@@ -221,6 +221,7 @@ hr {
   grid-template-columns: repeat(var(--col-count, 12), 1fr);
   grid-template-rows: repeat(var(--row-count, 1), 1fr);
   gap: var(--spacing);
+  padding: calc(var(--spacing) * 1);
   height: 100%;
 }
 
