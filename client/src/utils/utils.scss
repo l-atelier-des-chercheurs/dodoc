@@ -261,12 +261,15 @@ button,
 
   &:hover,
   &:active,
-  &:focus-visible,
-  &.is--active {
+  &:focus-visible {
     &:not([disabled]) {
-      color: var(--active-color);
+      // color: var(--active-color);
       background-color: rgba(0, 0, 0, 0.1);
     }
+  }
+  &.is--active {
+    background-color: var(--active-color);
+    color: white;
   }
 
   &.u-button_small {
