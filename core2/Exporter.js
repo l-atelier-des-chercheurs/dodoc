@@ -334,6 +334,8 @@ class Exporter {
       let query = {};
       if (this.instructions.page) {
         query.page = this.instructions.page;
+      }
+      if (this.instructions.make_preview === true) {
         query.make_preview = true;
       }
       const superadmintoken = auth.getSuperadminToken();
@@ -397,10 +399,6 @@ class Exporter {
       let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
-      if (this.instructions.page) {
-        query.page = this.instructions.page;
-        query.make_preview = true;
-      }
 
       // use superadmin token
       const superadmintoken = auth.getSuperadminToken();
