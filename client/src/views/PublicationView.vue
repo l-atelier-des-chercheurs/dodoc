@@ -183,6 +183,10 @@ export default {
   @media screen {
     // margin: 0 calc(var(--spacing) * 2);
   }
+
+  &.is--serversidepreview {
+    padding: calc(var(--spacing) * 2);
+  }
 }
 </style>
 <style lang="scss">
