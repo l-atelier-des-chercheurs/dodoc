@@ -13,6 +13,7 @@
           <span
             v-if="content && clean_content.length > 0"
             v-html="clean_content"
+            @click="enableEditMode"
           />
           <span v-else class="u-instructions">
             {{ $t("none") }}
@@ -142,6 +143,7 @@ export default {
   },
   methods: {
     enableEditMode() {
+      if (!this.can_edit) return;
       this.edit_mode = true;
     },
     cancel() {
