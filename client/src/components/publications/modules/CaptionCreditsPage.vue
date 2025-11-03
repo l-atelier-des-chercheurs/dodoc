@@ -111,8 +111,10 @@ export default {
     isHTMLEmpty(html) {
       if (!html) return true;
 
-      // Remove all HTML tags and check if there's any actual content
-      const text = html.replace(/<[^>]*>/g, "").trim();
+      // Create a temporary div to parse HTML and get plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = html;
+      const text = this.cleanUpString(temp.innerText);
       return text.length === 0;
     },
     canEditLinkedMedia(path) {
