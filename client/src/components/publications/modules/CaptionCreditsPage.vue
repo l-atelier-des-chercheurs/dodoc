@@ -21,7 +21,10 @@
 
         <div
           class="u-spacingBottom"
-          v-if="media.caption || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.caption) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
           <CollaborativeEditor3
             :label="$t('caption')"
@@ -35,7 +38,10 @@
         </div>
         <div
           class="u-spacingBottom"
-          v-if="media.$credits || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.$credits) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
           <CollaborativeEditor3
             :label="$t('credit/reference')"
@@ -93,8 +99,8 @@ export default {
         return false;
       if (
         this.canEditLinkedMedia(this.media.$path) === false &&
-        !this.media.$credits &&
-        !this.media.caption
+        this.isHTMLEmpty(this.media.$credits) &&
+        this.isHTMLEmpty(this.media.caption)
       )
         return false;
 
@@ -102,6 +108,13 @@ export default {
     },
   },
   methods: {
+    isHTMLEmpty(html) {
+      if (!html) return true;
+
+      // Remove all HTML tags and check if there's any actual content
+      const text = html.replace(/<[^>]*>/g, "").trim();
+      return text.length === 0;
+    },
     canEditLinkedMedia(path) {
       if (!path || !this.publication_path || !this.can_edit) return false;
 
