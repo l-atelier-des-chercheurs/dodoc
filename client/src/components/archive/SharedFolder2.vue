@@ -58,29 +58,15 @@
       <div class="_loader" v-if="is_loading_folder">
         <LoaderSpinner />
       </div>
-      <div
+      <TwoColumnLayout
         v-else
+        :show-sidebar.sync="show_filter_bar"
+        :show-toggle-button="true"
+        :sidebar-padding="false"
         class="_sharedFolder--content"
-        :class="{ 'filter-bar-hidden': !show_filter_bar }"
       >
-        <div class="_filterBarToggle">
-          <button
-            type="button"
-            class="u-button u-button_icon u-button_transparent"
-            :class="{
-              'is--active': show_filter_bar,
-            }"
-            @click="toggleFilterBar"
-            :aria-label="
-              show_filter_bar ? $t('hide_filter_bar') : $t('show_filter_bar')
-            "
-          >
-            <b-icon icon="sliders" />
-          </button>
-        </div>
-        <transition name="fade_fast">
+        <template #sidebar>
           <FilterBar
-            v-if="show_filter_bar"
             :group_mode.sync="group_mode"
             :sort_order.sync="sort_order"
             :search_str.sync="search_str"
@@ -113,72 +99,75 @@
               <hr />
             </template>
           </FilterBar>
-        </transition>
+        </template>
 
-        <!-- <hr /> -->
-
-        <transition name="pagechange" mode="out-in">
-          <transition-group
-            tag="div"
-            name="projectsList"
-            class="_stacksList"
-            appear
-            :key="sort_order + '-' + group_mode"
-          >
-            <div
-              v-if="grouped_stacks.length === 0"
-              class="u-instructions _noContent"
-              :key="'nocontent'"
+        <template #content>
+          <transition name="pagechange" mode="out-in">
+            <transition-group
+              tag="div"
+              name="projectsList"
+              class="_stacksList"
+              appear
+              :key="sort_order + '-' + group_mode"
             >
-              {{ $t("no_content") }}
-            </div>
-            <template v-else>
-              <template v-if="view_mode === 'list'">
-                <div
-                  class="_dayFileSection"
-                  v-for="{ label, files: stacks } in grouped_stacks"
-                  :key="label"
-                >
-                  <div class="_label">
-                    {{ label }}
-                  </div>
-                  <transition-group
-                    tag="div"
-                    class="_itemGrid"
-                    name="listComplete"
-                    :style="{
-                      '--stack_preview_width': `${stack_preview_width}px`,
-                    }"
-                    appear
+              <div
+                v-if="grouped_stacks.length === 0"
+                class="u-instructions _noContent"
+                :key="'nocontent'"
+              >
+                {{ $t("no_content") }}
+              </div>
+              <template v-else>
+                <template v-if="view_mode === 'list'">
+                  <div
+                    class="_dayFileSection"
+                    v-for="{ label, files: stacks } in grouped_stacks"
+                    :key="label"
                   >
-                    <StackPreview
-                      v-for="stack in stacks"
-                      :key="stack.$path"
-                      :stack="stack"
-                      :display="stack_preview_width < 120 ? 'compact' : ''"
-                      :is_selected="stack.$path === last_selected_stack_path"
-                      :can_be_added_to_fav="can_be_added_to_fav"
-                      :is_favorite="isFavorite(stack.$path)"
-                      @toggleFav="toggleFav(stack.$path)"
-                      @openStack="openStack"
-                    />
-                  </transition-group>
+                    <div class="_label">
+                      {{ label }}
+                    </div>
+                    <transition-group
+                      tag="div"
+                      class="_itemGrid"
+                      :class="{
+                        'is--compact': display_mode === 'compact',
+                      }"
+                      name="listComplete"
+                      :style="{
+                        '--stack_preview_width': `${stack_preview_width}px`,
+                      }"
+                      appear
+                    >
+                      <StackPreview
+                        v-for="stack in stacks"
+                        :key="stack.$path"
+                        :stack="stack"
+                        :display="display_mode"
+                        :is_selected="stack.$path === last_selected_stack_path"
+                        :can_be_added_to_fav="can_be_added_to_fav"
+                        :is_favorite="isFavorite(stack.$path)"
+                        @toggleFav="toggleFav(stack.$path)"
+                        @openStack="openStack"
+                      />
+                    </transition-group>
+                  </div>
+                </template>
+                <div
+                  v-else-if="view_mode === 'map'"
+                  key="mediaMap"
+                  class="_mediamapContainer"
+                >
+                  <MediaMap
+                    :medias="filtered_stacks"
+                    @toggleMediaFocus="toggleMediaFocus"
+                  />
                 </div>
               </template>
-              <div
-                v-else-if="view_mode === 'map'"
-                key="mediaMap"
-                class="_mediamapContainer"
-              >
-                <MediaMap
-                  :medias="filtered_stacks"
-                  @toggleMediaFocus="toggleMediaFocus"
-                />
-              </div>
-            </template>
-          </transition-group>
-        </transition>
-      </div>
+            </transition-group>
+          </transition>
+        </template>
+      </TwoColumnLayout>
     </transition>
   </div>
 </template>
@@ -187,6 +176,7 @@ import FilterBar from "@/components/archive/FilterBar.vue";
 import StackPreview from "@/components/archive/StackPreview.vue";
 import StackDisplay from "@/components/StackDisplay.vue";
 import CorpusMenu from "@/components/archive/CorpusMenu.vue";
+import TwoColumnLayout from "@/adc-core/ui/TwoColumnLayout.vue";
 
 export default {
   props: {
@@ -202,6 +192,7 @@ export default {
     StackPreview,
     StackDisplay,
     CorpusMenu,
+    TwoColumnLayout,
     MediaMap: () => import("@/adc-core/ui/MediaMap.vue"),
   },
   data() {
@@ -280,6 +271,9 @@ export default {
     },
   },
   computed: {
+    display_mode() {
+      return this.stack_preview_width < 120 ? "compact" : "";
+    },
     can_edit() {
       return this.canLoggedinEditFolder({ folder: this.folder });
     },
@@ -500,8 +494,8 @@ export default {
       delete query.stack;
       this.$router.push({ query });
     },
-    toggleFilterBar() {
-      this.show_filter_bar = !this.show_filter_bar;
+    changeCorpus(folder_path) {
+      this.$emit("changeCorpus", folder_path);
     },
   },
 };
@@ -527,35 +521,7 @@ export default {
 ._sharedFolder--content {
   position: relative;
   overflow: auto;
-
-  display: flex;
-  flex-flow: row nowrap;
-
-  ._filterBarToggle {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    align-self: flex-start;
-    padding: calc(var(--spacing) / 2);
-    background-color: var(--body-bg);
-    border-bottom: 1px solid var(--h-200);
-    border-right: 1px solid var(--h-200);
-    flex: 0 0 auto;
-  }
-
-  ._filterBar {
-    position: sticky;
-    top: 0;
-    height: 100%;
-    overflow: auto;
-    flex: 0 0 320px;
-  }
-
-  &.filter-bar-hidden {
-    ._filterBarToggle {
-      border-right: none;
-    }
-  }
+  height: 100%;
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
@@ -571,10 +537,17 @@ export default {
     minmax(var(--stack_preview_width, 120px), 1fr)
   );
   align-items: baseline;
-  gap: calc(var(--stack_preview_width, 120px) / 40);
+  gap: calc(var(--stack_preview_width, 120px) / 10)
+    calc(var(--stack_preview_width, 120px) / 40);
+}
+
+._itemGrid.is--compact {
+  gap: 2px;
 }
 
 ._stacksList {
+  background: var(--sd-bg);
+  color: var(--sd-textcolor);
   width: 100%;
 }
 
@@ -582,7 +555,8 @@ export default {
   position: sticky;
   top: 0;
   z-index: 10;
-  font-weight: 600;
+  font-size: var(--sl-font-size-xx-large);
+  font-weight: 400;
   padding: calc(var(--spacing) / 4);
   margin-top: calc(var(--spacing) / 2);
   background-color: var(--body-bg);

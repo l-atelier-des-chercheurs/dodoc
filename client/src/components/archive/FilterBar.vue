@@ -383,8 +383,11 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
-  padding: calc(var(--spacing) / 1);
-  border-right: 1px solid var(--h-200);
+  // padding: calc(var(--spacing) / 1);
+  // height: 100%;
+  // overflow: auto;
+
+  @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 
   // select,
   // input {

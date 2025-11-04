@@ -242,8 +242,7 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    // display: table-cell;
-    // vertical-align: middle;
+    max-height: 15rem;
 
     &[data-filetype="text"] {
       max-height: 10rem;
@@ -305,6 +304,10 @@ export default {
   // text-overflow: ellipsis;
   // white-space: nowrap;
   // overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   width: 100%;
 }
 
