@@ -137,9 +137,10 @@ export default {
     btn_styles() {
       if (this.style_type === "black")
         return `
-          --color1: var(--c-noir);
-          --color2: white;
-          --color-text: var(--c-noir);
+          --color-bg: var(--c-noir);
+          --color-icon: white;
+          --color-icon-hover: white;
+          --color-bg-hover: var(--c-noir);
         `;
 
       if (
@@ -149,28 +150,33 @@ export default {
         this.btn_type === "hide"
       )
         return `
-          --color2: var(--c-noir);
+          --color-icon: var(--c-noir);
+          --color-icon-hover: white;
+          --color-bg-hover:  var(--c-noir);
         `;
       // if (this.btn_type === "add")
       //   return `
-      //     --color1: white;
-      //     --color2: var(--c-noir);
+      //     --color-bg: white;
+      //     --color-icon: var(--c-noir);
       //     --color-hover-icon: white;
       //   `;
       else if (this.btn_type === "credits")
         return `
-          --color2: var(--c-noir);
+          --color-icon: var(--c-noir);
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       else if (this.btn_type === "remove")
         return `
-          --color2: var(--c-rouge);
+          --color-icon: var(--c-rouge);
         `;
 
       if (this.btn_type === "fullscreen-exit")
         return `
-          --color1: var(--c-noir);
-          --color2: white;
-          --color-text: var(--c-noir);
+          --color-bg: var(--c-noir);
+          --color-icon: white;
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       return ``;
     },
@@ -180,15 +186,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0.5);
-  --color2: var(--active-color);
-  --color-text: white;
+  --color-bg: rgba(255, 255, 255, 0.5);
+  --color-icon: var(--active-color);
+  --color-icon-hover: white;
+  --color-bg-hover: var(--active-color);
 
   position: relative;
   // display: inline-flex;
-  background: var(--color1);
-  color: var(--color2);
-  // border: 1px solid var(--color1);
+  background: var(--color-bg);
+  color: var(--color-icon);
+  // border: 1px solid var(--color-bg);
 
   // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
@@ -219,8 +226,7 @@ export default {
     top: 0;
     height: calc(100% + 2px);
 
-    background: var(--color2);
-    color: var(--color-text);
+    background: var(--color-icon);
 
     margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
@@ -265,12 +271,14 @@ export default {
   &:active,
   &:focus-visible,
   &.is--unfolded {
-    background: var(--color2);
-    color: var(--color-text);
+    color: var(--color-icon-hover);
 
     ._label {
       transform: none;
       color: inherit;
+      background: var(--color-bg-hover);
+      color: var(--color-icon-hover);
+
       opacity: 1;
       max-width: 40ch;
       // pointer-events: auto;
