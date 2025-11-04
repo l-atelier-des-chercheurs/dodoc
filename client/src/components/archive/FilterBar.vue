@@ -1,20 +1,6 @@
 <template>
   <div class="_filterBar">
     <div class="_topBtn">
-      <div class="">
-        <button
-          type="button"
-          class="u-buttonLink"
-          :class="{
-            'is--active': show_filter_sort_pane,
-          }"
-          @click="show_filter_sort_pane = !show_filter_sort_pane"
-        >
-          <b-icon icon="filter" />
-          {{ $t("filters") }}
-        </button>
-      </div>
-
       <div class="_searchField">
         <SearchInput2
           :value="search_str"
@@ -85,7 +71,7 @@
     </div>
 
     <transition name="pagechange">
-      <div class="_filterPane" v-if="show_filter_sort_pane">
+      <div class="_filterPane">
         <!-- <button
           type="button"
           class="u-buttonLink _closeBtn"
@@ -216,8 +202,6 @@ export default {
   },
   data() {
     return {
-      show_filter_sort_pane: false,
-
       all_authors: [],
 
       show_all_keywords: false,
@@ -357,8 +341,8 @@ export default {
 ._filterBar {
   position: relative;
   z-index: 1;
-  margin: calc(var(--spacing) / 1);
-  border-bottom: 1px solid var(--h-500);
+  padding: calc(var(--spacing) / 1);
+  border-right: 1px solid var(--h-200);
 
   // select,
   // input {

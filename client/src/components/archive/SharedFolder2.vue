@@ -54,90 +54,92 @@
       />
     </transition>
 
-    <div class="_sharedFolder--content">
-      <transition name="fade_fast" mode="out-in">
-        <div class="_loader" v-if="is_loading_folder">
-          <LoaderSpinner />
-        </div>
-        <div v-else>
-          <FilterBar
-            :group_mode.sync="group_mode"
-            :sort_order.sync="sort_order"
-            :search_str.sync="search_str"
-            :filetype_filter.sync="filetype_filter"
-            :author_path_filter.sync="author_path_filter"
-            :available_keywords="available_keywords"
-            :keywords_filter.sync="keywords_filter"
-            :fav_filter.sync="fav_filter"
-            :view_mode.sync="view_mode"
-          />
+    <transition name="fade_fast" mode="out-in">
+      <div class="_loader" v-if="is_loading_folder">
+        <LoaderSpinner />
+      </div>
+      <div v-else class="_sharedFolder--content">
+        <FilterBar
+          :group_mode.sync="group_mode"
+          :sort_order.sync="sort_order"
+          :search_str.sync="search_str"
+          :filetype_filter.sync="filetype_filter"
+          :author_path_filter.sync="author_path_filter"
+          :available_keywords="available_keywords"
+          :keywords_filter.sync="keywords_filter"
+          :fav_filter.sync="fav_filter"
+          :view_mode.sync="view_mode"
+        />
 
-          <!-- <hr /> -->
+        <!-- <hr /> -->
 
-          <transition name="pagechange" mode="out-in">
-            <transition-group
-              tag="div"
-              name="projectsList"
-              appear
-              :key="sort_order + '-' + group_mode"
+        <transition name="pagechange" mode="out-in">
+          <transition-group
+            tag="div"
+            name="projectsList"
+            appear
+            :key="sort_order + '-' + group_mode"
+          >
+            <div
+              v-if="grouped_stacks.length === 0"
+              class="u-instructions _noContent"
+              :key="'nocontent'"
             >
-              <div
-                v-if="grouped_stacks.length === 0"
-                class="u-instructions _noContent"
-                :key="'nocontent'"
-              >
-                {{ $t("no_content") }}
-              </div>
-              <template v-else>
-                <template v-if="view_mode === 'list'">
-                  <div
-                    class="_dayFileSection"
-                    v-for="{ label, files: stacks } in grouped_stacks"
-                    :key="label"
-                  >
-                    <div class="_label">
-                      {{ label }}
-                    </div>
-                    <transition-group
-                      tag="div"
-                      class="_itemGrid"
-                      name="listComplete"
-                      appear
-                    >
-                      <StackPreview
-                        v-for="stack in stacks"
-                        :key="stack.$path"
-                        :stack="stack"
-                        :is_selected="stack.$path === last_selected_stack_path"
-                        :can_be_added_to_fav="can_be_added_to_fav"
-                        :is_favorite="isFavorite(stack.$path)"
-                        @toggleFav="toggleFav(stack.$path)"
-                        @openStack="openStack"
-                      />
-                    </transition-group>
-                  </div>
-                </template>
-                <div v-else-if="view_mode === 'timeline'" key="timeline">
-                  <pre>
-                  {{ timeline_stacks }}
-                  </pre>
-                </div>
+              {{ $t("no_content") }}
+            </div>
+            <template v-else>
+              <template v-if="view_mode === 'list'">
                 <div
-                  v-else-if="view_mode === 'map'"
-                  key="mediaMap"
-                  class="_mediamapContainer"
+                  class="_dayFileSection"
+                  v-for="{ label, files: stacks } in grouped_stacks"
+                  :key="label"
                 >
-                  <MediaMap
-                    :medias="filtered_stacks"
-                    @toggleMediaFocus="toggleMediaFocus"
-                  />
+                  <div class="_label">
+                    {{ label }}
+                  </div>
+                  <transition-group
+                    tag="div"
+                    class="_itemGrid"
+                    name="listComplete"
+                    :style="{
+                      '--stack_preview_width': `${stack_preview_width}px`,
+                    }"
+                    appear
+                  >
+                    <StackPreview
+                      v-for="stack in stacks"
+                      :key="stack.$path"
+                      :stack="stack"
+                      :is_selected="stack.$path === last_selected_stack_path"
+                      :can_be_added_to_fav="can_be_added_to_fav"
+                      :is_favorite="isFavorite(stack.$path)"
+                      @toggleFav="toggleFav(stack.$path)"
+                      @openStack="openStack"
+                    />
+                  </transition-group>
                 </div>
               </template>
-            </transition-group>
-          </transition>
-        </div>
-      </transition>
-    </div>
+              <div v-else-if="view_mode === 'timeline'" key="timeline">
+                <pre>
+                  {{ timeline_stacks }}
+                  </pre
+                >
+              </div>
+              <div
+                v-else-if="view_mode === 'map'"
+                key="mediaMap"
+                class="_mediamapContainer"
+              >
+                <MediaMap
+                  :medias="filtered_stacks"
+                  @toggleMediaFocus="toggleMediaFocus"
+                />
+              </div>
+            </template>
+          </transition-group>
+        </transition>
+      </div>
+    </transition>
   </div>
 </template>
 <script>
@@ -186,6 +188,8 @@ export default {
       fav_filter: false,
 
       selected_medias_paths: [],
+
+      stack_preview_width: 120,
     };
   },
   i18n: {
@@ -425,14 +429,23 @@ export default {
 
   > ._sharedFolder--content {
     flex: 1 1 0;
-    overflow: auto;
   }
 }
 
 ._sharedFolder--content {
   position: relative;
   overflow: auto;
-  // padding: 2px;
+
+  display: flex;
+  flex-flow: row nowrap;
+
+  ._filterBar {
+    position: sticky;
+    top: 0;
+    height: 100%;
+    overflow: auto;
+    flex: 0 0 320px;
+  }
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 }
@@ -443,8 +456,11 @@ export default {
 
 ._itemGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: calc(var(--spacing) / 2);
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--stack_preview_width, 120px), 1fr)
+  );
+  // gap: calc(var(--spacing) / 2);
 }
 
 ._label {
