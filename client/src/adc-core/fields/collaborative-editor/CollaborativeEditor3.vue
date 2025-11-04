@@ -116,7 +116,11 @@
           @click="enableEditor"
         />
       </div>
-      <div ref="editor" class="_editor" />
+      <div
+        ref="editor"
+        class="_editor"
+        :class="{ 'is--noPadding': no_padding }"
+      />
     </div>
   </div>
 </template>
@@ -213,6 +217,7 @@ export default {
       type: String,
       default: "normal",
     },
+    no_padding: Boolean,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -864,7 +869,7 @@ export default {
 ._toolbarAndEditorContainer {
   position: relative;
   &.is--editing_is_enabled {
-    ._editor {
+    ._editor:not(.is--noPadding) {
       // background-color: #f9f9f9;
       border: 2px solid var(--c-gris_clair);
       border-top: none;

@@ -15,9 +15,9 @@
             v-html="clean_content"
             @click="enableEditMode"
           />
-          <span v-else class="u-instructions">
+          <!-- <span v-else class="u-instructions">
             {{ $t("none") }}
-          </span>
+          </span> -->
           <EditBtn
             v-if="can_edit"
             class="_edit"
@@ -228,7 +228,6 @@ export default {
   }
 
   &:hover > ._label {
-    color: var(--c-bleuvert);
   }
 }
 
@@ -275,7 +274,7 @@ export default {
 }
 
 ._edit {
-  margin-top: -4px;
+  // margin-top: -4px;
 
   /* Hide edit button by default on devices that support hover */
   @media (hover: hover) {

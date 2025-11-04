@@ -228,7 +228,7 @@ export default {
 
     background: var(--color-icon);
 
-    margin: -1px;
+    // margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     display: flex;

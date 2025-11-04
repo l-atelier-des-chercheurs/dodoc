@@ -707,7 +707,7 @@ export default {
       left: auto;
       right: 0;
     }
-    ._collaborativeEditor > ._floatingEditBtn {
+    ._floatingEditBtn {
       display: none !important;
     }
   }

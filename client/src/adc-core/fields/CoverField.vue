@@ -247,11 +247,18 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 200%;
-  color: var(--c-gris);
+  color: var(--active-color);
+  transition: opacity 0.2s ease;
 
   ::v-deep {
     .u-button_icon {
       font-size: 2rem;
+    }
+  }
+
+  @media (hover: hover) {
+    &:not(:hover) {
+      opacity: 0;
     }
   }
 }

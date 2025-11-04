@@ -185,7 +185,11 @@
           </template>
         </div>
 
-        <div class="_compactExpandButton" @click="toggleCompacted">
+        <div
+          class="_compactExpandButton"
+          v-if="context === 'list'"
+          @click="toggleCompacted"
+        >
           <button
             type="button"
             class="u-button u-button_icon u-button_white"
