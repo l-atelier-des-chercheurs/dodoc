@@ -10,9 +10,12 @@
             v-html="clean_content"
             @click="enableEditMode"
           />
-          <!-- <span v-else class="u-instructions">
-            {{ $t("none") }}
-          </span> -->
+          <span
+            v-else
+            v-text="'-'"
+            class="u-instructions"
+            @click="enableEditMode"
+          />
           <EditBtn
             v-if="can_edit"
             class="_edit"

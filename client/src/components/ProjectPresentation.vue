@@ -125,7 +125,9 @@
           :maxlength="40"
           :tag="context === 'full' ? 'h1' : context === 'list' ? 'h3' : 'h5'"
           :can_edit="can_edit"
-          :instructions="$t('project_title_instructions')"
+          :instructions="
+            can_edit ? $t('project_title_instructions') : undefined
+          "
         />
 
         <TitleField
@@ -186,6 +188,7 @@
         <div
           class="_compactExpandButton"
           v-if="context === 'list'"
+          :class="{ 'is--active': !short_project_view }"
           @click="toggleCompacted"
         >
           <button
@@ -674,9 +677,12 @@ export default {
 
   padding: calc(var(--spacing) / 4);
 
-  background: linear-gradient(transparent, white);
   text-align: right;
   pointer-events: none;
+
+  &:not(.is--active) {
+    background: linear-gradient(to bottom, transparent, white);
+  }
 
   > button {
     pointer-events: auto;
