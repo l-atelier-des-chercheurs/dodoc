@@ -4,9 +4,7 @@
     @mouseenter="startSlide"
     @mousemove="updateMousePos"
     @mouseleave="endSlide"
-    :style="{
-      '--object-fit': display === 'compact' ? 'cover' : 'cover',
-    }"
+    :style="{}"
   >
     <button
       type="button"
@@ -14,6 +12,7 @@
       :class="{
         'is--slider': start_slide,
         'is--selected': is_selected,
+        'is--compact': display === 'compact',
       }"
       :title="stack.title"
       @click="openStack"
@@ -240,18 +239,31 @@ export default {
   justify-content: center;
   align-items: center;
 
+  ._stackPreview--content.is--compact & {
+    aspect-ratio: 1/1;
+  }
+
   ._mediaPreview {
     position: relative;
     height: 100%;
     width: 100%;
     // max-height: 10rem;
 
+    &[data-filetype="text"] {
+      max-height: 5rem;
+      overflow: hidden;
+    }
+
     ::v-deep {
       ._mediaContent--image {
         height: 100%;
         width: 100%;
-        object-fit: var(--object-fit, cover);
+        object-fit: contain;
         object-position: center;
+
+        ._stackPreview--content.is--compact & {
+          object-fit: cover;
+        }
       }
 
       &._mediaContent[data-novisual] {
