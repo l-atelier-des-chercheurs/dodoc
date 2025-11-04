@@ -356,8 +356,9 @@ export default {
           // this.editor.setText(this.content);
           // this.editor.root.innerHTML = this.content;
           const delta = this.editor.clipboard.convert({ html: this.content });
-          this.editor.setContents(delta, "silent");
+          this.editor.setContents(delta, "init");
         }
+        this.editor.history.clear();
       }
 
       this.setStatusButton();
