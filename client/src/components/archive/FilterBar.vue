@@ -1,5 +1,6 @@
 <template>
   <div class="_filterBar">
+    <slot name="top" />
     <div>
       <div class="_stackPreviewWidthSlider">
         <label class="_sliderLabel">{{ $t("stack_preview_width") }}</label>
@@ -430,15 +431,12 @@ export default {
 
 ._searchField {
   flex: 1 1 100px;
+  max-width: 420px;
+  margin-bottom: calc(var(--spacing) / 1);
 }
 
 ._searchKW {
   margin-bottom: calc(var(--spacing) / 2);
-}
-
-._searchField {
-  flex-grow: 1;
-  max-width: 420px;
 }
 
 ._stackPreviewWidthSlider {

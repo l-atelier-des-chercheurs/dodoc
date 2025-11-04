@@ -1,6 +1,6 @@
 <template>
   <div class="_sharedFolder">
-    <div class="_topBar">
+    <div class="_topBar" v-if="false">
       <label class="u-label _corpusLabel">
         {{ $t("Corpus") }}
       </label>
@@ -70,7 +70,28 @@
           :fav_filter.sync="fav_filter"
           :view_mode.sync="view_mode"
           :stack_preview_width.sync="stack_preview_width"
-        />
+        >
+          <template #top>
+            <DLabel :str="$t('corpus visibles')" />
+            <div v-for="folder in all_folders" :key="folder.$path">
+              <div class="_corpusItem">
+                <input
+                  checkbox
+                  type="checkbox"
+                  :id="folder.$path"
+                  checked
+                  :value="folder.$path"
+                  @change="changeCorpus(folder.$path)"
+                />
+                <label :for="folder.$path">{{
+                  folder.title || $t("untitled")
+                }}</label>
+              </div>
+            </div>
+            <div class="u-spacingBottom" />
+            <hr />
+          </template>
+        </FilterBar>
 
         <!-- <hr /> -->
 
@@ -169,6 +190,7 @@ export default {
   data() {
     return {
       folder: undefined,
+      all_folders: [],
       all_stacks: [],
 
       show_corpus_menu: false,
@@ -338,10 +360,10 @@ export default {
   methods: {
     async checkExistingFolder() {
       // first load all folders
-      const folders = await this.$api.getFolders({ path: "folders" });
+      this.all_folders = await this.$api.getFolders({ path: "folders" });
 
       if (this.shared_folder_path) {
-        const matching_folder = folders.find(
+        const matching_folder = this.all_folders.find(
           (f) => f.$path === this.shared_folder_path
         );
         if (matching_folder) {
@@ -356,7 +378,7 @@ export default {
         "last_opened_folder_path"
       );
       if (last_opened_folder_path) {
-        const matching_folder = folders.find(
+        const matching_folder = this.all_folders.find(
           (f) => f.$path === last_opened_folder_path
         );
         if (matching_folder?.$path) {
@@ -365,8 +387,8 @@ export default {
         }
       }
 
-      if (folders.length > 0) {
-        this.$emit("changeCorpus", folders[0].$path);
+      if (this.all_folders.length > 0) {
+        this.$emit("changeCorpus", this.all_folders[0].$path);
       }
     },
     toggleMediaFocus(path) {
@@ -510,5 +532,11 @@ export default {
 
 ._corpusLabel {
   margin-bottom: 0;
+}
+._corpusItem {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
 }
 </style>
