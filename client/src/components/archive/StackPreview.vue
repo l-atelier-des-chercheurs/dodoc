@@ -251,7 +251,8 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    max-height: 14rem;
+    max-height: calc(var(--stack_preview_width) * 1.2);
+    float: right;
 
     &[data-filetype="text"] {
       max-height: 10rem;
@@ -318,6 +319,8 @@ export default {
   -webkit-box-orient: vertical;
   overflow: hidden;
   width: 100%;
+
+  font-weight: 500;
 }
 
 ._count {

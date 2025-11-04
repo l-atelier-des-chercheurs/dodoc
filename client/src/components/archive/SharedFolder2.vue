@@ -527,6 +527,7 @@ export default {
 }
 
 ._dayFileSection {
+  text-align: center;
   margin: 0 calc(var(--spacing) / 1);
 }
 
@@ -549,6 +550,7 @@ export default {
   background: var(--sd-bg);
   color: var(--sd-textcolor);
   width: 100%;
+  height: 100%;
 }
 
 ._label {

@@ -1,6 +1,7 @@
 <template>
   <div class="_filterBar">
     <slot name="top" />
+
     <div>
       <div class="_stackPreviewWidthSlider">
         <label class="_sliderLabel">{{ $t("stack_preview_width") }}</label>
@@ -131,17 +132,6 @@
               v-text="author.name"
             />
           </select>
-
-          <transition name="fade_fast" mode="out-in">
-            <button
-              type="button"
-              v-if="can_be_reset"
-              class="u-buttonLink _resetFilters"
-              @click="resetFilters"
-            >
-              {{ $t("reset") }}
-            </button>
-          </transition>
         </div>
 
         <div class="_filterPane--row">
@@ -183,6 +173,11 @@
         </div>
       </div>
     </transition>
+    <div class="_resetFilters" v-if="can_be_reset">
+      <button type="button" class="u-buttonLink" @click="resetFilters">
+        {{ $t("reset") }}
+      </button>
+    </div>
   </div>
 </template>
 <script>
@@ -431,7 +426,8 @@ export default {
 }
 
 ._resetFilters {
-  flex: 0 0 100px;
+  text-align: center;
+  padding: calc(var(--spacing) / 2);
 }
 ._closeBtn {
   position: absolute;

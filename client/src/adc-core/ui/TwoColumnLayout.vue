@@ -95,7 +95,7 @@ export default {
     left: 0;
     margin: 0;
     z-index: 8;
-    background: var(--active-color);
+    // background: var(--active-color);
     border-radius: 0;
     padding: calc(var(--spacing) / 4);
   }
