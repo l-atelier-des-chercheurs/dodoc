@@ -40,7 +40,7 @@
         >
           <MediaContent :file="slide_file" class="_mediaPreview" />
         </div>
-        <transition-group name="projectsList" class="_count">
+        <!-- <transition-group name="projectsList" class="_count">
           <template
             v-if="
               index_of_slide_file_to_show !== undefined &&
@@ -55,7 +55,7 @@
           <div key="preview">
             {{ number_of_medias_in_stack }}
           </div>
-        </transition-group>
+        </transition-group> -->
       </div>
       <div class="_title">
         {{ stack.title }}
@@ -68,7 +68,7 @@
           type="button"
           class="u-button u-button_icon u-button_transparent _addToFav"
           :data-isfav="is_favorite"
-          :disabled="can_be_added_to_fav && (is_favorite || start_slide)"
+          :disabled="!can_be_added_to_fav"
           @click.stop="$emit('toggleFav')"
         >
           <svg
@@ -175,7 +175,7 @@ export default {
   justify-content: flex-end;
   align-items: stretch;
   padding: 0px;
-  min-height: 8rem;
+  // min-height: 8rem;
 }
 
 ._stackPreview--content {
@@ -220,8 +220,8 @@ export default {
 ._preview {
   position: relative;
   width: 100%;
-  min-height: 3rem;
-  aspect-ratio: 135/150;
+  // min-height: 3rem;
+  aspect-ratio: 1/1;
   overflow: hidden;
 
   cursor: pointer;
@@ -241,8 +241,14 @@ export default {
       ._mediaContent--image {
         height: 100%;
         width: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center;
+      }
+
+      &._mediaContent[data-novisual] {
+        align-items: flex-start;
+        color: var(--h-600);
+        padding: calc(var(--spacing) / 4);
       }
     }
   }
@@ -275,7 +281,7 @@ export default {
   // bottom: 0;
   // background: rgba(255, 255, 255, 0.9);
 
-  height: 1.5em;
+  // height: 1.5em;
   padding: 0 calc(var(--spacing) / 4);
 
   text-overflow: ellipsis;
@@ -291,18 +297,18 @@ export default {
   flex-flow: row nowrap;
   gap: calc(var(--spacing) / 8);
   align-content: center;
-  top: 0;
+  bottom: 0;
   left: 0;
-  margin: calc(var(--spacing) / 4);
+  margin: 0;
   padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4)
     calc(var(--spacing) / 4);
   font-weight: 400;
-  background: white;
+  background: rgba(255, 255, 255, 0.5);
   color: black;
   line-height: 1;
 
   > * {
-    background: white;
+    // background: white;
   }
 }
 
@@ -326,12 +332,20 @@ export default {
   stroke: var(--c-noir);
 
   &[data-isfav] {
-    color: var(--c-noir);
+    stroke: transparent;
+    color: var(--active-color);
   }
 
   svg {
     width: 1rem;
     height: 1rem;
+  }
+}
+@media (hover: hover) {
+  ._stackPreview:not(:hover) {
+    ._addToFav:not([data-isfav]) {
+      opacity: 0;
+    }
   }
 }
 
