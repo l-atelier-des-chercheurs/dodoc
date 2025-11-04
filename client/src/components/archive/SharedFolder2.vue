@@ -65,7 +65,7 @@
           :search_str.sync="search_str"
           :filetype_filter.sync="filetype_filter"
           :author_path_filter.sync="author_path_filter"
-          :available_keywords="available_keywords"
+          :available_keywords="valid_keywords"
           :keywords_filter.sync="keywords_filter"
           :fav_filter.sync="fav_filter"
           :view_mode.sync="view_mode"
@@ -99,6 +99,7 @@
           <transition-group
             tag="div"
             name="projectsList"
+            class="_stacksList"
             appear
             :key="sort_order + '-' + group_mode"
           >
@@ -142,12 +143,6 @@
                   </transition-group>
                 </div>
               </template>
-              <div v-else-if="view_mode === 'timeline'" key="timeline">
-                <pre>
-                  {{ timeline_stacks }}
-                  </pre
-                >
-              </div>
               <div
                 v-else-if="view_mode === 'map'"
                 key="mediaMap"
@@ -277,6 +272,31 @@ export default {
           (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
         );
     },
+    stacks_without_keyword_filter() {
+      // Stacks filtered by all filters except keyword filter
+      // Used to compute which keywords would result in 0 results
+      return this.sorted_stacks.filter((f) => {
+        if (this.fav_filter) if (!this.isFavorite(f.$path)) return false;
+
+        if (this.author_path_filter)
+          if (!f.$authors?.includes(this.author_path_filter)) return false;
+
+        if (this.search_str) {
+          if (
+            (f.title &&
+              f.title.toLowerCase().includes(this.search_str.toLowerCase())) ||
+            (f.description &&
+              f.description
+                .toLowerCase()
+                .includes(this.search_str.toLowerCase()))
+          )
+            return true;
+          else return false;
+        }
+
+        return true;
+      });
+    },
     filtered_stacks() {
       return this.sorted_stacks.filter((f) => {
         if (this.fav_filter) if (!this.isFavorite(f.$path)) return false;
@@ -285,8 +305,9 @@ export default {
           if (!f.$authors?.includes(this.author_path_filter)) return false;
 
         if (this.keywords_filter.length > 0) {
+          // Inclusion logic: show only stacks that have ALL selected keywords (AND logic)
           if (!f.keywords || !Array.isArray(f.keywords)) return false;
-          if (this.keywords_filter.some((kwf) => !f.keywords.includes(kwf)))
+          if (!this.keywords_filter.every((kwf) => f.keywords.includes(kwf)))
             return false;
         }
         // if (this.filetype_filter !== "all")
@@ -334,20 +355,36 @@ export default {
       return this.groupFilesBy(this.filtered_stacks, order_props, "day");
     },
     available_keywords() {
-      const all_kw = this.filtered_stacks.reduce((acc, f) => {
+      // Use sorted_stacks instead of filtered_stacks so all keywords remain visible
+      // even when some are excluded from the view
+      const all_kw = this.sorted_stacks.reduce((acc, f) => {
         if (f.keywords && Array.isArray(f.keywords)) {
           f.keywords.map((kw) => {
             const item = acc.find((_kw) => _kw.title === kw);
             if (item) item.count += 1;
             else acc.push({ title: kw, count: 1 });
-            // if (!acc[kw]) acc[kw] = 1;
-            // else acc[kw] += 1;
           });
         }
         return acc;
       }, []);
       return all_kw.sort((a, b) => {
         return b.count - a.count;
+      });
+    },
+    valid_keywords() {
+      // Filter out keywords that would result in 0 results when combined with current selection
+      return this.available_keywords.filter((kw) => {
+        // If keyword is already selected, always show it
+        if (this.keywords_filter.includes(kw.title)) return true;
+
+        // Combine current selection with this keyword
+        const test_keywords = [...this.keywords_filter, kw.title];
+
+        // Check if any stack has ALL of these keywords
+        return this.stacks_without_keyword_filter.some((stack) => {
+          if (!stack.keywords || !Array.isArray(stack.keywords)) return false;
+          return test_keywords.every((kwf) => stack.keywords.includes(kwf));
+        });
       });
     },
     opened_stack() {
@@ -487,10 +524,18 @@ export default {
   // gap: calc(var(--spacing) / 2);
 }
 
+._stacksList {
+  width: 100%;
+}
+
 ._label {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   font-weight: 600;
-  font-size: var(--sl-font-size-large);
-  margin: calc(var(--spacing) * 1) 0;
+  padding: calc(var(--spacing) / 4);
+  margin-top: calc(var(--spacing) / 2);
+  background-color: var(--body-bg);
 }
 
 ._stackModal {
@@ -510,7 +555,8 @@ export default {
 }
 
 ._mediamapContainer {
-  height: 90vh;
+  width: 100%;
+  height: 100%;
 }
 
 ._noContent {

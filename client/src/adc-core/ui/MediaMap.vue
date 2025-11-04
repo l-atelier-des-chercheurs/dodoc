@@ -63,6 +63,6 @@ export default {
 <style lang="scss" scoped>
 ._mediaMap {
   width: 100%;
-  height: 90%;
+  height: 100%;
 }
 </style>

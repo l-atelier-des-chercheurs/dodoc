@@ -4,6 +4,9 @@
     @mouseenter="startSlide"
     @mousemove="updateMousePos"
     @mouseleave="endSlide"
+    :style="{
+      '--object-fit': display === 'compact' ? 'cover' : 'contain',
+    }"
   >
     <button
       type="button"
@@ -12,6 +15,7 @@
         'is--slider': start_slide,
         'is--selected': is_selected,
       }"
+      :title="stack.title"
       @click="openStack"
     >
       <div class="_preview">
@@ -193,10 +197,14 @@ export default {
 
   // border-radius: 2px;
   overflow: hidden;
-  padding: calc(var(--stack_preview_width) / 40);
+  padding: clamp(
+    1px,
+    calc(var(--stack_preview_width) / 40),
+    calc(var(--stack_preview_width) / 40)
+  );
 
   transform-origin: center calc(100% - 2em);
-  transition: background 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
 
   > * {
     pointer-events: none;
@@ -242,7 +250,7 @@ export default {
       ._mediaContent--image {
         height: 100%;
         width: 100%;
-        object-fit: cover;
+        object-fit: var(--object-fit, cover);
         object-position: center;
       }
 
@@ -283,7 +291,7 @@ export default {
   // background: rgba(255, 255, 255, 0.9);
 
   // height: 1.5em;
-  padding: 0 calc(var(--spacing) / 4);
+  padding-top: calc(var(--spacing) / 8);
 
   text-overflow: ellipsis;
   white-space: nowrap;

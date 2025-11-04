@@ -8,9 +8,9 @@
           type="range"
           class="_inputRange"
           :value="stack_preview_width"
-          min="60"
-          max="300"
-          step="10"
+          min="50"
+          max="250"
+          step="5"
           @input="$emit('update:stack_preview_width', +$event.target.value)"
         />
       </div>
@@ -148,43 +148,36 @@
           <div class="_tag">
             <DLabel :str="$t('filter_by_keyword')" />
 
-            <div class="_searchKW">
-              <SearchInput2
-                v-model="kw_search"
-                :search_placeholder="$t('search')"
-              />
-            </div>
-
-            <div class="u-keywords _usedKw" v-if="keywords_filter.length > 0">
-              <SingleKeyword
-                v-for="keyword in keywords_filter"
-                :key="keyword"
-                :keyword="keyword"
-                :can_remove="true"
-                @remove="removeFilter(keyword)"
-              />
-            </div>
-            <div class="u-keywords">
-              <SingleKeyword
-                v-for="keyword in collapsable_keywords"
-                :key="keyword.title"
-                :keyword="keyword.title"
-                :count="keyword.count"
-                :can_add="true"
-                @add="addFilter(keyword.title)"
-              />
-
-              <button
-                type="button"
-                v-if="available_keywords_except_active.length > 10"
-                class="u-buttonLink"
-                @click="show_all_keywords = !show_all_keywords"
-                :class="{
-                  'is--active': show_all_keywords,
-                }"
+            <div class="_keywordsScrollContainer">
+              <div
+                v-for="category in keywords_by_category"
+                :key="category.type"
+                class="_keywordCategory"
               >
-                {{ $t("show_all_keywords") }}
-              </button>
+                <div class="_categoryHeader">
+                  {{ category.type }}
+                </div>
+                <div class="_keywordCheckboxes">
+                  <label
+                    v-for="keyword in category.keywords"
+                    :key="keyword.title"
+                    class="u-keywords _keywordCheckbox"
+                  >
+                    <input
+                      type="checkbox"
+                      :checked="isKeywordSelected(keyword.title)"
+                      @change="
+                        toggleKeyword(keyword.title, $event.target.checked)
+                      "
+                    />
+                    <SingleKeyword
+                      :keyword="keyword.title"
+                      :count="keyword.count"
+                      :cat_color="getCategoryColor(category.type)"
+                    />
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -193,8 +186,8 @@
   </div>
 </template>
 <script>
-import SingleKeyword from "@/components/SingleKeyword.vue";
 import SearchInput2 from "@/components/SearchInput2.vue";
+import SingleKeyword from "@/components/SingleKeyword.vue";
 
 export default {
   props: {
@@ -211,15 +204,12 @@ export default {
     stack_preview_width: Number,
   },
   components: {
-    SingleKeyword,
     SearchInput2,
+    SingleKeyword,
   },
   data() {
     return {
       all_authors: [],
-
-      show_all_keywords: false,
-      kw_search: "",
 
       group_options: [
         {
@@ -295,20 +285,35 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    available_keywords_except_active() {
-      let _keywords = this.available_keywords.filter((kw) => {
-        if (this.keywords_filter.includes(kw.title)) return false;
-        if (this.kw_search)
-          return this.twoStringsSearch(kw.title, this.kw_search);
+    keywords_by_category() {
+      const categories = {};
 
-        return true;
+      // available_keywords already contains only valid keywords (computed in parent)
+      this.available_keywords.forEach((kw) => {
+        const category = this.getKeywordCategory(kw.title);
+        const categoryKey = category || "OTHER";
+
+        if (!categories[categoryKey]) {
+          categories[categoryKey] = {
+            type: categoryKey,
+            keywords: [],
+          };
+        }
+
+        categories[categoryKey].keywords.push(kw);
       });
-      return _keywords;
-    },
-    collapsable_keywords() {
-      if (!this.show_all_keywords)
-        return this.available_keywords_except_active.slice(0, 10);
-      return this.available_keywords_except_active;
+
+      // Sort categories and keywords within each category
+      return Object.keys(categories)
+        .sort()
+        .map((key) => ({
+          type: key,
+          keywords: categories[key].keywords.sort((a, b) =>
+            this.getKeywordName(a.title).localeCompare(
+              this.getKeywordName(b.title)
+            )
+          ),
+        }));
     },
     can_be_reset() {
       return (
@@ -330,25 +335,46 @@ export default {
       this.$emit("update:filetype_filter", "all");
       this.$emit("update:keywords_filter", []);
     },
-    filterByKeyword(keyword) {
+    getKeywordCategory(keyword) {
+      return keyword.includes("/") ? keyword.split("/")[0] : null;
+    },
+    getKeywordName(keyword) {
+      return keyword.includes("/") ? keyword.split("/")[1] : keyword;
+    },
+    isKeywordSelected(keyword) {
+      return this.keywords_filter.includes(keyword);
+    },
+    toggleKeyword(keyword, checked) {
       let _new_kw = this.keywords_filter.slice();
-      if (this.keywords_filter.includes(keyword)) {
-        _new_kw = _new_kw.filter((kw) => kw !== keyword);
+      if (checked) {
+        // Add to inclusion list (show only items with this keyword)
+        if (!_new_kw.includes(keyword)) {
+          _new_kw.push(keyword);
+        }
       } else {
-        _new_kw.push(keyword);
+        // Remove from inclusion list
+        _new_kw = _new_kw.filter((kw) => kw !== keyword);
       }
       this.$emit("update:keywords_filter", _new_kw);
     },
-    removeFilter(kw) {
-      this.$nextTick(() => {
-        this.filterByKeyword(kw);
-      });
+    getCategoryColorStyle(categoryType) {
+      if (!categoryType || !window.app_infos?.custom_suggested_categories) {
+        return "";
+      }
+      const category = window.app_infos.custom_suggested_categories.find(
+        (c) => c.title === categoryType
+      );
+      if (!category?.tag_color) return "";
+      return `--cat-color: ${category.tag_color}`;
     },
-    addFilter(kw) {
-      this.$nextTick(() => {
-        this.kw_search = "";
-        this.filterByKeyword(kw);
-      });
+    getCategoryColor(categoryType) {
+      if (!categoryType || !window.app_infos?.custom_suggested_categories) {
+        return undefined;
+      }
+      const category = window.app_infos.custom_suggested_categories.find(
+        (c) => c.title === categoryType
+      );
+      return category?.tag_color;
     },
   },
 };
@@ -401,10 +427,6 @@ export default {
   margin-bottom: calc(var(--spacing) / 2);
 }
 
-._searchKW {
-  margin-bottom: calc(var(--spacing) / 2);
-}
-
 ._resetFilters {
   flex: 0 0 100px;
 }
@@ -432,11 +454,50 @@ export default {
 ._searchField {
   flex: 1 1 100px;
   max-width: 420px;
-  margin-bottom: calc(var(--spacing) / 1);
+  margin-bottom: calc(var(--spacing) / 2);
 }
 
-._searchKW {
-  margin-bottom: calc(var(--spacing) / 2);
+._keywordsScrollContainer {
+}
+
+._keywordCategory {
+  margin-bottom: calc(var(--spacing) * 1);
+}
+
+._categoryHeader {
+  position: sticky;
+  // padding: calc(var(--spacing) / 2) 0;
+  // margin-bottom: calc(var(--spacing) / 2);
+  font-weight: 600;
+  // font-size: var(--sl-font-size-small);
+  // text-transform: uppercase;
+  // color: var(--h-700);
+  // border-radius: 4px;
+  // padding-left: calc(var(--spacing) / 2);
+  // padding-right: calc(var(--spacing) / 2);
+}
+
+._keywordCheckboxes {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 4);
+  max-height: 30vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+._keywordCheckbox {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  cursor: pointer;
+  // padding: calc(var(--spacing) / 4) 0;
+
+  input[type="checkbox"] {
+    cursor: pointer;
+    flex: 0 0 auto;
+  }
 }
 
 ._stackPreviewWidthSlider {
