@@ -511,8 +511,9 @@ export default {
   text-decoration: none;
 
   &.is--active {
-    background-color: var(--h-600);
-    color: white;
+    // background-color: var(--h-600);
+    // color: white;
+    font-weight: 800;
     // font-weight: bold;
   }
 }

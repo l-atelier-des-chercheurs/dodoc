@@ -43,6 +43,15 @@
         >
           <MediaContent :file="slide_file" class="_mediaPreview" />
         </div>
+        <!-- <transition name="fade_fast" mode="out-in">
+          <div
+            class="_count"
+            v-if="
+              index_of_slide_file_to_show !== undefined &&
+              number_of_medias_in_stack > 0
+            "
+          ></div>
+        </transition> -->
         <!-- <transition-group name="projectsList" class="_count">
           <template
             v-if="
@@ -242,7 +251,7 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    max-height: 15rem;
+    max-height: 14rem;
 
     &[data-filetype="text"] {
       max-height: 10rem;
@@ -320,12 +329,14 @@ export default {
   align-content: center;
   bottom: 0;
   left: 0;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+
   margin: 0;
-  padding: calc(var(--spacing) / 8) calc(var(--spacing) / 4)
-    calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 4);
   font-weight: 400;
-  background: rgba(255, 255, 255, 0.5);
-  color: black;
+  background: white;
   line-height: 1;
 
   > * {
