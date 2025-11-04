@@ -571,7 +571,7 @@ export default {
     minmax(var(--stack_preview_width, 120px), 1fr)
   );
   align-items: baseline;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--stack_preview_width, 120px) / 40);
 }
 
 ._stacksList {

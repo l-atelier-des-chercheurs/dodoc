@@ -234,11 +234,6 @@ export default {
 
   cursor: pointer;
 
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-
   ._stackPreview--content.is--compact & {
     aspect-ratio: 1/1;
   }
@@ -247,11 +242,13 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    // max-height: 10rem;
+    // display: table-cell;
+    // vertical-align: middle;
 
     &[data-filetype="text"] {
-      max-height: 5rem;
+      max-height: 10rem;
       overflow: hidden;
+      float: left;
     }
 
     ::v-deep {
