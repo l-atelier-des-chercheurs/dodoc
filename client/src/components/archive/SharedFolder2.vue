@@ -221,7 +221,8 @@ export default {
 
       selected_medias_paths: [],
 
-      stack_preview_width: 120,
+      stack_preview_width:
+        parseInt(localStorage.getItem("archive.stack_preview_width")) || 120,
 
       show_filter_bar:
         localStorage.getItem("archive.show_filter_bar") !== "false",
@@ -268,6 +269,12 @@ export default {
     },
     show_filter_bar() {
       localStorage.setItem("archive.show_filter_bar", this.show_filter_bar);
+    },
+    stack_preview_width() {
+      localStorage.setItem(
+        "archive.stack_preview_width",
+        this.stack_preview_width.toString()
+      );
     },
   },
   computed: {
