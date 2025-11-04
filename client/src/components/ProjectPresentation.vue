@@ -125,9 +125,7 @@
           :maxlength="40"
           :tag="context === 'full' ? 'h1' : context === 'list' ? 'h3' : 'h5'"
           :can_edit="can_edit"
-          :instructions="
-            can_edit ? $t('project_title_instructions') : undefined
-          "
+          :instructions="$t('project_title_instructions')"
         />
 
         <TitleField

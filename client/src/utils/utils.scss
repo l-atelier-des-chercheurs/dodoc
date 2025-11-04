@@ -232,7 +232,7 @@ button,
   &[disabled] {
     cursor: not-allowed;
     filter: grayscale(50%);
-    color: var(--c-gris_fonce);
+    color: var(--c-gris);
   }
 
   &:hover,

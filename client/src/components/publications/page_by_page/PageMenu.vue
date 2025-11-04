@@ -52,6 +52,7 @@
 
         <button
           type="button"
+          v-if="can_edit"
           class="u-button u-button_bleuvert u-button_small"
           @click="createPageAndOpen"
         >

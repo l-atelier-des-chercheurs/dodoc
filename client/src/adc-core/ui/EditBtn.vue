@@ -131,7 +131,8 @@ export default {
         };
       return {
         label: this.$t("edit"),
-        icon: "pencil-fill",
+        icon: "pencil",
+        icon_size: 0.8,
       };
     },
     btn_styles() {
@@ -204,6 +205,7 @@ export default {
   // width: 24px;
   // height: 24px;
   // flex: 0 0 24px;
+  padding-left: 2px;
   padding: calc(var(--spacing) / 2);
 
   border-radius: 50%;

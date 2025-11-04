@@ -1,11 +1,6 @@
 <template>
   <span class="_titleField">
-    <DLabel
-      v-if="label && show_label"
-      class="_label"
-      :str="label"
-      :instructions="can_edit ? instructions : ''"
-    />
+    <DLabel v-if="label && show_label" class="_label" :str="label" />
 
     <div class="_container">
       <div class="_content">
@@ -144,6 +139,10 @@ export default {
   methods: {
     enableEditMode() {
       if (!this.can_edit) return;
+      // Don't start edit mode if user currently has a text selection
+      if (window.getSelection && window.getSelection().toString().length > 0) {
+        return;
+      }
       this.edit_mode = true;
     },
     cancel() {
