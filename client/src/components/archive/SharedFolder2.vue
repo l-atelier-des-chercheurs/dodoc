@@ -69,6 +69,7 @@
           :keywords_filter.sync="keywords_filter"
           :fav_filter.sync="fav_filter"
           :view_mode.sync="view_mode"
+          :stack_preview_width.sync="stack_preview_width"
         />
 
         <!-- <hr /> -->
@@ -110,6 +111,7 @@
                       v-for="stack in stacks"
                       :key="stack.$path"
                       :stack="stack"
+                      :display="stack_preview_width < 120 ? 'compact' : ''"
                       :is_selected="stack.$path === last_selected_stack_path"
                       :can_be_added_to_fav="can_be_added_to_fav"
                       :is_favorite="isFavorite(stack.$path)"

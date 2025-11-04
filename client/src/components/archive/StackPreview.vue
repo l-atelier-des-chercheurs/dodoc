@@ -57,7 +57,7 @@
           </div>
         </transition-group> -->
       </div>
-      <div class="_title">
+      <div class="_title" v-if="display !== 'compact'">
         {{ stack.title }}
       </div>
     </button>
@@ -98,6 +98,7 @@ export default {
     is_selected: Boolean,
     is_favorite: Boolean,
     can_be_added_to_fav: Boolean,
+    display: String,
   },
   components: {},
   data() {
@@ -190,12 +191,12 @@ export default {
   // border: 2px solid var(--c-bodybg);
   cursor: pointer;
 
-  border-radius: 2px;
+  // border-radius: 2px;
   overflow: hidden;
-  padding: 2px;
+  padding: calc(var(--stack_preview_width) / 40);
 
   transform-origin: center calc(100% - 2em);
-  transition: all 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+  transition: background 0.45s cubic-bezier(0.19, 1, 0.22, 1);
 
   > * {
     pointer-events: none;

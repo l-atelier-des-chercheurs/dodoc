@@ -1,14 +1,18 @@
 <template>
   <div class="_filterBar">
-    <div class="_topBtn">
-      <div class="_searchField">
-        <SearchInput2
-          :value="search_str"
-          @input="$emit('update:search_str', $event)"
-          :search_placeholder="$t('search_fields')"
+    <div>
+      <div class="_stackPreviewWidthSlider">
+        <label class="_sliderLabel">{{ $t("stack_preview_width") }}</label>
+        <input
+          type="range"
+          class="_inputRange"
+          :value="stack_preview_width"
+          min="60"
+          max="300"
+          step="10"
+          @input="$emit('update:stack_preview_width', +$event.target.value)"
         />
       </div>
-
       <div class="u-sameRow">
         <div>
           <button
@@ -68,6 +72,14 @@
           <b-icon icon="map-fill" />
         </button>
       </div>
+    </div>
+
+    <div class="_searchField">
+      <SearchInput2
+        :value="search_str"
+        @input="$emit('update:search_str', $event)"
+        :search_placeholder="$t('search_fields')"
+      />
     </div>
 
     <transition name="pagechange">
@@ -195,6 +207,7 @@ export default {
     keywords_filter: Array,
     fav_filter: Boolean,
     view_mode: String,
+    stack_preview_width: Number,
   },
   components: {
     SingleKeyword,
@@ -264,9 +277,11 @@ export default {
       fr: {
         search_fields:
           "Rechercher dans les champs titre et description des documents.",
+        stack_preview_width: "Largeur aperçu",
       },
       en: {
         search_fields: "Search in titles or descriptions of documents.",
+        stack_preview_width: "Preview width",
       },
     },
   },
@@ -424,5 +439,31 @@ export default {
 ._searchField {
   flex-grow: 1;
   max-width: 420px;
+}
+
+._stackPreviewWidthSlider {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  min-width: 200px;
+}
+
+._sliderLabel {
+  font-size: var(--sl-font-size-small);
+  white-space: nowrap;
+}
+
+._inputRange {
+  flex: 1 1 100px;
+  min-width: 100px;
+  margin: 0;
+}
+
+._sliderValue {
+  font-size: var(--sl-font-size-small);
+  min-width: 50px;
+  text-align: right;
+  white-space: nowrap;
 }
 </style>
