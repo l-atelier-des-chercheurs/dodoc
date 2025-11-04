@@ -58,40 +58,62 @@
       <div class="_loader" v-if="is_loading_folder">
         <LoaderSpinner />
       </div>
-      <div v-else class="_sharedFolder--content">
-        <FilterBar
-          :group_mode.sync="group_mode"
-          :sort_order.sync="sort_order"
-          :search_str.sync="search_str"
-          :filetype_filter.sync="filetype_filter"
-          :author_path_filter.sync="author_path_filter"
-          :available_keywords="valid_keywords"
-          :keywords_filter.sync="keywords_filter"
-          :fav_filter.sync="fav_filter"
-          :view_mode.sync="view_mode"
-          :stack_preview_width.sync="stack_preview_width"
-        >
-          <template #top>
-            <DLabel :str="$t('corpus visibles')" />
-            <div v-for="folder in all_folders" :key="folder.$path">
-              <div class="_corpusItem">
-                <input
-                  checkbox
-                  type="checkbox"
-                  :id="folder.$path"
-                  checked
-                  :value="folder.$path"
-                  @change="changeCorpus(folder.$path)"
-                />
-                <label :for="folder.$path">{{
-                  folder.title || $t("untitled")
-                }}</label>
+      <div
+        v-else
+        class="_sharedFolder--content"
+        :class="{ 'filter-bar-hidden': !show_filter_bar }"
+      >
+        <div class="_filterBarToggle">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_transparent"
+            :class="{
+              'is--active': show_filter_bar,
+            }"
+            @click="toggleFilterBar"
+            :aria-label="
+              show_filter_bar ? $t('hide_filter_bar') : $t('show_filter_bar')
+            "
+          >
+            <b-icon icon="sliders" />
+          </button>
+        </div>
+        <transition name="fade_fast">
+          <FilterBar
+            v-if="show_filter_bar"
+            :group_mode.sync="group_mode"
+            :sort_order.sync="sort_order"
+            :search_str.sync="search_str"
+            :filetype_filter.sync="filetype_filter"
+            :author_path_filter.sync="author_path_filter"
+            :available_keywords="valid_keywords"
+            :keywords_filter.sync="keywords_filter"
+            :fav_filter.sync="fav_filter"
+            :view_mode.sync="view_mode"
+            :stack_preview_width.sync="stack_preview_width"
+          >
+            <template #top>
+              <DLabel :str="$t('corpus visibles')" />
+              <div v-for="folder in all_folders" :key="folder.$path">
+                <div class="_corpusItem">
+                  <input
+                    checkbox
+                    type="checkbox"
+                    :id="folder.$path"
+                    checked
+                    :value="folder.$path"
+                    @change="changeCorpus(folder.$path)"
+                  />
+                  <label :for="folder.$path">{{
+                    folder.title || $t("untitled")
+                  }}</label>
+                </div>
               </div>
-            </div>
-            <div class="u-spacingBottom" />
-            <hr />
-          </template>
-        </FilterBar>
+              <div class="u-spacingBottom" />
+              <hr />
+            </template>
+          </FilterBar>
+        </transition>
 
         <!-- <hr /> -->
 
@@ -209,6 +231,9 @@ export default {
       selected_medias_paths: [],
 
       stack_preview_width: 120,
+
+      show_filter_bar:
+        localStorage.getItem("archive.show_filter_bar") !== "false",
     };
   },
   i18n: {
@@ -249,6 +274,9 @@ export default {
     },
     sort_order() {
       localStorage.setItem("archive.sort_order", this.sort_order);
+    },
+    show_filter_bar() {
+      localStorage.setItem("archive.show_filter_bar", this.show_filter_bar);
     },
   },
   computed: {
@@ -472,6 +500,9 @@ export default {
       delete query.stack;
       this.$router.push({ query });
     },
+    toggleFilterBar() {
+      this.show_filter_bar = !this.show_filter_bar;
+    },
   },
 };
 </script>
@@ -500,12 +531,30 @@ export default {
   display: flex;
   flex-flow: row nowrap;
 
+  ._filterBarToggle {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    align-self: flex-start;
+    padding: calc(var(--spacing) / 2);
+    background-color: var(--body-bg);
+    border-bottom: 1px solid var(--h-200);
+    border-right: 1px solid var(--h-200);
+    flex: 0 0 auto;
+  }
+
   ._filterBar {
     position: sticky;
     top: 0;
     height: 100%;
     overflow: auto;
     flex: 0 0 320px;
+  }
+
+  &.filter-bar-hidden {
+    ._filterBarToggle {
+      border-right: none;
+    }
   }
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
@@ -521,7 +570,8 @@ export default {
     auto-fill,
     minmax(var(--stack_preview_width, 120px), 1fr)
   );
-  // gap: calc(var(--spacing) / 2);
+  align-items: baseline;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._stacksList {

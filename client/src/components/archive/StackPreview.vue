@@ -5,7 +5,7 @@
     @mousemove="updateMousePos"
     @mouseleave="endSlide"
     :style="{
-      '--object-fit': display === 'compact' ? 'cover' : 'contain',
+      '--object-fit': display === 'compact' ? 'cover' : 'cover',
     }"
   >
     <button
@@ -230,7 +230,7 @@ export default {
   position: relative;
   width: 100%;
   // min-height: 3rem;
-  aspect-ratio: 1/1;
+  // aspect-ratio: 1/1;
   overflow: hidden;
 
   cursor: pointer;
@@ -291,11 +291,11 @@ export default {
   // background: rgba(255, 255, 255, 0.9);
 
   // height: 1.5em;
-  padding-top: calc(var(--spacing) / 8);
+  padding-top: calc(var(--spacing) / 4);
 
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+  // overflow: hidden;
   width: 100%;
 }
 
