@@ -100,6 +100,7 @@
 
               <div class="_dateFields">
                 <div class="">
+
                   <DateField
                     :label="$t('created')"
                     :field_name="'date_created_corrected'"
@@ -108,7 +109,6 @@
                     :input_type="'datetime-local'"
                     :can_edit="can_edit"
                   />
-                  {{ date_created_corrected }}
                 </div>
                 <div class="">
                   <DateField

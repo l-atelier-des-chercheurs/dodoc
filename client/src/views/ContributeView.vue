@@ -289,21 +289,21 @@ export default {
     messages: {
       fr: {
         imported_docs:
-          "Les médias importés apparaissent ici. Seul vous pouvez les voir et les modifier. Sélectionnez-en un ou plusieurs pour créer un document partagé.",
+          "Les fichiers importés apparaissent ici. Seul vous pouvez les voir et les modifier. Sélectionnez-en un ou plusieurs pour créer un document partagé.",
         add_to_existing_document: "Ajouter à un document existant",
         create_new_document: "Créer un nouveau document",
         dashboard: "Dashboard",
         new_stack_created: "Nouveau document créé",
         go_to_new_stack: "Aller au nouveau document",
         too_many_items_selected:
-          "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
+          "Vous ne pouvez sélectionner que {max_items_selected} fichiers maximum.",
         files_with_caption: "Fichiers avec légende : {percentage}%",
         files_with_credits: "Fichiers avec crédits : {percentage}%",
         no_items_imported: "Aucun média importé",
       },
       en: {
         imported_docs:
-          "Imported medias will appear here. Only you can see and edit them. Select one or more to create a shared document.",
+          "Imported files will appear here. Only you can see and edit them. Select one or more to create a shared document.",
         add_to_existing_document: "Add to existing document",
         create_new_document: "Create a new document",
         dashboard: "Dashboard",
@@ -313,7 +313,7 @@ export default {
           "You can only select {max_items_selected} media maximum.",
         files_with_caption: "Files with caption: {percentage}%",
         files_with_credits: "Files with credits: {percentage}%",
-        no_items_imported: "No imported media",
+        no_items_imported: "No imported file",
       },
     },
   },

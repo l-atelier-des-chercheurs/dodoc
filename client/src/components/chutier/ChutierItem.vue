@@ -318,7 +318,7 @@ export default {
   &.can--toggleSelect {
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(.is--selected) {
-        background-color: var(--h-100);
+        background-color: var(--h-200);
       }
     }
   }
@@ -329,7 +329,7 @@ export default {
   }
 
   &.is--selected {
-    background-color: var(--h-200);
+    background-color: var(--h-100);
     color: var(--h-900);
     // transform: scale(0.98);
 

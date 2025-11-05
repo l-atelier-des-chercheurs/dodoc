@@ -1,8 +1,7 @@
 <template>
   <BaseModal2
-    size=""
-    :title="modal_name"
     class=""
+    size="large"
     :confirm_before_closing="true"
     @save=""
     @close="$emit('close')"
@@ -27,9 +26,9 @@
           >
             <div class="step-line" v-if="index > 0"></div>
             <div class="step-circle">
-              <div v-if="current_step >= index" class="step-label">
+              <!-- <div v-if="current_step >= index" class="step-label">
                 {{ step.label }}
-              </div>
+              </div> -->
             </div>
           </button>
         </div>
@@ -42,6 +41,55 @@
                   {{ steps[current_step].label }}
                 </h2>
               </div>
+            </div>
+
+            <template v-if="current_step === 0">
+              <div class="u-spacingBottom"></div>
+
+              <div class="_form-title">
+                <div class="u-spacingBottom">
+                  <h1>
+                    <DLabel :str="$t('document_title')" />
+                    <TextInput
+                      :content.sync="stack_title"
+                      :required="true"
+                      :autofocus="true"
+                      :can_edit="true"
+                      @toggleValidity="($event) => (has_valid_title = $event)"
+                    />
+                  </h1>
+                </div>
+                <div class="u-spacingBottom _description">
+                  <DLabel :str="$t('description')" />
+                  <TextInput
+                    :content.sync="stack_description"
+                    :input_type="'editor'"
+                    :can_edit="true"
+                  />
+                </div>
+              </div>
+
+              <!-- <div class="u-spacingBottom">
+                <DLabel :str="$t('credit_unique_for_all_files')" />
+                <TextInput
+                  :content.sync="credit_unique_for_all_files"
+                  :input_type="'text'"
+                  :can_edit="true"
+                  @onEnter="nextStep"
+                />
+              </div> -->
+            </template>
+            <DLabel :str="$t('content')" />
+            <!-- <p class="u-spacingBottom">
+              Renseignez les légendes et crédits de vos fichiers.
+              <button type="button" class="u-buttonLink">
+                Crédit unique pour tous les fichiers
+              </button>
+            </p> -->
+
+            <div class="u-spacingBottom">
+              Crédit par défaut (si champ vide) :
+              <TextInput :content="'LUMA Arles 2025'" :can_edit="true" />
             </div>
 
             <div
@@ -58,33 +106,6 @@
                 :is_selected="true"
               />
             </div>
-
-            <template v-if="current_step === 0">
-              <div class="_form-title">
-                <div class="u-spacingBottom">
-                  <h1>
-                    <DLabel :str="$t('title')" />
-                    <TextInput
-                      :content.sync="stack_title"
-                      :required="true"
-                      :autofocus="true"
-                      :can_edit="true"
-                      @toggleValidity="($event) => (has_valid_title = $event)"
-                      @onEnter="nextStep"
-                    />
-                  </h1>
-                </div>
-                <div class="u-spacingBottom _description">
-                  <DLabel :str="$t('description')" />
-                  <TextInput
-                    :content.sync="stack_description"
-                    :input_type="'editor'"
-                    :can_edit="true"
-                    @onEnter="nextStep"
-                  />
-                </div>
-              </div>
-            </template>
 
             <template v-if="current_step === 1">
               <div class="u-spacingBottom _form-tags">
@@ -213,6 +234,7 @@ export default {
     messages: {
       fr: {
         destination_corpus: "Corpus de destination",
+        document_title: "Titre du document",
         create_document: "Nouveau document",
         add_title_to_continue: "Indiquez un titre pour continuer",
         add_keywords_to_continue: "Ajoutez des mots-clés pour continuer",
@@ -220,6 +242,7 @@ export default {
       },
       en: {
         destination_corpus: "Destination corpus",
+        document_title: "Document title",
         create_document: "New document",
         add_title_to_continue: "Add title to continue",
         add_keywords_to_continue: "Add keywords to continue",
@@ -248,6 +271,7 @@ export default {
       stack_title: "",
       has_valid_title: false,
       stack_description: "",
+      stack_common_credit: "",
       stack_tags: [],
       stack_authors: [],
 
@@ -264,14 +288,13 @@ export default {
   watch: {},
   computed: {
     modal_name() {
-      return (
-        this.$t("create_document") +
-        " (" +
-        (this.current_step + 1) +
-        "/" +
-        this.steps.length +
-        ")"
-      );
+      return this.$t("create_document");
+      // +
+      // " (" +
+      // (this.current_step + 1) +
+      // "/" +
+      // this.steps.length +
+      // ")"
     },
     allow_next_step() {
       if (this.current_step === 0) return this.has_valid_title;
@@ -380,7 +403,7 @@ export default {
   align-items: center;
   list-style: none;
   padding: 0;
-  margin-bottom: var(--spacing);
+  // margin-bottom: var(--spacing);
 }
 
 .step {
@@ -458,7 +481,7 @@ export default {
 ._form {
   width: 100%;
   background-color: white;
-  padding: calc(var(--spacing) * 1) 0;
+  // padding: calc(var(--spacing) * 1) 0;
 }
 
 ._description {

@@ -213,7 +213,7 @@ export default {
   height: var(--thumb-size);
   flex: 0 0 var(--thumb-size);
 
-  background-color: var(--c-gris);
+  // background-color: var(--c-gris);
 
   overflow: hidden;
   border-radius: 4px;
