@@ -1,5 +1,5 @@
 <template>
-  <TwoColumnLayout>
+  <TwoColumnLayout :show-sidebar.sync="show_create_bar">
     <template #sidebar>
       <h3 class="_dashboard--label">{{ $t("publications") }}</h3>
       <div class="u-spacingBottom" />
@@ -141,6 +141,7 @@ export default {
   data() {
     return {
       settings: undefined,
+      show_create_bar: false,
       is_loading: true,
       show_create_collection: false,
       collections: [],

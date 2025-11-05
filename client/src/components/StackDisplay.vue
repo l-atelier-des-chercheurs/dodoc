@@ -13,19 +13,16 @@
       <div v-else-if="fetch_stack_error">
         {{ fetch_stack_error }}
       </div>
-      <template v-else>
-        <div class="_showSidebar">
-          <button
-            type="button"
-            class="u-button u-button_icon u-button_transparent"
-            @click.stop="show_sidebar = true"
-          >
-            <b-icon icon="list-ul" :aria-label="$t('show')" />
-          </button>
-        </div>
-
-        <transition name="slideleft" mode="out-in">
-          <div class="_infos" v-if="show_sidebar">
+      <TwoColumnLayout
+        v-else
+        :show-sidebar.sync="show_sidebar"
+        :show-toggle-button="true"
+        :sidebar-width="'360px'"
+        :content-padding="false"
+        class="_stackDisplayLayout"
+      >
+        <template #sidebar>
+          <div class="_infos">
             <div class="_allFields">
               <div class="_titleRow">
                 <TitleField
@@ -100,7 +97,6 @@
 
               <div class="_dateFields">
                 <div class="">
-
                   <DateField
                     :label="$t('created')"
                     :field_name="'date_created_corrected'"
@@ -159,7 +155,6 @@
 
               <hr />
 
-
               <div v-if="can_edit" class="u-sameRow">
                 <DownloadFolder :path="stack.$path" />
                 <button
@@ -167,8 +162,8 @@
                   class="u-buttonLink"
                   @click.stop="show_duplicate_stack_modal = true"
                 >
-                <b-icon icon="file-plus" />
-                {{ $t("duplicate_or_move") }}
+                  <b-icon icon="file-plus" />
+                  {{ $t("duplicate_or_move") }}
                 </button>
                 <RemoveMenu
                   :remove_text="$t('remove')"
@@ -191,38 +186,22 @@
                 </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              class="u-button u-button_icon u-button_transparent _hideSidebar"
-              @click.stop="show_sidebar = false"
-            >
-              <b-icon icon="arrow-left" :aria-label="$t('hide')" />
-            </button>
           </div>
-        </transition>
-
-        <transition name="fade" mode="out-in">
-          <div
-            v-if="show_sidebar && !dual_display"
-            class="_overlay"
-            @click="show_sidebar = false"
+        </template>
+        <template #content>
+          <StackCarousel
+            class="_topCarousel"
+            :files="stack_files_in_order"
+            :can_edit="can_edit"
+            :can_be_selected="can_be_selected"
+            :selected_files="selected_stack_files"
+            @toggleMediaSelection="handleToggleMediaSelection"
+            @selectMedia="selectMedia"
+            @removeMediaFromStack="removeMediaFromStack"
+            @changeMediaOrder="changeMediaOrder"
           />
-        </transition>
-
-        <StackCarousel
-          class="_topCarousel"
-          :data-dualdisplay="dual_display"
-          :files="stack_files_in_order"
-          :can_edit="can_edit"
-          :can_be_selected="can_be_selected"
-          :selected_files="selected_stack_files"
-          @toggleMediaSelection="handleToggleMediaSelection"
-          @selectMedia="selectMedia"
-          @removeMediaFromStack="removeMediaFromStack"
-          @changeMediaOrder="changeMediaOrder"
-        />
-      </template>
+        </template>
+      </TwoColumnLayout>
     </div>
     <div v-if="can_be_selected === 'single_stack'" class="_selectBar">
       <button class="u-button" type="button" @click="$emit('selectStack')">
@@ -235,7 +214,12 @@
       </button>
     </div>
     <div v-if="can_be_selected === 'multiple'" class="_selectBar">
-      <button type="button" class="u-buttonLink" :disabled="selected_stack_files.length === stack_files_in_order.length" @click="selectAllMedias">
+      <button
+        type="button"
+        class="u-buttonLink"
+        :disabled="selected_stack_files.length === stack_files_in_order.length"
+        @click="selectAllMedias"
+      >
         {{ $t("select_all") }}
       </button>
       <button
@@ -256,7 +240,6 @@
       :stack="stack"
       @close="show_duplicate_stack_modal = false"
     />
-    </div>
   </div>
 </template>
 <script>
@@ -264,6 +247,7 @@
 import KeywordsField from "@/components/KeywordsField.vue";
 import StackCarousel from "@/components/archive/StackCarousel.vue";
 import DuplicateStackModal from "@/components/archive/DuplicateStackModal.vue";
+import TwoColumnLayout from "@/adc-core/ui/TwoColumnLayout.vue";
 
 export default {
   props: {
@@ -279,6 +263,7 @@ export default {
     KeywordsField,
     StackCarousel,
     DuplicateStackModal,
+    TwoColumnLayout,
   },
   inject: {},
   data() {
@@ -287,8 +272,6 @@ export default {
       fetch_stack_error: undefined,
       is_loading: true,
       show_sidebar: localStorage.getItem("show_sidebar") !== "false",
-      pane_width: undefined,
-      ro: undefined,
       selected_stack_files: [],
       show_duplicate_stack_modal: false,
     };
@@ -356,13 +339,9 @@ export default {
     }
   },
   mounted() {
-    this.updatePaneWidth();
-    this.ro = new ResizeObserver(this.updatePaneWidth);
-    this.ro.observe(this.$el);
     window.addEventListener("keyup", this.handleKeyPress);
   },
   beforeDestroy() {
-    this.ro.unobserve(this.$el);
     window.removeEventListener("keyup", this.handleKeyPress);
     if (this.stack) this.$api.leave({ room: this.stack.$path });
   },
@@ -393,15 +372,8 @@ export default {
         this.stack_files_in_order.length > 0
       );
     },
-    dual_display() {
-      if (this.show_sidebar && this.pane_width > 360 * 2) return true;
-      return false;
-    },
   },
   methods: {
-    updatePaneWidth() {
-      this.pane_width = this.$el.offsetWidth;
-    },
     addSelectedMedia() {
       this.$emit("selectMedias", this.selected_stack_files);
     },
@@ -503,8 +475,10 @@ export default {
       this.$emit("updateSelectedStackMedias", this.selected_stack_files);
     },
     selectAllMedias() {
-      this.selected_stack_files = JSON.parse(JSON.stringify(this.stack_files_in_order));
-    }
+      this.selected_stack_files = JSON.parse(
+        JSON.stringify(this.stack_files_in_order)
+      );
+    },
   },
 };
 </script>
@@ -531,79 +505,34 @@ export default {
 ._panes {
   position: relative;
   overflow: hidden;
+  height: 100%;
+}
 
-  > ._infos {
-    // flex: 1 1 320px;
-
-    [data-context="archive"] & {
-      max-width: 360px;
-    }
-  }
-  > ._topCarousel {
-    // flex: 1 1 220px;
-  }
+._stackDisplayLayout {
+  height: 100%;
 }
 
 ._infos {
-  position: absolute;
   display: flex;
   flex-flow: column nowrap;
-  overflow: auto;
-  z-index: 10;
   height: 100%;
-  width: 100%;
-  max-width: 360px;
   background: var(--sd-bg);
 
   @include scrollbar(3px, 4px, 4px, transparent, var(--c-noir));
 
-  border-right: 1px solid var(--sd-separator);
-
   > ._allFields {
     flex: 1 1 0;
-    padding: calc(var(--spacing) * 2);
   }
   > ._bottomBtns {
     flex: 0 0 auto;
   }
 }
 
-._overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  // background-color: rgba(119, 117, 124, 0.95);
-  z-index: 9;
-  cursor: pointer;
-  backdrop-filter: blur(5px);
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.8;
-    background-color: var(--sd-bg);
-  }
-}
-
 ._topCarousel {
-  position: relative;
-  z-index: 1;
-  top: 0;
-
   height: 100%;
   width: 100%;
-  background: white;
   background: var(--sd-bg);
   padding-left: 32px;
-
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &[data-dualdisplay] {
-    padding-left: 360px;
-  }
 }
 
 ._allFields {
@@ -669,38 +598,6 @@ hr {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: flex-start;
-}
-
-._showSidebar {
-  position: absolute;
-  border-right: 1px solid var(--sd-separator);
-  z-index: 10;
-  height: 100%;
-  background: var(--sd-bg);
-  width: 38px;
-  > button {
-    height: 100%;
-    justify-content: flex-start;
-    align-items: flex-start;
-    border-radius: 0;
-
-    &:hover,
-    &:focus {
-      color: white;
-      background: var(--sd-separator);
-    }
-  }
-}
-
-._hideSidebar {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 0;
-  z-index: 8;
-  background: var(--active-color);
-  border-radius: 0;
-  padding: calc(var(--spacing) / 4);
 }
 
 ._addToColl {

@@ -6,24 +6,22 @@
       'is--sidebarHidden': !showSidebar,
     }"
   >
-    <template v-if="showToggleButton">
-      <div class="_sidebarToggle">
-        <button
-          type="button"
-          class="u-button u-button_icon u-button_transparent"
-          :class="{
-            'is--active': showSidebar,
-          }"
-          @click="$emit('update:showSidebar', !showSidebar)"
-          :aria-label="showSidebar ? $t('hide_sidebar') : $t('show_sidebar')"
-        >
-          <b-icon
-            :icon="showSidebar ? 'arrow-left' : 'list-ul'"
-            :aria-label="showSidebar ? $t('hide') : $t('show')"
-          />
-        </button>
-      </div>
-    </template>
+    <div class="_sidebarToggle">
+      <button
+        type="button"
+        class="u-button u-button_icon"
+        :class="{
+          'is--active': showSidebar,
+        }"
+        @click="$emit('update:showSidebar', !showSidebar)"
+        :aria-label="showSidebar ? $t('hide_sidebar') : $t('show_sidebar')"
+      >
+        <b-icon
+          :icon="showSidebar ? 'arrow-left' : 'list-ul'"
+          :aria-label="showSidebar ? $t('hide') : $t('show')"
+        />
+      </button>
+    </div>
     <transition name="fade_fast">
       <div class="_colLeft" v-if="showSidebar">
         <slot name="sidebar" />
@@ -56,10 +54,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    showToggleButton: {
-      type: Boolean,
-      default: false,
-    },
   },
 };
 </script>
@@ -85,19 +79,18 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
   z-index: 20;
   flex: 0 0 auto;
   align-self: flex-start;
 
   > button {
     position: absolute;
-    top: 0;
     left: 0;
-    margin: 0;
-    z-index: 8;
-    // background: var(--active-color);
-    border-radius: 0;
-    padding: calc(var(--spacing) / 4);
+
+    &.is--active {
+      left: v-bind(sidebarWidth);
+    }
   }
 }
 

@@ -61,8 +61,6 @@
       <TwoColumnLayout
         v-else
         :show-sidebar.sync="show_filter_bar"
-        :show-toggle-button="true"
-        :sidebar-padding="false"
         class="_sharedFolder--content"
       >
         <template #sidebar>
