@@ -531,7 +531,6 @@ export default {
   height: 100%;
   width: 100%;
   background: var(--sd-bg);
-  padding-left: 32px;
 }
 
 ._allFields {

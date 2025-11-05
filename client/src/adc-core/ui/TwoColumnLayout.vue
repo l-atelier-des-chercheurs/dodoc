@@ -22,10 +22,18 @@
         />
       </button>
     </div>
-    <transition name="fade_fast">
+    <transition name="fade">
       <div class="_colLeft" v-if="showSidebar">
         <slot name="sidebar" />
       </div>
+    </transition>
+
+    <transition name="fade">
+      <div
+        class="_colOverlay"
+        v-if="showSidebar && $root.is_mobile_view"
+        @click="$emit('update:showSidebar', false)"
+      />
     </transition>
 
     <div class="_colRight">
@@ -71,7 +79,9 @@ export default {
   padding: 0;
 
   &.is--mobile {
-    display: block;
+    ._colLeft {
+      position: absolute;
+    }
   }
 }
 
@@ -99,16 +109,24 @@ export default {
 
     align-items: center;
 
+    transition: none;
+
     &.is--active {
-      background-color: var(--active-color);
-      color: black;
+      &:not(:hover) {
+        background-color: var(--active-color);
+        color: black;
+      }
       left: calc(v-bind(sidebarWidth) - 2rem);
     }
   }
 }
 
 ._colLeft {
+  position: relative;
+  z-index: 3;
   flex: 0 0 v-bind(sidebarWidth);
+  max-width: v-bind(sidebarWidth);
+  background-color: var(--body-bg);
   margin: 0;
   border-right: 1px solid var(--h-200);
   overflow-y: auto;
@@ -117,10 +135,6 @@ export default {
   top: 0;
   align-self: flex-start;
   height: 100%;
-
-  &.is--mobile {
-    flex: 0 0 v-bind(sidebarMobileWidth);
-  }
 }
 
 ._twoColumnLayout ._colLeft {
@@ -134,6 +148,8 @@ export default {
 }
 
 ._colRight {
+  position: relative;
+  z-index: 1;
   flex: 1 1 0;
   overflow: auto;
   position: relative;
@@ -141,5 +157,14 @@ export default {
 }
 
 ._content {
+}
+
+._colOverlay {
+  position: absolute;
+  inset: 0;
+  background-color: var(--body-bg);
+  opacity: 0.8;
+  z-index: 2;
+  cursor: pointer;
 }
 </style>

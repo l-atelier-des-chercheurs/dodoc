@@ -234,7 +234,7 @@ export default {
         parseInt(localStorage.getItem("archive.stack_preview_width")) || 120,
 
       show_filter_bar:
-        localStorage.getItem("archive.show_filter_bar") !== "false",
+        localStorage.getItem("archive.show_filter_bar") === "true",
     };
   },
   i18n: {
