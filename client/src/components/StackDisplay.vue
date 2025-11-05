@@ -124,7 +124,7 @@
 
               <hr />
 
-              <div class="u-spacingBottom">
+              <!-- <div class="u-spacingBottom">
                 <AuthorField
                   :label="$t('authors')"
                   :field="'$authors'"
@@ -134,11 +134,11 @@
                   :can_edit="can_edit"
                   :no_options="true"
                 />
-              </div>
+              </div> -->
 
               <div class="u-spacingBottom">
                 <AuthorField
-                  :label="$t('admins')"
+                  :label="$t('authors')"
                   :field="'$admins'"
                   :instructions="$t('media_editing_instructions')"
                   :authors_paths="stack.$admins"
