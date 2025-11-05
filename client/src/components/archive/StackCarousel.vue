@@ -262,8 +262,9 @@ export default {
 ._previewOverlay {
   position: absolute;
   inset: 0;
-  background-color: var(--h-700);
-  opacity: 0.9;
+  background-color: var(--h-900);
+  // backdrop-filter: blur(10px);
+  opacity: 0.7;
 }
 
 ._removeBtn {

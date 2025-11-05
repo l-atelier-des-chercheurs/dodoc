@@ -17,7 +17,6 @@
         v-else
         :show-sidebar.sync="show_sidebar"
         :show-toggle-button="true"
-        :sidebar-width="'360px'"
         :content-padding="false"
         class="_stackDisplayLayout"
       >
@@ -561,6 +560,8 @@ hr {
 
   > button {
     width: 100%;
+    padding: calc(var(--spacing) / 2);
+    height: 2rem;
     justify-content: flex-end;
     border-radius: 0;
 

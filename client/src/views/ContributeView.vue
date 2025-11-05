@@ -1,5 +1,8 @@
 <template>
-  <TwoColumnLayout :content-padding="false" @click="last_clicked = false">
+  <TwoColumnLayout
+    :show-sidebar.sync="show_sidebar"
+    @click="last_clicked = false"
+  >
     <template #sidebar>
       <h3 class="_dashboard--label">{{ $t("dashboard") }}</h3>
       <div class="u-spacingBottom" />
@@ -320,7 +323,7 @@ export default {
   data() {
     return {
       chutier: undefined,
-
+      show_sidebar: false,
       is_dragover: false,
       files_to_import: [],
       id: `image_select_${(

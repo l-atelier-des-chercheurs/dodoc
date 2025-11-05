@@ -80,16 +80,29 @@ export default {
   top: 0;
   left: 0;
   width: 100%;
+  height: 100%;
   z-index: 20;
   flex: 0 0 auto;
   align-self: flex-start;
+  pointer-events: none;
 
   > button {
     position: absolute;
     left: 0;
+    // color: black;
+    color: white;
+    background-color: var(--h-900);
+    border-radius: 0;
+    width: 2rem;
+    height: 2rem;
+    pointer-events: auto;
+
+    align-items: center;
 
     &.is--active {
-      left: v-bind(sidebarWidth);
+      background-color: var(--active-color);
+      color: black;
+      left: calc(v-bind(sidebarWidth) - 2rem);
     }
   }
 }

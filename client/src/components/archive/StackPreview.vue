@@ -251,7 +251,7 @@ export default {
     position: relative;
     height: 100%;
     width: 100%;
-    max-height: calc(var(--stack_preview_width) * 1.2);
+    max-height: calc(var(--stack_preview_width) * 1.6);
     float: right;
 
     &[data-filetype="text"] {
