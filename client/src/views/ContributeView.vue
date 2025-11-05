@@ -104,6 +104,9 @@
               {{ $t("items_to_share") }} • {{ chutier_items.length }}
             </label>
           </template>
+          <div class="u-instructions" v-else>
+            {{ $t("no_items_imported") }}
+          </div>
 
           <div class="_items" @click.self="selected_items_slugs = []">
             <div
@@ -296,6 +299,7 @@ export default {
           "Vous ne pouvez sélectionner que {max_items_selected} médias maximum.",
         files_with_caption: "Fichiers avec légende : {percentage}%",
         files_with_credits: "Fichiers avec crédits : {percentage}%",
+        no_items_imported: "Aucun média importé",
       },
       en: {
         imported_docs:
@@ -309,6 +313,7 @@ export default {
           "You can only select {max_items_selected} media maximum.",
         files_with_caption: "Files with caption: {percentage}%",
         files_with_credits: "Files with credits: {percentage}%",
+        no_items_imported: "No imported media",
       },
     },
   },
@@ -382,7 +387,7 @@ export default {
       return this.selected_items.length === this.chutier_items.length;
     },
     chutier_items() {
-      if (!this.chutier || !this.chutier.$files) return [];
+      if (!this.chutier?.$files) return [];
       let _medias = JSON.parse(JSON.stringify(this.chutier.$files));
       _medias = _medias
         .filter((m) => m.is_stack !== true && m.$media_filename)
