@@ -79,9 +79,13 @@
             :stack_preview_width.sync="stack_preview_width"
           >
             <template #top>
-              <DLabel :str="$t('corpus visibles')" />
-              <div v-for="folder in all_folders" :key="folder.$path">
-                <div class="_corpusItem">
+              <DLabel :str="$t('Communautés')" />
+              <div class="_corpusItems">
+                <div
+                  v-for="folder in all_folders"
+                  :key="folder.$path"
+                  class="_corpusItem"
+                >
                   <input
                     checkbox
                     type="checkbox"
@@ -93,6 +97,13 @@
                   <label :for="folder.$path">{{
                     folder.title || $t("untitled")
                   }}</label>
+                  <AdminsAndContributorsField
+                    :folder="folder"
+                    :can_edit="can_edit"
+                    :admin_label="$t('admin')"
+                    :admin_instructions="$t('admin_instructions')"
+                    :contrib_instructions="$t('contrib_instructions')"
+                  />
                 </div>
               </div>
               <div class="u-spacingBottom" />
@@ -612,10 +623,21 @@ export default {
 ._corpusLabel {
   margin-bottom: 0;
 }
+
+._corpusItems {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+}
+
 ._corpusItem {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   gap: calc(var(--spacing) / 2);
+
+  min-height: 4rem;
+  background: var(--h-100);
+  padding: calc(var(--spacing) / 2);
 }
 </style>

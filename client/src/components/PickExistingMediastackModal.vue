@@ -2,7 +2,7 @@
   <BaseModal2
     :title="modal_title || $t('pick_existing_mediastack')"
     :is_closable="true"
-    :size="'large'"
+    :size="'x-large'"
     @close="$emit('close')"
   >
     <div class="_pickExistingMediastackModal">
@@ -53,11 +53,11 @@ export default {
   i18n: {
     messages: {
       fr: {
-        pick_existing_mediastack: "Choisir un corpus existant",
+        pick_existing_mediastack: "Choisir un document",
         corpus: "Corpus",
       },
       en: {
-        pick_existing_mediastack: "Pick existing mediastack",
+        pick_existing_mediastack: "Pick document",
         corpus: "Corpus",
       },
     },
