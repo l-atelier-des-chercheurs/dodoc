@@ -23,8 +23,12 @@
         :key="file.$path"
         @click="openFile(index)"
       >
-        <MediaContent :file="file" :context="'preview'" :resolution="360" />
-
+        <MediaContent
+          class="_preview--media"
+          :file="file"
+          :context="'preview'"
+          :resolution="360"
+        />
         <div v-if="can_be_selected === 'multiple'" class="_selectCheckbox">
           <label :for="boxid">
             <input
@@ -230,9 +234,21 @@ export default {
     cursor: pointer;
   }
 
+  ._preview--media {
+    transition: all 0.25s ease-out;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
   &[data-iscurrent] {
-    // opacity: 0.25;
     // pointer-events: none;
+
+    ._preview--media {
+      opacity: 0.5;
+      transform: scale(0.8) rotate(-5deg);
+    }
   }
 
   ._mediaContent {
@@ -262,7 +278,7 @@ export default {
 ._previewOverlay {
   position: absolute;
   inset: 0;
-  background-color: var(--h-900);
+  // background-color: var(--g-500);
   // backdrop-filter: blur(10px);
   opacity: 0.7;
 }
