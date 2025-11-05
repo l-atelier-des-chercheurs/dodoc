@@ -1040,6 +1040,7 @@ export default {
   make: "Fabriquer",
   publish: "Publier",
   items_to_share: "Éléments à partager",
+  do_not_show_window_again: "Ne pas afficher cette fenêtre automatiquement",
 
   media_editing_instructions:
     "Indiquer le ou les personnes qui pourront modifier ce contenu.",
