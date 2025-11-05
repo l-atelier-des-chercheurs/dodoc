@@ -110,7 +110,7 @@ export default {
   position: sticky;
   top: 0;
   align-self: flex-start;
-  max-height: 100%;
+  height: 100%;
 
   &.is--mobile {
     flex: 0 0 v-bind(sidebarMobileWidth);
