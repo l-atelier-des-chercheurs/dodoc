@@ -19,7 +19,7 @@
     "start": "node .",
     "debug": "node . --inspect=5858 -- --debug --verbose",
     "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
-    "postinstall": "node scripts/cleanup-ffprobe.js"
+    "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
   },
   "engines": {
     "node": "22.19.0",
@@ -64,7 +64,7 @@
     "rich-text": "^4.1.0",
     "sharedb": "^5.2.2",
     "sharedb-logger": "^0.1.4",
-    "sharp": "^0.34.4",
+    "sharp": "^0.34.5",
     "slugg": "^1.2.1",
     "socket.io": "^4.8.1",
     "unzipper": "^0.12.3",
@@ -78,7 +78,6 @@
   },
   "optionalDependencies": {
     "bufferutil": "4.0.9",
-    "extractd": "^2.1.2",
-    "@img/sharp-linuxmusl-arm64v8": "^0.34.4"
+    "extractd": "^2.1.2"
   }
 }
