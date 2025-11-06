@@ -534,10 +534,11 @@ export default {
   watch: {
     edit_mode() {
       // if text bloc in text bloc module
+      debugger;
       if (this.$refs.textBloc)
-        if (this.edit_mode)
+        if (this.edit_mode) {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
-        else this.$refs.textBloc.disableEditor();
+        } else this.$refs.textBloc.disableEditor();
       else {
         // this.$nextTick(() => {
         //   const edit_btn = this.$el.querySelector(
