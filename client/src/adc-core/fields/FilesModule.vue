@@ -34,14 +34,16 @@
       </div>
     </template>
 
-    <div class="_addBtn">
+    <div class="_addBtn" v-if="can_edit">
+      <LoaderSpinner v-if="is_loading" />
       <button
         type="button"
         class="u-button u-button_small u-button_bleuvert _addFile"
-        v-if="can_edit"
+        :disabled="is_loading"
         @click="show_picker = !show_picker"
       >
-        {{ $t("add") }}
+        <b-icon icon="plus-circle" />
+        <span>{{ $t("add") }}</span>
       </button>
 
       <PickMediaFromProjects
@@ -77,6 +79,9 @@ export default {
   data() {
     return {
       show_picker: false,
+      is_loading: false,
+      processing_file_index: 0,
+      processing_file_count: 0,
     };
   },
   created() {},
@@ -112,14 +117,18 @@ export default {
   },
   methods: {
     async pickMedias(medias) {
+      this.is_loading = true;
       let new_files = [];
+
+      this.processing_file_index = 0;
+      this.processing_file_count = medias.length;
 
       // for each media, check if it's already in project
       // if not, copy it to project
       for (const m of medias) {
-        const media_already_in_project = this.listed_files.some(
-          (lf) => this.getParent(medias[0].$path) === this.project_path
-        );
+        const media_already_in_project =
+          this.getParent(m.$path) === this.project_path;
+
         if (!media_already_in_project) {
           const new_file = await this.$api.copyFile({
             path: m.$path,
@@ -129,12 +138,15 @@ export default {
         } else {
           new_files.push(this.getFilename(m.$path));
         }
+
+        this.processing_file_index++;
       }
 
       // const new_files = medias.map((m) => this.getFilename(m.$path));
       const files = this.content.slice() || [];
       const new_files_list = files.concat(new_files);
       this.updateFiles(new_files_list);
+      this.is_loading = false;
     },
     async removeFile(path) {
       let _files = this.content.slice();

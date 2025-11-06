@@ -26,7 +26,7 @@
 
         <div class="u-spacingBottom" />
 
-        <CollaborativeEditor2
+        <CollaborativeEditor3
           v-if="text_content"
           ref="textBloc"
           :path="text_content.$path"

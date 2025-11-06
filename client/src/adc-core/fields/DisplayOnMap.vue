@@ -49,7 +49,7 @@
         />
         <div
           class="_popupMessage"
-          v-if="
+          v-else-if="
             !clicked_location.module && $slots.hasOwnProperty('popup_message')
           "
         >
@@ -196,6 +196,30 @@
                 </small>
               </div> -->
 
+              <!-- Shape info display -->
+              <div
+                v-if="['Circle', 'Polygon'].includes(selected_feature_type)"
+                class="_circleInfo"
+              >
+                <div
+                  v-if="selected_feature_type === 'Circle'"
+                  class="u-metaField"
+                >
+                  <DLabel :str="$t('radius')" />
+                  <div>{{ selected_circle_radius }}</div>
+                </div>
+                <div class="u-metaField">
+                  <DLabel :str="$t('area')" />
+                  <div>
+                    {{
+                      selected_feature_type === "Circle"
+                        ? selected_circle_area
+                        : selected_polygon_area
+                    }}
+                  </div>
+                </div>
+              </div>
+
               <ColorInput
                 :can_toggle="false"
                 :live_editing="true"
@@ -227,7 +251,24 @@
               />
 
               <RangeValueInput
-                class="u-spacingBottom _strokeWidth"
+                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                :can_toggle="false"
+                :label="$t('fill_opacity')"
+                :value="selected_feature.get('fill_opacity')"
+                :min="0"
+                :max="1"
+                :step="0.1"
+                :ticks="[0, 0.2, 0.4, 0.6, 0.8, 1]"
+                :default_value="0.2"
+                @save="
+                  updateDrawing({
+                    prop: 'fill_opacity',
+                    val: $event,
+                  })
+                "
+              />
+
+              <RangeValueInput
                 :can_toggle="false"
                 :label="$t('outline_width')"
                 :value="selected_feature.get('stroke_width')"
@@ -245,7 +286,7 @@
               />
               <button
                 type="button"
-                class="u-button u-button_bleumarine"
+                class="u-button u-button_red"
                 @click="removeSelected"
               >
                 {{ $t("remove") }}
@@ -450,7 +491,7 @@ export default {
           olType: "Circle",
           freehand: false,
           idleTip: this.$t("click_to_place_center"),
-          activeTip: this.$t("click_to_define_circle_radius"),
+          activeTip: "",
         },
       ],
       map_select_mode: undefined,
@@ -458,6 +499,11 @@ export default {
       map_translate: undefined,
 
       start_map_print: false,
+
+      // Circle drawing state
+      circle_center: null,
+      is_drawing_circle: false,
+      current_radius_text: "",
     };
   },
   created() {
@@ -551,6 +597,36 @@ export default {
     selected_feature_type() {
       if (!this.selected_feature) return undefined;
       return this.selected_feature.getGeometry().getType();
+    },
+    selected_circle_radius() {
+      if (!this.selected_feature || this.selected_feature_type !== "Circle")
+        return undefined;
+      const circle = this.selected_feature.getGeometry();
+      const center = circle.getCenter();
+      const radiusInDegrees = circle.getRadius();
+      // Calculate actual radius in meters by measuring distance from center to edge
+      const edgePoint = [center[0] + radiusInDegrees, center[1]];
+      const radiusInMeters = this.calculateDistance(center, edgePoint);
+      return this.formatDistance(radiusInMeters);
+    },
+    selected_circle_area() {
+      if (!this.selected_feature || this.selected_feature_type !== "Circle")
+        return undefined;
+      const circle = this.selected_feature.getGeometry();
+      const center = circle.getCenter();
+      const radiusInDegrees = circle.getRadius();
+      // Calculate actual radius in meters by measuring distance from center to edge
+      const edgePoint = [center[0] + radiusInDegrees, center[1]];
+      const radiusInMeters = this.calculateDistance(center, edgePoint);
+      const areaInSquareMeters = Math.PI * radiusInMeters * radiusInMeters;
+      return this.formatArea(areaInSquareMeters);
+    },
+    selected_polygon_area() {
+      if (!this.selected_feature || this.selected_feature_type !== "Polygon")
+        return undefined;
+      const polygon = this.selected_feature.getGeometry();
+      const areaInSquareMeters = this.calculatePolygonArea(polygon);
+      return this.formatArea(areaInSquareMeters);
     },
     has_module_content_to_show() {
       if (!this.clicked_location.module)
@@ -1242,6 +1318,9 @@ export default {
     makeGeomStyle({ feature, resolution, tip, is_selected }) {
       const styles = [];
 
+      // Get the stored z-index for this feature
+      const zIndex = feature.get("z_index") || 1; // Default to 1 if no z-index set
+
       // const line_dash = !is_selected ? undefined : [10, 5];
       let stroke_width = feature.get("stroke_width") || 3;
       resolution;
@@ -1254,19 +1333,35 @@ export default {
       const stroke_color =
         feature.get("stroke_color") || this.opened_view_color || "#000";
       let fill_color = feature.get("fill_color") || "rgba(255, 255, 255, 1)";
-      if (fill_color !== "transparent")
-        fill_color = asString(asArray(fill_color).slice(0, 3).concat(0.2));
+      if (fill_color !== "transparent") {
+        const fill_opacity = feature.get("fill_opacity") || 0.2;
+        fill_color = asString(
+          asArray(fill_color).slice(0, 3).concat(fill_opacity)
+        );
+      }
 
       if (is_selected) {
-        const style = new olStyle({
+        // Create a white glow effect
+        const glowStyle = new olStyle({
           stroke: new olStroke({
-            color: "white",
+            color: "rgba(128, 128, 128, 0.6)", // Semi-transparent white glow
+            width: stroke_width + 8,
+            lineDash: [10, 5],
+          }),
+          zIndex: zIndex, // Ensure selected features are always on top
+        });
+        styles.push(glowStyle);
+
+        const innerStyle = new olStyle({
+          stroke: new olStroke({
+            color: "white", // Solid white
             width: stroke_width + 4,
-            // lineDash: line_dash,
+            lineDash: [8, 4],
           }),
           image: this.makePointerStyle(),
+          zIndex: zIndex, // Even higher for the inner stroke
         });
-        styles.push(style);
+        styles.push(innerStyle);
       }
 
       const style = new olStyle({
@@ -1279,6 +1374,7 @@ export default {
           // lineDash: line_dash,
         }),
         image: this.makePointerStyle(),
+        zIndex: zIndex, // Use the feature's z-index for proper layering
       });
       styles.push(style);
 
@@ -1400,8 +1496,17 @@ export default {
         source: this.draw_vector_source,
         type: drawType,
         freehand,
-        style: (feature, resolution) =>
-          this.makeGeomStyle({ feature, resolution, tip }),
+        style: (feature, resolution) => {
+          // For circle drawing, use radius text if available
+          if (
+            this.current_draw_mode === "Circle" &&
+            this.is_drawing_circle &&
+            this.current_radius_text
+          ) {
+            tip = this.current_radius_text;
+          }
+          return this.makeGeomStyle({ feature, resolution, tip });
+        },
         // style: (feature) => {
         //   return this.styleFunction(
         //     feature,
@@ -1412,14 +1517,24 @@ export default {
         // },
       });
       this.map.addInteraction(this.map_draw);
-      this.map_draw.on("drawstart", () => {
+      this.map_draw.on("drawstart", (event) => {
         tip = activeTip;
         if (["LineString", "Polygon"].includes(this.current_draw_mode))
           this.draw_can_be_finished = true;
+
+        // Store circle center for radius tooltip
+        if (this.current_draw_mode === "Circle") {
+          this.circle_center = event.feature.getGeometry().getCenter();
+          this.is_drawing_circle = true;
+        }
       });
       this.map_draw.on("drawabort", () => {
         tip = idleTip;
         this.draw_can_be_finished = false;
+        this.is_drawing_circle = false;
+        this.circle_center = null;
+        this.current_radius_text = "";
+        this.closePopup();
       });
       this.map_draw.on("drawend", (event) => {
         const new_feature = event.feature;
@@ -1428,15 +1543,137 @@ export default {
         new_feature.setId(id);
         new_feature.set("type_of_pin", "geometry");
 
+        // Assign a z-index higher than all existing features
+        const existingFeatures = this.draw_vector_source.getFeatures();
+        let maxZIndex = 0;
+        existingFeatures.forEach((feature) => {
+          const zIndex = feature.get("z_index") || 0;
+          if (zIndex > maxZIndex) maxZIndex = zIndex;
+        });
+        new_feature.set("z_index", maxZIndex + 1);
+
         this.$nextTick(() => {
           this.saveGeom();
+          // Automatically select the newly created shape
+          this.selected_feature_id = id;
+          // Switch to select mode to show the selection UI
+          this.toggleTool({
+            draw_mode: { key: "Select" },
+          });
         });
         tip = idleTip;
         this.draw_can_be_finished = false;
+        this.is_drawing_circle = false;
+        this.circle_center = null;
+        this.current_radius_text = "";
+        this.closePopup();
       });
 
       this.map_snap = new olSnap({ source: this.draw_vector_source });
       this.map.addInteraction(this.map_snap);
+
+      // Add mouse tracking for circle radius tooltip
+      if (this.current_draw_mode === "Circle") {
+        this.addCircleMouseTracking();
+      }
+    },
+
+    addCircleMouseTracking() {
+      this.map.on("pointermove", this.handleCircleMouseMove);
+    },
+
+    removeCircleMouseTracking() {
+      this.map.un("pointermove", this.handleCircleMouseMove);
+    },
+
+    handleCircleMouseMove(event) {
+      if (!this.is_drawing_circle || !this.circle_center) {
+        return;
+      }
+
+      const mouseCoordinate = event.coordinate;
+      const distance = this.calculateDistance(
+        this.circle_center,
+        mouseCoordinate
+      );
+
+      // Update radius text for tooltip
+      if (distance < 1) {
+        this.current_radius_text = "";
+      } else {
+        this.current_radius_text = this.formatDistance(distance);
+      }
+    },
+
+    calculateDistance(coord1, coord2) {
+      // Calculate distance between two coordinates in meters
+      const R = 6371000; // Earth's radius in meters
+      const lat1 = (coord1[1] * Math.PI) / 180;
+      const lat2 = (coord2[1] * Math.PI) / 180;
+      const deltaLat = ((coord2[1] - coord1[1]) * Math.PI) / 180;
+      const deltaLon = ((coord2[0] - coord1[0]) * Math.PI) / 180;
+
+      const a =
+        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(deltaLon / 2) *
+          Math.sin(deltaLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    },
+
+    formatDistance(distanceInMeters) {
+      if (distanceInMeters >= 1000) {
+        const km = distanceInMeters / 1000;
+        return `${this.formatDecimal(km, 1)} km`;
+      } else {
+        return `${Math.round(distanceInMeters)} m`;
+      }
+    },
+
+    formatArea(areaInSquareMeters) {
+      if (areaInSquareMeters >= 1000000) {
+        const km2 = areaInSquareMeters / 1000000;
+        return `${this.formatDecimal(km2, 2)} km²`;
+      } else {
+        return `${Math.round(areaInSquareMeters)} m²`;
+      }
+    },
+
+    calculatePolygonArea(polygon) {
+      // Use the Shoelace formula for polygon area calculation
+      const coordinates = polygon.getCoordinates()[0]; // Get the outer ring
+      let area = 0;
+
+      for (let i = 0; i < coordinates.length - 1; i++) {
+        const j = (i + 1) % (coordinates.length - 1);
+        area += coordinates[i][0] * coordinates[j][1];
+        area -= coordinates[j][0] * coordinates[i][1];
+      }
+
+      // Convert from square degrees to square meters using a rough approximation
+      // This is not perfectly accurate but gives a reasonable estimate
+      const areaInSquareDegrees = Math.abs(area) / 2;
+
+      // Convert to square meters using the average latitude
+      const avgLat =
+        coordinates.reduce((sum, coord) => sum + coord[1], 0) /
+        coordinates.length;
+      const latRad = (avgLat * Math.PI) / 180;
+      const metersPerDegree = 111320 * Math.cos(latRad); // Approximate meters per degree at this latitude
+      const areaInSquareMeters =
+        areaInSquareDegrees * metersPerDegree * metersPerDegree;
+
+      return areaInSquareMeters;
+    },
+
+    formatDecimal(value, decimals = 1) {
+      return Number(value).toLocaleString(this.$i18n.locale, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      });
     },
 
     // styleFunction(feature, segments, drawType, tip) {
@@ -1654,9 +1891,14 @@ export default {
         if (stroke_color) obj.stroke_color = stroke_color;
         const fill_color = f.get("fill_color");
         if (fill_color) obj.fill_color = fill_color;
+        const fill_opacity = f.get("fill_opacity");
+        if (fill_opacity !== undefined) obj.fill_opacity = fill_opacity;
 
         const id = f.getId();
         if (id) obj.id = id;
+
+        const z_index = f.get("z_index");
+        if (z_index) obj.z_index = z_index;
 
         acc.push(obj);
 
@@ -1740,16 +1982,26 @@ export default {
           if (p.stroke_width) feature_cont.stroke_width = p.stroke_width;
           if (p.stroke_color) feature_cont.stroke_color = p.stroke_color;
           if (p.fill_color) feature_cont.fill_color = p.fill_color;
+          if (p.fill_opacity !== undefined)
+            feature_cont.fill_opacity = p.fill_opacity;
+          if (p.z_index !== undefined) feature_cont.z_index = p.z_index;
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
           else feature.setId(this.makeRandomIdForShape(p.type));
           feature.set("type_of_pin", "geometry");
 
+          // Set z-index if not present (for existing features)
+          if (!feature.get("z_index")) {
+            feature.set("z_index", features.length + 1); // Assign based on order in array
+          }
+
           features.push(feature);
         });
 
-        if (features.length > 0) this.draw_vector_source.addFeatures(features);
+        if (features.length > 0) {
+          this.draw_vector_source.addFeatures(features);
+        }
         this.draw_vector_source.changed();
 
         if (this.selected_feature_id && !this.selected_feature)
@@ -1764,6 +2016,10 @@ export default {
       this.map.removeInteraction(this.map_modify);
       this.map.removeInteraction(this.map_draw);
       this.map.removeInteraction(this.map_snap);
+      this.removeCircleMouseTracking();
+      this.is_drawing_circle = false;
+      this.circle_center = null;
+      this.current_radius_text = "";
     },
     startSelectMode() {
       this.selected_feature_id = undefined;
@@ -1820,6 +2076,7 @@ export default {
         this.selected_feature_id
       );
       this.draw_vector_source.removeFeature(f);
+      this.selected_feature_id = undefined;
       this.$nextTick(() => {
         this.saveGeom();
       });
@@ -1875,7 +2132,6 @@ export default {
   width: 100%;
   height: 100%;
   background-color: var(--c-gris_clair);
-  font-size: 150%;
 
   flex: 1 1 320px;
 
@@ -2152,12 +2408,9 @@ export default {
 
 ._bottomMenu {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  text-align: center;
+  bottom: calc(var(--spacing) / 2);
+  right: calc(var(--spacing) * 2.5);
   pointer-events: none;
-  padding: calc(var(--spacing) / 2);
 
   display: flex;
 
@@ -2166,7 +2419,7 @@ export default {
     pointer-events: auto;
     margin: 0 auto;
     width: 100%;
-    max-width: 250px;
+    max-width: 270px;
 
     padding: calc(var(--spacing) / 2);
     background: rgba(255, 255, 255, 0.9);
@@ -2174,6 +2427,7 @@ export default {
 
     display: flex;
     flex-flow: column nowrap;
+    gap: calc(var(--spacing) / 4);
 
     &::before {
       position: absolute;
@@ -2186,6 +2440,20 @@ export default {
       border: 1px solid black;
       pointer-events: none;
     }
+  }
+}
+
+._circleInfo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--spacing) / 2);
+  // padding: calc(var(--spacing) / 4);
+  // background: rgba(0, 0, 0, 0.05);
+  // border-radius: 3px;
+  // border: 1px solid rgba(0, 0, 0, 0.1);
+
+  .u-metaField {
+    margin-bottom: 0;
   }
 }
 </style>

@@ -194,8 +194,6 @@ export default {
             .error(this.$t("not_allowed_to_copy_to_space"));
         }
 
-        debugger;
-
         this.is_copying = false;
         throw "fail";
       }
