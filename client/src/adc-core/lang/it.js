@@ -516,12 +516,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   couldnt_load_getusermedia:
     "Impossibile caricare la fotocamera o il microfono",
   failed_listing_devices: "Impossibile elencare i dispositivi",
-  failed_to_start_stream_sharing:
-    "Avvio della condivisione delllo streaming non riuscito",
   failed_to_start_recording: "Avvio della registrazione non riuscito",
   new_user_connected_to_stream: "Nuovo utente connesso allo streaming",
-  no_stream_found_while_sharing:
-    "Nessuno streaming  trovato durante la condivisione",
   media_couldnt_be_sent: "Salvataggio del media non riuscito",
 
   space: "Spazio",
@@ -806,13 +802,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   name_of_stream: "Nome dello stream",
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
-  failed_to_share_stream: "Non è stato possibile condividere il feed",
   stream_local_mode: "su questo dispositivo",
   stream_remote_mode: "do•doc remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
-  share_stream: "Condividi questo stream",
-  "stream_currently_shared_with_name:":
-    "Stream video/audio condiviso con il nome&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",
@@ -1304,4 +1296,18 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
   forgot_password: "Hai dimenticato la password?",
+
+  from_website: "Da un sito web",
+  resources: "Risorse",
+  free_resources: "Risorse gratuite",
+  free_resources_description: "Accedi a media gratuiti da collezioni online",
+  import_from_project: "Importa dal progetto",
+  import_from_project_description:
+    "Usa media dai tuoi progetti o da un altro progetto del tuo spazio",
+  resources_picker: "Selettore di risorse",
+  loading_resources: "Caricamento delle risorse…",
+  downloading: "Download in corso…",
+  failed_to_load_resources: "Impossibile caricare le risorse",
+  resource_imported_successfully: "Risorsa importata con successo",
+  failed_to_import_resource: "Impossibile importare la risorsa",
 };

@@ -28,6 +28,9 @@ export default {
   image_url_instr:
     "Enter the URL of an image (in .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp or .tiff).",
   import_from_url: "Import from URL",
+  file_url: "URL of a file",
+  file_url_instr:
+    "Enter the URL of a file (images, videos, audio, PDF documents, text files, etc.).",
   example_image_url: "Example image URL",
   importing_from_url: "Importing from URL...",
   preview_of_image: "Preview of the image",
@@ -458,7 +461,7 @@ export default {
   all_accounts: "All accounts",
 
   or_download_media_on_device: "or download this media to your device",
-  or_paste_an_image: "Or drop a picture",
+  or_paste_an_image: "Or paste an image",
 
   drop_here: "Drop here",
   or_drag_drop_file_here: "Or drag and drop file here",
@@ -723,10 +726,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible to load camera or microphone",
   failed_listing_devices: "Impossible to list devices",
-  failed_to_start_stream_sharing: "Impossible to start stream sharing",
   failed_to_start_recording: "Failed to start recording",
   new_user_connected_to_stream: "New user connected to the stream",
-  no_stream_found_while_sharing: "No stream found while sharing",
   media_couldnt_be_sent: "Media couldn't be sent",
 
   watermark: "Dressing",
@@ -897,12 +898,9 @@ export default {
   name_of_stream: "Stream name",
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
-  failed_to_share_stream: "The stream could not be shared",
   stream_local_mode: "on this device",
   stream_remote_mode: "remote do•doc",
   "stream_shown:": "Stream used:",
-  share_stream: "Share this stream",
-  "stream_currently_shared_with_name:": "Video/audio stream shared under name:",
   remote_access: "Remote Sources",
   hangup: "hang up",
   connect: "Connect",
@@ -920,6 +918,8 @@ export default {
   reload: "Reload",
   add_media: "Add media",
   add_medias: "Add media",
+  add_grid_area: "Add grid area",
+  click_empty_cell_to_add_area: "Click on an empty cell to add an area",
   add_link: "Add link",
   add_text: "Add text",
   share_link_to_page: "Share a link to this page",
@@ -1357,6 +1357,10 @@ export default {
   looking_for_gps_coordinates: "Looking for GPS coordinates...",
   gps_coordinates_found: "GPS coordinates found.",
   column_count: "Column count",
+  row_count: "Row count",
+  columns: "columns",
+  rows: "rows",
+  grid_dimensions: "Grid dimensions",
   restore_publications: "Restore deleted publications",
 
   debug_logs: "Debug logs",
@@ -1396,8 +1400,6 @@ export default {
   all_content: "All content",
   all_publications: "All publications",
   anonymous: "Anonymous",
-  bandwidth_very_low_for_stream_sharing:
-    "Very low bandwidth for stream sharing",
   camera_access_refused: "Camera access refused",
   change_base_media: "Change base media",
   change_page: "Change page",
@@ -1409,6 +1411,10 @@ export default {
   from_website: "From a website",
   resources: "Resources",
   free_resources: "Free resources",
+  free_resources_description: "Access free media from online collections",
+  import_from_project: "Import from project",
+  import_from_project_description:
+    "Use media from this project or another from the same space",
   resources_picker: "Resources Picker",
   loading_resources: "Loading resources…",
   downloading: "Downloading…",
@@ -1435,7 +1441,6 @@ export default {
   restore_medias: "Restore medias",
   show_cursor: "Show cursor",
   starts_on_page: "Starts on page",
-  stream_sharing_media_error: "Stream sharing media error",
   today: "Today",
   type: "Type",
   side_by_side: "Side by side",
@@ -1452,4 +1457,5 @@ export default {
     "You are running a newer version than the latest version available ({version}).",
   radius: "Radius",
   area: "Area",
+  no_areas_defined: "No areas defined",
 };

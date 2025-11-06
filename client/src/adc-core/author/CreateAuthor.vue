@@ -253,6 +253,10 @@ export default {
           });
         }
 
+        if (!this.is_instance_admin) {
+          window.location.reload();
+        }
+
         // not working
         // this.$emit("close");
       } catch (err) {

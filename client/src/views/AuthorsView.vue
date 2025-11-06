@@ -144,9 +144,11 @@
 </template>
 <script>
 import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     AuthorCard,
     DisplayOnMap: () => import("@/adc-core/fields/DisplayOnMap.vue"),
@@ -163,6 +165,9 @@ export default {
   },
   created() {},
   async mounted() {
+    // Set the authors page title
+    this.updateDocumentTitle(this.$t("list_of_accounts"));
+
     this.$api.updateSelfPath(this.path);
     this.authors = await this.$api.getFolders({
       path: this.path,

@@ -2,7 +2,7 @@
   <div class="_chatsList">
     <component
       :is="in_modal ? 'BaseModal2' : 'div'"
-      :size="$root.is_mobile_view ? 'full' : 'large'"
+      :size="modal_size"
       :nopadding="true"
       @close="closeModal"
     >
@@ -55,8 +55,12 @@
         <div
           v-if="opened_chat_slug"
           class="_openedChatContainer"
-          :class="{ 'is--fullscreen': in_modal }"
+          :class="{
+            'is--fullscreen': in_modal,
+            'is--mobileview': $root.is_mobile_view,
+          }"
         >
+          <!-- <div class="_openedChatContainer--overlay" /> -->
           <OpenedChat
             :key="opened_chat_slug"
             :chat_slug="opened_chat_slug"
@@ -112,6 +116,11 @@ export default {
   },
   watch: {},
   computed: {
+    modal_size() {
+      if (this.$root.is_mobile_view) return "full";
+      if (this.opened_chat_slug) return "large";
+      return "medium";
+    },
     in_modal() {
       return this.open_in_modal || this.$root.is_mobile_view;
     },
@@ -199,6 +208,7 @@ export default {
 
   &.is--mobileview {
     height: calc(100vh - var(--spacing) * 1);
+    --side-padding: 0px;
     // overflow: hidden;
   }
 }
@@ -267,5 +277,14 @@ export default {
   &.is--fullscreen {
     --side-padding: 20vw;
   }
+  &.is--mobileview {
+    --side-padding: 0px;
+  }
+}
+._openedChatContainer--overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
 }
 </style>

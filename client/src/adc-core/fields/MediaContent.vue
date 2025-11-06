@@ -67,7 +67,7 @@
     </template>
 
     <template v-else-if="file.$type === 'text'">
-      <CollaborativeEditor2
+      <CollaborativeEditor3
         v-if="file.$media_filename.endsWith('.txt')"
         class="_mediaContent--collabEditor"
         :content="file.$content"

@@ -1701,7 +1701,7 @@ module.exports = (function () {
   async function _removeBinFile(req, res, next) {
     const { path_to_folder, meta_filename } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
-    dev.logapi({ path_to_folder_in_bin });
+    dev.logapi({ path_to_folder, meta_filename });
 
     try {
       await file.removeBinFile({

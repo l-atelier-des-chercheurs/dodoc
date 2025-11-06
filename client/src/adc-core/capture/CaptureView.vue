@@ -47,22 +47,16 @@
       <div
         class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
-        :class="{
-          'is--being_streamed':
-            (stream_sharing_informations_status &&
-              stream_sharing_informations_status.enabled) ||
-            (stream_access_informations_status &&
-              stream_access_informations_status.enabled),
-        }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
           <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
+              v-if="showVideoElement"
               ref="videoElement"
               autoplay
               playsinline
               :src-object.prop.camel="stream"
-              :controls="stream_type === 'RemoteSources'"
+              :controls="false"
               muted
               :style="`opacity: ${enable_effects ? '0' : '1'}`"
             />
@@ -135,57 +129,6 @@
                 />
                 <span>{{ $t("seconds") }}</span>
               </div>
-            </div>
-
-            <div
-              v-if="
-                stream_sharing_informations_status &&
-                stream_sharing_informations_status.enabled &&
-                stream_type === 'LocalSources'
-              "
-              :key="
-                'stream_share_name-' + stream_sharing_informations_status.name
-              "
-            >
-              <label class="u-label">
-                <span v-html="$t('stream_currently_shared_with_name:')" />
-                <span>
-                  <strong>{{ stream_sharing_informations_status.name }}</strong>
-                </span>
-                <br />
-                <span
-                  v-if="
-                    stream_sharing_informations_status.peers_connected &&
-                    stream_sharing_informations_status.peers_connected.length >
-                      0
-                  "
-                >
-                  {{ $t("other_users_connected") }} =
-                  {{
-                    stream_sharing_informations_status.peers_connected.length
-                  }}
-                </span>
-              </label>
-            </div>
-
-            <div
-              v-else-if="
-                stream_access_informations_status &&
-                stream_access_informations_status.enabled &&
-                stream_type === 'RemoteSources'
-              "
-              :key="
-                'stream_share_name-' + stream_access_informations_status.callee
-              "
-            >
-              <label class="u-label">
-                <span v-html="$t('stream_shown:')" />
-                <span>
-                  <strong>{{
-                    stream_access_informations_status.callee
-                  }}</strong>
-                </span>
-              </label>
             </div>
 
             <div
@@ -1083,7 +1026,7 @@ export default {
       // },
 
       stream: undefined,
-      stream_type: undefined,
+      showVideoElement: true, // Control video element visibility for proper cleanup
 
       audio_output_deviceId: undefined,
 
@@ -1135,9 +1078,6 @@ export default {
       lines_contrast: 1,
       lines_density: 0.25,
 
-      stream_sharing_informations_status: {},
-      stream_access_informations_status: {},
-
       enable_effects: false,
       update_last_video_imageData: undefined,
     };
@@ -1162,14 +1102,6 @@ export default {
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
-    this.$eventHub.$on(
-      `stream.newSharingInformations`,
-      this.updateStreamSharing
-    );
-    this.$eventHub.$on(
-      `stream.newDistantAccessInformations`,
-      this.updateDistantStream
-    );
     this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
@@ -1177,36 +1109,44 @@ export default {
       "loadedmetadata",
       this.refreshVideoActualSize
     );
+
+    // Handle page visibility changes to release camera when tab is hidden
   },
-  beforeDestroy() {
+  async beforeDestroy() {
+    console.log("CaptureView: beforeDestroy - cleaning up camera resources");
+
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
-    this.$eventHub.$off(
-      `stream.newSharingInformations`,
-      this.updateStreamSharing
-    );
-    this.$eventHub.$off(
-      `stream.newDistantAccessInformations`,
-      this.updateDistantStream
-    );
     this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
     this.ask_before_leaving_capture = false;
 
+    // Stop any active recording first
+    if (this.is_recording) {
+      console.log("CaptureView: Stopping active recording before destroy");
+      this.stopRecording();
+    }
+
     this.stopFrameGrabber();
     this.stopTimelapseInterval();
     this.cancelDelay();
     this.eraseTimer();
+    await this.stopStream();
+
+    // Ensure video element is removed
+    this.showVideoElement = false;
 
     if (this.update_last_video_imageData)
       window.cancelAnimationFrame(this.update_last_video_imageData);
 
-    this.$refs.videoElement.removeEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    ); //turn off the event handler
+    if (this.$refs.videoElement) {
+      this.$refs.videoElement.removeEventListener(
+        "loadedmetadata",
+        this.refreshVideoActualSize
+      ); //turn off the event handler
+    }
   },
   watch: {
     selected_mode(val, oldVal) {
@@ -1318,14 +1258,55 @@ export default {
     },
   },
   methods: {
+    async stopStream() {
+      console.log("CaptureView: METHODS • stopStream");
+
+      // Stop all tracks in the current stream
+      if (this.stream) {
+        console.log(
+          "CaptureView: Stopping stream tracks:",
+          this.stream.getTracks().length
+        );
+        this.stream.getTracks().forEach((track) => {
+          console.log("CaptureView: Stopping track:", track.kind, track.label);
+          track.stop();
+        });
+        this.stream = null;
+      }
+
+      // Remove video element from DOM to fully release camera
+      console.log("CaptureView: Removing video element from DOM");
+      this.showVideoElement = false;
+
+      // Stop any active recorder
+      if (this.recorder) {
+        console.log("CaptureView: Stopping recorder");
+        try {
+          this.recorder.stopRecording();
+          this.recorder.destroy();
+          this.recorder = null;
+        } catch (err) {
+          console.warn("CaptureView: Error stopping recorder:", err);
+        }
+      }
+
+      // Reset stream-related state
+      this.is_loading_stream = false;
+      this.show_live_feed = false;
+    },
     hasFinishedLoading() {
       this.is_loading_stream = false;
       this.show_live_feed = true;
     },
-    setStream({ stream, type }) {
+    setStream(stream) {
+      console.log("CaptureView: METHODS • setStream", stream);
       this.stream = stream;
-      this.stream_type = type;
-      this.$refs.videoElement.volume = 0;
+      this.showVideoElement = true;
+      this.$nextTick(() => {
+        if (this.$refs.videoElement) {
+          this.$refs.videoElement.volume = 0;
+        }
+      });
       this.enable_effects = false;
     },
     updateSelectedColor({ e, type }) {
@@ -1382,12 +1363,6 @@ export default {
         g: frame.data[1],
         b: frame.data[2],
       };
-    },
-    updateStreamSharing(val) {
-      this.stream_sharing_informations_status = val;
-    },
-    updateDistantStream(val) {
-      this.stream_access_informations_status = val;
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()
@@ -2018,10 +1993,6 @@ export default {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-
-    &.is--being_streamed {
-      border-bottom: 5px solid var(--c-rouge);
-    }
   }
 
   .m_captureview--videoPane--bottom {

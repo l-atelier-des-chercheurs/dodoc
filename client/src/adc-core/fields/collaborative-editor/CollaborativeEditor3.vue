@@ -59,6 +59,7 @@
             <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
             <span>{{ $t("stop_edit") }}</span>
           </button> -->
+
           <transition name="pagechange" mode="out-in">
             <div
               class="u-button _savingStatus"
@@ -91,7 +92,9 @@
           </transition>
           <EditBtn
             class="_editBtn"
-            v-if="is_collaborative && !is_loading_or_saving"
+            v-if="
+              (is_collaborative && !is_loading_or_saving) || path !== undefined
+            "
             :btn_type="'check'"
             :label_position="'left'"
             @click="saveContent"
@@ -100,11 +103,12 @@
       </div>
     </div>
 
-    <!-- <div class="_floatingEditBtn" v-if="can_edit && !editor_is_enabled">
-      <EditBtn key="editbtn" :label_position="'left'" @click="toggleEdit" />
-    </div> -->
-
-    <div class="_toolbarAndEditorContainer">
+    <div
+      class="_toolbarAndEditorContainer"
+      :class="{
+        'is--editing_is_enabled': editor_is_enabled,
+      }"
+    >
       <div class="_editText">
         <EditBtn
           v-if="can_edit && !editor_is_enabled"
@@ -112,7 +116,11 @@
           @click="enableEditor"
         />
       </div>
-      <div ref="editor" />
+      <div
+        ref="editor"
+        class="_editor"
+        :class="{ 'is--noPadding': no_padding }"
+      />
     </div>
   </div>
 </template>
@@ -209,6 +217,7 @@ export default {
       type: String,
       default: "normal",
     },
+    no_padding: Boolean,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -256,7 +265,11 @@ export default {
     await this.initEditor();
     this.toolbar_el = this.$el.querySelector(".ql-toolbar");
     this.tooltip_el = this.$el.querySelector(".ql-tooltip");
-    if (this.can_edit && this.mode === "always_active") this.enableEditor();
+    if (
+      this.can_edit &&
+      (this.mode === "always_active" || this.mode === "edit_on_mounted")
+    )
+      this.enableEditor();
 
     this.$eventHub.$on("media.enableEditor." + this.path, this.enableEditor);
     this.$eventHub.$on("media.disableEditor." + this.path, this.disableEditor);
@@ -348,8 +361,9 @@ export default {
           // this.editor.setText(this.content);
           // this.editor.root.innerHTML = this.content;
           const delta = this.editor.clipboard.convert({ html: this.content });
-          this.editor.setContents(delta, "silent");
+          this.editor.setContents(delta, "init");
         }
+        this.editor.history.clear();
       }
 
       this.setStatusButton();
@@ -782,7 +796,6 @@ export default {
     }
 
     .ql-editor {
-      counter-reset: listCounter;
       height: auto;
       overflow: visible;
       color: inherit;
@@ -818,58 +831,8 @@ export default {
       }
 
       > * {
-        // counter-increment: listCounter;
         position: relative;
         // padding: 0;
-
-        &::before {
-          // content: counter(listCounter);
-          cursor: pointer;
-
-          /* old way : pos abs */
-          position: absolute;
-          // padding-top: 0.85em;
-          right: 100%;
-          text-align: right;
-          height: 100%;
-
-          font-size: 0.6rem;
-          text-align: center;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-          line-height: 3;
-          width: calc(var(--spacing) * 2);
-          max-width: 100px;
-          line-height: 2.5;
-          color: transparent;
-          color: hsl(210, 11%, 18%);
-
-          // position: relative;
-          // display: inline-block;
-          // font-size: 0.6rem;
-          // vertical-align: baseline;
-          // width: calc(var(--spacing) * 2);
-          // margin-left: calc(var(--spacing) * 2 * -1);
-
-          transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-        }
-
-        &.is--selected {
-          &::before {
-            background-color: var(--active-color);
-          }
-        }
-
-        &::after {
-          content: "";
-          display: block;
-          width: 100%;
-          height: 0;
-          margin: 0;
-          background-color: var(--active-color);
-          transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
-        }
       }
     }
 
@@ -884,7 +847,6 @@ export default {
   }
 }
 ._collaborativeEditor.is--editing_is_enabled {
-  background-color: var(--c-gris_clair);
   ::v-deep {
     .ql-editor {
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
@@ -904,23 +866,18 @@ export default {
   }
 }
 
-._floatingEditBtn {
-  position: sticky;
-  z-index: 101;
-  top: calc(var(--spacing) / 4);
-  height: 0;
-  text-align: right;
-  margin-right: calc(var(--spacing) / 4);
-
-  > * {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-}
-
 ._toolbarAndEditorContainer {
   position: relative;
+  &.is--editing_is_enabled {
+    ._editor:not(.is--noPadding) {
+      // background-color: #f9f9f9;
+      border: 2px solid var(--c-gris_clair);
+      border-top: none;
+      border-bottom-left-radius: var(--input-border-radius);
+      border-bottom-right-radius: var(--input-border-radius);
+      // border-radius: var(--input-border-radius);
+    }
+  }
 }
 ._editText {
   position: sticky;

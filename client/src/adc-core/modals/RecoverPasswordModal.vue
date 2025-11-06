@@ -54,6 +54,7 @@
     </div>
     <template #footer>
       <button type="button" class="u-button" @click="$emit('close')">
+        <b-icon icon="x" />
         {{ $t("close") }}
       </button>
       <button
@@ -64,6 +65,7 @@
         class="u-button u-button_bleuvert"
         @click="recoverPassword"
       >
+        <b-icon icon="envelope" />
         {{ $t("recover_via_email") }}
       </button>
     </template>

@@ -58,9 +58,11 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 import NotFound from "@/components/NotFound.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     ProjectPresentation,
     PaneList2,
@@ -175,6 +177,11 @@ export default {
 
       this.is_loading = false;
       this.project = project;
+
+      // Update document title with actual project name
+      if (this.project) {
+        this.updateDocumentTitle(this.project.title);
+      }
     },
     async getSpace() {
       const path = this.createPath({

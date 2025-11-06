@@ -27,10 +27,23 @@ export default {
   image_url: "URL vers une image",
   image_url_instr:
     "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
+  file_url: "URL vers un fichier",
+  file_url_instr:
+    "Indiquez ici une URL vers n'importe quel fichier avec une extension (ex: .pdf, .jpeg, .exe, .ino, .zip, etc.).",
   import_from_url: "Importer depuis une URL",
-  example_image_url: "Exemple d’URL d'image",
-  importing_from_url: "Importation depuis l’URL…",
-  preview_of_image: "Aperçu de l’image",
+  example_file_url: "Exemple d'URL de fichier",
+  importing_from_url: "Importation depuis l'URL…",
+  preview_of_image: "Aperçu de l'image",
+  preview_of_file: "Aperçu du fichier",
+  video_preview_not_supported: "Aperçu vidéo non supporté",
+  audio_preview_not_supported: "Aperçu audio non supporté",
+  pdf_preview_not_supported: "Aperçu PDF non supporté",
+  executable_file_warning:
+    "⚠️ Fichier exécutable - Soyez prudent lors de l'exécution",
+  code_file: "Fichier de code",
+  archive_file: "Fichier d'archive",
+  file_size_limit_exceeded:
+    "Fichier trop volumineux - Taille maximale : {maxSize} MB",
   failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
@@ -533,10 +546,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
   failed_listing_devices: "Impossible de lister les appareils",
-  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
   failed_to_start_recording: "Échec du démarrage de l’enregistrement",
   new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
-  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
   media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
@@ -826,13 +837,9 @@ export default {
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
-  failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
   stream_local_mode: "sur cet appareil",
   stream_remote_mode: "do•doc distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
-  share_stream: "Partager ce flux",
-  "stream_currently_shared_with_name:":
-    "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
@@ -860,6 +867,9 @@ export default {
 
   add_media: "Ajouter un média",
   add_medias: "Ajouter des médias",
+  add_grid_area: "Ajouter une zone de grille",
+  click_empty_cell_to_add_area:
+    "Cliquez sur une cellule vide pour ajouter une zone",
   add_link: "Ajouter un lien",
   add_text: "Ajouter du texte",
 
@@ -930,7 +940,7 @@ export default {
   not_allowed_to_contribute_contact_referent:
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
-  or_paste_an_image: "Ou coller une image depuis le presse-papier",
+  or_paste_an_image: "Ou collez une image depuis le presse-papier",
   media_was_saved: "Média enregistré",
   no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
   project_was_removed: "Ce projet vient d’être supprimé",
@@ -1424,6 +1434,10 @@ export default {
     "Recherche des coordonnées GPS de votre appareil...",
   gps_coordinates_found: "Coordonnées GPS trouvées.",
   column_count: "Nombre de colonnes",
+  row_count: "Nombre de lignes",
+  columns: "colonnes",
+  rows: "lignes",
+  grid_dimensions: "Dimensions de la grille",
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
 
@@ -1467,8 +1481,6 @@ export default {
 
   all_content: "Tout le contenu",
   all_publications: "Toutes les publications",
-  bandwidth_very_low_for_stream_sharing:
-    "Bande passante très faible pour le partage de flux",
   camera_access_refused: "Accès à la caméra refusé",
   disconnect_warning: "Avertissement de déconnexion",
   failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
@@ -1476,6 +1488,11 @@ export default {
   from_website: "Depuis un site",
   resources: "Ressources",
   free_resources: "Ressources libres",
+  free_resources_description:
+    "Accéder à des médias libres depuis des collections en ligne (nécessite une connexion internet)",
+  import_from_project: "Importer depuis un projet",
+  import_from_project_description:
+    "Utiliser des médias de ce projet ou d’un autre du même espace",
   resources_picker: "Sélecteur de ressources",
   loading_resources: "Chargement des ressources…",
   downloading: "Téléchargement…",
@@ -1496,7 +1513,6 @@ export default {
   on_this_list: "Sur cette liste",
   other_users_connected: "Autres utilisateurs connectés",
   show_cursor: "Afficher le curseur",
-  stream_sharing_media_error: "Erreur de média lors du partage de flux",
   side_by_side: "Côte à côte",
   new_line: "À la suite",
   latest_version_available: "Dernière version disponible",
@@ -1511,5 +1527,6 @@ export default {
   running_newer_version:
     "Vous utilisez une version plus récente que la dernière version disponible ({version}).",
   radius: "Rayon",
-  area: "Surface",
+  area: "Zone",
+  no_areas_defined: "Aucune zone de grille définie",
 };

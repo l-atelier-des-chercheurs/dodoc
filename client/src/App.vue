@@ -180,15 +180,15 @@ export default {
   --border-radius: 6px;
 
   --input-font-family: inherit;
-  --input-font-size: 1rem;
-  --input-font-size-x-small: 0.6rem;
-  --input-font-size-small: 0.8rem;
-  --input-font-size-big: 1.2rem;
+  --input-font-size: var(--sl-font-size-normal);
+  --input-font-size-x-small: var(--sl-font-size-x-small);
+  --input-font-size-small: var(--sl-font-size-small);
+  --input-font-size-big: var(--sl-font-size-large);
   --input-font-weight: inherit;
   --input-height: 2.5em;
   --input-height-large: 3em;
   // --input-height-big: 3em;
-  --input-height-small: 1.6rem;
+  --input-height-small: 1.85rem;
 
   --input-color: var(--body-color);
   --input-border-color: var(--c-gris_fonce);
@@ -213,7 +213,7 @@ export default {
   --color-make: var(--c-bleumarine);
   --color-publish: var(--c-bleuvert);
 
-  --active-color: var(--c-bleuvert);
+  --active-color: var(--c-bleumarine);
 
   --sl-font-mono: "Fira Mono";
   --padding: var(--spacing);

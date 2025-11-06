@@ -203,11 +203,21 @@ module.exports = (function () {
 
       // update meta file
       if (new_meta && Object.keys(new_meta).length) {
-        const clean_meta = await utils.cleanNewMeta({
+        const item_in_schema = utils.parseAndCheckSchema({
           relative_path: path_to_meta,
-          new_meta,
         });
-        Object.assign(meta, clean_meta);
+
+        if (item_in_schema?.$files?.fields) {
+          const clean_meta = utils.validateMeta({
+            fields: item_in_schema.$files.fields,
+            new_meta,
+            context: "update",
+          });
+          Object.assign(meta, clean_meta);
+        } else {
+          // No schema validation available, use new_meta as-is
+          Object.assign(meta, new_meta);
+        }
 
         // if file has $media_filename
         // if (new.hasOwnProperty("$media_filename") && meta.$media_filename) {

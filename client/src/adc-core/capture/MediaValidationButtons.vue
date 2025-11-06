@@ -49,7 +49,7 @@
         84.1,98.7 57.5,125.4 42.6,110.5 69.3,83.9"
           />
         </svg>
-        <span class>{{ $t("cancel") }}</span>
+        {{ $t("cancel") }}
       </template>
     </button>
 
@@ -90,8 +90,9 @@
             fill="currentColor"
           />
         </svg>
-        <span class="c-rouge">{{ $t("save") }}</span>
-        <span class="u-icon" v-html="dodoc_icon_collect" />
+        <span>{{ $t("save") }}</span>
+
+        <!-- <span class="u-icon" v-html="dodoc_icon_collect" /> -->
       </button>
 
       <button
