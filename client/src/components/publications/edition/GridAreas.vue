@@ -20,7 +20,7 @@
           @click="addAreaAtCell(cellIndex)"
         >
           <div v-if="!isCellOccupied(cellIndex)" class="_gridCell--addIcon">
-            <b-icon icon="plus-lg" />
+            <b-icon icon="plus" scale="1.5" />
           </div>
         </div>
       </div>

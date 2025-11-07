@@ -117,7 +117,8 @@ export default {
       else if (this.btn_type === "create_page")
         return {
           label: this.$t("create_page"),
-          icon: "plus-lg",
+          icon: "plus",
+          icon_size: 1.5,
         };
       else if (this.btn_type === "regenerate_thumbs")
         return {

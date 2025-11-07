@@ -27,6 +27,7 @@
               project.$status === 'finished' || project.$status === 'private'
             "
             class="_icon"
+            :class="{ 'is--list': context === 'list' }"
             :key="project.$status"
             :show_label="false"
             :status="project.$status"
@@ -48,7 +49,7 @@
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
-
+      ``
       <div
         class="_projectInfos--infos"
         :class="{
@@ -546,6 +547,10 @@ export default {
     top: 0;
     right: 0;
     margin: calc(var(--spacing) / 1);
+
+    &.is--list {
+      margin: calc(var(--spacing) / 2);
+    }
     // font-size: 125%;
   }
 
