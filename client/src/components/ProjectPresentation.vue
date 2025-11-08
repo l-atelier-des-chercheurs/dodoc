@@ -49,7 +49,6 @@
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
-      ``
       <div
         class="_projectInfos--infos"
         :class="{
