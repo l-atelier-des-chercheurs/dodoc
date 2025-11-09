@@ -96,6 +96,9 @@ module.exports = (function () {
       });
 
       let metas = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (const meta_filename of meta_filenames) {
         try {
           // dev.logverbose(`reading ${meta_filename}`);
@@ -108,7 +111,12 @@ module.exports = (function () {
           if (embed_source) meta = await _embedSourceMedias({ meta });
 
           metas.push(meta);
-          await new Promise(setImmediate);
+
+          // Yield only if enough time has passed
+          if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+            await new Promise(setImmediate);
+            lastYield = Date.now();
+          }
         } catch (err) {
           dev.error(err);
         }

@@ -23,6 +23,9 @@ module.exports = (function () {
       });
 
       let all_folders_with_meta = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (let folder_slug of folders_slugs) {
         const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
@@ -34,7 +37,12 @@ module.exports = (function () {
           else throw err;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
-        await new Promise(setImmediate);
+
+        // Yield only if enough time has passed
+        if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+          await new Promise(setImmediate);
+          lastYield = Date.now();
+        }
       }
 
       return all_folders_with_meta;
