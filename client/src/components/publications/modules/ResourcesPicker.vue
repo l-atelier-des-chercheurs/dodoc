@@ -72,43 +72,51 @@
             <div
               v-for="file in project_files"
               :key="file.$path"
-              class="_fileCard"
-              :class="{ _isDownloading: downloading.includes(file.$media_url) }"
+              class="u-card2 _fileCard"
             >
-              <div class="_preview">
-                <img
-                  v-if="file.$type === 'image'"
-                  :src="makeMediaFileURL(file)"
-                  :alt="file.$title || file.$media_filename"
-                  loading="lazy"
-                />
-                <video
-                  v-else-if="file.$type === 'video'"
-                  :src="file.$media_url"
-                  preload="metadata"
-                />
-                <audio
-                  v-else-if="file.$type === 'audio'"
-                  :src="file.$media_url"
-                  controls
-                />
-                <div v-else class="_filePlaceholder">
-                  {{ file.$type || "FILE" }}
-                </div>
+              <div
+                v-if="downloading.includes(file.$media_url)"
+                class="_downloading"
+              >
+                <LoaderSpinner />
+                <p>{{ $t("downloading") }}</p>
               </div>
 
-              <div class="_info">
-                <p class="_fileTitle">
-                  {{ file.$title || file.$media_filename }}
-                </p>
-                <button
-                  class="u-button u-button--small"
-                  :disabled="downloading.includes(file.$media_url)"
-                  @click="downloadProjectFile(file)"
-                >
-                  {{ getDownloadButtonText(file.$media_url) }}
-                </button>
-              </div>
+              <template v-else>
+                <div class="_preview">
+                  <img
+                    v-if="file.$type === 'image'"
+                    :src="makeMediaFileURL(file)"
+                    :alt="file.$title || file.$media_filename"
+                    loading="lazy"
+                  />
+                  <video
+                    v-else-if="file.$type === 'video'"
+                    :src="makeMediaFileURL(file)"
+                    preload="metadata"
+                  />
+                  <audio
+                    v-else-if="file.$type === 'audio'"
+                    :src="makeMediaFileURL(file)"
+                    controls
+                  />
+                  <div v-else class="_filePlaceholder">
+                    {{ file.$type || "FILE" }}
+                  </div>
+                </div>
+
+                <div class="_info">
+                  <p class="_fileTitle">
+                    {{ file.$title || file.$media_filename }}
+                  </p>
+                  <button
+                    class="u-button u-button--small"
+                    @click="downloadProjectFile(file)"
+                  >
+                    {{ $t("download") }}
+                  </button>
+                </div>
+              </template>
             </div>
           </div>
 
@@ -172,11 +180,6 @@ export default {
         file.$media_filename
       );
     },
-    getDownloadButtonText(src) {
-      return this.downloading.includes(src)
-        ? this.$t("downloading")
-        : this.$t("download");
-    },
     async loadResources() {
       this.is_loading = true;
       this.error = null;
@@ -236,14 +239,14 @@ export default {
     },
 
     async downloadProjectFile(file) {
-      const src = file.$media_url;
-      if (this.downloading.includes(src)) return;
+      const url = this.makeMediaFileURL(file);
+      if (this.downloading.includes(url)) return;
 
-      this.downloading.push(src);
+      this.downloading.push(url);
 
       try {
         const additional_meta = {
-          url: src,
+          url,
           $credits: file.$credits || file.$authors || "",
           $origin: "resources_picker",
           $authors: [this.connected_as.$path],
@@ -269,89 +272,11 @@ export default {
         console.error("Error downloading resource:", error);
         this.$alertify.delay(4000).error(this.$t("failed_to_import_resource"));
       } finally {
-        const index = this.downloading.indexOf(src);
+        const index = this.downloading.indexOf(url);
         if (index > -1) {
           this.downloading.splice(index, 1);
         }
       }
-    },
-
-    async downloadResource(src, type) {
-      if (this.downloading.includes(src)) return;
-
-      this.downloading.push(src);
-
-      try {
-        const fullUrl = this.getFullUrl(src);
-        const filename = this.getFilenameForResource(src);
-
-        const additional_meta = {
-          url: fullUrl,
-          $credits: this.getCreditsForResource(src),
-          $origin: "resources_picker",
-          $authors: [this.connected_as.$path],
-          requested_slug: filename,
-        };
-
-        const { uploaded_meta } = await this.$api.uploadFile({
-          path: this.project_path,
-          additional_meta,
-        });
-
-        if (uploaded_meta) {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .success(this.$t("resource_imported_successfully"));
-
-          setTimeout(() => {
-            this.$emit("pickResources", [uploaded_meta]);
-          }, 200);
-        }
-      } catch (error) {
-        console.error("Error downloading resource:", error);
-        this.$alertify.delay(4000).error(this.$t("failed_to_import_resource"));
-      } finally {
-        const index = this.downloading.indexOf(src);
-        if (index > -1) {
-          this.downloading.splice(index, 1);
-        }
-      }
-    },
-
-    getFilenameForResource(src) {
-      // Find filename for this resource from our transformed data
-      const allResources = [
-        ...(this.resources.images || []),
-        ...(this.resources.videos || []),
-        ...(this.resources.sons || []),
-      ];
-
-      const resource = allResources.find((r) => r.src === src);
-      return resource?.filename || this.extractFilenameFromUrl(src);
-    },
-
-    extractFilenameFromUrl(url) {
-      try {
-        const urlObj = new URL(url);
-        const pathname = urlObj.pathname;
-        const filename = pathname.split("/").pop();
-        return filename || "downloaded-resource";
-      } catch {
-        return "downloaded-resource";
-      }
-    },
-
-    getCreditsForResource(src) {
-      // Find credits for this resource
-      const allResources = [
-        ...(this.resources.images || []),
-        ...(this.resources.videos || []),
-        ...(this.resources.sons || []),
-      ];
-
-      const resource = allResources.find((r) => r.src === src);
-      return resource?.credits || src;
     },
   },
 };
@@ -488,7 +413,7 @@ export default {
 
 ._filesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 1.25rem;
 }
 
@@ -496,8 +421,8 @@ export default {
   position: relative;
   overflow: hidden;
   background: white;
-  border: 1px solid var(--c-gris);
-  border-radius: 8px;
+  // border: 1px solid var(--c-gris);
+  border-radius: var(--border-radius);
   transition: all 0.25s ease;
 
   // &:hover {
@@ -506,8 +431,19 @@ export default {
   //   border-color: var(--c-noir);
   // }
 
-  &._isDownloading {
-    opacity: 0.6;
+  ._downloading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    min-height: 200px;
+
+    p {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--color-text-secondary);
+    }
   }
 
   ._preview {
