@@ -65,60 +65,14 @@
             <p>{{ $t("loading") }}...</p>
           </div>
 
-          <div
-            v-else-if="project_files && project_files.length > 0"
-            class="_filesGrid"
-          >
-            <div
-              v-for="file in project_files"
-              :key="file.$path"
-              class="u-card2 _fileCard"
-            >
-              <div
-                v-if="downloading.includes(file.$media_url)"
-                class="_downloading"
-              >
-                <LoaderSpinner />
-                <p>{{ $t("downloading") }}</p>
-              </div>
-
-              <template v-else>
-                <div class="_preview">
-                  <img
-                    v-if="file.$type === 'image'"
-                    :src="makeMediaFileURL(file)"
-                    :alt="file.$title || file.$media_filename"
-                    loading="lazy"
-                  />
-                  <video
-                    v-else-if="file.$type === 'video'"
-                    :src="makeMediaFileURL(file)"
-                    preload="metadata"
-                  />
-                  <audio
-                    v-else-if="file.$type === 'audio'"
-                    :src="makeMediaFileURL(file)"
-                    controls
-                  />
-                  <div v-else class="_filePlaceholder">
-                    {{ file.$type || "FILE" }}
-                  </div>
-                </div>
-
-                <div class="_info">
-                  <p class="_fileTitle">
-                    {{ file.$title || file.$media_filename }}
-                  </p>
-                  <button
-                    class="u-button u-button--small"
-                    @click="downloadProjectFile(file)"
-                  >
-                    {{ $t("download") }}
-                  </button>
-                </div>
-              </template>
-            </div>
-          </div>
+          <ResourceFilesGrid
+            v-if="project_files && project_files.length > 0"
+            :files="project_files"
+            :downloading="downloading"
+            :resources_base_url="resources_base_url"
+            :selected_project_path="selected_project.$path"
+            @download="downloadProjectFile"
+          />
 
           <div v-else class="_noFiles">
             <p>{{ $t("no_files_found") }}</p>
@@ -131,8 +85,12 @@
 
 <script>
 import AuthorsMixin from "@/mixins/Authors.js";
+import ResourceFilesGrid from "./ResourceFilesGrid.vue";
 
 export default {
+  components: {
+    ResourceFilesGrid,
+  },
   mixins: [AuthorsMixin],
   props: {
     project_path: {
@@ -157,7 +115,6 @@ export default {
       is_loading_files: false,
       error: null,
       downloading: [],
-      fullscreen_media: null,
 
       resources_api_url: "https://ressources.dodoc.fr/_api2",
       resources_base_url: "https://ressources.dodoc.fr",
@@ -166,20 +123,7 @@ export default {
   created() {
     this.loadResources();
   },
-  mounted() {},
-  beforeDestroy() {},
-  watch: {},
-  computed: {},
   methods: {
-    makeMediaFileURL(file) {
-      return (
-        this.resources_base_url +
-        "/" +
-        this.selected_project.$path +
-        "/" +
-        file.$media_filename
-      );
-    },
     async loadResources() {
       this.is_loading = true;
       this.error = null;
@@ -239,7 +183,12 @@ export default {
     },
 
     async downloadProjectFile(file) {
-      const url = this.makeMediaFileURL(file);
+      const url =
+        this.resources_base_url +
+        "/" +
+        this.selected_project.$path +
+        "/" +
+        file.$media_filename;
       if (this.downloading.includes(url)) return;
 
       this.downloading.push(url);
@@ -411,94 +360,6 @@ export default {
   }
 }
 
-._filesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1.25rem;
-}
-
-._fileCard {
-  position: relative;
-  overflow: hidden;
-  background: white;
-  // border: 1px solid var(--c-gris);
-  border-radius: var(--border-radius);
-  transition: all 0.25s ease;
-
-  // &:hover {
-  //   transform: translateY(-2px);
-  //   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  //   border-color: var(--c-noir);
-  // }
-
-  ._downloading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 1rem;
-    min-height: 200px;
-
-    p {
-      margin-top: 1rem;
-      font-size: 0.875rem;
-      color: var(--color-text-secondary);
-    }
-  }
-
-  ._preview {
-    position: relative;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    background: var(--c-gris_clair);
-    // cursor: pointer;
-
-    img,
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    audio {
-      width: 100%;
-      height: 54px;
-      padding: 0.5rem;
-    }
-
-    ._filePlaceholder {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--color-text-secondary);
-      text-transform: uppercase;
-    }
-  }
-
-  ._info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 1rem;
-
-    ._fileTitle {
-      margin: 0;
-      font-size: 0.875rem;
-      color: var(--color-text);
-      line-height: 1.4;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-weight: 500;
-    }
-  }
-}
-
 ._noFiles {
   display: flex;
   align-items: center;
@@ -510,36 +371,6 @@ export default {
     margin: 0;
     font-size: 0.9375rem;
     color: var(--color-text-secondary);
-  }
-}
-
-// Fullscreen Modal
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-// Responsive adjustments
-@media (max-width: 768px) {
-  ._resourcesGrid {
-    ._grid {
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 1rem;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  ._resourcesGrid {
-    ._grid {
-      grid-template-columns: 1fr;
-    }
   }
 }
 </style>
