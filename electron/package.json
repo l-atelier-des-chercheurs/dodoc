@@ -24,7 +24,10 @@
       "!../tokens.json"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "electron-window-state": "^5.0.3"
+  },
   "devDependencies": {
     "@electron/rebuild": "^4.0.1",
     "electron": "^37.6.1",

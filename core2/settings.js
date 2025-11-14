@@ -18,7 +18,10 @@ module.exports = (function () {
     },
     updateStoragePath: async ({ new_path }) => {
       dev.logfunction();
-      await _saveNewPathToUserContent({ path: new_path });
+      if (!global.is_electron) {
+        throw new Error(`option_only_available_in_electron`);
+      }
+      global.electron.saveNewPathToUserContent({ path: new_path });
     },
     getStoragePath: async () => {
       return await _getStoragePath();
@@ -36,15 +39,4 @@ async function _getStoragePath() {
   //   return store.get("custom_content_path");
   // }
   return global.pathToUserContent;
-}
-
-async function _saveNewPathToUserContent({ path }) {
-  dev.logfunction({ path });
-  try {
-    const Store = require("electron-store").default;
-    const store = new Store({ name: "dodoc" });
-    store.set("custom_content_path", path);
-  } catch (err) {
-    throw new Error(`option_only_available_in_electron`);
-  }
 }

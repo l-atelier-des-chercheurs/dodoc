@@ -119,6 +119,10 @@ module.exports = (function () {
         });
       });
     },
+    saveNewPathToUserContent: ({ path }) => {
+      dev.logfunction({ path });
+      store.set("custom_content_path", path);
+    },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });
 
