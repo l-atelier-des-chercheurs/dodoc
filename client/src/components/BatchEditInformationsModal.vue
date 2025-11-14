@@ -15,8 +15,8 @@
         class="u-spacingBottom"
       >
         <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('caption')"
+          <DLabel :str="$t('caption')" />
+          <CollaborativeEditor3
             :content="''"
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
@@ -27,8 +27,8 @@
           />
         </div>
         <div class="u-spacingBottom">
-          <CollaborativeEditor2
-            :label="$t('credit/reference')"
+          <DLabel :str="$t('credit/reference')" />
+          <CollaborativeEditor3
             :field_to_edit="'$credits'"
             :content="''"
             :custom_formats="['bold', 'italic', 'link', 'emoji']"

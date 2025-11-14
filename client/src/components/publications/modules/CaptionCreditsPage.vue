@@ -21,9 +21,12 @@
 
         <div
           class="u-spacingBottom"
-          v-if="media.caption || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.caption) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             :label="$t('caption')"
             :field_to_edit="'caption'"
             :content="media.caption"
@@ -35,9 +38,12 @@
         </div>
         <div
           class="u-spacingBottom"
-          v-if="media.$credits || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.$credits) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
             :content="media.$credits"
@@ -93,8 +99,8 @@ export default {
         return false;
       if (
         this.canEditLinkedMedia(this.media.$path) === false &&
-        !this.media.$credits &&
-        !this.media.caption
+        this.isHTMLEmpty(this.media.$credits) &&
+        this.isHTMLEmpty(this.media.caption)
       )
         return false;
 
@@ -102,6 +108,15 @@ export default {
     },
   },
   methods: {
+    isHTMLEmpty(html) {
+      if (!html) return true;
+
+      // Create a temporary div to parse HTML and get plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = html;
+      const text = this.cleanUpString(temp.innerText);
+      return text.length === 0;
+    },
     canEditLinkedMedia(path) {
       if (!path || !this.publication_path || !this.can_edit) return false;
 

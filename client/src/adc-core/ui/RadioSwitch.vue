@@ -15,7 +15,13 @@
           :checked="content === option.value"
           @input="(event) => $emit('update:content', option.value)"
         />
-        <label class="radio-switch__label" :for="id + '_' + option.value">
+        <label
+          class="u-button radio-switch__label"
+          :class="{
+            'is--active': content === option.value,
+          }"
+          :for="id + '_' + option.value"
+        >
           {{ option.label }}
         </label>
         <transition name="popUp_slow">
@@ -94,7 +100,7 @@ menu {
   position: relative;
   display: inline-block;
   display: inline-flex;
-  gap: 2px;
+  // gap: 2px;
   border-radius: calc(var(--radio-switch-radius) * 1.4);
   transition: all var(--radio-switch-animation-duration);
   overflow: hidden;
@@ -113,41 +119,58 @@ menu {
 .radio-switch__item {
   position: relative;
   display: inline-block;
-  height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
-  width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
+  // height: calc(var(--radio-switch-height) - 2 * var(--radio-switch-padding));
+  // width: calc(var(--radio-switch-width) * 0.5 - var(--radio-switch-padding));
 
   // padding: calc(var(--spacing) / 4);
   // margin: -1px;
+
+  .radio-switch__label {
+    border-radius: 0;
+  }
+
+  &:first-child {
+    .radio-switch__label {
+      border-top-left-radius: var(--radio-switch-radius);
+      border-bottom-left-radius: var(--radio-switch-radius);
+    }
+  }
+  &:last-child {
+    .radio-switch__label {
+      border-top-right-radius: var(--radio-switch-radius);
+      border-bottom-right-radius: var(--radio-switch-radius);
+    }
+  }
 }
 
 .radio-switch__label {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radio-switch-radius);
-  color: var(--c-noir);
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  // position: relative;
+  // z-index: 2;
+  // display: flex;
+  // height: 100%;
+  // align-items: center;
+  // justify-content: center;
+  // border-radius: var(--radio-switch-radius);
+  // color: var(--c-noir);
+  // cursor: pointer;
+  // -webkit-user-select: none;
+  // -moz-user-select: none;
+  // -ms-user-select: none;
+  // user-select: none;
 
-  font-weight: 500;
+  // font-weight: 500;
 
   transition: all var(--radio-switch-animation-duration);
 
   &:hover,
   &:focus-visible {
-    background-color: var(--active-color);
+    // background-color: var(--active-color);
   }
 }
 .radio-switch__input:checked ~ .radio-switch__label {
-  color: hsl(var(--ri5-color-white-hsl));
-  background-color: var(--c-noir);
-  pointer-events: none;
+  // color: hsl(var(--ri5-color-white-hsl));
+  // background-color: var(--c-noir);
+  // pointer-events: none;
   // pointer-events: none;
 }
 .radio-switch__input:focus ~ .radio-switch__label {

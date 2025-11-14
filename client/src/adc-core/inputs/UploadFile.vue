@@ -316,7 +316,7 @@ export default {
     transform-origin: left center;
 
     transition: all 0.2s;
-    background-color: var(--active-color);
+    background-color: var(--c-orange);
   }
 
   ._uploadFile--progressBar--percent {

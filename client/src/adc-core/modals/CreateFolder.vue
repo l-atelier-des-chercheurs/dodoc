@@ -61,6 +61,7 @@
         :loading="is_creating_folder"
         @click="createFolder"
       >
+        <b-icon icon="plus-circle" />
         {{ $t("create_and_open") }}
       </button>
     </template>

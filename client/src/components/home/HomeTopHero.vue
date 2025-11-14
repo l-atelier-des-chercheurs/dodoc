@@ -5,7 +5,7 @@
         <div v-if="layout === 'text'" :key="layout" class="_textBlock">
           <h1 class="_sessionTitle" v-text="name || $t('welcome_to_dodoc')" />
           <div class="">
-            <CollaborativeEditor2 v-if="description" :content="description" />
+            <CollaborativeEditor3 v-if="description" :content="description" />
             <template v-else>
               <template v-if="!is_instance_admin">
                 <p v-html="$t('admins_edit_text_here')" />
@@ -217,8 +217,9 @@ export default {
 
 ._sessionTitle {
   display: block;
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: 300;
+  // letter-spacing: -0.015em;
+  font-style: italic;
   margin-bottom: calc(var(--spacing) * 1);
 }
 

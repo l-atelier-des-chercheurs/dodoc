@@ -78,7 +78,7 @@
           </div>
 
           <div class="u-spacingBottom">
-            <CollaborativeEditor2
+            <CollaborativeEditor3
               :label="
                 can_edit_event && !event.description ? $t('presentation') : ''
               "

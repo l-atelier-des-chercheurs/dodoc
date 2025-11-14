@@ -96,6 +96,9 @@ module.exports = (function () {
       });
 
       let metas = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (const meta_filename of meta_filenames) {
         try {
           // dev.logverbose(`reading ${meta_filename}`);
@@ -108,7 +111,12 @@ module.exports = (function () {
           if (embed_source) meta = await _embedSourceMedias({ meta });
 
           metas.push(meta);
-          await new Promise(setImmediate);
+
+          // Yield only if enough time has passed
+          if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+            await new Promise(setImmediate);
+            lastYield = Date.now();
+          }
         } catch (err) {
           dev.error(err);
         }
@@ -203,11 +211,21 @@ module.exports = (function () {
 
       // update meta file
       if (new_meta && Object.keys(new_meta).length) {
-        const clean_meta = await utils.cleanNewMeta({
+        const item_in_schema = utils.parseAndCheckSchema({
           relative_path: path_to_meta,
-          new_meta,
         });
-        Object.assign(meta, clean_meta);
+
+        if (item_in_schema?.$files?.fields) {
+          const clean_meta = utils.validateMeta({
+            fields: item_in_schema.$files.fields,
+            new_meta,
+            context: "update",
+          });
+          Object.assign(meta, clean_meta);
+        } else {
+          // No schema validation available, use new_meta as-is
+          Object.assign(meta, new_meta);
+        }
 
         // if file has $media_filename
         // if (new.hasOwnProperty("$media_filename") && meta.$media_filename) {
@@ -603,7 +621,6 @@ module.exports = (function () {
         case ".mp3":
         case ".wav":
         case ".aac":
-        case ".m4a":
         case ".ogg":
           new_meta.$type = "audio";
           break;

@@ -27,6 +27,7 @@
               project.$status === 'finished' || project.$status === 'private'
             "
             class="_icon"
+            :class="{ 'is--list': context === 'list' }"
             :key="project.$status"
             :show_label="false"
             :status="project.$status"
@@ -48,7 +49,6 @@
           +&thinsp;{{ original_space_name }}
         </div>
       </div>
-
       <div
         class="_projectInfos--infos"
         :class="{
@@ -186,11 +186,17 @@
         </div>
 
         <div
-          v-if="is_compacted"
           class="_compactExpandButton"
+          v-if="context === 'list'"
+          :class="{ 'is--active': !short_project_view }"
           @click="toggleCompacted"
         >
-          <button type="button" class="u-button u-button_icon" tabindex="-1">
+          <button
+            type="button"
+            class="u-button u-button_icon u-button_white"
+            :class="{ 'is--active': !short_project_view }"
+            tabindex="-1"
+          >
             <b-icon v-if="short_project_view" icon="arrow-down-short" />
             <b-icon v-else icon="arrow-up-short" />
           </button>
@@ -355,7 +361,7 @@ export default {
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
     &.is--own {
-      border-bottom-color: var(--c-bleumarine);
+      // border-bottom-color: var(--c-bleumarine);
     }
 
     ._projectInfos--topContent {
@@ -367,7 +373,7 @@ export default {
 
     ._title {
       h3 {
-        font-size: var(--sl-font-size-medium);
+        font-size: var(--sl-font-size-normal);
       }
     }
   }
@@ -540,6 +546,10 @@ export default {
     top: 0;
     right: 0;
     margin: calc(var(--spacing) / 1);
+
+    &.is--list {
+      margin: calc(var(--spacing) / 2);
+    }
     // font-size: 125%;
   }
 
@@ -671,9 +681,12 @@ export default {
 
   padding: calc(var(--spacing) / 4);
 
-  background: linear-gradient(transparent, white);
   text-align: right;
   pointer-events: none;
+
+  &:not(.is--active) {
+    background: linear-gradient(to bottom, transparent, white);
+  }
 
   > button {
     pointer-events: auto;

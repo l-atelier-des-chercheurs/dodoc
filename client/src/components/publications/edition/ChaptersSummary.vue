@@ -20,7 +20,6 @@
           :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
-          @remove="$emit('removeChapter', section)"
         />
 
         <div key="'add'" class="_addSection">
@@ -39,6 +38,14 @@
           >
             <b-icon icon="plus" />
             {{ $t("gallery") }}
+          </button>
+          <button
+            type="button"
+            class="u-button u-button_bleuvert u-button_small"
+            @click="createSection({ type: 'grid' })"
+          >
+            <b-icon icon="plus" />
+            {{ $t("grid") }}
           </button>
           <button
             type="button"
@@ -134,6 +141,10 @@ export default {
         additional_meta.section_title =
           this.$t("gallery") + " " + this.new_section_index;
         additional_meta.section_type = "gallery";
+      } else if (type === "grid") {
+        additional_meta.section_title =
+          this.$t("grid") + " " + this.new_section_index;
+        additional_meta.section_type = "grid";
       } else if (type === "story") {
         additional_meta.section_title =
           this.$t("story") + " " + this.new_section_index;

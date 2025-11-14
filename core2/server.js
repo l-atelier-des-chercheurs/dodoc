@@ -26,7 +26,7 @@ module.exports = function () {
     helmet({
       // todo: set correct CSP
       contentSecurityPolicy: false,
-      crossOriginResourcePolicy: false,
+      crossOriginResourcePolicy: { policy: "same-site" },
     })
   );
 

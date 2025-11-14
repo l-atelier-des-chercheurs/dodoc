@@ -155,7 +155,15 @@ export default {
     context: String,
     types_available: {
       type: Array,
-      default: () => ["capture", "import", "write", "embed", "table", "shapes"],
+      default: () => [
+        "capture",
+        "import",
+        "resources",
+        "write",
+        "embed",
+        "table",
+        "shapes",
+      ],
     },
     start_collapsed: {
       type: Boolean,
@@ -330,8 +338,6 @@ export default {
           $type: "url",
         },
       });
-
-      debugger;
 
       this.createMosaic({ meta_filename });
 

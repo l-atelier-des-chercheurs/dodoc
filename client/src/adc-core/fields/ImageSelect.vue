@@ -98,7 +98,8 @@ export default {
     },
     updateCrop(image) {
       this.picked_image = image;
-      this.crop_mode = false;
+      // this.crop_mode = false;
+      this.updateCover();
     },
     removeImage: function () {
       this.picked_image = "";

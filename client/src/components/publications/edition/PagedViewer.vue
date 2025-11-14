@@ -149,7 +149,11 @@ export default {
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
         >`;
-        if (chapter.title && chapter.section_type !== "gallery")
+        if (
+          chapter.title &&
+          chapter.section_type !== "gallery" &&
+          chapter.section_type !== "grid"
+        )
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content)
           html += `<div class="chapterContent">${chapter.content}</div>`;
@@ -711,6 +715,31 @@ export default {
       display: none;
     }
 
+    /* Show grid structure in edit mode */
+    @media screen {
+      .is--editable & {
+        /* Show grid lines on the grid container */
+        .grid-content {
+          /* Create a visual grid pattern using borders and shadows on each cell */
+          // background: transparent;
+          // position: relative;
+        }
+
+        /* Add visible border to each grid cell */
+        .grid-cell {
+          outline: 2px solid var(--color-pageBox);
+          outline-offset: -1px;
+          background-color: rgba(
+            238,
+            130,
+            238,
+            0.05
+          ); /* light violet background */
+          min-height: 30px; /* ensure even empty cells are visible */
+        }
+      }
+    }
+
     /* To define how the book look on the screen: */
     @media screen {
       .editChapterBtn {
@@ -720,6 +749,18 @@ export default {
         // left: calc(var(--pagedjs-margin-left) / -1);
         bottom: 100%;
         left: -1px;
+        background-color: var(--color-pageContent);
+        font-size: 0.8rem;
+        color: white;
+
+        &:hover {
+          background-color: var(--c-noir);
+        }
+      }
+      .chapter[data-chapter-type="grid"] .editChapterBtn {
+        bottom: auto;
+        top: calc(var(--pagedjs-margin-top) * -1);
+        left: calc(var(--pagedjs-margin-left) * -1 + var(--spacing));
         background-color: var(--color-pageContent);
         font-size: 0.8rem;
         color: white;
@@ -738,7 +779,6 @@ export default {
         //   }
         // }
       }
-
       .pagedjs_pages {
         display: flex;
         width: calc(var(--pagedjs-width) * 2);
@@ -768,7 +808,6 @@ export default {
 
       .pagedjs_page {
         background-color: var(--color-paper);
-        box-shadow: 0 0 0 1px var(--color-pageSheet);
         margin: 0;
         flex-shrink: 0;
         flex-grow: 0;
@@ -778,6 +817,10 @@ export default {
       }
       .pagedjs_page_content {
         box-shadow: 0 0 0 1px var(--color-pageContent);
+        /* Remove margin from .pagedjs_page if it contains a grid chapter */
+        &:has(.chapter[data-chapter-type="grid"]) {
+          box-shadow: none !important;
+        }
       }
 
       .pagedjs_first_page {

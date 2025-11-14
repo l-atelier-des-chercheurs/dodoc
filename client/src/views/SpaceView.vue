@@ -81,9 +81,11 @@
 import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
 import NotFound from "@/components/NotFound.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     ProjectsListWithFilter,
     SpacePresentation,
@@ -150,6 +152,11 @@ export default {
           else this.fetch_space_error_message = err.code;
           throw err;
         });
+
+      // Update document title with actual space name
+      if (this.space) {
+        this.updateDocumentTitle(this.space.title);
+      }
     },
     async getProjects() {
       this.projects = await this.$api

@@ -600,13 +600,13 @@ export default {
       this.$alertify.delay(4000).log(this.$t("compilation_started"));
       this.backToStopmotion();
 
-      const checkIfEnded = ({ task_id, message }) => {
+      const checkIfEnded = ({ task_id, event, message }) => {
         if (task_id !== current_task_id) return;
         this.$eventHub.$off("task.ended", checkIfEnded);
 
         this.compilation_in_progress = false;
 
-        if (message.event === "completed") {
+        if (event === "completed") {
           const meta_filename = this.getFilename(message.file?.$path);
           if (meta_filename) this.$emit("insertMedia", meta_filename);
           this.$emit("close");
@@ -618,7 +618,7 @@ export default {
           //   folder_path: this.current_stopmotion_path,
           // });
         } else {
-          this.$alertify.delay(4000).error(message.info);
+          this.$alertify.delay(4000).error(message);
         }
       };
       this.$eventHub.$on("task.ended", checkIfEnded);

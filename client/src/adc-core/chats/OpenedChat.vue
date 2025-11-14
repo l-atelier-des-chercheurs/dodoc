@@ -417,6 +417,7 @@ export default {
 
       const last_message_date = new Date().toISOString();
       const last_message_count = this.messages.length;
+      this.last_message_read_index += 1;
 
       this.$nextTick(() => {
         try {
@@ -468,7 +469,7 @@ export default {
   justify-content: space-between;
   overflow: hidden;
   border-radius: var(--border-radius);
-  border: 2px solid var(--c-rouge_fonce);
+  border: 2px solid var(--c-rouge);
 
   > ._openedChat--header {
     flex: 0 0 auto;
@@ -491,7 +492,7 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 
   &:not(:last-child) {
     border-bottom: 2px solid var(--c-rouge_fonce);
@@ -576,8 +577,8 @@ export default {
 }
 
 ._backBtn {
-  padding: calc(var(--spacing) / 2);
-  padding-left: 0;
+  // padding: calc(var(--spacing) / 2);
+  // padding-left: 0;
 }
 
 ._scrollToEndBtn {

@@ -27,9 +27,11 @@
 </template>
 <script>
 import AuthorCard from "@/adc-core/author/AuthorCard.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     AuthorCard,
   },
@@ -70,6 +72,12 @@ export default {
 
       this.is_loading = false;
       this.author = author;
+
+      // Update document title with actual author name
+      if (this.author) {
+        this.updateDocumentTitle(this.author.name);
+      }
+
       this.$eventHub.$emit("received.author", this.author);
     },
   },

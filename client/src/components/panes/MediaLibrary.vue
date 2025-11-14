@@ -21,20 +21,22 @@
             class="u-button u-button_bleumarine"
             @click="show_url_picker = true"
           >
-            <b-icon icon="globe" />
-            {{ $t("importer depuis un site") }}
+            <b-icon icon="globe" />{{ $t("from_website") }}
           </button>
           <UrlPicker
             v-if="show_url_picker"
             :path="project.$path"
-            @importedURL="mediasJustImported"
+            @importedURL="importedURL"
             @close="show_url_picker = false"
           />
         </div>
-        <div class="_importCreateTextButtons--createText">
+        <!-- only show inside collect pane -->
+        <div
+          v-if="!show_only_media_of_types"
+          class="_importCreateTextButtons--createText"
+        >
           <button class="u-button u-button_bleuvert" @click="createText">
-            <b-icon icon="fonts" />
-            {{ $t("add_text") }}
+            <b-icon icon="fonts" />{{ $t("add_text") }}
           </button>
         </div>
       </div>
@@ -880,6 +882,7 @@ export default {
         content: "…",
         additional_meta: {
           $origin: "collect",
+          $authors: [this.connected_as.$path],
         },
       });
       const path = this.project.$path + "/" + meta_filename;
@@ -888,6 +891,11 @@ export default {
       setTimeout(() => {
         this.$eventHub.$emit("media.enableEditor." + path);
       }, 500);
+    },
+    importedURL(meta) {
+      const meta_filename = this.getFilename(meta.$path);
+      this.mediasJustImported([meta_filename]);
+      this.show_url_picker = false;
     },
     mediasJustImported(list_of_added_metas) {
       if (this.select_mode === "multiple") {
@@ -1203,12 +1211,16 @@ export default {
   flex-flow: row nowrap;
   align-items: stretch;
   justify-content: stretch;
-  gap: calc(var(--spacing) / 2);
+  gap: calc(var(--spacing) / 4);
   padding: calc(var(--spacing) / 2);
   padding-bottom: 0;
 
   > * {
     // flex: 1 1 0;
+  }
+
+  @media (max-width: 480px) {
+    flex-flow: column nowrap;
   }
 }
 
@@ -1230,7 +1242,7 @@ export default {
 
   border: 3px dotted var(--c-bleumarine);
   border-radius: 10px;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4);
 
   &._importCreateTextButtons--createText {
     border-color: var(--c-bleuvert);

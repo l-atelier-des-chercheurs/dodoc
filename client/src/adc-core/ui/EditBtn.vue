@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class="u-button u-button_verysmall _editBtn"
+    class="u-button _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
       'is--spinning': is_spinning,
@@ -10,11 +10,14 @@
     :style="btn_styles"
     @click="$emit('click')"
   >
-    <span class="_label" :data-position="label_position">
-      <template v-if="label">{{ label }}</template>
-      <template v-else>{{ btn_props.label }}</template>
+    <span class="_label" v-if="button_label" :data-position="label_position">
+      {{ button_label }}
     </span>
-    <b-icon class="_icon" :icon="btn_props.icon" />
+    <b-icon
+      class="_icon"
+      :icon="btn_props.icon"
+      :scale="btn_props.icon_size ? btn_props.icon_size : 1"
+    />
   </button>
 </template>
 <script>
@@ -55,6 +58,10 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    button_label() {
+      if (this.label !== undefined) return this.label;
+      return this.btn_props.label;
+    },
     btn_props() {
       if (this.btn_type === "fullscreen")
         return {
@@ -69,7 +76,8 @@ export default {
       else if (this.btn_type === "add")
         return {
           label: this.$t("add"),
-          icon: "plus-lg",
+          icon: "plus",
+          icon_size: 1.5,
         };
       else if (this.btn_type === "order")
         return {
@@ -109,7 +117,8 @@ export default {
       else if (this.btn_type === "create_page")
         return {
           label: this.$t("create_page"),
-          icon: "plus-lg",
+          icon: "plus",
+          icon_size: 1.5,
         };
       else if (this.btn_type === "regenerate_thumbs")
         return {
@@ -123,15 +132,17 @@ export default {
         };
       return {
         label: this.$t("edit"),
-        icon: "pencil-fill",
+        icon: "pencil",
+        icon_size: 0.8,
       };
     },
     btn_styles() {
       if (this.style_type === "black")
         return `
-          --color1: var(--c-noir);
-          --color2: white;
-          --color-text: var(--c-noir);
+          --color-bg: var(--c-noir);
+          --color-icon: white;
+          --color-icon-hover: white;
+          --color-bg-hover: var(--c-noir);
         `;
 
       if (
@@ -141,28 +152,33 @@ export default {
         this.btn_type === "hide"
       )
         return `
-          --color2: var(--c-noir);
+          --color-icon: var(--c-noir);
+          --color-icon-hover: white;
+          --color-bg-hover:  var(--c-noir);
         `;
       // if (this.btn_type === "add")
       //   return `
-      //     --color1: white;
-      //     --color2: var(--c-noir);
+      //     --color-bg: white;
+      //     --color-icon: var(--c-noir);
       //     --color-hover-icon: white;
       //   `;
       else if (this.btn_type === "credits")
         return `
-          --color2: var(--c-noir);
+          --color-icon: var(--c-noir);
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       else if (this.btn_type === "remove")
         return `
-          --color2: var(--c-rouge);
+          --color-icon: var(--c-rouge);
         `;
 
       if (this.btn_type === "fullscreen-exit")
         return `
-          --color1: var(--c-noir);
-          --color2: white;
-          --color-text: var(--c-noir);
+          --color-bg: var(--c-noir);
+          --color-icon: white;
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       return ``;
     },
@@ -172,23 +188,26 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  --color1: rgba(255, 255, 255, 0.5);
-  --color2: var(--active-color);
-  --color-text: white;
+  --color-bg: rgba(255, 255, 255, 0.5);
+  --color-icon: var(--active-color);
+  --color-icon-hover: white;
+  --color-bg-hover: var(--active-color);
 
   position: relative;
-  display: inline-flex;
-  background: var(--color1);
-  color: var(--color2);
-  // border: 1px solid var(--color1);
+  // display: inline-flex;
+  background: var(--color-bg);
+  color: var(--color-icon);
+  // border: 1px solid var(--color-bg);
 
   // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
 
   // margin-top: -0.5rem;
   // margin-bottom: -0.5rem;
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  // width: 24px;
+  // height: 24px;
+  // flex: 0 0 24px;
+  padding-left: 2px;
+  padding: calc(var(--spacing) / 2);
 
   border-radius: 50%;
   transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
@@ -210,10 +229,9 @@ export default {
     top: 0;
     height: calc(100% + 2px);
 
-    background: var(--color2);
-    color: var(--color-text);
+    background: var(--color-icon);
 
-    margin: -1px;
+    // margin: -1px;
     padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
 
     display: flex;
@@ -256,12 +274,14 @@ export default {
   &:active,
   &:focus-visible,
   &.is--unfolded {
-    background: var(--color2);
-    color: var(--color-text);
+    color: var(--color-icon-hover);
 
     ._label {
       transform: none;
       color: inherit;
+      background: var(--color-bg-hover);
+      color: var(--color-icon-hover);
+
       opacity: 1;
       max-width: 40ch;
       // pointer-events: auto;

@@ -63,6 +63,7 @@
             class="u-button u-button_bleuvert"
             @click="createCustomStylesheet"
           >
+            <b-icon icon="plus-circle" />
             {{ $t("create_and_open") }}
           </button>
         </template>

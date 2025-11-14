@@ -17,7 +17,6 @@
               :opened_section_meta_filename="opened_section_meta_filename"
               :view_mode="view_mode"
               :chapters_positions="chapters_positions"
-              @removeChapter="removeChapter"
               @toggleSection="
                 $emit('updatePane', { key: 'chapter', value: $event })
               "

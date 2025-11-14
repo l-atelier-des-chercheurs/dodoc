@@ -19,7 +19,13 @@
         />
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
-        <template v-if="!is_serversidepreview && !is_fullscreen">
+        <template
+          v-if="
+            !is_serversidepreview &&
+            !is_fullscreen &&
+            !is_server_making_pdf_or_png_preview
+          "
+        >
           <transition name="pagechange" mode="out-in">
             <div class="_pubTopbar" v-if="show_topbar">
               <PublicationTopbar
@@ -71,9 +77,11 @@
 import screenfull from "screenfull";
 
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     PublicationTopbar,
     PageExport: () =>
@@ -125,6 +133,11 @@ export default {
           }
         });
 
+    // Update document title with actual publication name
+    if (this.publication) {
+      this.updateDocumentTitle(this.publication.title);
+    }
+
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
@@ -148,6 +161,9 @@ export default {
         space_slug: this.$route.params.space_slug,
         project_slug: this.$route.params.project_slug,
       });
+    },
+    is_server_making_pdf_or_png_preview() {
+      return this.$route.query?.superadmintoken !== undefined;
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
@@ -175,6 +191,10 @@ export default {
 
   @media screen {
     // margin: 0 calc(var(--spacing) * 2);
+  }
+
+  &.is--serversidepreview {
+    padding: calc(var(--spacing) * 2);
   }
 }
 </style>

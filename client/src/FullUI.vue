@@ -5,7 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
-    <DynamicCursor v-if="!$root.is_touch_device" />
+    <!-- <DynamicCursor v-if="!$root.is_touch_device" /> -->
 
     <transition name="pagetransition" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
@@ -117,11 +117,11 @@ export default {
           .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
-      if (this.$root.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(`Connect error ${reason}`);
+      // if (this.$root.debug_mode)
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(4000)
+      //     .error(`Connect error ${reason}`);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;

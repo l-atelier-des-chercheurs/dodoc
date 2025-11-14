@@ -34,8 +34,6 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 - **next** --> code for the next major version. Unified branch supporting both Electron and Node modes. Use at your own risks.
 
-Note 1: on Ubuntu up to 24.04, you may need to install the dependency sharp 0.31.3 as the most recent version (0.33.5) is not compatible.
-
 `npm install sharp@0.31.3`
 
 Note 2: bufferutil seems to be necessary specifically for intel macOS.

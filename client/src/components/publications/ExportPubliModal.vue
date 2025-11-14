@@ -12,7 +12,8 @@
     <template
       v-if="
         export_mode === 'pdf' &&
-        ['page_by_page', 'edition'].includes(publication.template)
+        ['page_by_page', 'edition'].includes(publication.template) &&
+        publication.pages.length > 1
       "
     >
       <DLabel
@@ -69,7 +70,7 @@
       </div>
     </template>
 
-    <template v-if="export_mode === 'png'">
+    <template v-if="export_mode === 'png' && publication.pages.length > 1">
       <template v-if="publication.template === 'page_by_page'">
         <div class="u-spacingBottom" />
 
@@ -264,7 +265,7 @@ export default {
             : this.current_spread_number;
         else if (this.pdf_pages_to_export_mode === "custom")
           instructions.page = this.specific_pdf_page_or_spread_to_export;
-        else instructions.page = "1-" + this.total_number_of_pages;
+        // else instructions.page = "1-" + this.total_number_of_pages;
       }
 
       if (this.is_spread) instructions.page_width *= 2;

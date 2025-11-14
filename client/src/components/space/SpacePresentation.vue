@@ -207,7 +207,7 @@ export default {
   // max-width: 120ch;
 
   padding: 0;
-  border-radius: 6px;
+  border-radius: 10px;
   background: white;
   // padding: calc(var(--spacing) * 1);
 
@@ -219,10 +219,12 @@ export default {
   }
   &[data-context="list"] {
     flex-flow: row nowrap;
+    border-radius: 4px;
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     ._spaceCover {
-      max-width: 120px;
+      max-width: 220px;
+      border-radius: 2px;
     }
   }
 }
@@ -237,7 +239,7 @@ export default {
   aspect-ratio: 1/1;
   align-self: flex-start;
   // border: 1px solid var(--c-gris);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   flex: 1 2 240px;
   // max-width: 120px;
@@ -295,6 +297,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
 ._icon {

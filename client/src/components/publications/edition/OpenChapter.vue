@@ -50,7 +50,7 @@
         </div>
         <div>
           <button type="button" class="u-linkList" @click="$emit('close')">
-            <b-icon icon="x-circle" :label="$t('close')" />
+            <b-icon icon="x" :label="$t('close')" />
             {{ $t("close") }}
           </button>
         </div>
@@ -99,6 +99,10 @@
           <template v-else-if="chapter.section_type === 'gallery'">
             <b-icon icon="image" />
             {{ $t("gallery") }}
+          </template>
+          <template v-else-if="chapter.section_type === 'grid'">
+            <b-icon icon="grid-fill" />
+            {{ $t("grid") }}
           </template>
           <template v-else-if="chapter.section_type === 'story'">
             <b-icon icon="list" />
@@ -202,45 +206,10 @@
           </template>
         </template>
         <template v-if="chapter.section_type === 'gallery'">
-          <transition-group
-            tag="div"
-            class="_gallery"
-            name="StoryModules"
-            appear
-          >
-            <div
-              class="_gallery--item"
-              v-for="media in gallery_medias"
-              :key="media.$path"
-            >
-              <MediaContent :file="media" :context="'full'" />
-              <div class="_remove_media">
-                <RemoveMenu
-                  :show_button_text="false"
-                  @remove="removeMedia(media)"
-                />
-              </div>
-            </div>
-
-            <div class="_add_medias" key="add_medias">
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="show_media_picker = true"
-              >
-                {{ $t("add_medias") }}
-              </button>
-            </div>
-          </transition-group>
-
-          <MediaPicker
-            v-if="show_media_picker"
-            :publication_path="publication.$path"
-            :select_mode="'multiple'"
-            :pick_from_types="['image']"
-            @pickMedias="pickMediasForGallery"
-            @close="show_media_picker = false"
-          />
+          <GalleryChapter :chapter="chapter" :publication="publication" />
+        </template>
+        <template v-if="chapter.section_type === 'grid'">
+          <GridChapter :chapter="chapter" :publication="publication" />
         </template>
         <template v-if="chapter.section_type === 'story'">
           <SingleSection
@@ -260,7 +229,8 @@ import markdownit from "markdown-it";
 import markdownItCsc from "@/components/publications/edition/markdownItCsc.js";
 
 import PickMediaForMarkdown from "@/components/publications/edition/PickMediaForMarkdown.vue";
-import MediaPicker from "@/components/publications/MediaPicker.vue";
+import GalleryChapter from "@/components/publications/edition/GalleryChapter.vue";
+import GridChapter from "@/components/publications/edition/GridChapter.vue";
 
 export default {
   props: {
@@ -275,7 +245,8 @@ export default {
   components: {
     // MarkdownEditor,
     PickMediaForMarkdown,
-    MediaPicker,
+    GalleryChapter,
+    GridChapter,
     SingleSection: () =>
       import("@/components/publications/story/SingleSection.vue"),
   },
@@ -310,23 +281,6 @@ export default {
     },
     main_text_content() {
       return this.chapter._main_text?.$content;
-    },
-    gallery_medias() {
-      const medias = [];
-      if (
-        this.chapter.section_type !== "gallery" ||
-        !this.chapter.source_medias
-      )
-        return [];
-      for (const source_media of this.chapter.source_medias) {
-        const folder_path = this.getParent(this.chapter.$path);
-        const media = this.getSourceMedia({
-          source_media,
-          folder_path,
-        });
-        if (media) medias.push(media);
-      }
-      return medias;
     },
     starts_on_page_options() {
       if (this.chapter.section_type === "gallery")
@@ -490,38 +444,6 @@ export default {
         };
       }
     },
-
-    async pickMediasForGallery(medias) {
-      const new_entries = [];
-      for (const media of medias) {
-        const import_mode = this.$root.publication_include_mode;
-        const new_entry = await this.prepareMediaForPublication({
-          path_to_source_media_meta: media.$path,
-          publication_path: this.publication.$path,
-          import_mode,
-        });
-        new_entries.push(new_entry);
-      }
-
-      const existing_source_medias = this.chapter.source_medias || [];
-      const source_medias = [...existing_source_medias, ...new_entries];
-
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          source_medias,
-        },
-      });
-    },
-    removeMedia(media) {
-      const source_medias = this.chapter.source_medias.filter(
-        (sm) => sm.meta_filename_in_project !== this.getFilename(media.$path)
-      );
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: { source_medias },
-      });
-    },
   },
 };
 </script>
@@ -658,9 +580,7 @@ export default {
   min-height: 8rem;
 }
 ._content--type {
-  .b-icon {
-    vertical-align: middle;
-  }
+  font-weight: 500;
 }
 
 ._infos {
@@ -671,57 +591,6 @@ export default {
   justify-content: space-between;
   align-items: baseline;
   gap: calc(var(--spacing) * 1);
-}
-
-._gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: calc(var(--spacing) * 1);
-
-  ._add_medias {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-  }
-
-  ._gallery--item {
-    position: relative;
-    aspect-ratio: 1/1;
-
-    border: 2px solid var(--c-gris_clair);
-    // aspect-ratio: 1/1;
-    overflow: hidden;
-
-    ::v-deep {
-      ._mediaContent {
-        width: 100%;
-        height: 100%;
-      }
-
-      ._mediaContent--image,
-      .plyr--video,
-      .plyr__poster,
-      ._mediaContent--iframe,
-      ._iframeStylePreview {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        top: 0;
-        left: 0;
-        object-fit: scale-down;
-        background-size: scale-down;
-        background-color: var(--c-gris_clair);
-      }
-    }
-  }
-}
-
-._remove_media {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: calc(var(--spacing) / 2);
 }
 
 ._selects--starts_on_page {

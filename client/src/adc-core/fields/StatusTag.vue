@@ -6,8 +6,8 @@
     :data-status="[new_status]"
     @click="$emit('click')"
   >
-    <div v-if="!can_edit" class="_tag">
-      <b-icon v-if="status === 'finished'" icon="check-circle-fill" />
+    <div v-if="!can_edit" class="_tag" :data-nolabel="!show_label">
+      <b-icon v-if="status === 'finished'" icon="check" scale="1.5" />
       <b-icon v-else-if="status === 'private'" icon="file-lock2-fill" />
       <template v-if="show_label">{{ $t(status) }}</template>
       <b-icon v-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
@@ -119,12 +119,18 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    justify-content: center;
 
     gap: calc(var(--spacing) / 4);
     height: var(--input-height-small);
     padding: calc(var(--spacing) / 4);
     border-radius: var(--input-border-radius);
     font-size: var(--sl-font-size-small);
+
+    &[data-nolabel] {
+      width: var(--input-height-small);
+      border-radius: 50%;
+    }
   }
   select {
     max-width: 15ch;

@@ -219,6 +219,8 @@ export default {
           _chapter.content = this.parseGallery(chapter.source_medias);
         } else if (chapter.section_type === "story") {
           _chapter.content = this.parseStory(chapter);
+        } else if (chapter.section_type === "grid") {
+          _chapter.content = this.parseGrid(chapter);
         }
 
         nodes.chapters.push(_chapter);
@@ -409,9 +411,9 @@ export default {
         )}</i></div>`;
 
       const medias = source_medias
-        .map((media) => {
+        .map((source_media) => {
           return this.getSourceMedia({
-            source_media: media,
+            source_media,
             folder_path: this.publication.$path,
           });
         })
@@ -477,6 +479,41 @@ export default {
         md_string,
         chapter.source_medias
       );
+
+      return html;
+    },
+
+    parseGrid(chapter) {
+      if (!chapter.grid_areas || chapter.grid_areas.length === 0)
+        return `<div class="grid"><i>${this.$t("no_areas_defined")}</i></div>`;
+
+      // Use row_count and column_count from chapter
+      const col_count = chapter.column_count || 6;
+      const row_count = chapter.row_count || 6;
+
+      let html = `<div class="grid"><div class="grid-content" style="--col-count: ${col_count}; --row-count: ${row_count};">`;
+
+      chapter.grid_areas.forEach((area) => {
+        const text_meta = this.publication.$files.find(
+          (f) => f.grid_area_id === area.id
+        );
+
+        if (text_meta && text_meta.$content) {
+          const text = this.parseMarkdownWithMarkedownIt(
+            text_meta.$content,
+            text_meta.source_medias
+          );
+
+          html += `<div class="grid-cell" style="grid-column-start: ${area.column_start}; grid-column-end: ${area.column_end}; grid-row-start: ${area.row_start}; grid-row-end: ${area.row_end};">
+            ${text}
+          </div>`;
+        } else {
+          // Empty cell with grid positioning
+          html += `<div class="grid-cell" style="grid-column-start: ${area.column_start}; grid-column-end: ${area.column_end}; grid-row-start: ${area.row_start}; grid-row-end: ${area.row_end};"></div>`;
+        }
+      });
+
+      html += "</div></div>";
 
       return html;
     },

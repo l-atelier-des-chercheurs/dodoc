@@ -52,6 +52,7 @@
 
         <button
           type="button"
+          v-if="can_edit"
           class="u-button u-button_bleuvert u-button_small"
           @click="createPageAndOpen"
         >
@@ -266,7 +267,7 @@
           "
           class="u-textEllipsis u-textEllipsis_3 _textExtract"
         >
-          <CollaborativeEditor2
+          <CollaborativeEditor3
             ref="textBloc"
             :path="active_module_first_media.$path"
             :content="active_module_first_media.$content"
@@ -371,8 +372,6 @@
             :can_edit="can_edit"
           />
 
-          <div class="u-spacingBottom" />
-
           <div
             class=""
             v-if="
@@ -392,9 +391,8 @@
                   caption: active_module_first_media.caption,
                 })
               "
-            >
-              {{ active_module_first_media.caption }}
-            </button>
+              v-html="$sanitize(active_module_first_media.caption)"
+            />
           </div>
 
           <div class="u-spacingBottom" />
@@ -611,6 +609,19 @@
           :default_value="100"
           :suffix="'%'"
           @save="updateMediaPubliMeta({ opacity: $event / 100 })"
+        />
+
+        <RangeValueInput
+          class="u-spacingBottom"
+          :label="$t('blur')"
+          :value="active_module.blur || 0"
+          :min="0"
+          :max="10"
+          :step="0.5"
+          :ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+          :default_value="0"
+          :suffix="unit"
+          @save="updateMediaPubliMeta({ blur: $event })"
         />
 
         <ColorInput
@@ -1073,7 +1084,7 @@ export default {
   }
 
   button {
-    font-size: var(--sl-font-size-medium);
+    font-size: var(--sl-font-size-normal);
   }
 }
 

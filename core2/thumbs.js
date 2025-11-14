@@ -781,9 +781,10 @@ module.exports = (function () {
       $('meta[property="og:image"]').attr("content") ||
       $('meta[property="og:image:url"]').attr("content") ||
       $('meta[property="image"]').attr("content") ||
-      $('meta[name="og:image"]').attr("content") ||
-      $('link[rel="shortcut icon"]').attr("href") ||
-      $('link[rel="icon"]').attr("href");
+      $('meta[name="og:image"]').attr("content");
+    // Commented out favicon fallbacks to prevent stretched favicon previews
+    // $('link[rel="shortcut icon"]').attr("href") ||
+    // $('link[rel="icon"]').attr("href");
 
     if (image) page_meta.image = image;
 

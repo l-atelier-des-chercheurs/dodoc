@@ -35,14 +35,23 @@
       </span>
     </div>
 
-    <div class="_editingPane" v-if="context === 'full' && can_edit">
-      <EditBtn
-        v-if="!edit_mode"
-        :label_position="'left'"
-        :is_unfolded="!cover_thumb"
-        :label="!cover_thumb ? $t('add') : undefined"
-        @click="enableEditMode"
-      />
+    <template v-if="context === 'full' && can_edit">
+      <div v-if="!cover_thumb" class="_addCoverBtn">
+        <button
+          class="u-button u-button_icon"
+          type="button"
+          @click="edit_mode = true"
+        >
+          <b-icon icon="plus-circle-fill" :title="$t('add_cover')" />
+        </button>
+      </div>
+      <div class="_editCoverBtn" v-else>
+        <EditBtn
+          :label_position="'left'"
+          :is_unfolded="false"
+          @click="edit_mode = true"
+        />
+      </div>
       <ImageSelect
         v-if="edit_mode"
         :path="path"
@@ -53,7 +62,7 @@
         :available_options="available_options"
         @close="edit_mode = false"
       />
-    </div>
+    </template>
   </div>
 </template>
 <script>
@@ -118,9 +127,6 @@ export default {
     },
   },
   methods: {
-    enableEditMode() {
-      this.edit_mode = true;
-    },
     coverMakeRelativeURLFromThumbs(res = 640) {
       return this.makeRelativeURLFromThumbs({
         $thumbs: this.cover,
@@ -136,6 +142,7 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
+  z-index: 1;
   overflow: hidden;
 
   --color1: var(--c-gris_clair);
@@ -216,10 +223,43 @@ export default {
   }
 }
 
+._editCoverBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
+}
+
 ._fsButton {
   position: absolute;
   left: 0;
   bottom: 0;
   margin: calc(var(--spacing) / 1);
+}
+
+._addCoverBtn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 200%;
+  color: var(--active-color);
+  transition: opacity 0.2s ease;
+
+  ::v-deep {
+    .u-button_icon {
+      font-size: 2rem;
+    }
+  }
+
+  @media (hover: hover) {
+    &:not(:hover) {
+      opacity: 0;
+    }
+  }
 }
 </style>

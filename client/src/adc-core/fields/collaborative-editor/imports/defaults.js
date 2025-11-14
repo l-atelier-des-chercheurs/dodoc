@@ -21,6 +21,7 @@ export const fonts = [
   "Archivo",
   "Spectral",
   "Krub",
+  "Faune",
 ];
 
 export const fontSizeArr = [

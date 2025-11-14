@@ -58,7 +58,8 @@
 
         <div
           class="_topRightBtn"
-          v-if="!$root.is_mobile_view && show_overlay_button"
+          v-if="!$root.is_mobile_view"
+          :class="{ 'is--hidden': !show_overlay_button }"
         >
           <DragFile class="_dragFile" :file="file" />
           <button
@@ -86,11 +87,8 @@
         <transition name="scaleOutFade" mode="out-in">
           <div
             class="_navBtns"
-            v-if="
-              position_in_list !== 'alone' &&
-              show_nav_btn &&
-              show_overlay_button
-            "
+            v-if="position_in_list !== 'alone' && show_nav_btn"
+            :class="{ 'is--hidden': !show_overlay_button }"
             :key="file.$path"
           >
             <span>
@@ -709,7 +707,7 @@ export default {
             padding: calc(var(--spacing) / 2);
           }
         }
-        ._floatingEditBtn {
+        ._editText {
           top: calc(var(--spacing) * 3);
         }
       }
@@ -762,6 +760,14 @@ export default {
   }
 }
 
+._topRightBtn.is--hidden {
+  opacity: 0.2;
+  pointer-events: auto;
+  transition: opacity 0.3s ease-in-out;
+  &:hover {
+    opacity: 1;
+  }
+}
 ._stickyClose {
   position: sticky;
   top: 0;
@@ -793,6 +799,14 @@ export default {
   ._rightArrow {
     &:not(:hover) {
       // margin-right: -10px;
+    }
+  }
+
+  &.is--hidden ._navBtn {
+    opacity: 0.2;
+    transition: opacity 0.3s ease-in-out;
+    &:hover {
+      opacity: 1;
     }
   }
 }

@@ -109,8 +109,8 @@ export default {
 <style lang="scss" scoped>
 ._detailsPane {
   background: white;
-  border-bottom: none;
-  border-radius: 8px;
+  // border-bottom: none;
+  border-radius: var(--panel-radius);
   overflow: hidden;
 
   &:hover,
