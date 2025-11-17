@@ -24,7 +24,7 @@ try {
   console.warn("Could not set command line switches:", err.message);
 }
 
-const windowStateKeeper = require("electron-window-state");
+const windowStateKeeper = require("./window-state");
 const Store = require("electron-store").default;
 
 module.exports = (function () {
