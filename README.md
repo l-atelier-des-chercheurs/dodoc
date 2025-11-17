@@ -110,6 +110,27 @@ sudo chown root chrome-sandbox
 chmod 4755 chrome-sandbox
 ```
 
+## Method 4 — the docker way
+
+This method makes the installation of do•doc a bit simpler.
+You need to have `docker` installed on your machine.
+
+### The docker compose way
+
+Run `docker compose up`, wait for it to initialize completely, and visit `https://localhost:8080`.
+Your data is persistent (in ./dodoc-data directory).
+
+### Or the docker manual way
+
+If you prefer to customise the container, the basic pattern for starting a do•doc instance is:
+
+```
+$ docker run --name my-dodoc -p 8080:8080 -v ./dodoc-data:/home/node/Documents -d registry.gitlab.com/l-atelier-des-chercheurs/dodoc2-node:12.0.7-0
+```
+
+Your data is persistent (in ./dodoc-data directory).
+Then, access it via `https://localhost:8080`.
+
 # After installation
 
 When starting the app for the first time, a message will tell you about an admin account that is created by default. Its password is "dodoc". Connect to this account and change the password by opening that account's page and clicking Options, and editing the password field. It is recommended to open the admin settings afterwards (the gear icon in the top bar) and read/adapt all settings.
