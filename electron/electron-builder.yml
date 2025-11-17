@@ -24,13 +24,14 @@ files:
   - "**/*"
   - "!client/node_modules/**"
   - "!electron/node_modules/**"
+  - "!node_modules/puppeteer/**"
+  - "!node_modules/platform-folders/**"
   - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"
   - "!.git/**"
   - "!dist/**"
-  # Note: puppeteer and platform-folders are uninstalled before building (see package.json dist script)
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
