@@ -77,7 +77,7 @@ npm install
 npm start
 ```
 
-**Note:** When building Electron app (`npm run dist`), puppeteer and platform-folders are removed to reduce app size. Run `npm install` at the root to reinstall them if you need Node mode again.
+**Note:** When building Electron app, electron-builder automatically excludes puppeteer, typescript, and platform-folders from the final package to reduce app size. Both modes work from the same dependencies.
 
 Available scripts for Electron mode (run from `/electron` folder):
 
