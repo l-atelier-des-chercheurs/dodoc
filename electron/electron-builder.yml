@@ -3,9 +3,6 @@ productName: "do•doc"
 
 electronVersion: "37.6.1"
 asar: true
-# asar disabled for now, because it's not working with the content folder
-# paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
-# into a temporary folder, but this is not very straightforward.
 asarUnpack:
   - "content/**"
   - "client/dist/**"
@@ -17,7 +14,7 @@ asarUnpack:
 directories:
   app: ../
   output: dist
-  buildResources: electron/build
+  buildResources: build
 
 # Exclude problematic directories to prevent pattern length issues
 files:
