@@ -14,7 +14,11 @@ asarUnpack:
 directories:
   app: ../
   output: dist
-  buildResources: build
+  buildResources: electron/build
+
+# Override package.json main entry to use electron wrapper
+extraMetadata:
+  main: electron/index.js
 
 # Exclude problematic directories to prevent pattern length issues
 files:
