@@ -6,13 +6,14 @@ This document explains the unified branch structure that supports both Electron 
 
 ```
 dodoc/
-├── package.json              # Shared dependencies (includes electron-store/electron-window-state)
+├── package.json              # Shared dependencies (includes electron-store)
 ├── index.js                  # Main entry point
 ├── core2/                    # Shared application code
 ├── electron/                 # All Electron-specific files
 │   ├── package.json         # Electron dev dependencies only (electron, electron-builder)
 │   ├── index.js             # Electron entry point (requires ../index.js)
 │   ├── electron.js          # Electron-specific code (BrowserWindow, etc.)
+│   ├── window-state.js      # Local window state management (no external deps)
 │   ├── electron-builder.yml # Build config (excludes puppeteer, typescript, etc.)
 │   ├── build/               # Build assets (icons, entitlements, etc.)
 │   └── dist/                # Build output (created by electron-builder)
@@ -45,16 +46,17 @@ Code uses conditional requires to handle platform-specific dependencies:
 
 - Only loaded when running in Electron mode
 - Contains BrowserWindow management, menu, dialogs, etc.
-- Dependencies (`electron-store`, `electron-window-state`) are in `/electron/node_modules`
+- Uses `electron-store` dependency from root `node_modules`
 
 **Settings Storage** (`core2/settings.js`):
 
 - Electron: Uses `electron-store` (dependency in root package.json)
 - Node: Throws error for features requiring Electron
 
-**Window State** (`electron/electron.js`):
+**Window State** (`electron/window-state.js`):
 
-- Electron: Uses `electron-window-state` (dependency in root package.json)
+- Electron: Uses local implementation (no external dependencies)
+- Saves/restores window position, size, and state using Node.js built-ins
 - Node: Not loaded
 
 ## Installation & Usage
@@ -71,7 +73,7 @@ Dependencies installed:
 - Base dependencies (express, sharp, ffmpeg, etc.)
 - `puppeteer` (for PDF/screenshot generation)
 - `platform-folders` (for system paths)
-- `electron-store`, `electron-window-state` (only loaded in Electron mode)
+- `electron-store` (only loaded in Electron mode)
 - NO Electron runtime
 
 ### For Electron (Desktop App)
@@ -90,9 +92,10 @@ npm start
 
 Dependencies installed:
 
-- Base dependencies (from root, including electron-store/electron-window-state)
+- Base dependencies (from root, including electron-store)
 - Electron runtime
 - `electron-builder` (for packaging)
+- Local window state management (no external dependency)
 - Build excludes: puppeteer, platform-folders, typescript (removed from final package)
 
 ## Building Electron App
@@ -115,7 +118,7 @@ The `electron-builder.yml` configuration handles path resolution from the electr
    - Desktop builds: Excludes puppeteer, typescript, platform-folders via electron-builder
 3. **Same code**: All application logic is shared in `/core2`
 4. **Easy switching**: Can install both modes on the same machine
-5. **Simpler setup**: electron-store and electron-window-state in root (only loaded when needed)
+5. **Minimal dependencies**: electron-store in root (only loaded when needed), window state uses local implementation
 
 ## Migration Notes
 
