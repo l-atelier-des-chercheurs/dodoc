@@ -1,7 +1,7 @@
 {
   "name": "dodoc-electron",
   "productName": "do•doc",
-  "version": "12.0.22",
+  "version": "13.0.1",
   "description": "do•doc Electron wrapper",
   "main": "index.js",
   "private": true,
