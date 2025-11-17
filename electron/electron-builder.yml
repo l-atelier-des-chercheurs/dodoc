@@ -14,7 +14,6 @@ asarUnpack:
 directories:
   app: ../
   output: dist
-  buildResources: electron/build
 
 # Override package.json main entry to use electron wrapper
 extraMetadata:
@@ -25,8 +24,14 @@ files:
   - "**/*"
   - "!client/node_modules/**"
   - "!electron/node_modules/**"
+  - "!electron/dist/**"
   - "!node_modules/puppeteer/**"
+  - "!node_modules/puppeteer-core/**"
+  - "!node_modules/chromium-bidi/**"
+  - "!node_modules/devtools-protocol/**"
   - "!node_modules/platform-folders/**"
+  - "!node_modules/typescript/**"
+  - "!node_modules/@types/**"
   - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
@@ -36,7 +41,7 @@ files:
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
-  icon: icon.png
+  icon: build/icon.png
   target:
     - target: nsis
       arch: [x64]
@@ -67,7 +72,7 @@ appx:
 mac:
   artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
-  icon: electron/build/icon.icns
+  icon: build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
   entitlements: entitlements.mac.plist
@@ -84,7 +89,7 @@ linux:
   artifactName: dodoc-${version}-linux.${ext}
   target: AppImage
   category: Education
-  icon: icons
+  icon: build/icons
   executableArgs:
     - '--js-flags="--max-old-space-size=4096"'
   desktop:
