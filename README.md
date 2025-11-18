@@ -171,6 +171,7 @@ Default values are:
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
 - $files_count      (Number)                              number of files in that folder
+- $folders_count    (Number)                              total count of content folders across all subfolder types (e.g., for a space: number of projects; for a project: total of publications + makes + stopmotions)
 - $date_last_file   (Date)                                when the last file was uploaded
 - $files            (Array)                               list of all the files in this folder (see Files below) (bypass with no_files=true to improve performance where files are not needed)
 - $status           (String, editable)                    determines whether the folder gets listed

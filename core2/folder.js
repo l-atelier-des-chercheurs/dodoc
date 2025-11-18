@@ -110,6 +110,32 @@ module.exports = (function () {
 
       return folder_meta;
     },
+    getFoldersCount: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+
+      const item_in_schema = utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
+      if (!item_in_schema || !item_in_schema.$folders) {
+        return 0;
+      }
+
+      let total_count = 0;
+      const folder_types = Object.keys(item_in_schema.$folders);
+
+      for (const folder_type of folder_types) {
+        const path_to_type = path.join(path_to_folder, folder_type);
+        try {
+          const folders_slugs = await _getFolderSlugs({ path_to_type });
+          total_count += folders_slugs.length;
+        } catch (err) {
+          // Folder type doesn't exist yet, skip it
+          if (err.code !== "ENOENT") throw err;
+        }
+      }
+
+      return total_count;
+    },
 
     createFolder: async ({ path_to_type, data }) => {
       dev.logfunction({ path_to_type, data });

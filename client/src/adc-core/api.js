@@ -279,15 +279,18 @@ export default function () {
         return response.data;
       },
 
-      folderCreated({ path, meta }) {
+      folderCreated({ path, path_to_type, path_to_folder, meta }) {
+        // Handle both old format (path) and new format (path_to_type)
+        const type_path = path_to_type || path;
+
         // only update store if content is tracked
-        if (!this.rooms_joined.includes(path)) {
+        if (!this.rooms_joined.includes(type_path)) {
           // console.log("folderCreated – room isnt tracked, not adding to store");
           return;
         }
-        if (!Object.prototype.hasOwnProperty.call(this.store, path))
-          this.store[path] = new Array();
-        this.store[path].push(meta);
+        if (!Object.prototype.hasOwnProperty.call(this.store, type_path))
+          this.store[type_path] = new Array();
+        this.store[type_path].push(meta);
         // this.$set(this.store, meta.$path, meta);
       },
 
@@ -297,47 +300,59 @@ export default function () {
         });
       },
 
-      folderUpdated({ path, changed_data }) {
+      folderUpdated({ path, path_to_folder, changed_data }) {
+        // Handle both old format (path) and new format (path_to_folder)
+        const folder_path = path_to_folder || path;
+
         // updated folder $path
-        if (Object.prototype.hasOwnProperty.call(this.store, path)) {
+        if (Object.prototype.hasOwnProperty.call(this.store, folder_path)) {
           this.updateProps({
             changed_data,
-            folder_to_update: this.store[path],
+            folder_to_update: this.store[folder_path],
           });
         }
 
-        if (path === "") return;
+        if (folder_path === "") return;
 
         // parent folder path
-        const parent_folder_path = path.substr(0, path.lastIndexOf("/"));
+        const parent_folder_path = folder_path.substr(
+          0,
+          folder_path.lastIndexOf("/")
+        );
         if (
           Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
         ) {
           const folder_to_update = this.store[parent_folder_path].find(
-            (f) => f.$path === path
+            (f) => f.$path === folder_path
           );
           this.updateProps({ changed_data, folder_to_update });
         }
       },
-      folderRemoved({ path }) {
-        this.$delete(this.store, path);
+      folderRemoved({ path, path_to_folder }) {
+        // Handle both old format (path) and new format (path_to_folder)
+        const folder_path = path_to_folder || path;
 
-        if (Object.prototype.hasOwnProperty.call(this.store, path)) {
-          this.store.$delete(path);
+        this.$delete(this.store, folder_path);
+
+        if (Object.prototype.hasOwnProperty.call(this.store, folder_path)) {
+          this.store.$delete(folder_path);
         }
 
-        const parent_folder_path = path.substr(0, path.lastIndexOf("/"));
+        const parent_folder_path = folder_path.substr(
+          0,
+          folder_path.lastIndexOf("/")
+        );
         if (
           Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
         ) {
           const folder_index = this.store[parent_folder_path].findIndex(
-            (f) => f.$path === path
+            (f) => f.$path === folder_path
           );
           if (folder_index !== -1)
             this.store[parent_folder_path].splice(folder_index, 1);
         }
 
-        this.$eventHub.$emit("folder.removed", { path });
+        this.$eventHub.$emit("folder.removed", { path: folder_path });
       },
 
       fileCreated({ path_to_folder, meta }) {

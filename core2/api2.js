@@ -334,6 +334,16 @@ module.exports = (function () {
     notifier.on("fileRemoved", async (room, { path_to_folder }) => {
       _updateFolderCountAndBroadcast("fileRemoved", path_to_folder);
     });
+    notifier.on(
+      "folderCreated",
+      async (room, { path_to_folder, path_to_type }) => {
+        _updateParentFoldersCountAndBroadcast(path_to_folder, path_to_type);
+      }
+    );
+    notifier.on("folderRemoved", async (room, { path_to_folder }) => {
+      const path_to_type = utils.getContainingFolder(path_to_folder);
+      _updateParentFoldersCountAndBroadcast(path_to_folder, path_to_type);
+    });
   }
 
   function _corsCheck(req, callback) {
@@ -765,7 +775,8 @@ module.exports = (function () {
       });
 
       notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_type),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+        path_to_type: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -823,7 +834,8 @@ module.exports = (function () {
 
       // 7. Notify subscribers (after response)
       notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_type),
+        path_to_folder: utils.convertToSlashPath(path_to_new_folder),
+        path_to_type: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -1529,7 +1541,8 @@ module.exports = (function () {
       });
 
       notifier.emit("folderCreated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_type),
+        path_to_folder: utils.convertToSlashPath(restored_folder_path),
+        path_to_type: utils.convertToSlashPath(path_to_type),
         meta: new_folder_meta,
       });
     } catch (err) {
@@ -1865,13 +1878,13 @@ module.exports = (function () {
     });
 
     notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-      path: utils.convertToSlashPath(path_to_folder),
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
       changed_data,
     });
 
     if (path_to_type)
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
   }
@@ -1923,11 +1936,11 @@ module.exports = (function () {
         },
       });
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
     } catch (err) {
@@ -2356,14 +2369,61 @@ module.exports = (function () {
       admin_meta,
     });
     notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-      path: utils.convertToSlashPath(path_to_folder),
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
       changed_data,
     });
     if (path_to_type)
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
+  }
+
+  async function _updateParentFoldersCountAndBroadcast(
+    path_to_folder,
+    path_to_type
+  ) {
+    dev.logfunction({ path_to_folder, path_to_type });
+
+    // Get the parent folder (the one containing the type folder)
+    // E.g., for path_to_type "spaces/espace-de-test/projects", parent is "spaces/espace-de-test"
+    const path_to_parent_folder = utils.getContainingFolder(path_to_type);
+    if (!path_to_parent_folder) return; // No parent to update
+
+    const $folders_count = await folder.getFoldersCount({
+      path_to_folder: path_to_parent_folder,
+    });
+
+    const admin_meta = {
+      $folders_count,
+    };
+
+    const path_to_parent_type = utils.getContainingFolder(
+      path_to_parent_folder
+    );
+    const changed_data = await folder.updateFolder({
+      path_to_type: path_to_parent_type,
+      path_to_folder: path_to_parent_folder,
+      admin_meta,
+    });
+
+    notifier.emit(
+      "folderUpdated",
+      utils.convertToSlashPath(path_to_parent_folder),
+      {
+        path_to_folder: utils.convertToSlashPath(path_to_parent_folder),
+        changed_data,
+      }
+    );
+    if (path_to_parent_type)
+      notifier.emit(
+        "folderUpdated",
+        utils.convertToSlashPath(path_to_parent_type),
+        {
+          path_to_folder: utils.convertToSlashPath(path_to_parent_folder),
+          changed_data,
+        }
+      );
   }
 
   async function _recoverPassword(req, res) {
@@ -2429,12 +2489,12 @@ module.exports = (function () {
       res.status(200).json(result);
 
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data: result.changed_data,
       });
       if (path_to_type)
         notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-          path: utils.convertToSlashPath(path_to_folder),
+          path_to_folder: utils.convertToSlashPath(path_to_folder),
           changed_data: result.changed_data,
         });
     } catch (err) {
@@ -2456,12 +2516,12 @@ module.exports = (function () {
   // Helper function for folder update notifications
   function _notifyFolderUpdated(path_to_type, path_to_folder, changed_data) {
     notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_folder), {
-      path: utils.convertToSlashPath(path_to_folder),
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
       changed_data,
     });
     if (path_to_type)
       notifier.emit("folderUpdated", utils.convertToSlashPath(path_to_type), {
-        path: utils.convertToSlashPath(path_to_folder),
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
         changed_data,
       });
   }
@@ -2489,10 +2549,10 @@ module.exports = (function () {
   // Helper function for folder removal notifications
   function _notifyFolderRemoved(path_to_type, path_to_folder) {
     notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_folder), {
-      path: utils.convertToSlashPath(path_to_folder),
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
     });
     notifier.emit("folderRemoved", utils.convertToSlashPath(path_to_type), {
-      path: utils.convertToSlashPath(path_to_folder),
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
     });
   }
 
