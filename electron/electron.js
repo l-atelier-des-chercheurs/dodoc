@@ -9,11 +9,11 @@ const {
 const path = require("path");
 const writeFileAtomic = require("write-file-atomic");
 
-const utils = require("./utils"),
-  notifier = require("./notifier"),
-  cacheManager = require("./cache-manager"),
-  journal = require("./journal"),
-  ffmpegTracker = require("./ffmpeg-tracker");
+const utils = require("../core2/utils"),
+  notifier = require("../core2/notifier"),
+  cacheManager = require("../core2/cache-manager"),
+  journal = require("../core2/journal"),
+  ffmpegTracker = require("../core2/ffmpeg-tracker");
 
 // Set command line switches before app is ready
 try {
@@ -24,7 +24,7 @@ try {
   console.warn("Could not set command line switches:", err.message);
 }
 
-const windowStateKeeper = require("electron-window-state");
+const windowStateKeeper = require("./window-state");
 const Store = require("electron-store").default;
 
 module.exports = (function () {
@@ -118,6 +118,10 @@ module.exports = (function () {
           }
         });
       });
+    },
+    saveNewPathToUserContent: ({ path }) => {
+      dev.logfunction({ path });
+      store.set("custom_content_path", path);
     },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });

@@ -24,6 +24,19 @@ module.exports = async function () {
   console.log(infos);
   journal.log({ message: infos, from: "main2" });
 
+  // Check for Node-specific dependencies when not in Electron
+  if (!global.is_electron) {
+    try {
+      require.resolve("puppeteer");
+    } catch (e) {
+      console.error(
+        "\n❌ ERROR: Puppeteer not installed. Node mode requires puppeteer for PDF/screenshot generation."
+      );
+      console.error("Run 'npm install' to install required dependencies.\n");
+      process.exit(1);
+    }
+  }
+
   // Log all dependencies with their installed versions
   console.log(utils.getDependenciesWithVersions());
   journal.log({ message: utils.getDependenciesWithVersions(), from: "main2" });
@@ -57,7 +70,7 @@ module.exports = async function () {
   let win;
   if (global.is_electron) {
     try {
-      win = await require("./electron").init();
+      win = await require("../electron/electron").init();
     } catch (err) {
       dev.error(err);
       throw err;

@@ -3,9 +3,6 @@ productName: "do•doc"
 
 electronVersion: "37.6.1"
 asar: true
-# asar disabled for now, because it's not working with the content folder
-# paths are too long and it's not working.  Fix could be zipping/unzipping the content folder
-# into a temporary folder, but this is not very straightforward.
 asarUnpack:
   - "content/**"
   - "client/dist/**"
@@ -13,15 +10,34 @@ asarUnpack:
   - "node_modules/@img"
   # not needed, only useful in the web version (js modules, while website export uses a bundle)
   - "!client/dist/assets/**"
-icon: build/icon.png
+
+directories:
+  app: ../
+  output: dist
+
+# Override package.json main entry to use electron wrapper
+extraMetadata:
+  main: electron/index.js
 
 # Exclude problematic directories to prevent pattern length issues
 files:
+  - "**/*"
   - "!client/node_modules/**"
+  - "!electron/node_modules/**"
+  - "!electron/dist/**"
+  - "!node_modules/puppeteer/**"
+  - "!node_modules/puppeteer-core/**"
+  - "!node_modules/chromium-bidi/**"
+  - "!node_modules/devtools-protocol/**"
+  - "!node_modules/platform-folders/**"
+  - "!node_modules/typescript/**"
+  - "!node_modules/@types/**"
   - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"
+  - "!.git/**"
+  - "!dist/**"
 
 win:
   artifactName: dodoc-${version}-windows.${ext}
@@ -59,9 +75,9 @@ mac:
   icon: build/icon.icns
   hardenedRuntime: true
   gatekeeperAssess: false
-  entitlements: build/entitlements.mac.plist
-  entitlementsInherit: build/entitlements.mac.plist
-  provisioningProfile: build/dodoc.provisionprofile
+  entitlements: entitlements.mac.plist
+  entitlementsInherit: entitlements.mac.plist
+  provisioningProfile: dodoc.provisionprofile
   extendInfo:
     NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.
     NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.

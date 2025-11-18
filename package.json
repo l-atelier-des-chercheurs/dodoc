@@ -16,23 +16,14 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . -- --debug --verbose",
-    "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:win-store": "electron-builder --win appx",
-    "postinstall": "electron-builder install-app-deps && npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
+    "start": "node .",
+    "debug": "node . --inspect=5858 -- --debug --verbose",
+    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
+    "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
   },
   "engines": {
     "node": "22.19.0",
     "npm": "*"
-  },
-  "electronmon": {
-    "patterns": [
-      "!client/**",
-      "!tokens.json"
-    ]
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
@@ -42,8 +33,7 @@
     "cheerio": "^1.1.2",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
-    "electron-store": "^10.1.0",
-    "electron-window-state": "^5.0.3",
+    "electron-store": "^8.2.0",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
     "express": "^5.1.0",
@@ -62,8 +52,10 @@
     "nodemailer": "^7.0.6",
     "pad-left": "^2.1.0",
     "path": "^0.12.7",
+    "platform-folders": "^0.6.0",
     "portscanner": "^2.2.0",
     "pug": "^3.0.3",
+    "puppeteer": "^24.3.0",
     "rich-text": "^4.1.0",
     "sharedb": "^5.2.2",
     "sharedb-logger": "^0.1.4",
@@ -77,10 +69,6 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@electron/rebuild": "^4.0.1",
-    "electron": "^37.6.1",
-    "electron-builder": "^26.0.12",
-    "electronmon": "^2.0.3",
     "node-gyp": "^11.4.2"
   },
   "optionalDependencies": {
