@@ -329,10 +329,10 @@ module.exports = (function () {
     app.get("/robots.txt", _loadRobots);
     app.get("/{*index}", loadIndex);
     notifier.on("fileCreated", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast("fileCreated", path_to_folder);
+      _updateFileCountAndBroadcast("fileCreated", path_to_folder);
     });
     notifier.on("fileRemoved", async (room, { path_to_folder }) => {
-      _updateFolderCountAndBroadcast("fileRemoved", path_to_folder);
+      _updateFileCountAndBroadcast("fileRemoved", path_to_folder);
     });
     notifier.on(
       "folderCreated",
@@ -2352,7 +2352,7 @@ module.exports = (function () {
     }, []);
   }
 
-  async function _updateFolderCountAndBroadcast(event, path_to_folder) {
+  async function _updateFileCountAndBroadcast(event, path_to_folder) {
     dev.logfunction({ path_to_folder });
     const path_to_type = utils.getContainingFolder(path_to_folder);
     const $files_count = await file.getFilesCount({ path_to_folder });
