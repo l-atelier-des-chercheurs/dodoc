@@ -535,7 +535,6 @@ export default {
   watch: {
     edit_mode() {
       // if text bloc in text bloc module
-      debugger;
       if (this.$refs.textBloc)
         if (this.edit_mode) {
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
