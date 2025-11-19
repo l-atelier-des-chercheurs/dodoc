@@ -1363,6 +1363,7 @@ module.exports = (function () {
           "folderCreated",
           utils.convertToSlashPath(path_to_destination_type),
           {
+            path_to_folder: utils.convertToSlashPath(copy_folder_path),
             path_to_type: utils.convertToSlashPath(path_to_destination_type),
             meta: new_folder_meta,
           }
