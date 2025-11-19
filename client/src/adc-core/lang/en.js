@@ -1460,4 +1460,5 @@ export default {
   radius: "Radius",
   area: "Area",
   no_areas_defined: "No areas defined",
+  non_contributor: "Non contributor",
 };

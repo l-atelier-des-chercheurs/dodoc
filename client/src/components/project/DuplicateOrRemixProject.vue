@@ -16,7 +16,12 @@
               v-for="space in sorted_spaces"
               :key="space.$path"
               :value="space.$path"
-              v-text="space.title"
+              :disabled="
+                !canLoggedinContributeToFolder({
+                  folder: space,
+                })
+              "
+              v-text="makeSpaceTitle(space)"
             />
           </select>
         </div>
@@ -130,17 +135,22 @@ export default {
       if (!this.spaces) return [];
       return this.spaces
         .slice()
-        .filter((s) =>
-          this.canLoggedinSeeFolder({
-            folder: s,
-          })
-        )
+        .filter((s) => true)
         .sort((a, b) => {
           return a.title.localeCompare(b.title);
         });
     },
   },
   methods: {
+    makeSpaceTitle(space) {
+      if (this.canLoggedinContributeToFolder({ folder: space })) {
+        return space.title;
+      } else {
+        return (
+          space.title + " (" + this.$t("non_contributor").toLowerCase() + ")"
+        );
+      }
+    },
     async confirm() {
       // const parent_type = this.getParent(this.path);
 
