@@ -1338,6 +1338,11 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully copied folder ${path_to_source_folder} to ${copy_folder_path}`
       );
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: copy_folder_path,
+      });
+
       journal.log({
         from: "api2",
         event: "copy_folder",
@@ -1352,18 +1357,21 @@ module.exports = (function () {
       });
       res.status(200).json({ copy_folder_path });
 
-      const new_folder_meta = await folder.getFolder({
-        path_to_folder: copy_folder_path,
-      });
-
-      notifier.emit(
-        "folderCreated",
-        utils.convertToSlashPath(path_to_destination_type),
-        {
-          path: utils.convertToSlashPath(path_to_destination_type),
-          meta: new_folder_meta,
-        }
-      );
+      // Post-response operations (non-critical)
+      try {
+        notifier.emit(
+          "folderCreated",
+          utils.convertToSlashPath(path_to_destination_type),
+          {
+            path_to_type: utils.convertToSlashPath(path_to_destination_type),
+            meta: new_folder_meta,
+          }
+        );
+      } catch (err) {
+        dev.error(
+          "Post-response operation failed in _copyFolder: " + err.message
+        );
+      }
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to copy content: " + message);
@@ -1802,6 +1810,11 @@ module.exports = (function () {
       dev.logpackets(
         `Successfully remixed folder ${path_to_source_folder} to ${remix_folder_path}`
       );
+
+      const new_folder_meta = await folder.getFolder({
+        path_to_folder: remix_folder_path,
+      });
+
       journal.log({
         from: "api2",
         event: "remix_folder",
@@ -1815,24 +1828,28 @@ module.exports = (function () {
       });
       res.status(200).json({ remix_folder_path });
 
-      await _updateFolderListOfRemixes({
-        path_to_type,
-        path_to_folder,
-        new_remix_path: remix_folder_path,
-      });
+      // Post-response operations (non-critical)
+      try {
+        await _updateFolderListOfRemixes({
+          path_to_type,
+          path_to_folder,
+          new_remix_path: remix_folder_path,
+        });
 
-      const new_folder_meta = await folder.getFolder({
-        path_to_folder: remix_folder_path,
-      });
-
-      notifier.emit(
-        "folderCreated",
-        utils.convertToSlashPath(path_to_destination_type),
-        {
-          path: utils.convertToSlashPath(path_to_destination_type),
-          meta: new_folder_meta,
-        }
-      );
+        notifier.emit(
+          "folderCreated",
+          utils.convertToSlashPath(path_to_destination_type),
+          {
+            path_to_folder: utils.convertToSlashPath(remix_folder_path),
+            path_to_type: utils.convertToSlashPath(path_to_destination_type),
+            meta: new_folder_meta,
+          }
+        );
+      } catch (err) {
+        dev.error(
+          "Post-response operation failed in _remixFolder: " + err.message
+        );
+      }
     } catch (err) {
       const { message, code, err_infos } = err;
       dev.error("Failed to remix folder: " + message);
