@@ -976,6 +976,8 @@ export default {
     "You do not have rights to create projects in the destination space",
   not_allowed_to_copy_to_project:
     "You do not have rights to add media to this project.",
+  not_allowed_to_remix_folder:
+    "This project does not allow remixing. Contact its referents if necessary.",
   name_taken: "This name is already in use",
   action_not_allowed: "This action is not allowed",
   account_created: "Your account has been created",

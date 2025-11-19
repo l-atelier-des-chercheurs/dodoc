@@ -910,6 +910,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "Non hai i diritti per creare progetti nello spazio di destinazione",
   not_allowed_to_copy_to_project:
     "Non hai i diritti per aggiungere i media a questo progetto",
+  not_allowed_to_remix_folder:
+    "Questo progetto non consente il remix. Contatta i suoi referenti se necessario.",
   name_taken: "Questo nome è già in uso",
   action_not_allowed: "Questa azione non è autorizzata",
   account_created: "Il tuo account è stato creato",

@@ -950,6 +950,8 @@ export default {
     "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
   not_allowed_to_copy_to_project:
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
+  not_allowed_to_remix_folder:
+    "Ce projet n'autorise pas le remix. Contactez ses référents si nécessaire.",
   name_taken: "Ce nom est déjà utilisé",
   action_not_allowed: "Cette action n’est pas autorisée",
   account_created: "Votre compte a été créé",

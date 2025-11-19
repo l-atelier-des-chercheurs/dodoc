@@ -1761,17 +1761,17 @@ module.exports = (function () {
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_type, path_to_folder, data });
 
-    // Check if folder can be remixed (applies to all remix operations)
-    const folder_meta = await folder.getFolder({
-      path_to_folder,
-    });
-    if (folder_meta.$can_be_remixed !== true) {
-      const err = new Error("Folder is not open to remix");
-      err.code = "source_folder_not_open_to_remix";
-      throw err;
-    }
-
     try {
+      // Check if folder can be remixed (applies to all remix operations)
+      const folder_meta = await folder.getFolder({
+        path_to_folder,
+      });
+      if (folder_meta.$can_be_remixed !== true) {
+        const err = new Error("Folder is not open to remix");
+        err.code = "source_folder_not_open_to_remix";
+        throw err;
+      }
+
       let { path_to_destination_type, new_meta } = data;
       if (!path_to_destination_type) path_to_destination_type = path_to_type;
 
