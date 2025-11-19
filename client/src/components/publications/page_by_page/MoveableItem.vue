@@ -697,12 +697,15 @@ export default {
     //   width: 320px !important;
     // }
 
-    > ._content > ._floatingEditBtn > * {
-      left: auto;
-      right: 0;
+    > ._content > ._floatingEditBtn {
+      display: none;
     }
-    ._collaborativeEditor > ._floatingEditBtn {
-      display: none !important;
+
+    .ql-editor {
+      padding: 0;
+    }
+    ._toolbarAndEditorContainer {
+      background: transparent;
     }
   }
 
