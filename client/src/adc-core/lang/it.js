@@ -216,6 +216,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   in_another_section: "In un altro capitolo",
   change_section: "Sposta verso un altro capitolo",
   remove_section: "Elimina il capitolo",
+  remove_area: "Elimina questa zona",
+  remove_area_confirm: "Sei sicuro di voler eliminare questa zona?",
 
   untitled: "Senza titolo",
   responsive: "Fluido",

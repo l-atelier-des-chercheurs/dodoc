@@ -240,6 +240,8 @@ export default {
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",
+  remove_area: "Supprimer cette zone",
+  remove_area_confirm: "Êtes-vous sûr de vouloir supprimer cette zone ?",
 
   untitled: "Sans titre",
   responsive: "Fluide",

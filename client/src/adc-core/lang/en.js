@@ -175,6 +175,8 @@ export default {
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
   remove_section: "Remove this chapter",
+  remove_area: "Remove this area",
+  remove_area_confirm: "Are you sure you want to remove this area?",
 
   status: "Status",
   origin: "Origin",

@@ -43,6 +43,7 @@
           :class="{
             '_gridArea--selected': selected_area_id === area.id,
             '_gridArea--dragging': dragging_area_id === area.id,
+            '_gridArea--updating': updating_area_id === area.id,
           }"
           :style="{
             gridColumnStart: area.column_start,
@@ -53,6 +54,11 @@
           @click="selectArea(area.id)"
           @mousedown="startDrag(area.id, $event)"
         >
+          <!-- Loading overlay -->
+          <div v-if="updating_area_id === area.id" class="_loadingOverlay">
+            <div class="_spinner"></div>
+          </div>
+
           <!-- Area label -->
           <div class="_gridArea--label">
             {{ area.id }}
@@ -69,14 +75,20 @@
           </div>
 
           <!-- Delete area button -->
-          <button
-            type="button"
-            class="_deleteArea"
-            @click.stop="deleteArea(area.id)"
-            :title="$t('delete')"
-          >
-            ×
-          </button>
+          <div class="_deleteArea" @click.stop>
+            <RemoveMenu
+              :show_button_text="false"
+              :modal_title="$t('remove_area')"
+              :modal_expl="$t('remove_area_confirm')"
+              @remove="deleteArea(area.id)"
+            >
+              <template v-slot:trigger>
+                <button type="button" class="_deleteAreaBtn">
+                  <b-icon icon="trash" scale="0.9" />
+                </button>
+              </template>
+            </RemoveMenu>
+          </div>
         </div>
       </div>
     </div>
@@ -107,6 +119,8 @@ export default {
       drag_start_pos: null,
       resize_start_pos: null,
       initial_area_position: null,
+      temp_grid_areas: null,
+      updating_area_id: null,
     };
   },
   computed: {
@@ -117,7 +131,8 @@ export default {
       return this.chapter.row_count || 6;
     },
     grid_areas() {
-      return this.chapter.grid_areas || [];
+      // Use temporary grid_areas during drag/resize operations
+      return this.temp_grid_areas || this.chapter.grid_areas || [];
     },
   },
   methods: {
@@ -199,8 +214,14 @@ export default {
       const area = this.findAreaById(areaId);
       this.initial_area_position = {
         column_start: area.column_start,
+        column_end: area.column_end,
         row_start: area.row_start,
+        row_end: area.row_end,
       };
+      // Clone grid_areas for local manipulation during drag
+      this.temp_grid_areas = JSON.parse(
+        JSON.stringify(this.chapter.grid_areas || [])
+      );
 
       document.addEventListener("mousemove", this.handleDrag);
       document.addEventListener("mouseup", this.stopDrag);
@@ -246,7 +267,8 @@ export default {
         new_col_start !== area.column_start ||
         new_row_start !== area.row_start
       ) {
-        const grid_areas = this.grid_areas.map((a) =>
+        // Update temp_grid_areas instead of calling updateChapter
+        this.temp_grid_areas = this.temp_grid_areas.map((a) =>
           a.id === this.dragging_area_id
             ? {
                 ...a,
@@ -257,10 +279,37 @@ export default {
               }
             : a
         );
-        this.updateChapter({ grid_areas });
       }
     },
     stopDrag() {
+      // Save the final state when drag stops, only if position changed
+      if (this.temp_grid_areas && this.dragging_area_id) {
+        const final_area = this.temp_grid_areas.find(
+          (a) => a.id === this.dragging_area_id
+        );
+
+        // Check if position actually changed
+        const has_changed =
+          final_area.column_start !== this.initial_area_position.column_start ||
+          final_area.column_end !== this.initial_area_position.column_end ||
+          final_area.row_start !== this.initial_area_position.row_start ||
+          final_area.row_end !== this.initial_area_position.row_end;
+
+        if (has_changed) {
+          this.updating_area_id = this.dragging_area_id;
+          this.updateChapter({ grid_areas: this.temp_grid_areas });
+
+          // Keep temp_grid_areas and clear after a short delay to prevent flashing
+          setTimeout(() => {
+            this.temp_grid_areas = null;
+            this.updating_area_id = null;
+          }, 100);
+        } else {
+          // No change, just clear temp state immediately
+          this.temp_grid_areas = null;
+        }
+      }
+
       this.dragging_area_id = null;
       this.drag_start_pos = null;
       this.initial_area_position = null;
@@ -276,6 +325,10 @@ export default {
         column_end: area.column_end,
         row_end: area.row_end,
       };
+      // Clone grid_areas for local manipulation during resize
+      this.temp_grid_areas = JSON.parse(
+        JSON.stringify(this.chapter.grid_areas || [])
+      );
 
       document.addEventListener("mousemove", this.handleResize);
       document.addEventListener("mouseup", this.stopResize);
@@ -313,7 +366,8 @@ export default {
       );
 
       if (new_col_end !== area.column_end || new_row_end !== area.row_end) {
-        const grid_areas = this.grid_areas.map((a) =>
+        // Update temp_grid_areas instead of calling updateChapter
+        this.temp_grid_areas = this.temp_grid_areas.map((a) =>
           a.id === this.resizing_area_id
             ? {
                 ...a,
@@ -322,10 +376,35 @@ export default {
               }
             : a
         );
-        this.updateChapter({ grid_areas });
       }
     },
     stopResize() {
+      // Save the final state when resize stops, only if size changed
+      if (this.temp_grid_areas && this.resizing_area_id) {
+        const final_area = this.temp_grid_areas.find(
+          (a) => a.id === this.resizing_area_id
+        );
+
+        // Check if size actually changed
+        const has_changed =
+          final_area.column_end !== this.initial_area_position.column_end ||
+          final_area.row_end !== this.initial_area_position.row_end;
+
+        if (has_changed) {
+          this.updating_area_id = this.resizing_area_id;
+          this.updateChapter({ grid_areas: this.temp_grid_areas });
+
+          // Keep temp_grid_areas and clear after a short delay to prevent flashing
+          setTimeout(() => {
+            this.temp_grid_areas = null;
+            this.updating_area_id = null;
+          }, 100);
+        } else {
+          // No change, just clear temp state immediately
+          this.temp_grid_areas = null;
+        }
+      }
+
       this.resizing_area_id = null;
       this.resize_start_pos = null;
       this.initial_area_position = null;
@@ -431,6 +510,10 @@ export default {
     border-style: dashed;
   }
 
+  &._gridArea--updating {
+    pointer-events: none;
+  }
+
   ._gridArea--label {
     display: flex;
     justify-content: center;
@@ -438,6 +521,34 @@ export default {
     font-weight: 600;
     user-select: none;
     pointer-events: none;
+  }
+}
+
+._loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+._spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--c-gris);
+  border-top-color: var(--active-color);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -476,29 +587,32 @@ export default {
   position: absolute;
   top: 4px;
   right: 4px;
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: transparent;
-  color: var(--c-gris);
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   opacity: 0;
-  transition: all 0.15s ease;
+  transition: opacity 0.15s ease;
   z-index: 10;
-
-  &:hover {
-    color: var(--c-rouge);
-    transform: scale(1.1);
-  }
 
   ._gridArea:hover &,
   ._gridArea._gridArea--selected & {
     opacity: 1;
+  }
+}
+
+._deleteAreaBtn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--c-gris);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: var(--c-rouge);
+    transform: scale(1.1);
   }
 }
 
