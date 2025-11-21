@@ -215,6 +215,7 @@ export default {
 <style lang="scss" scoped>
 ._positionPicker {
   position: relative;
+  min-height: 3rem;
 }
 ._editBtn {
   position: absolute;
