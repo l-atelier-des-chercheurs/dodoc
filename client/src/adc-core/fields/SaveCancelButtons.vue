@@ -1,6 +1,6 @@
 <template>
   <div class="_saveCancelBtns">
-    <button class="u-button u-button_red" @click="$emit('cancel')">
+    <button class="u-button" @click="$emit('cancel')">
       <b-icon icon="x-circle" />
       {{ cancel_text ? cancel_text : $t("cancel") }}
     </button>
@@ -49,6 +49,7 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
+  align-items: center;
   gap: calc(var(--spacing) / 4);
   flex-grow: 1;
 }

@@ -29,8 +29,7 @@
         </div>
       </template>
     </div>
-    <template slot="footer" v-if="!crop_mode">
-      <div />
+    <template slot="footer" v-if="image_has_been_changed && !crop_mode">
       <SaveCancelButtons
         :is_saving="is_saving"
         :allow_save="allow_save"
@@ -77,6 +76,9 @@ export default {
   computed: {
     modal_size() {
       return this.crop_mode ? "x-large" : "";
+    },
+    image_has_been_changed() {
+      return this.picked_image !== this.existing_preview;
     },
   },
   methods: {

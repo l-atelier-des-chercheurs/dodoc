@@ -36,15 +36,15 @@
     </div>
 
     <template v-if="context === 'full' && can_edit">
-      <div v-if="!cover_thumb" class="_addCoverBtn">
-        <button
-          class="u-button u-button_icon"
-          type="button"
-          @click="edit_mode = true"
-        >
-          <b-icon icon="plus-circle-fill" :title="$t('add_cover')" />
-        </button>
-      </div>
+      <button
+        type="button"
+        v-if="!cover_thumb"
+        class="_addCoverBtn"
+        @click="edit_mode = true"
+        :title="$t('add_cover')"
+      >
+        <b-icon icon="plus-circle-fill" :scale="2" />
+      </button>
       <div class="_editCoverBtn" v-else>
         <EditBtn
           :label_position="'left'"
@@ -228,6 +228,13 @@ export default {
   right: 0;
   bottom: 0;
   margin: calc(var(--spacing) / 1);
+  transition: opacity 0.2s ease;
+
+  @media (hover: hover) {
+    ._coverField:not(:hover) & {
+      opacity: 0;
+    }
+  }
 }
 
 ._fsButton {
@@ -248,12 +255,11 @@ export default {
   align-items: center;
   font-size: 200%;
   color: var(--active-color);
+  background: rgba(255, 255, 255, 0.5);
   transition: opacity 0.2s ease;
 
-  ::v-deep {
-    .u-button_icon {
-      font-size: 2rem;
-    }
+  .u-button_icon {
+    font-size: 2rem;
   }
 
   @media (hover: hover) {
