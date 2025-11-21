@@ -18,11 +18,31 @@
         />
       </div>
 
-      <ProjectsTester v-if="false" :path="projects_path" />
+      <!-- <ProjectsTester :path="projects_path" /> -->
 
       <div class="_projectsList">
-        <div class="u-sameRow u-spacingBottom">
+        <div class="_projectsList--header">
           <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
+
+          <div v-if="can_contribute_to_space" class="u-sameRow">
+            <button
+              type="button"
+              class="u-button u-button_red"
+              @click="show_create_modal = true"
+            >
+              <b-icon icon="plus" :label="$t('create')" />
+              {{ $t("create") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_red"
+              v-if="can_contribute_to_space"
+              @click="show_import_modal = true"
+            >
+              <b-icon icon="upload" :label="$t('import')" />
+              {{ $t("import_a_project") }}
+            </button>
+          </div>
         </div>
 
         <ProjectsListWithFilter
@@ -32,24 +52,6 @@
           :projects="projects"
           :can_edit="can_edit_space"
         >
-          <button
-            type="button"
-            class="u-button u-button_red u-button_small"
-            v-if="can_contribute_to_space"
-            @click="show_create_modal = true"
-          >
-            <b-icon icon="plus" :label="$t('create')" />
-            {{ $t("create") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red u-button_small"
-            v-if="can_contribute_to_space"
-            @click="show_import_modal = true"
-          >
-            <b-icon icon="upload" :label="$t('import')" />
-            {{ $t("import_a_project") }}
-          </button>
         </ProjectsListWithFilter>
         <CreateFolder
           v-if="show_create_modal"
@@ -203,5 +205,14 @@ export default {
 ._projectsList {
   margin: calc(var(--spacing) * 1) auto 0;
   // padding: calc(var(--spacing) * 1);
+}
+
+._projectsList--header {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>

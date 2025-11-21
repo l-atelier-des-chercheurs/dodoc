@@ -37,22 +37,20 @@
         <span v-html="instructions" />
       </div>
 
-      <component :is="tag">
-        <TextInput
-          ref="TextInput"
-          :content.sync="new_content"
-          :required="required"
-          :input_type="input_type"
-          :autofocus="true"
-          :autocomplete="input_type === 'email' ? 'email' : undefined"
-          :minlength="minlength"
-          :custom_formats="custom_formats"
-          :maxlength="maxlength"
-          :key="edit_mode + content"
-          @toggleValidity="($event) => (allow_save = $event)"
-          @onEnter="input_type !== 'editor' ? updateText() : undefined"
-        />
-      </component>
+      <TextInput
+        ref="TextInput"
+        :content.sync="new_content"
+        :required="required"
+        :input_type="input_type"
+        :autofocus="true"
+        :autocomplete="input_type === 'email' ? 'email' : undefined"
+        :minlength="minlength"
+        :custom_formats="custom_formats"
+        :maxlength="maxlength"
+        :key="edit_mode + content"
+        @toggleValidity="($event) => (allow_save = $event)"
+        @onEnter="input_type !== 'editor' ? updateText() : undefined"
+      />
 
       <SaveCancelButtons
         slot="footer"

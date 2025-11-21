@@ -63,7 +63,7 @@ export default {
 ._projectsList {
 }
 ._noProjects {
-  margin: calc(var(--spacing) / 2) 0 calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 1) 0 calc(var(--spacing) / 2);
   text-align: left;
 }
 </style>

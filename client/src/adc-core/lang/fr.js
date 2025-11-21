@@ -1534,4 +1534,5 @@ export default {
   area: "Zone",
   no_areas_defined: "Aucune zone de grille définie",
   non_contributor: "Non contributeur",
+  space_title: "Titre de l’espace",
 };

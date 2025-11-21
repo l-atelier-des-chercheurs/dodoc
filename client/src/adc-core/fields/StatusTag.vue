@@ -7,8 +7,17 @@
     @click="$emit('click')"
   >
     <div v-if="!can_edit" class="_tag" :data-nolabel="!show_label">
-      <b-icon v-if="status === 'finished'" icon="check" scale="1.5" />
-      <b-icon v-else-if="status === 'private'" icon="file-lock2-fill" />
+      <b-icon
+        v-if="status === 'finished'"
+        icon="check"
+        scale="1.5"
+        :title="$t('finished')"
+      />
+      <b-icon
+        v-else-if="status === 'private'"
+        icon="file-lock2-fill"
+        :title="$t('private')"
+      />
       <template v-if="show_label">{{ $t(status) }}</template>
       <b-icon v-if="mode === 'disable'" icon="x-circle-fill" :key="mode" />
     </div>

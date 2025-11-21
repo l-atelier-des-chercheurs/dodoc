@@ -1314,4 +1314,5 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   failed_to_load_resources: "Impossibile caricare le risorse",
   resource_imported_successfully: "Risorsa importata con successo",
   failed_to_import_resource: "Impossibile importare la risorsa",
+  space_title: "Titolo dello spazio",
 };

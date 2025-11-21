@@ -116,9 +116,9 @@ a:focus-visible {
 
   &:hover,
   &:focus-visible {
-    transform: translateY(-2px) rotate(-0deg);
+    transform: translateY(-0) rotate(-0deg);
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-    border-color: transparent;
+    border-color: var(--c-gris);
   }
 }
 
