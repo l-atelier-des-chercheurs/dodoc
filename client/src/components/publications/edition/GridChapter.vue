@@ -28,14 +28,14 @@
         />
       </div>
 
-      <GridAreas :chapter="chapter" />
+      <GridAreas :chapter="chapter" @deleteArea="deleteArea" />
     </div>
 
     <hr />
 
     <div class="_gridItems">
       <GridItem
-        v-for="area in chapter.grid_areas"
+        v-for="area in sorted_grid_areas"
         :key="area.id"
         :area="area"
         :area_text_meta="getAreaTextMeta(area)"
@@ -61,7 +61,11 @@ export default {
   data() {
     return {};
   },
-  computed: {},
+  computed: {
+    sorted_grid_areas() {
+      return this.chapter.grid_areas.sort((a, b) => a.id.localeCompare(b.id));
+    },
+  },
   methods: {
     updateChapter(new_meta) {
       this.$api.updateMeta({
@@ -83,6 +87,26 @@ export default {
     },
     getAreaTextMeta(area) {
       return this.publication.$files.find((f) => f.grid_area_id === area.id);
+    },
+    async deleteArea(areaId) {
+      // Find and delete associated text file if it exists
+      const text_meta = this.getAreaTextMeta({ id: areaId });
+
+      if (text_meta) {
+        try {
+          await this.$api.deleteItem({
+            path: text_meta.$path,
+          });
+        } catch (error) {
+          console.error("Error deleting text block:", error);
+        }
+      }
+
+      // Remove area from grid_areas
+      const grid_areas = this.chapter.grid_areas.filter(
+        (area) => area.id !== areaId
+      );
+      this.updateChapter({ grid_areas });
     },
   },
 };

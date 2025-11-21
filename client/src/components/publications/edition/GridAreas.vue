@@ -157,8 +157,7 @@ export default {
       });
     },
     deleteArea(areaId) {
-      const grid_areas = this.grid_areas.filter((area) => area.id !== areaId);
-      this.updateChapter({ grid_areas });
+      this.$emit("deleteArea", areaId);
     },
     selectArea(areaId) {
       this.selected_area_id = areaId;
