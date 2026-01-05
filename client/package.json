@@ -29,7 +29,7 @@
     "highlight.js": "^11.11.1",
     "imagetracerjs": "^1.2.6",
     "infinite-viewer": "^0.27.1",
-    "jspdf": "^2.5.2",
+    "jspdf": "^4.0.0",
     "lean-qr": "^2.3.5",
     "markdown-it": "^14.1.0",
     "markdown-it-attrs": "^4.3.1",
