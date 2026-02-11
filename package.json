@@ -30,9 +30,9 @@
     "archiver": "^7.0.1",
     "bonjour-service": "^1.3.0",
     "chalk": "^5.6.2",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "compression": "^1.8.1",
-    "cors": "^2.8.5",
+    "cors": "^2.8.6",
     "electron-store": "^11.0.2",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
@@ -43,35 +43,35 @@
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.3",
     "formidable": "^3.5.4",
-    "fs-extra": "^11.3.2",
+    "fs-extra": "^11.3.3",
     "heic-decode": "^2.1.0",
     "helmet": "^8.1.0",
-    "lru-cache": "^11.2.4",
+    "lru-cache": "^11.2.6",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^7.0.11",
+    "nodemailer": "^7.0.13",
     "path": "^0.12.7",
     "platform-folders": "^0.6.1",
     "portscanner": "^2.2.0",
     "pug": "^3.0.3",
-    "puppeteer": "^24.33.0",
+    "puppeteer": "^24.37.2",
     "rich-text": "^4.1.0",
     "sharedb": "^5.2.2",
     "sharedb-logger": "^0.1.4",
     "sharp": "^0.34.5",
     "slugg": "^1.2.1",
-    "socket.io": "^4.8.1",
+    "socket.io": "^4.8.3",
     "unzipper": "^0.12.3",
     "uuid": "^13.0.0",
     "websocket-json-stream": "0.0.3",
     "write-file-atomic": "^7.0.0",
-    "ws": "^8.18.3"
+    "ws": "^8.19.0"
   },
   "devDependencies": {
-    "node-gyp": "^12.1.0"
+    "node-gyp": "^12.2.0"
   },
   "optionalDependencies": {
-    "bufferutil": "4.0.9",
+    "bufferutil": "4.1.0",
     "extractd": "^2.1.2"
   }
 }
