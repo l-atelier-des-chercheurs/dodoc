@@ -22,7 +22,7 @@
     "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
   },
   "engines": {
-    "node": "22.21.1",
+    "node": "22.22.0",
     "npm": "*"
   },
   "dependencies": {

@@ -1,7 +1,7 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "39.2.7"
+electronVersion: "39.5.2"
 asar: true
 asarUnpack:
   - "content/**"
