@@ -497,7 +497,7 @@ export default {
 
 ._chatsBtn {
   &.is--active {
-    // background-color: #fc4b60;
+    background-color: var(--c-rouge) !important;
     svg {
     }
   }
