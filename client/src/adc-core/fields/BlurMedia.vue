@@ -75,6 +75,20 @@
                 @input="mask_feather_px = $event"
                 @save="mask_feather_px = $event"
               />
+              <RangeValueInput
+                class="u-spacingBottom"
+                :label="$t('blur_radius')"
+                :value="blur_radius"
+                :can_toggle="false"
+                :min="1"
+                :max="50"
+                :step="1"
+                :default_value="12"
+                :suffix="'px'"
+                :ticks="[12]"
+                @input="blur_radius = $event"
+                @save="blur_radius = $event"
+              />
               <button
                 type="button"
                 class="u-button u-button_small u-button_white"
@@ -195,7 +209,6 @@
 export default {
   props: {
     media: Object,
-    project_path: String,
     available_save_actions: {
       type: Array,
       default: () => ["saveAsNew", "replaceOriginal", "download"],
@@ -218,7 +231,7 @@ export default {
       last_x: 0,
       last_y: 0,
       blur_radius: 12,
-      mask_feather_px: 16,
+      mask_feather_px: 10,
       final_image: null,
       cursor_x: 0,
       cursor_y: 0,
@@ -236,7 +249,7 @@ export default {
       };
     },
     final_image_filename() {
-      let ext = this.media.$media_filename.endsWith(".png") ? ".png" : ".jpg";
+      const ext = this.media.$media_filename.endsWith(".png") ? ".png" : ".jpg";
       return (
         this.getFilenameWithoutExt(this.media.$media_filename) + "_blur" + ext
       );
@@ -259,6 +272,11 @@ export default {
           this.image_loaded = false;
         }
       },
+    },
+    blur_radius() {
+      if (this.image_loaded && this._blurred_display) {
+        this.updateBlurredDisplay();
+      }
     },
   },
   mounted() {
@@ -323,18 +341,35 @@ export default {
       const blur_ctx = this._blurred_display.getContext("2d");
       blur_ctx.filter = `blur(${this.blur_radius}px)`;
       blur_ctx.drawImage(img, 0, 0);
+      blur_ctx.filter = "none";
+      // blur_ctx.globalAlpha = 0.12;
+      // blur_ctx.fillStyle = "white";
+      // blur_ctx.fillRect(0, 0, w, h);
+      // blur_ctx.globalAlpha = 1;
 
       this.redrawPreview();
     },
+    updateBlurredDisplay() {
+      const img = this.$refs.source_img;
+      if (!img || !this._blurred_display) return;
+      const w = this._blurred_display.width;
+      const h = this._blurred_display.height;
+      const blur_ctx = this._blurred_display.getContext("2d");
+      blur_ctx.filter = `blur(${this.blur_radius}px)`;
+      blur_ctx.drawImage(img, 0, 0);
+      blur_ctx.filter = "none";
+      this.redrawPreview();
+    },
     getEventCoords(e) {
-      const canvas = this.$refs.preview_canvas || this.$refs.mask_canvas;
+      const canvas = this.$refs.preview_canvas;
       if (!canvas) return { x: 0, y: 0 };
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width / rect.width;
-      const scaleY = canvas.height / rect.height;
+      const scale_x = canvas.width / rect.width;
+      const scale_y = canvas.height / rect.height;
+      const point = e.touches && e.touches.length ? e.touches[0] : e;
       return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY,
+        x: (point.clientX - rect.left) * scale_x,
+        y: (point.clientY - rect.top) * scale_y,
       };
     },
     startDraw(e) {
@@ -365,24 +400,16 @@ export default {
     },
     startDrawTouch(e) {
       if (e.touches.length) {
-        const t = e.touches[0];
         this.is_drawing = true;
-        const rect = this.$refs.mask_canvas.getBoundingClientRect();
-        const scaleX = this.$refs.mask_canvas.width / rect.width;
-        const scaleY = this.$refs.mask_canvas.height / rect.height;
-        this.last_x = (t.clientX - rect.left) * scaleX;
-        this.last_y = (t.clientY - rect.top) * scaleY;
-        this.drawStroke(this.last_x, this.last_y);
+        const { x, y } = this.getEventCoords(e);
+        this.last_x = x;
+        this.last_y = y;
+        this.drawStroke(x, y);
       }
     },
     drawTouch(e) {
       if (!this.is_drawing || !e.touches.length) return;
-      const t = e.touches[0];
-      const rect = this.$refs.mask_canvas.getBoundingClientRect();
-      const scaleX = this.$refs.mask_canvas.width / rect.width;
-      const scaleY = this.$refs.mask_canvas.height / rect.height;
-      const x = (t.clientX - rect.left) * scaleX;
-      const y = (t.clientY - rect.top) * scaleY;
+      const { x, y } = this.getEventCoords(e);
       this.drawLine(this.last_x, this.last_y, x, y);
       this.last_x = x;
       this.last_y = y;

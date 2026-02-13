@@ -668,6 +668,7 @@ export default {
   blur: "Flou",
   brush_size: "Taille du pinceau",
   feather: "Adoucissement",
+  blur_radius: "Rayon du flou",
   clear: "Effacer",
   hue: "Teinte",
   saturation: "Saturation",

@@ -829,6 +829,7 @@ export default {
   blur: "Blur",
   brush_size: "Brush size",
   feather: "Feather",
+  blur_radius: "Blur radius",
   clear: "Clear",
   hue: "Hue",
   saturation: "Saturation",
