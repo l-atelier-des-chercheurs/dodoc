@@ -319,7 +319,7 @@ export default {
     if (this.initial_unread_count > 0) {
       this.scrollToUnread();
     } else {
-      this.scrollToLatest();
+      this.scrollToLatest("instant");
     }
 
     this.updateAuthorReadCount();
