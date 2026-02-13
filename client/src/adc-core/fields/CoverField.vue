@@ -6,8 +6,6 @@
         :data-isround="preview_format === 'circle'"
         role="presentation"
       />
-      <!-- // not actually useful since we dont know the size it will be shown at -->
-      <!-- :srcset="cover_thumb_srcset" -->
 
       <template v-if="context === 'full'">
         <div class="_fsButton">
@@ -80,6 +78,7 @@ export default {
       type: String,
       default: "pattern",
     },
+    resolution: Number,
     available_options: {
       type: Array,
       default: () => ["import", "project", "capture"],
@@ -109,15 +108,8 @@ export default {
       return this.$t("pick_cover");
     },
     cover_thumb() {
-      return this.coverMakeRelativeURLFromThumbs(
-        this.context === "full" ? 2000 : 640
-      );
-    },
-    cover_thumb_srcset() {
-      return `
-        ${this.coverMakeRelativeURLFromThumbs(320)} 320w, 
-        ${this.coverMakeRelativeURLFromThumbs(640)} 640w
-      `;
+      const res = this.resolution || (this.context === "full" ? 2000 : 640);
+      return this.coverMakeRelativeURLFromThumbs(res);
     },
     cover_full() {
       return this.coverMakeRelativeURLFromThumbs(2000);

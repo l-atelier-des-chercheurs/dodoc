@@ -17,6 +17,7 @@
             :ratio="'3 / 2'"
             :cover="project.$cover"
             :path="project.$path"
+            :resolution="cover_resolution"
             :can_edit="can_edit"
           />
         </div>
@@ -310,6 +311,11 @@ export default {
     },
     is_own_project() {
       return this.isOwnItem({ folder: this.project });
+    },
+    cover_resolution() {
+      if (this.context === "full") return 2000;
+      if (this.context === "tiny") return 320;
+      return 640;
     },
     all_tags() {
       let _all_tags = [];
