@@ -520,8 +520,6 @@ export default {
   export_montage: "Exporter le montage",
   export_stomotion: "Exporter l’animation",
 
-  video_to_rework: "Vidéo à retrailler",
-
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",
   pick_video: "Choisissez la vidéo à utiliser",
@@ -668,6 +666,9 @@ export default {
   lines_angle: "Angle des lignes",
   number_of_colors: "Nombre de couleurs",
   blur: "Flou",
+  brush_size: "Taille du pinceau",
+  feather: "Adoucissement",
+  clear: "Effacer",
   hue: "Teinte",
   saturation: "Saturation",
   lightness: "Clarté",
@@ -1216,6 +1217,7 @@ export default {
   very_close: "Très près",
   enable_indexing: "Permettre l’indexation par les moteurs de recherche",
   crop_adjust: "Recadrer/retoucher",
+  to_blur: "Flouter/anonymiser",
   aspect_ratio: "Rapport largeur/hauteur",
   square: "Carré",
   original: "Original",

@@ -705,8 +705,6 @@ export default {
   export_montage: "Export montage",
   export_stomotion: "Export animation",
 
-  video_to_rework: "Video to edit",
-
   pick_audio: "Pick audio media",
   pick_image: "Pick image media",
   pick_video: "Pick video media",
@@ -829,6 +827,9 @@ export default {
   lines_angle: "Lines angle",
   number_of_colors: "Number of colors",
   blur: "Blur",
+  brush_size: "Brush size",
+  feather: "Feather",
+  clear: "Clear",
   hue: "Hue",
   saturation: "Saturation",
   lightness: "Clarity",
@@ -1144,6 +1145,7 @@ export default {
   very_close: "Very close",
   enable_indexing: "Enable indexing on search engines",
   crop_adjust: "Crop/adjust",
+  to_blur: "Blur/anonymize",
   aspect_ratio: "Aspect ratio",
   square: "Square",
   original: "Original",

@@ -487,8 +487,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   export_montage: "Esporta il montaggio",
   export_stomotion: "Esporta l’animazione",
 
-  video_to_rework: "Video da rivedere",
-
   pick_audio: "Scegli l'audio da utilizzare",
   pick_image: "Scegli l’immagine da utilizzare",
   pick_video: "Scegli il video da utilizzare",

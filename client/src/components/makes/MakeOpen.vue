@@ -31,7 +31,7 @@
       <div v-if="make.type === 'video_effects'">
         <div class="_mediaPicker">
           <SingleBaseMediaPicker
-            :title="$t('video_to_rework')"
+            :title="$t('pick_video')"
             :field_name="'base_media_filename'"
             :open_modal_if_empty="true"
             :content="make.base_media_filename"
