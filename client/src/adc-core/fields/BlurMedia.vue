@@ -81,11 +81,11 @@
                 :value="blur_radius"
                 :can_toggle="false"
                 :min="1"
-                :max="50"
+                :max="20"
                 :step="1"
-                :default_value="12"
+                :default_value="5"
                 :suffix="'px'"
-                :ticks="[12]"
+                :ticks="[5]"
                 @input="blur_radius = $event"
                 @save="blur_radius = $event"
               />
@@ -230,7 +230,7 @@ export default {
       is_drawing: false,
       last_x: 0,
       last_y: 0,
-      blur_radius: 12,
+      blur_radius: 5,
       mask_feather_px: 10,
       final_image: null,
       cursor_x: 0,
