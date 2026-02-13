@@ -278,6 +278,11 @@ export default {
         this.updateBlurredDisplay();
       }
     },
+    mask_feather_px() {
+      if (this.image_loaded && this._blurred_display) {
+        this.redrawPreview();
+      }
+    },
   },
   mounted() {
     window.addEventListener("resize", this.onResize);
