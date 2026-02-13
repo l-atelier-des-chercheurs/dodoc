@@ -47,10 +47,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._recentlyEdited {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  // position: absolute;
+  // top: 0;
+  // right: 0;
+  // max-width: 320px;
   z-index: 10000;
 
   > ._recentlyEdited--content {
@@ -59,11 +59,22 @@ export default {
     height: 100%;
     overflow: auto;
     box-shadow: var(--panel-shadows);
+    margin: calc(var(--spacing) * 2) auto;
+    padding: calc(var(--spacing) / 2);
+    background: white;
+
     max-width: min(var(--max-column-width), var(--max-column-width-px));
-    margin: 0 auto;
+
     padding: calc(var(--spacing) / 2);
     border-radius: var(--border-radius) 0 0 var(--border-radius);
     background: var(--c-gris_clair);
+
+    ::v-deep {
+      ._projectInfos--topContent {
+        display: flex;
+        flex-flow: row nowrap;
+      }
+    }
   }
 
   ::v-deep label {

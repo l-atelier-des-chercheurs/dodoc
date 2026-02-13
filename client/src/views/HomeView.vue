@@ -4,7 +4,6 @@
 
     <template v-if="load_whole_page === true">
       <RecentlyEdited v-if="connected_as" />
-
       <!-- <div class="_slashProject_content">
         <p>
           Praesent consectetur dolor non massa laoreet, sit amet condimentum
