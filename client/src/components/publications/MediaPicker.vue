@@ -69,6 +69,11 @@ export default {
       default: "multiple",
     },
     pick_from_types: [String, Array],
+    // Caller can pass when it has the value (e.g. under EditionTemplate) so child modal gets it despite portal.
+    passed_meta_filenames_already_present: {
+      type: Array,
+      default: undefined,
+    },
   },
   components: {
     ResourcesPicker,
@@ -88,6 +93,8 @@ export default {
   watch: {},
   computed: {
     meta_filenames_already_present_from_parent() {
+      if (this.passed_meta_filenames_already_present !== undefined)
+        return this.passed_meta_filenames_already_present;
       return this.$getMetaFilenamesAlreadyPresent
         ? this.$getMetaFilenamesAlreadyPresent()
         : [];

@@ -17,6 +17,9 @@
         :publication_path="publication_path"
         :select_mode="'multiple'"
         :pick_from_types="['image', 'video', 'audio', 'text', 'pdf']"
+        :passed_meta_filenames_already_present="
+          meta_filenames_already_present_for_picker
+        "
         @pickMedias="pickMedias"
         @close="show_media_picker = false"
       />
@@ -161,6 +164,11 @@ export default {
     MediaPicker,
     CodeBlock,
   },
+  inject: {
+    $getMetaFilenamesAlreadyPresent: {
+      default: false,
+    },
+  },
   props: {
     publication_path: String,
   },
@@ -180,6 +188,13 @@ export default {
         this.pick_medias_list,
         this.medias_on_new_line
       );
+    },
+  },
+  computed: {
+    meta_filenames_already_present_for_picker() {
+      return this.$getMetaFilenamesAlreadyPresent
+        ? this.$getMetaFilenamesAlreadyPresent()
+        : [];
     },
   },
   methods: {
