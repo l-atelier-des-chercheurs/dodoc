@@ -80,7 +80,7 @@ export default {
       // invisible is the old name for private
       if (!["invisible", "private"].includes(folder.$status)) return true;
       // private should be visible only to editors
-      return this.canLoggedinEditFolder({ folder });
+      return this.canLoggedinContributeToFolder({ folder });
 
       // if (!this.connected_as) return false;
       // if (this.is_instance_admin) return true;
