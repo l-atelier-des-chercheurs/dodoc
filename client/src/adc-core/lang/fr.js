@@ -1038,7 +1038,7 @@ export default {
   collect: "Collecter",
   make: "Fabriquer",
   publish: "Publier",
-  notes_todo: "Notes/tâches",
+  notes_todo: "Tâches",
 
   projects_you_edited_last: "Derniers projets que vous avez modifiés",
 
@@ -1572,16 +1572,15 @@ export default {
   non_contributor: "Non contributeur",
   space_title: "Titre de l’espace",
 
-  new_note_todo: "Nouvelle note/tâche",
-  list_of_notes_todo:
-    "Aucune note/tâche | {count} note/tâche | {count} notes/tâches",
+  new_note_todo: "Nouvelle tâche",
+  list_of_notes_todo: "Aucune tâche | {count} tâche | {count} tâches",
   archived:
-    "Aucune note/tâche archivée | {count} note/tâche archivée | {count} notes/tâches archivées",
+    "Aucune tâche archivée | {count} tâche archivée | {count} tâches archivées",
   done_on: "Terminé le",
 
   create_list: "Créer une liste",
   create_list_instructions:
-    "Créez une nouvelle liste pour organiser vos notes et tâches.",
+    "Créez une nouvelle liste pour organiser vos tâches.",
   no_notes_to_show: "Aucune note à afficher",
   note_content: "Contenu de la note…",
   linked_project: "Projet en lien",

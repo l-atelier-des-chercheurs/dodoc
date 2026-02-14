@@ -5,18 +5,17 @@
         type="button"
         v-for="folder in notes_folders"
         :key="folder.$path"
-        class="u-button u-button_small"
+        class="u-button u-button_black"
         :class="{
           'is--active': folder.$path === opened_notes_path,
         }"
         @click="toggleList(folder.$path)"
       >
-        <template v-if="folder.$path === opened_notes_path"> • </template>
         {{ folder.title }}
       </button>
       <button
         type="button"
-        class="u-button u-button_small u-button_icon u-button_bleumarine"
+        class="u-button u-button_icon u-button_bleumarine"
         @click="show_create_notes_modal = true"
       >
         <b-icon icon="plus-circle-fill" />
@@ -29,6 +28,7 @@
           v-if="!!opened_notes_path"
           :key="opened_notes_path"
           :path="opened_notes_path"
+          @close="opened_notes_path = false"
         />
       </transition>
     </div>
@@ -63,7 +63,7 @@ export default {
     return {
       notes_folders: [],
       path: `${this.project.$path}/notes_todo`,
-      opened_notes_path: null,
+      opened_notes_path: false,
       show_create_notes_modal: false,
     };
   },
@@ -138,7 +138,11 @@ export default {
   gap: calc(var(--spacing) / 2);
   overflow-x: auto;
   padding: calc(var(--spacing) / 2);
-  border-bottom: 2px dotted white;
+  border-bottom: 2px dotted var(--c-bleumarine_fonce);
+
+  > * {
+    white-space: nowrap;
+  }
 }
 
 ._content {

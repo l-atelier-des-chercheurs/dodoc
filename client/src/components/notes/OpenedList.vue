@@ -1,125 +1,158 @@
 <template>
   <div class="_openedList">
-    <transition-group name="listComplete" class="_listItems" appear>
-      <div key="header">
-        <DLabel :str="$t('new_note_todo')" />
-      </div>
-      <div class="_listItem _listItem_newItem" key="newItem">
-        <TextInput
-          :content.sync="new_item_title"
-          :placeholder="$t('title')"
-          :custom_formats="[]"
-          @onEnter="createNewItem"
-        >
-          <template #suffix>
-            <button
-              type="button"
-              class="u-button u-button_icon"
-              :disabled="new_item_title.length === 0"
-              @click="createNewItem"
-            >
-              <transition name="fade">
-                <b-icon
-                  :icon="
-                    new_item_title.length === 0
-                      ? 'plus-circle'
-                      : 'plus-circle-fill'
-                  "
-                />
-              </transition>
-            </button>
-          </template>
-        </TextInput>
-      </div>
-
-      <div key="todo-separator" class="_separator" />
-
-      <div key="list">
-        <DLabel
-          :str="
-            $tc('list_of_notes_todo', local_todo_items.length, {
-              count: local_todo_items.length,
-            })
-          "
+    <LoaderSpinner v-if="!list_meta" class="_loader" />
+    <template v-else>
+      <div class="_header">
+        <TitleField
+          :content.sync="list_meta.title"
+          :path="list_meta.$path"
+          :tag="'h1'"
+          :required="true"
+          :maxlength="50"
+          :can_edit="true"
         />
+        <DropDown :right="true" :show_label="false">
+          <button
+            type="button"
+            class="u-buttonLink u-buttonLink_red"
+            @click="show_remove_modal = true"
+          >
+            <b-icon icon="trash" />
+            {{ $t("remove") }}
+          </button>
+
+          <RemoveMenu2
+            v-if="show_remove_modal"
+            :modal_title="$t('remove_todo_list', { name: list_meta.title })"
+            :success_notification="$t('todo_list_was_removed')"
+            :path="list_meta.$path"
+            @removedSuccessfully="$emit('close')"
+            @close="show_remove_modal = false"
+          />
+        </DropDown>
       </div>
+      <transition-group name="listComplete" class="_listItems" appear>
+        <div key="header">
+          <DLabel :str="$t('new_note_todo')" />
+        </div>
+        <div class="_listItem _listItem_newItem" key="newItem">
+          <TextInput
+            :content.sync="new_item_title"
+            :placeholder="$t('title')"
+            :custom_formats="[]"
+            @onEnter="createNewItem"
+          >
+            <template #suffix>
+              <button
+                type="button"
+                class="u-button u-button_icon"
+                :disabled="new_item_title.length === 0"
+                @click="createNewItem"
+              >
+                <transition name="fade">
+                  <b-icon
+                    :icon="
+                      new_item_title.length === 0
+                        ? 'plus-circle'
+                        : 'plus-circle-fill'
+                    "
+                  />
+                </transition>
+              </button>
+            </template>
+          </TextInput>
+        </div>
 
-      <template v-for="(item, index) in local_todo_items">
-        <div
-          class="_dropZone"
-          :class="{
-            _dropZone_active:
-              draggedIndex !== null &&
-              draggedIndex !== index &&
-              draggedIndex !== index - 1,
-            _dropZone_hovered: dragOverIndex === index && draggedIndex !== null,
-          }"
-          :key="item.$path + '_dropZone'"
-          @dragover.prevent="handleDragOver($event, index)"
-          @dragenter.prevent="handleDragEnter(index)"
-          @dragleave="handleDragLeave"
-          @drop.prevent="handleDrop($event, index)"
-        ></div>
+        <div key="todo-separator" class="_separator" />
 
-        <TodoListItem
-          :key="item.$path"
-          :item="item"
-          :index="index"
-          :draggable="true"
-          @toggle-state="toggleItemState"
-          @drag-start="handleDragStart"
-          @drag-end="handleDragEnd"
-          @duplicate-item="duplicateItem($event, index)"
-          @remove-item="removeItem"
-        />
-        <div
-          v-if="
-            index === local_todo_items.length - 1 &&
-            draggedIndex !== local_todo_items.length - 1
-          "
-          class="_dropZone _dropZone_last"
-          :class="{
-            _dropZone_active: draggedIndex !== null,
-            _dropZone_hovered:
-              dragOverIndex === index + 1 && draggedIndex !== null,
-          }"
-          :key="item.$path + '_dropZone_last'"
-          @dragover.prevent="handleDragOver($event, index + 1)"
-          @dragenter.prevent="handleDragEnter(index + 1)"
-          @dragleave="handleDragLeave"
-          @drop.prevent="handleDrop($event, index + 1)"
-        ></div>
-      </template>
-
-      <div
-        v-if="list_items_done.length > 0"
-        key="done-separator"
-        class="_separator"
-      />
-
-      <template v-if="list_items_done.length > 0">
-        <div key="done-header">
+        <div key="list">
           <DLabel
             :str="
-              $tc('archived', list_items_done.length, {
-                count: list_items_done.length,
+              $tc('list_of_notes_todo', local_todo_items.length, {
+                count: local_todo_items.length,
               })
             "
           />
         </div>
-        <TodoListItem
-          v-for="item in list_items_done"
-          :key="item.$path"
-          :item="item"
-          :draggable="false"
-          @toggle-state="toggleItemState"
-          @duplicate-item="duplicateItem"
-          @remove-item="removeItem"
-        />
-      </template>
-    </transition-group>
 
-    <div class="_footer"></div>
+        <template v-for="(item, index) in local_todo_items">
+          <div
+            class="_dropZone"
+            :class="{
+              _dropZone_active:
+                draggedIndex !== null &&
+                draggedIndex !== index &&
+                draggedIndex !== index - 1,
+              _dropZone_hovered:
+                dragOverIndex === index && draggedIndex !== null,
+            }"
+            :key="item.$path + '_dropZone'"
+            @dragover.prevent="handleDragOver($event, index)"
+            @dragenter.prevent="handleDragEnter(index)"
+            @dragleave="handleDragLeave"
+            @drop.prevent="handleDrop($event, index)"
+          ></div>
+
+          <TodoListItem
+            :key="item.$path"
+            :item="item"
+            :index="index"
+            :draggable="true"
+            @toggle-state="toggleItemState"
+            @drag-start="handleDragStart"
+            @drag-end="handleDragEnd"
+            @duplicate-item="duplicateItem($event, index)"
+            @remove-item="removeItem"
+          />
+          <div
+            v-if="
+              index === local_todo_items.length - 1 &&
+              draggedIndex !== local_todo_items.length - 1
+            "
+            class="_dropZone _dropZone_last"
+            :class="{
+              _dropZone_active: draggedIndex !== null,
+              _dropZone_hovered:
+                dragOverIndex === index + 1 && draggedIndex !== null,
+            }"
+            :key="item.$path + '_dropZone_last'"
+            @dragover.prevent="handleDragOver($event, index + 1)"
+            @dragenter.prevent="handleDragEnter(index + 1)"
+            @dragleave="handleDragLeave"
+            @drop.prevent="handleDrop($event, index + 1)"
+          ></div>
+        </template>
+
+        <div
+          v-if="list_items_done.length > 0"
+          key="done-separator"
+          class="_separator"
+        />
+
+        <template v-if="list_items_done.length > 0">
+          <div key="done-header">
+            <DLabel
+              :str="
+                $tc('archived', list_items_done.length, {
+                  count: list_items_done.length,
+                })
+              "
+            />
+          </div>
+          <TodoListItem
+            v-for="item in list_items_done"
+            :key="item.$path"
+            :item="item"
+            :draggable="false"
+            @toggle-state="toggleItemState"
+            @duplicate-item="duplicateItem"
+            @remove-item="removeItem"
+          />
+        </template>
+      </transition-group>
+
+      <div class="_footer"></div>
+    </template>
 
     <!-- <pre>{{ list_meta }}</pre> -->
   </div>
@@ -144,6 +177,8 @@ export default {
       draggedIndex: null,
       dragOverIndex: null,
       local_todo_items: [],
+
+      show_remove_modal: false,
 
       opened_item_path: undefined,
     };
@@ -433,6 +468,29 @@ export default {
   padding: calc(var(--spacing) * 2);
   max-width: 800px;
   margin: 0 auto;
+}
+
+._loader {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+}
+
+._header {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--spacing) * 1);
+  :deep(h1) {
+    color: white;
+    font-size: var(--sl-font-size-large);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  :deep(._toggleDropdown) {
+    color: white;
+  }
 }
 
 ._listItems {

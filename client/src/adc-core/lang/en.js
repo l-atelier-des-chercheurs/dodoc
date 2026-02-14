@@ -367,7 +367,7 @@ export default {
   collect: "Collect",
   make: "Make",
   publish: "Publish",
-  notes_todo: "Notes/todo",
+  notes_todo: "Todo",
 
   projects_you_edited_last: "Projects you edited last",
 
@@ -1503,16 +1503,14 @@ export default {
   muted: "Muted",
   show_controls: "Show controls",
 
-  new_note_todo: "Nouvelle note/tâche",
-  list_of_notes_todo: "No note/task | {count} note/task | {count} notes/tasks",
-  archived:
-    "No note/task archived | {count} note/task archived | {count} notes/tasks archived",
+  new_note_todo: "New task",
+  list_of_notes_todo: "No task | {count} task | {count} tasks",
+  archived: "No task archived | {count} task archived | {count} tasks archived",
   done_on: "Done on",
 
   create_list: "Create list",
-  create_list_instructions:
-    "Create a new list to organize your notes and tasks.",
-  no_notes_to_show: "No notes to show",
+  create_list_instructions: "Create a new list to organize your tasks.",
+  no_notes_to_show: "No tasks to show",
   note_content: "Note content…",
   linked_project: "Linked project",
   object_fit: "Fitting",
