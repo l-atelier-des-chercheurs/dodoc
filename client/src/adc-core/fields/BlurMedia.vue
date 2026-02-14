@@ -522,6 +522,8 @@ export default {
       if (this.media.$location)
         additional_meta.$location = this.media.$location;
 
+      additional_meta.$processing = ["blurred"];
+
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(
           Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -552,10 +554,15 @@ export default {
       const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
       const old_media_filename = this.media.$media_filename;
       const new_media_filename = uploaded_meta.$media_filename;
+      const processing = this.media.$processing || [];
+      processing.push("blurred");
 
       await this.$api.updateMeta({
         path: this.media.$path,
-        new_meta: { $media_filename: new_media_filename },
+        new_meta: {
+          $media_filename: new_media_filename,
+          $processing: processing,
+        },
       });
       await this.$api.updateMeta({
         path: temp_path,

@@ -202,7 +202,7 @@ Default values are:
 - $type             (String, editable)                    type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $status           (String, editable)                    determines whether the file gets listed when getFiles is called by non-authors
 - $origin           (String, editable)                    used to indicate the origin of the media (capture page, upload, etc.)
-- $optimized        (Boolean, editable)                   used to indicate whether the media has been optimized or not
+- $processing        (Array, editable)                    used to list processing applied to media (blurred, cropped, resized, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
 - $content          (String, editable)                    text content of a file
 - $credits          (String, editable)                    Credits for media
