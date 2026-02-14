@@ -402,6 +402,24 @@
                 </DuplicateMedia>
                 <button
                   type="button"
+                  class="u-button u-button_orange"
+                  v-if="selected_has_images"
+                  @click="show_batch_resize_modal = true"
+                >
+                  <b-icon icon="file-play-fill" />
+                  {{ $t("optimize_resize") }}
+                </button>
+                <BatchResizeModal
+                  v-if="show_batch_resize_modal"
+                  :selected_medias="selected_medias"
+                  @close="show_batch_resize_modal = false"
+                  @ended="
+                    show_batch_resize_modal = false;
+                    selected_medias_paths = [];
+                  "
+                />
+                <button
+                  type="button"
                   class="u-button u-button_red"
                   @click="removeAllMedias"
                 >
@@ -444,6 +462,7 @@ import BatchEditInformationsModal from "@/components/BatchEditInformationsModal.
 import DuplicateMedia from "@/components/DuplicateMedia.vue";
 import BinFolder from "@/adc-core/fields/BinFolder.vue";
 import UrlPicker from "@/adc-core/modals/UrlPicker.vue";
+import BatchResizeModal from "@/components/BatchResizeModal.vue";
 
 export default {
   props: {
@@ -464,6 +483,7 @@ export default {
     DuplicateMedia,
     BinFolder,
     UrlPicker,
+    BatchResizeModal,
   },
   data() {
     return {
@@ -484,6 +504,7 @@ export default {
 
       fav_filter: false,
       show_bin_modal: false,
+      show_batch_resize_modal: false,
 
       group_mode: "day",
       // group_mode: localStorage.getItem("library_group_mode") || "day",
@@ -717,6 +738,9 @@ export default {
       return this.selected_medias_paths.map((p) =>
         this.medias.find((m) => m.$path === p)
       );
+    },
+    selected_has_images() {
+      return this.selected_medias.some((m) => m?.$type === "image");
     },
     all_medias_selected() {
       return (
