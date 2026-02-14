@@ -52,11 +52,20 @@
     />
 
     <!-- bottom right -->
-    <div v-if="has_coordinates || tile_mode === 'table'" class="">
-      <div v-if="has_coordinates" class="_hasCoordinates">
+    <div class="_bottomRightIndicators">
+      <div v-if="has_coordinates">
         <b-icon class="_indicator" icon="pin-map-fill" />
       </div>
-      <span v-else v-text="'-'" />
+      <!-- <div
+        v-if="is_optimized"
+        class="_optimized"
+        :title="$t('already_optimized')"
+      >
+        <b-icon class="_indicator" icon="tools" />
+      </div> -->
+      <div v-if="is_blurred" class="_blurred" :title="$t('blurred')">
+        <b-icon class="_indicator" icon="dash-circle-dotted" />
+      </div>
     </div>
 
     <template>
@@ -131,6 +140,14 @@ export default {
     },
     has_coordinates() {
       return this.file.$location;
+    },
+    is_optimized() {
+      const p = this.file.$processing;
+      return Array.isArray(p) && p.length > 0;
+    },
+    is_blurred() {
+      const p = this.file.$processing;
+      return Array.isArray(p) && p.includes("blurred");
     },
     is_own_media() {
       return this.isOwnItem({ folder: this.file });
@@ -317,8 +334,7 @@ export default {
       }
 
       &._content,
-      &._index,
-      &._hasCoordinates {
+      &._index {
         flex: 0 0 30px;
       }
       &._alreadySelected {
@@ -372,6 +388,24 @@ export default {
 
   ._mediaTile[data-tilemode="medium"] & {
     bottom: 20px;
+  }
+}
+
+._bottomRightIndicators {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: calc(var(--spacing) / 8);
+
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
+  }
+  ._mediaTile[data-tilemode="medium"] & {
+    bottom: 1.5rem;
   }
 }
 
@@ -446,8 +480,9 @@ export default {
 }
 
 ._indicator {
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
+  display: block;
+  background: white;
+  color: black;
   border-radius: 2px;
   line-height: 1;
   font-weight: 600;
@@ -457,28 +492,6 @@ export default {
   text-transform: uppercase;
 }
 
-._hasCoordinates {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: auto !important;
-
-  svg {
-    // color: var(--c-bleumarine);
-
-    padding: 2px;
-    width: 1rem;
-    display: block;
-    height: 1rem;
-  }
-
-  ._mediaTile[data-tilemode="table"] & {
-    position: relative;
-  }
-  ._mediaTile[data-tilemode="medium"] & {
-    bottom: 1.5rem;
-  }
-}
 ._favSwitch {
   position: absolute;
   top: 0;

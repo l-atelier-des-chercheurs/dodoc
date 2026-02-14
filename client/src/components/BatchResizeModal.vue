@@ -162,7 +162,7 @@ export default {
         }),
         additional_meta: {
           $origin: "collect",
-          $optimized: true,
+          $processing: ["resized"],
         },
       };
     },
@@ -170,13 +170,16 @@ export default {
       const old_source_file = JSON.parse(JSON.stringify(media));
       const new_source_file = JSON.parse(JSON.stringify(optimized_file));
 
+      const processing = media.$processing || [];
+      processing.push("resized");
+
       // set original media to new source file
       await this.$api.updateMeta({
         path: media.$path,
         new_meta: {
           $media_filename: new_source_file.$media_filename,
           $type: new_source_file.$type,
-          $optimized: true,
+          $processing: processing,
         },
       });
 

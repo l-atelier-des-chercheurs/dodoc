@@ -165,6 +165,7 @@ module.exports = (function () {
         $credits: { type: "string" },
         $location: { type: "object" },
         $origin: { type: "string" },
+        $processing: { type: "array" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },

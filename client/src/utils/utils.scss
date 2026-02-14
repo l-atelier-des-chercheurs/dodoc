@@ -257,17 +257,19 @@ button,
     }
   }
   &.is--active {
-    &:not([disabled]) {
-      background-color: var(--g-500);
-      color: white;
-      // outline: 2px solid var(--active-color);
-      box-shadow: 0 2px 4px inset rgba(0, 0, 0, 0.2);
+    background-color: var(--c-gris_fonce);
+    color: white;
+    // outline: 2px solid var(--active-color);
+    box-shadow: 0 2px 4px inset rgba(0, 0, 0, 0.2);
 
-      &:hover,
-      &:active,
-      &:focus-visible {
-        background-color: var(--g-400);
-      }
+    &[disabled] {
+      color: var(--c-gris);
+    }
+
+    &:hover,
+    &:active,
+    &:focus-visible {
+      background-color: var(--g-500);
     }
   }
 }
@@ -320,11 +322,11 @@ button,
   color: white;
 
   &:hover,
-  &:focus-visible,
+  &:focus-visible {
+    background-color: var(--c-gris_fonce);
+  }
   &.is--active {
-    &:not([disabled]) {
-      background-color: var(--c-gris_fonce);
-    }
+    background-color: var(--g-500);
   }
 }
 .u-button_white {
@@ -335,8 +337,8 @@ button,
   &:focus-visible,
   &.is--active {
     &:not([disabled]) {
-      // background-color: var(--active-color);
-      // color: white;
+      background-color: var(--g-200);
+      color: var(--c-noir);
     }
   }
 }

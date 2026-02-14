@@ -141,13 +141,16 @@ export default {
       const old_source_file = JSON.parse(JSON.stringify(this.media));
       const new_source_file = JSON.parse(JSON.stringify(this.optimized_file));
 
+      const processing = this.media.$processing || [];
+      processing.push("optimized");
+
       // set original media to new source file
       await this.$api.updateMeta({
         path: this.media.$path,
         new_meta: {
           $media_filename: new_source_file.$media_filename,
           $type: new_source_file.$type,
-          $optimized: true,
+          $processing: processing,
         },
       });
 

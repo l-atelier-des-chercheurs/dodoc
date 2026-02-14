@@ -659,6 +659,13 @@ module.exports = (function () {
 
     if (additional_meta.$credits) new_meta.$credits = additional_meta.$credits;
 
+    if (
+      additional_meta.$processing &&
+      Array.isArray(additional_meta.$processing)
+    ) {
+      new_meta.$processing = additional_meta.$processing;
+    }
+
     return new_meta;
   }
 

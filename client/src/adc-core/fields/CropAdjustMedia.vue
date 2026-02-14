@@ -169,6 +169,7 @@ export default {
       if (this.media.$authors) additional_meta.$authors = this.media.$authors;
       if (this.media.$location)
         additional_meta.$location = this.media.$location;
+      additional_meta.$processing = ["cropped"];
 
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(
@@ -203,11 +204,15 @@ export default {
       const old_media_filename = this.media.$media_filename;
       const new_media_filename = uploaded_meta.$media_filename;
 
+      const processing = this.media.$processing || [];
+      processing.push("cropped");
+
       // set $media_filename from temp to the new filename
       await this.$api.updateMeta({
         path: this.media.$path,
         new_meta: {
           $media_filename: new_media_filename,
+          $processing: processing,
         },
       });
 
