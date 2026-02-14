@@ -347,10 +347,6 @@ export default {
       blur_ctx.filter = `blur(${this.blur_radius}px)`;
       blur_ctx.drawImage(img, 0, 0);
       blur_ctx.filter = "none";
-      // blur_ctx.globalAlpha = 0.12;
-      // blur_ctx.fillStyle = "white";
-      // blur_ctx.fillRect(0, 0, w, h);
-      // blur_ctx.globalAlpha = 1;
 
       this.redrawPreview();
     },
