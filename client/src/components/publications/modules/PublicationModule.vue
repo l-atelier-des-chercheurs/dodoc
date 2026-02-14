@@ -409,6 +409,7 @@
               ? $t('add_caption')
               : undefined
           "
+          :placeholder="''"
           :field_to_edit="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
