@@ -175,6 +175,7 @@ export default {
   section_title: "Chapter title",
   section: "Chapter",
   in_this_section: "In this chapter",
+  on_the_cover: "On the cover",
   in_another_section: "In another chapter",
   change_section: "Move to another chapter",
   remove_section: "Remove this chapter",

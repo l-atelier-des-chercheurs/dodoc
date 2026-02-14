@@ -240,6 +240,7 @@ export default {
   section_title: "Titre du chapitre",
   section: "Chapitre",
   in_this_section: "Dans ce chapitre",
+  on_the_cover: "Sur la couverture",
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",

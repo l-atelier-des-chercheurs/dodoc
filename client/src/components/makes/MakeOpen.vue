@@ -119,6 +119,7 @@ export default {
       return false;
     },
     meta_filenames_already_present() {
+      if (!this.make) return [];
       if (
         ["stopmotion_animation", "video_assemblage"].includes(this.make.type)
       ) {

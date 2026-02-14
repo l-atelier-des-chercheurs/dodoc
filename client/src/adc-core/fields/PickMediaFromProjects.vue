@@ -87,6 +87,11 @@ export default {
       type: [String, Array],
       default: "all",
     },
+    // When used inside a child modal (e.g. inside MediaPicker), inject can be broken; parent modal can pass this.
+    meta_filenames_already_present_from_parent: {
+      type: Array,
+      default: undefined,
+    },
   },
   components: {
     MediaLibrary,
@@ -123,6 +128,8 @@ export default {
   },
   computed: {
     meta_filenames_already_present() {
+      if (this.meta_filenames_already_present_from_parent !== undefined)
+        return this.meta_filenames_already_present_from_parent;
       if (this.$getMetaFilenamesAlreadyPresent)
         return this.$getMetaFilenamesAlreadyPresent();
       return [];

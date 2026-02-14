@@ -41,6 +41,9 @@
       :path="current_project_path"
       :select_mode="select_mode"
       :pick_from_types="pick_from_types"
+      :meta_filenames_already_present_from_parent="
+        meta_filenames_already_present_from_parent
+      "
       @pickMedias="handlePickMedias"
       @close="handleClose"
     />
@@ -70,6 +73,11 @@ export default {
   components: {
     ResourcesPicker,
   },
+  inject: {
+    $getMetaFilenamesAlreadyPresent: {
+      default: false,
+    },
+  },
   data() {
     return {
       selected_source: null,
@@ -79,6 +87,11 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    meta_filenames_already_present_from_parent() {
+      return this.$getMetaFilenamesAlreadyPresent
+        ? this.$getMetaFilenamesAlreadyPresent()
+        : [];
+    },
     current_project_path() {
       const all_publications_path = this.getParent(this.publication_path);
       return this.getParent(all_publications_path);
