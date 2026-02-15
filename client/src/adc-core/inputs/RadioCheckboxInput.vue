@@ -25,25 +25,25 @@
           @input="checkOption(option.key)"
         />
         <span class="_optionContent">
-          <img
-            v-if="option.thumb_src"
-            :src="option.thumb_src"
-            class="_option_preview"
-          />
-          <span
-            v-if="option.icon_html"
-            class="_option_icon"
-            v-html="option.icon_html"
-          />
-          <component :is="option.key === '' ? 'i' : 'span'">
-            {{ option.label }}
-          </component>
-          <template v-if="option.instructions">
-            <br />
-            <div class="u-instructions">
-              <small v-html="option.instructions" />
-            </div>
-          </template>
+          <div class="_option_icon_container">
+            <img
+              v-if="option.thumb_src"
+              :src="option.thumb_src"
+              class="_option_preview"
+            />
+            <span
+              v-if="option.icon_html"
+              class="_option_icon"
+              v-html="option.icon_html"
+            />
+            <component :is="option.key === '' ? 'i' : 'span'">
+              {{ option.label }}
+            </component>
+          </div>
+
+          <div v-if="option.instructions" class="u-instructions">
+            <small v-html="option.instructions" />
+          </div>
         </span>
       </label>
     </template>
@@ -118,7 +118,8 @@ export default {
     // padding: calc(var(--spacing) / 4) 0;
 
     gap: calc(var(--spacing) / 2);
-    ._optionContent {
+
+    ._option_icon_container {
       display: flex;
       flex-flow: row nowrap;
       align-items: center;
@@ -129,18 +130,13 @@ export default {
       display: inline-flex;
       flex: 0 0 auto;
       vertical-align: middle;
-      height: 1em;
+      height: 2em;
       aspect-ratio: 1;
       object-fit: cover;
     }
     ._option_icon {
       align-items: center;
       justify-content: center;
-
-      ::v-deep svg {
-        width: 1em;
-        height: 1em;
-      }
     }
   }
 
