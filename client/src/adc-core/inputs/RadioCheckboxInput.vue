@@ -18,7 +18,7 @@
         <input
           v-if="can_edit"
           :type="input_type"
-          :name="id + '-radiocheckboxi-option-' + option.key"
+          :name="radio_name"
           :id="id + '-radiocheckboxi-option-' + option.key"
           :value="option.key"
           :checked="optionIsSelected(option.key)"
@@ -47,6 +47,46 @@
         </span>
       </label>
     </template>
+
+    <label
+      v-if="
+        allow_custom_option &&
+        input_type === 'radio' &&
+        (can_edit || is_custom_value)
+      "
+      :key="'_custom'"
+      :for="id + '-radiocheckboxi-custom'"
+      :data-selectable="can_edit"
+      class="_customOptionRow"
+    >
+      <input
+        v-if="can_edit"
+        :type="input_type"
+        :name="radio_name"
+        :id="id + '-radiocheckboxi-custom'"
+        :value="custom_placeholder"
+        :checked="is_custom_value"
+        @input="selectCustomOption"
+      />
+      <span class="_optionContent">
+        <span>{{ custom_option_label }}</span>
+        <input
+          v-if="can_edit && is_custom_value"
+          ref="custom_text_input"
+          type="text"
+          class="_customTextInput"
+          :value="custom_text_value"
+          :placeholder="custom_option_placeholder"
+          @input="onCustomTextInput"
+        />
+        <span
+          v-else-if="!can_edit && is_custom_value"
+          class="_customTextDisplay"
+        >
+          {{ custom_text_value }}
+        </span>
+      </span>
+    </label>
   </transition-group>
 </template>
 <script>
@@ -59,6 +99,18 @@ export default {
     },
     options: Array,
     can_edit: Boolean,
+    allow_custom_option: {
+      type: Boolean,
+      default: false,
+    },
+    custom_option_label: {
+      type: String,
+      default: "",
+    },
+    custom_option_placeholder: {
+      type: String,
+      default: "",
+    },
   },
   components: {},
   data() {
@@ -73,14 +125,34 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    radio_name() {
+      return this.id + "-radiocheckboxi-group";
+    },
+    custom_placeholder() {
+      return "__custom__";
+    },
     adjusted_options() {
       let _options = [];
-      // if (this.input_type === "radio")
-      //   _options.push({
-      //     key: "",
-      //     label: "–",
-      //   });
       return _options.concat(this.options);
+    },
+    option_keys() {
+      return (this.options || []).map((o) => o.key);
+    },
+    is_custom_value() {
+      if (
+        !this.allow_custom_option ||
+        this.input_type !== "radio" ||
+        this.value == null
+      )
+        return false;
+      return (
+        this.value === this.custom_placeholder ||
+        (this.value !== "" && !this.option_keys.includes(this.value))
+      );
+    },
+    custom_text_value() {
+      if (this.value === this.custom_placeholder) return "";
+      return this.is_custom_value ? this.value : "";
     },
   },
   methods: {
@@ -98,6 +170,15 @@ export default {
         else values.push(key);
         return this.$emit("update:value", values);
       }
+    },
+    selectCustomOption() {
+      this.$emit("update:value", this.custom_placeholder);
+      this.$nextTick(() => {
+        this.$refs.custom_text_input && this.$refs.custom_text_input.focus();
+      });
+    },
+    onCustomTextInput(e) {
+      this.$emit("update:value", e.target.value);
     },
   },
 };
@@ -153,6 +234,21 @@ export default {
 
   input {
     margin: 0;
+  }
+
+  ._customOptionRow {
+    ._optionContent {
+      flex: 1;
+    }
+
+    ._customTextInput {
+      min-width: 0;
+      background: white;
+      width: 100%;
+    }
+    ._customTextDisplay {
+      margin-left: calc(var(--spacing) / 2);
+    }
   }
 }
 </style>

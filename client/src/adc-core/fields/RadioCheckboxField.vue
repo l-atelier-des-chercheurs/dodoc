@@ -6,7 +6,7 @@
     }"
   >
     <DLabel
-      v-if="label"
+      v-if="label && show_label"
       class="_label"
       :str="label"
       :instructions="can_edit ? instructions : ''"
@@ -51,6 +51,9 @@
           :input_type="input_type"
           :options="options"
           :can_edit="can_edit && edit_mode"
+          :allow_custom_option="allow_custom_option"
+          :custom_option_label="custom_option_label"
+          :custom_option_placeholder="custom_option_placeholder"
         />
       </div>
 
@@ -67,6 +70,7 @@
 export default {
   props: {
     label: String,
+    show_label: Boolean,
     instructions: String,
     field_name: String,
     content: {
@@ -83,6 +87,18 @@ export default {
     path: String,
     can_edit: {
       type: Boolean,
+    },
+    allow_custom_option: {
+      type: Boolean,
+      default: false,
+    },
+    custom_option_label: {
+      type: String,
+      default: "",
+    },
+    custom_option_placeholder: {
+      type: String,
+      default: "",
     },
   },
   components: {},
@@ -111,7 +127,17 @@ export default {
       return filtered_options;
     },
     current_option() {
-      return this.options.find((o) => o.key === this.content);
+      const from_options = this.options.find((o) => o.key === this.content);
+      if (from_options) return from_options;
+      if (
+        this.allow_custom_option &&
+        this.content &&
+        typeof this.content === "string" &&
+        !this.options.some((o) => o.key === this.content)
+      ) {
+        return { key: "custom", label: this.content };
+      }
+      return null;
     },
   },
   methods: {
@@ -132,10 +158,12 @@ export default {
     },
     async updateSelect() {
       this.is_saving = true;
+      const value_to_save =
+        this.new_content === "__custom__" ? "" : this.new_content;
 
       try {
         const new_meta = {
-          [this.field_name]: this.new_content,
+          [this.field_name]: value_to_save,
         };
         await this.$api.updateMeta({
           path: this.path,

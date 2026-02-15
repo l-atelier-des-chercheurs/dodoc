@@ -12,7 +12,6 @@
         {{ str }}
       </component>
       <template v-if="instructions || hasToggleInstructionsListener">
-        &nbsp;
         <button
           type="button"
           class="u-button u-button_icon _icon"
@@ -80,9 +79,8 @@ export default {
 }
 ._labelLine {
   display: flex;
-  align-items: baseline;
-  // align-items: flex-start;
-  font-size: var(--sl-font-size-small);
+  align-items: center;
+  // font-size: var(--sl-font-size-small);
 
   .u-label {
     // color: currentColor;
@@ -99,7 +97,9 @@ export default {
 ._icon {
   font-size: var(--sl-font-size-x-small);
   padding: 0;
-  margin-left: calc(var(--spacing) / 2);
+  margin-left: calc(var(--spacing) / 3);
+  margin-top: -2px;
+  margin-bottom: -2px;
 }
 ._instr {
   // margin-bottom: calc(var(--spacing) / 2);

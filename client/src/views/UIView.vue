@@ -36,6 +36,12 @@
         str="Label with instructions (click info to toggle)"
         instructions="<strong>Instructions:</strong> This helper text appears when you click the info icon."
       />
+      <br />
+      <DLabel
+        str="Label with pencil icon"
+        icon="pencil"
+        instructions="Instructions"
+      />
     </div>
 
     <h3>With icon and instructions</h3>
