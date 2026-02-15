@@ -19,7 +19,15 @@
             :src="current_option.thumb_src"
             class="_option_preview"
           />
-          <span :class="{ _emptyOption: current_option.key === '' }">
+          <span
+            v-if="current_option.key === 'custom' && allow_custom_option === 'html'"
+            class="_customOptionPreview"
+            v-html="current_option.label"
+          />
+          <span
+            v-else
+            :class="{ _emptyOption: current_option.key === '' }"
+          >
             {{ current_option.label }}
           </span>
         </template>
@@ -54,6 +62,7 @@
           :allow_custom_option="allow_custom_option"
           :custom_option_label="custom_option_label"
           :custom_option_placeholder="custom_option_placeholder"
+          :custom_option_formats="custom_option_formats"
         />
       </div>
 
@@ -89,7 +98,7 @@ export default {
       type: Boolean,
     },
     allow_custom_option: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false,
     },
     custom_option_label: {
@@ -99,6 +108,10 @@ export default {
     custom_option_placeholder: {
       type: String,
       default: "",
+    },
+    custom_option_formats: {
+      type: Array,
+      default: () => ["bold", "italic", "link", "emoji"],
     },
   },
   components: {},

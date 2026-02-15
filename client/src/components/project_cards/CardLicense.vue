@@ -43,9 +43,10 @@
         :path="project.$path"
         :can_edit="can_edit"
         :options="license_options"
-        :allow_custom_option="true"
+        allow_custom_option="html"
         :custom_option_label="$t('custom_license')"
         :custom_option_placeholder="$t('fill_out_your_license')"
+        :custom_option_formats="['bold', 'italic', 'link', 'emoji']"
       />
     </div>
   </DetailsPane>
