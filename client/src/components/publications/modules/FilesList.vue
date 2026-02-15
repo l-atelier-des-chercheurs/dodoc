@@ -82,11 +82,13 @@
             />
           </template>
 
-          <b-icon
-            v-if="mode === 'source'"
-            class="_download"
-            icon="file-earmark-arrow-down-fill"
-          />
+          <button type="button" class="u-button u-button_icon _download">
+            <b-icon
+              v-if="mode === 'source'"
+              class=""
+              icon="file-earmark-arrow-down-fill"
+            />
+          </button>
         </component>
 
         <div class="_removeItem" v-if="edit_mode">
@@ -211,7 +213,7 @@ export default {
 
   &:hover,
   &:focus-visible {
-    background: var(--c-gris);
+    // background: var(--c-gris);
   }
 
   ._link {
@@ -305,6 +307,10 @@ export default {
 ._removeItem,
 ._download {
   margin: calc(var(--spacing) / 4);
+
+  &:last-child {
+    margin-right: calc(var(--spacing) / 1);
+  }
 }
 
 ._dragHandle {

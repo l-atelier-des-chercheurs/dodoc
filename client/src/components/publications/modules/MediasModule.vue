@@ -143,8 +143,8 @@ export default {
     },
     reorderMedias(new_order) {
       const source_medias = new_order.map((m) => {
-        delete m._linked_media;
-        return m;
+        const { _linked_media, ...rest } = m;
+        return rest;
       });
       this.$emit("updateMeta", { source_medias });
     },
