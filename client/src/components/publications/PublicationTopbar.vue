@@ -131,10 +131,8 @@
           :url_to_access="share_url"
           @close="show_qr_code_modal = false"
         >
-          <!-- <div v-if="$root.app_infos.instance_meta.has_general_password">
-            instance has general password, make publication public to display
-          </div> -->
           <ToggleField
+            v-if="$root.app_infos?.instance_meta?.has_general_password"
             :label="$t('make_publication_public')"
             :field_name="'$public'"
             :content="publication.$public === true"
