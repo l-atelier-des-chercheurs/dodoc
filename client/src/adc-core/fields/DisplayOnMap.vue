@@ -1557,9 +1557,9 @@ export default {
           // Automatically select the newly created shape
           this.selected_feature_id = id;
           // Switch to select mode to show the selection UI
-          this.toggleTool({
-            draw_mode: { key: "Select" },
-          });
+          // this.toggleTool({
+          //   draw_mode: { key: "Select" },
+          // });
         });
         tip = idleTip;
         this.draw_can_be_finished = false;
@@ -2365,15 +2365,14 @@ export default {
 
   button {
     position: relative;
-    background: white;
 
     padding: 0;
     color: var(--c-noir);
     height: 2rem;
     min-width: 2rem;
 
-    background-color: white;
-    border: 2px solid transparent;
+    // background: white;
+    // border: 2px solid transparent;
     border-radius: 0;
     margin-bottom: 1px;
     pointer-events: auto;
@@ -2387,7 +2386,8 @@ export default {
 
     &.is--active {
       background-color: var(--ol-background-color);
-      border-color: var(--current-view-color, --active-color);
+      // border-color: var(--current-view-color, --active-color);
+      box-shadow: none;
     }
 
     &:first-child {
