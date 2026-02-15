@@ -406,7 +406,7 @@
                   v-if="selected_has_images"
                   @click="show_batch_resize_modal = true"
                 >
-                  <b-icon icon="file-play-fill" />
+                  <b-icon icon="sliders" />
                   {{ $t("optimize_resize") }}
                 </button>
                 <BatchResizeModal

@@ -94,7 +94,7 @@
                 class="u-button u-button_orange"
                 @click="show_optimize_modal = true"
               >
-                <b-icon :icon="'file-play-fill'" />
+                <b-icon icon="sliders" />
                 {{ $t("convert_shorten") }}
               </button>
             </div>

@@ -71,6 +71,7 @@
 
 <script>
 import ShowOptimizedFileInfos from "@/adc-core/fields/ShowOptimizedFileInfos.vue";
+import { replaceOriginalWithNewFile } from "@/utils/replaceOriginalMedia.js";
 
 export default {
   props: {
@@ -138,35 +139,12 @@ export default {
       this.$emit("close");
     },
     async replaceOriginal() {
-      const old_source_file = JSON.parse(JSON.stringify(this.media));
-      const new_source_file = JSON.parse(JSON.stringify(this.optimized_file));
-
-      const processing = this.media.$processing || [];
-      processing.push("optimized");
-
-      // set original media to new source file
-      await this.$api.updateMeta({
-        path: this.media.$path,
-        new_meta: {
-          $media_filename: new_source_file.$media_filename,
-          $type: new_source_file.$type,
-          $processing: processing,
-        },
-      });
-
-      // CLEAN UP
-      // set optimized media to old source file
-      await this.$api.updateMeta({
-        path: old_source_file.$path,
-        new_meta: {
-          $media_filename: old_source_file.$media_filename,
-        },
-      });
-      // remove optimized media
-      await this.$api.deleteItem({
-        path: old_source_file.$path,
-      });
-
+      await replaceOriginalWithNewFile(
+        this.$api,
+        this.media,
+        this.optimized_file,
+        "optimized"
+      );
       this.optimized_file = undefined;
       this.$emit("close");
     },

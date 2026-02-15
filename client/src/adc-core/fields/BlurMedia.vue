@@ -206,6 +206,8 @@
   </BaseModal2>
 </template>
 <script>
+import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
+
 export default {
   props: {
     media: Object,
@@ -514,15 +516,10 @@ export default {
     async saveAsNew() {
       this.is_saving = true;
       const path = this.getParent(this.media.$path);
-      let additional_meta = { $origin: "collect" };
-      if (this.media.caption) additional_meta.caption = this.media.caption;
-      if (this.media.$credits) additional_meta.$credits = this.media.$credits;
-      if (this.media.keywords) additional_meta.keywords = this.media.keywords;
-      if (this.media.$authors) additional_meta.$authors = this.media.$authors;
-      if (this.media.$location)
-        additional_meta.$location = this.media.$location;
-
-      additional_meta.$processing = ["blurred"];
+      const additional_meta = getCopyableMediaMeta(this.media, {
+        $origin: "collect",
+        $processing: ["blurred"],
+      });
 
       const onProgress = (progressEvent) => {
         this.media_being_sent_percent = parseInt(

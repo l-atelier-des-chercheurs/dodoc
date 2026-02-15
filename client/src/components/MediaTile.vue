@@ -61,9 +61,13 @@
         class="_optimized"
         :title="$t('already_optimized')"
       >
-        <b-icon class="_indicator _indicator--tiny" icon="tools" />
+        <b-icon class="_indicator _indicator--tiny" icon="sliders" />
       </div>
-      <div v-if="is_resized" class="_resized" :title="$t('resized')">
+      <div
+        v-if="is_cropped"
+        class="_cropped"
+        :title="$t('cropped')"
+      >
         <b-icon class="_indicator _indicator--tiny" icon="bounding-box" />
       </div>
       <div v-if="is_blurred" class="_blurred" :title="$t('blurred')">
@@ -146,11 +150,14 @@ export default {
     },
     is_optimized() {
       const p = this.file.$processing;
-      return Array.isArray(p) && p.includes("optimized");
+      return (
+        Array.isArray(p) &&
+        (p.includes("optimized") || p.includes("resized"))
+      );
     },
-    is_resized() {
+    is_cropped() {
       const p = this.file.$processing;
-      return Array.isArray(p) && p.includes("resized");
+      return Array.isArray(p) && p.includes("cropped");
     },
     is_blurred() {
       const p = this.file.$processing;

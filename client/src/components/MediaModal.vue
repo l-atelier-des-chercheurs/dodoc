@@ -35,6 +35,7 @@
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
         <div class="u-spacingBottom">
+          pro {{ file.$processing }}
           <div class="_topbar">
             <h3>
               {{ $t("media") }}
@@ -252,7 +253,7 @@
               v-if="optimization_possible"
               @click="show_optimize_modal = true"
             >
-              <b-icon :icon="'file-play-fill'" />
+              <b-icon icon="sliders" />
               <template v-if="file.$type === 'image'">
                 {{ $t("optimize_resize") }}
               </template>
@@ -322,7 +323,7 @@
                 class="u-button u-button_orange"
                 @click="show_optimize_modal = true"
               >
-                <b-icon :icon="'file-play-fill'" />
+                <b-icon icon="sliders" />
                 {{ $t("convert_shorten") }}
               </button>
             </div>

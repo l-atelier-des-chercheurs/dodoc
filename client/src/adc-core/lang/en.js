@@ -1137,6 +1137,7 @@ export default {
   already_optimized:
     "This media has already been converted, it is not recommended to convert it again.",
   resized: "Resized",
+  cropped: "Cropped",
   blurred: "Blurred",
   preview_new: "Create new version",
   wont_remove_original: "Will not remove the original",

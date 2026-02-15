@@ -21,8 +21,10 @@
           :show_image_only="show_image_only"
         />
       </template>
-      <div v-else class="t-500" key="noone">
-        {{ $t("noone") }}
+      <div v-else class="" key="noone">
+        <small>
+          {{ $t("noone") }}
+        </small>
       </div>
       <EditBtn
         key="editbtn"

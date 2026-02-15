@@ -57,7 +57,7 @@
         >
           <LoaderSpinner v-if="is_resizing" class="_inlineSpinner" />
           <template v-else>
-            <b-icon icon="tools" />
+            <b-icon icon="sliders" />
             {{ $t("optimize_resize") }}
           </template>
         </button>
@@ -75,6 +75,7 @@ import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 import SelectField2 from "@/adc-core/fields/SelectField2.vue";
 import Medias from "@/mixins/Medias.js";
 import Paths from "@/mixins/Paths.js";
+import { replaceOriginalWithNewFile } from "@/utils/replaceOriginalMedia.js";
 
 export default {
   props: {
@@ -162,39 +163,17 @@ export default {
         }),
         additional_meta: {
           $origin: "collect",
-          $processing: ["resized"],
+          $processing: ["optimized"],
         },
       };
     },
     async replaceOriginalWithOptimized(media, optimized_file) {
-      const old_source_file = JSON.parse(JSON.stringify(media));
-      const new_source_file = JSON.parse(JSON.stringify(optimized_file));
-
-      const processing = media.$processing || [];
-      processing.push("resized");
-
-      // set original media to new source file
-      await this.$api.updateMeta({
-        path: media.$path,
-        new_meta: {
-          $media_filename: new_source_file.$media_filename,
-          $type: new_source_file.$type,
-          $processing: processing,
-        },
-      });
-
-      // CLEAN UP (same as OptimizeMediaModal.replaceOriginal)
-      // set optimized media to old source file
-      await this.$api.updateMeta({
-        path: old_source_file.$path,
-        new_meta: {
-          $media_filename: old_source_file.$media_filename,
-        },
-      });
-      // remove optimized media
-      await this.$api.deleteItem({
-        path: old_source_file.$path,
-      });
+      await replaceOriginalWithNewFile(
+        this.$api,
+        media,
+        optimized_file,
+        "optimized"
+      );
     },
     async runOneOptimize(media) {
       const instructions = this.buildInstructionsForImage(media);
