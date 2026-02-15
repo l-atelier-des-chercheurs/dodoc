@@ -4,8 +4,11 @@
     <template v-else>
       <div class="_header">
         <TitleField
+          :label="$t('name')"
+          :show_label="false"
           :content.sync="list_meta.title"
           :path="list_meta.$path"
+          :field_name="'title'"
           :tag="'h1'"
           :required="true"
           :maxlength="50"

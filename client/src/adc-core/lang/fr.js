@@ -1034,6 +1034,10 @@ export default {
   general_informations: "Informations sur l’instance",
 
   panes: "Panneaux",
+  panes_visible_in_project_instr:
+    "Choisissez les panneaux disponibles dans ce projet. Seuls ceux-ci apparaîtront dans la barre ci‑dessus.",
+  panes_hidden_in_project_instr:
+    "Les panneaux affichés sont cochés. Décochez un panneau pour le masquer de la barre du projet.",
   capture: "Capter",
   collect: "Collecter",
   make: "Fabriquer",

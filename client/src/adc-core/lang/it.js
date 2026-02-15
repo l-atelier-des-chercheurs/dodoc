@@ -984,6 +984,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   general_informations: "Informazioni sull'istanza",
 
   panes: "Pannello",
+  panes_visible_in_project_instr:
+    "Scegli quali pannelli sono disponibili in questo progetto. Solo questi appariranno nella barra sopra.",
+  panes_hidden_in_project_instr:
+    "I pannelli visibili sono selezionati. Deseleziona un pannello per nasconderlo dalla barra del progetto.",
   capture: "Cattura",
   collect: "Colleziona",
   make: "Costruisci",

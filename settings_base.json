@@ -203,7 +203,7 @@
               "publications_pinned": {
                 "type": "array"
               },
-              "todos_pinned": {
+              "disabled_panes": {
                 "type": "array"
               }
             },

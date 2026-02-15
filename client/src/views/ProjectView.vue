@@ -34,6 +34,7 @@
             :can_edit="can_contribute_to_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
+            @updateDisabledPanes="updateDisabledPanes"
           />
           <!-- <hr v-else class="_separator" /> -->
           <div class="_panes">
@@ -220,6 +221,12 @@ export default {
           this.getParent(this.createURLFromPath(this.project.$path))
         );
       }
+    },
+    async updateDisabledPanes(disabled_panes) {
+      await this.$api.updateMeta({
+        path: this.project.$path,
+        new_meta: { disabled_panes },
+      });
     },
   },
 };

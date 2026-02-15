@@ -102,6 +102,7 @@
           type="button"
           class="u-button u-button_icon"
           :title="$t('options')"
+          @click="show_pane_list_modal = true"
         >
           <b-icon
             icon="three-dots"
@@ -109,12 +110,21 @@
             :aria-label="$t('options')"
           />
         </button>
+        <PaneListModal
+          v-if="show_pane_list_modal"
+          :project="project"
+          :disabled_panes="disabled_panes_from_project"
+          :can_edit="can_edit"
+          @close="show_pane_list_modal = false"
+          @updateDisabledPanes="$emit('updateDisabledPanes', $event)"
+        />
       </div>
     </div>
   </div>
 </template>
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
+import PaneListModal from "@/components/nav/PaneListModal.vue";
 
 export default {
   props: {
@@ -125,6 +135,7 @@ export default {
   components: {
     SlickItem,
     SlickList,
+    PaneListModal,
   },
   directives: { handle: HandleDirective },
   data() {
@@ -136,6 +147,7 @@ export default {
 
       animate_pane: false,
       animate_pane_timeout: null,
+      show_pane_list_modal: false,
     };
   },
   created() {
@@ -183,6 +195,9 @@ export default {
     },
   },
   computed: {
+    disabled_panes_from_project() {
+      return this.project?.disabled_panes || [];
+    },
     possible_project_panes() {
       const all_panes = [
         {
@@ -206,12 +221,17 @@ export default {
       ];
 
       // Filter out chats pane if enable_chats is not enabled
-      return all_panes.filter((pane) => {
+      let list = all_panes.filter((pane) => {
         if (pane.type === "chats") {
           return this.$root.app_infos?.instance_meta?.enable_chats === true;
         }
         return true;
       });
+
+      // When project has disabled_panes set, hide those pane icons
+      const disabled_set = new Set(this.disabled_panes_from_project);
+      list = list.filter((pane) => !disabled_set.has(pane.type));
+      return list;
     },
     cover_thumb() {
       return this.makeRelativeURLFromThumbs({
