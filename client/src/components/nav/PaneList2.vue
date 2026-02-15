@@ -97,7 +97,7 @@
           </SlickItem>
         </SlickList>
       </span>
-      <div>
+      <div class="_optionsBtnContainer">
         <button
           type="button"
           class="u-button u-button_icon"
@@ -359,9 +359,10 @@ export default {
   }
 
   ._paneList.is--mobile & {
+    justify-content: safe center;
     > * {
       &._projectPanes {
-        flex: 1 0 auto;
+        // flex: 1 0 auto;
       }
     }
   }
@@ -522,5 +523,9 @@ export default {
     align-items: center;
     // background: var(--c-gris);
   }
+}
+._optionsBtnContainer {
+  text-align: right;
+  padding-right: calc(var(--spacing) / 2);
 }
 </style>
