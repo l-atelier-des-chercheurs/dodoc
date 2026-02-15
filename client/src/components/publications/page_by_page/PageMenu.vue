@@ -1,15 +1,12 @@
 <template>
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
-      <!-- <button
-        type="button"
-        class="u-button u-button_bleuvert"
-        @click="$emit('close')"
-      >
-        <b-icon icon="chevron-left" />
+      <button type="button" class="u-buttonLink" @click="$emit('close')">
+        <b-icon icon="x" />
+        <!-- {{ $t("close") }} -->
         <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
         <template v-else>{{ $t("list_of_spreads") }}</template>
-      </button> -->
+      </button>
       <div class="_titleRow">
         <SelectField2
           :value="active_page_number"
@@ -22,6 +19,7 @@
       </div>
 
       <div v-if="is_last_page" class="u-spacingBottom">
+        <div class="u-spacingBottom" />
         <div class="u-instructions">
           {{ $t("last_page_reached") }}
         </div>
@@ -29,7 +27,7 @@
         <button
           type="button"
           v-if="can_edit"
-          class="u-button u-button_bleuvert u-button_small"
+          class="u-button u-button_small u-button_small"
           @click="createPageAndOpen"
         >
           <b-icon icon="plus-square" />
@@ -42,9 +40,8 @@
           :key="'createPage' + index"
           @click="createPageAndOpen"
         /> -->
-
-        <hr />
       </div>
+      <hr />
 
       <div class="_scale">
         <RangeValueInput
@@ -1006,7 +1003,7 @@ export default {
     border-top: 2px solid var(--c-gris_clair);
   }
   &:first-child {
-    padding-top: 0;
+    // padding-top: 0;
   }
 }
 
