@@ -5,13 +5,13 @@
       :key="/* slicklist stays active otherwise */ slicklist_key"
       class="_listOfFiles"
       axis="y"
-      :value="medias_with_linked"
-      @input="$emit('reorderMedias', $event)"
+      :value="local_items"
+      @input="reorderMedias"
       :useDragHandle="true"
     >
       <SlickItem
-        v-for="({ _linked_media }, index) in medias_with_linked"
-        :key="_linked_media.$path"
+        v-for="(media, index) in local_items"
+        :key="(media._linked_media && media._linked_media.$path) || index"
         :index="index"
         class="_reorderedFile"
       >
@@ -24,24 +24,25 @@
         </button>
         <component
           :is="mode === 'source' ? 'DownloadFile' : 'span'"
-          v-if="_linked_media && _linked_media.$path"
+          v-if="media._linked_media && media._linked_media.$path"
           class="_link"
-          :file="_linked_media"
+          :file="media._linked_media"
         >
           <button
             type="button"
             class="_link--previewBtn"
             v-if="
+              media._linked_media &&
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
-                _linked_media.$type
+                media._linked_media.$type
               )
             "
-            @click.prevent="show_media_preview_for = _linked_media"
+            @click.prevent="show_media_preview_for = media._linked_media"
           >
             <MediaContent
               class="_preview"
               :context="'preview'"
-              :file="_linked_media"
+              :file="media._linked_media"
               :resolution="220"
             />
           </button>
@@ -50,7 +51,7 @@
           </div>
 
           <BaseModal2
-            v-if="show_media_preview_for === _linked_media"
+            v-if="show_media_preview_for === media._linked_media"
             @close="show_media_preview_for = null"
           >
             <MediaContent
@@ -64,13 +65,20 @@
 
           <span
             class="_link--filename"
-            v-text="_linked_media.$media_filename"
+            v-text="media._linked_media && media._linked_media.$media_filename"
           />
-          <template v-if="_linked_media.$infos.size && mode === 'source'">
+          <template
+            v-if="
+              media._linked_media &&
+              media._linked_media.$infos &&
+              media._linked_media.$infos.size &&
+              mode === 'source'
+            "
+          >
             <!-- |&nbsp; -->
             <span
               class="u-instructions _link--filesize"
-              v-text="formatBytes(_linked_media.$infos.size)"
+              v-text="formatBytes(media._linked_media.$infos.size)"
             />
           </template>
 
@@ -132,22 +140,37 @@ export default {
     return {
       show_media_picker: false,
       show_media_preview_for: null,
+      local_items: undefined,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    medias_with_linked: {
+      handler() {
+        this.local_items = this.medias_with_linked || [];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
     slicklist_key() {
       let key = this.edit_mode + "_";
-      this.medias_with_linked.forEach((media) => {
-        key += media._linked_media.$path + "_";
+      const list = this.local_items || [];
+      list.forEach((media) => {
+        key += media._linked_media?.$path + "_";
       });
       return key;
     },
   },
-  methods: {},
+  methods: {
+    reorderMedias(items) {
+      this.local_items = items;
+      this.$emit("reorderMedias", items);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
