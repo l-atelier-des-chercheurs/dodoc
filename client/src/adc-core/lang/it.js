@@ -1151,6 +1151,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   already_optimized:
     "Questo media è già stato convertito e una nuova conversione rischia di degradarne significativamente la qualità.",
+  resized: "Ridimensionato",
+  blurred: "Sfocato",
   preview_new: "Crea una nuova versione",
   wont_remove_original: "Non eliminerà l’originale",
   replace_original: "Sostituisci l’originale",

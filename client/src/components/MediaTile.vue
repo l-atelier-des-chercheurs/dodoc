@@ -56,15 +56,18 @@
       <div v-if="has_coordinates">
         <b-icon class="_indicator" icon="pin-map-fill" />
       </div>
-      <!-- <div
+      <div
         v-if="is_optimized"
         class="_optimized"
         :title="$t('already_optimized')"
       >
-        <b-icon class="_indicator" icon="tools" />
-      </div> -->
+        <b-icon class="_indicator _indicator--tiny" icon="tools" />
+      </div>
+      <div v-if="is_resized" class="_resized" :title="$t('resized')">
+        <b-icon class="_indicator _indicator--tiny" icon="bounding-box" />
+      </div>
       <div v-if="is_blurred" class="_blurred" :title="$t('blurred')">
-        <b-icon class="_indicator" icon="dash-circle-dotted" />
+        <b-icon class="_indicator _indicator--tiny" icon="dash-circle-dotted" />
       </div>
     </div>
 
@@ -143,7 +146,11 @@ export default {
     },
     is_optimized() {
       const p = this.file.$processing;
-      return Array.isArray(p) && p.length > 0;
+      return Array.isArray(p) && p.includes("optimized");
+    },
+    is_resized() {
+      const p = this.file.$processing;
+      return Array.isArray(p) && p.includes("resized");
     },
     is_blurred() {
       const p = this.file.$processing;

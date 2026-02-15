@@ -1208,6 +1208,8 @@ export default {
 
   already_optimized:
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
+  resized: "Redimensionné",
+  blurred: "Flouté",
   preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
   replace_original: "Remplacer l’original",
