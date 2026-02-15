@@ -116,7 +116,7 @@ export default {
   margin: 0;
 }
 ._numberField {
-  flex: 2 0 0px;
+  flex: 0 0 12ch;
 }
 
 ::v-deep {
@@ -124,7 +124,7 @@ export default {
     // background: blue;
     &.is--beingEdited {
       // background: red;
-      flex: 6 0 0;
+      // flex: 6 0 0;
     }
   }
 }

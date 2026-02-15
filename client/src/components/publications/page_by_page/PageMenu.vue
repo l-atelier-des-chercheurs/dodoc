@@ -585,6 +585,7 @@
         />
 
         <RangeValueInput
+          v-if="!is_shape"
           class="u-spacingBottom"
           :label="$t('blur')"
           :value="active_module.blur || 0"

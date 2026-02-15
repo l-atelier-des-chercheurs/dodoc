@@ -194,9 +194,9 @@ export default {
   border-radius: var(--border-radius);
 
   ::v-deep {
-    ._numberField {
-      flex: 1 0 0;
-    }
+    // ._numberField {
+    //   flex: 1 0 0;
+    // }
   }
 }
 ._preview {

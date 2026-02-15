@@ -5,7 +5,7 @@
   >
     <DLabel v-if="label" :str="label" :for="label" />
 
-    <div class="u-sameRow">
+    <div class="u-sameRow _inputRow">
       <div class="u-inputGroup">
         <input
           ref="field"
@@ -25,9 +25,9 @@
         </span>
       </div>
       <button
-        type="button"
         v-if="value !== local_value"
-        class="u-button u-button_bleuvert _submitBtn"
+        type="button"
+        class="u-button u-button_bleuvert u-button_verysmall _submitBtn"
         @click="$emit('save', local_value)"
       >
         <b-icon style="font-size: 1.5em" icon="check" />
@@ -90,11 +90,21 @@ export default {
 ._numberInput {
 }
 
+._inputRow {
+  position: relative;
+}
+
+._numberInput.is--beingEdited .u-inputGroup {
+  // padding-right: 2.5em; /* room for absolute save button */
+}
+
 ._input {
   flex: 1 0 30px;
 }
 
 ._submitBtn {
-  padding: calc(var(--spacing) / 8);
+  position: absolute;
+  top: 100%;
+  width: 100%;
 }
 </style>
