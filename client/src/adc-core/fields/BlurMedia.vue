@@ -511,7 +511,7 @@ export default {
     },
     async buttonSaveAsNew() {
       await this.saveAsNew();
-      this.$emit("closeParentModal");
+      this.$emit("close");
     },
     async saveAsNew() {
       this.is_saving = true;
@@ -566,7 +566,7 @@ export default {
         new_meta: { $media_filename: old_media_filename },
       });
       await this.$api.deleteItem({ path: temp_path });
-      this.$emit("closeParentModal");
+      this.$emit("close");
     },
   },
 };

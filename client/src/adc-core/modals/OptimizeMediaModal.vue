@@ -136,7 +136,7 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async keepBoth() {
-      this.$emit("close");
+      this.$emit("closeParentModal");
     },
     async replaceOriginal() {
       await replaceOriginalWithNewFile(
@@ -146,7 +146,7 @@ export default {
         "optimized"
       );
       this.optimized_file = undefined;
-      this.$emit("close");
+      this.$emit("closeParentModal");
     },
     removeAndCloseModal() {
       if (this.optimized_file)

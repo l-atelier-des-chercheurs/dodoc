@@ -155,7 +155,7 @@ export default {
     },
     async buttonSaveAsNew() {
       await this.saveAsNew();
-      this.$emit("closeParentModal");
+      this.$emit("close");
     },
     async saveAsNew() {
       console.log("saveAsNew");
@@ -207,7 +207,7 @@ export default {
         "cropped",
         true
       );
-      this.$emit("closeParentModal");
+      this.$emit("close");
     },
   },
 };

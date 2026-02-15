@@ -6,6 +6,7 @@ const META_KEYS_NOT_COPIED = [
   "$path",
   "$media_filename",
   "$infos",
+  "$type",
   "$thumbs",
   "$date_uploaded",
   "$date_modified",

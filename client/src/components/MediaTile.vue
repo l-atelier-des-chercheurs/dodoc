@@ -61,17 +61,13 @@
         class="_optimized"
         :title="$t('already_optimized')"
       >
-        <b-icon class="_indicator _indicator--tiny" icon="sliders" />
+        <b-icon class="_indicator" icon="sliders" />
       </div>
-      <div
-        v-if="is_cropped"
-        class="_cropped"
-        :title="$t('cropped')"
-      >
-        <b-icon class="_indicator _indicator--tiny" icon="bounding-box" />
+      <div v-if="is_cropped" class="_cropped" :title="$t('cropped')">
+        <b-icon class="_indicator" icon="bounding-box" />
       </div>
       <div v-if="is_blurred" class="_blurred" :title="$t('blurred')">
-        <b-icon class="_indicator _indicator--tiny" icon="dash-circle-dotted" />
+        <b-icon class="_indicator" icon="dash-circle-dotted" />
       </div>
     </div>
 
@@ -151,8 +147,7 @@ export default {
     is_optimized() {
       const p = this.file.$processing;
       return (
-        Array.isArray(p) &&
-        (p.includes("optimized") || p.includes("resized"))
+        Array.isArray(p) && (p.includes("optimized") || p.includes("resized"))
       );
     },
     is_cropped() {
@@ -411,9 +406,9 @@ export default {
   right: 0;
   left: auto;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: calc(var(--spacing) / 8);
+  gap: 0;
 
   ._mediaTile[data-tilemode="table"] & {
     position: relative;
@@ -499,7 +494,7 @@ export default {
   color: black;
   border-radius: 2px;
   line-height: 1;
-  font-weight: 600;
+  // font-weight: 600;
   padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 8);
   font-size: var(--input-font-size-small);

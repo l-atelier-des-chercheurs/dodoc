@@ -30,7 +30,6 @@
         v-if="show_blur_modal"
         :media="file"
         @close="show_blur_modal = false"
-        @closeParentModal="$emit('close')"
       />
 
       <div class="_meta" v-if="show_meta_sidebar || $root.is_mobile_view">
@@ -234,7 +233,6 @@
               v-if="show_cropadjust_modal"
               :media="file"
               @close="show_cropadjust_modal = false"
-              @closeParentModal="$emit('close')"
             />
 
             <button

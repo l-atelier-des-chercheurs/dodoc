@@ -60,6 +60,7 @@
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
 import VideoAudioImageQualityPicker from "@/adc-core/fields/VideoAudioImageQualityPicker.vue";
 import OptimizeMediaModal from "@/adc-core/modals/OptimizeMediaModal.vue";
+import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
 
 export default {
   props: {
@@ -139,6 +140,11 @@ export default {
         base_media_path: this.makeMediaFilePath({
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
+        }),
+
+        additional_meta: getCopyableMediaMeta(this.media, {
+          $origin: "collect",
+          $processing: ["optimized"],
         }),
       };
 

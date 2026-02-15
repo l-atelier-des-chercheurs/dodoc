@@ -76,6 +76,7 @@ import SelectField2 from "@/adc-core/fields/SelectField2.vue";
 import Medias from "@/mixins/Medias.js";
 import Paths from "@/mixins/Paths.js";
 import { replaceOriginalWithNewFile } from "@/utils/replaceOriginalMedia.js";
+import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
 
 export default {
   props: {
@@ -161,10 +162,10 @@ export default {
           $path: image.$path,
           $media_filename: image.$media_filename,
         }),
-        additional_meta: {
+        additional_meta: getCopyableMediaMeta(image, {
           $origin: "collect",
           $processing: ["optimized"],
-        },
+        }),
       };
     },
     async replaceOriginalWithOptimized(media, optimized_file) {
