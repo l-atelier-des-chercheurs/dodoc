@@ -34,33 +34,12 @@
         {{ $t("add") }}
       </button>
 
-      <BaseModal2
+      <CreateFontModal
         v-if="show_create_font"
-        :title="$t('add_font')"
+        :path="path"
         @close="show_create_font = false"
-      >
-        <TextInput
-          :content.sync="new_font_title"
-          :label_str="'font_name'"
-          :required="true"
-          :input_type="'text'"
-          :autofocus="true"
-          :maxlength="40"
-        />
-
-        <div class="u-spacingBottom" />
-
-        <template #footer>
-          <button
-            class="u-button u-button_bleuvert"
-            :disabled="new_font_title.length === 0"
-            type="submit"
-            @click="createFont"
-          >
-            {{ $t("create") }}
-          </button>
-        </template>
-      </BaseModal2>
+        @created="openFontItem"
+      />
     </template>
     <template v-else>
       <FontItem
@@ -85,11 +64,13 @@
 </template>
 <script>
 import FontItem from "@/adc-core/ui/FontItem.vue";
+import CreateFontModal from "@/adc-core/ui/CreateFontModal.vue";
 
 export default {
   props: {},
   components: {
     FontItem,
+    CreateFontModal,
   },
   data() {
     return {
@@ -97,8 +78,6 @@ export default {
       show_create_font: false,
 
       opened_font_item_path: false,
-
-      new_font_title: "",
 
       path: "fonts",
     };
@@ -121,17 +100,6 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    async createFont() {
-      const font_slug = await this.$api.createFolder({
-        path: this.path,
-        additional_meta: {
-          title: this.new_font_title,
-          requested_slug: this.new_font_title,
-          $status: "public",
-        },
-      });
-      this.openFontItem(this.path + "/" + font_slug);
-    },
     openFontItem(path) {
       this.opened_font_item_path = path;
     },
