@@ -54,7 +54,6 @@
       <PagedViewer
         v-if="view_mode === 'book'"
         :content_nodes="content_nodes"
-        :format_mode="format_mode"
         :viewer_type="viewer_type"
         :css_styles="css_styles"
         :content_html="content_html"
@@ -249,14 +248,24 @@ export default {
         });
     },
     css_styles() {
-      return (
-        // prettier-ignore
-        "/******************************* paged.js engine styles (added by do•doc) *******************************/" +
-        (pagedengine || "") +
-        // prettier-ignore
-        `/******************************* custom styles ${this.opened_style_file_meta || "default"} *******************************/` +
-        (this.custom_styles_unnested || "")
-      );
+      const engine_block =
+        `/****************** paged.js engine styles (added by do•doc) ******************/\n` +
+        pagedengine;
+
+      const injected_block =
+        `\n\n/****************** page size ${this.format_mode} ******************/\n` +
+        `@page {
+          size: ${this.format_mode};
+        }`;
+
+      const user_block =
+        `\n\n/****************** custom styles ${
+          this.opened_style_file_meta || "default"
+        } ******************/\n` + (this.custom_styles_unnested || "");
+
+      const full = engine_block + injected_block + user_block;
+
+      return full;
     },
     content_html() {
       const nodes = this.content_nodes;

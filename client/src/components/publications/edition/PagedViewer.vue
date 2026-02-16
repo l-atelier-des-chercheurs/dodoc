@@ -44,10 +44,6 @@ export default {
       type: Object,
       required: true,
     },
-    format_mode: {
-      type: String,
-      required: true,
-    },
     viewer_type: {
       type: String,
       required: true,
@@ -99,9 +95,6 @@ export default {
   },
   watch: {
     async content_html() {
-      await this.generateBook();
-    },
-    async format_mode() {
       await this.generateBook();
     },
     async css_styles() {
@@ -164,15 +157,9 @@ export default {
         let pagedjs_html = this.content_html;
         if (pagedjs_html.length == 0) pagedjs_html = `<div></div>`;
 
-        let pagedjs_styles = `
-        @page {
-          size: ${this.format_mode};
-        }
-        `;
-        pagedjs_styles += this.css_styles;
         const theme_styles = [
           {
-            pagedjs_styles,
+            pagedjs_styles: this.css_styles,
           },
         ];
 
