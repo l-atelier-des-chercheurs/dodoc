@@ -311,6 +311,7 @@ export default (md, o = {}) => {
           height: token.attrs.height,
           title,
           size,
+          tag: token.tag,
         });
 
         if (!html || html.includes("Media not found")) {

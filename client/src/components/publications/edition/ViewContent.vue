@@ -447,7 +447,7 @@ export default {
         },
       });
       md.use(markdownItCsc, {
-        renderMedia: ({ meta_src, alt, width, height, title, size }) =>
+        renderMedia: ({ meta_src, alt, width, height, title, size, tag }) =>
           this.renderMedia({
             meta_src,
             source_medias,
@@ -456,6 +456,7 @@ export default {
             height,
             title,
             size,
+            tag,
           }),
         transformURL: (url) => this.transformURL(url),
       });
@@ -702,6 +703,7 @@ export default {
       height,
       title,
       size,
+      tag,
     }) {
       return renderMediaFunction({
         media,
@@ -712,11 +714,13 @@ export default {
         height,
         title,
         size,
+        tag,
         context: {
           view_mode: this.view_mode,
           getMediaSrc: this.getMediaSrc.bind(this),
           makeMediaFileURL: this.makeMediaFileURL.bind(this),
           makeQREmbedForQR: this.makeQREmbedForQR.bind(this),
+          makeQREmbedForExternalURL: this.makeQREmbedForExternalURL.bind(this),
         },
       });
     },
@@ -776,6 +780,21 @@ export default {
                 >
               </div>`;
       }
+      return html;
+    },
+    makeQREmbedForExternalURL({ url, alt, width, height }) {
+      const code = generate(url);
+      const data_url = code.toDataURL({ scale: 10 });
+
+      let html = `
+        <a href="${url}" target="_blank" rel="noopener" data-url="url">
+          <img class="_qrCode" src="${data_url}" alt="QR code for link" />
+        </a>
+      `;
+      html += `<div class="mediaInfos">`;
+      html += `<div class="mediaDuration">${url}</div>`;
+      html += `<div class="mediaSourceCaption">${alt || ""}</div>`;
+      html += `</div>`;
       return html;
     },
   },

@@ -76,6 +76,10 @@ function renderMediaHTML({
       }></iframe>`;
     case "image":
       return `<img src="${src}"${alt_attr}${img_style_attr} />`;
+    case "embed":
+      // External embed (e.g. PeerTube, YouTube) as iframe in HTML view
+      const embed_style = iframe_style_attr || ' style="width: 100%; min-height: 400px;"';
+      return `<iframe src="${src}" frameborder="0" allowfullscreen${embed_style}></iframe>`;
     case "text":
       return media?.$content || "";
     default:
@@ -99,6 +103,8 @@ function renderMediaHTML({
  * @param {Function} params.context.getMediaSrc - Function to get media from source
  * @param {Function} params.context.makeMediaFileURL - Function to create media file URLs
  * @param {Function} params.context.makeQREmbedForQR - Function to create QR code embeds
+ * @param {Function} params.context.makeQREmbedForExternalURL - Function to create QR for external embed URLs
+ * @param {string} params.tag - Shortcode tag (e.g. "embed", "pdf", "image")
  * @returns {Object} Object with `html` and `is_qr_code` properties
  */
 export function renderMedia({
@@ -110,6 +116,7 @@ export function renderMedia({
   height,
   title,
   size,
+  tag,
   context = {},
 }) {
   const {
@@ -117,6 +124,7 @@ export function renderMedia({
     getMediaSrc = () => null,
     makeMediaFileURL = ({ $path, $media_filename }) => `/${$media_filename}`,
     makeQREmbedForQR = () => "",
+    makeQREmbedForExternalURL = () => "",
   } = context;
 
   let media_html = "";
@@ -163,21 +171,37 @@ export function renderMedia({
 
   // Handle external URLs (http/https)
   if (meta_src && meta_src.startsWith("http")) {
-    const media_type = detectMediaTypeFromURL(meta_src);
+    const media_type =
+      tag === "embed" ? "embed" : detectMediaTypeFromURL(meta_src);
     custom_classes.push(`media-${media_type}`);
 
-    media_html = renderMediaHTML({
-      media_type,
-      src: meta_src,
-      width,
-      height,
-      alt,
-      has_caption,
-      view_mode,
-      makeQREmbedForQR,
-      media: null, // External URLs don't have media object
-      use_qr_code: false, // External URLs never use QR codes
-    });
+    // In book mode, external embed URLs show QR code (like PDF)
+    const use_qr_for_external_embed =
+      view_mode === "book" && tag === "embed" && makeQREmbedForExternalURL;
+
+    if (use_qr_for_external_embed) {
+      is_qr_code = true;
+      custom_classes.push("_isqrcode");
+      media_html = makeQREmbedForExternalURL({
+        url: meta_src,
+        alt,
+        width,
+        height,
+      });
+    } else {
+      media_html = renderMediaHTML({
+        media_type,
+        src: meta_src,
+        width,
+        height,
+        alt,
+        has_caption,
+        view_mode,
+        makeQREmbedForQR,
+        media: null, // External URLs don't have media object
+        use_qr_code: false, // Other external URLs never use QR codes
+      });
+    }
   } else {
     // Handle local media
     if (!media) {
