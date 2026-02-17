@@ -1,6 +1,6 @@
 services:
   dodoc-node:
-    image: registry.gitlab.com/l-atelier-des-chercheurs/dodoc2-node:13.0.1-0
+    image: ghcr.io/l-atelier-des-chercheurs/dodoc:latest
     ports:
       - "8080:8080"
     volumes:

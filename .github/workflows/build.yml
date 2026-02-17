@@ -1,0 +1,71 @@
+name: Build/release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      dodoc-version: ${{ steps.dodoc-version.outputs.current-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Get Dodoc version
+        id: dodoc-version
+        run: |
+          echo "Reading package.json from package.json"
+          PACKAGE_VERSION=$(cat package.json | jq '.version' | tr -d '"')
+          echo "current-version=${PACKAGE_VERSION}" >> $GITHUB_OUTPUT
+          echo "current-version=${PACKAGE_VERSION}"
+  docker:
+    runs-on: ubuntu-latest
+    needs : meta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ghcr.io/l-atelier-des-chercheurs/dodoc:${{needs.meta.outputs.dodoc-version}}
+            ghcr.io/l-atelier-des-chercheurs/dodoc:latest
+
+  electron:
+    runs-on: ${{ matrix.os }}
+    needs : meta
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Package Electron app
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          npm install
+          cd electron
+          npm install
+          npm run dist

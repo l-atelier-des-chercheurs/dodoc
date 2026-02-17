@@ -10,7 +10,7 @@
     "debug": "electron --inspect=5858 . -- --debug --verbose",
     "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "electron-builder -p always",
     "dist:win-store": "electron-builder --win appx",
     "postinstall": "electron-builder install-app-deps"
   },
