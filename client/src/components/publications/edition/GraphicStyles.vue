@@ -49,7 +49,7 @@
         <DLabel :str="$t('name')" />
         <TextInput
           :content.sync="new_css_title"
-          :maxlength="40"
+          :maxlength="60"
           :required="true"
           :autofocus="true"
           ref="titleInput"

@@ -21,7 +21,7 @@
           :path="make.$path"
           :required="true"
           :minlength="3"
-          :maxlength="40"
+          :maxlength="60"
           :can_edit="can_edit"
         />
 

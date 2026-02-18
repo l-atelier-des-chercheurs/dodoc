@@ -18,7 +18,7 @@
         :show_label="false"
         :field_name="'title'"
         :tag="'h3'"
-        :maxlength="40"
+        :maxlength="60"
         :required="true"
         :content="publication.title"
         :path="publication.$path"

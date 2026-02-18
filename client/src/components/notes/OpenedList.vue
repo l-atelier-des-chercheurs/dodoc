@@ -11,7 +11,7 @@
           :field_name="'title'"
           :tag="'h1'"
           :required="true"
-          :maxlength="50"
+          :maxlength="60"
           :can_edit="true"
         />
         <DropDown :right="true" :show_label="false">

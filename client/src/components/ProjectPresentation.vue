@@ -129,7 +129,7 @@
           :content="project.title"
           :path="project.$path"
           :required="true"
-          :maxlength="50"
+          :maxlength="60"
           :tag="
             context === 'full'
               ? 'h1'

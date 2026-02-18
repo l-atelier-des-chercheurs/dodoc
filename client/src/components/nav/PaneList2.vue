@@ -58,7 +58,7 @@
               <span
                 class="_name"
                 key="'name'"
-                v-if="paneIsEnabled(pane.type) || !$root.is_mobile_view"
+                v-if="paneIsEnabled(pane.type) || !has_enabled_panes"
               >
                 <!-- {{ index + 1 }} •  -->
                 {{ $t(pane.type) }}
@@ -195,6 +195,9 @@ export default {
     },
   },
   computed: {
+    has_enabled_panes() {
+      return this.project_panes.length > 0;
+    },
     disabled_panes_from_project() {
       return this.project?.disabled_panes || [];
     },

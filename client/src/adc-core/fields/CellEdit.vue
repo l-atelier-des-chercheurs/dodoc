@@ -1,14 +1,5 @@
 <template>
   <div class="_cellEdit">
-    <!-- <TitleField
-      :content="local_value"
-      :input_type="input_type"
-      :maxlength="60"
-      :can_edit="can_edit"
-      @save="save"
-      @cancel="cancel"
-    /> -->
-
     <TitleField
       :label="$t('content')"
       :show_label="false"
