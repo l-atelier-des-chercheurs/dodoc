@@ -93,14 +93,6 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
-    can_edit_project() {
-      const project_path = this.getParent(
-        this.getParent(this.publication_path)
-      );
-      const project = this.getFromCache(project_path);
-      if (!project) return false;
-      return this.canLoggedinEditFolder({ folder: project });
-    },
     show_credits_caption_button() {
       if (this.show_credits_caption) return false;
       if (this.media.$type === "text" || this.media.$type === "table")
@@ -135,9 +127,13 @@ export default {
         return this.can_edit;
       }
 
+      const project_path = this.getParent(
+        this.getParent(this.publication_path)
+      );
       // media is linked to parent project
-      if (media_parent_folder === this.project_path) {
-        return this.can_edit_project;
+      if (media_parent_folder === project_path) {
+        const project = this.getFromCache(project_path);
+        return this.canLoggedinContributeToFolder({ folder: project });
       }
 
       return false;
