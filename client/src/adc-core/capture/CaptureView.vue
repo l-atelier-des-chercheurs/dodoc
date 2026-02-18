@@ -454,7 +454,10 @@
                   type="button"
                   class="u-button u-button_orange u-button_inline _captureButton"
                   :key="selected_mode + '_pause'"
-                  v-if="selected_mode === 'video' && is_recording"
+                  v-if="
+                    (selected_mode === 'video' || selected_mode === 'audio') &&
+                    is_recording
+                  "
                   @mousedown.stop.prevent="pauseOrResumeCapture()"
                   @touchstart.stop.prevent="pauseOrResumeCapture()"
                 >
@@ -553,7 +556,7 @@
                       'is--active': capture_button_pressed,
                     }"
                     :disabled="is_sending_image"
-                    :key="selected_mode + is_recording"
+                    :key="selected_mode + '_start'"
                     @mousedown.stop.prevent="setCaptureInit()"
                     @touchstart.stop.prevent="setCaptureInit()"
                   >
@@ -596,7 +599,7 @@
                     v-else-if="is_recording"
                     class="u-button u-button_orange u-button_inline _captureButton"
                     :disabled="is_sending_image"
-                    :key="selected_mode + is_recording"
+                    :key="selected_mode + '_stop'"
                     @mousedown.stop.prevent="stopRecording()"
                     @touchstart.stop.prevent="stopRecording()"
                   >
