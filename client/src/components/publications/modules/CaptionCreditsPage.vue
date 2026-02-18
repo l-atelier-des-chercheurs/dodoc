@@ -44,7 +44,7 @@
           "
         >
           <CollaborativeEditor3
-            :label="$t('credit/reference')"
+            :label="$t('credit')"
             :field_to_edit="'$credits'"
             :content="media.$credits"
             :path="media.$path"
@@ -93,6 +93,14 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    can_edit_project() {
+      const project_path = this.getParent(
+        this.getParent(this.publication_path)
+      );
+      const project = this.getFromCache(project_path);
+      if (!project) return false;
+      return this.canLoggedinEditFolder({ folder: project });
+    },
     show_credits_caption_button() {
       if (this.show_credits_caption) return false;
       if (this.media.$type === "text" || this.media.$type === "table")
@@ -123,15 +131,14 @@ export default {
       const media_parent_folder = this.getParent(path);
 
       // media is directly inside publication
-      let folder = this.publication_path;
-      if (media_parent_folder === folder) {
-        if (this.canLoggedinEditFolder({ folder })) return "local";
+      if (media_parent_folder === this.publication_path) {
+        return this.can_edit;
       }
 
-      // media is linked to parent
-      folder = this.getParent(this.getParent(this.publication_path));
-      if (media_parent_folder === folder)
-        if (this.canLoggedinEditFolder({ folder })) return "link";
+      // media is linked to parent project
+      if (media_parent_folder === this.project_path) {
+        return this.can_edit_project;
+      }
 
       return false;
     },
