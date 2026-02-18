@@ -44,7 +44,7 @@
           "
         >
           <CollaborativeEditor3
-            :label="$t('credit')"
+            :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
             :content="media.$credits"
             :path="media.$path"
