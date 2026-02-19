@@ -11,7 +11,7 @@
         :tag="'h2'"
         :content="style_file.css_title"
         :path="style_file.$path"
-        :maxlength="40"
+        :maxlength="60"
         :can_edit="true"
       />
     </template>
