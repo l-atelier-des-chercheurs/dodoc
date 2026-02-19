@@ -1,7 +1,7 @@
 <template>
   <div class="_textEditor">
     <div class="_textEditor--label" v-if="is_empty || is_editing">
-      <b-icon :icon="icon" />
+      <b-icon v-if="icon" :icon="icon" />
       <DLabel
         v-if="!placeholder"
         :str="label"
@@ -12,7 +12,7 @@
       </span>
       <button
         type="button"
-        v-if="!is_editing"
+        v-if="!is_editing && can_edit"
         class="u-button u-button_icon u-button_small _textEditor--editBtn"
         :label="$t('edit')"
         @click="startEditing"
@@ -271,6 +271,7 @@ export default {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 4);
+  color: var(--g-700);
 
   &.is--empty {
     :deep(.u-label) {
