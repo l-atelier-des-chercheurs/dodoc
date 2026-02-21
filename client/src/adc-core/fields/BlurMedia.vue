@@ -184,7 +184,7 @@
             >
               <small>
                 <a
-                  :href="final_image_blob"
+                  :href="final_image_blob_url"
                   :download="final_image_filename"
                   target="_blank"
                 >
@@ -235,6 +235,7 @@ export default {
       blur_radius: 5,
       mask_feather_px: 10,
       final_image: null,
+      final_image_blob_url: null,
       cursor_x: 0,
       cursor_y: 0,
       show_brush_cursor: false,
@@ -261,6 +262,15 @@ export default {
     },
   },
   watch: {
+    final_image_blob: {
+      immediate: true,
+      handler(blob) {
+        this.revokeFinalImageBlobUrl();
+        this.final_image_blob_url = blob
+          ? window.URL.createObjectURL(blob)
+          : null;
+      },
+    },
     media: {
       immediate: true,
       handler(media) {
@@ -291,8 +301,15 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
+    this.revokeFinalImageBlobUrl();
   },
   methods: {
+    revokeFinalImageBlobUrl() {
+      if (this.final_image_blob_url) {
+        window.URL.revokeObjectURL(this.final_image_blob_url);
+        this.final_image_blob_url = null;
+      }
+    },
     onImageLoad() {
       const img = this.$refs.source_img;
       if (!img) return;

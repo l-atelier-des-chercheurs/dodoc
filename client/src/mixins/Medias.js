@@ -65,7 +65,7 @@ export default {
       // - meta_filename_in_project, meaning media belongs to project path
       // - path, meaning media has full path to project or publi media (legacy)
 
-      if(!source_media) return;
+      if (!source_media) return;
 
       let source_path = undefined;
       let meta_filename = undefined;
@@ -353,6 +353,7 @@ export default {
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
     dataURLtoBlob(dataurl) {
+      if (!dataurl) return null;
       var arr = dataurl.split(","),
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]),

@@ -70,7 +70,7 @@
               <small>
                 <a
                   ref=""
-                  :href="final_image_blob"
+                  :href="final_image_blob_url"
                   :download="final_image_filename"
                   target="_blank"
                 >
@@ -121,14 +121,27 @@ export default {
 
       final_image: null,
 
+      final_image_blob_url: null,
+
       saturation: 1,
     };
   },
   created() {},
   mounted() {},
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.revokeFinalImageBlobUrl();
+  },
   watch: {
     saturation(value) {},
+    final_image_blob: {
+      immediate: true,
+      handler(blob) {
+        this.revokeFinalImageBlobUrl();
+        this.final_image_blob_url = blob
+          ? window.URL.createObjectURL(blob)
+          : null;
+      },
+    },
   },
   computed: {
     final_image_filename() {
@@ -142,6 +155,12 @@ export default {
     },
   },
   methods: {
+    revokeFinalImageBlobUrl() {
+      if (this.final_image_blob_url) {
+        window.URL.revokeObjectURL(this.final_image_blob_url);
+        this.final_image_blob_url = null;
+      }
+    },
     updateCrop(image) {
       this.cropped_image = image;
       this.current_step = "adjust";
