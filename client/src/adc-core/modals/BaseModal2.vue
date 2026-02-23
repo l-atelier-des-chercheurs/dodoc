@@ -63,7 +63,9 @@
             <template slot="footer">
               <SaveCancelButtons
                 :cancel_text="$t('continue_editing')"
-                :save_text="$t('close_without_saving')"
+                cancel_icon="none"
+                :save_text="$t('discard_changes')"
+                save_icon="x-circle"
                 :save_is_destructive="true"
                 @save="closeModal"
                 @cancel="cancelCloseModal"

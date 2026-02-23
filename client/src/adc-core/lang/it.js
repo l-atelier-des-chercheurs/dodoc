@@ -1231,7 +1231,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   connected_currently: "Connesso attualmente",
 
-  confirm_save_changes: "Ci sono state delle modifiche, vuoi salvarle?",
+  confirm_save_changes: "Ci sono modifiche non salvate.",
+  confirm_cancel_changes: "Ci sono modifiche non salvate.",
+  continue_editing: "Continua a modificare",
+  discard_changes: "Annulla modifiche",
   close_without_saving: "Chiudi senza salvare",
 
   start_by_uploading_images: "Inizia importando le immagini di seguito",
