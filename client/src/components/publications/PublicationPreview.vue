@@ -157,9 +157,13 @@ export default {
 }
 ._publicationPreview--cover {
   position: relative;
+
   // overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  img {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
 }
 
 ._header {
@@ -210,9 +214,11 @@ export default {
   align-content: center;
   align-items: center;
   // border: 2px solid white;
-  padding: calc(var(--spacing) / 1);
+  // padding: calc(var(--spacing) / 1);
   width: 100%;
-  aspect-ratio: 21/29.7;
+  // aspect-ratio: 21/29.7;
+  box-shadow: none;
+  background: transparent;
   min-height: 50px;
 }
 

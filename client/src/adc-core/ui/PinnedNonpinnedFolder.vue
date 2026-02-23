@@ -240,6 +240,7 @@ export default {
     grid-gap: var(--item-gap, calc(var(--spacing) / 1));
     align-items: stretch;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    align-items: baseline;
 
     &.is--medium {
       grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
