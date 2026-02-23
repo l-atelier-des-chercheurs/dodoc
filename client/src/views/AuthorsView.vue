@@ -10,6 +10,7 @@
       :can_edit="false"
       :empty_message="$t('no_accounts_to_show')"
       :available_view_modes="['list', 'medium', 'map']"
+      :default_view_mode="'medium'"
     >
       <template #list-header>
         <div class="u-spacingBottom">

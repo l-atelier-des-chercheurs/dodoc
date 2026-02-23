@@ -9,6 +9,7 @@
         :display_original_space="true"
         :folder_type="'project'"
         :available_view_modes="['tiny', 'medium', 'map']"
+        :default_view_mode="'tiny'"
       >
         <template #item="{ item, view_mode }">
           <ProjectPresentation

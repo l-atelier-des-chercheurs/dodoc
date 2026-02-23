@@ -56,6 +56,7 @@
           :pin_field_name="'projects_pinned'"
           :pin_label="$t('projects_pinned')"
           :available_view_modes="['tiny', 'medium', 'map']"
+          :default_view_mode="'tiny'"
         >
           <template #item="{ item, view_mode }">
             <ProjectPresentation

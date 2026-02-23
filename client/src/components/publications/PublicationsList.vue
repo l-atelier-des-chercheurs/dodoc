@@ -11,6 +11,7 @@
       :pin_label="$t('publications_pinned')"
       :empty_message="$t('no_publications')"
       :available_view_modes="['list', 'tiny', 'medium']"
+      :default_view_mode="'tiny'"
     >
       <template #before-sidebar-toggle>
         <DLabel :str="$t('publications')" :tag="'h2'" />

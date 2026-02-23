@@ -301,6 +301,10 @@ export default {
       type: Array,
       default: () => ["list", "medium", "map", "tiny"],
     },
+    default_view_mode: {
+      type: String,
+      default: "tiny",
+    },
   },
   components: {
     FilterableListLayout,
@@ -312,7 +316,7 @@ export default {
       search_query: "",
       order_key: "$date_created",
 
-      current_view_mode: "tiny", // 'list' or 'map' or 'medium'
+      current_view_mode: this.default_view_mode, // 'list' or 'map' or 'medium'
       filter_by_group: "", // for authors
     };
   },
@@ -550,7 +554,8 @@ export default {
   methods: {
     loadSettings() {
       this.current_view_mode =
-        localStorage.getItem(this.view_mode_saved_key) || "tiny";
+        localStorage.getItem(this.view_mode_saved_key) ||
+        this.default_view_mode;
       this.search_query =
         localStorage.getItem(this.search_query_saved_key) || "";
 

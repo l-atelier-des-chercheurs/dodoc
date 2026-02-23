@@ -16,6 +16,7 @@
       :pin_label="$t('spaces_pinned')"
       :empty_message="$t('no_spaces')"
       :available_view_modes="['medium', 'map']"
+      :default_view_mode="'medium'"
     >
       <template #before-sidebar-toggle>
         <button
