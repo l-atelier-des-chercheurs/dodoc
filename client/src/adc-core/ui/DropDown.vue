@@ -16,14 +16,14 @@
     >
       <template v-if="$slots.hasOwnProperty('trigger')">
         <slot name="trigger" />
-        <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
+        <b-icon icon="three-dots" :aria-label="$t('options')" />
         <template v-if="show_label">
           {{ $t("options") }}
         </template>
-        <b-icon icon="three-dots" :aria-label="$t('options')" />
       </template>
+      <span v-if="show_caret" class="b-icon bi _caret" />
     </button>
 
     <transition name="fade_fast">
