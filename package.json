@@ -19,7 +19,9 @@
     "start": "node .",
     "debug": "node . --inspect=5858 -- --debug --verbose",
     "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
-    "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
+    "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js",
+    "preversion": "npm run build --prefix client && git add client/dist",
+    "postversion": "git push --follow-tags"
   },
   "engines": {
     "node": "22.22.0",
