@@ -312,7 +312,7 @@ export default {
       search_query: "",
       order_key: "$date_created",
 
-      current_view_mode: "medium", // 'list' or 'map' or 'medium'
+      current_view_mode: "tiny", // 'list' or 'map' or 'medium'
       filter_by_group: "", // for authors
     };
   },
@@ -550,7 +550,7 @@ export default {
   methods: {
     loadSettings() {
       this.current_view_mode =
-        localStorage.getItem(this.view_mode_saved_key) || "medium";
+        localStorage.getItem(this.view_mode_saved_key) || "tiny";
       this.search_query =
         localStorage.getItem(this.search_query_saved_key) || "";
 
