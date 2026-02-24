@@ -1287,14 +1287,12 @@ export default {
 
   connected_currently: "Connecté actuellement",
 
-  confirm_save_changes:
-    "Vous avez des modifications non enregistrées.",
-  confirm_cancel_changes:
-    "Vous avez des modifications non enregistrées.",
+  confirm_save_changes: "Vous avez des modifications non enregistrées.",
+  confirm_cancel_changes: "Vous avez des modifications non enregistrées.",
   continue_editing: "Continuer l’édition",
   discard_changes: "Abandonner",
   close_without_saving: "Fermer sans enregistrer",
-
+  done: "Terminé",
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
   or: "ou",
   live_dubbing: "Doublage en direct",

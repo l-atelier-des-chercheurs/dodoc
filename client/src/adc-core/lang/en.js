@@ -1208,14 +1208,12 @@ export default {
 
   connected_currently: "Connected currently",
 
-  confirm_save_changes:
-    "You have unsaved changes.",
-  confirm_cancel_changes:
-    "You have unsaved changes.",
+  confirm_save_changes: "You have unsaved changes.",
+  confirm_cancel_changes: "You have unsaved changes.",
   continue_editing: "Continue editing",
   discard_changes: "Discard changes",
   close_without_saving: "Close without saving",
-
+  done: "Done",
   keep_existing_keywords: "Keep existing keywords",
   add_after_existing_keywords: "Add after existing keywords",
   erase_and_replace_keywords: "Erase and replace keywords",

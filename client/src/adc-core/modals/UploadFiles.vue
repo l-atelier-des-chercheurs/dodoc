@@ -44,7 +44,7 @@
             {{ $t("cancel") }}
           </template>
           <template v-else> -->
-          {{ confirm_before_closing ? $t("interrupt") : $t("close") }}
+          {{ confirm_before_closing ? $t("interrupt") : $t("done") }}
           <!-- </template> -->
         </button>
       </template>
