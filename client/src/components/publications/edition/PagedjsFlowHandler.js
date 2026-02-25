@@ -11,7 +11,7 @@ export class PagedjsFlowHandler extends Handler {
   }
 
   afterPreview(pages) {
-    console.log("PagedjsFlowHandler: afterPreview");
+    // console.log("PagedjsFlowHandler: afterPreview");
     this.handleAllChains(pages);
   }
 
@@ -38,6 +38,10 @@ export class PagedjsFlowHandler extends Handler {
       });
 
       const page_number = page.position + 1;
+
+      if (Object.keys(chains).length === 0) {
+        return;
+      }
 
       console.log(
         `PagedjsFlowHandler: Page ${page_number} found ${

@@ -334,9 +334,9 @@ export default {
 
       const page_scrollLeft = page.getBoundingClientRect().left;
       const page_scrollTop = page.getBoundingClientRect().top;
-      console.log("-");
-      console.log(container_scrollLeft, container_scrollTop);
-      console.log(page_scrollLeft, page_scrollTop);
+      // console.log("-");
+      // console.log(container_scrollLeft, container_scrollTop);
+      // console.log(page_scrollLeft, page_scrollTop);
 
       const padding = 200;
       this.$refs.panzoom3.scrollTo(

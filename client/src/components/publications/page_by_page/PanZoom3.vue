@@ -224,7 +224,7 @@ export default {
         const x = this.infiniteviewer.getScrollLeft();
         const y = this.infiniteviewer.getScrollTop();
         const zoom = this.infiniteviewer.getZoom();
-        console.log("handleInteractionEnd", x, y, zoom);
+        // console.log("handleInteractionEnd", x, y, zoom);
         this.$emit("scroll-end", { x, y, zoom });
       }, 200);
     },
@@ -244,7 +244,6 @@ export default {
       console.log("abortPinch");
     },
     pinch() {
-      console.log("pinch");
       this.handleInteractionEnd();
     },
     panTo({ x, y }) {
@@ -285,7 +284,6 @@ export default {
       this.$eventHub.$emit("module.setActive", false);
     },
     onScroll() {
-      console.log("onScroll");
       this.handleInteractionEnd();
     },
     // Expose methods that might be called from parent components
