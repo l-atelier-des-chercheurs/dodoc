@@ -104,11 +104,75 @@
           :title="$t('options')"
           @click="show_pane_list_modal = true"
         >
-          <b-icon
+          <!-- <b-icon
             icon="three-dots"
             style="flex: 0 0 auto"
             :aria-label="$t('options')"
-          />
+          /> -->
+          <svg
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+            height="16"
+            id="screenshot-e5b0a7de-5e02-8077-8007-963dad311f91"
+            viewBox="0 0 16 16"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            fill="none"
+            version="1.1"
+          >
+            <g
+              id="shape-e5b0a7de-5e02-8077-8007-963dad311f91"
+              width="1em"
+              height="1em"
+              class="bi-window-dock mx-auto b-icon bi"
+              rx="0"
+              ry="0"
+              style="fill: rgb(0, 0, 0)"
+            >
+              <g
+                id="shape-e5b0a7de-5e02-8077-8007-963dad32a3d6"
+                style="display: none"
+              >
+                <g
+                  class="fills"
+                  id="fills-e5b0a7de-5e02-8077-8007-963dad32a3d6"
+                >
+                  <rect
+                    width="16"
+                    height="16"
+                    x="0"
+                    transform="matrix(1.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000)"
+                    style="fill: none"
+                    ry="0"
+                    fill="none"
+                    rx="0"
+                    y="0"
+                  />
+                </g>
+              </g>
+              <g id="shape-e5b0a7de-5e02-8077-8007-963dad347567">
+                <g
+                  class="fills"
+                  id="fills-e5b0a7de-5e02-8077-8007-963dad347567"
+                >
+                  <path
+                    d="M3.5,7C3.223876953125,7,3,7.223876953125,3,7.5L3,8.5C3,8.776123046875,3.223876953125,9,3.5,9L4.5,9C4.776123046875,9,5,8.776123046875,5,8.5L5,7.5C5,7.223876953125,4.776123046875,7,4.5,7ZM7,7.5C7,7.223876953125,7.223876953125,7,7.5,7L8.5,7C8.776123046875,7,9,7.223876953125,9,7.5L9,8.5C9,8.776123046875,8.776123046875,9,8.5,9L7.5,9C7.223876953125,9,7,8.776123046875,7,8.5ZM11.5,7C11.223876953125,7,11,7.223876953125,11,7.5L11,8.5C11,8.776123046875,11.223876953125,9,11.5,9L12.5,9C12.776123046875,9,13,8.776123046875,13,8.5L13,7.5C13,7.223876953125,12.776123046875,7,12.5,7Z"
+                    style="fill: rgb(0, 0, 0)"
+                  />
+                </g>
+              </g>
+              <g id="shape-e5b0a7de-5e02-8077-8007-963dad3554f2">
+                <g
+                  class="fills"
+                  id="fills-e5b0a7de-5e02-8077-8007-963dad3554f2"
+                >
+                  <path
+                    d="M14,1C15.1046142578125,1,16,1.8953857421875,16,3L16,13C16,14.1046142578125,15.1046142578125,15,14,15L2,15C0.8953857421875,15,0,14.1046142578125,0,13L0,3C0,1.8953857421875,0.8953857421875,1,2,1L14,1M2,14L14,14C14.55224609375,14,15,13.55224609375,15,13L15,2L1,2L1,13C1,13.55224609375,1.44775390625,14,2,14M2,2C1.44775390625,2,1,2.44775390625,1,3L1,2L15,2L15,3C15,2.44775390625,14.55224609375,2,14,2L2,2"
+                    style="fill: rgb(0, 0, 0)"
+                  />
+                </g>
+              </g>
+            </g>
+          </svg>
         </button>
         <PaneListModal
           v-if="show_pane_list_modal"
@@ -528,7 +592,8 @@ export default {
   }
 }
 ._optionsBtnContainer {
-  text-align: right;
+  //text-align: right;
+  margin-left: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) / 2);
 }
 </style>
