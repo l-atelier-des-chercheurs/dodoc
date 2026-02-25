@@ -1,9 +1,6 @@
 <template>
   <div class="_grid">
     <!-- Max grid area reached message (Z already exists, no more single letters) -->
-    <p v-if="max_grid_area_reached" class="_maxGridAreaMessage u-warning">
-      {{ $t("max_grid_area_reached") }}
-    </p>
 
     <!-- Grid container wrapper -->
     <div class="_gridWrapper">
@@ -87,10 +84,15 @@
       </svg>
     </div>
 
-    <!-- Add new area button (optional fallback) -->
-    <div v-if="grid_areas.length === 0" class="_addAreaButton">
-      <p class="u-instructions">
+    <div class="_addAreaButton">
+      <p class="u-instructions" v-if="grid_areas.length === 0">
         {{ $t("click_empty_cell_to_add_area") }}
+      </p>
+      <p v-if="max_grid_area_reached" class="u-warning">
+        {{ $t("max_grid_area_reached") }}
+      </p>
+      <p v-if="toggle_chain_area_id" class="">
+        {{ $t("click_on_another_cell_to_continue") }}
       </p>
     </div>
   </div>
@@ -146,7 +148,7 @@ export default {
     },
     max_grid_area_reached() {
       // Check if all single letters from A to Z are used as area IDs
-      if (!this.chapter.grid_areas) return false;
+      if (!this.chapter.grid_areas || this.toggle_chain_area_id) return false;
       const letterSet = new Set();
       this.chapter.grid_areas.forEach((area) => {
         if (/^[A-Z]$/.test(area.id)) {

@@ -30,7 +30,7 @@
         @click="$emit('toggle-chain', area.id)"
       >
         <b-icon icon="signpost" scale="1" />
-        {{ $t("flow") }}
+        {{ $t("continue") }}
       </button>
     </div>
 

@@ -1529,4 +1529,6 @@ export default {
 
   add_cover: "Add cover",
   back_to_content: "Back to content",
+  click_on_another_cell_to_continue:
+    "Click on an empty cell to create a chained area.",
 };

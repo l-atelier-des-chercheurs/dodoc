@@ -1599,4 +1599,6 @@ export default {
   add_cover: "Ajouter une couverture",
 
   back_to_content: "Revenir au contenu",
+  click_on_another_cell_to_continue:
+    "Cliquez sur une cellule vide pour créer un bloc chaîné.",
 };
