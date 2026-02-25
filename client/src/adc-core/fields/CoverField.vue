@@ -6,14 +6,19 @@
         :data-isround="preview_format === 'circle'"
         role="presentation"
       />
-
       <template v-if="context === 'full'">
-        <div class="_fsButton">
+        <!-- <div class="_fsButton">
           <EditBtn
             :btn_type="'fullscreen'"
             @click="show_cover_fullscreen = true"
           />
-        </div>
+        </div> -->
+        <button
+          type="button"
+          class="_fsButton"
+          @click="show_cover_fullscreen = true"
+          :title="$t('fullscreen')"
+        ></button>
         <FullscreenView
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
@@ -160,6 +165,7 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: scale-down;
+    cursor: pointer;
   }
 }
 
@@ -233,7 +239,10 @@ export default {
   position: absolute;
   left: 0;
   bottom: 0;
-  margin: calc(var(--spacing) / 1);
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background: transparent;
 }
 
 ._addCoverBtn {
