@@ -1392,8 +1392,6 @@ export default {
   items_in_bin: "Éléments dans la corbeille",
   bin_removal_notice:
     "Les éléments dans la corbeille sont automatiquement supprimés après 30 jours.",
-  bin_removal_notice:
-    "Les éléments dans la corbeille sont automatiquement supprimés après 30 jours.",
   restore: "Restaurer",
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
