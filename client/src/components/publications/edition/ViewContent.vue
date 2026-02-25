@@ -596,6 +596,16 @@ export default {
           });
         }
 
+        if (!media) {
+          // try to find in chapter source_medias
+          const local_media = chapter.source_medias.find(
+            (sm) =>
+              sm.meta_filename_in_project ===
+              source_media.meta_filename_in_project
+          );
+          if (local_media) media = local_media._media;
+        }
+
         let cell = document.createElement("div");
         cell.className = "grid-cell";
 
@@ -645,6 +655,7 @@ export default {
           cell.appendChild(document.createTextNode("\n"));
           cell.appendChild(img);
         } else if (media?.$type === "video") {
+        } else {
         }
 
         grid_content.appendChild(cell);

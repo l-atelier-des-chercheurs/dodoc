@@ -252,14 +252,16 @@ export default {
         return area;
       });
 
+      const existing_source_medias = this.chapter.source_medias || [];
+      const source_medias = [...existing_source_medias, new_entry];
+
       this.$api.updateMeta({
         path: this.chapter.$path,
         new_meta: {
           grid_areas: new_grid_areas,
+          source_medias,
         },
       });
-
-      this.show_media_picker = false;
     },
 
     async removeAreaText() {
