@@ -94,7 +94,7 @@ import { renderMedia as renderMediaFunction } from "@/components/publications/ed
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
 
-import pagedengine from "@/components/publications/edition/pagedengine.scss?raw";
+import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
 
 export default {
