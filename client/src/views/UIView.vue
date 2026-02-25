@@ -119,6 +119,18 @@
       </button>
     </div>
 
+    <h3>Buttons with long text</h3>
+    <div class="_buttonsDemo">
+      <button
+        class="u-button"
+        :class="{ 'is--active': all_active }"
+        @click="toggleAllActive"
+      >
+        Long text button with a long text that should wrap to the next line and
+        not be cut off at the end of the button
+      </button>
+    </div>
+
     <h3>Colored Buttons</h3>
     <div class="_buttonsDemo">
       <button

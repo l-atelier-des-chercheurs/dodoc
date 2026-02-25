@@ -140,7 +140,7 @@ export default {
   padding: calc(var(--spacing) / 2);
   border-bottom: 2px dotted var(--c-bleumarine_fonce);
 
-  > * {
+  button {
     white-space: nowrap;
   }
 }

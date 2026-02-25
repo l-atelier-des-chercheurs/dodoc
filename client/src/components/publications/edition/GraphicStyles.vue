@@ -208,6 +208,10 @@ export default {
 
   // border-bottom: 2px solid var(--c-gris_fonce);
   padding: calc(var(--spacing) / 2);
+
+  button {
+    white-space: nowrap;
+  }
 }
 
 ._openedStyleFile {
