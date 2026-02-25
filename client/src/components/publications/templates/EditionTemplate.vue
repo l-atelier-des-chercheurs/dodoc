@@ -1,7 +1,7 @@
 <template>
   <div class="_editionTemplate">
     <splitpanes v-if="can_edit" class="_splitpanes">
-      <pane v-if="show_edit_pane">
+      <pane v-if="show_edit_pane" min-size="10">
         <div class="_chapterSummary">
           <div class="_chapterSummary--content">
             <div class="_showPreviewBtn">
@@ -62,7 +62,7 @@
           />
         </transition>
       </pane>
-      <pane v-if="show_preview_pane">
+      <pane v-if="show_preview_pane" min-size="10">
         <div class="_viewer">
           <ViewContent
             :publication="publication"

@@ -327,7 +327,7 @@ hr {
 }
 .book .cover[data-layout-mode="image_top_text_down"] .coverTitle {
   position: absolute;
-  top: calc(var(--pagedjs-margin-top) * -1 + var(--pagedjs-height) / 2 + 2rem);
+  top: calc(var(--pagedjs-margin-top) * -1 + var(--pagedjs-height) / 2);
   height: calc(var(--pagedjs-height) / 2);
   width: 100%;
 }
