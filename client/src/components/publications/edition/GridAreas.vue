@@ -1,7 +1,11 @@
 <template>
   <div class="_grid">
-    <!-- Grid container wrapper -->
+    <!-- Max grid area reached message (Z already exists, no more single letters) -->
+    <p v-if="max_grid_area_reached" class="_maxGridAreaMessage u-warning">
+      {{ $t("max_grid_area_reached") }}
+    </p>
 
+    <!-- Grid container wrapper -->
     <div class="_gridWrapper">
       <!-- Background grid for visual reference -->
       <div
@@ -17,10 +21,16 @@
           v-for="cellIndex in column_count * row_count"
           :key="'bg-' + cellIndex"
           class="_gridCell--background"
-          :class="{ '_gridCell--occupied': isCellOccupied(cellIndex) }"
+          :class="{
+            '_gridCell--occupied': isCellOccupied(cellIndex),
+            '_gridCell--maxGridAreaReached': max_grid_area_reached,
+          }"
           @click="addAreaAtCell(cellIndex)"
         >
-          <div v-if="!isCellOccupied(cellIndex)" class="_gridCell--addIcon">
+          <div
+            v-if="!isCellOccupied(cellIndex) && !max_grid_area_reached"
+            class="_gridCell--addIcon"
+          >
             <b-icon icon="plus" scale="1.5" />
           </div>
         </div>
@@ -133,6 +143,20 @@ export default {
       const areas = this.temp_grid_areas || this.chapter.grid_areas || [];
       // Clamp all areas to grid bounds
       return areas.map((area) => this.clampAreaToBounds(area));
+    },
+    max_grid_area_reached() {
+      // Check if all single letters from A to Z are used as area IDs
+      if (!this.chapter.grid_areas) return false;
+      const letterSet = new Set();
+      this.chapter.grid_areas.forEach((area) => {
+        if (/^[A-Z]$/.test(area.id)) {
+          letterSet.add(area.id);
+        }
+      });
+      const alphabet = Array.from({ length: 26 }, (_, i) =>
+        String.fromCharCode(65 + i)
+      );
+      return alphabet.every((letter) => letterSet.has(letter));
     },
     text_chain_links() {
       // Don't calculate links until DOM is ready
@@ -311,7 +335,7 @@ export default {
       });
     },
     async addAreaAtCell(cellIndex) {
-      if (this.isCellOccupied(cellIndex)) return;
+      if (this.isCellOccupied(cellIndex) || this.max_grid_area_reached) return;
 
       const { col, row } = this.getCellPosition(cellIndex);
 
@@ -754,6 +778,10 @@ export default {
   margin-bottom: calc(var(--spacing) * 1);
 }
 
+._maxGridAreaMessage {
+  margin: calc(var(--spacing) * 0.5) auto;
+}
+
 ._gridWrapper {
   position: relative;
   background: transparent;
@@ -783,7 +811,7 @@ export default {
     color: var(--c-gris);
   }
 
-  &:not(._gridCell--occupied):hover {
+  &:not(._gridCell--occupied):not(._gridCell--maxGridAreaReached):hover {
     background: rgba(0, 0, 0, 0.02);
     outline: 1px dashed var(--c-gris);
 
@@ -795,6 +823,9 @@ export default {
   &._gridCell--occupied {
     cursor: default;
     opacity: 0.3;
+  }
+  &._gridCell--maxGridAreaReached {
+    cursor: default;
   }
 }
 

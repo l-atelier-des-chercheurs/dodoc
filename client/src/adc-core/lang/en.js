@@ -937,6 +937,8 @@ export default {
   add_grid_area: "Add grid area",
   areas_used: "{count} areas used",
   click_empty_cell_to_add_area: "Click on an empty cell to add an area",
+  max_grid_area_reached:
+    "Maximum number of grid areas reached (A to Z). Delete an area to add a new one.",
   add_link: "Add link",
   add_text: "Add text",
   share_link_to_page: "Share a link to this page",
@@ -1521,6 +1523,7 @@ export default {
   linked_project: "Linked project",
   object_fit: "Fitting",
   chain_count: "{count} area | {count} areas",
+  continue: "Continue",
   no_linked_project: "No linked project",
   no_spaces: "No spaces to show",
 

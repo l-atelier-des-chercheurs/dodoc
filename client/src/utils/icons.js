@@ -149,6 +149,7 @@ import {
   BIconBoundingBox,
   BIconRulers,
   BIconSliders,
+  BIconSignpost,
   BIconClock,
   BIconFilter,
   BIconThreeDots,
@@ -326,6 +327,7 @@ Vue.component("BIconEyeSlashFill", BIconEyeSlashFill);
 Vue.component("BIconBoundingBox", BIconBoundingBox);
 Vue.component("BIconRulers", BIconRulers);
 Vue.component("BIconSliders", BIconSliders);
+Vue.component("BIconSignpost", BIconSignpost);
 Vue.component("BIconClock", BIconClock);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);

@@ -21,18 +21,17 @@
       <span v-if="area_type" class="_gridArea--type"
         >({{ $t(area_type) }})</span
       >
-
-      <template v-if="is_last_of_text_chain === true">
-        &nbsp;
-        <button
-          type="button"
-          class="u-button u-button_small u-button_icon _chainButtonBtn"
-          :class="{ 'is--active': is_being_chained }"
-          @click="$emit('toggle-chain', area.id)"
-        >
-          <b-icon icon="link" scale="1" />
-        </button>
-      </template>
+    </div>
+    <div v-if="is_last_of_text_chain === true">
+      <button
+        type="button"
+        class="u-button u-button_verysmall _chainButtonBtn"
+        :class="{ 'is--active': is_being_chained }"
+        @click="$emit('toggle-chain', area.id)"
+      >
+        <b-icon icon="signpost" scale="1" />
+        {{ $t("flow") }}
+      </button>
     </div>
 
     <!-- Resize handle -->
@@ -142,6 +141,7 @@ export default {
   cursor: move;
   transition: border-color 0.15s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   overflow: hidden;

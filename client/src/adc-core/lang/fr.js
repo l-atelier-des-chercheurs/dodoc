@@ -882,6 +882,8 @@ export default {
   areas_used: "{count} zones utilisées",
   click_empty_cell_to_add_area:
     "Cliquez sur une cellule vide pour ajouter une zone",
+  max_grid_area_reached:
+    "Nombre maximum de zones atteint (de A à Z). Supprimez une zone pour en ajouter une nouvelle.",
   add_link: "Ajouter un lien",
   add_text: "Ajouter du texte",
 
@@ -1590,6 +1592,7 @@ export default {
   linked_project: "Projet en lien",
   object_fit: "Remplissage",
   chain_count: "{count} zone | {count} zones",
+  continue: "Continuer",
   no_linked_project: "Aucun projet en lien",
   no_spaces: "Aucun espace à afficher",
 
