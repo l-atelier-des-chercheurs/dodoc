@@ -20,11 +20,7 @@
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
         <template
-          v-if="
-            !is_serversidepreview &&
-            !is_fullscreen &&
-            !is_server_making_pdf_or_png_preview
-          "
+          v-if="!is_serversidepreview && !is_server_making_pdf_or_png_preview"
         >
           <transition name="pagechange" mode="out-in">
             <div class="_pubTopbar" v-if="show_topbar">
@@ -74,8 +70,6 @@
 </template>
 
 <script>
-import screenfull from "screenfull";
-
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 import DynamicTitle from "@/mixins/DynamicTitle.js";
 
@@ -102,7 +96,6 @@ export default {
       fetch_publication_error: undefined,
       show_topbar: false,
 
-      is_fullscreen: false,
       is_serversidepreview: false,
     };
   },
@@ -148,13 +141,7 @@ export default {
     // this.$api.leave({ room: this.project.$path });
     // this.$api.leave({ room: this.publication_path });
   },
-  watch: {
-    is_fullscreen() {
-      // this.$nextTick(() => {
-      // this.fitZoomToPage();
-      // });
-    },
-  },
+  watch: {},
   computed: {
     project_path() {
       return this.createPath({
