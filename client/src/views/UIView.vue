@@ -817,7 +817,7 @@
       <div class="_inputsDemo">
         <div>
           <label>color</label>
-          <input type="color" />
+          <input type="color" value="#FF00FF" />
         </div>
         <div>
           <label>date</label>
