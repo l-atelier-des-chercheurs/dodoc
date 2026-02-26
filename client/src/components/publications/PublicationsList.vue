@@ -237,5 +237,6 @@ export default {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
   padding-top: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 4);
 }
 </style>
