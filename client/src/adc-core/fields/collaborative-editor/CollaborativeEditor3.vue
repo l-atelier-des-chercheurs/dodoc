@@ -1314,6 +1314,9 @@ export default {
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
   }
+  .ql-picker-label[data-value="Belle Allure CE"] {
+    line-height: 2.2;
+  }
 }
 
 select.ql-ui {
