@@ -255,7 +255,7 @@ button,
     background-color: var(--c-gris_fonce);
     color: white;
     // outline: 2px solid var(--active-color);
-    box-shadow: 0 0px 10px inset rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 4px inset rgba(0, 0, 0, 0.2);
 
     &[disabled] {
       color: var(--c-gris);
@@ -502,7 +502,7 @@ textarea,
   // font-size: var(--input-font-size);
   // font-weight: var(--input-font-weight);
   // color: var(--input-color);
-  min-height: 1.5rem;
+  // min-height: 1.5rem;
 
   color: inherit;
   // border: solid var(--input-border-width) var(--input-border-color);
