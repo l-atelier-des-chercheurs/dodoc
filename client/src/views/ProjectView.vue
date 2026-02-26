@@ -208,7 +208,7 @@ export default {
         JSON.stringify(this.$route.query) === JSON.stringify(query)
       )
         return false;
-      this.$router.replace({ query });
+      this.$router.push({ query });
     },
     closeOnRemove({ path }) {
       if (path === this.project.$path) {
