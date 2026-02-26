@@ -192,7 +192,7 @@ export default {
   --input-font-size-x-small: var(--sl-font-size-x-small);
   --input-font-size-small: var(--sl-font-size-small);
   --input-font-weight: inherit;
-  --input-height: 2.5em;
+  --input-height: 2.5rem;
   --input-height-large: 3em;
   // --input-height-big: 3em;
   --input-height-small: 1.85rem;

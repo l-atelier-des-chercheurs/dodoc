@@ -790,6 +790,14 @@
       </div>
     </div>
 
+    <h3>Search Input</h3>
+    <div class="_inputsDemo">
+      <div>
+        <label>Search</label>
+        <SearchInput v-model="search_query" search_placeholder="Search..." />
+      </div>
+    </div>
+
     <h3>Textarea</h3>
     <div class="_inputsDemo">
       <div>
@@ -1065,6 +1073,7 @@ export default {
   components: {},
   data() {
     return {
+      search_query: "",
       radioswitch_content: "opt1",
       authors: [],
       show_modal: 0,
