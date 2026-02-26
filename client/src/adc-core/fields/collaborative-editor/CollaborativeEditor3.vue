@@ -1134,7 +1134,7 @@ export default {
       transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
     }
 
-    button,
+    button:not(.u-button),
     > *:not(.ql-size):not(.ql-lineheight):not(.ql-header):not(.ql-font)
       .ql-picker-label {
       display: flex;
