@@ -520,7 +520,7 @@ textarea,
   padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
   margin: 0;
 
-  border: 2px solid transparent;
+  outline: 2px solid transparent;
 
   transition: all 0.05s;
 
@@ -528,7 +528,7 @@ textarea,
   &:focus-visible {
     outline: 0;
     // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-    border: 2px solid var(--c-gris);
+    outline: 2px solid var(--c-gris);
     background-color: var(--c-gris_clair);
   }
 
@@ -928,10 +928,11 @@ fieldset {
 input[type="checkbox"] {
   width: 1.15em;
   height: 1.15em;
-  border: 2px solid var(--c-gris);
+  border: 1px solid var(--c-gris);
+  // outline: 2px solid transparent;
   // background-color: white;
   padding: 0;
-  border-radius: 4px;
+  // border-radius: 4px;
   color: var(--c-noir);
 
   display: grid;
