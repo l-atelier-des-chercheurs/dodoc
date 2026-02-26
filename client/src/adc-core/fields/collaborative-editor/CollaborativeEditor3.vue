@@ -856,6 +856,7 @@ export default {
 
       .u-warning {
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+        padding-left: calc(var(--spacing) * 4);
         margin: calc(var(--spacing) * 1) 0;
       }
 

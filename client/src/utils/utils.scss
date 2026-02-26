@@ -56,12 +56,12 @@ a:focus-visible {
   color: var(--label-color);
 }
 .u-warning {
-  display: flex;
-  gap: calc(var(--spacing) / 1);
+  // display: flex;
+  // gap: calc(var(--spacing) / 1);
   // justify-content: center;
-  align-items: center;
+  display: block;
+  position: relative;
   color: var(--c-rouge);
-  // font-weight: bold;
   border: 1px solid var(--c-rouge);
   border-top-width: 4px;
   max-width: 80ch;
@@ -69,11 +69,21 @@ a:focus-visible {
   // color: white;
   // color: white;
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+  padding-left: calc(var(--spacing) * 4);
   border-radius: var(--input-border-radius);
 
   // font-weight: 400;
 
   &::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(var(--spacing) * 4);
+    // background-color: var(--c-rouge);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     content: "⚠";
     font-size: 150%;
   }
