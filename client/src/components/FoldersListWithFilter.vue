@@ -18,23 +18,21 @@
     </template>
 
     <template #top-right>
-      <div class="_topRightControls">
-        <template v-if="sorted_folders.length > 0">
-          <select
-            size="small"
-            class="_orderSelect"
-            :name="'order_folders'"
-            v-model="order_key"
-            :disabled="filtered_folders.length <= 1"
-          >
-            <option
-              v-for="opt in order_options"
-              :key="opt.key"
-              :value="opt.key"
-              v-text="opt.text"
-            />
-          </select>
-        </template>
+      <div class="_topRightControls" v-if="sorted_folders.length > 0">
+        <select
+          size="small"
+          class="_orderSelect"
+          :name="'order_folders'"
+          v-model="order_key"
+          :disabled="filtered_folders.length <= 1"
+        >
+          <option
+            v-for="opt in order_options"
+            :key="opt.key"
+            :value="opt.key"
+            v-text="opt.text"
+          />
+        </select>
 
         <div class="_mode" v-if="view_mode">
           <button
