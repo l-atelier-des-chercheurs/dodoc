@@ -197,9 +197,6 @@ export default {
   --input-height-small: 1.75rem;
 
   --input-color: var(--body-color);
-  --input-border-color: var(--c-gris_fonce);
-  --input-border-color-focus: var(--active-color);
-  --input-border-width: 3px;
   --input-border-radius: 6px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);

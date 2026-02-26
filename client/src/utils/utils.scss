@@ -519,8 +519,8 @@ textarea,
   // min-height: 1.5rem;
 
   color: inherit;
-  // border: solid var(--input-border-width) var(--input-border-color);
   padding: calc(var(--spacing) / 2);
+  border: 2px solid transparent;
   border-radius: var(--input-border-radius);
   background-color: var(--c-gris_clair);
   color: inherit;
@@ -532,17 +532,16 @@ textarea,
   // padding: calc(var(--spacing) * 0.5);
   padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
   margin: 0;
+  outline: 0;
 
-  outline: 2px solid transparent;
-
-  transition: all 0.05s;
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
   &:hover,
   &:focus-visible {
     &:not([disabled]) {
-      outline: 0;
+      // outline: 0;
       // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-      outline: 2px solid var(--c-gris);
+      border-color: var(--c-gris);
       background-color: var(--c-gris_clair);
     }
   }
@@ -590,7 +589,7 @@ input {
   &[size="small"] {
     height: var(--input-height-small);
     font-size: var(--sl-font-size-small);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    padding: calc(var(--spacing) / 8) calc(var(--spacing) / 2);
   }
 }
 
@@ -948,7 +947,7 @@ fieldset {
 input[type="checkbox"] {
   width: 1.15em;
   height: 1.15em;
-  border: 1px solid var(--c-gris);
+  border: 2px solid var(--c-gris);
   // outline: 2px solid transparent;
   // background-color: white;
   padding: 0;
