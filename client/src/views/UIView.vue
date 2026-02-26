@@ -777,6 +777,14 @@
         </div>
       </div>
 
+      <h3>Required field</h3>
+      <div class="_inputsDemo">
+        <div>
+          <label>Required Input</label>
+          <input type="text" placeholder="Required..." required />
+        </div>
+      </div>
+
       <h3>Small Inputs</h3>
       <div class="_inputsDemo">
         <div>
