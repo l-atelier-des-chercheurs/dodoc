@@ -201,7 +201,7 @@ export default {
       default: "$content",
     },
     scrollingContainer: HTMLElement,
-    custom_formats: Array,
+    custom_formats: [Array, Boolean],
     can_edit: Boolean,
     is_collaborative: {
       type: Boolean,
@@ -818,6 +818,7 @@ export default {
       height: auto;
       overflow: visible;
       color: inherit;
+      border: none;
 
       background-color: transparent;
 
@@ -913,6 +914,10 @@ export default {
       border-bottom-left-radius: var(--input-border-radius);
       border-bottom-right-radius: var(--input-border-radius);
       // border-radius: var(--input-border-radius);
+
+      &:has(.ql-editor:focus-visible) {
+        border-color: var(--c-gris);
+      }
     }
   }
 }

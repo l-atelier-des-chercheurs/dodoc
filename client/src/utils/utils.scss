@@ -255,7 +255,7 @@ button,
     background-color: var(--c-gris_fonce);
     color: white;
     // outline: 2px solid var(--active-color);
-    box-shadow: 0 2px 4px inset rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0px 10px inset rgba(0, 0, 0, 0.2);
 
     &[disabled] {
       color: var(--c-gris);
@@ -521,16 +521,15 @@ textarea,
   padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
   margin: 0;
 
-  // border-bottom: 2px solid var(--c-gris);
+  border: 2px solid transparent;
 
   transition: all 0.05s;
 
-  &:hover {
-    outline: 0;
-    background-color: var(--c-gris_clair);
-  }
+  &:hover,
   &:focus-visible {
     outline: 0;
+    // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
+    border: 2px solid var(--c-gris);
     background-color: var(--c-gris_clair);
   }
 
@@ -596,7 +595,7 @@ select {
   background-size: 0.75rem;
   color: var(--c-noir);
   // border: none;
-  padding: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1.5);
   padding-right: calc(var(--spacing) * 0.5 + 1rem);
   min-width: 0px;
   cursor: pointer;
@@ -611,9 +610,8 @@ select {
   &[size="small"] {
     height: var(--input-height-small);
     font-size: var(--sl-font-size-small);
-    padding-top: calc(var(--spacing) / 4);
-    padding-bottom: calc(var(--spacing) / 4);
-    line-height: 1.5;
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    line-height: 1;
   }
 
   &.is--active {

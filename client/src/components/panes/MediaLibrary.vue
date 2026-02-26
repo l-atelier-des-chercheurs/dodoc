@@ -1267,7 +1267,7 @@ export default {
   gap: calc(var(--spacing) / 4);
 
   button {
-    padding: calc(var(--spacing) / 1.5);
+    // padding: calc(var(--spacing) / 1.5);
   }
 }
 

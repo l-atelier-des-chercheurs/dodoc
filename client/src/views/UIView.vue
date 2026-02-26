@@ -1012,6 +1012,17 @@
       </template>
     </TextInput>
 
+    <TextInput
+      :content="'test'"
+      ref="textInput"
+      :input_type="'editor'"
+      :custom_formats="false"
+      :placeholder="$t('write_a_message')"
+      :minlength="0"
+      :maxlength="300"
+    >
+    </TextInput>
+
     <div class="u-spacingBottom"></div>
 
     <fieldset>
