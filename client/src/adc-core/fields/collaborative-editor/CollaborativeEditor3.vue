@@ -352,11 +352,21 @@ export default {
               enter: {
                 key: "Enter",
                 handler: (range, context) => {
+                  const current_format = (context && context.format) || {};
+                  const in_blockquote_or_warning =
+                    current_format.blockquote || current_format.warning;
+
+                  if (in_blockquote_or_warning) {
+                    this.editor.insertText(range.index, "\n");
+                    this.editor.setSelection(range.index + 1);
+                    this.editor.format("blockquote", false);
+                    this.editor.format("warning", false);
+                    return false;
+                  }
+
                   if (this.$listeners.onEnter) {
                     return this.$listeners.onEnter(range, context);
                   }
-                  // Return true to allow default Enter behavior
-                  // Return false to prevent default behavior
                   return true;
                 },
               },
