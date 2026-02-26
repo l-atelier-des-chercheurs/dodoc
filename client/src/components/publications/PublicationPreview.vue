@@ -220,6 +220,7 @@ export default {
   box-shadow: none;
   background: transparent;
   min-height: 50px;
+  max-width: 140px;
 }
 
 ._icon {
