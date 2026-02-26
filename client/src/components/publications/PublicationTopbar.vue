@@ -132,7 +132,7 @@
           @close="show_qr_code_modal = false"
         >
           <ToggleField
-            v-if="$root.app_infos?.instance_meta?.has_general_password"
+            v-if="publication_needs_to_be_public_to_be_shared"
             :label="$t('make_publication_public')"
             :field_name="'$public'"
             :content="publication.$public === true"
@@ -172,6 +172,8 @@ export default {
   watch: {},
   computed: {
     share_url() {
+      if (!this.publication_is_public) return false;
+
       let query = {};
       if (this.publication.template === "page_by_page")
         query = { display: "slides" };
@@ -186,6 +188,13 @@ export default {
       });
 
       return window.location.origin + route.href;
+    },
+    publication_needs_to_be_public_to_be_shared() {
+      return this.$root.app_infos?.instance_meta?.has_general_password;
+    },
+    publication_is_public() {
+      if (!this.publication_needs_to_be_public_to_be_shared) return true;
+      return this.publication.$public === true;
     },
   },
   methods: {

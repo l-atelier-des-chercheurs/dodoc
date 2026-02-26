@@ -9,40 +9,42 @@
     <div class="_txt" v-else>
       <slot />
 
-      <DetailsPane
-        :header="$t('advanced_options')"
-        :icon="'link'"
-        :is_open_initially="false"
-        v-if="!urls_to_page.domain"
-      >
-        <RadioCheckboxInput
-          :value.sync="current_opt"
-          :options="network_options"
-          :can_edit="true"
-        />
-      </DetailsPane>
+      <template v-if="urls_to_page">
+        <DetailsPane
+          :header="$t('advanced_options')"
+          :icon="'link'"
+          :is_open_initially="false"
+          v-if="!urls_to_page.domain"
+        >
+          <RadioCheckboxInput
+            :value.sync="current_opt"
+            :options="network_options"
+            :can_edit="true"
+          />
+        </DetailsPane>
 
-      <!-- <hr class="_hr" /> -->
+        <!-- <hr class="_hr" /> -->
 
-      <transition name="pagechange" mode="out-in">
-        <div class="_qrAndLinks" :key="current_opt">
-          <template v-if="!qr_urls">
-            <template v-if="current_opt === 'domain'">
-              {{ $t("no_domain_set") }}
+        <transition name="pagechange" mode="out-in">
+          <div class="_qrAndLinks" :key="current_opt">
+            <template v-if="!qr_urls">
+              <template v-if="current_opt === 'domain'">
+                {{ $t("no_domain_set") }}
+              </template>
+              <template v-else-if="current_opt === 'local_network'">
+                {{ $t("no_local_network_set") }}
+              </template>
             </template>
-            <template v-else-if="current_opt === 'local_network'">
-              {{ $t("no_local_network_set") }}
+            <template v-else>
+              <QRCodeWithLink
+                v-for="qr_url of qr_urls"
+                :key="qr_url"
+                :url="qr_url"
+              />
             </template>
-          </template>
-          <template v-else>
-            <QRCodeWithLink
-              v-for="qr_url of qr_urls"
-              :key="qr_url"
-              :url="qr_url"
-            />
-          </template>
-        </div>
-      </transition>
+          </div>
+        </transition>
+      </template>
     </div>
   </BaseModal2>
 </template>
@@ -81,14 +83,13 @@ export default {
   },
   computed: {
     urls_to_page() {
+      if (!this.url_to_access) return false;
+
       let current_url = new URL(this.url_to_access.trim());
 
       let _urls_to_page = {};
 
-      // this.network_infos.local_ips;
-
       // si localhost + pas d'autre IP dispo, renvoyer uniquement l'url locale
-
       if (current_url.hostname === "localhost") {
         _urls_to_page.local = [current_url.href];
       } else if (this.isIP(current_url.hostname)) {
@@ -146,46 +147,6 @@ export default {
 
       return options;
     },
-
-    // dodoc 9 code
-    // url_to_page() {
-    //   let url = new URL(this.url_to_access);
-    //   function isIP(address) {
-    //     const r = RegExp(
-    //       "((25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\\.){3}(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])"
-    //     );
-    //     return r.test(address);
-    //   }
-    //   // si on est en localhost (cas de electron et navigateur connecté à electron)
-    //   // alors on remplace localhost par l’IP
-    //   if (url.hostname === "localhost") {
-    //     url.hostname = ip;
-    //   }
-    //   // si on est sur une ip (cas d’un hébergement en ligne, ou d’un navigateur connecté à electron)
-    //   // alors on remplace par l’IP
-    //   else if (isIP(url.hostname)) {
-    //     url.hostname = ip;
-    //   }
-    //   // et si on est sur un nom de domaine alors on ne fait rien
-    //   if (this.slugFolderName) {
-    //     if (this.type === "projects") {
-    //       url.pathname = this.slugFolderName;
-    //     } else {
-    //       url.pathname = "_" + this.type + "/" + this.slugFolderName;
-    //     }
-    //     if (this.media) {
-    //       const urlSafe_metaFileName = this.media.metaFileName.replace(
-    //         /\./g,
-    //         "*"
-    //       );
-    //       url.pathname += `/media/${urlSafe_metaFileName}`;
-    //       if (!this.open_in_dodoc) {
-    //         url.search += `display=standalone`;
-    //       }
-    //     }
-    //   }
-    //   return url;
-    // },
   },
   methods: {
     isIP(address) {
