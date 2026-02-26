@@ -51,7 +51,7 @@
 <script>
 export default {
   props: {
-    url_to_access: String,
+    url_to_access: [Boolean, String],
     modal_title: String,
   },
   components: {

@@ -126,20 +126,14 @@
             {{ $t("direct_link") }}
           </button>
         </div>
-        <QRModal
+        <SharePublication
           v-if="show_qr_code_modal"
-          :url_to_access="share_url"
+          :share_url="share_url"
+          :publication_path="publication.$path"
+          :is_public="publication.$public === true"
+          :can_edit="can_edit"
           @close="show_qr_code_modal = false"
-        >
-          <ToggleField
-            v-if="publication_needs_to_be_public_to_be_shared"
-            :label="$t('make_publication_public')"
-            :field_name="'$public'"
-            :content="publication.$public === true"
-            :path="publication.$path"
-            :can_edit="can_edit"
-          />
-        </QRModal>
+        />
       </DropDown>
     </div>
   </div>
@@ -147,6 +141,7 @@
 <script>
 import DuplicatePublication from "@/components/publications/DuplicatePublication.vue";
 import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
+import SharePublication from "@/components/publications/SharePublication.vue";
 
 export default {
   props: {
@@ -158,6 +153,7 @@ export default {
   components: {
     DuplicatePublication,
     ExportPubliModal,
+    SharePublication,
   },
   data() {
     return {
@@ -172,8 +168,6 @@ export default {
   watch: {},
   computed: {
     share_url() {
-      if (!this.publication_is_public) return false;
-
       let query = {};
       if (this.publication.template === "page_by_page")
         query = { display: "slides" };
@@ -188,13 +182,6 @@ export default {
       });
 
       return window.location.origin + route.href;
-    },
-    publication_needs_to_be_public_to_be_shared() {
-      return this.$root.app_infos?.instance_meta?.has_general_password;
-    },
-    publication_is_public() {
-      if (!this.publication_needs_to_be_public_to_be_shared) return true;
-      return this.publication.$public === true;
     },
   },
   methods: {
