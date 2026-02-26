@@ -539,10 +539,12 @@ textarea,
 
   &:hover,
   &:focus-visible {
-    outline: 0;
-    // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
-    outline: 2px solid var(--c-gris);
-    background-color: var(--c-gris_clair);
+    &:not([disabled]) {
+      outline: 0;
+      // filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.05));
+      outline: 2px solid var(--c-gris);
+      background-color: var(--c-gris_clair);
+    }
   }
 
   &.bg-blanc {
@@ -555,6 +557,11 @@ textarea,
     background-image: radial-gradient(var(--c-rouge) 18%, transparent 25%);
 
     transition: background-size 0.2s;
+  }
+  &[disabled] {
+    // background-color: var(--c-gris_clair);
+    color: var(--c-gris_fonce);
+    cursor: not-allowed;
   }
 }
 
