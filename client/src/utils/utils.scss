@@ -1,3 +1,25 @@
+input[type="color"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="checkbox"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="text"],
+input[type="time"],
+input[type="url"],
+input[type="week"],
+select,
+textarea {
+  border: none;
+  appearance: none;
+  font-family: var(--input-font-family);
+  font-size: var(--input-font-size);
+}
+
 .u-label {
   display: block;
   color: var(--label-color);
@@ -302,8 +324,8 @@ button,
   &.u-button_small {
     padding: calc(var(--spacing) / 4);
     .b-icon.bi {
-      width: 1em;
-      height: 1em;
+      // width: 1em;
+      // height: 1em;
     }
   }
 }
@@ -442,9 +464,10 @@ button,
 }
 .u-button_small {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+  min-height: var(--input-height-small);
 
-  b-icon {
-    font-size: 80%;
+  .b-icon {
+    font-size: 90%;
   }
 }
 .u-button_verysmall {
@@ -456,26 +479,6 @@ button,
 }
 .u-colorWhite {
   color: white;
-}
-
-input[type="color"],
-input[type="date"],
-input[type="datetime-local"],
-input[type="email"],
-input[type="month"],
-input[type="number"],
-input[type="checkbox"],
-input[type="password"],
-input[type="search"],
-input[type="tel"],
-input[type="text"],
-input[type="time"],
-input[type="url"],
-input[type="week"],
-select,
-textarea {
-  all: unset;
-  box-sizing: border-box;
 }
 
 input[type="number"] {
@@ -524,8 +527,7 @@ textarea,
 
   // background: white;
   line-height: inherit;
-
-  vertical-align: middle;
+  // vertical-align: middle;
 
   // padding: calc(var(--spacing) * 0.5);
   padding: calc(var(--spacing) * 0.5) calc(var(--spacing) * 0.5);
@@ -579,7 +581,7 @@ textarea,
 select,
 input {
   &[size="small"] {
-    height: 1.3rem;
+    height: var(--input-height-small);
     font-size: var(--sl-font-size-small);
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   }
@@ -604,13 +606,13 @@ svg {
 select {
   position: relative;
   background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg width='41px' height='26px' viewBox='0 0 41 26' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Page-1' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpolygon id='Path-3' fill='%23000000' points='0 5.38215461 19.9830489 25.3652035 40.1398855 5.20836689 34.9315186 0 19.8691842 15.0623344 4.83971338 0.0328636246'%3E%3C/polygon%3E%3C/g%3E%3C/svg%3E%0A");
-  background-position: right 0.4rem center;
+  background-position: right 0.5rem center;
   background-repeat: no-repeat;
-  background-size: 0.75rem;
+  background-size: 0.8rem;
   color: var(--c-noir);
   // border: none;
   padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1.5);
-  padding-right: calc(var(--spacing) * 0.5 + 1rem);
+  padding-right: calc(var(--spacing) / 2 + 1.5rem);
   min-width: 0px;
   cursor: pointer;
   // line-height: 1.5;

@@ -247,7 +247,7 @@
         :class="{ 'is--active': all_active }"
         @click="toggleAllActive"
       >
-        <b-icon icon="exclamation-triangle" /> Warning
+        <b-icon icon="exclamation-triangle-fill" /> Warning
       </button>
       <button
         class="u-button u-button_red u-button_floating"
@@ -795,6 +795,69 @@
       <div>
         <label>Search</label>
         <SearchInput v-model="search_query" search_placeholder="Search..." />
+      </div>
+    </div>
+
+    <h3>
+      Input types (color, date, datetime-local, email, month, number, checkbox,
+      password, search, tel, text, time, url, week)
+    </h3>
+    <div class="_inputsDemo">
+      <div>
+        <label>color</label>
+        <input type="color" />
+      </div>
+      <div>
+        <label>date</label>
+        <input type="date" />
+      </div>
+      <div>
+        <label>datetime-local</label>
+        <input type="datetime-local" />
+      </div>
+      <div>
+        <label>email</label>
+        <input type="email" placeholder="email" />
+      </div>
+      <div>
+        <label>month</label>
+        <input type="month" />
+      </div>
+      <div>
+        <label>number</label>
+        <input type="number" placeholder="0" />
+      </div>
+      <div>
+        <label>checkbox</label>
+        <input type="checkbox" />
+      </div>
+      <div>
+        <label>password</label>
+        <input type="password" placeholder="password" />
+      </div>
+      <div>
+        <label>search</label>
+        <input type="search" placeholder="search" />
+      </div>
+      <div>
+        <label>tel</label>
+        <input type="tel" placeholder="tel" />
+      </div>
+      <div>
+        <label>text</label>
+        <input type="text" placeholder="text" />
+      </div>
+      <div>
+        <label>time</label>
+        <input type="time" />
+      </div>
+      <div>
+        <label>url</label>
+        <input type="url" placeholder="https://" />
+      </div>
+      <div>
+        <label>week</label>
+        <input type="week" />
       </div>
     </div>
 
