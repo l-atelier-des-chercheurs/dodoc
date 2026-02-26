@@ -465,9 +465,10 @@ button,
 .u-button_small {
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
   min-height: var(--input-height-small);
+  min-width: var(--input-height-small);
 
   .b-icon {
-    font-size: 90%;
+    font-size: 80%;
   }
 }
 .u-button_verysmall {
