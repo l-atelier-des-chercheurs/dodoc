@@ -67,6 +67,7 @@ export const formats = [
   "link",
   "header",
   "blockquote",
+  "warning",
   "list",
   "color",
   "background",

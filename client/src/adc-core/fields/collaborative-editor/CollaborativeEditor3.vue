@@ -172,6 +172,13 @@ DividerBlot.blotName = "divider";
 DividerBlot.tagName = "hr";
 Quill.register(DividerBlot);
 
+var Block = Quill.import("blots/block");
+class WarningBlot extends Block {}
+WarningBlot.blotName = "warning";
+WarningBlot.tagName = "DIV";
+WarningBlot.className = "u-warning";
+Quill.register(WarningBlot);
+
 import MediaBlot from "./imports/MediaBlot.js";
 import CardEditableModule from "./imports/CardEditableModule.js";
 
@@ -411,6 +418,7 @@ export default {
         "link",
         "emoji",
         "blockquote",
+        "warning",
       ];
       basic_formatting.map((bf) => {
         if (reference_formats.includes(bf)) formatting_opt.push(bf);
@@ -841,6 +849,11 @@ export default {
         border-left: 2px solid var(--c-gris);
       }
 
+      .u-warning {
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+        margin: calc(var(--spacing) * 1) 0;
+      }
+
       .ql-code-block-container {
         border-color: transparent;
         font-family: "Fira Code", monospace;
@@ -1079,6 +1092,24 @@ export default {
       font-size: var(--quill-buttons-size);
       line-height: 1;
       filter: grayscale(1);
+    }
+  }
+
+  // Warning block button styling
+  .ql-warning {
+    svg {
+      display: none;
+    }
+    &:after {
+      content: "⚠";
+      color: currentColor;
+      font-size: var(--quill-buttons-size);
+      line-height: 1;
+    }
+
+    &:hover,
+    &.ql-active {
+      color: #06c;
     }
   }
 
