@@ -14,20 +14,14 @@
         </template>
       </h3>
 
-      <!-- <span class="_gridItem--chainCount">
-        {{
-          $tc("chain_count", area.number_of_areas_in_chain, {
-            count: area.number_of_areas_in_chain,
-          })
-        }}
-      </span> -->
-
-      <!-- <select class="_gridItem--select" size="small">
-        <option value="1">texte (markdown)</option>
-        <option value="2">titre</option>
-        <option value="3">sous-titre</option>
-        <option value="4">média (image, video, audio)</option>
-      </select> -->
+      <button
+        type="button"
+        class="u-button u-button_verysmall"
+        @click="removeAreaText"
+      >
+        <b-icon icon="trash" style="font-size: var(--icon-size)" />
+        {{ $t("remove") }}
+      </button>
     </div>
     <div class="_gridItem--content">
       <div v-if="!area_current_file" class="_gridItem--actions">
@@ -56,14 +50,6 @@
           :publication_path="publication.$path"
           :show_label="false"
         />
-        <button
-          type="button"
-          class="u-button u-button_red u-button_small"
-          @click="removeAreaText"
-        >
-          <b-icon icon="trash" style="font-size: var(--icon-size)" />
-          {{ $t("remove") }}
-        </button>
       </div>
 
       <div

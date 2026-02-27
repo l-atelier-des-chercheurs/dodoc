@@ -8,6 +8,7 @@
       :custom_formats="custom_formats"
       :save_format="save_format"
       :content_type="'markdown'"
+      :mode="edit_mode"
       :can_edit="can_edit"
       ref="collaborativeEditor"
     >
@@ -49,6 +50,10 @@ export default {
     can_edit: {
       type: Boolean,
       default: true,
+    },
+    edit_mode: {
+      type: String,
+      default: undefined,
     },
   },
   components: {
