@@ -253,6 +253,7 @@ hr {
 .media-container {
   display: flex;
   flex-flow: row nowrap;
+  align-items: flex-start;
   gap: 1rem;
 }
 .media-container > * {
