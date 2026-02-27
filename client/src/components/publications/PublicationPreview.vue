@@ -221,6 +221,10 @@ export default {
   background: transparent;
   min-height: 50px;
   max-width: 140px;
+
+  ::v-deep svg {
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+  }
 }
 
 ._icon {
