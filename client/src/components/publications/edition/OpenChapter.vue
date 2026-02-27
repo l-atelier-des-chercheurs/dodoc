@@ -141,6 +141,7 @@
             :text_file="chapter._main_text"
             :medias_holder="chapter"
             :publication_path="publication.$path"
+            :edit_mode="'edit_on_mounted'"
           />
           <div v-else class="u-instructions">
             {{ $t("no_content") }}
