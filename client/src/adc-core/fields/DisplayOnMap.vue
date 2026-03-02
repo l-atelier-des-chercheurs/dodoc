@@ -176,6 +176,7 @@
         <button
           type="button"
           class="u-button"
+          v-if="can_print_map"
           :class="{
             'is--active': start_map_print,
           }"
@@ -187,7 +188,7 @@
           </template> -->
         </button>
         <PrintMap
-          v-if="start_map_print"
+          v-if="start_map_print && can_print_map"
           :map="map"
           :map_baselayer_bw="map_baselayer_bw"
           @close="start_map_print = false"
@@ -421,6 +422,10 @@ export default {
     can_click: {
       type: Boolean,
       default: true,
+    },
+    can_print_map: {
+      type: Boolean,
+      default: false,
     },
     can_edit: Boolean,
   },

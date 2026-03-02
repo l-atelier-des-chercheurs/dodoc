@@ -4,6 +4,7 @@
       class="_mapContainer"
       :pins="pins"
       :is_small="false"
+      :can_print_map="true"
       @update:opened_pin_path="pinClicked($event)"
     />
   </div>

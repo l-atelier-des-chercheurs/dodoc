@@ -27,6 +27,7 @@
             :is_small="false"
             :opened_view_color="getViewColor(opened_view)"
             :opened_pin_path.sync="opened_pin_path"
+            :can_print_map="true"
             :can_edit="can_edit && !!opened_view_meta_filename"
             @newPositionClicked="newPositionClicked"
             @saveGeom="
