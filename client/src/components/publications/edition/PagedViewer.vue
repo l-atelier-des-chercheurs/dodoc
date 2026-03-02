@@ -192,7 +192,6 @@ export default {
       });
     },
     updateNumberOfBookPages(number_of_book_pages) {
-      debugger;
       this.$emit("updateNumberOfBookPages", number_of_book_pages);
     },
     addChapterShortcuts() {

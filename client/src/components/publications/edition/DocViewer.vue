@@ -81,7 +81,11 @@ export default {
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_chapter_meta_filename() {
+      this.$nextTick(() => this.scrollToTop());
+    },
+  },
   computed: {
     opened_chapter() {
       if (!this.opened_chapter_meta_filename) return undefined;
@@ -90,7 +94,38 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    getScrollParent(el) {
+      while (el && el !== document.body) {
+        const style = getComputedStyle(el);
+        const overflow_y = style.overflowY;
+        if (
+          overflow_y === "auto" ||
+          overflow_y === "scroll" ||
+          overflow_y === "overlay"
+        ) {
+          return el;
+        }
+        el = el.parentElement;
+      }
+      return document.scrollingElement || document.documentElement;
+    },
+    scrollToTop() {
+      const scroll_el = this.getScrollParent(this.$el);
+      if (!scroll_el || scroll_el.scrollTop === 0) return;
+      const duration = 250;
+      const start = scroll_el.scrollTop;
+      const start_time = performance.now();
+      const step = (now) => {
+        const elapsed = now - start_time;
+        const t = Math.min(elapsed / duration, 1);
+        const eased = 1 - (1 - t) * (1 - t);
+        scroll_el.scrollTop = start * (1 - eased);
+        if (t < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    },
+  },
 };
 </script>
 
