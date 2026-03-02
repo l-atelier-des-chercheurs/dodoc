@@ -267,7 +267,7 @@ export default {
     },
     cancelSend() {},
     retrySend() {
-      // todo
+      this.uploadFile().catch(() => {});
     },
   },
 };

@@ -347,13 +347,13 @@ module.exports = (function () {
             }
           })
           .on("aborted", (err) => {
-            if (err.code === 1009) {
+            if (err?.code === 1009) {
               dev.error(
                 `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
               );
               return reject("file_size_limit_exceeded");
             }
-            return reject(err);
+            return reject(err || new Error("Upload aborted"));
           });
 
         form.once("end", async () => {

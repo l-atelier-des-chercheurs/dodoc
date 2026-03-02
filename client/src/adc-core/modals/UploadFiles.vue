@@ -108,7 +108,11 @@ export default {
       for (let i = 0; i < this.$refs.filesList.length; i++) {
         const fileComponent = this.$refs.filesList[i];
         if (fileComponent.status === "waiting") {
-          await fileComponent.uploadFile();
+          try {
+            await fileComponent.uploadFile();
+          } catch (e) {
+            // ignore
+          }
         }
       }
     },
