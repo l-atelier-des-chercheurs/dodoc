@@ -51,23 +51,17 @@ export default (md, o = {}) => {
       // Extract text from current position to end of line
       const remainingText = state.src.slice(pos, max);
 
-      // Find matching closing parenthesis accounting for nesting and quoted strings
-      // Rule: If a value contains a closing parenthesis, it MUST be quoted
+      // Find matching closing parenthesis accounting for nesting and double-quoted strings
+      // Rule: If a value contains a closing parenthesis, it MUST be in double quotes.
+      // Single quote (') is not used here so apostrophes in captions (e.g. d'argile) don't break parsing.
       let depth = 0;
       let closeParenPos = -1;
-      let inQuotes = false;
-      let quoteChar = null;
+      let inDoubleQuotes = false;
       for (let i = 0; i < remainingText.length; i++) {
         const char = remainingText[i];
-        if (!inQuotes && (char === '"' || char === "'")) {
-          // Start of quoted string
-          inQuotes = true;
-          quoteChar = char;
-        } else if (inQuotes && char === quoteChar) {
-          // End of quoted string
-          inQuotes = false;
-          quoteChar = null;
-        } else if (!inQuotes) {
+        if (char === '"') {
+          inDoubleQuotes = !inDoubleQuotes;
+        } else if (!inDoubleQuotes) {
           // Only count parentheses when not inside quotes
           if (char === "(") {
             depth++;
@@ -298,7 +292,8 @@ export default (md, o = {}) => {
 
       // Use renderMedia for both external URLs and local media
       if (renderMedia) {
-        const alt = token.attrs.caption || "";
+        // Normalize typographic double single-quote to apostrophe (e.g. d''argile → d'argile)
+        const alt = (token.attrs.caption || "").replace(/''/g, "'");
         const width = token.attrs.width || "";
         const height = token.attrs.height || "";
         const title = token.attrs.title || "";

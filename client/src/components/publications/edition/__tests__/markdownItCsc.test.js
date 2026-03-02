@@ -341,5 +341,16 @@ Some text in between
         'style="--media-width: 100; --media-height: 200"'
       );
     });
+
+    it("should handle strange characters in captions like '' in caption (unquoted)", () => {
+      // Parser only uses double-quote for string boundaries, so apostrophes in unquoted caption don't break the shortcode
+      const input =
+        "(image: https://example.com/image.jpg caption: Premiers tests de formulation d'émaux céramique à partir d''argile rose champenoise, feldpath, et wollastonite.)";
+      const output = md.render(input);
+      expect(output).toContain("media media-image");
+      expect(output).toContain(
+        "Premiers tests de formulation d'émaux céramique à partir d'argile rose champenoise"
+      );
+    });
   });
 });
