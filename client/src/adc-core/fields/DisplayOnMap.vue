@@ -55,6 +55,30 @@
         >
           <slot name="popup_message" />
         </div>
+        <div
+          v-else-if="
+            !clicked_location.module &&
+            !popup_message &&
+            (clicked_location.latitude != null ||
+              clicked_location.longitude != null)
+          "
+          class="_popupMessage _popupCoords"
+        >
+          {{ $t("latitude") }}: {{ clicked_location.latitude }}°<br />
+          {{ $t("longitude") }}: {{ clicked_location.longitude }}°
+        </div>
+        <div
+          v-if="
+            (popup_message ||
+              clicked_location.module ||
+              clicked_location.latitude != null ||
+              clicked_location.longitude != null) &&
+            $slots.hasOwnProperty('popup_footer')
+          "
+          class="_popupFooter"
+        >
+          <slot name="popup_footer" />
+        </div>
       </div>
     </div>
     <div id="mouse-position" />
@@ -637,8 +661,12 @@ export default {
     },
 
     show_popup() {
+      const has_clicked_coords =
+        this.clicked_location.latitude != null ||
+        this.clicked_location.longitude != null;
       return (
         this.has_module_content_to_show ||
+        (this.can_click && has_clicked_coords) ||
         (!this.clicked_location.latitude && !this.clicked_location.longitude)
       );
     },
@@ -2388,7 +2416,17 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+}
+
+._popupCoords {
+  font-size: var(--sl-font-size-small);
+  color: var(--sl-color-neutral-600);
+}
+
+._popupFooter {
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  border-top: 1px solid var(--sl-color-neutral-200);
 }
 
 ._leftTopMenu {
