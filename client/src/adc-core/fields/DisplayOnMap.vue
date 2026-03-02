@@ -2205,7 +2205,7 @@ export default {
   &.is--small {
     width: 600px;
     max-width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 3/2;
     border-radius: 4px;
     overflow: hidden;
   }
