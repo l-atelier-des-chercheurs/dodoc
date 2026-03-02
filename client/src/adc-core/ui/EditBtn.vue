@@ -67,11 +67,13 @@ export default {
         return {
           label: this.$t("fullscreen"),
           icon: "fullscreen",
+          icon_size: 0.8,
         };
       else if (this.btn_type === "fullscreen-exit")
         return {
           label: this.$t("exit_fullscreen"),
           icon: "fullscreen-exit",
+          icon_size: 0.8,
         };
       else if (this.btn_type === "add")
         return {
@@ -133,7 +135,7 @@ export default {
         };
       return {
         label: this.$t("edit"),
-        icon: "pencil",
+        icon: "pencil-fill",
         icon_size: 0.8,
       };
     },
