@@ -35,6 +35,8 @@ export default {
   importing_from_url: "Importing from URL...",
   preview_of_image: "Preview of the image",
   failed_to_import_from_url: "Failed to import image from URL",
+  file_size_limit_exceeded:
+    "File too large. Maximum size: {maxSize} MB.",
   embed: "Embed",
   table: "Table",
   from_project: "From project",

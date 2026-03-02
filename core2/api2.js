@@ -1008,7 +1008,10 @@ module.exports = (function () {
       _notifyFolderUpdated(path_to_type, path_to_folder, changed_data);
 
       // 7. If password was changed, revoke all other tokens for this folder (force re-login on other devices)
-      if (changed_data && Object.prototype.hasOwnProperty.call(changed_data, "$password")) {
+      if (
+        changed_data &&
+        Object.prototype.hasOwnProperty.call(changed_data, "$password")
+      ) {
         await auth.removeAllTokensForFolderExcept({
           token_path,
           except_token: token,
@@ -2608,7 +2611,10 @@ module.exports = (function () {
 
   // Helper function for file upload error handling
   function _handleUploadFileError(err, res, context) {
-    const { message, code, err_infos } = err;
+    const message = err?.message ?? String(err);
+    const code = err?.code ?? "upload_failed";
+    const err_infos = err?.err_infos ?? undefined;
+
     const error_msg = `Failed to upload file to ${context.path_to_folder}: ${message}`;
 
     dev.error(error_msg);
@@ -2624,9 +2630,11 @@ module.exports = (function () {
     });
 
     try {
-      res.status(500).send({ code, err_infos });
+      if (!res.headersSent) {
+        res.status(500).send({ code, err_infos });
+      }
     } catch (e) {
-      // Response may have already been sent
+      // Response may have already been sent or connection closed
     }
   }
 

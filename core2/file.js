@@ -881,19 +881,19 @@ module.exports = (function () {
           req,
           upload_max_file_size_in_mo,
         })
-        .catch((err) => {
-          if (err === "file_size_limit_exceeded") {
-            const err = new Error("File size limit exceeded");
-            err.code = "file_size_limit_exceeded";
-            err.err_infos = {
+        .catch((rejected) => {
+          if (rejected === "file_size_limit_exceeded") {
+            const size_err = new Error("File size limit exceeded");
+            size_err.code = "file_size_limit_exceeded";
+            size_err.err_infos = {
               upload_max_file_size_in_mo,
             };
-            throw err;
+            throw size_err;
           } else {
-            dev.error(`Failed to handle form`, err);
-            const err = new Error("Failed to save file");
-            err.code = "failed_to_save_file";
-            throw err;
+            dev.error(`Failed to handle form`, rejected);
+            const save_err = new Error("Failed to save file");
+            save_err.code = "failed_to_save_file";
+            throw save_err;
           }
         });
 

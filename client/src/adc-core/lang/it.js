@@ -41,6 +41,8 @@ export default {
   add: "Aggiungi",
   add_item: "Aggiungi un elemento",
   add_files: "Aggiungi file",
+  file_size_limit_exceeded:
+    "File troppo grande. Dimensione massima: {maxSize} MB.",
   hide_already_present_medias: `
     Nascondi i media già inclusi nella pubblicazione | 
     Nascondi i {count} media già inclusi nella pubblicazione

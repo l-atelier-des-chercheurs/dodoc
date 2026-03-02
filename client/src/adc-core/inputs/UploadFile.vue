@@ -239,9 +239,18 @@ export default {
         })
         .catch((err) => {
           this.status = "error";
-          if (err.code !== "file_size_limit_exceeded")
+          if (err.code === "file_size_limit_exceeded") {
+            const max_size_mo =
+              err.err_infos?.upload_max_file_size_in_mo ?? 10000;
+            const msg = this.$t("file_size_limit_exceeded", {
+              maxSize: max_size_mo,
+            });
+            this.$alertify.delay(6000).error(msg);
+            this.error = msg;
+          } else {
             this.$alertify.delay(4000).error(err.message);
-          this.error = err.message;
+            this.error = err.message;
+          }
           throw err;
         });
 
@@ -393,7 +402,7 @@ export default {
   flex: 0 0 70px;
 }
 ._uploadFile--action {
-  flex: 0 0 70px;
+  flex: 0 0 15ch;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
