@@ -17,15 +17,6 @@
         </button>
       </div>
 
-      <template v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :allow_save="allow_save"
-          @save="updateLongLatZoom"
-          @cancel="cancel"
-        />
-      </template>
-
       <DisplayOnMap
         v-if="pins.length > 0 || edit_mode"
         :key="map_key"
@@ -46,6 +37,16 @@
           @click="enableEditMode"
         />
       </div>
+
+      <template v-if="edit_mode">
+        <SaveCancelButtons
+          class="_scb"
+          :allow_save="allow_save"
+          @save="updateLongLatZoom"
+          @cancel="cancel"
+        />
+      </template>
+
       <details v-if="pins.length > 0 || edit_mode">
         <summary class="u-buttonLink">
           {{ $t("more_informations") }}
@@ -139,9 +140,12 @@ export default {
   computed: {
     allow_save() {
       return (
-        this.longitude !== this.content?.longitude ||
-        this.latitude !== this.content?.latitude ||
-        this.zoom !== this.content?.zoom
+        !!this.longitude &&
+        !!this.latitude &&
+        !!this.zoom &&
+        (this.longitude !== this.content?.longitude ||
+          this.latitude !== this.content?.latitude ||
+          this.zoom !== this.content?.zoom)
       );
     },
     pins() {

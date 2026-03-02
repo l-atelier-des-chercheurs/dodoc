@@ -14,7 +14,7 @@
       class="_popup"
       :class="{
         'is--pin': clicked_location.module,
-        'is--shown': has_module_content_to_show,
+        'is--shown': show_popup,
       }"
     >
       <div class="_popupShadow" />
@@ -634,6 +634,13 @@ export default {
       const polygon = this.selected_feature.getGeometry();
       const areaInSquareMeters = this.calculatePolygonArea(polygon);
       return this.formatArea(areaInSquareMeters);
+    },
+
+    show_popup() {
+      return (
+        this.has_module_content_to_show ||
+        (!this.clicked_location.latitude && !this.clicked_location.longitude)
+      );
     },
     has_module_content_to_show() {
       if (!this.clicked_location.module)
@@ -2289,7 +2296,7 @@ export default {
   bottom: 9px;
   left: -48px;
   min-width: 280px;
-  opacity: 0;
+  // opacity: 0;
 
   font-size: var(--sl-font-size-normal);
 
