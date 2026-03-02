@@ -35,7 +35,7 @@ export default {
       return this.$route.query?.chapter || "";
     },
     view_mode() {
-      return this.$route.query?.view_mode || "book";
+      return this.$route.query?.view_mode || "web";
     },
     opened_style_file_meta() {
       return this.$route.query?.style || "first";

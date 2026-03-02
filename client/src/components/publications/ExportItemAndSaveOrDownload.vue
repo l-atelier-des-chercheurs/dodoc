@@ -1,5 +1,9 @@
 <template>
-  <BaseModal2 :size="modal_size" @close="removeAndCloseModal">
+  <BaseModal2
+    :title="$t('webpage')"
+    :size="modal_size"
+    @close="removeAndCloseModal"
+  >
     <template v-if="is_exporting">
       <div class="u-instructions u-spacingBottom">
         {{ $t("export_in_progress") }}

@@ -20,14 +20,13 @@
             class="_option_preview"
           />
           <span
-            v-if="current_option.key === 'custom' && allow_custom_option === 'html'"
+            v-if="
+              current_option.key === 'custom' && allow_custom_option === 'html'
+            "
             class="_customOptionPreview"
             v-html="current_option.label"
           />
-          <span
-            v-else
-            :class="{ _emptyOption: current_option.key === '' }"
-          >
+          <span v-else :class="{ _emptyOption: current_option.key === '' }">
             {{ current_option.label }}
           </span>
         </template>

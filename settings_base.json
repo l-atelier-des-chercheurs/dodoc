@@ -445,6 +445,9 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "number_of_book_pages": {
+                    "type": "number"
                   }
                 },
                 "$files": {

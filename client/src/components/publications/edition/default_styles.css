@@ -243,8 +243,8 @@
       text-align: left;
       color: currentColor;
       background: transparent;
-      padding: 0.25em 0.5em;
-      border-radius: 0.5em;
+      /* padding: 0.25em 0.5em; */
+      border-radius: 0.25em;
       cursor: pointer;
       font-size: inherit;
 

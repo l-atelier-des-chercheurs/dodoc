@@ -173,6 +173,9 @@ export default {
           bookpreview.appendChild(flow.pagesArea);
           bookrender.innerHTML = "";
 
+          const number_of_book_pages = flow.total;
+          this.updateNumberOfBookPages(number_of_book_pages);
+
           this.$nextTick(() => {
             this.showOnlyPages();
             if (this.can_edit) {
@@ -187,6 +190,10 @@ export default {
           });
         });
       });
+    },
+    updateNumberOfBookPages(number_of_book_pages) {
+      debugger;
+      this.$emit("updateNumberOfBookPages", number_of_book_pages);
     },
     addChapterShortcuts() {
       const bookpreview = this.$refs.bookpreview;

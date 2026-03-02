@@ -331,12 +331,11 @@ class Exporter {
       let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
-      if (this.instructions.page) {
-        query.page = this.instructions.page;
-      }
-      if (this.instructions.make_preview === true) {
-        query.make_preview = true;
-      }
+      if (this.instructions.page) query.page = this.instructions.page;
+      if (this.instructions.view_mode)
+        query.view_mode = this.instructions.view_mode;
+      if (this.instructions.make_preview === true) query.make_preview = true;
+
       const superadmintoken = auth.getSuperadminToken();
       query.superadmintoken = superadmintoken;
 

@@ -56,7 +56,7 @@
             :chapter_position="getChapterPosition(opened_chapter.$path)"
             :view_mode="view_mode"
             @remove="removeChapter(opened_chapter)"
-            @close="$emit('updatePane', { key: 'chapter', value: false })"
+            @close="closeChapter"
             @prev="openChapter(-1)"
             @next="openChapter(1)"
           />
@@ -155,7 +155,7 @@ export default {
   watch: {},
   computed: {
     view_mode() {
-      return this.pane_infos?.view_mode || "book";
+      return this.pane_infos?.view_mode || "web";
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -291,6 +291,9 @@ export default {
     },
   },
   methods: {
+    closeChapter() {
+      this.$emit("updatePane", { key: "chapter", value: false });
+    },
     openChapter(dir) {
       const idx = this.all_chapters.findIndex((f) =>
         f.$path.endsWith(this.opened_section_meta_filename)

@@ -16,14 +16,6 @@
           </button>
         </div>
       </div>
-      <!-- <select
-        :value="view_mode"
-        size="small"
-        @change="$emit('changeView', $event.target.value)"
-      >
-        <option value="book">{{ $t("book") }}</option>
-        <option value="html">{{ $t("webpage") }}</option>
-      </select> -->
 
       <select
         size="small"
@@ -61,6 +53,7 @@
         :can_edit="can_edit"
         @openChapter="$emit('openChapter', $event)"
         @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
+        @updateNumberOfBookPages="updateNumberOfBookPages"
       />
       <DocViewer
         v-else
@@ -122,14 +115,14 @@ export default {
       is_loading: false,
       available_view_modes: [
         {
+          label: this.$t("webpage"),
+          value: "web",
+          icon: "window-sidebar",
+        },
+        {
           label: this.$t("book"),
           value: "book",
           icon: "book",
-        },
-        {
-          label: this.$t("webpage"),
-          value: "html",
-          icon: "window-sidebar",
         },
       ],
       // custom_styles_nested: "",
@@ -807,6 +800,19 @@ export default {
       html += `<div class="mediaSourceCaption">${alt || ""}</div>`;
       html += `</div>`;
       return html;
+    },
+    async updateNumberOfBookPages(number_of_book_pages) {
+      if (
+        this.publication.number_of_book_pages === number_of_book_pages ||
+        !this.can_edit
+      )
+        return;
+      await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          number_of_book_pages,
+        },
+      });
     },
   },
 };

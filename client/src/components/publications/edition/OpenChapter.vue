@@ -70,24 +70,6 @@
         <DropDown :right="true" :show_label="false">
           <RemoveMenu @remove="$emit('remove')" />
         </DropDown>
-
-        <!-- <div>
-        <button type="button" class="u-buttonLink" @click="$emit('close')">
-          <b-icon icon="arrow-left-short" />
-          {{ $t("back") }}
-        </button>
-      </div> -->
-        <!-- <SelectField
-        :field_name="'content_type'"
-        :content="content_type"
-        :path="chapter._main_text.$path"
-        :options="[
-          { key: 'html', text: 'HTML' },
-          { key: 'markdown', text: 'Markdown' },
-        ]"
-        :can_edit="can_edit"
-        :hide_validation="true"
-      /> -->
       </div>
 
       <div class="_infos">
