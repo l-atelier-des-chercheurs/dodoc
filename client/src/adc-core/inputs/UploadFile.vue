@@ -146,7 +146,7 @@
             type="button"
             v-else
             key="retry"
-            class="u-button u-button_bleuvert"
+            class="u-button u-button_bleuvert u-button_small"
             @click="retrySend"
           >
             {{ $t("retry") }}
