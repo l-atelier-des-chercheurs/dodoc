@@ -309,6 +309,32 @@ module.exports = (function () {
       await fs.ensureDir(destination_full_folder_path);
 
       return new Promise((resolve, reject) => {
+        let settled = false;
+        const settleReject = (err) => {
+          if (settled) return;
+          settled = true;
+          reject(err);
+        };
+        const settleResolve = (value) => {
+          if (settled) return;
+          settled = true;
+          resolve(value);
+        };
+        const isSizeLimitError = (err) => {
+          if (err?.code === 1009) return true;
+          const err_msg = err?.message ?? "";
+          return (
+            err_msg.includes("maxFileSize") ||
+            err_msg.includes("maxTotalFileSize")
+          );
+        };
+        const rejectFileSizeLimit = () => {
+          dev.error(
+            `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+          );
+          return settleReject("file_size_limit_exceeded");
+        };
+
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
@@ -337,23 +363,12 @@ module.exports = (function () {
 
         form
           .on("error", (err) => {
-            if (err.code === 1009) {
-              dev.error(
-                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
-              );
-              return reject("file_size_limit_exceeded");
-            } else {
-              return reject(err);
-            }
+            if (isSizeLimitError(err)) return rejectFileSizeLimit();
+            return settleReject(err);
           })
           .on("aborted", (err) => {
-            if (err?.code === 1009) {
-              dev.error(
-                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
-              );
-              return reject("file_size_limit_exceeded");
-            }
-            return reject(err || new Error("Upload aborted"));
+            if (isSizeLimitError(err)) return rejectFileSizeLimit();
+            return settleReject(err || new Error("Upload aborted"));
           });
 
         form.once("end", async () => {
@@ -361,16 +376,21 @@ module.exports = (function () {
           dev.logverbose({ file });
 
           if (!file || !file.filepath)
-            return reject(new Error("No file to parse"));
+            return settleReject(new Error("No file to parse"));
 
-          return resolve({
+          return settleResolve({
             originalFilename: file.originalFilename,
             path_to_temp_file: file.filepath,
             user_additional_meta,
           });
         });
 
-        form.parse(req);
+        // formidable v3 may also reject parse() promise; catch it to avoid
+        // triggering the global unhandledRejection handler.
+        Promise.resolve(form.parse(req)).catch((err) => {
+          if (isSizeLimitError(err)) return rejectFileSizeLimit();
+          return settleReject(err);
+        });
       });
     },
 
