@@ -86,9 +86,21 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  // prevent access to general admin and folders meta.txt
+  // prevent access to internal/sensitive files that live in content root
   app.use(function (req, res, next) {
-    if (req.url.includes("/meta.txt"))
+    let normalized_path = req.path || req.url || "";
+    try {
+      normalized_path = decodeURIComponent(normalized_path);
+    } catch (err) {}
+
+    const is_meta_file = normalized_path.includes("/meta.txt");
+    const is_tokens_file =
+      normalized_path === "/tokens.json" ||
+      normalized_path.endsWith("/tokens.json");
+    const is_journal_folder =
+      normalized_path === "/journal" || normalized_path.startsWith("/journal/");
+
+    if (is_meta_file || is_tokens_file || is_journal_folder)
       res.status(403).send(`Access not allowed.`);
     // TODO: allow loading medias from domains that admin has allowed (set to ”domain1”, ”domain2”, ”domain3”, etc., or to "all")
     // else if (!(cors_for_ressources.allowed(req, res, next)))
