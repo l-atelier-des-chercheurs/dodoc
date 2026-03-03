@@ -351,6 +351,7 @@ export default {
 
   none_f: "Aucune",
   not_specified: "Non renseigné",
+  not_specified_f: "Non spécifiée",
   none: "Aucun·e",
   reset_all: "Retirer tout",
   filter: "Filtrer",

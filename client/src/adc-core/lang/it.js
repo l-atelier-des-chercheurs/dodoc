@@ -325,6 +325,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   none_f: "Nessuna",
   not_specified: "Non specificato",
+  not_specified_f: "Non specificata",
   none: "Nessuna.o",
   reset_all: "Resetta tutto",
   filter: "Filtra",
