@@ -17,6 +17,8 @@
       v-if="show_archives"
       :path="path"
       :current_content="content"
+      :save_format="save_format"
+      :content_type="content_type"
       @close="show_archives = false"
       @restore="restoreVersion"
     />
@@ -308,9 +310,10 @@ export default {
         (this.is_collaborative && !this.editor_is_enabled)
       ) {
         this.$nextTick(() => {
-          if (this.content !== this.editor.root.innerHTML)
-            // this.editor.root.innerHTML = (this.content);
-            this.editor.root.innerHTML = this.$sanitize(this.content);
+          const incoming_content = this.content || "";
+          if (this.getEditorContent() !== incoming_content) {
+            this.setEditorContent(incoming_content);
+          }
         });
       }
     },
@@ -335,6 +338,21 @@ export default {
     },
   },
   methods: {
+    setEditorContent(content, change_source = "init") {
+      if (!this.editor) return;
+
+      if (this.save_format === "raw") {
+        const normalized = (content || "").replace(/\r\n?/g, "\n");
+        const text = normalized.endsWith("\n") ? normalized : normalized + "\n";
+        this.editor.setContents([{ insert: text }], change_source);
+      } else {
+        const sanitized_content = this.$sanitize(content || "");
+        const delta = this.editor.clipboard.convert({
+          html: sanitized_content,
+        });
+        this.editor.setContents(delta, change_source);
+      }
+    },
     async initEditor() {
       const toolbar = this.makeToolbar();
 
@@ -380,23 +398,8 @@ export default {
         scrollingContainer: this.scrollingContainer,
       });
 
-      if (this.content) {
-        if (this.save_format === "raw") {
-          // const _content = this.$sanitize(this.content);
-          // this.editor.root.innerHTML = _content;
-          // this.editor.clipboard.dangerouslyPasteHTML(_content);
-          // this.editor.setContents(this.editor.getContents(), "init");
-          const normalized = this.content.replace(/\r\n?/g, "\n");
-          const text = normalized.endsWith("\n")
-            ? normalized
-            : normalized + "\n";
-          this.editor.setContents([{ insert: text }], "init");
-        } else {
-          // this.editor.setText(this.content);
-          // this.editor.root.innerHTML = this.content;
-          const delta = this.editor.clipboard.convert({ html: this.content });
-          this.editor.setContents(delta, "init");
-        }
+      if (this.content || this.content === "") {
+        this.setEditorContent(this.content);
         this.editor.history.clear();
       }
 
@@ -652,11 +655,7 @@ export default {
     },
 
     restoreVersion(content) {
-      this.editor.root.innerHTML = content;
-      // do not use, it doesnt respect \n
-      // const value = content;
-      // const delta = this.editor.clipboard.convert(value);
-      // this.editor.setContents(delta, "user");
+      this.setEditorContent(content, "user");
       this.show_archives = false;
     },
     updateInput() {

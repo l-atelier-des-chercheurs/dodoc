@@ -54,6 +54,8 @@
             <CollaborativeEditor3
               :content="archive_shown.content"
               :can_edit="false"
+              :save_format="save_format"
+              :content_type="content_type"
             />
           </div>
         </div>
@@ -74,6 +76,11 @@ export default {
   props: {
     path: String,
     current_content: String,
+    save_format: {
+      type: String,
+      default: "html",
+    },
+    content_type: String,
   },
   components: {},
   data() {
