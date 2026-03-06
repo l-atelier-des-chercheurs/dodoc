@@ -110,6 +110,21 @@ sudo chown root chrome-sandbox
 chmod 4755 chrome-sandbox
 ```
 
+### HTTPS for local development
+
+HTTPS is required for WebSockets, camera/geolocation APIs, and other secure-context features. The backend uses self-signed certs by default, which browsers reject. Use **mkcert** for locally-trusted certificates:
+
+```bash
+# Install mkcert (macOS)
+brew install mkcert
+mkcert -install   # trust the local CA, run once
+
+# Generate certs and update settings.json
+npm run setup-https
+```
+
+Restart the server and open https://localhost:8080 — the browser will trust the certificate.
+
 ## Method 4 — the docker way
 
 This method makes the installation of do•doc a bit simpler.
