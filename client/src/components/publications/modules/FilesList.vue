@@ -102,15 +102,25 @@
       </SlickItem>
     </SlickList>
 
-    <div v-if="edit_mode || (mode === 'source' && download_all_meta_filenames.length > 0)" class="_addBtnSection">
+    <div
+      v-if="
+        edit_mode ||
+        (mode === 'source' && download_all_meta_filenames.length > 0)
+      "
+      class="_addBtnSection"
+    >
       <button
         v-if="mode === 'source' && download_all_meta_filenames.length > 0"
         type="button"
-        class="u-button u-button_bleuvert u-button_small"
+        class="u-button u-button_small"
         :disabled="is_downloading_sources"
         @click="downloadAllSources"
       >
-        <b-icon v-if="is_downloading_sources" icon="arrow-repeat" class="_spinner" />
+        <b-icon
+          v-if="is_downloading_sources"
+          icon="arrow-repeat"
+          class="_spinner"
+        />
         <b-icon v-else icon="file-earmark-arrow-down" />
         {{ $t("download_all") }}
       </button>
@@ -191,7 +201,11 @@ export default {
       if (!folder) return [];
       const items = this.local_items || [];
       return items
-        .filter((m) => m._linked_media?.$path && this.getParent(m._linked_media.$path) === folder)
+        .filter(
+          (m) =>
+            m._linked_media?.$path &&
+            this.getParent(m._linked_media.$path) === folder
+        )
         .map((m) => this.getFilename(m._linked_media.$path));
     },
   },
@@ -362,7 +376,11 @@ export default {
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
