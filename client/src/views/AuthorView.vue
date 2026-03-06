@@ -3,7 +3,17 @@
     <div class="_spinner" v-if="is_loading" key="loader">
       <LoaderSpinner />
     </div>
-    <template v-else>
+    <div class="_error" v-else-if="fetch_author_error">
+      <div class="_errorMessage">
+        <template v-if="fetch_author_error === 'not_found'">
+          {{ $t("page_not_found") }}
+        </template>
+        <template v-else>
+          {{ $t(fetch_author_error) }}
+        </template>
+      </div>
+    </div>
+    <template v-else-if="author">
       <div class="_authorFull">
         <div class="u-spacingBottom">
           <router-link to="/@" class="u-buttonLink">
@@ -237,18 +247,15 @@ export default {
           path: this.author_path,
         })
         .catch((err) => {
-          this.fetch_author_error = err.response;
           this.is_loading = false;
+          this.fetch_author_error = err.code;
+          return;
         });
 
       this.is_loading = false;
       this.author = author;
 
-      // Update document title with actual author name
-      if (this.author) {
-        this.updateDocumentTitle(this.author.name);
-      }
-
+      this.updateDocumentTitle(this.author.name);
       this.$eventHub.$emit("received.author", this.author);
     },
     async removeAuthor() {
