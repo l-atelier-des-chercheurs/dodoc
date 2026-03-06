@@ -1,13 +1,13 @@
 const cors = require("cors"),
   url = require("url"),
-  path = require("path"),
-  archiver = require("archiver");
+  path = require("path");
 
 const folder = require("./folder"),
   file = require("./file"),
   settings = require("./settings"),
   notifier = require("./notifier"),
   utils = require("./utils"),
+  downloads = require("./downloads"),
   Exporter = require("./Exporter"),
   auth = require("./auth"),
   users = require("./users"),
@@ -271,6 +271,16 @@ module.exports = (function () {
       _generalPasswordCheck,
       _restrictToLocalAdmins,
       _downloadFolder
+    );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_downloadSources",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_downloadSources",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_downloadSources",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _downloadSources
     );
     app.post(
       [
@@ -1402,79 +1412,28 @@ module.exports = (function () {
     }
   }
   async function _downloadFolder(req, res, next) {
-    // 1. Extract and validate input
     const { path_to_folder, path_to_type } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
 
-    dev.logapi({ path_to_folder, path_to_type });
-
-    try {
-      // 2. Prepare download headers
-      const filename = utils.getZipFolderFilename({
-        path_to_folder,
-        path_to_type,
-      });
-      res.header("Content-Type", "application/zip");
-      res.header("Content-Disposition", `attachment; filename="${filename}"`);
-      // const { size } = await thumbs.getInfosForFolder({
-      //   path_to_folder,
-      // });
-      // if (size) res.header("Content-Length", size);
-
-      // 3. Create and stream archive
-      const archive = archiver("zip", {
-        zlib: { level: 0 },
-      });
-      archive.on("warning", (err) => {
-        throw err;
-      });
-      archive.on("error", function (err) {
-        throw err;
-      });
-      archive.pipe(res);
-
-      const full_folder_path = utils.getPathToUserContent(path_to_folder);
-      const folder_slug = utils.getFilename(path_to_folder);
-      archive.directory(full_folder_path, folder_slug);
-
-      archive.finalize();
-
-      // 4. Log success
-      dev.logpackets(`Successfully started download for ${path_to_folder}`);
-      journal.log({
-        from: "api2",
-        event: "download_folder",
-        details: {
-          outcome: "success",
-          path_to_folder,
-          author_path: token_path,
-        },
-      });
-
-      dev.log(`download started`);
-    } catch (err) {
-      _handleDownloadFolderError(err, res, { path_to_folder, token_path });
-    }
+    await downloads.downloadFolder({
+      path_to_folder,
+      path_to_type,
+      res,
+      token_path,
+    });
   }
 
-  // Helper function for download folder error handling
-  function _handleDownloadFolderError(err, res, context) {
-    const { message, code, err_infos } = err;
-    const error_msg = `Failed to download folder ${context.path_to_folder}: ${message}`;
+  async function _downloadSources(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+    const { meta_filenames } = req.body || {};
 
-    dev.error(error_msg);
-    journal.log({
-      from: "api2",
-      event: "download_folder",
-      details: {
-        outcome: "error",
-        path_to_folder: context.path_to_folder,
-        error_message: message,
-        author_path: context.token_path,
-      },
+    await downloads.downloadSources({
+      path_to_folder,
+      res,
+      token_path,
+      meta_filenames,
     });
-
-    res.status(500).send({ code, err_infos });
   }
 
   /************************************************************************************ BIN ***********/

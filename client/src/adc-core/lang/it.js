@@ -392,6 +392,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   latest_changes_to_project: "Ultime modifiche al progetto",
 
   download: "Scarica",
+  download_all: "Scarica tutto",
+  download_selected: "Scarica selezionati",
+  failed_to_download: "Download fallito",
   download_project: "Scarica il progetto {name}",
   download_project_instr:
     "È possibile importarlo in qualsiasi altro do•doc (offline o online, purché sia la versione 11 o 12).",

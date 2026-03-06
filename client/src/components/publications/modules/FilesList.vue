@@ -102,8 +102,20 @@
       </SlickItem>
     </SlickList>
 
-    <div v-if="edit_mode" class="_addBtnSection">
+    <div v-if="edit_mode || (mode === 'source' && download_all_meta_filenames.length > 0)" class="_addBtnSection">
       <button
+        v-if="mode === 'source' && download_all_meta_filenames.length > 0"
+        type="button"
+        class="u-button u-button_bleuvert u-button_small"
+        :disabled="is_downloading_sources"
+        @click="downloadAllSources"
+      >
+        <b-icon v-if="is_downloading_sources" icon="arrow-repeat" class="_spinner" />
+        <b-icon v-else icon="file-earmark-arrow-down" />
+        {{ $t("download_all") }}
+      </button>
+      <button
+        v-if="edit_mode"
         type="button"
         class="u-button u-button_bleuvert u-button_small"
         @click="show_media_picker = true"
@@ -124,6 +136,7 @@
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
+import PathsMixin from "@/mixins/Paths.js";
 
 export default {
   props: {
@@ -137,12 +150,14 @@ export default {
     SlickList,
     MediaPicker,
   },
+  mixins: [PathsMixin],
   directives: { handle: HandleDirective },
   data() {
     return {
       show_media_picker: false,
       show_media_preview_for: null,
       local_items: undefined,
+      is_downloading_sources: false,
     };
   },
   created() {},
@@ -166,11 +181,37 @@ export default {
       });
       return key;
     },
+    download_all_folder_path() {
+      const items = this.local_items || [];
+      const first = items.find((m) => m._linked_media?.$path);
+      return first ? this.getParent(first._linked_media.$path) : null;
+    },
+    download_all_meta_filenames() {
+      const folder = this.download_all_folder_path;
+      if (!folder) return [];
+      const items = this.local_items || [];
+      return items
+        .filter((m) => m._linked_media?.$path && this.getParent(m._linked_media.$path) === folder)
+        .map((m) => this.getFilename(m._linked_media.$path));
+    },
   },
   methods: {
     reorderMedias(items) {
       this.local_items = items;
       this.$emit("reorderMedias", items);
+    },
+    async downloadAllSources() {
+      const path = this.download_all_folder_path;
+      const meta_filenames = this.download_all_meta_filenames;
+      if (!path || meta_filenames.length === 0) return;
+      this.is_downloading_sources = true;
+      try {
+        await this.$api.downloadSources({ path, meta_filenames });
+      } catch (err) {
+        this.$alertify?.error(this.$t("failed_to_download"));
+      } finally {
+        this.is_downloading_sources = false;
+      }
     },
   },
 };
@@ -315,5 +356,13 @@ export default {
 
 ._dragHandle {
   cursor: grab;
+}
+
+._spinner {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

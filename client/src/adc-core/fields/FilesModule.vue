@@ -34,11 +34,12 @@
       </div>
     </template>
 
-    <div class="_addBtn" v-if="can_edit">
-      <LoaderSpinner v-if="is_loading" />
+    <div class="_addBtn" v-if="can_edit || listed_files.length > 0">
+      <LoaderSpinner v-if="can_edit && is_loading" />
       <button
+        v-if="can_edit"
         type="button"
-        class="u-button u-button_small u-button_bleuvert _addFile"
+        class="u-button u-button_small _addFile"
         :disabled="is_loading"
         @click="show_picker = !show_picker"
       >
@@ -55,6 +56,21 @@
         @close="show_picker = false"
       />
     </div>
+    <button
+      v-if="listed_files.length > 0"
+      type="button"
+      class="u-button u-button_small"
+      :disabled="is_downloading_sources"
+      @click="downloadAllSources"
+    >
+      <b-icon
+        v-if="is_downloading_sources"
+        icon="arrow-repeat"
+        class="_spinner"
+      />
+      <b-icon v-else icon="file-earmark-arrow-down" />
+      {{ $t("download_all") }}
+    </button>
   </div>
 </template>
 <script>
@@ -82,6 +98,7 @@ export default {
       is_loading: false,
       processing_file_index: 0,
       processing_file_count: 0,
+      is_downloading_sources: false,
     };
   },
   created() {},
@@ -161,6 +178,20 @@ export default {
         },
       });
     },
+    async downloadAllSources() {
+      if (!this.project_path || !this.content?.length) return;
+      this.is_downloading_sources = true;
+      try {
+        await this.$api.downloadSources({
+          path: this.project_path,
+          meta_filenames: this.content,
+        });
+      } catch (err) {
+        this.$alertify?.error(this.$t("failed_to_download"));
+      } finally {
+        this.is_downloading_sources = false;
+      }
+    },
   },
 };
 </script>
@@ -193,7 +224,7 @@ export default {
 
     &:hover,
     &:focus-visible {
-      background: var(--c-gris);
+      background: var(--c-gris_clair);
     }
 
     ._link {
@@ -237,7 +268,23 @@ export default {
 }
 
 ._addBtn {
-  text-align: center;
-  padding: calc(var(--spacing) / 4);
+  // text-align: center;
+  // padding: calc(var(--spacing) / 4);
+  // display: flex;
+  // flex-wrap: wrap;
+  // gap: calc(var(--spacing) / 4);
+  // justify-content: center;
+}
+
+._spinner {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

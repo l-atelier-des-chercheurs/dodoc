@@ -422,6 +422,9 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_all: "Tout télécharger",
+  download_selected: "Télécharger la sélection",
+  failed_to_download: "Échec du téléchargement",
   download_project: "Télécharger le projet {name}",
   download_project_instr:
     "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11 ou 12).",

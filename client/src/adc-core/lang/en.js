@@ -246,6 +246,9 @@ export default {
   latest_changes_to_project: "Latest changes to project",
 
   download: "Download",
+  download_all: "Download all",
+  download_selected: "Download selected",
+  failed_to_download: "Failed to download",
   download_project: "Download project {name}",
   download_project_instr:
     "You will be able to import it to any other do•doc (offline or online, as long as it is version 11 or 12).",

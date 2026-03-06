@@ -699,6 +699,26 @@ export default function () {
         } catch (err) {}
         saveAs(response.data, filename);
       },
+      async downloadSources({ path, meta_filenames }) {
+        const response = await this.$axios({
+          url: `${path}/_downloadSources`,
+          method: "POST",
+          data: { meta_filenames },
+          responseType: "blob",
+        }).catch((err) => {
+          throw this.processError(err);
+        });
+        let filename = "sources.zip";
+        try {
+          const contentDispositionHeader =
+            response.headers["content-disposition"];
+          const regExpFilename = /filename="(?<filename>.*)"/;
+          filename =
+            regExpFilename.exec(contentDispositionHeader)?.groups?.filename ??
+            "sources.zip";
+        } catch (err) {}
+        saveAs(response.data, filename);
+      },
       async importFolder({
         path,
         filename,

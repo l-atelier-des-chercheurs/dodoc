@@ -426,6 +426,16 @@
                   <b-icon icon="trash" />
                   {{ $t("remove") }}
                 </button>
+                <button
+                  type="button"
+                  class="u-button u-button_bleuvert"
+                  :disabled="is_downloading_sources"
+                  @click="downloadSelectedSources"
+                >
+                  <b-icon v-if="is_downloading_sources" icon="arrow-repeat" class="_spinner" />
+                  <b-icon v-else icon="file-earmark-arrow-down" />
+                  {{ $t("download_selected") }}
+                </button>
               </template>
 
               <button type="button" class="u-buttonLink" @click="cancelSelect">
@@ -505,6 +515,7 @@ export default {
       fav_filter: false,
       show_bin_modal: false,
       show_batch_resize_modal: false,
+      is_downloading_sources: false,
 
       group_mode: "day",
       // group_mode: localStorage.getItem("library_group_mode") || "day",
@@ -848,6 +859,26 @@ export default {
     cancelSelect() {
       this.selected_medias_paths = [];
       if (this.batch_mode) this.batch_mode = false;
+    },
+    async downloadSelectedSources() {
+      if (this.selected_medias_paths.length === 0) return;
+      const first_path = this.selected_medias_paths[0];
+      const folder_path = this.getParent(first_path);
+      const meta_filenames = this.selected_medias_paths
+        .filter((p) => this.getParent(p) === folder_path)
+        .map((p) => this.getFilename(p));
+      if (meta_filenames.length === 0) return;
+      this.is_downloading_sources = true;
+      try {
+        await this.$api.downloadSources({
+          path: folder_path,
+          meta_filenames,
+        });
+      } catch (err) {
+        this.$alertify?.error(this.$t("failed_to_download"));
+      } finally {
+        this.is_downloading_sources = false;
+      }
     },
     quantityOfMediaWithKey({ key, val }) {
       if (val === "all") return false;
@@ -1284,5 +1315,13 @@ export default {
 ._binButton {
   margin: calc(var(--spacing) / 1) calc(var(--spacing) / 2);
   text-align: center;
+}
+
+._spinner {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>
