@@ -7,7 +7,7 @@
   "cache_content": true,
   "bonjour_domain": false,
   "versioning": true,
-  "tokenIsValidForXDays": 60,
+  "tokenIsValidForXDays": 30,
 
   "contentPath": "dodoc",
 
