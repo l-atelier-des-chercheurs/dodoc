@@ -2,7 +2,6 @@ var express = require("express");
 
 var http = require("http");
 var https = require("https");
-var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
@@ -12,7 +11,8 @@ const sockets = require("./sockets"),
   api2 = require("./api2"),
   journal = require("./journal"),
   serverRTC = require("./serverRTC.js"),
-  dev = require("./dev-log");
+  dev = require("./dev-log"),
+  { loadHttpsOptions } = require("./load-ssl");
 // cors_for_ressources = require("./cors_for_ressources"),
 
 module.exports = function () {
@@ -44,18 +44,10 @@ module.exports = function () {
   // Apply rate limiting only to _api2 endpoints
   app.use("/_api2", apiSpeedLimiter);
 
-  // only for HTTPS, works without asking for a certificate
-  const options = {
-    key: fs.readFileSync(
-      global.settings.privateKeyPath ||
-        path.join(__dirname, "ssl", "selfsigned.key")
-    ),
-    cert: fs.readFileSync(
-      global.settings.certificatePath ||
-        path.join(__dirname, "ssl", "selfsigned.crt")
-    ),
-    passphrase: global.settings.passphrase || "",
-  };
+  const https_options =
+    global.settings.protocol === "https"
+      ? loadHttpsOptions(global.settings, __dirname)
+      : null;
 
   if (
     global.settings.protocol === "https" &&
@@ -74,7 +66,7 @@ module.exports = function () {
 
   let server =
     global.settings.protocol === "https"
-      ? https.createServer(options, app)
+      ? https.createServer(https_options, app)
       : http.createServer(app);
 
   dev.logverbose("Starting server 2");
