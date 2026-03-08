@@ -125,7 +125,7 @@ module.exports = function () {
   );
 
   // app.use(express.urlencoded({ extended: true }));
-  app.use(express.json({ limit: "1mb" })); // To parse the incoming requests with JSON payloads
+  app.use(express.json({ limit: "4mb" })); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
   journal.log({
