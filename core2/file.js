@@ -156,7 +156,7 @@ module.exports = (function () {
           media_filename
         );
 
-      if (media_type) {
+      if (media_type && media_filename) {
         const _thumbs = await thumbs
           .makeThumbForMedia({
             media_type,
