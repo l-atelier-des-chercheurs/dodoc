@@ -83,12 +83,10 @@ module.exports = (function () {
 
         app.on("activate", () => {
           dev.logfunction(`ELECTRON — init : activate`);
-          // On macOS it's common to re-create a window in the app when the
-          // dock icon is clicked and there are no other windows open.
-          if (win === null) {
+          // On macOS re-create a window when the dock icon is clicked and none exist.
+          if (BrowserWindow.getAllWindows().length === 0) {
             _createWindow().then((_win) => {
               win = _win;
-              return resolve(win);
             });
           }
         });
@@ -227,6 +225,33 @@ module.exports = (function () {
     },
   };
 
+  function createNewWindow() {
+    const preloadPath = path.join(__dirname, "preload.js");
+    const new_win = new BrowserWindow({
+      width: 1000,
+      height: 800,
+      backgroundColor: "#EBEBEB",
+      show: true,
+      title: global.appInfos.productName,
+      icon: path.join(global.appRoot, "build", "icon.png"),
+      webPreferences: {
+        allowRunningInsecureContent: true,
+        nodeIntegration: false,
+        contextIsolation: true,
+        enableRemoteModule: false,
+        plugins: true,
+        preload: preloadPath,
+      },
+    });
+
+    new_win.loadURL(global.appInfos.homeURL);
+
+    new_win.on("ready-to-show", () => {
+      new_win.show();
+      new_win.focus();
+    });
+  }
+
   function _createWindow() {
     return new Promise(function (resolve, reject) {
       dev.logfunction();
@@ -347,13 +372,15 @@ module.exports = (function () {
 
   async function _pickPath() {
     dev.logfunction();
-    const result = await dialog.showOpenDialog(win, {
+    const parent_win =
+      BrowserWindow.getFocusedWindow() || win || BrowserWindow.getAllWindows()[0];
+    const result = await dialog.showOpenDialog(parent_win, {
       properties: ["openDirectory", "createDirectory"],
     });
     if (result.canceled) return false;
 
     const path_to_content = result.filePaths[0];
-    win.webContents.send("fromMain", {
+    parent_win?.webContents?.send("fromMain", {
       type: "new_path",
       path_to_content,
     });
@@ -381,7 +408,8 @@ module.exports = (function () {
               aboutModalOpening = true;
 
               // Trigger the existing About modal in the app
-              win.webContents
+              const target_win = BrowserWindow.getFocusedWindow() || win;
+              target_win?.webContents
                 .executeJavaScript(
                   `
                 try {
@@ -413,7 +441,7 @@ module.exports = (function () {
                 .catch((error) => {
                   console.error("Failed to execute JavaScript:", error);
                   // Fallback to native dialog if JavaScript execution fails
-                  dialog.showMessageBox(win, {
+                  dialog.showMessageBox(target_win || win, {
                     type: "info",
                     title: `À propos ${global.appInfos.productName}`,
                     message: global.appInfos.productName,
@@ -535,11 +563,20 @@ module.exports = (function () {
           },
         ],
       },
-      ...(process.platform === "darwin"
-        ? [
-            {
-              label: "Fenêtre",
-              submenu: [
+      {
+        label: "Fenêtre",
+        submenu: [
+          {
+            label: "Nouvelle fenêtre",
+            accelerator:
+              process.platform === "darwin" ? "Command+N" : "Ctrl+N",
+            click: () => createNewWindow(),
+          },
+          {
+            type: "separator",
+          },
+          ...(process.platform === "darwin"
+            ? [
                 {
                   label: "Réduire",
                   accelerator: "Command+M",
@@ -557,10 +594,21 @@ module.exports = (function () {
                   label: "Mettre tout au premier plan",
                   role: "front",
                 },
-              ],
-            },
-          ]
-        : []),
+              ]
+            : [
+                {
+                  label: "Réduire",
+                  accelerator: "Ctrl+M",
+                  role: "minimize",
+                },
+                {
+                  label: "Fermer",
+                  accelerator: "Ctrl+W",
+                  role: "close",
+                },
+              ]),
+        ],
+      },
       {
         label: "Aide",
         submenu: [],
