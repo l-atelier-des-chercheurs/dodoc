@@ -40,13 +40,13 @@
         :data-size="pane.size"
         :style="`--color-type: var(--color-${pane.type});`"
       >
-        <InstructionsWindow
+        <!-- <InstructionsWindow
           v-if="can_contribute_to_project && false"
           :key="pane.type"
           :type="pane.type"
           :path="project.$path"
           @close="scrollToPanes"
-        />
+        /> -->
         <CapturePane
           v-if="pane.type === 'capture'"
           :project="project"
@@ -63,26 +63,26 @@
           :can_edit_project="can_edit_project"
           @update:media_focused="setItem(pane, 'focus', $event)"
         />
-        <NotesTodoPane
-          v-else-if="pane.type === 'notes_todo'"
-          :project="project"
-          @close="removePane(pane)"
-        />
-        <ChatsPane v-else-if="pane.type === 'chats'" :project="project" />
         <MakePane
-          v-if="pane.type === 'make'"
+          v-else-if="pane.type === 'make'"
           :project="project"
           :opened_make_slug="pane.make"
           :can_edit="can_contribute_to_project"
           @update:opened_make_slug="setItem(pane, 'make', $event)"
         />
         <PublierPane
-          v-if="pane.type === 'publish'"
+          v-else-if="pane.type === 'publish'"
           :project="project"
           :pane_infos="pane"
           :can_edit="can_contribute_to_project"
           @updatePane="($event) => setItem(pane, $event.key, $event.value)"
         />
+        <NotesTodoPane
+          v-else-if="pane.type === 'notes_todo'"
+          :project="project"
+          @close="removePane(pane)"
+        />
+        <ChatsPane v-else-if="pane.type === 'chats'" :project="project" />
       </pane>
     </splitpanes>
   </div>

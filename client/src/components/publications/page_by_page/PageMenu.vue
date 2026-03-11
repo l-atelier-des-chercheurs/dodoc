@@ -431,9 +431,9 @@
           />
         </div>
 
-        <div class="u-sameRow">
+        <div class="u-sameRow _withFiraArrows">
           <NumberInput
-            :label="$t('width') + ' ↔'"
+            :label="$t('width') + ' <->'"
             :value="active_module.width"
             :min="0"
             :suffix="unit"
@@ -1099,5 +1099,9 @@ export default {
   flex-flow: row wrap;
   justify-content: space-between;
   color: var(--c-gris_fonce);
+}
+
+._withFiraArrows ::v-deep label {
+  font-family: "Fira Code", monospace;
 }
 </style>

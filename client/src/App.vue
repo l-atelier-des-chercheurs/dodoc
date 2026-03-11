@@ -409,12 +409,12 @@ img {
 .splitpanes--vertical > .splitpanes__splitter {
   width: 2px;
   margin-left: -1px;
-  border-right: 1px solid var(--c-noir);
+  border-right: 2px solid var(--c-noir);
 }
 .splitpanes--horizontal > .splitpanes__splitter {
   margin-top: -1px;
   height: 2px;
-  border-bottom: 1px solid var(--c-noir);
+  border-bottom: 2px solid var(--c-noir);
 }
 
 .splitpanes__splitter:before {
@@ -454,26 +454,29 @@ img {
 }
 
 .splitpanes__splitter:after {
-  --icon-width: 1.5em;
+  --icon-size: 1.75rem;
 
   content: "";
   position: absolute;
-  left: calc(50% - var(--icon-width) / 2 + 1px);
+  left: calc(50% - var(--icon-size) / 2 + 1px);
   top: auto;
-  bottom: calc(10% - var(--icon-width) / 2);
+  bottom: calc(10% - var(--icon-size) / 2);
   pointer-events: none;
 
-  width: var(--icon-width);
-  height: var(--icon-width);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 2px;
-  line-height: 1;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: var(--input-border-radius);
+  font-family: "Fira Code";
+  font-weight: 700;
   background-color: var(--c-noir);
   color: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  background-size: 80%;
+  line-height: 1.5;
+  // border: 1px solid var(--c-noir);
+  //
 
   transition: transform 0.4s;
   opacity: 1;
@@ -489,11 +492,18 @@ img {
 
 // Vertical splitter (left-right double arrow)
 .splitpanes--vertical > .splitpanes__splitter:after {
-  content: "↔";
+  width: calc(var(--icon-size) * 1.5);
+  left: calc(50% - var(--icon-size) * 1.5 / 2 + 1px);
+  content: "<->";
+}
+.splitpanes--vertical > .splitpanes__splitter:hover:after {
 }
 
 // Horizontal splitter (up-down double arrow)
 .splitpanes--horizontal > .splitpanes__splitter:after {
+  content: "↕";
+}
+.splitpanes--horizontal > .splitpanes__splitter:hover:after {
   content: "↕";
 }
 

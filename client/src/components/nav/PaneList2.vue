@@ -24,80 +24,41 @@
           {{ project.title }}
         </span>
       </button>
-      <span placement="top" class="_projectPanes" ref="drawer">
-        <SlickList
-          v-if="can_edit"
-          class="_paneList--list"
-          axis="x"
-          v-model="project_panes"
-          :useDragHandle="true"
-        >
-          <SlickItem
-            v-for="(pane, index) in possible_project_panes"
-            :index="index"
-            class="_paneItem"
-            :class="{
-              'is--enabled': paneIsEnabled(pane.type),
-              'is--animating': animate_pane === pane.type,
-            }"
-            :style="`--color-active: var(--color-${pane.type});`"
+      <span placement="top" class="_projectPanes">
+        <div v-if="can_edit" class="_paneList--list">
+          <PaneItem
+            v-for="pane in possible_project_panes"
             :key="pane.type"
-          >
-            <div
-              class="_btn"
-              :ref="`pane_${pane.type}`"
-              @click="togglePane(pane)"
-            >
-              <span
-                class="u-icon"
-                v-if="getIcon(pane.type)"
-                v-html="getIcon(pane.type)"
-              />
-              <!-- <span>{{ $t(pane.type) }}</span> -->
-
-              <span
-                class="_name"
-                key="'name'"
-                v-if="paneIsEnabled(pane.type) || !has_enabled_panes"
-              >
-                <!-- {{ index + 1 }} •  -->
-                {{ $t(pane.type) }}
-              </span>
-
-              <transition name="fade" mode="out-in">
-                <span
-                  key="'count+'"
-                  class="_count"
-                  v-if="animate_pane === pane.type"
-                >
-                  +1
-                </span>
-                <div
-                  v-else-if="project_panes.some((p) => p.type === pane.type)"
-                  class="_inlineBtn _removePaneBtn"
-                >
-                  <b-icon
-                    icon="x"
-                    :label="$t('close')"
-                    @click.stop="removePane(pane.type)"
-                  />
-                </div>
-                <div
-                  v-else-if="project_panes.length > 0 && !$root.is_mobile_view"
-                  class="_inlineBtn _addPaneBtn"
-                >
-                  <b-icon
-                    icon="plus-circle"
-                    :label="$t('add')"
-                    @click.stop="addPane(pane)"
-                  />
-                </div>
-              </transition>
-            </div>
-          </SlickItem>
-        </SlickList>
+            :pane="pane"
+            variant="main"
+            :is_enabled="paneIsEnabled(pane.type)"
+            :is_animating="animate_pane === pane.type"
+            :show_name="paneIsEnabled(pane.type) || !has_enabled_panes"
+            :show_add_remove="project_panes.length > 0 && !$root.is_mobile_view"
+            :color_active="`var(--color-${pane.type})`"
+            @click="togglePane(pane)"
+            @add="addPane(pane)"
+            @remove="removePane(pane.type)"
+          />
+        </div>
       </span>
       <div class="_optionsBtnContainer">
+        <div class="_secondaryPanes">
+          <PaneItem
+            v-for="pane in secondery_posible_project_panes"
+            :key="pane.type"
+            :pane="pane"
+            variant="secondary"
+            :is_enabled="paneIsEnabled(pane.type)"
+            :is_animating="animate_pane === pane.type"
+            :show_name="paneIsEnabled(pane.type) || false"
+            :show_add_remove="project_panes.length > 0 && !$root.is_mobile_view"
+            :color_active="`var(--color-${pane.type})`"
+            @click="togglePane(pane)"
+            @add="addPane(pane)"
+            @remove="removePane(pane.type)"
+          />
+        </div>
         <button
           type="button"
           class="u-button u-button_icon"
@@ -187,8 +148,8 @@
   </div>
 </template>
 <script>
-import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 import PaneListModal from "@/components/nav/PaneListModal.vue";
+import PaneItem from "@/components/nav/PaneItem.vue";
 
 export default {
   props: {
@@ -197,11 +158,9 @@ export default {
     can_edit: Boolean,
   },
   components: {
-    SlickItem,
-    SlickList,
     PaneListModal,
+    PaneItem,
   },
-  directives: { handle: HandleDirective },
   data() {
     return {
       show_panelist: false,
@@ -266,18 +225,12 @@ export default {
       return this.project?.disabled_panes || [];
     },
     possible_project_panes() {
-      const all_panes = [
+      let list = [
         {
           type: "capture",
         },
         {
           type: "collect",
-        },
-        {
-          type: "notes_todo",
-        },
-        {
-          type: "chats",
         },
         {
           type: "make",
@@ -287,17 +240,27 @@ export default {
         },
       ];
 
+      // When project has disabled_panes set, hide those pane icons
+      const disabled_set = new Set(this.disabled_panes_from_project);
+      list = list.filter((p) => !disabled_set.has(p.type));
+      return list;
+    },
+    secondery_posible_project_panes() {
+      let list = [
+        {
+          type: "notes_todo",
+        },
+      ];
       // Filter out chats pane if enable_chats is not enabled
-      let list = all_panes.filter((pane) => {
-        if (pane.type === "chats") {
-          return this.$root.app_infos?.instance_meta?.enable_chats === true;
-        }
-        return true;
-      });
+      if (this.$root.app_infos?.instance_meta?.enable_chats === true) {
+        list.push({
+          type: "chats",
+        });
+      }
 
       // When project has disabled_panes set, hide those pane icons
       const disabled_set = new Set(this.disabled_panes_from_project);
-      list = list.filter((pane) => !disabled_set.has(pane.type));
+      list = list.filter((p) => !disabled_set.has(p.type));
       return list;
     },
     cover_thumb() {
@@ -342,7 +305,12 @@ export default {
       let pp = JSON.parse(JSON.stringify(this.project_panes));
       pp.push(pane);
 
-      const sortingArr = this.possible_project_panes.map((p) => p.type);
+      const all_possible_panes = [
+        ...this.possible_project_panes,
+        ...this.secondery_posible_project_panes,
+      ];
+
+      const sortingArr = all_possible_panes.map((p) => p.type);
       pp.sort(
         (a, b) => sortingArr.indexOf(a.type) - sortingArr.indexOf(b.type)
       );
@@ -360,15 +328,6 @@ export default {
           inline: "nearest",
         });
       }, 100);
-    },
-    getIcon(type) {
-      if (type === "capture") return this.dodoc_icon_capture;
-      else if (type === "collect") return this.dodoc_icon_collect;
-      else if (type === "make") return this.dodoc_icon_make;
-      else if (type === "publish") return this.dodoc_icon_publish;
-      else if (type === "notes_todo") return this.dodoc_icon_todo;
-      else if (type === "chats") return this.dodoc_icon_chats;
-      return false;
     },
     animatePane(pane) {
       this.animate_pane = pane;
@@ -461,100 +420,6 @@ export default {
   }
 }
 
-._paneItem {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  text-decoration: none;
-  border-radius: 44px;
-
-  text-decoration: none;
-
-  text-transform: uppercase;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-
-  // border-radius: 4px;
-  color: var(--color-active);
-
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-
-  &:hover,
-  &:focus {
-    color: white;
-    background-color: var(--color-active);
-  }
-  &.is--enabled,
-  &.is--animating {
-    color: white;
-    background-color: var(--color-active);
-  }
-  &.is--enabled {
-    &:hover,
-    &:focus {
-      // color: var(--c-noir);
-    }
-  }
-}
-
-._inlineBtn {
-  position: relative;
-  display: block;
-  --sl-transition-medium: 0;
-
-  line-height: 0;
-  padding: calc(var(--spacing) / 4);
-  font-size: 120%;
-  border-radius: 50%;
-  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-._addPaneBtn {
-  &:hover,
-  &:focus {
-    background: white;
-    color: var(--color-active);
-  }
-}
-._removePaneBtn {
-  &:hover,
-  &:focus {
-    background: white;
-    color: var(--color-active);
-  }
-}
-
-._btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 4);
-  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-  cursor: pointer;
-
-  width: 100%;
-  height: 100%;
-  //
-  .u-icon {
-    width: 2rem;
-    height: 2rem;
-    overflow: visible;
-
-    svg {
-      width: 2rem;
-      height: 2rem;
-    }
-  }
-}
-
-._name {
-  padding: 0 calc(var(--spacing) / 2);
-}
-._count {
-  padding: 0 calc(var(--spacing) / 2);
-}
-
 ._projectTitle {
   padding: calc(var(--spacing) / 4);
   font-weight: 700;
@@ -592,7 +457,11 @@ export default {
   }
 }
 ._optionsBtnContainer {
-  //text-align: right;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: right;
   margin-left: calc(var(--spacing) / 2);
   padding-right: calc(var(--spacing) / 2);
 }
