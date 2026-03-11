@@ -474,7 +474,7 @@ img {
   background-position: center;
   text-align: center;
   background-size: 80%;
-  line-height: 1.5;
+  line-height: 1.6;
   // border: 1px solid var(--c-noir);
   //
 
