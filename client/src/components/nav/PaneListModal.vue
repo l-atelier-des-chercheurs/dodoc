@@ -51,10 +51,10 @@ export default {
       const all = [
         { type: "capture" },
         { type: "collect" },
-        { type: "notes_todo" },
-        { type: "chats" },
         { type: "make" },
         { type: "publish" },
+        { type: "notes_todo" },
+        { type: "chats" },
       ];
       return all.filter((pane) => {
         if (pane.type === "chats") {

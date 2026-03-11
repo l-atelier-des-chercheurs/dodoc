@@ -15,10 +15,10 @@
       </button>
       <button
         type="button"
-        class="u-button u-button_icon u-button_bleumarine"
+        class="u-button u-button_icon"
         @click="show_create_notes_modal = true"
       >
-        <b-icon icon="plus-circle-fill" />
+        <b-icon icon="plus-lg" />
       </button>
     </div>
 
@@ -138,7 +138,8 @@ export default {
   gap: calc(var(--spacing) / 2);
   overflow-x: auto;
   padding: calc(var(--spacing) / 2);
-  border-bottom: 2px dotted var(--c-bleumarine_fonce);
+  border-bottom: 2px dashed var(--c-noir);
+  color: white;
 
   button {
     white-space: nowrap;
