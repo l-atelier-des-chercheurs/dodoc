@@ -257,12 +257,6 @@ export default {
     }
   }
 
-  &.is--unfolded {
-    ._label {
-      pointer-events: auto;
-    }
-  }
-
   &.is--spinning {
     ._icon {
       animation: spin 1s linear infinite;
@@ -280,7 +274,6 @@ export default {
       color: inherit;
       background: var(--color-bg-hover);
       color: var(--color-icon-hover);
-      pointer-events: auto;
 
       opacity: 1;
       max-width: 40ch;
