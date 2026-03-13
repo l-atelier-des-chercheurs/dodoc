@@ -2260,7 +2260,12 @@ module.exports = (function () {
     const logs = await journal.getLogs();
     res.json({ logs });
   }
+  async function _downloadLog(req, res, next) {
     return await journal.downloadLog({
+      filename: req.params.filename,
+      res,
+    });
+  }
   async function _getStoragePath(req, res, next) {
     const pathToUserContent = await settings.getStoragePath();
     dev.logfunction({ pathToUserContent });
