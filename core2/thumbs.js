@@ -616,6 +616,9 @@ module.exports = (function () {
           "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
         )
         .outputOptions(["-vframes 1"])
+        .on("start", (command_line) => {
+          dev.log(`THUMBS • FFMPEG CMD ${command_line}`);
+        })
         // setup event handlers
         .on("end", () => {
           return resolve();
