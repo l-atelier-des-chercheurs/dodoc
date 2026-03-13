@@ -394,6 +394,17 @@ export default function () {
         const logs = response.data.logs;
         return logs;
       },
+      async downloadLog({ filename }) {
+        const response = await this.$axios({
+          url: `_logs/${encodeURIComponent(filename)}`,
+          method: "GET",
+          responseType: "blob",
+        }).catch((err) => {
+          throw this.processError(err);
+        });
+
+        saveAs(response.data, filename);
+      },
       async restartApp() {
         await this.$axios.post(`_restartApp`);
       },

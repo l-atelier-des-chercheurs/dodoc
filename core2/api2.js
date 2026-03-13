@@ -42,6 +42,7 @@ module.exports = (function () {
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
 
     app.get("/_api2/_logs", _getLogs);
+    app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
 
     app.get("/_api2/_users", _getAllUsers);
     app.patch("/_api2/_users/:id", _updateUser);
@@ -2259,6 +2260,7 @@ module.exports = (function () {
     const logs = await journal.getLogs();
     res.json({ logs });
   }
+    return await journal.downloadLog({
   async function _getStoragePath(req, res, next) {
     const pathToUserContent = await settings.getStoragePath();
     dev.logfunction({ pathToUserContent });
