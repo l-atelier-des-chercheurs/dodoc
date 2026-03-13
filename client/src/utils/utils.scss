@@ -172,8 +172,8 @@ a:focus-visible {
 
 .b-icon {
   display: inline-block;
-  min-width: 1em;
-  min-height: 1em;
+  min-width: 1rem;
+  min-height: 1rem;
   max-width: none;
   overflow: visible;
 }
@@ -257,8 +257,8 @@ button,
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 
   .b-icon.bi {
-    width: 1.35em;
-    height: 1.35em;
+    width: 1.35rem;
+    height: 1.35rem;
   }
 
   svg,
@@ -469,7 +469,8 @@ button,
   min-width: var(--input-height-small);
 
   .b-icon {
-    font-size: 80%;
+    width: 1rem;
+    height: 1rem;
   }
 }
 .u-button_verysmall {
