@@ -229,11 +229,13 @@
           </div>
 
           <div class="_saveBtn">
-            <EditBtn
-              :btn_type="'check'"
-              :label_position="'left'"
+            <button
+              type="button"
+              class="u-button u-button_icon"
               @click="disableEdit"
-            />
+            >
+              <b-icon icon="check-lg" />
+            </button>
           </div>
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
