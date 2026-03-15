@@ -986,6 +986,7 @@ export default {
     return {
       is_sending_image: false,
       is_loading_stream: true,
+      is_destroying_capture_view: false,
 
       invisible_canvas: undefined,
 
@@ -1121,6 +1122,7 @@ export default {
   },
   async beforeDestroy() {
     console.log("CaptureView: beforeDestroy - cleaning up camera resources");
+    this.is_destroying_capture_view = true;
 
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
@@ -1307,6 +1309,13 @@ export default {
     },
     setStream(stream) {
       console.log("CaptureView: METHODS • setStream", stream);
+
+      // If a late stream arrives while closing the pane, stop it immediately.
+      if (this.is_destroying_capture_view) {
+        stream?.getTracks?.().forEach((track) => track.stop());
+        return;
+      }
+
       this.stream = stream;
       this.showVideoElement = true;
       this.$nextTick(() => {

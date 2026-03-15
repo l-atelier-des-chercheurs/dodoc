@@ -311,6 +311,9 @@ export default {
   components: {},
   data() {
     return {
+      is_destroying_capture_settings: false,
+      stream_request_counter: 0,
+
       is_loading_available_devices: false,
       is_loading_feed: false,
       status: undefined,
@@ -400,6 +403,9 @@ export default {
   },
   async beforeDestroy() {
     try {
+      this.is_destroying_capture_settings = true;
+      // Invalidate in-flight async stream requests.
+      this.stream_request_counter += 1;
       await this.cleanupStream();
     } catch (error) {
       console.warn("Error during component cleanup:", error);
@@ -1015,6 +1021,9 @@ export default {
         console.log(`CaptureSettings • METHODS : setCameraStreamFromDefaults`);
       }
 
+      if (this.is_destroying_capture_settings) return;
+
+      const request_id = ++this.stream_request_counter;
       this.is_loading_feed = true;
 
       try {
@@ -1026,7 +1035,15 @@ export default {
           );
         }
 
-        await this.startLocalStream();
+        await this.startLocalStream({ request_id });
+
+        // Ignore stale responses from older async requests.
+        if (
+          this.is_destroying_capture_settings ||
+          request_id !== this.stream_request_counter
+        ) {
+          return;
+        }
 
         this.stream_current_settings = this.current_settings;
         this.last_working_resolution = this.desired_camera_resolution;
@@ -1070,14 +1087,30 @@ export default {
         }
       }
     },
-    async startLocalStream() {
+    async startLocalStream({ request_id } = {}) {
       if (this.$root.debug_mode === true) {
         console.log(`CaptureSettings • METHODS : startLocalStream`);
       }
 
       try {
+        if (
+          this.is_destroying_capture_settings ||
+          (request_id !== undefined &&
+            request_id !== this.stream_request_counter)
+        ) {
+          return;
+        }
+
         // Clean up any existing stream
         await this.cleanupStream();
+
+        if (
+          this.is_destroying_capture_settings ||
+          (request_id !== undefined &&
+            request_id !== this.stream_request_counter)
+        ) {
+          return;
+        }
 
         // Create constraints from selected devices
         const constraints = this.createConstraintsFromSelected();
@@ -1087,6 +1120,15 @@ export default {
 
         // Start the media device feed
         const stream = await this.startMediaDeviceFeed(constraints);
+
+        if (
+          this.is_destroying_capture_settings ||
+          (request_id !== undefined &&
+            request_id !== this.stream_request_counter)
+        ) {
+          stream?.getTracks?.().forEach((track) => track.stop());
+          return;
+        }
 
         this.local_stream = stream;
 
