@@ -1250,6 +1250,8 @@ export default {
   navigate_to_page: "Naviguer vers une page",
 
   regenerate_thumbs: "Regénérer l’aperçu",
+  failed_to_regenerate_thumbs: "Échec de la régénération de l’aperçu",
+  thumbs_regenerated: "Aperçu régénéré",
   embed_link: "Lien d’intégration",
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",

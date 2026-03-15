@@ -332,16 +332,11 @@ module.exports = (function () {
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
 
       if ($type) {
-        const $thumbs = await thumbs
-          .makeThumbForMedia({
-            media_type: $type,
-            media_filename: $media_filename,
-            path_to_folder,
-          })
-          .catch((err) => {
-            if (err.message) dev.error(err.message);
-            else dev.error(err);
-          });
+        const $thumbs = await thumbs.makeThumbForMedia({
+          media_type: $type,
+          media_filename: $media_filename,
+          path_to_folder,
+        });
         if ($thumbs) return { $thumbs };
       }
       return { $thumbs: {} };

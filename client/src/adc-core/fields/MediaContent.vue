@@ -365,8 +365,15 @@ export default {
 
     async regenerateThumbs() {
       this.is_regenerating = true;
-      await this.$api.regenerateThumbs({ path: this.file.$path });
-      this.is_regenerating = false;
+      try {
+        await this.$api.regenerateThumbs({ path: this.file.$path });
+        this.$alertify.delay(4000).success(this.$t("thumbs_regenerated"));
+      } catch (err) {
+        const error_code = err?.code || "failed_to_regenerate_thumbs";
+        this.$alertify.delay(4000).error(this.$t(error_code));
+      } finally {
+        this.is_regenerating = false;
+      }
     },
     loadIframe() {
       if (this.url_to_site.type === "any") this.is_loading_iframe = true;

@@ -814,7 +814,11 @@ export default function () {
         return response.data;
       },
       async regenerateThumbs({ path }) {
-        const response = await this.$axios.patch(`${path}/_regenerateThumbs`);
+        const response = await this.$axios
+          .patch(`${path}/_regenerateThumbs`)
+          .catch((err) => {
+            throw this.processError(err);
+          });
         this.$eventHub.$emit("hooks.regenerateThumbs", { path });
         return response.data;
       },

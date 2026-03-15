@@ -522,8 +522,15 @@ export default {
     },
     async regenerateThumbs() {
       this.is_regenerating = true;
-      await this.$api.regenerateThumbs({ path: this.file.$path });
-      this.is_regenerating = false;
+      try {
+        await this.$api.regenerateThumbs({ path: this.file.$path });
+        this.$alertify.delay(4000).success(this.$t("thumbs_regenerated"));
+      } catch (err) {
+        const error_code = err?.code || "failed_to_regenerate_thumbs";
+        this.$alertify.delay(4000).error(this.$t(error_code));
+      } finally {
+        this.is_regenerating = false;
+      }
     },
 
     async createNewMakeAndOpenIt({ type, additional_meta: addtl_meta }) {

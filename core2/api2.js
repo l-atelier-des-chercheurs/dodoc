@@ -2092,6 +2092,7 @@ module.exports = (function () {
   // Helper function for regenerate thumbs error handling
   function _handleRegenerateThumbsError(err, res, context) {
     const { message, code, err_infos } = err;
+    const error_code = code || "failed_to_regenerate_thumbs";
     const error_msg = `Failed to regenerate thumbs for ${context.path_to_meta}: ${message}`;
 
     dev.error(error_msg);
@@ -2102,11 +2103,12 @@ module.exports = (function () {
         outcome: "error",
         path_to_meta: context.path_to_meta,
         error_message: message,
+        error_code,
         author_path: context.token_path,
       },
     });
 
-    res.status(500).send({ code, err_infos });
+    res.status(500).send({ code: error_code, err_infos, message });
   }
 
   async function _removeFile(req, res, next) {

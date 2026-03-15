@@ -1179,6 +1179,8 @@ export default {
   navigate_to_page: "Navigate to page",
 
   regenerate_thumbs: "Regenerate preview",
+  failed_to_regenerate_thumbs: "Failed to regenerate preview",
+  thumbs_regenerated: "Preview regenerated",
   embed_link: "Embed link",
   direct_link_to_file:
     "This link points directly to the media file, it can be used in other applications or websites.",
