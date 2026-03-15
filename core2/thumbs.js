@@ -14,6 +14,12 @@ const ffmpegPath = require("ffmpeg-static").replace(
 );
 ffmpeg.setFfmpegPath(ffmpegPath);
 
+function _logFfmpegCommand({ context, command_line }) {
+  dev.log(
+    `THUMBS • FFMPEG (${context}) • BIN ${ffmpegPath} • CMD ${command_line}`
+  );
+}
+
 module.exports = (function () {
   const API = {
     makeFolderCover: ({ path_to_folder }) =>
@@ -588,6 +594,9 @@ module.exports = (function () {
       dev.logfunction({ thumb_name, thumb_folder, timemark_key });
 
       ffmpeg(full_media_path)
+        .on("start", (command_line) => {
+          _logFfmpegCommand({ context: "video_screenshot", command_line });
+        })
         // setup event handlers
         .on("end", () => {
           return resolve();
@@ -617,7 +626,7 @@ module.exports = (function () {
         )
         .outputOptions(["-vframes 1"])
         .on("start", (command_line) => {
-          dev.log(`THUMBS • FFMPEG CMD ${command_line}`);
+          _logFfmpegCommand({ context: "audio_waveform", command_line });
         })
         // setup event handlers
         .on("end", () => {
