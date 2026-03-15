@@ -337,7 +337,20 @@ module.exports = (function () {
           media_filename: $media_filename,
           path_to_folder,
         });
-        if ($thumbs) return { $thumbs };
+
+        const no_thumbs_were_generated =
+          !$thumbs ||
+          $thumbs === "no_preview" ||
+          (typeof $thumbs === "object" && Object.keys($thumbs).length === 0);
+
+        if (no_thumbs_were_generated) {
+          const err = new Error("No thumbnails were generated");
+          err.code = "failed_to_regenerate_thumbs";
+          err.err_infos = { path_to_meta, meta_filename, media_type: $type };
+          throw err;
+        }
+
+        return { $thumbs };
       }
       return { $thumbs: {} };
     },
