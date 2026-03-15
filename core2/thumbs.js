@@ -592,6 +592,10 @@ module.exports = (function () {
   }) {
     return new Promise((resolve, reject) => {
       dev.logfunction({ thumb_name, thumb_folder, timemark_key });
+      dev.logfunction({
+        context: "video_screenshot",
+        ffmpeg_path: ffmpegPath,
+      });
 
       ffmpeg(full_media_path)
         .on("start", (command_line) => {
@@ -601,8 +605,13 @@ module.exports = (function () {
         .on("end", () => {
           return resolve();
         })
-        .on("error", (err) => {
-          dev.error(`ffmpeg failed: ${err.message}`);
+        .on("error", (err, stdout, stderr) => {
+          dev.error({
+            context: "video_screenshot",
+            ffmpeg_path: ffmpegPath,
+            message: err?.message || err,
+            stderr,
+          });
           return reject(err.message);
         })
         .screenshots({
@@ -632,7 +641,13 @@ module.exports = (function () {
         .on("end", () => {
           return resolve();
         })
-        .on("error", function (err) {
+        .on("error", function (err, stdout, stderr) {
+          dev.error({
+            context: "audio_waveform",
+            ffmpeg_path: ffmpegPath,
+            message: err?.message || err,
+            stderr,
+          });
           return reject(err.message);
         })
         .save(full_path_to_thumb);
