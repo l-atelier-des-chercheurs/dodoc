@@ -628,9 +628,8 @@ module.exports = (function () {
 
       ffmpeg()
         .input(full_media_path)
-        .input("lavfi:color=white:s=3000x2000")
         .complexFilter(
-          "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+          "color=c=white:s=3000x2000[bg];[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[bg][fg]overlay=format=auto"
         )
         .outputOptions(["-vframes 1"])
         .on("start", (command_line) => {
