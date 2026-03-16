@@ -12,9 +12,9 @@
           @load="onIframeLoad"
         ></iframe>
         <ThreeDPreview
-          v-else-if="media_type === 'stl'"
+          v-else-if="['stl', 'obj'].includes(media_type)"
           class="_content"
-          :file_type="'stl'"
+          :file_type="media_type"
           :src="preview_url"
         />
       </template>
