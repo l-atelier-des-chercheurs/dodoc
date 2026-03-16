@@ -108,7 +108,7 @@
                 timer_recording_in_seconds !== false
               "
               :key="'duration'"
-              v-html="timer_recording_in_seconds"
+              v-html="formatDurationToHuman(timer_recording_in_seconds)"
             />
           </transition-group>
 
@@ -2210,11 +2210,13 @@ export default {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
-    padding: 0 calc(var(--spacing) / 8);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
 
     margin-bottom: calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-large);
     color: white;
-    border-radius: 4px;
+    border-radius: 2rem;
+    line-height: 1.2;
     pointer-events: auto;
   }
 }
