@@ -980,7 +980,7 @@ export default {
     position: absolute;
     top: 0;
     left: 100%;
-    margin: calc(var(--spacing) / 2);
+    // margin: calc(var(--spacing) / 2);
   }
 }
 

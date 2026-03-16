@@ -93,7 +93,7 @@ export default {
 <style lang="scss" scoped>
 ._sectionsList {
   position: relative;
-  // z-index: 1;
-  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 1 + 8%);
+  overflow: auto;
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) * 2);
 }
 </style>
