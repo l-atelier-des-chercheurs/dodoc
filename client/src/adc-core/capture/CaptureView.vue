@@ -346,7 +346,7 @@
                 >
                   <button
                     type="button"
-                    class="u-button u-button_red _settingsBtn"
+                    class="u-button u-button_icon _settingsBtn"
                     :class="{ 'is--active': show_capture_settings }"
                     @click="show_capture_settings = !show_capture_settings"
                     :content="$t('settings')"
@@ -378,15 +378,11 @@
                   <button
                     type="button"
                     v-if="selected_mode !== 'audio'"
-                    class="u-button u-button_bleumarine _settingsBtn"
+                    class="u-button u-button_icon _settingsBtn _effectsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
                     :content="$t('effects')"
                   >
-                    <!-- v-tippy="{
-                      placement: 'right',
-                      delay: [600, 0],
-                    }" -->
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 168 168"

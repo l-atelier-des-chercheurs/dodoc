@@ -15,7 +15,9 @@
       </div>
     </div>
 
-    <slot />
+    <div class="_content">
+      <slot />
+    </div>
   </div>
 </template>
 <script>
@@ -55,10 +57,11 @@ export default {
     }
   }
   &[data-type="effects"] {
-    background-color: var(--c-bleumarine);
+    background-color: var(--c-gris);
 
     ._topbar {
-      border-color: var(--c-bleumarine_fonce);
+      border-color: var(--c-gris_fonce);
+      color: var(--c-noir);
     }
   }
 }
@@ -81,5 +84,11 @@ export default {
   width: 100%;
   justify-content: space-between;
   align-items: center;
+}
+
+._content {
+  flex: 1 1 auto;
+  overflow: auto;
+  padding: calc(var(--spacing) / 2);
 }
 </style>

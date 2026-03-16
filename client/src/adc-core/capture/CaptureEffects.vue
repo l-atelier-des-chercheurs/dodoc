@@ -1,168 +1,163 @@
 <template>
   <div class="m_captureEffects">
-    <div class="_content">
-      <div class="_options">
-        <ToggleInput
-          :content.sync="flip_horizontally"
-          :label="$t('flip_horizontally')"
-        />
-        <ToggleInput
-          :content.sync="flip_vertically"
-          :label="$t('flip_vertically')"
-        />
-        <RangeValueInput
-          :label="$t('zoom')"
-          :value="zoom.value"
-          :can_toggle="true"
-          :min="zoom.min"
-          :max="zoom.max"
-          :step="zoom.step"
-          :ticks="zoom.ticks"
-          :default_value="zoom.default"
-          @input="zoom.value = $event"
-        />
+    <div class="_options">
+      <ToggleInput
+        :content.sync="flip_horizontally"
+        :label="$t('flip_horizontally')"
+      />
+      <ToggleInput
+        :content.sync="flip_vertically"
+        :label="$t('flip_vertically')"
+      />
+      <RangeValueInput
+        :label="$t('zoom')"
+        :value="zoom.value"
+        :can_toggle="true"
+        :min="zoom.min"
+        :max="zoom.max"
+        :step="zoom.step"
+        :ticks="zoom.ticks"
+        :default_value="zoom.default"
+        @input="zoom.value = $event"
+      />
 
-        <ToggledSection
-          class=""
-          :label="$t('chroma_key')"
-          :show_toggle.sync="chroma_key_settings.enable"
-        >
-          <fieldset>
-            <legend>{{ $t("chroma_key_color") }}</legend>
+      <ToggledSection
+        class=""
+        :label="$t('chroma_key')"
+        :show_toggle.sync="chroma_key_settings.enable"
+      >
+        <fieldset>
+          <legend>{{ $t("chroma_key_color") }}</legend>
 
-            <ColorInput
-              :label="$t('color')"
-              :can_toggle="false"
-              :value="chroma_key_color_hex"
-              @save="chroma_key_color_hex = $event"
-            />
-            <div>
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="setTogglePickColorFromVideo"
-              >
-                <template v-if="!enable_pick_color_from_video">
-                  {{ $t("pick_color_in_video") }}
-                </template>
-                <template v-else>
-                  {{ $t("click_in_video…") }}
-                </template>
-              </button>
-            </div>
-
-            <br />
-
-            <div>
-              <div class="">
-                <label>{{ $t("similarity") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.similarity"
-                  min="0"
-                  max="0.2"
-                  step="0.001"
-                />
-              </div>
-
-              <div class="">
-                <label>{{ $t("smoothness") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.smoothness"
-                  min="0"
-                  max="0.3"
-                  step="0.001"
-                />
-              </div>
-
-              <div class="">
-                <label>{{ $t("spill") }}</label>
-                <input
-                  class="margin-none"
-                  type="range"
-                  v-model.number="chroma_key_settings.spill"
-                  min="0"
-                  max="0.5"
-                  step="0.001"
-                  value="0.1"
-                />
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>{{ $t("replace_color_with") }}</legend>
-
-            <RadioCheckboxInput
-              :value="chroma_key_settings.replacement_mode"
-              :options="[
-                {
-                  label: $t('color'),
-                  key: 'color',
-                },
-                {
-                  label: $t('image'),
-                  key: 'image',
-                },
-              ]"
-              :can_edit="true"
-              @update:value="chroma_key_settings.replacement_mode = $event"
-            />
-
-            <div v-if="chroma_key_settings.replacement_mode === 'image'">
-              <img
-                class="_imgPreview"
-                :src="chroma_key_replacement_image_url"
-              />
-              <EditBtn
-                :label="
-                  !chroma_key_replacement_image_url ? $t('select') : $t('edit')
-                "
-                :is_unfolded="true"
-                @click="select_image = true"
-              />
-              <ImageSelect
-                v-if="select_image"
-                :label="$t('image')"
-                :project_path="project_path"
-                @newPreview="newChromaKeyImage"
-                @close="select_image = false"
-              />
-            </div>
-            <div v-else>
-              <ColorInput
-                :can_toggle="false"
-                :value="chroma_key_replacement_color_hex"
-                @save="chroma_key_replacement_color_hex = $event"
-              />
-            </div>
-          </fieldset>
-        </ToggledSection>
-
-        <div
-          v-for="[name, props] in Object.entries(image_filters_settings)"
-          :key="name"
-        >
-          <RangeValueInput
-            :label="$t(name)"
-            :value="image_filters_settings[name].value"
-            :can_toggle="true"
-            :min="props.min"
-            :max="props.max"
-            :step="props.step"
-            :ticks="props.ticks"
-            :default_value="props.default"
-            @save="image_filters_settings[name].value = $event"
+          <ColorInput
+            :label="$t('color')"
+            :can_toggle="false"
+            :value="chroma_key_color_hex"
+            @save="chroma_key_color_hex = $event"
           />
-        </div>
+          <div>
+            <button
+              type="button"
+              class="u-buttonLink"
+              @click="setTogglePickColorFromVideo"
+            >
+              <template v-if="!enable_pick_color_from_video">
+                {{ $t("pick_color_in_video") }}
+              </template>
+              <template v-else>
+                {{ $t("click_in_video…") }}
+              </template>
+            </button>
+          </div>
 
-        <!-- <pre>
+          <br />
+
+          <div>
+            <div class="">
+              <label>{{ $t("similarity") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.similarity"
+                min="0"
+                max="0.2"
+                step="0.001"
+              />
+            </div>
+
+            <div class="">
+              <label>{{ $t("smoothness") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.smoothness"
+                min="0"
+                max="0.3"
+                step="0.001"
+              />
+            </div>
+
+            <div class="">
+              <label>{{ $t("spill") }}</label>
+              <input
+                class="margin-none"
+                type="range"
+                v-model.number="chroma_key_settings.spill"
+                min="0"
+                max="0.5"
+                step="0.001"
+                value="0.1"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>{{ $t("replace_color_with") }}</legend>
+
+          <RadioCheckboxInput
+            :value="chroma_key_settings.replacement_mode"
+            :options="[
+              {
+                label: $t('color'),
+                key: 'color',
+              },
+              {
+                label: $t('image'),
+                key: 'image',
+              },
+            ]"
+            :can_edit="true"
+            @update:value="chroma_key_settings.replacement_mode = $event"
+          />
+
+          <div v-if="chroma_key_settings.replacement_mode === 'image'">
+            <img class="_imgPreview" :src="chroma_key_replacement_image_url" />
+            <EditBtn
+              :label="
+                !chroma_key_replacement_image_url ? $t('select') : $t('edit')
+              "
+              :is_unfolded="true"
+              @click="select_image = true"
+            />
+            <ImageSelect
+              v-if="select_image"
+              :label="$t('image')"
+              :project_path="project_path"
+              @newPreview="newChromaKeyImage"
+              @close="select_image = false"
+            />
+          </div>
+          <div v-else>
+            <ColorInput
+              :can_toggle="false"
+              :value="chroma_key_replacement_color_hex"
+              @save="chroma_key_replacement_color_hex = $event"
+            />
+          </div>
+        </fieldset>
+      </ToggledSection>
+
+      <div
+        v-for="[name, props] in Object.entries(image_filters_settings)"
+        :key="name"
+      >
+        <RangeValueInput
+          :label="$t(name)"
+          :value="image_filters_settings[name].value"
+          :can_toggle="true"
+          :min="props.min"
+          :max="props.max"
+          :step="props.step"
+          :ticks="props.ticks"
+          :default_value="props.default"
+          @save="image_filters_settings[name].value = $event"
+        />
+      </div>
+
+      <!-- <pre>
           {{ image_filters_settings }}
         </pre> -->
-      </div>
     </div>
   </div>
 </template>
@@ -915,30 +910,24 @@ void main(void) {
 </script>
 <style lang="scss" scoped>
 .m_captureEffects {
-  ._content {
-    // background-color: #fff;
-    // border-radius: 4px;
-    // padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+}
+._options {
+  background: rgba(0, 0, 0, 0.1);
+  padding: calc(var(--spacing) / 2);
+  border-radius: 6px;
 
-    ._options {
-      background: rgba(0, 0, 0, 0.1);
-      padding: calc(var(--spacing) / 2);
-      border-radius: 6px;
+  > * {
+    // margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+    margin: calc(var(--spacing) / 2) 0;
+    padding: calc(var(--spacing) / 2);
+    background-color: white;
+    border-radius: 4px;
 
-      > * {
-        // margin: 0 calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-        margin: calc(var(--spacing) / 2) 0;
-        padding: calc(var(--spacing) / 2);
-        background-color: white;
-        border-radius: 4px;
-
-        &:first-child {
-          margin-top: 0;
-        }
-        &:last-child {
-          margin-bottom: 0;
-        }
-      }
+    &:first-child {
+      margin-top: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 }
