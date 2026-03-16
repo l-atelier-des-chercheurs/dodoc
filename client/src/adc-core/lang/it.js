@@ -22,6 +22,8 @@ export default {
   select_all: "Seleziona tutto",
   back: "Indietro",
   save: "Salva",
+  set_timer: "Imposta timer",
+  disable_timer: "Disattiva timer",
   input_url: "URL verso un sito da integrare",
   input_url_instr: "Indica una URL vero una risorsa.",
   url_to_open: "URL della pagina da aprire",

@@ -23,6 +23,8 @@ export default {
   select: "Select",
   back: "Back",
   save: "Save",
+  set_timer: "Set timer",
+  disable_timer: "Disable timer",
   input_url: "URL of the website to embed",
   image_url: "URL of an image",
   image_url_instr:

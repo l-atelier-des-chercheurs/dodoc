@@ -110,52 +110,6 @@
               :key="'duration'"
               v-html="timer_recording_in_seconds"
             />
-
-            <div
-              v-if="
-                selected_mode === 'stopmotion' &&
-                timelapse_mode_enabled &&
-                !timelapse_event
-              "
-              :key="'timelapse_interval'"
-              class="record_options"
-            >
-              <div>
-                <span>{{ $t("interval_between_pictures") }}</span>
-                <input
-                  type="number"
-                  min="1"
-                  step="1"
-                  v-model.number="timelapse_interval"
-                  @keypress="preventNonInteger($event)"
-                />
-                <span>{{ $t("seconds") }}</span>
-              </div>
-            </div>
-
-            <div
-              v-if="
-                delay_mode_enabled &&
-                !is_recording &&
-                !media_to_validate &&
-                !delay_event
-              "
-              :key="'delay_interval'"
-              class="record_options"
-            >
-              <div>
-                <span>{{ $t("delay") }}</span>
-                <input
-                  type="number"
-                  v-model.number="delay_seconds"
-                  step="1"
-                  min="1"
-                  max="60"
-                  @keypress="preventNonInteger($event)"
-                />
-                <span>{{ $t("seconds") }}</span>
-              </div>
-            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in">
@@ -172,8 +126,6 @@
               class="_delay_timer is--small is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
-            <!-- necessary to handle timely out-in transition -->
-            <!-- <span v-else /> -->
           </transition>
 
           <transition name="onionSkin" mode="in-out">
@@ -300,6 +252,24 @@
           <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
+
+          <CaptureDurationModal
+            v-if="duration_modal_mode"
+            :mode="duration_modal_mode"
+            :value="
+              duration_modal_mode === 'timelapse'
+                ? timelapse_interval
+                : delay_seconds
+            "
+            :enabled="
+              duration_modal_mode === 'timelapse'
+                ? timelapse_mode_enabled
+                : delay_mode_enabled
+            "
+            @close="closeDurationModal()"
+            @save="saveDurationModal($event)"
+            @disable="disableDurationMode()"
+          />
         </div>
       </div>
 
@@ -632,11 +602,10 @@
                     :class="{ 'is--active': timelapse_mode_enabled }"
                     v-if="
                       selected_mode === 'stopmotion' &&
-                      !timelapse_event &&
                       !delay_event
                     "
                     :content="$t('timelapse')"
-                    @click="timelapse_mode_enabled = !timelapse_mode_enabled"
+                    @click="openDurationModal('timelapse')"
                   >
                     <svg
                       version="1.1"
@@ -662,6 +631,12 @@
                   c0,1.3-0.8,2.5-2.1,2.9l-19,5.9C23.6,49.4,23.3,49.4,23,49.4z"
                       />
                     </svg>
+                    <span
+                      v-if="timelapse_mode_enabled"
+                      class="_enable_timelapse_button--value"
+                    >
+                      {{ timelapse_interval }}
+                    </span>
                   </button>
                 </transition>
 
@@ -672,7 +647,7 @@
                     v-if="!is_recording && !delay_event"
                     :class="{ 'is--active': delay_mode_enabled }"
                     :content="$t('delay')"
-                    @click="delay_mode_enabled = !delay_mode_enabled"
+                    @click="openDurationModal('delay')"
                   >
                     <svg
                       version="1.1"
@@ -703,6 +678,12 @@
                         height="5.7"
                       />
                     </svg>
+                    <span
+                      v-if="delay_mode_enabled"
+                      class="_enable_timelapse_button--value"
+                    >
+                      {{ delay_seconds }}
+                    </span>
                   </button>
                 </transition>
               </div>
@@ -927,6 +908,7 @@ import StopmotionList from "./StopmotionList.vue";
 import AudioEqualizer from "./AudioEqualizer.vue";
 import VectoMode from "./VectoMode.vue";
 import LinesMode from "./LinesMode.vue";
+import CaptureDurationModal from "./CaptureDurationModal.vue";
 
 // import adapter from "webrtc-adapter";
 
@@ -977,6 +959,7 @@ export default {
     AudioEqualizer,
     VectoMode,
     LinesMode,
+    CaptureDurationModal,
   },
   data() {
     return {
@@ -1054,6 +1037,7 @@ export default {
       delay_seconds: 5,
       delay_event: false,
       delay_remaining_time: false,
+      duration_modal_mode: false,
 
       recorder: null,
 
@@ -1570,6 +1554,36 @@ export default {
       } else {
         this.setCapture();
       }
+    },
+    openDurationModal(mode) {
+      if (!["delay", "timelapse"].includes(mode)) return;
+      this.duration_modal_mode = mode;
+    },
+    closeDurationModal() {
+      this.duration_modal_mode = false;
+    },
+    saveDurationModal(value) {
+      if (this.duration_modal_mode === "timelapse") {
+        this.timelapse_interval = value;
+        this.timelapse_mode_enabled = true;
+      } else if (this.duration_modal_mode === "delay") {
+        this.delay_seconds = value;
+        this.delay_mode_enabled = true;
+      }
+      this.closeDurationModal();
+    },
+    disableDurationMode() {
+      if (this.duration_modal_mode === "timelapse") {
+        this.stopTimelapseInterval();
+        this.timelapse_mode_enabled = false;
+        if (this.selected_mode === "stopmotion" && this.is_recording) {
+          this.is_recording = false;
+        }
+      } else if (this.duration_modal_mode === "delay") {
+        this.cancelDelay();
+        this.delay_mode_enabled = false;
+      }
+      this.closeDurationModal();
     },
     startDelay() {
       let time_passed = 0;
@@ -2167,13 +2181,8 @@ export default {
   color: transparent;
 
   --c-text-stroke: var(--c-rouge);
-  --c-text-shadow: rgba(0, 0, 0, 0.2);
   color: var(--c-rouge_fonce);
-
   -webkit-text-stroke: 1vmin var(--c-text-stroke);
-  // text-shadow: 1vmin 1vmin 0 var(--c-text-shadow),
-  //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
-  //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
 
   &.is--small {
     font-size: 10vmin;
@@ -2185,13 +2194,6 @@ export default {
     }
   }
 }
-
-// @container video-pane (height < 400px) {
-//   ._delay_timer {
-//     font-size: 10vmin;
-//     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
-//   }
-// }
 
 ._capture_options {
   position: absolute;
@@ -2212,7 +2214,6 @@ export default {
     margin: 0 auto;
     background-color: var(--c-rouge);
     padding: 0 calc(var(--spacing) / 8);
-    font-size: var(--sl-font-size-normal);
 
     margin-bottom: calc(var(--spacing) / 8);
     color: white;
@@ -2220,51 +2221,6 @@ export default {
     pointer-events: auto;
   }
 
-  .record_options {
-    max-width: 450px;
-    margin: 0 auto;
-    // .padding-verysmall;
-    pointer-events: auto;
-    // .font-small;
-
-    > * {
-      margin-bottom: 0;
-      background-color: var(--c-rouge);
-
-      color: white;
-      padding: 0 calc(var(--spacing) / 4);
-      border-radius: 4px;
-      width: auto;
-
-      display: flex;
-      align-items: center;
-    }
-
-    input {
-      min-width: 2em;
-      max-width: 4em;
-      height: 1.4em;
-      margin: 2px;
-      padding: 0 2px;
-      width: auto;
-      width: auto;
-      text-align: center;
-      color: white;
-
-      background-color: var(--c-rouge_clair);
-
-      border-bottom: 0px;
-
-      &:active,
-      &:focus {
-        border-bottom-color: var(--c-rouge_fonce);
-      }
-    }
-
-    .record_options--timer {
-      font-size: 2em;
-    }
-  }
 }
 
 ._tiny_equalizer {
@@ -2349,6 +2305,7 @@ export default {
   width: 28px;
   height: 28px;
   display: block;
+  position: relative;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
@@ -2360,6 +2317,21 @@ export default {
   svg {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  ._enable_timelapse_button--value {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 1.4em;
+    height: 1.4em;
+    padding: 0 0.35em;
+    border-radius: 999px;
+    background: var(--c-noir);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.4em;
+    text-align: center;
   }
 
   &.is--active {

@@ -22,6 +22,8 @@ export default {
   select_all: "Sélectionner tout",
   back: "Retour",
   save: "Enregistrer",
+  set_timer: "Régler le minuteur",
+  disable_timer: "Désactiver le minuteur",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   image_url: "URL vers une image",
@@ -774,7 +776,7 @@ export default {
 
   take_picture: "Prendre une photo",
   delay: "Retardateur",
-  timelapse: "time-lapse",
+  timelapse: "Déclenchement automatique (time-lapse)",
   live: "Direct",
   img_per_second: "Images par seconde",
 
