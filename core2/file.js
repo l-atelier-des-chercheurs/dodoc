@@ -627,6 +627,7 @@ module.exports = (function () {
           new_meta.$type = "stl";
           break;
         case ".mp3":
+        case ".weba":
         case ".wav":
         case ".aac":
         case ".m4a":

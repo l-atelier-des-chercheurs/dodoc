@@ -1740,7 +1740,7 @@ export default {
               preview,
               rawData: fixed_audio_blob,
               objectURL: URL.createObjectURL(fixed_audio_blob),
-              temp_name: "audio.webm",
+              temp_name: "audio.weba",
               type: "audio",
             };
           });
@@ -1918,7 +1918,7 @@ export default {
       const extensions = {
         image: "jpeg",
         video: "webm",
-        audio: "webm",
+        audio: "weba",
         svg: "svg",
       };
       const filename = `${
@@ -1937,6 +1937,7 @@ export default {
       let additional_meta = {
         fav,
         $origin: this.origin,
+        $type: this.media_to_validate.type,
       };
 
       if (this.connected_as?.$path)
