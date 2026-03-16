@@ -791,8 +791,14 @@ module.exports = (function () {
 
         // Set output format and options
         if (video_bitrate === "no_video") {
-          // Audio-only export - use ADTS AAC format
-          ffmpeg_cmd.toFormat("adts");
+          // Audio-only export - use MP4/M4A container for browser-safe duration/seek.
+          ffmpeg_cmd
+            .inputOptions(["-fflags +genpts"])
+            .toFormat("mp4")
+            .addOptions([
+              "-movflags +faststart",
+              "-avoid_negative_ts make_zero",
+            ]);
         } else if (format === "mp4") {
           ffmpeg_cmd
             .toFormat("mp4")
