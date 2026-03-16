@@ -230,6 +230,9 @@
                     "type": "string",
                     "unique": true
                   },
+                  "description": {
+                    "type": "string"
+                  },
                   "notes_list": {
                     "type": "array"
                   }

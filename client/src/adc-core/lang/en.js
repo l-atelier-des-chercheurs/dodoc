@@ -37,8 +37,7 @@ export default {
   importing_from_url: "Importing from URL...",
   preview_of_image: "Preview of the image",
   failed_to_import_from_url: "Failed to import image from URL",
-  file_size_limit_exceeded:
-    "File too large. Maximum size: {maxSize} MB.",
+  file_size_limit_exceeded: "File too large. Maximum size: {maxSize} MB.",
   embed: "Embed",
   table: "Table",
   from_project: "From project",
@@ -1525,6 +1524,7 @@ export default {
   list_of_notes_todo: "No task | {count} task | {count} tasks",
   archived: "No task archived | {count} task archived | {count} tasks archived",
   done_on: "Done on",
+  task_list: "Task list",
 
   create_list: "Create list",
   create_list_instructions: "Create a new list to organize your tasks.",

@@ -1592,6 +1592,7 @@ export default {
   archived:
     "Aucune tâche archivée | {count} tâche archivée | {count} tâches archivées",
   done_on: "Terminé le",
+  task_list: "Liste de tâches",
 
   create_list: "Créer une liste",
   create_list_instructions:

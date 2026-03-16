@@ -1,6 +1,6 @@
 <template>
   <div class="_notesTodoPane">
-    <div class="_topTabs" v-if="notes_folders.length > 0">
+    <div class="_topTabs">
       <button
         type="button"
         v-for="folder in notes_folders"
@@ -16,6 +16,7 @@
       <button
         type="button"
         class="u-button u-button_icon"
+        :title="$t('create')"
         @click="show_create_notes_modal = true"
       >
         <b-icon icon="plus-lg" />
@@ -92,7 +93,7 @@ export default {
       const slug = await this.$api.createFolder({
         path: this.path,
         additional_meta: {
-          title: this.$t("default_value"),
+          title: this.$t("task_list") + " 1",
         },
       });
       this.notes_folders = await this.getNotes();

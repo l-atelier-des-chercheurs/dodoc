@@ -14,6 +14,7 @@
           :maxlength="60"
           :can_edit="true"
         />
+
         <DropDown :right="true" :show_label="false">
           <button
             type="button"
@@ -34,6 +35,20 @@
           />
         </DropDown>
       </div>
+      <div class="_description">
+        <TitleField
+          :field_name="'description'"
+          :label="$t('description')"
+          :show_label="true"
+          :input_type="'editor'"
+          :custom_formats="['bold', 'italic', 'link', 'emoji']"
+          :content="list_meta.description"
+          :path="list_meta.$path"
+          :maxlength="1280"
+          :can_edit="true"
+        />
+      </div>
+
       <transition-group name="listComplete" class="_listItems" appear>
         <div key="header">
           <DLabel :str="$t('new_note_todo')" />
@@ -48,17 +63,13 @@
             <template #suffix>
               <button
                 type="button"
-                class="u-button u-button_icon"
+                class="u-button u-button_icon _newItemBtn"
                 :disabled="new_item_title.length === 0"
                 @click="createNewItem"
               >
                 <transition name="fade">
                   <b-icon
-                    :icon="
-                      new_item_title.length === 0
-                        ? 'plus-circle'
-                        : 'plus-circle-fill'
-                    "
+                    :icon="new_item_title.length === 0 ? 'plus-lg' : 'plus-lg'"
                   />
                 </transition>
               </button>
@@ -496,6 +507,14 @@ export default {
   }
 }
 
+._description {
+  margin-bottom: calc(var(--spacing) * 1);
+  color: white;
+  :deep(.u-label) {
+    color: white;
+  }
+}
+
 ._listItems {
   position: relative;
   background-color: rgba(0, 0, 0, 0.1);
@@ -528,9 +547,12 @@ export default {
   background-color: transparent;
   padding-right: calc(var(--spacing) / 4);
   gap: calc(var(--spacing) / 2);
+}
+._newItemBtn {
+  color: white;
 
-  .u-button {
-    color: white;
+  &[disabled] {
+    color: var(--c-gris);
   }
 }
 
