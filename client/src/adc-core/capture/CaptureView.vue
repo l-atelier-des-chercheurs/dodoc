@@ -1023,6 +1023,9 @@ export default {
       is_recording: false,
       timer_recording_in_seconds: false,
       recording_timer_interval: undefined,
+      recording_started_at_ms: undefined,
+      recording_paused_at_ms: undefined,
+      recording_paused_total_ms: 0,
 
       stopmotion_frame_rate: 4,
       timelapse_mode_enabled: false,
@@ -1684,7 +1687,9 @@ export default {
     },
     stopRecording() {
       if (!this.is_recording) return;
-      const duration = this.timer_recording_in_seconds;
+      const duration = this.getAccurateRecordingDurationInSeconds();
+      const duration_in_ms = Math.max(1, Math.round(duration * 1000));
+      console.log("METHODS • CaptureView: stopRecording", duration_in_ms);
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode_enabled) {
         this.is_recording = false;
@@ -1702,7 +1707,7 @@ export default {
           this.recorder.destroy();
           this.recorder = null;
 
-          ysFixWebmDuration(video_blob, duration * 1000, {
+          ysFixWebmDuration(video_blob, duration_in_ms, {
             logger: false,
           }).then((fixed_video_blob) => {
             this.media_to_validate = {
@@ -1728,7 +1733,7 @@ export default {
             .querySelector("canvas")
             .toDataURL("image/png");
 
-          ysFixWebmDuration(audio_blob, duration * 1000, {
+          ysFixWebmDuration(audio_blob, duration_in_ms, {
             logger: false,
           }).then((fixed_audio_blob) => {
             this.media_to_validate = {
@@ -1746,13 +1751,34 @@ export default {
     pauseOrResumeCapture() {
       if (this.recorder.state !== "paused") {
         this.video_recording_is_paused = true;
+        this.recording_paused_at_ms = Date.now();
         this.pauseTimer();
         this.recorder.pauseRecording();
       } else {
         this.video_recording_is_paused = false;
+        if (this.recording_paused_at_ms) {
+          this.recording_paused_total_ms +=
+            Date.now() - this.recording_paused_at_ms;
+          this.recording_paused_at_ms = undefined;
+        }
         this.unpauseTimer();
         this.recorder.resumeRecording();
       }
+    },
+    getAccurateRecordingDurationInSeconds() {
+      if (!this.recording_started_at_ms) {
+        return Number(this.timer_recording_in_seconds) || 0;
+      }
+
+      let paused_ms = this.recording_paused_total_ms;
+      if (this.recording_paused_at_ms)
+        paused_ms += Date.now() - this.recording_paused_at_ms;
+
+      const elapsed_ms = Math.max(
+        0,
+        Date.now() - this.recording_started_at_ms - paused_ms
+      );
+      return +(elapsed_ms / 1000).toFixed(3);
     },
 
     startTimer() {
@@ -1771,6 +1797,9 @@ export default {
     eraseTimer() {
       this.timer_recording_in_seconds = false;
       window.clearInterval(this.recording_timer_interval);
+      this.recording_started_at_ms = undefined;
+      this.recording_paused_at_ms = undefined;
+      this.recording_paused_total_ms = 0;
     },
 
     getImageDataFromFeed({ width, height } = {}) {
@@ -1857,6 +1886,9 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.recording_started_at_ms = Date.now();
+          this.recording_paused_at_ms = undefined;
+          this.recording_paused_total_ms = 0;
           this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
@@ -2210,13 +2242,16 @@ export default {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
-    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1)
+      calc(var(--spacing) / 3);
+
+    min-width: 6ch;
 
     margin-bottom: calc(var(--spacing) / 8);
     font-size: var(--sl-font-size-large);
     color: white;
     border-radius: 2rem;
-    line-height: 1.2;
+    line-height: 1;
     pointer-events: auto;
   }
 }
