@@ -220,7 +220,10 @@
             </small>
           </template>
           <template v-else-if="'Select' === current_draw_mode">
-            <small class="_instr u-instructions" v-if="!selected_feature">
+            <small
+              class="_instr u-instructions"
+              v-if="!selected_features.length"
+            >
               {{ $t("select_by_clicking") }}
             </small>
             <template v-else>
@@ -232,7 +235,10 @@
 
               <!-- Shape info display -->
               <div
-                v-if="['Circle', 'Polygon'].includes(selected_feature_type)"
+                v-if="
+                  selected_features.length === 1 &&
+                  ['Circle', 'Polygon'].includes(selected_feature_type)
+                "
                 class="_circleInfo"
               >
                 <div
@@ -270,7 +276,7 @@
               />
 
               <ColorInput
-                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                v-if="selected_features_have_fillable"
                 :can_toggle="false"
                 :live_editing="true"
                 :allow_transparent="true"
@@ -285,7 +291,7 @@
               />
 
               <RangeValueInput
-                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                v-if="selected_features_have_fillable"
                 :can_toggle="false"
                 :label="$t('fill_opacity')"
                 :value="selected_feature.get('fill_opacity')"
@@ -632,8 +638,17 @@ export default {
       return `data:image/svg+xml;base64, ${b64}`;
     },
     selected_feature() {
+      if (this.selected_features.length > 0) return this.selected_features[0];
       if (!this.selected_feature_id) return undefined;
       return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
+    },
+    selected_features() {
+      return this.map_select_mode?.getFeatures?.().getArray?.() || [];
+    },
+    selected_features_have_fillable() {
+      return this.selected_features.some((feature) =>
+        ["Polygon", "Circle"].includes(feature.getGeometry()?.getType?.())
+      );
     },
     selected_feature_type() {
       if (!this.selected_feature) return undefined;
@@ -2130,22 +2145,32 @@ export default {
     startSelectMode() {
       this.selected_feature_id = undefined;
       this.map_select_mode = new olSelect({
+        multi: true,
         style: (feature, resolution) =>
           this.makeGeomStyle({ feature, resolution, is_selected: true }),
       });
       this.map.addInteraction(this.map_select_mode);
-      this.map_select_mode.on("select", (e) => {
-        if (e.target.getFeatures().getLength() > 0) {
-          const feature_selected = e.target.getFeatures().getArray()[0];
-          const id = feature_selected.getId();
-          if (id) return (this.selected_feature_id = id);
-        }
-        this.selected_feature_id = undefined;
+      this.map_select_mode.on("select", () => {
+        this.syncSelectedFeatureIdFromCollection();
       });
 
       this.startTranslate();
       // clashes with translate on linestring
       // this.startModify();
+    },
+    syncSelectedFeatureIdFromCollection() {
+      const selected_features = this.selected_features;
+      if (selected_features.length > 0) {
+        const first_selected = selected_features[0];
+        const id = first_selected?.getId?.();
+        if (id) return (this.selected_feature_id = id);
+      }
+      this.selected_feature_id = undefined;
+    },
+    getSelectedFeaturesForEdit() {
+      if (this.selected_features.length > 0) return this.selected_features;
+      if (!this.selected_feature) return [];
+      return [this.selected_feature];
     },
     startTranslate() {
       this.map_translate = new olTranslate({
@@ -2177,28 +2202,34 @@ export default {
       this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
-      if (!this.selected_feature) return false;
-      const f = this.draw_vector_source.getFeatureById(
-        this.selected_feature_id
-      );
-      this.draw_vector_source.removeFeature(f);
+      const selected_features = this.getSelectedFeaturesForEdit();
+      if (!selected_features.length) return false;
+      selected_features.forEach((feature) => {
+        this.draw_vector_source.removeFeature(feature);
+      });
+      this.map_select_mode?.getFeatures?.().clear();
       this.selected_feature_id = undefined;
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
     updateDrawing({ prop, val }) {
-      if (!this.selected_feature) return false;
-      const f = this.draw_vector_source.getFeatureById(
-        this.selected_feature_id
-      );
-      f.set(prop, val);
+      const selected_features = this.getSelectedFeaturesForEdit();
+      if (!selected_features.length) return false;
+      selected_features.forEach((feature) => {
+        const geometry_type = feature.getGeometry()?.getType?.();
+        const supports_fill = ["Polygon", "Circle"].includes(geometry_type);
+        if (["fill_color", "fill_opacity"].includes(prop) && !supports_fill)
+          return;
+        feature.set(prop, val);
+      });
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
     endSelectMode() {
       this.map.removeInteraction(this.map_select_mode);
+      this.map_select_mode?.getFeatures?.().clear();
       this.selected_feature_id = undefined;
     },
     keyPressed(event) {
