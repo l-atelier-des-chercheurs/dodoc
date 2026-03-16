@@ -19,7 +19,11 @@
         <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
-        <b-icon icon="three-dots" :aria-label="$t('options')" />
+        <b-icon
+          icon="three-dots"
+          :aria-label="$t('options')"
+          :title="$t('options')"
+        />
         <template v-if="show_label">
           {{ $t("options") }}
         </template>

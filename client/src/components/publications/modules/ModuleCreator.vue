@@ -288,7 +288,7 @@ export default {
             source_media: { path: path_to_source_media_meta },
             folder_path: this.publication_path,
           });
-          if (source_media.$type === "text") {
+          if (source_media?.$type === "text") {
             import_mode = "copy";
           }
 
@@ -305,7 +305,7 @@ export default {
                 this.pre_addtl_meta.width * source_media.$infos.ratio;
             }
             const meta_filename = await this.createMetaForModule({
-              module_type: source_media.$type === "text" ? "text" : "mosaic",
+              module_type: source_media?.$type === "text" ? "text" : "mosaic",
               source_medias: [new_entry],
               addtl_meta,
             });

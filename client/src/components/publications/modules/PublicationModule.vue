@@ -232,6 +232,7 @@
             <button
               type="button"
               class="u-button u-button_icon"
+              :title="$t('save')"
               @click="disableEdit"
             >
               <b-icon icon="check-lg" />
