@@ -600,10 +600,7 @@
                     type="button"
                     class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode_enabled }"
-                    v-if="
-                      selected_mode === 'stopmotion' &&
-                      !delay_event
-                    "
+                    v-if="selected_mode === 'stopmotion' && !delay_event"
                     :content="$t('timelapse')"
                     @click="openDurationModal('timelapse')"
                   >
@@ -1738,7 +1735,7 @@ export default {
               preview,
               rawData: fixed_audio_blob,
               objectURL: URL.createObjectURL(fixed_audio_blob),
-              temp_name: "audio.wav",
+              temp_name: "audio.webm",
               type: "audio",
             };
           });
@@ -1889,7 +1886,7 @@ export default {
       const extensions = {
         image: "jpeg",
         video: "webm",
-        audio: "wav",
+        audio: "webm",
         svg: "svg",
       };
       const filename = `${
@@ -2220,7 +2217,6 @@ export default {
     border-radius: 4px;
     pointer-events: auto;
   }
-
 }
 
 ._tiny_equalizer {
