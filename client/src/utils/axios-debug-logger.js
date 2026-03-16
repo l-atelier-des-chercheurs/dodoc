@@ -15,10 +15,23 @@ export function setupAxiosDebugLogger(axiosInstance) {
       const startTime = Date.now();
       request._startTime = startTime;
 
-      // Build full URL
-      const fullUrl = request.url?.startsWith("http")
-        ? request.url
-        : `${request.baseURL || ""}${request.url || ""}`;
+      const fullUrl = (() => {
+        const requestUrl = request.url || "";
+        if (requestUrl.startsWith("http")) return requestUrl;
+
+        const baseUrl = request.baseURL || window.location.origin;
+        try {
+          return new URL(
+            requestUrl,
+            `${baseUrl.replace(/\/+$/, "")}/`
+          ).toString();
+        } catch (e) {
+          // Fallback: normalize duplicated/missing slash between base and path
+          const normalizedBase = baseUrl.replace(/\/+$/, "");
+          const normalizedPath = requestUrl.replace(/^\/+/, "");
+          return `${normalizedBase}/${normalizedPath}`;
+        }
+      })();
 
       // Log request details
       console.groupCollapsed(
