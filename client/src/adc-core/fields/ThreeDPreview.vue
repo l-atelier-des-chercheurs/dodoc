@@ -10,13 +10,10 @@
     <component
       :is="tag"
       :src="src"
-      :rotation="{
-        x: Math.PI / 12,
-        y: -Math.PI / 12,
-        z: 0,
-      }"
+      :rotation="rotation"
       :background-alpha="0.5"
-      :background-color="0xffffff"
+      :background-color="background_color"
+      :lights="lights"
     />
   </div>
 </template>
@@ -33,7 +30,33 @@ export default {
     ModelObj,
   },
   data() {
-    return {};
+    return {
+      background_color: "#f5f8ff",
+      rotation: {
+        x: Math.PI / 18,
+        y: -Math.PI / 10,
+        z: 0,
+      },
+      lights: [
+        {
+          type: "AmbientLight",
+          color: 0xffffff,
+          intensity: 0.42,
+        },
+        {
+          type: "DirectionalLight",
+          color: 0xffffff,
+          intensity: 0.78,
+          position: { x: 1.2, y: 1.4, z: 1.1 },
+        },
+        {
+          type: "DirectionalLight",
+          color: 0xdde6ff,
+          intensity: 0.28,
+          position: { x: -1.1, y: 0.3, z: 0.5 },
+        },
+      ],
+    };
   },
   created() {},
   mounted() {},
