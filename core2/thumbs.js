@@ -75,7 +75,7 @@ module.exports = (function () {
             ext: "png",
           },
         ];
-      } else if (media_type === "stl") {
+      } else if (["stl", "obj"].includes(media_type)) {
         settings = [
           {
             camera_angle: [10, 50, 100],
@@ -306,7 +306,7 @@ module.exports = (function () {
                 full_media_path,
                 full_path_to_thumb,
               });
-            else if (media_type === "stl")
+            else if (["stl", "obj"].includes(media_type))
               await _makeSTLThumbs({
                 full_media_path,
                 full_path_to_thumb,
