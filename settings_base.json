@@ -203,6 +203,9 @@
               "publications_pinned": {
                 "type": "array"
               },
+              "todolists_order": {
+                "type": "array"
+              },
               "disabled_panes": {
                 "type": "array"
               }
