@@ -18,7 +18,7 @@
       </div>
 
       <DisplayOnMap
-        v-if="pins.length > 0 || edit_mode"
+        v-if="has_position || edit_mode"
         :key="map_key"
         :pins="pins"
         :start_zoom="zoom"
@@ -44,8 +44,7 @@
       <div v-if="!edit_mode && can_edit" class="_editBtn">
         <EditBtn
           :label_position="'left'"
-          :btn_type="pins.length === 0 ? 'add' : 'edit'"
-          :is_unfolded="pins.length === 0"
+          :btn_type="has_position ? 'edit' : 'add'"
           @click="enableEditMode"
         />
       </div>
@@ -59,7 +58,7 @@
         />
       </template> -->
 
-      <details v-if="pins.length > 0 || edit_mode">
+      <details v-if="has_position || edit_mode">
         <summary class="u-buttonLink">
           {{ $t("more_informations") }}
         </summary>
@@ -159,6 +158,9 @@ export default {
           this.latitude !== this.content?.latitude ||
           this.zoom !== this.content?.zoom)
       );
+    },
+    has_position() {
+      return this.pins.length > 0;
     },
     pins() {
       if (this.content) {
