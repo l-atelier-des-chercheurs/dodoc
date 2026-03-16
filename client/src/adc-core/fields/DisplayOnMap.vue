@@ -699,6 +699,28 @@ export default {
     },
   },
   methods: {
+    isPixelBasedBaselayer() {
+      return ["image", "color"].includes(this.map_baselayer);
+    },
+    getCurrentProjectionExtent() {
+      return this.map?.getView()?.getProjection()?.getExtent();
+    },
+    clampCenterToProjectionExtent(center) {
+      const projection_extent = this.getCurrentProjectionExtent();
+      if (!projection_extent || !Array.isArray(center) || center.length < 2)
+        return center;
+
+      const [min_x, min_y, max_x, max_y] = projection_extent;
+      const center_x = Number(center[0]);
+      const center_y = Number(center[1]);
+      if (!Number.isFinite(center_x) || !Number.isFinite(center_y))
+        return center;
+
+      return [
+        Math.min(Math.max(center_x, min_x), max_x),
+        Math.min(Math.max(center_y, min_y), max_y),
+      ];
+    },
     startMap({ keep_loc_and_zoom = false } = {}) {
       let zoom = 6;
       let center;
@@ -713,7 +735,10 @@ export default {
         this.map = null;
       }
 
-      olProj.useGeographic();
+      // Image/color baselayers use pixel projections, which cannot be
+      // transformed from EPSG:4326 user projection.
+      if (this.isPixelBasedBaselayer()) olProj.clearUserProjection();
+      else olProj.useGeographic();
 
       const { view, background_layer } = this.createViewAndBackgroundLayer({
         center,
@@ -1018,6 +1043,8 @@ export default {
       }, 100);
     },
     getCurrentPosition() {
+      if (this.isPixelBasedBaselayer()) return;
+
       this.is_looking_for_gps_coords = true;
       var options = {
         enableHighAccuracy: true,
@@ -1107,6 +1134,8 @@ export default {
           center,
           zoom,
           maxZoom: 6,
+          extent,
+          constrainOnlyCenter: true,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
@@ -1143,6 +1172,8 @@ export default {
           center,
           zoom,
           maxZoom: 6,
+          extent,
+          constrainOnlyCenter: true,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
@@ -1504,6 +1535,9 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      if (this.isPixelBasedBaselayer()) {
+        center = this.clampCenterToProjectionExtent(center);
+      }
       const duration = 1400;
       this.view.animate({
         center,
@@ -2416,7 +2450,7 @@ export default {
   overflow: auto;
 
   ::v-deep ._publicationModule ._collaborativeEditor {
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   }
 
   ::v-deep ._captionField {
