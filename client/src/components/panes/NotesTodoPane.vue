@@ -26,10 +26,10 @@
     <div class="_content">
       <transition name="fade" mode="out-in">
         <OpenedList
-          v-if="!!opened_notes_path"
-          :key="opened_notes_path"
-          :path="opened_notes_path"
-          @close="opened_notes_path = false"
+          v-if="!!current_opened_notes_path"
+          :key="current_opened_notes_path"
+          :path="current_opened_notes_path"
+          @close="current_opened_notes_path = false"
         />
       </transition>
     </div>
@@ -55,6 +55,10 @@ import CreateNotesList from "@/components/notes/CreateNotesList.vue";
 export default {
   props: {
     project: Object,
+    opened_notes_path: {
+      type: String,
+      default: undefined,
+    },
   },
   components: {
     OpenedList,
@@ -64,7 +68,6 @@ export default {
     return {
       notes_folders: [],
       path: `${this.project.$path}/notes_todo`,
-      opened_notes_path: false,
       show_create_notes_modal: false,
     };
   },
@@ -74,14 +77,23 @@ export default {
 
     if (this.notes_folders.length === 0) {
       await this.createDefaultNotesFolder();
-    } else {
-      this.opened_notes_path = this.notes_folders[0]?.$path;
+    } else if (!this.current_opened_notes_path) {
+      this.current_opened_notes_path = this.notes_folders[0]?.$path;
     }
   },
   beforeDestroy() {
     this.$api.leave({ room: this.path });
   },
-  computed: {},
+  computed: {
+    current_opened_notes_path: {
+      get() {
+        return this.opened_notes_path || false;
+      },
+      set(new_path) {
+        this.$emit("update:opened_notes_path", new_path);
+      },
+    },
+  },
   methods: {
     async getNotes() {
       const notes_folders = await this.$api.getFolders({
@@ -97,18 +109,18 @@ export default {
         },
       });
       this.notes_folders = await this.getNotes();
-      this.opened_notes_path = `${this.path}/${slug}`;
+      this.current_opened_notes_path = `${this.path}/${slug}`;
     },
     async handleFolderCreated(slug) {
       this.notes_folders = await this.getNotes();
-      this.opened_notes_path = `${this.path}/${slug}`;
+      this.current_opened_notes_path = `${this.path}/${slug}`;
       this.show_create_notes_modal = false;
     },
     async removeNote(path) {
       await this.$api.deleteItem({ path });
       this.notes_folders = await this.getNotes();
-      if (this.opened_notes_path === path) {
-        this.opened_notes_path = false;
+      if (this.current_opened_notes_path === path) {
+        this.current_opened_notes_path = false;
       }
     },
     toggleList(path) {
@@ -116,7 +128,7 @@ export default {
       //   this.opened_notes_path = null;
       //   return;
       // } else {
-      this.opened_notes_path = path;
+      this.current_opened_notes_path = path;
       // }
     },
   },

@@ -80,6 +80,8 @@
         <NotesTodoPane
           v-else-if="pane.type === 'notes_todo'"
           :project="project"
+          :opened_notes_path="pane.focus"
+          @update:opened_notes_path="setItem(pane, 'focus', $event)"
           @close="removePane(pane)"
         />
         <ChatsPane v-else-if="pane.type === 'chats'" :project="project" />
