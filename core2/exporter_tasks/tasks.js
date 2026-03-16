@@ -506,23 +506,30 @@ module.exports = (function () {
     video_bitrate,
   }) {
     return new Promise(async (resolve, reject) => {
-      ffmpegTracker
+      const ffmpeg_cmd = ffmpegTracker
         .createTrackedFfmpeg()
         .input(temp_image_path)
         .duration(image_duration)
         .loop()
-        .input("anullsrc=channel_layout=stereo:sample_rate=44100")
-        .inputFormat("lavfi")
         .outputFPS(30)
         .withVideoCodec("libx264")
+        .withAudioCodec("aac")
         .withVideoBitrate(video_bitrate)
-        .addOptions(["-af apad", "-tune stillimage"])
+        .complexFilter("anullsrc=channel_layout=stereo:sample_rate=44100[silence]")
+        .addOptions([
+          "-map 0:v",
+          "-map [silence]",
+          "-af apad",
+          "-tune stillimage",
+        ])
         .videoFilter([
           `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=decrease`,
           `pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
           "setsar=1/1",
         ])
-        .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"])
+        .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"]);
+
+      ffmpeg_cmd
         .toFormat("mp4")
         .on("start", (commandLine) => {
           dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);

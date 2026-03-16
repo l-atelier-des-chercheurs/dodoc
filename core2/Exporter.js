@@ -207,16 +207,23 @@ class Exporter {
         this.ffmpeg_cmd
           .withVideoCodec("libx264")
           .withVideoBitrate(video_bitrate)
-          .input("anullsrc")
-          .inputFormat("lavfi");
+          .withAudioCodec("aac");
       }
 
-      this.ffmpeg_cmd
+      let render_cmd = this.ffmpeg_cmd
         .duration(images.length / frame_rate)
         .size(`${output_width}x${output_height}`)
         .outputFPS(output_frame_rate)
         .autopad()
-        .addOptions(["-preset slow", "-tune animation"])
+        .addOptions(["-preset slow", "-tune animation"]);
+
+      if (output_format !== "gif") {
+        render_cmd = render_cmd
+          .complexFilter("anullsrc=channel_layout=stereo:sample_rate=44100[silence]")
+          .addOptions(["-map 0:v", "-map [silence]", "-shortest"]);
+      }
+
+      render_cmd
         .toFormat(output_format === "gif" ? "gif" : "mp4")
         .on("start", (commandLine) => {
           dev.log("Spawned Ffmpeg with command: \n" + commandLine);
