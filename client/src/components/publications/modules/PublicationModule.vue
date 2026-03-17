@@ -713,13 +713,25 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "auto") {
+    scrollToModule(scroll_options = {}) {
+      const { behavior, block, inline } =
+        typeof scroll_options === "string"
+          ? {
+              behavior: scroll_options,
+              block: "start",
+              inline: "nearest",
+            }
+          : {
+              behavior: scroll_options.behavior || "auto",
+              block: scroll_options.block || "start",
+              inline: scroll_options.inline || "nearest",
+            };
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
           behavior,
-          block: "start",
-          inline: "nearest",
+          block,
+          inline,
         });
       }
     },

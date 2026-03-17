@@ -362,6 +362,11 @@ export default {
       const meta_filename = meta_filenames.at(-1);
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
+        this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`, {
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
         this.$eventHub.$emit("publication.map.openPin", pin_path);
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 150);
@@ -449,6 +454,11 @@ export default {
   &[data-viewpane-hidden="true"] {
     ._viewpaneToggle {
     }
+  }
+
+  ::v-deep ._sectionsList {
+    padding-left: calc(var(--spacing) * 3) !important;
+    padding-right: calc(var(--spacing) * 3) !important;
   }
 }
 

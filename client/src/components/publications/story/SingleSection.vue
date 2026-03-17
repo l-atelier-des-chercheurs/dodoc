@@ -192,9 +192,14 @@ export default {
     toggleNewModuleEdit({ meta_filename }) {
       const pin_path = this.publication.$path + "/" + meta_filename;
       setTimeout(() => {
+        this.$eventHub.$emit(`publication.story.scrollTo.${pin_path}`, {
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
         this.$eventHub.$emit("publication.map.openPin", pin_path);
-      }, 150);
+      }, 250);
     },
     async toggleSectionVisibility() {
       await this.$api.updateMeta({
