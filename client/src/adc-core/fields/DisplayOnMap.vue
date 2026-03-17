@@ -178,7 +178,7 @@
           </template>
         </button>
       </div>
-      <div class="_buttonRow" v-if="can_print_map">
+      <div class="_buttonRow" v-if="can_show_print_button">
         <button
           type="button"
           class="u-button"
@@ -193,7 +193,7 @@
           </template> -->
         </button>
         <PrintMap
-          v-if="start_map_print && can_print_map"
+          v-if="start_map_print && can_show_print_button"
           :map="map"
           :map_baselayer_bw="map_baselayer_bw"
           @close="start_map_print = false"
@@ -612,8 +612,13 @@ export default {
     },
   },
   computed: {
+    can_show_print_button() {
+      return this.can_print_map && this.map_baselayer !== "image";
+    },
     has_current_position_button() {
-      return !this.$root.app_infos.is_electron;
+      return (
+        !this.$root.app_infos.is_electron && this.map_baselayer !== "image"
+      );
     },
     map_styles() {
       let styles = {};
@@ -1741,7 +1746,7 @@ export default {
           Math.sin(deltaLon / 2) *
           Math.sin(deltaLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
+      
       return R * c; // Distance in meters
     },
 
