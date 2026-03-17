@@ -59,7 +59,6 @@ export default {
 <style lang="scss" scoped>
 ._loadSelectedProjects {
   position: relative;
-  margin-bottom: calc(var(--spacing) / 2);
 
   display: grid;
   grid-auto-rows: max-content;

@@ -58,16 +58,14 @@ export default {
     width: 100%;
     height: 100%;
     overflow: auto;
-    box-shadow: var(--panel-shadows);
+    // box-shadow: var(--panel-shadows);
     margin: calc(var(--spacing) * 2) auto;
-    padding: calc(var(--spacing) / 2);
-    background: white;
 
     max-width: min(var(--max-column-width), var(--max-column-width-px));
 
     padding: calc(var(--spacing) / 2);
-    border-radius: var(--border-radius) 0 0 var(--border-radius);
-    background: var(--c-gris_clair);
+    border-radius: var(--border-radius);
+    background: var(--c-gris);
 
     ::v-deep {
       ._projectInfos--topContent {
