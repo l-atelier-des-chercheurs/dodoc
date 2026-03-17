@@ -379,8 +379,17 @@ export default function () {
       },
       fileRemoved({ path_to_folder, path_to_meta }) {
         const folder = this.store[path_to_folder];
+        if (!folder) return;
         folder.$files = folder.$files.filter(
           (file) => file.$path !== path_to_meta
+        );
+      },
+      filesRemoved({ path_to_folder, paths_to_meta }) {
+        const folder = this.store[path_to_folder];
+        if (!folder) return;
+        const removed = new Set(paths_to_meta);
+        folder.$files = folder.$files.filter(
+          (file) => !removed.has(file.$path)
         );
       },
 
@@ -858,6 +867,20 @@ export default function () {
         });
         this.$eventHub.$emit("hooks.deleteItem", { path });
         return response.data;
+      },
+      async deleteItems({ path, meta_filenames }) {
+        const response = await this.$axios
+          .post(`${path}/_removefiles`, { meta_filenames })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        const { success, failed } = response.data;
+        this.$eventHub.$emit("hooks.deleteItems", { path, success, failed });
+        if (failed.length > 0)
+          this.$alertify
+            .delay(4000)
+            .error(`${failed.length} file(s) could not be deleted.`);
+        return { success, failed };
       },
 
       resetToken() {

@@ -302,6 +302,16 @@ module.exports = (function () {
       _restrictToLocalAdmins,
       _generatePreview
     );
+    app.post(
+      [
+        "/_api2/:folder_type/:folder_slug/_removefiles",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_removefiles",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_removefiles",
+      ],
+      _generalPasswordCheck,
+      _restrictToContributors,
+      _removeFiles
+    );
     app.get(
       [
         "/_api2/",
@@ -2159,6 +2169,54 @@ module.exports = (function () {
     }
   }
 
+  async function _removeFiles(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+    const { meta_filenames } = req.body;
+
+    dev.logapi({ path_to_folder, meta_filenames });
+
+    if (!Array.isArray(meta_filenames) || meta_filenames.length === 0)
+      return res.status(400).json({ code: "invalid_meta_filenames" });
+    if (meta_filenames.length > 100)
+      return res.status(400).json({ code: "batch_too_large" });
+
+    const unique_filenames = [...new Set(meta_filenames)];
+
+    const success = [];
+    const failed = [];
+
+    for (const meta_filename of unique_filenames) {
+      const path_to_meta = path.join(path_to_folder, meta_filename);
+      try {
+        await file.removeFile({ path_to_folder, meta_filename, path_to_meta });
+        success.push(meta_filename);
+      } catch (err) {
+        failed.push({ meta_filename, code: err.code || "unknown_error" });
+      }
+    }
+
+    const outcome =
+      failed.length === 0
+        ? "success"
+        : success.length === 0
+        ? "error"
+        : "partial";
+
+    journal.log({
+      from: "api2",
+      event: "remove_files",
+      details: { outcome, path_to_folder, success, failed, author_path: token_path },
+    });
+
+    res.status(200).json({ success, failed });
+
+    if (success.length > 0) {
+      const paths_to_meta = success.map((f) => path.join(path_to_folder, f));
+      _notifyFilesRemoved(path_to_folder, paths_to_meta);
+    }
+  }
+
   async function _copyFile(req, res, next) {
     // 1. Extract and validate input
     const { path_to_folder, meta_filename, path_to_meta, data } =
@@ -2640,6 +2698,13 @@ module.exports = (function () {
     notifier.emit("fileRemoved", utils.convertToSlashPath(path_to_folder), {
       path_to_folder: utils.convertToSlashPath(path_to_folder),
       path_to_meta: utils.convertToSlashPath(path_to_meta),
+    });
+  }
+
+  function _notifyFilesRemoved(path_to_folder, paths_to_meta) {
+    notifier.emit("filesRemoved", utils.convertToSlashPath(path_to_folder), {
+      path_to_folder: utils.convertToSlashPath(path_to_folder),
+      paths_to_meta: paths_to_meta.map(utils.convertToSlashPath),
     });
   }
 
