@@ -5,7 +5,7 @@
         v-if="selected_media"
         :key="selected_media.$path"
         :file="selected_media"
-        :resolution="220"
+        :resolution="440"
         :context="context"
         @videoPaused="$emit('videoPaused')"
         @videoEnded="$emit('videoEnded')"
