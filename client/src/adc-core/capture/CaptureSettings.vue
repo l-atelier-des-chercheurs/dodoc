@@ -494,18 +494,22 @@ export default {
         console.log("Requesting initial permissions...");
         // Request initial permissions
         await this.requestInitialPermissions();
+        if (this.is_destroying_capture_settings) return;
 
         console.log("Refreshing available devices...");
         // Refresh available devices
         await this.refreshAvailableDevices();
+        if (this.is_destroying_capture_settings) return;
 
         console.log("Setting default inputs and outputs...");
         // Set default inputs and outputs
         this.setDefaultInputsAndOutputs();
+        if (this.is_destroying_capture_settings) return;
 
         console.log("Setting up camera stream...");
         // Set up camera stream
         await this.setCameraStreamFromDefaults();
+        if (this.is_destroying_capture_settings) return;
 
         console.log("Initialization completed successfully");
         this.is_loading_feed = false;
@@ -550,12 +554,21 @@ export default {
     },
 
     async requestInitialPermissions() {
+      const request_id = this.stream_request_counter;
       try {
         console.log("Requesting getUserMedia permissions...");
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: true,
         });
+
+        if (
+          this.is_destroying_capture_settings ||
+          request_id !== this.stream_request_counter
+        ) {
+          this.stopStreamTracks(stream);
+          return;
+        }
 
         console.log("Permissions granted, stream created:", stream);
 
@@ -566,6 +579,9 @@ export default {
         this.handlePermissionError(error);
         throw error;
       }
+    },
+    stopStreamTracks(stream) {
+      stream?.getTracks?.().forEach((track) => track.stop());
     },
 
     handlePermissionError(error) {
@@ -1130,7 +1146,7 @@ export default {
     async cleanupStream() {
       if (this.local_stream) {
         try {
-          this.local_stream.getTracks().forEach((track) => track.stop());
+          this.stopStreamTracks(this.local_stream);
           this.local_stream = undefined;
           // Wait a bit for cleanup to complete
           await new Promise((resolve) => setTimeout(resolve, 200));
