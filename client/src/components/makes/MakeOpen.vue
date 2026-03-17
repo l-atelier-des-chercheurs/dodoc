@@ -1,32 +1,15 @@
 <template>
   <div class="_make">
-    <button
-      type="button"
-      class="u-buttonLink u-buttonLink_white"
-      @click="$emit('close')"
-    >
-      <b-icon icon="arrow-left-short" />
-      {{ $t("back_to_makes_list") }}
-    </button>
-
     <div v-if="fetch_make_error">
       {{ fetch_make_error }}
     </div>
     <div v-if="make">
-      <div class="_topbar">
-        <TitleField
-          :field_name="'title'"
-          :tag="'h2'"
-          :content="make.title"
-          :path="make.$path"
-          :required="true"
-          :minlength="3"
-          :maxlength="60"
-          :can_edit="can_edit"
-        />
-
-        <RemoveMenu v-if="can_edit" @remove="removeMake" />
-      </div>
+      <MakeTopbar
+        :make="make"
+        :can_edit="can_edit"
+        @close="$emit('close')"
+        @remove="removeMake"
+      />
 
       <div v-if="make.type === 'video_effects'">
         <div class="_mediaPicker">
@@ -67,6 +50,7 @@
 </template>
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
+import MakeTopbar from "@/components/makes/MakeTopbar.vue";
 
 export default {
   props: {
@@ -75,6 +59,7 @@ export default {
     can_edit: Boolean,
   },
   components: {
+    MakeTopbar,
     SingleBaseMediaPicker,
     ImageAndVideoMontage: () =>
       import("@/components/makes/ImageAndVideoMontage.vue"),
@@ -204,22 +189,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._make {
-  padding: calc(var(--spacing) / 4);
-}
-._topbar {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  gap: calc(var(--spacing) * 1);
-  align-items: center;
-  width: 100%;
-  background: white;
-
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
-  // border-radius: 10px;
-  margin: calc(var(--spacing) / 2) auto 0;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
-  // max-width: 800px;
+  // padding: calc(var(--spacing) / 4);
 }
 
 ._mediaPicker {
