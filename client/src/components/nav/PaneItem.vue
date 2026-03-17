@@ -13,7 +13,12 @@
     @click="$emit('click')"
   >
     <span class="u-icon" v-if="icon_html" v-html="icon_html" />
-    <span class="_name" v-if="show_name" v-text="$t(pane.type)" />
+    <span
+      class="_name"
+      :class="{ 'is--hidden': !show_name }"
+      :aria-hidden="!show_name"
+      v-text="$t(pane.type)"
+    />
 
     <transition name="fade" mode="out-in">
       <span key="count" class="_count" v-if="is_animating" v-text="+1" />
@@ -129,7 +134,20 @@ export default {
 }
 
 ._name {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 12rem;
   padding: 0 calc(var(--spacing) / 2);
+  opacity: 1;
+  transition: max-width 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+    padding 0.5s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.12s ease-out;
+
+  &.is--hidden {
+    max-width: 0;
+    padding: 0;
+    opacity: 0;
+  }
 }
 ._count {
   padding: 0 calc(var(--spacing) / 2);
