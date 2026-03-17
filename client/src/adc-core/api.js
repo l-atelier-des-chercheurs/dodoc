@@ -116,6 +116,7 @@ export default function () {
         this.socket.on("fileCreated", this.fileCreated);
         this.socket.on("fileUpdated", this.fileUpdated);
         this.socket.on("fileRemoved", this.fileRemoved);
+        this.socket.on("filesRemoved", this.filesRemoved);
 
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);

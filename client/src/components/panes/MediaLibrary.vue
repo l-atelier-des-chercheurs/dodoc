@@ -432,7 +432,11 @@
                   :disabled="is_downloading_sources"
                   @click="downloadSelectedSources"
                 >
-                  <b-icon v-if="is_downloading_sources" icon="arrow-repeat" class="_spinner" />
+                  <b-icon
+                    v-if="is_downloading_sources"
+                    icon="arrow-repeat"
+                    class="_spinner"
+                  />
                   <b-icon v-else icon="file-earmark-arrow-down" />
                   {{ $t("download_selected") }}
                 </button>
@@ -844,13 +848,23 @@ export default {
       // });
     },
     async removeAllMedias() {
-      for (const path of this.selected_medias_paths) {
-        await this.removeMedia(path);
-        this.selected_medias_paths = this.selected_medias_paths.filter(
-          (p) => p !== path
-        );
-      }
+      if (this.selected_medias_paths.length === 0) return;
+      const folder_path = this.getParent(this.selected_medias_paths[0]);
+      const meta_filenames = this.selected_medias_paths.map((p) =>
+        this.getFilename(p)
+      );
+      const { success } = await this.$api.deleteItems({
+        path: folder_path,
+        meta_filenames,
+      });
+      this.selected_medias_paths = [];
       this.batch_mode = false;
+      this.closeMediaFocus();
+      if (success.length > 0)
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("media_removed"));
     },
     selectAllVisibleMedias() {
       this.selected_medias_paths = this.filtered_medias.map((fm) => fm.$path);
@@ -1321,7 +1335,11 @@ export default {
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

@@ -148,6 +148,9 @@ module.exports = (function () {
     notifier.on("fileRemoved", (room, content) => {
       io.to("content/" + room).emit("fileRemoved", content);
     });
+    notifier.on("filesRemoved", (room, content) => {
+      io.to("content/" + room).emit("filesRemoved", content);
+    });
 
     notifier.on("adminSettingsUpdated", (room, content) => {
       io.to("content/" + room).emit("adminSettingsUpdated", content);

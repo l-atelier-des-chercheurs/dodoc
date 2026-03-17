@@ -355,6 +355,9 @@ module.exports = (function () {
     notifier.on("fileRemoved", async (room, { path_to_folder }) => {
       _updateFileCountAndBroadcast("fileRemoved", path_to_folder);
     });
+    notifier.on("filesRemoved", async (room, { path_to_folder }) => {
+      _updateFileCountAndBroadcast("fileRemoved", path_to_folder);
+    });
     notifier.on(
       "folderCreated",
       async (room, { path_to_folder, path_to_type }) => {
@@ -2206,7 +2209,13 @@ module.exports = (function () {
     journal.log({
       from: "api2",
       event: "remove_files",
-      details: { outcome, path_to_folder, success, failed, author_path: token_path },
+      details: {
+        outcome,
+        path_to_folder,
+        success,
+        failed,
+        author_path: token_path,
+      },
     });
 
     res.status(200).json({ success, failed });
