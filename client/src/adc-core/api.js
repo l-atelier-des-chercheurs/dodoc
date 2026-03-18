@@ -326,10 +326,15 @@ export default function () {
         if (
           Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
         ) {
-          const folder_to_update = this.store[parent_folder_path].find(
-            (f) => f.$path === folder_path
-          );
-          this.updateProps({ changed_data, folder_to_update });
+          const parent_folder = this.store[parent_folder_path];
+          if (Array.isArray(parent_folder)) {
+            const folder_to_update = parent_folder.find(
+              (f) => f.$path === folder_path
+            );
+            if (folder_to_update) {
+              this.updateProps({ changed_data, folder_to_update });
+            }
+          }
         }
       },
       folderRemoved({ path, path_to_folder }) {
@@ -349,11 +354,13 @@ export default function () {
         if (
           Object.prototype.hasOwnProperty.call(this.store, parent_folder_path)
         ) {
-          const folder_index = this.store[parent_folder_path].findIndex(
-            (f) => f.$path === folder_path
-          );
-          if (folder_index !== -1)
-            this.store[parent_folder_path].splice(folder_index, 1);
+          const parent_folder = this.store[parent_folder_path];
+          if (Array.isArray(parent_folder)) {
+            const folder_index = parent_folder.findIndex(
+              (f) => f.$path === folder_path
+            );
+            if (folder_index !== -1) parent_folder.splice(folder_index, 1);
+          }
         }
 
         this.$eventHub.$emit("folder.removed", { path: folder_path });
