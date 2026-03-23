@@ -59,9 +59,9 @@
                 class="margin-none"
                 type="range"
                 v-model.number="chroma_key_settings.similarity"
-                min="0.01"
-                max="0.15"
-                step="0.001"
+                min="0"
+                max="1"
+                step="0.01"
               />
             </div>
 
@@ -71,21 +71,9 @@
                 class="margin-none"
                 type="range"
                 v-model.number="chroma_key_settings.smoothness"
-                min="0.01"
-                max="0.2"
-                step="0.001"
-              />
-            </div>
-
-            <div class="">
-              <label>{{ $t("spill") }}</label>
-              <input
-                class="margin-none"
-                type="range"
-                v-model.number="chroma_key_settings.spill"
-                min="0.01"
-                max="0.25"
-                step="0.001"
+                min="0"
+                max="1"
+                step="0.01"
               />
             </div>
           </div>
@@ -190,9 +178,8 @@ export default {
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.07, // 0.01 -> 0.15 by 0.001
-        smoothness: 0.08, // 0.01 -> 0.2 by 0.001
-        spill: 0.1, // 0.01 -> 0.25 by 0.001
+        similarity: 0.4, // user control: 0 -> 1
+        smoothness: 0.35, // user control: 0 -> 1
         replacement_color: {
           r: 252,
           g: 75,
@@ -286,6 +273,7 @@ uniform sampler2D replacementImage;
 uniform float similarity;
 uniform float smoothness;
 uniform float spill;
+uniform float lumaWeight;
 uniform int chromaKeyMode;
 
 uniform float brightness;
@@ -306,11 +294,18 @@ vec2 RGBtoUV(vec3 rgb) {
     rgb.r *  0.5   + rgb.g * -0.419 + rgb.b * -0.081  + 0.5
   );
 }
+float RGBtoY(vec3 rgb) {
+  return dot(rgb, vec3(0.2126, 0.7152, 0.0722));
+}
 
 vec4 ProcessChromaKey(vec2 texCoord, vec4 videoColor) {
+  // UV-only distance makes black/gray/white behave almost the same.
+  // Blend in a small luma component so achromatic colors are separable.
   float chromaDist = distance(RGBtoUV(videoColor.rgb), RGBtoUV(keyColor));
+  float lumaDist = abs(RGBtoY(videoColor.rgb) - RGBtoY(keyColor));
+  float colorDist = chromaDist + (lumaDist * lumaWeight);
 
-  float baseMask = chromaDist - similarity;
+  float baseMask = colorDist - similarity;
   float fullMask = pow(clamp(baseMask / smoothness, 0., 1.), 1.5);
   videoColor.a = fullMask;
 
@@ -591,6 +586,29 @@ void main(void) {
 
       return "#" + r + g + b;
     },
+    getChromaKeyTuning() {
+      const similarity_control = Math.min(
+        1,
+        Math.max(0, parseFloat(this.chroma_key_settings.similarity))
+      );
+      const smoothness_control = Math.min(
+        1,
+        Math.max(0, parseFloat(this.chroma_key_settings.smoothness))
+      );
+
+      // Two UI controls drive all chroma key parameters.
+      const similarity = 0.02 + similarity_control * 0.13;
+      const smoothness = 0.02 + smoothness_control * 0.18;
+      const spill = 0.05 + smoothness_control * 0.2;
+      const luma_weight = 0.18 + similarity_control * 0.5;
+
+      return {
+        similarity,
+        smoothness,
+        spill,
+        luma_weight,
+      };
+    },
     setTogglePickColorFromVideo() {
       if (!this.enable_pick_color_from_video) {
         // this.chroma_key_settings.enable = false;
@@ -692,6 +710,7 @@ void main(void) {
       const similarityLoc = gl.getUniformLocation(prog, "similarity");
       const smoothnessLoc = gl.getUniformLocation(prog, "smoothness");
       const spillLoc = gl.getUniformLocation(prog, "spill");
+      const luma_weight_loc = gl.getUniformLocation(prog, "lumaWeight");
       const chromaKeyModeLoc = gl.getUniformLocation(prog, "chromaKeyMode");
       const midLoc = gl.getUniformLocation(prog, "mid");
 
@@ -753,15 +772,11 @@ void main(void) {
           this.chroma_key_settings.replacement_color.b / 255
         );
 
-        gl.uniform1f(
-          similarityLoc,
-          parseFloat(this.chroma_key_settings.similarity)
-        );
-        gl.uniform1f(
-          smoothnessLoc,
-          parseFloat(this.chroma_key_settings.smoothness)
-        );
-        gl.uniform1f(spillLoc, parseFloat(this.chroma_key_settings.spill));
+        const chroma_key_tuning = this.getChromaKeyTuning();
+        gl.uniform1f(similarityLoc, chroma_key_tuning.similarity);
+        gl.uniform1f(smoothnessLoc, chroma_key_tuning.smoothness);
+        gl.uniform1f(spillLoc, chroma_key_tuning.spill);
+        gl.uniform1f(luma_weight_loc, chroma_key_tuning.luma_weight);
 
         Object.entries(imageFiltersLoc).map(([name, loc]) => {
           gl.uniform1f(
