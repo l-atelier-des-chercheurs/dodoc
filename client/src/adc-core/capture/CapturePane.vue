@@ -57,10 +57,10 @@ export default {
     }
   }
   &[data-type="effects"] {
-    background-color: var(--c-gris);
+    background-color: var(--c-gris_clair);
 
     ._topbar {
-      border-color: var(--c-gris_fonce);
+      border-color: var(--c-gris);
       color: var(--c-noir);
     }
   }

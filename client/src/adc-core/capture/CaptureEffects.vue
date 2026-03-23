@@ -27,11 +27,10 @@
         :label="$t('chroma_key')"
         :show_toggle.sync="chroma_key_settings.enable"
       >
-        <fieldset>
+        <fieldset class="u-spacingBottom">
           <legend>{{ $t("chroma_key_color") }}</legend>
 
           <ColorInput
-            :label="$t('color')"
             :can_toggle="false"
             :value="chroma_key_color_hex"
             @save="chroma_key_color_hex = $event"
