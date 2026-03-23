@@ -83,6 +83,7 @@ export default {
 ._paneItem {
   color: var(--color-active);
   padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+  gap: 0;
   border-radius: 44px;
   text-transform: uppercase;
   font-weight: 500;
@@ -135,6 +136,7 @@ export default {
 
 ._name {
   display: inline-block;
+  flex: 0 1 auto;
   white-space: nowrap;
   overflow: hidden;
   max-width: 12rem;
@@ -150,6 +152,11 @@ export default {
   }
 }
 ._count {
+  margin-left: calc(var(--spacing) / 4);
   padding: 0 calc(var(--spacing) / 2);
+}
+
+._inlineBtn {
+  margin-left: calc(var(--spacing) / 4);
 }
 </style>
