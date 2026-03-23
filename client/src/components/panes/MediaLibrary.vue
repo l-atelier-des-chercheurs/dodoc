@@ -712,6 +712,7 @@ export default {
       return _focused_media;
     },
     focused_media_index() {
+      if (!this.focused_media) return -1;
       return this.filtered_medias.findIndex(
         (m) => m.$path === this.focused_media.$path
       );
@@ -1006,12 +1007,13 @@ export default {
         .success(this.$t("media_removed"));
     },
     prevMedia() {
-      if (this.focused_media_index === 0) return;
+      if (this.focused_media_index <= 0) return;
       this.toggleMediaFocus(
         this.filtered_medias[this.focused_media_index - 1].$path
       );
     },
     nextMedia() {
+      if (this.focused_media_index < 0) return;
       if (this.focused_media_index === this.filtered_medias.length - 1) return;
       this.toggleMediaFocus(
         this.filtered_medias[this.focused_media_index + 1].$path
