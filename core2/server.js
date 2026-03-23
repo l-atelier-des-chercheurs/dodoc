@@ -27,6 +27,8 @@ module.exports = function () {
       // todo: set correct CSP
       contentSecurityPolicy: false,
       crossOriginResourcePolicy: false,
+      // OSM tile servers require Referer for anonymous usage.
+      referrerPolicy: { policy: "origin-when-cross-origin" },
     })
   );
 
