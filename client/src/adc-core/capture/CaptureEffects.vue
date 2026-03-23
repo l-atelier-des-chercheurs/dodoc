@@ -18,6 +18,7 @@
         :step="zoom.step"
         :ticks="zoom.ticks"
         :default_value="zoom.default"
+        @save="zoom.value = $event"
         @input="zoom.value = $event"
       />
 
@@ -192,9 +193,9 @@ export default {
       zoom: {
         value: 1,
         min: 1,
-        max: 10,
-        step: 0.1,
-        ticks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        max: 5,
+        step: 0.01,
+        ticks: [],
         default: 1,
       },
 
@@ -519,6 +520,15 @@ void main(void) {
       if (this.chroma_key_settings.replacement_mode === "image") {
         this.chroma_key_replacement_image_url = undefined;
         this.select_image = true;
+      }
+    },
+    "chroma_key_settings.enable"(is_enabled, was_enabled) {
+      if (is_enabled && !was_enabled) {
+        this.chroma_key_settings.key_color = {
+          r: 255,
+          g: 255,
+          b: 255,
+        };
       }
     },
   },
