@@ -59,8 +59,8 @@
                 class="margin-none"
                 type="range"
                 v-model.number="chroma_key_settings.similarity"
-                min="0"
-                max="0.2"
+                min="0.01"
+                max="0.15"
                 step="0.001"
               />
             </div>
@@ -71,8 +71,8 @@
                 class="margin-none"
                 type="range"
                 v-model.number="chroma_key_settings.smoothness"
-                min="0"
-                max="0.3"
+                min="0.01"
+                max="0.2"
                 step="0.001"
               />
             </div>
@@ -83,10 +83,9 @@
                 class="margin-none"
                 type="range"
                 v-model.number="chroma_key_settings.spill"
-                min="0"
-                max="0.5"
+                min="0.01"
+                max="0.25"
                 step="0.001"
-                value="0.1"
               />
             </div>
           </div>
@@ -191,9 +190,9 @@ export default {
           g: 255,
           b: 0,
         }, // 0 -> 1 by 0.001
-        similarity: 0.05, // 0 -> 0.2 by 0.001 (better default)
-        smoothness: 0.12, // 0 -> 0.3 by 0.001 (better default)
-        spill: 0.2, // 0 -> 0.5 by 0.001 (better default)
+        similarity: 0.07, // 0.01 -> 0.15 by 0.001
+        smoothness: 0.08, // 0.01 -> 0.2 by 0.001
+        spill: 0.1, // 0.01 -> 0.25 by 0.001
         replacement_color: {
           r: 252,
           g: 75,
