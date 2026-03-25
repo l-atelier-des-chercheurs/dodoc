@@ -63,9 +63,9 @@ export default {
 
     max-width: min(var(--max-column-width), var(--max-column-width-px));
 
-    padding: calc(var(--spacing) / 2);
+    padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
     border-radius: var(--border-radius);
-    background: var(--c-gris);
+    background: var(--c-gris_clair);
 
     ::v-deep {
       ._projectInfos--topContent {

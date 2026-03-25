@@ -360,6 +360,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._projectInfos {
+  --project-border-radius: 8px;
   position: relative;
 
   width: 100%;
@@ -373,17 +374,13 @@ export default {
   }
 
   &.is--medium {
-    // background: white;
-    // border-radius: 4px;
-
     ._title {
-      // font-size: var(--sl-font-size-small);
     }
   }
 
   &.is--list {
     background-color: #fff;
-    border-radius: 4px;
+    border-radius: var(--project-border-radius);
 
     transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
 
@@ -560,7 +557,7 @@ export default {
     position: relative;
 
     aspect-ratio: 3/2;
-    border-radius: 4px;
+    border-radius: calc(var(--project-border-radius) / 1.3);
     overflow: hidden;
 
     margin-right: 0;
