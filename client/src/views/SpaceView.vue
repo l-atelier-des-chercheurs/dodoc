@@ -232,7 +232,7 @@ export default {
 
 ._projectsList--header {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   align-items: center;
   justify-content: space-between;
