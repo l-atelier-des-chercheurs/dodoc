@@ -305,6 +305,9 @@ export default {
       this.show_credits_modal = true;
     },
     async loadChatsAndDisplayUnreadMessages() {
+      // only if chats is enabled
+      if (!this.$root.app_infos.instance_meta.enable_chats) return;
+
       const path = `chats`;
       const chats = await this.$api.getFolders({
         path,
