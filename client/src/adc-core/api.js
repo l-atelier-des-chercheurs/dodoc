@@ -69,13 +69,19 @@ export default function () {
           this.$eventHub.$emit("socketio.connect", {
             socketid: this.socket.id,
           });
+          this.rejoinRooms();
+          if (this.is_tracking_users) this.getAndTrackUsers();
         });
 
         this.socket.on("session", ({ sessionID, userID }) => {
           // attach the session ID to the next reconnection attempts
-          this.socket.auth = { sessionID };
+          this.socket.auth = {
+            ...(this.socket.auth || {}),
+            sessionID,
+          };
           this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
+          this.setAuthorizationHeader();
         });
         this.socket.on("connect_error", (reason) => {
           console.log("socket connect error");
@@ -86,11 +92,6 @@ export default function () {
 
           this.connected = false;
           this.$eventHub.$emit("socketio.disconnect", reason);
-          this.socket.disconnect();
-          this.socket.once("connect", () => {
-            this.rejoinRooms();
-            if (this.is_tracking_users) this.getAndTrackUsers();
-          });
         });
 
         this.socket.onAny((eventName, ...args) => {
@@ -219,10 +220,12 @@ export default function () {
         // --> meaning they can read content, but not update anything
       },
       setAuthorizationHeader() {
+        const sessionID = localStorage.getItem("sessionID");
         this.$axios.defaults.headers.common["Authorization"] = JSON.stringify({
           token: this.tokenpath.token,
           token_path: this.tokenpath.token_path,
           general_password: this.general_password,
+          sessionID,
         });
       },
       async getAllAuthors() {
@@ -250,13 +253,16 @@ export default function () {
         return this.users;
       },
       userJoined(user) {
-        this.users.push(user);
+        const user_exists = this.users.some((u) => u.id === user.id);
+        if (!user_exists) this.users.push(user);
       },
       userUpdated({ id, changed_data }) {
         const index = this.users.findIndex((u) => u.id === id);
         if (index === -1) {
           this.getAndTrackUsers();
         } else {
+          if (!this.users[index].meta)
+            this.$set(this.users[index], "meta", {});
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(this.users[index].meta, key, value);
           });
@@ -930,10 +936,10 @@ export default function () {
     },
     computed: {
       all_devices_connected() {
-        return this.users.map((u) => {
-          if (u.id === this.self_user_id) u.is_self = true;
-          return u;
-        });
+        return this.users.map((u) => ({
+          ...u,
+          is_self: u.id === this.self_user_id,
+        }));
       },
       other_devices_connected() {
         return this.all_devices_connected.filter((u) => !u.is_self);

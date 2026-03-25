@@ -11,6 +11,7 @@ const folder = require("./folder"),
   Exporter = require("./Exporter"),
   auth = require("./auth"),
   users = require("./users"),
+  sessionStore = require("./sessionStore"),
   journal = require("./journal"),
   recoverPassword = require("./recover-password"),
   dev = require("./dev-log");
@@ -44,8 +45,8 @@ module.exports = (function () {
     app.get("/_api2/_logs", _getLogs);
     app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
 
-    app.get("/_api2/_users", _getAllUsers);
-    app.patch("/_api2/_users/:id", _updateUser);
+    app.get("/_api2/_users", _generalPasswordCheck, _getAllUsers);
+    app.patch("/_api2/_users/:id", _generalPasswordCheck, _updateUser);
 
     /* PUBLIC FOLDER */
     app.get(
@@ -2378,6 +2379,21 @@ module.exports = (function () {
   }
   async function _updateUser(req, res, next) {
     const id = req.params.id;
+    let sessionID;
+    try {
+      const auth_infos = JSON.parse(req.headers.authorization || "{}");
+      sessionID = auth_infos.sessionID;
+    } catch (err) {
+      return res.status(401).json({ code: "invalid_authorization_header" });
+    }
+    if (!sessionID)
+      return res.status(401).json({ code: "no_session_id_submitted" });
+
+    const session = sessionStore.findSession(sessionID);
+    if (!session) return res.status(401).json({ code: "session_not_found" });
+    if (session.userID !== id)
+      return res.status(403).json({ code: "not_allowed" });
+
     const { path } = req.body;
     const user = users.updateUser(id, { path });
     if (!user) return res.status(404).json({ status: "user not found" });

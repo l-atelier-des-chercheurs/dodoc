@@ -1,6 +1,7 @@
 /* abstract */
 // from https://socket.io/fr/get-started/private-messaging-part-2/
 const crypto = require("crypto");
+const dev = require("./dev-log");
 const randomId = () => crypto.randomBytes(8).toString("hex");
 
 module.exports = (function () {

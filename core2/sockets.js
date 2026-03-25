@@ -73,6 +73,7 @@ module.exports = (function () {
       // persist session, see https://github.com/socketio/socket.io/blob/992c9380c34b9a67c03dd503c26d008836f2899b/examples/private-messaging/server/index.js
       sessionStore.updateSession(sessionID, {
         connected: true,
+        userID,
       });
 
       let meta = {
@@ -124,8 +125,7 @@ module.exports = (function () {
         sessionStore.updateSession(sessionID, {
           connected: false,
         });
-        users.userLeft(userID);
-        notifier.emit("userLeft", userID);
+        if (users.userLeft(userID)) notifier.emit("userLeft", userID);
       });
     });
 

@@ -142,7 +142,7 @@ export default {
     }
   }
   select {
-    width: 12ch;
+    width: 14ch;
     background-image: var(--select-caret);
   }
 }
