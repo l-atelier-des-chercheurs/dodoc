@@ -20,6 +20,11 @@
           </button>
         </div>
         <div class="_chatsList--content">
+          <div class="u-divCentered" v-if="is_loading" key="loader">
+            <LoaderSpinner />
+          </div>
+
+          <template v-else>
           <button
             type="button"
             class="u-button u-button_red u-spacingBottom _createChat"
@@ -48,6 +53,7 @@
               @toggle="toggleChat"
             />
           </PinnedNonpinnedFolder>
+          </template>
         </div>
       </div>
 
@@ -100,14 +106,15 @@ export default {
       chats: [],
       path: "chats",
       fetch_chats_error: null,
+      is_loading: true,
       show_create_chat_modal: false,
       opened_chat_slug: null,
       open_in_modal: false,
     };
   },
   async created() {
-    this.loadSettings();
-    await this.loadChats();
+    await Promise.all([this.loadSettings(), this.loadChats()]);
+    this.is_loading = false;
     this.$api.join({ room: this.path });
   },
   mounted() {},
