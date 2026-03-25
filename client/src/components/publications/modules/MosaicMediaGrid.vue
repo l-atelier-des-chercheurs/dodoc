@@ -34,6 +34,7 @@
           class="_mediaContent--table"
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
+          :table_file="media_with_linked._linked_media"
           :can_edit="edit_mode"
         />
         <MediaContent
