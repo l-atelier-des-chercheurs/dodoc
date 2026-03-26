@@ -3,24 +3,25 @@
     <div v-if="show_empty_actions" class="_cellEdit--actions">
       <button
         type="button"
-        class="u-button u-button_bleuvert u-button_small"
+        class="u-button u-button_small"
+        :title="$t('add_text')"
         @click="createText"
       >
         <b-icon icon="fonts" style="font-size: var(--icon-size)" />
-        {{ $t("add_text") }}
       </button>
       <button
         type="button"
-        class="u-button u-button_orange u-button_small"
+        class="u-button u-button_small"
+        :title="$t('add_image')"
         @click="show_media_picker = true"
       >
         <b-icon icon="image" style="font-size: var(--icon-size)" />
-        {{ $t("add_image") }}
       </button>
     </div>
 
     <TitleField
       v-else-if="show_text_editor"
+      ref="text_editor"
       :label="$t('content')"
       :show_label="false"
       :input_type="'editor'"
@@ -33,25 +34,16 @@
       <div class="_cellEdit--media" :style="media_container_style">
         <MediaContent :file="cell_current_file" :resolution="1600" />
       </div>
-
-      <div v-if="can_edit" class="_cellEdit--mediaActions">
-        <button
-          type="button"
-          class="u-button u-button_orange u-button_small"
-          @click="show_media_picker = true"
-        >
-          <b-icon icon="image" style="font-size: var(--icon-size)" />
-          {{ $t("change") }}
-        </button>
-        <button
-          type="button"
-          class="u-button u-button_red u-button_small"
-          @click="removeMedia"
-        >
-          <b-icon icon="trash" style="font-size: var(--icon-size)" />
-          {{ $t("remove") }}
-        </button>
-      </div>
+    </div>
+    <div v-if="can_edit && !show_empty_actions" class="_cellEdit--mediaActions">
+      <button
+        type="button"
+        class="u-button u-button_icon u-button_small"
+        :title="$t('remove')"
+        @click.stop="resetCell"
+      >
+        <b-icon icon="trash" />
+      </button>
     </div>
 
     <MediaPicker
@@ -249,6 +241,9 @@ export default {
         source_medias: [],
         media_width: null,
       });
+      setTimeout(() => {
+        this.$refs.text_editor?.enableEditMode();
+      }, 200);
     },
     async pickMediaForCell(medias) {
       const media = medias?.[0];
@@ -269,11 +264,12 @@ export default {
       });
       this.show_media_picker = false;
     },
-    removeMedia() {
+    resetCell() {
       this.emitUpdatedCell({
         content_type: "",
         source_medias: [],
         media_width: null,
+        content: "",
       });
     },
   },
@@ -329,8 +325,19 @@ export default {
 ._cellEdit--mediaActions {
   display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: flex-end;
   gap: calc(var(--spacing) / 4);
+
+  @media (hover: hover) {
+    ._cellEdit & {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    ._cellEdit:hover & {
+      opacity: 1;
+    }
+  }
 }
 
 ._cellEdit ::v-deep {

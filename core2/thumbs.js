@@ -1,5 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
+  { spawn } = require("child_process"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
@@ -19,6 +20,8 @@ function _logFfmpegCommand({ context, command_line }) {
     `THUMBS • FFMPEG (${context}) • BIN ${ffmpegPath} • CMD ${command_line}`
   );
 }
+
+let _has_pdftoppm = undefined;
 
 module.exports = (function () {
   const API = {
@@ -674,6 +677,23 @@ module.exports = (function () {
     page,
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
+
+    if (await _isPdftoppmAvailable()) {
+      try {
+        await _makePDFThumbsWithPdftoppm({
+          full_media_path,
+          full_path_to_thumb,
+          page,
+        });
+        dev.logverbose(`Made PDF thumb with pdftoppm`, full_path_to_thumb);
+        return;
+      } catch (err) {
+        dev.logverbose(`pdftoppm failed, falling back to webpreview`, {
+          message: err?.message || String(err),
+        });
+      }
+    }
+
     try {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
@@ -709,6 +729,109 @@ module.exports = (function () {
       dev.error(err);
       throw new Error("failed to capture screenshot");
     }
+  }
+
+  async function _isPdftoppmAvailable() {
+    if (typeof _has_pdftoppm === "boolean") return _has_pdftoppm;
+
+    try {
+      await _runProcess({
+        command: "pdftoppm",
+        args: ["-v"],
+        timeout_ms: 5000,
+        allow_non_zero_exit: true,
+      });
+      _has_pdftoppm = true;
+    } catch (err) {
+      _has_pdftoppm = false;
+      dev.logverbose(`pdftoppm is not available`, {
+        message: err?.message || String(err),
+      });
+    }
+
+    return _has_pdftoppm;
+  }
+
+  async function _makePDFThumbsWithPdftoppm({
+    full_media_path,
+    full_path_to_thumb,
+    page = 1,
+  }) {
+    const ext = path.extname(full_path_to_thumb) || ".png";
+    const output_base = full_path_to_thumb.slice(0, -ext.length);
+
+    await fs.ensureDir(path.dirname(full_path_to_thumb));
+
+    await _runProcess({
+      command: "pdftoppm",
+      args: [
+        "-f",
+        `${page}`,
+        "-singlefile",
+        "-png",
+        full_media_path,
+        output_base,
+      ],
+      timeout_ms: 20000,
+    });
+
+    if (!(await fs.pathExists(full_path_to_thumb))) {
+      throw new Error("pdftoppm did not generate expected output file");
+    }
+  }
+
+  function _runProcess({
+    command,
+    args = [],
+    timeout_ms = 10000,
+    allow_non_zero_exit = false,
+  }) {
+    return new Promise((resolve, reject) => {
+      let stdout = "";
+      let stderr = "";
+      let is_settled = false;
+
+      const proc = spawn(command, args, {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+
+      const timeout = setTimeout(() => {
+        if (is_settled) return;
+        is_settled = true;
+        proc.kill("SIGKILL");
+        reject(new Error(`Process timeout for ${command}`));
+      }, timeout_ms);
+
+      proc.stdout.on("data", (d) => {
+        stdout += String(d);
+      });
+      proc.stderr.on("data", (d) => {
+        stderr += String(d);
+      });
+
+      proc.on("error", (err) => {
+        if (is_settled) return;
+        is_settled = true;
+        clearTimeout(timeout);
+        reject(err);
+      });
+
+      proc.on("close", (code) => {
+        if (is_settled) return;
+        is_settled = true;
+        clearTimeout(timeout);
+
+        if (code !== 0 && !allow_non_zero_exit) {
+          const err = new Error(
+            `${command} exited with code ${code}: ${stderr || stdout}`
+          );
+          err.code = "process_non_zero_exit";
+          err.exit_code = code;
+          return reject(err);
+        }
+        resolve({ stdout, stderr, code });
+      });
+    });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {

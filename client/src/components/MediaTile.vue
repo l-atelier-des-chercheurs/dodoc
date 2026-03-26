@@ -229,13 +229,13 @@ export default {
 
   &.was--focused,
   &.was--imported {
-    border: 2px solid var(--c-noir);
+    border: 2px solid white;
     margin: 2px;
     padding: 4px;
     // background-color: var(--c-noir);
   }
   &.was--imported {
-    border-color: var(--c-noir);
+    border-color: white;
     // border-color: rgba(255, 255, 255, 0.4);
     animation: fadeImport 0.6s ease-in-out 3 alternate;
   }
