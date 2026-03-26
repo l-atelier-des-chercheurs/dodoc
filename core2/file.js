@@ -330,6 +330,9 @@ module.exports = (function () {
 
       let { $media_filename, $type } = await utils.readMetaFile(path_to_meta);
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+      cache.delete({
+        key: path_to_meta,
+      });
 
       if ($type) {
         const $thumbs = await thumbs.makeThumbForMedia({
