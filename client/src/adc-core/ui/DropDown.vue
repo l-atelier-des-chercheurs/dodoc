@@ -12,6 +12,7 @@
     <button
       type="button"
       class="u-button u-button_transparent _toggleDropdown"
+      :title="$t('options')"
       :class="{ 'is--active': show_dropdown, 'u-button_icon': !show_label }"
     >
       <template v-if="$slots.hasOwnProperty('trigger')">
@@ -19,11 +20,7 @@
         <span v-if="show_caret" class="b-icon bi _caret" />
       </template>
       <template v-else>
-        <b-icon
-          icon="three-dots"
-          :aria-label="$t('options')"
-          :title="$t('options')"
-        />
+        <b-icon icon="three-dots" :aria-label="$t('options')" />
         <template v-if="show_label">
           {{ $t("options") }}
         </template>

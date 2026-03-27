@@ -1,6 +1,7 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import { init_title_popper } from "@/utils/title-popper";
 
 import "./utils/icons";
 
@@ -8,6 +9,7 @@ import "./utils/icons";
 import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
 
 Vue.config.productionTip = false;
+init_title_popper();
 
 const publicPath =
   window.app_infos.page_is_standalone_html === true
