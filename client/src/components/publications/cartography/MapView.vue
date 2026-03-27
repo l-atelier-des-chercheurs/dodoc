@@ -81,6 +81,7 @@
             :key="opened_view.$path"
             :view="opened_view"
             :default_view_color="default_view_color"
+            :has_positioned_medias="opened_view_has_positioned_medias"
           />
         </transition>
       </component>
@@ -191,6 +192,15 @@ export default {
       return this.views.find(
         (v) => this.getFilename(v.$path) === this.opened_view_meta_filename
       );
+    },
+    opened_view_has_positioned_medias() {
+      if (!this.opened_view) return false;
+      const modules = this.getModulesForSection({
+        publication: this.publication,
+        section: this.opened_view,
+      }).map(({ _module }) => _module);
+
+      return modules.some((_module) => this.moduleHasPosition(_module));
     },
     base_media() {
       // public folder export view
@@ -342,6 +352,23 @@ export default {
     },
   },
   methods: {
+    moduleHasPosition(_module) {
+      const longitude = _module?.location?.longitude;
+      const latitude = _module?.location?.latitude;
+
+      const has_longitude =
+        longitude !== undefined &&
+        longitude !== null &&
+        longitude !== "" &&
+        Number.isFinite(Number(longitude));
+      const has_latitude =
+        latitude !== undefined &&
+        latitude !== null &&
+        latitude !== "" &&
+        Number.isFinite(Number(latitude));
+
+      return has_longitude && has_latitude;
+    },
     newPositionClicked({ longitude, latitude }) {
       this.latest_click.longitude = longitude;
       this.latest_click.latitude = latitude;
