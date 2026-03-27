@@ -10,7 +10,6 @@ const path = require("path"),
   exifr = require("exifr"),
   crypto = require("crypto"),
   archiver = require("archiver"),
-  { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size"),
   fetch = require("node-fetch"),
   ffmpegTracker = require("./ffmpeg-tracker");
@@ -936,13 +935,55 @@ module.exports = (function () {
 
     async getFolderSize(...paths) {
       const full_folder_path = API.getPathToUserContent(...paths);
-      const fastFolderSizeAsync = promisify(fastFolderSize);
+
+      const getFolderSizeNative = async (folder_path) => {
+        let total_size = 0;
+        let entries = [];
+
+        try {
+          entries = await fs.readdir(folder_path, { withFileTypes: true });
+        } catch (err) {
+          dev.error(err);
+          return 0;
+        }
+
+        for (const entry of entries) {
+          const entry_path = path.join(folder_path, entry.name);
+
+          try {
+            if (entry.isSymbolicLink()) continue;
+
+            if (entry.isDirectory()) {
+              total_size += await getFolderSizeNative(entry_path);
+            } else if (entry.isFile()) {
+              const stat = await fs.stat(entry_path);
+              total_size += stat.size;
+            }
+          } catch (err) {
+            // Ignore unreadable entries to keep size requests resilient.
+            dev.error(err);
+          }
+        }
+
+        return total_size;
+      };
+
+      if (process.platform === "win32") {
+        return await getFolderSizeNative(full_folder_path);
+      }
+
       try {
-        const bin_size = await fastFolderSizeAsync(full_folder_path);
+        const bin_size = await new Promise((resolve, reject) =>
+          fastFolderSize(full_folder_path, (err, size) => {
+            if (err) return reject(err);
+            if (!Number.isFinite(size)) return reject(new Error("Invalid folder size"));
+            resolve(size);
+          })
+        );
         return bin_size;
       } catch (err) {
         dev.error(err);
-        return 0;
+        return await getFolderSizeNative(full_folder_path);
       }
     },
     getZipFolderFilename({ path_to_folder, path_to_type }) {
