@@ -1076,6 +1076,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   IGN_MAP: "Carta IGN (solo in Francia)",
   IGN_SAT: "Foto satellitare IGN (solo in Francia)",
   image_or_drawing: "Immagine o disegno",
+  map_baselayer_switch_locked_image:
+    "Alcuni media sono gia posizionati su questo sfondo immagine. Rimuovi le loro posizioni prima di passare a uno sfondo GPS.",
+  map_baselayer_switch_locked_gps:
+    "Alcuni media sono gia posizionati con coordinate GPS. Puoi passare solo tra sfondi GPS.",
   bw_filter: "Filtro bianco e nero",
   failed_loading_tiles:
     "Errore nel caricamento dello sfondo della mappa, puoi provare a ridurre lo zoom",

@@ -541,6 +541,7 @@ export default {
       map_select_mode: undefined,
       selected_feature_id: undefined,
       map_translate: undefined,
+      hidden_geometries: [],
 
       start_map_print: false,
 
@@ -1229,7 +1230,7 @@ export default {
       }
 
       this.current_zoom = zoom;
-      this.current_view = center;
+      // this.current_view = center;
       return { view, background_layer };
     },
 
@@ -1668,6 +1669,7 @@ export default {
         var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
         new_feature.set("type_of_pin", "geometry");
+        new_feature.set("coordinate_space", this.getCurrentCoordinateSpace());
 
         // Assign a z-index higher than all existing features
         const existingFeatures = this.draw_vector_source.getFeatures();
@@ -1746,7 +1748,7 @@ export default {
           Math.sin(deltaLon / 2) *
           Math.sin(deltaLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      
+
       return R * c; // Distance in meters
     },
 
@@ -1994,9 +1996,70 @@ export default {
       const geom_str = this.convertFeaturesToStr();
       this.$emit("saveGeom", geom_str);
     },
+    getCurrentCoordinateSpace() {
+      return this.isPixelBasedBaselayer() ? "pixel" : "gps";
+    },
+    isGpsCoordinatePair(coord_pair) {
+      if (!Array.isArray(coord_pair) || coord_pair.length < 2) return false;
+      const longitude = Number(coord_pair[0]);
+      const latitude = Number(coord_pair[1]);
+      if (!Number.isFinite(longitude) || !Number.isFinite(latitude))
+        return false;
+      return (
+        longitude >= -180 &&
+        longitude <= 180 &&
+        latitude >= -90 &&
+        latitude <= 90
+      );
+    },
+    extractGeometryCoordinateSamples(geometry_payload) {
+      if (!geometry_payload) return [];
+
+      if (geometry_payload.type === "Circle")
+        return geometry_payload.center ? [geometry_payload.center] : [];
+
+      if (geometry_payload.type === "LineString")
+        return Array.isArray(geometry_payload.coords)
+          ? geometry_payload.coords
+          : [];
+
+      if (geometry_payload.type === "Polygon")
+        return Array.isArray(geometry_payload.coords?.[0])
+          ? geometry_payload.coords[0]
+          : [];
+
+      return [];
+    },
+    inferGeometryCoordinateSpace(geometry_payload) {
+      const explicit_coordinate_space = geometry_payload?.coordinate_space;
+      if (["gps", "pixel"].includes(explicit_coordinate_space))
+        return explicit_coordinate_space;
+
+      const coordinate_samples =
+        this.extractGeometryCoordinateSamples(geometry_payload);
+      if (!coordinate_samples.length) return this.getCurrentCoordinateSpace();
+
+      const all_coordinates_look_gps = coordinate_samples.every((coord_pair) =>
+        this.isGpsCoordinatePair(coord_pair)
+      );
+      if (!all_coordinates_look_gps) return "pixel";
+
+      if (geometry_payload?.type === "Circle") {
+        const radius = Number(geometry_payload.radius);
+        if (Number.isFinite(radius) && radius > 180) return "pixel";
+      }
+
+      return "gps";
+    },
+    isGeometryCompatibleWithCurrentBaselayer(geometry_payload) {
+      const current_coordinate_space = this.getCurrentCoordinateSpace();
+      const geometry_coordinate_space =
+        this.inferGeometryCoordinateSpace(geometry_payload);
+      return geometry_coordinate_space === current_coordinate_space;
+    },
     convertFeaturesToStr() {
       const features = this.draw_vector_source.getFeatures();
-      return features.reduce((acc, f) => {
+      const visible_geometries = features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
         let obj = {};
@@ -2025,11 +2088,16 @@ export default {
 
         const z_index = f.get("z_index");
         if (z_index) obj.z_index = z_index;
+        const coordinate_space = f.get("coordinate_space");
+        if (coordinate_space) obj.coordinate_space = coordinate_space;
+        else obj.coordinate_space = this.getCurrentCoordinateSpace();
 
         acc.push(obj);
 
         return acc;
       }, []);
+
+      return visible_geometries.concat(this.hidden_geometries || []);
     },
     loadPins() {
       this.pins_vector_source.clear();
@@ -2085,11 +2153,17 @@ export default {
     },
     loadGeom() {
       this.draw_vector_source.clear();
+      this.hidden_geometries = [];
 
       try {
         let features = [];
 
         this.geometries?.map((p) => {
+          if (!this.isGeometryCompatibleWithCurrentBaselayer(p)) {
+            this.hidden_geometries.push(p);
+            return;
+          }
+
           let feature_cont;
 
           if (p.type === "Polygon" && p.coords)
@@ -2111,11 +2185,14 @@ export default {
           if (p.fill_opacity !== undefined)
             feature_cont.fill_opacity = p.fill_opacity;
           if (p.z_index !== undefined) feature_cont.z_index = p.z_index;
+          feature_cont.coordinate_space =
+            p.coordinate_space || this.inferGeometryCoordinateSpace(p);
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
           else feature.setId(this.makeRandomIdForShape(p.type));
           feature.set("type_of_pin", "geometry");
+          feature.set("coordinate_space", feature_cont.coordinate_space);
 
           // Set z-index if not present (for existing features)
           if (!feature.get("z_index")) {

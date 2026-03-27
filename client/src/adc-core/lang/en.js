@@ -1059,6 +1059,10 @@ export default {
   IGN_MAP: "IGN map (France only)",
   IGN_SAT: "IGN satellite pictures (France only)",
   image_or_drawing: "Image or drawing",
+  map_baselayer_switch_locked_image:
+    "Some medias are already positioned on this image basemap. Remove their positions before switching to a GPS basemap.",
+  map_baselayer_switch_locked_gps:
+    "Some medias are already positioned with GPS coordinates. You can only switch between GPS basemaps.",
   bw_filter: "Black and white filter",
   failed_loading_tiles:
     "Failed loading the baselayer, you can try to zoom out.",

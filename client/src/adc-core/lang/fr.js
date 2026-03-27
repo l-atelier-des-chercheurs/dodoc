@@ -1132,6 +1132,10 @@ export default {
   IGN_MAP: "Carte IGN (en France uniquement)",
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
+  map_baselayer_switch_locked_image:
+    "Des médias sont déjà positionnés sur ce fond image. Supprimez leurs positions avant de passer à un fond GPS.",
+  map_baselayer_switch_locked_gps:
+    "Des médias sont déjà positionnés avec des coordonnées GPS. Vous pouvez uniquement changer de fond GPS.",
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
