@@ -286,6 +286,7 @@ button,
   &.is--active {
     background-color: var(--c-gris_fonce);
     color: white;
+    font-style: italic;
     // outline: 2px solid var(--active-color);
     box-shadow: 0 1px 4px inset rgba(0, 0, 0, 0.2);
 
@@ -355,12 +356,12 @@ button,
   }
 
   &.is--active {
-    background-color: white;
-    color: var(--c-noir);
+    background-color: var(--c-gris_fonce);
+    color: white;
 
     &:hover,
     &:focus-visible {
-      background-color: var(--c-gris);
+      background-color: var(--c-gris_fonce);
     }
   }
 }
