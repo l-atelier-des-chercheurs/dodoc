@@ -162,7 +162,17 @@
             <DLabel :str="$t('filename')" />
             <div class="u-filename">{{ file.$media_filename }}</div>
           </div>
-
+          <div class="u-metaField" v-if="file.$origin">
+            <DLabel :str="$t('origin')" />
+            <div class="">
+              <div
+                class="_originInd"
+                :style="`--o-color: var(--color-${file.$origin})`"
+              >
+                {{ $t(file.$origin) }}
+              </div>
+            </div>
+          </div>
           <div class="">
             <DateDisplay
               :title="$t('date_uploaded')"
@@ -195,17 +205,6 @@
               :title="$t('duration')"
               :duration="file.$infos.duration"
             />
-          </div>
-          <div class="u-metaField" v-if="file.$origin">
-            <DLabel :str="$t('origin')" />
-            <div class="">
-              <div
-                class="_originInd"
-                :style="`--o-color: var(--color-${file.$origin})`"
-              >
-                {{ $t(file.$origin) }}
-              </div>
-            </div>
           </div>
         </DetailsPane>
 
