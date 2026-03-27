@@ -14,7 +14,7 @@
       <template v-if="instructions || hasToggleInstructionsListener">
         <button
           type="button"
-          class="u-button u-button_icon _icon"
+          class="u-button u-button_icon u-button_small _icon"
           :style="icon_styles"
         >
           <b-icon
@@ -95,11 +95,10 @@ export default {
   flex-shrink: 0;
 }
 ._icon {
-  font-size: var(--sl-font-size-x-small);
   padding: 0;
-  margin-left: calc(var(--spacing) / 3);
-  margin-top: -2px;
-  margin-bottom: -2px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  margin-left: calc(var(--spacing) / 4);
 }
 ._instr {
   // margin-bottom: calc(var(--spacing) / 2);
