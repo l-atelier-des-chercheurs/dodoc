@@ -57,7 +57,7 @@
                 :step="1"
                 :default_value="40"
                 :suffix="'px'"
-                :ticks="[30]"
+                :ticks="[40]"
                 @input="brush_size = $event"
                 @save="brush_size = $event"
               />
@@ -183,7 +183,7 @@ export default {
       img_natural_height: 0,
       display_width: 0,
       display_height: 0,
-      brush_size: 30,
+      brush_size: 40,
       draw_mode: "blur",
       is_drawing: false,
       last_x: 0,

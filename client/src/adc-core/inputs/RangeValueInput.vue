@@ -118,6 +118,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._rangeInput {
+  position: relative;
 }
 ._inputRange {
   flex: 1 1 60px;
@@ -136,5 +137,9 @@ export default {
       // flex: 6 0 0;
     }
   }
+}
+.u-defaultValue {
+  position: absolute;
+  right: 0;
 }
 </style>
