@@ -1,16 +1,18 @@
 <template>
   <button
     type="button"
-    class="u-button u-button_icon _editBtn"
+    class="u-button _editBtn"
     :class="{
       'is--unfolded': is_unfolded,
       'is--spinning': is_spinning,
     }"
     :disabled="disabled"
     :style="btn_styles"
-    :title="button_label"
     @click="$emit('click')"
   >
+    <span class="_label" v-if="button_label" :data-position="label_position">
+      {{ button_label }}
+    </span>
     <b-icon
       class="_icon"
       :icon="btn_props.icon"
@@ -140,7 +142,10 @@ export default {
     btn_styles() {
       if (this.style_type === "black")
         return `
+          --color-bg: var(--c-noir);
           --color-icon: white;
+          --color-icon-hover: white;
+          --color-bg-hover: var(--c-noir);
         `;
 
       if (
@@ -151,6 +156,8 @@ export default {
       )
         return `
           --color-icon: var(--c-noir);
+          --color-icon-hover: white;
+          --color-bg-hover:  var(--c-noir);
         `;
       // if (this.btn_type === "add")
       //   return `
@@ -161,6 +168,8 @@ export default {
       else if (this.btn_type === "credits")
         return `
           --color-icon: var(--c-noir);
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       else if (this.btn_type === "remove")
         return `
@@ -169,7 +178,10 @@ export default {
 
       if (this.btn_type === "fullscreen-exit")
         return `
+          --color-bg: var(--c-noir);
           --color-icon: white;
+          --color-icon-hover: var(--c-noir);
+          --color-bg-hover: white;
         `;
       return ``;
     },
@@ -179,17 +191,95 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._editBtn {
-  // position: relative;
-  // border: none;
-  // color: var(--color-icon);
+  --color-bg: rgba(255, 255, 255, 0.5);
+  --color-icon: var(--active-color);
+  --color-icon-hover: white;
+  --color-bg-hover: var(--active-color);
+
+  position: relative;
+  // display: inline-flex;
+  background: var(--color-bg);
+  color: var(--color-icon);
+  border: none;
+  // border: 1px solid var(--color-bg);
+
+  // box-shadow: 0 1px 40px rgb(0 0 0 / 10%);
+
+  padding: calc(var(--spacing) / 4);
+
+  border-radius: 50%;
+  transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+  &:hover,
+  &:active,
+  &:focus-visible {
+    z-index: 2;
+    // transform: scale(1.2);
+    background: transparent;
+  }
 
   ._icon {
-    // position: relative;
+    position: relative;
+    // z-index: 1;
+  }
+
+  ._label {
+    position: absolute;
+    top: 0;
+    height: calc(100% + 2px);
+
+    background: var(--color-icon);
+
+    // margin: -1px;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+
+    display: flex;
+    align-items: center;
+    border-radius: 1rem;
+    white-space: nowrap;
+
+    max-width: 0;
+    overflow: hidden;
+
+    pointer-events: none;
+    opacity: 0;
+    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &[data-position="right"] {
+      left: 0;
+      padding-left: 100%;
+      transform: translateX(15px);
+    }
+    &[data-position="left"] {
+      right: 0;
+      padding-right: 100%;
+      transform: translateX(-15px);
+    }
   }
 
   &.is--spinning {
     ._icon {
       animation: spin 1s linear infinite;
+    }
+  }
+
+  &:hover,
+  &:active,
+  &:focus-visible,
+  &.is--unfolded {
+    color: var(--color-icon-hover);
+
+    ._label {
+      transform: none;
+      color: inherit;
+      background: var(--color-bg-hover);
+      color: var(--color-icon-hover);
+
+      opacity: 1;
+      max-width: 40ch;
+      // pointer-events: auto;
+      // transition: all 0.25s 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+      transition: all 0.25s 0s cubic-bezier(0.19, 1, 0.22, 1);
     }
   }
 }

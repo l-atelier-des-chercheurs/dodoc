@@ -27,7 +27,7 @@
       </template>
       <EditBtn v-if="can_edit" @click="edit_mode = !edit_mode" />
     </div>
-    <div class="u-sameRow" v-if="edit_mode">
+    <div class="u-sameRow _pageLabel--actions" v-if="edit_mode">
       <div class="">
         <EditBtn
           :btn_type="'duplicate'"
@@ -81,5 +81,10 @@ export default {
   // background: white;
   // border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);
+}
+
+._pageLabel--actions {
+  background-color: white;
+  border-radius: var(--border-radius);
 }
 </style>
