@@ -277,7 +277,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._cellEdit {
+  position: relative;
   --icon-size: 1rem;
+  color: var(--c-noir);
 }
 
 ._cellEdit--actions {
@@ -323,21 +325,9 @@ export default {
 }
 
 ._cellEdit--mediaActions {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: calc(var(--spacing) / 4);
-
-  @media (hover: hover) {
-    ._cellEdit & {
-      opacity: 0;
-      transition: opacity 0.2s ease;
-    }
-    ._cellEdit:hover & {
-      opacity: 1;
-    }
-  }
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 ._cellEdit ::v-deep {

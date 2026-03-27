@@ -941,7 +941,7 @@ export default {
       // border-radius: var(--input-border-radius);
 
       &:has(.ql-editor:focus-visible) {
-        border-color: var(--c-gris);
+        border-left-color: var(--c-gris);
       }
     }
   }
