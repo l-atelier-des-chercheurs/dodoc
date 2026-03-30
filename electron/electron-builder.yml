@@ -79,10 +79,10 @@ mac:
   category: public.app-category.education
   icon: build/icon.icns
   hardenedRuntime: true
-  gatekeeperAssess: false
+  gatekeeperAssess: true
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
-  notarize: false
+  notarize: true
   #provisioningProfile: dodoc.provisionprofile
   extendInfo:
     NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.

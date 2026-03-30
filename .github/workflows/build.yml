@@ -72,3 +72,10 @@ jobs:
           cd electron
           npm install
           npm run dist
+      - name: check macOS image
+        if: matrix.os == 'macos-latest'
+        run: |
+          echo "🔍 verify signature"
+          codesign -dv electron/dist/mac-arm64/do•doc.app
+          echo "🔍 verify notarisation"
+          spctl -a -vvv -t open -vvv --context context:primary-signature electron/dist/mac-arm64/do•doc.app
