@@ -71,7 +71,11 @@ jobs:
           npm install
           cd electron
           npm install
-          npm run dist
+          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+            npm run dist -- --mac dmg
+          else
+            npm run dist
+          fi
       - name: check macOS image
         if: matrix.os == 'macos-latest'
         run: |
