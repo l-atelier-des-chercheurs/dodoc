@@ -61,6 +61,8 @@ npm install
 npm start
 ```
 
+**Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
+
 Available scripts for Node mode:
 
 - `npm start` - run the app with minimal logging
