@@ -219,7 +219,9 @@ class Exporter {
 
       if (output_format !== "gif") {
         render_cmd = render_cmd
-          .complexFilter("anullsrc=channel_layout=stereo:sample_rate=44100[silence]")
+          .complexFilter(
+            "anullsrc=channel_layout=stereo:sample_rate=44100[silence]"
+          )
           .addOptions(["-map 0:v", "-map [silence]", "-shortest"]);
       }
 
@@ -917,7 +919,7 @@ class Exporter {
         task: "convertImage",
       },
       {
-        exts: [".flv", ".mov", ".avi", ".webm", ".mp4", ".mkv", ".wmv"],
+        exts: [".flv", ".mov", ".avi", ".webm", ".mp4", ".mkv", ".wmv", ".qt"],
         task: "convertVideo",
       },
       {

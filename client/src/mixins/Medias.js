@@ -364,6 +364,7 @@ export default {
         ".avi",
         ".mkv",
         ".wmv",
+        ".qt",
       ];
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
