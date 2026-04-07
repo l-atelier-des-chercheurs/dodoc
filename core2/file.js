@@ -775,13 +775,37 @@ module.exports = (function () {
       utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
+    const makeMissingMediaNotice = ({ source_media, key, err }) => {
+      const requested_meta_filename = source_media?.[key];
+      return {
+        $status: "missing",
+        $error: "source_media_missing",
+        $requested_meta_filename: requested_meta_filename,
+        $requested_meta_path: requested_meta_filename
+          ? utils.convertToSlashPath(
+              path.join(source_folder, requested_meta_filename)
+            )
+          : undefined,
+        $error_code: err?.code || "missing_source_media",
+      };
+    };
+
     const findSourceMedia = async (source_media, key) => {
-      if (source_media.hasOwnProperty(key)) {
-        const path_to_meta = path.join(source_folder, source_media[key]);
+      if (!source_media?.hasOwnProperty(key)) return;
+
+      const path_to_meta = path.join(source_folder, source_media[key]);
+      try {
         const source_media_meta = await API.getFile({
           path_to_meta,
         });
         return source_media_meta;
+      } catch (err) {
+        dev.error(
+          `Missing source media while embedding: ${source_media[key]} (${
+            err?.code || "unknown_error"
+          })`
+        );
+        return makeMissingMediaNotice({ source_media, key, err });
       }
     };
 
