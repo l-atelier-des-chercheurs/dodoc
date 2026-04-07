@@ -207,7 +207,6 @@ export default {
       for (const table_source_media of this.table_source_medias) {
         if (!table_source_media?._media) continue;
         if (this.sourceMediaMatches(source_media, table_source_media)) {
-          debugger;
           return table_source_media._media;
         }
       }
