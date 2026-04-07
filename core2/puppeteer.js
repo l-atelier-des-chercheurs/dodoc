@@ -2,6 +2,52 @@ const puppeteer = require("puppeteer");
 
 const utils = require("./utils");
 
+const READY_FOR_EXPORT_EVENT = "READY_FOR_EXPORT";
+const READY_WAIT_MS = 15_000;
+const READY_SETTLE_MS = 400;
+
+/**
+ * Register before navigation: listen for READY_FOR_EXPORT with detail.ready === true.
+ */
+async function installReadyForExportListener(page) {
+  await page.evaluateOnNewDocument((event_name) => {
+    window.__ready_for_export_promise = new Promise((resolve) => {
+      window.addEventListener(
+        event_name,
+        function onReadyForExport(e) {
+          if (e.detail && e.detail.ready === true) {
+            window.removeEventListener(event_name, onReadyForExport);
+            resolve();
+          }
+        }
+      );
+    });
+  }, READY_FOR_EXPORT_EVENT);
+}
+
+/**
+ * Wait for the first ready event or READY_WAIT_MS, then READY_SETTLE_MS.
+ */
+async function waitForReadyForExportOrTimeout(page) {
+  const start = Date.now();
+  try {
+    await Promise.race([
+      page.evaluate(() => {
+        const p = window.__ready_for_export_promise;
+        return p ? p : new Promise(() => {});
+      }),
+      new Promise((r) => setTimeout(r, READY_WAIT_MS)),
+    ]);
+  } catch (err) {
+    /* navigation / context gone */
+  }
+  const elapsed = Date.now() - start;
+  if (elapsed < READY_WAIT_MS) {
+    console.log("ready signal received after " + elapsed + "ms");
+  }
+  await new Promise((r) => setTimeout(r, READY_SETTLE_MS));
+}
+
 module.exports = (function () {
   return {
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
@@ -12,7 +58,7 @@ module.exports = (function () {
         const err = new Error("Failed to capture screenshot");
         err.code = "timeout";
         throw err;
-      }, 10_000);
+      }, 20_000);
 
       try {
         browser = await puppeteer.launch({
@@ -31,6 +77,8 @@ module.exports = (function () {
         const width = 800;
         const height = 800;
 
+        await installReadyForExportListener(page);
+
         await page.setUserAgent("facebookexternalhit/1.1");
         await page.setViewport({
           width: width + x_padding * 2,
@@ -40,13 +88,19 @@ module.exports = (function () {
 
         dev.logverbose(`Navigating to ${url}`);
 
-        await page.goto(url).catch((err) => {
-          throw err;
-        });
+        await page
+          .goto(url, {
+            waitUntil: "load",
+            timeout: 60_000,
+          })
+          .catch((err) => {
+            throw err;
+          });
 
-        dev.logverbose(`Waiting for page to load`);
-
-        await new Promise((resolve) => setTimeout(resolve, 3_000));
+        dev.logverbose(
+          `Waiting for ${READY_FOR_EXPORT_EVENT} or ${READY_WAIT_MS}ms`
+        );
+        await waitForReadyForExportOrTimeout(page);
 
         dev.logverbose(`Taking screenshot`);
         await page.screenshot({
@@ -87,7 +141,7 @@ module.exports = (function () {
         const err = new Error("Failed to capture media screenshot");
         err.code = "failed_to_capture_media_screenshot_page-timeout";
         throw err;
-      }, 30_000);
+      }, 120_000);
 
       let stopTimeoutAndCloseBrowser = async () => {
         if (page_timeout) {
@@ -117,7 +171,8 @@ module.exports = (function () {
 
         const page = await browser.newPage();
 
-        // Set screen size
+        await installReadyForExportListener(page);
+
         await page.setViewport({
           width: bw_pagesize.width,
           height: bw_pagesize.height,
@@ -136,9 +191,12 @@ module.exports = (function () {
 
         if (reportProgress) reportProgress(45);
 
-        page.emulateMediaType("print");
+        dev.logverbose(
+          `Waiting for ${READY_FOR_EXPORT_EVENT} or ${READY_WAIT_MS}ms (export)`
+        );
+        await waitForReadyForExportOrTimeout(page);
 
-        await new Promise((r) => setTimeout(r, 3000));
+        page.emulateMediaType("print");
 
         if (reportProgress) reportProgress(70);
 
@@ -174,11 +232,6 @@ module.exports = (function () {
               height: Math.floor(bw_pagesize.height),
             },
           });
-          // path_to_temp_file = await this._saveImage({
-          //   data,
-          //   width: bw_pagesize.width,
-          //   height: bw_pagesize.height,
-          // });
         }
 
         if (reportProgress) reportProgress(100);

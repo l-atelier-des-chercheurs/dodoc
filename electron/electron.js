@@ -143,7 +143,7 @@ module.exports = (function () {
               const err = new Error("Failed to capture screenshot");
               err.code = "timeout";
               reject(err);
-            }, 10_000);
+            }, 20_000);
           }),
         ]);
         return;
@@ -354,7 +354,31 @@ module.exports = (function () {
     try {
       await new Promise((resolve, reject) => {
         win.webContents.once("did-finish-load", async () => {
-          await new Promise((resolve) => setTimeout(resolve, 3000));
+          const ready_wait_ms = 15_000;
+          const settle_ms = 400;
+          const event_name_json = JSON.stringify("READY_FOR_EXPORT");
+          try {
+            await Promise.race([
+              win.webContents.executeJavaScript(
+                `(function () {
+                  var event_name = ${event_name_json};
+                  return new Promise(function (resolve) {
+                    window.addEventListener(event_name, function onReady(e) {
+                      if (e.detail && e.detail.ready === true) {
+                        window.removeEventListener(event_name, onReady);
+                        resolve();
+                      }
+                    });
+                  });
+                })();`,
+                true
+              ),
+              new Promise((r) => setTimeout(r, ready_wait_ms)),
+            ]);
+          } catch (err) {
+            /* same as timeout: proceed */
+          }
+          await new Promise((r) => setTimeout(r, settle_ms));
           return resolve();
         });
         win.webContents.on("did-fail-load", (event, error) => {
@@ -373,7 +397,9 @@ module.exports = (function () {
   async function _pickPath() {
     dev.logfunction();
     const parent_win =
-      BrowserWindow.getFocusedWindow() || win || BrowserWindow.getAllWindows()[0];
+      BrowserWindow.getFocusedWindow() ||
+      win ||
+      BrowserWindow.getAllWindows()[0];
     const result = await dialog.showOpenDialog(parent_win, {
       properties: ["openDirectory", "createDirectory"],
     });
@@ -568,8 +594,7 @@ module.exports = (function () {
         submenu: [
           {
             label: "Nouvelle fenêtre",
-            accelerator:
-              process.platform === "darwin" ? "Command+N" : "Ctrl+N",
+            accelerator: process.platform === "darwin" ? "Command+N" : "Ctrl+N",
             click: () => createNewWindow(),
           },
           {

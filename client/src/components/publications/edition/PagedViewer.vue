@@ -37,8 +37,10 @@
 import { Handler, Previewer } from "pagedjs";
 import { PagedjsFlowHandler } from "./PagedjsFlowHandler.js";
 import PanZoom3 from "@/components/publications/page_by_page/PanZoom3.vue";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
+  mixins: [PublicationReady],
   props: {
     content_nodes: {
       type: Object,
@@ -142,6 +144,8 @@ export default {
       await new Promise((resolve) => {
         console.log("generateBook");
 
+        this.setPublicationReadyState(false);
+
         this.is_generating_book = true;
 
         this.removeExistingStyles();
@@ -149,6 +153,8 @@ export default {
         const bookpreview = this.$refs.bookpreview;
         if (!bookpreview) {
           console.log("no bookpreview div");
+          this.setPublicationReadyState(true);
+          resolve();
           return;
         }
 
@@ -168,27 +174,37 @@ export default {
         // Register the Flow Handler
         paged.registerHandlers(PagedjsFlowHandler);
 
-        paged.preview(pagedjs_html, theme_styles, bookrender).then((flow) => {
-          bookpreview.innerHTML = "";
-          bookpreview.appendChild(flow.pagesArea);
-          bookrender.innerHTML = "";
+        paged
+          .preview(pagedjs_html, theme_styles, bookrender)
+          .then((flow) => {
+            bookpreview.innerHTML = "";
+            bookpreview.appendChild(flow.pagesArea);
+            bookrender.innerHTML = "";
 
-          const number_of_book_pages = flow.total;
-          this.updateNumberOfBookPages(number_of_book_pages);
+            const number_of_book_pages = flow.total;
+            this.updateNumberOfBookPages(number_of_book_pages);
 
-          this.$nextTick(() => {
-            this.showOnlyPages();
-            if (this.can_edit) {
-              this.addChapterShortcuts();
-              this.reportChapterPositions();
-            }
-            setTimeout(() => {
-              this.is_loading = false;
-              this.is_generating_book = false;
-              resolve();
-            }, 100);
+            this.$nextTick(() => {
+              this.showOnlyPages();
+              if (this.can_edit) {
+                this.addChapterShortcuts();
+                this.reportChapterPositions();
+              }
+              setTimeout(() => {
+                this.is_loading = false;
+                this.is_generating_book = false;
+                this.setPublicationReadyState(true);
+                resolve();
+              }, 100);
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+            this.is_loading = false;
+            this.is_generating_book = false;
+            this.setPublicationReadyState(true);
+            resolve();
           });
-        });
       });
     },
     updateNumberOfBookPages(number_of_book_pages) {

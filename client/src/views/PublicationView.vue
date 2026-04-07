@@ -72,10 +72,11 @@
 <script>
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
 import DynamicTitle from "@/mixins/DynamicTitle.js";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
   props: {},
-  mixins: [DynamicTitle],
+  mixins: [DynamicTitle, PublicationReady],
   components: {
     PublicationTopbar,
     PageExport: () =>
