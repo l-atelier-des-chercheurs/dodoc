@@ -497,6 +497,12 @@ export default {
       let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
+        if (media?.$status === "missing") {
+          html += `<figure class="media gallery--item media-missing"><i>${this.$t(
+            "source_media_missing"
+          )}</i></figure>`;
+          return;
+        }
         html += `<figure class="media gallery--item">
           <img src="${this.makeMediaFileURL({
             $path: media.$path,
@@ -635,6 +641,10 @@ export default {
             media.source_medias
           );
           cell.innerHTML = text;
+        } else if (media?.$status === "missing") {
+          cell.innerHTML = `<div class="u-instructions">${this.$t(
+            "source_media_missing"
+          )}</div>`;
         } else if (media?.$type === "image") {
           const img = document.createElement("img");
           img.src = this.makeMediaFileURL({
@@ -725,6 +735,7 @@ export default {
           makeMediaFileURL: this.makeMediaFileURL.bind(this),
           makeQREmbedForQR: this.makeQREmbedForQR.bind(this),
           makeQREmbedForExternalURL: this.makeQREmbedForExternalURL.bind(this),
+          getMissingMediaNoticeText: () => this.$t("source_media_missing"),
         },
       });
     },

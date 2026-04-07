@@ -112,6 +112,38 @@ export default {
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );
     },
+    getGridEmbeddedSourceMedias({ grid_areas = [] }) {
+      const source_medias = [];
+
+      const makeSourceMediaKey = (source_media) => {
+        if (source_media?.meta_filename_in_project)
+          return `project:${source_media.meta_filename_in_project}`;
+        if (source_media?.meta_filename)
+          return `publication:${source_media.meta_filename}`;
+        if (source_media?.path) return `path:${source_media.path}`;
+        return false;
+      };
+
+      grid_areas.forEach((area) => {
+        if (!Array.isArray(area?.source_medias)) return;
+
+        area.source_medias.forEach((source_media) => {
+          const source_media_key = makeSourceMediaKey(source_media);
+          if (!source_media_key) return;
+          if (
+            source_medias.some(
+              (sm) => makeSourceMediaKey(sm) === source_media_key
+            )
+          )
+            return;
+
+          const { _media, ...clean_source_media } = source_media;
+          source_medias.push(clean_source_media);
+        });
+      });
+
+      return source_medias;
+    },
 
     transformURL({ url: og_url, autoplay }) {
       function addhttp(url) {

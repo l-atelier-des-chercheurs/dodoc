@@ -173,6 +173,19 @@ export default {
     },
   },
   methods: {
+    updateChapterFromGridAreas(new_grid_areas) {
+      const source_medias = this.getGridEmbeddedSourceMedias({
+        grid_areas: new_grid_areas,
+      });
+
+      return this.$api.updateMeta({
+        path: this.chapter.$path,
+        new_meta: {
+          grid_areas: new_grid_areas,
+          source_medias,
+        },
+      });
+    },
     async createText() {
       const areaId = this.area.id;
       const chapter_name = this.chapter.$path.split("/").pop();
@@ -199,12 +212,7 @@ export default {
         return area;
       });
 
-      await this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          grid_areas: new_grid_areas,
-        },
-      });
+      await this.updateChapterFromGridAreas(new_grid_areas);
 
       const path = this.publication.$path + "/" + meta_filename;
       // call media.enableEditor to enable editing of the new text
@@ -238,16 +246,7 @@ export default {
         return area;
       });
 
-      const existing_source_medias = this.chapter.source_medias || [];
-      const source_medias = [...existing_source_medias, new_entry];
-
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          grid_areas: new_grid_areas,
-          source_medias,
-        },
-      });
+      this.updateChapterFromGridAreas(new_grid_areas);
     },
 
     async removeAreaText() {
@@ -264,12 +263,7 @@ export default {
         return area;
       });
 
-      await this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          grid_areas: new_grid_areas,
-        },
-      });
+      await this.updateChapterFromGridAreas(new_grid_areas);
 
       // Only delete the actual text file when it's local to the publication
       if (
@@ -296,12 +290,7 @@ export default {
         return area;
       });
 
-      this.$api.updateMeta({
-        path: this.chapter.$path,
-        new_meta: {
-          grid_areas: new_grid_areas,
-        },
-      });
+      this.updateChapterFromGridAreas(new_grid_areas);
     },
 
     toggleObjectFit() {

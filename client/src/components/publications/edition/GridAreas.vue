@@ -233,7 +233,8 @@ export default {
       const grid_areas = this.chapter.grid_areas.filter(
         (area) => area.id !== areaId
       );
-      this.updateChapter({ grid_areas });
+      const source_medias = this.getGridEmbeddedSourceMedias({ grid_areas });
+      this.updateChapter({ grid_areas, source_medias });
     },
     selectArea(areaId) {
       this.selected_area_id = areaId;

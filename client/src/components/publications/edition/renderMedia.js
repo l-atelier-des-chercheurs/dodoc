@@ -125,6 +125,7 @@ export function renderMedia({
     makeMediaFileURL = ({ $path, $media_filename }) => `/${$media_filename}`,
     makeQREmbedForQR = () => "",
     makeQREmbedForExternalURL = () => "",
+    getMissingMediaNoticeText = () => "Source media is missing",
   } = context;
 
   let media_html = "";
@@ -213,6 +214,14 @@ export function renderMedia({
         html: `<figure class="${custom_classes.join(
           " "
         )}"><i>Media not found</i></figure>`,
+        is_qr_code: false,
+      };
+
+    if (media?.$status === "missing")
+      return {
+        html: `<figure class="${custom_classes.join(
+          " "
+        )} media-missing"><i>${getMissingMediaNoticeText()}</i></figure>`,
         is_qr_code: false,
       };
 
