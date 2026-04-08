@@ -12,7 +12,7 @@
       <button
         type="button"
         class="u-button u-button_small"
-        :title="$t('add_image')"
+        :title="$t('add_media')"
         @click="show_media_picker = true"
       >
         <b-icon icon="image" style="font-size: var(--icon-size)" />
@@ -32,13 +32,17 @@
     />
     <div v-else-if="show_media_preview" class="_cellEdit--mediaPreview">
       <div class="_cellEdit--media" :style="media_container_style">
-        <MediaContent :file="cell_current_file" :resolution="1600" />
+        <MediaContent
+          :file="cell_current_file"
+          :resolution="1600"
+          :context="'full'"
+        />
       </div>
     </div>
     <div v-if="can_edit && !show_empty_actions" class="_cellEdit--mediaActions">
       <button
         type="button"
-        class="u-button u-button_icon u-button_small"
+        class="u-button u-button_icon u-button_small u-button_glass"
         :title="$t('remove')"
         @click.stop="resetCell"
       >
@@ -50,7 +54,6 @@
       v-if="show_media_picker"
       :publication_path="table_folder_path"
       :select_mode="'single'"
-      :pick_from_types="['image']"
       @pickMedias="pickMediaForCell"
       @close="show_media_picker = false"
     />
@@ -327,6 +330,10 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
+  margin: calc(var(--spacing) / 2);
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
 }
 
 ._cellEdit ::v-deep {
