@@ -58,7 +58,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v6
         with:
-          node-version: 22.22.2
+          node-version: 24.14.0
       - name: Package Electron app
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
