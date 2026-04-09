@@ -343,6 +343,7 @@ class Exporter {
       if (this.instructions.page) query.page = this.instructions.page;
       if (this.instructions.view_mode)
         query.view_mode = this.instructions.view_mode;
+      if (this.instructions.style) query.style = this.instructions.style;
       if (this.instructions.make_preview === true) query.make_preview = true;
 
       const superadmintoken = auth.getSuperadminToken();
