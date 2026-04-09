@@ -160,12 +160,16 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
+      debugger;
       if (
         this.opened_style_file_meta === "default" ||
         this.style_files?.length === 0
       ) {
         return default_styles;
-      } else if (!this.opened_style_file_meta) {
+      } else if (
+        !this.opened_style_file_meta ||
+        this.opened_style_file_meta === "first"
+      ) {
         return this.style_files[0];
       } else {
         return (

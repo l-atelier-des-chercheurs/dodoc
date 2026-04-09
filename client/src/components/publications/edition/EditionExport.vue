@@ -38,7 +38,7 @@ export default {
       return this.$route.query?.view_mode || "web";
     },
     opened_style_file_meta() {
-      return this.$route.query?.style || "first";
+      return this.$route.query?.style || "default";
     },
   },
   methods: {
