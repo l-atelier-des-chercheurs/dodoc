@@ -88,7 +88,11 @@
             class="u-instructions"
             v-if="section.grid_areas && section.grid_areas.length > 0"
           >
-            {{ $t("areas_used", { count: section.grid_areas.length }) }}
+            {{
+              $tc("areas_used", section.grid_areas.length, {
+                count: section.grid_areas.length,
+              })
+            }}
           </span>
           <span v-else class="u-instructions">
             {{ $t("no_areas_defined") }}

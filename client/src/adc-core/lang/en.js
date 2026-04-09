@@ -942,7 +942,7 @@ export default {
   add_medias: "Add medias",
   add_media: "Add media",
   add_grid_area: "Add grid area",
-  areas_used: "{count} areas used",
+  areas_used: "No area defined | {count} area defined | {count} areas defined",
   click_empty_cell_to_add_area: "Click on an empty cell to add an area",
   max_grid_area_reached:
     "Maximum number of grid areas reached (A to Z). Delete an area to add a new one.",
