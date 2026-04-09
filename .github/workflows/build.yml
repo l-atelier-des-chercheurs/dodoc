@@ -59,7 +59,13 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24.14.0
-      - name: Package Electron app
+      - name: Install Electron dependencies
+        run: |
+          npm install
+          cd electron
+          npm install
+      - name: Package Electron app (macOS)
+        if: matrix.os == 'macos-latest'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -68,14 +74,17 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
-          npm install
           cd electron
-          npm install
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            npm run dist -- --mac dmg
-          else
-            npm run dist
-          fi
+          npm run dist -- --mac dmg
+      - name: Package Electron app (non-macOS)
+        if: matrix.os != 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+        run: |
+          cd electron
+          npm run dist
       - name: check macOS image
         if: matrix.os == 'macos-latest'
         run: |
