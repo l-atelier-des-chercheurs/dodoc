@@ -301,7 +301,9 @@ export default {
           html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
         if (chapter.content)
           html += `
-        <div class="chapterContent"
+        <div class="chapterContent${
+          chapter.section_type === "grid" ? " grid" : ""
+        }"
           style="--column-count: ${chapter.column_count};"
         >${chapter.content}</div>`;
         html += `</section>`;
@@ -575,6 +577,7 @@ export default {
       const row_count = chapter.row_count || 6;
 
       let html = document.createElement("div");
+      html.className = "grid";
       let grid_content = document.createElement("div");
       grid_content.className = "grid-content";
       grid_content.style.setProperty("--col-count", col_count);
