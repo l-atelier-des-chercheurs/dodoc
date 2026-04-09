@@ -1,5 +1,6 @@
 <template>
   <div class="_viewContent">
+    <!-- <pre>{{ css_styles }}</pre> -->
     <div class="_viewMode">
       <div class="_viewMode--buttons">
         <div
@@ -241,24 +242,27 @@ export default {
         });
     },
     css_styles() {
-      const engine_block =
+      let css_styles = [];
+
+      css_styles.push(
         `/****************** paged.js engine styles (added by do•doc) ******************/\n` +
-        pagedengine;
+          pagedengine
+      );
 
-      const injected_block =
-        `\n\n/****************** page size ${this.format_mode} ******************/\n` +
-        `@page {
+      css_styles.push(
+        `/****************** page size ${this.format_mode} ******************/\n` +
+          `@page {
           size: ${this.format_mode};
-        }`;
+        }`
+      );
 
-      const user_block =
-        `\n\n/****************** custom styles ${
+      css_styles.push(
+        `/****************** custom styles ${
           this.opened_style_file_meta || "default"
-        } ******************/\n` + (this.custom_styles_unnested || "");
+        } ******************/\n` + (this.custom_styles_unnested || "")
+      );
 
-      const full = engine_block + injected_block + user_block;
-
-      return full;
+      return css_styles.join("\n\n");
     },
     content_html() {
       const nodes = this.content_nodes;
