@@ -687,6 +687,30 @@
     url("luciole/Luciole-BoldItalic.woff") format("woff");
 }
 
+/* Webfont: Marelle-Regular */
+@font-face {
+  font-family: "Marelle";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/Marelle-Regular.woff2") format("woff2");
+}
+
+/* Webfont: MarelleBaton-Regular */
+@font-face {
+  font-family: "Marelle Baton";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/MarelleBaton-Regular.woff2") format("woff2");
+}
+
+/* Webfont: MarelleLIGNES-Regular */
+@font-face {
+  font-family: "Marelle LIGNES";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/MarelleLIGNES-Regular.woff2") format("woff2");
+}
+
 @font-face {
   font-family: "Belle Allure CE";
   font-style: normal;

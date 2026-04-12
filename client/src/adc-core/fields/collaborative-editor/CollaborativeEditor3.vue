@@ -1316,6 +1316,13 @@ export default {
   .ql-picker-label[data-value="Belle Allure CE"] {
     line-height: 2.2;
   }
+
+  /* Marelle LIGNES includes built-in guideline glyphs:
+     tighten its preview so it doesn't overflow picker rows. */
+  .ql-picker.ql-font .ql-picker-label {
+    overflow: hidden;
+    white-space: nowrap;
+  }
 }
 
 select.ql-ui {

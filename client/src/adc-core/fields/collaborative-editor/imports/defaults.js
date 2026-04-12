@@ -1,17 +1,21 @@
 export const fonts = [
   "Fira Sans",
   "Luciole",
-  "Belle Allure CE",
-  "Belle Allure CM",
+  "Karla",
   "OpenDyslexic",
   "Alegreya",
+  "Faune",
+  "Marelle",
+  "Marelle Baton",
+  "Marelle LIGNES",
+  "Belle Allure CE",
+  "Belle Allure CM",
   "Roboto Mono",
   "Roboto",
   "Source Sans Pro",
   "Source Serif Pro",
   "PT Serif",
   "Work Sans",
-  "Karla",
   "IBM Plex Serif",
   "IBM Plex Sans",
   "IBM Plex Mono",
@@ -21,7 +25,6 @@ export const fonts = [
   "Archivo",
   "Spectral",
   "Krub",
-  "Faune",
 ];
 
 export const fontSizeArr = [
