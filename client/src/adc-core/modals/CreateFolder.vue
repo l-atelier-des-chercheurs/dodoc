@@ -79,6 +79,7 @@ export default {
   props: {
     modal_name: String,
     path: String,
+    additional_meta: { type: Object, default: () => ({}) },
     private_status_explanations: String,
     public_status_explanations: String,
     default_folder_status: { type: String, default: "public" },
@@ -138,6 +139,7 @@ export default {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
           additional_meta: {
+            ...this.additional_meta,
             title: this.new_folder_title,
             requested_slug: this.new_folder_title,
             $status:

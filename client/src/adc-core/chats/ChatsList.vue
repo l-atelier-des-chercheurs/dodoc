@@ -28,7 +28,7 @@
           <button
             type="button"
             class="u-button u-button_red u-spacingBottom _createChat"
-            v-if="is_instance_admin || is_instance_contributor"
+            v-if="connected_as"
             @click="show_create_chat_modal = true"
           >
             <b-icon icon="plus-lg" />

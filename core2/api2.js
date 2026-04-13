@@ -442,6 +442,13 @@ module.exports = (function () {
     if (path_to_type && auth.canFolderBeCreatedByAll({ path_to_type }))
       return "Folder contribution allowed to all according to schema";
 
+    if (path_to_type && auth.canFolderBeCreatedByLoggedIn({ path_to_type })) {
+      const token_path = auth.extractAndCheckToken({ req });
+      if (token_path)
+        return "Folder contribution allowed to logged-in users according to schema";
+      return false;
+    }
+
     if (
       (await auth.isFolderOpenedToAll({
         field: "$contributors",

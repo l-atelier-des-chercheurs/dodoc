@@ -967,8 +967,7 @@ export default {
   add_to_instance_admin: "Add as instance administrator",
   instance_admin_instructions:
     "Can access, modify and delete all content (spaces, projects, accounts, discussion topics). They also have access to these settings and can modify them.",
-  instance_contrib_instructions:
-    "Can only create spaces and discussion topics and manage them.",
+  instance_contrib_instructions: "Can only create spaces and manage them.",
   space_admin_instructions:
     "The referrers of a space can modify or delete it, as well as all its contents (including those which are private). They can also modify the list of referrers and contributors.",
   space_contrib_instructions:
@@ -1368,7 +1367,7 @@ export default {
   chats: "Discussions",
   enable_chats: "Enable the discussion feature",
   enable_chats_instructions:
-    "The discussion feature allows you to create topics where selected users can exchange messages. Once enabled, click on the bubble in the top right of the screen to access it.",
+    "The discussion feature allows logged-in users to create topics, then exchange messages based on each topic’s permissions. Visitors who are not logged in cannot create a topic. Once enabled, click the bubble in the top right of the screen to access it.",
   list_of_topics: "List of topics",
   create_a_topic: "Create a topic",
   not_allowed_to_post_messages:

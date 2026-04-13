@@ -121,17 +121,22 @@ module.exports = (function () {
 
       return;
     },
-    canFolderBeCreatedByAll({ path_to_type }) {
+    getFolderCreationPolicy({ path_to_type }) {
       try {
         const item_in_schema = utils.parseAndCheckSchema({
           relative_path: path_to_type,
         });
-        if (item_in_schema && item_in_schema.$can_be_created_by === "everyone")
-          return true;
+        return item_in_schema?.$can_be_created_by;
       } catch (err) {
         err;
       }
       return false;
+    },
+    canFolderBeCreatedByAll({ path_to_type }) {
+      return API.getFolderCreationPolicy({ path_to_type }) === "everyone";
+    },
+    canFolderBeCreatedByLoggedIn({ path_to_type }) {
+      return API.getFolderCreationPolicy({ path_to_type }) === "logged-in";
     },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });

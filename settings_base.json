@@ -663,6 +663,7 @@
         }
       },
       "chats": {
+        "$can_be_created_by": "logged-in",
         "fields": {
           "title": {
             "type": "string",

@@ -4,6 +4,15 @@
       <div v-if="!opened_chat_slug" class="_chatsList">
         <div class="_chatsList--header">
           <div class="u-label">{{ $t("list_of_topics") }}</div>
+          <button
+            type="button"
+            class="u-button u-button_red u-button_small"
+            v-if="can_create_chat_topic"
+            @click="show_create_chat_modal = true"
+          >
+            <b-icon icon="plus" />
+            {{ $t("create") }}
+          </button>
         </div>
         <div class="_chatsList--content">
           <div v-if="sorted_chats.length === 0" class="_placeholder">
@@ -28,6 +37,15 @@
           />
         </div>
       </transition>
+
+      <CreateFolder
+        v-if="show_create_chat_modal"
+        :modal_name="$t('create_a_topic')"
+        :path="path"
+        :additional_meta="{ linked_project_path: project.$path }"
+        @close="show_create_chat_modal = false"
+        @openNew="openNewChat"
+      />
     </div>
   </div>
 </template>
@@ -50,6 +68,7 @@ export default {
       chats: [],
       path: "chats",
       opened_chat_slug: null,
+      show_create_chat_modal: false,
     };
   },
   async mounted() {
@@ -60,6 +79,9 @@ export default {
     this.$api.leave({ room: this.path });
   },
   computed: {
+    can_create_chat_topic() {
+      return !!this.connected_as;
+    },
     filtered_chats() {
       return this.chats.filter((chat) => {
         if (chat.linked_project_path !== this.project.$path) return false;
@@ -88,6 +110,10 @@ export default {
       const chat_slug = this.getFilename(path);
       this.opened_chat_slug =
         this.opened_chat_slug === chat_slug ? null : chat_slug;
+    },
+    openNewChat(new_chat_slug) {
+      this.show_create_chat_modal = false;
+      this.opened_chat_slug = new_chat_slug;
     },
   },
 };
@@ -119,6 +145,9 @@ export default {
 }
 
 ._chatsList--header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: calc(var(--spacing) / 2);
   color: white;
 
