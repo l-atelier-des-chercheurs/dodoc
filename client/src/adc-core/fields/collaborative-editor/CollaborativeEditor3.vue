@@ -146,12 +146,15 @@ const line_height_config = {
   scope: Parchment.Scope.BLOCK,
   whitelist: lineHeightArr.filter(Boolean),
 };
-const line_height_style = new Parchment.Attributor.Style(
-  "lineheight",
-  "line-height",
-  line_height_config
-);
-Quill.register(line_height_style, true);
+const LineHeightStyleAttributor = Parchment.StyleAttributor;
+if (LineHeightStyleAttributor) {
+  const line_height_style = new LineHeightStyleAttributor(
+    "lineheight",
+    "line-height",
+    line_height_config
+  );
+  Quill.register(line_height_style, true);
+}
 var Size = Quill.import("attributors/style/size");
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
@@ -826,6 +829,8 @@ export default {
       overflow: visible;
       color: inherit;
       border: none;
+      --block_line_height: 1.42;
+      --script_font_line_height_multiplier: 1.7;
 
       background-color: transparent;
 
@@ -877,11 +882,22 @@ export default {
         position: relative;
         // padding: 0;
       }
+      > *[style*="line-height:1.25"],
+      > *[style*="line-height: 1.25"] {
+        --block_line_height: 1.25;
+      }
+      > *[style*="line-height:1.65"],
+      > *[style*="line-height: 1.65"] {
+        --block_line_height: 1.65;
+      }
 
-      /* Script fonts need a bit more breathing room to avoid descender collisions. */
+      /* Script fonts use a multiplier on the block line-height from the picker. */
       [style*="font-family"][style*="Marelle"],
       [style*="font-family"][style*="Belle Allure"] {
-        line-height: 1.55;
+        line-height: calc(
+          var(--block_line_height, 1.42) *
+            var(--script_font_line_height_multiplier, 1.12)
+        );
       }
     }
 
@@ -1182,13 +1198,19 @@ export default {
         .ql-picker-label,
         .ql-picker-item {
           &::before {
-            content: "Normal (1.42)" !important;
+            content: "Normal" !important;
           }
           &[data-value],
           &[data-value] {
             &::before {
               content: attr(data-value) !important;
             }
+          }
+          &[data-value="1.25"]::before {
+            content: "Tight" !important;
+          }
+          &[data-value="1.65"]::before {
+            content: "Spacious" !important;
           }
         }
       }
@@ -1263,6 +1285,21 @@ export default {
       &[data-value="4"]::before {
         content: "Titre 4";
         font-weight: 700;
+      }
+    }
+  }
+
+  html[lang="fr"] .ql-picker.ql-lineheight {
+    .ql-picker-label,
+    .ql-picker-item {
+      &::before {
+        content: "Normal" !important;
+      }
+      &[data-value="1.25"]::before {
+        content: "Serré" !important;
+      }
+      &[data-value="1.65"]::before {
+        content: "Aéré" !important;
       }
     }
   }
