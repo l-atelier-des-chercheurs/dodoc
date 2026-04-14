@@ -21,6 +21,8 @@
     "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
     "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js",
     "preversion": "npm run build --prefix client && git add client/dist",
+    "sync:electron-version": "ROOT_VERSION=$(node -p \"require('./package.json').version\") && npm version --no-git-tag-version \"$ROOT_VERSION\" --prefix electron",
+    "version": "npm run sync:electron-version && git add electron/package.json electron/package-lock.json",
     "postversion": "git push --follow-tags",
     "setup-https": "node scripts/setup-https-certs.js"
   },
