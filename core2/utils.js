@@ -309,6 +309,11 @@ module.exports = (function () {
 
       return new Promise((resolve, reject) => {
         let settled = false;
+        const makeUploadAbortedError = () => {
+          const aborted_err = new Error("Upload aborted");
+          aborted_err.code = "upload_aborted";
+          return aborted_err;
+        };
         const settleReject = (err) => {
           if (settled) return;
           settled = true;
@@ -363,19 +368,21 @@ module.exports = (function () {
         form
           .on("error", (err) => {
             if (isSizeLimitError(err)) return rejectFileSizeLimit();
+            if (err?.code === "ECONNRESET") {
+              return settleReject(makeUploadAbortedError());
+            }
             return settleReject(err);
           })
-          .on("aborted", (err) => {
-            if (isSizeLimitError(err)) return rejectFileSizeLimit();
-            return settleReject(err || new Error("Upload aborted"));
-          });
+          .on("aborted", () => settleReject(makeUploadAbortedError()));
 
         form.once("end", async () => {
           dev.logverbose(`File downloaded`);
           dev.logverbose({ file });
 
-          if (!file || !file.filepath)
+          if (!file || !file.filepath) {
+            if (req?.aborted) return settleReject(makeUploadAbortedError());
             return settleReject(new Error("No file to parse"));
+          }
 
           return settleResolve({
             originalFilename: file.originalFilename,
@@ -388,6 +395,9 @@ module.exports = (function () {
         // triggering the global unhandledRejection handler.
         Promise.resolve(form.parse(req)).catch((err) => {
           if (isSizeLimitError(err)) return rejectFileSizeLimit();
+          if (req?.aborted || err?.code === "ECONNRESET") {
+            return settleReject(makeUploadAbortedError());
+          }
           return settleReject(err);
         });
       });

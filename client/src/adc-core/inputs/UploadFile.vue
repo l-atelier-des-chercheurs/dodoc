@@ -125,8 +125,17 @@
           >
             <b-icon icon="x-lg" />
           </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="cancel"
+            v-else-if="status === 'sending'"
+            @click="$emit('skip')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
           <LoaderSpinner
-            v-else-if="['creating_thumb', 'sending'].includes(status)"
+            v-else-if="status === 'creating_thumb'"
             key="loading"
           />
           <button
@@ -175,6 +184,7 @@ export default {
       status: "waiting",
       upload_percentage: undefined,
       preview: undefined,
+      upload_abort_controller: undefined,
 
       new_file_caption: "",
       sent_file: undefined,
@@ -190,6 +200,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
+    this.cancelSend();
     if (this.preview) URL.revokeObjectURL(this.preview);
   },
   watch: {},
@@ -206,6 +217,8 @@ export default {
   },
   methods: {
     async uploadFile() {
+      this.cancelSend();
+      this.upload_abort_controller = new AbortController();
       this.status = "sending";
       this.upload_percentage = 0;
 
@@ -236,8 +249,14 @@ export default {
           file: this.file,
           additional_meta,
           onProgress,
+          abort_signal: this.upload_abort_controller.signal,
         })
         .catch((err) => {
+          if (err?.code === "ERR_CANCELED") {
+            this.status = "waiting";
+            this.upload_percentage = undefined;
+            throw err;
+          }
           this.status = "error";
           if (err.code === "file_size_limit_exceeded") {
             const max_size_mo =
@@ -254,6 +273,7 @@ export default {
           throw err;
         });
 
+      this.upload_abort_controller = undefined;
       this.upload_percentage = 100;
       this.status = "sent";
 
@@ -265,7 +285,12 @@ export default {
 
       this.$emit("uploaded", { filename: this.file.name, meta_filename });
     },
-    cancelSend() {},
+    cancelSend() {
+      if (this.upload_abort_controller) {
+        this.upload_abort_controller.abort();
+        this.upload_abort_controller = undefined;
+      }
+    },
     retrySend() {
       this.uploadFile().catch(() => {});
     },

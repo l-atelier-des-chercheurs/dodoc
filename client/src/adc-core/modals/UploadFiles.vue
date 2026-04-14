@@ -35,7 +35,7 @@
         <button
           type="button"
           class="u-button"
-          @click="$emit('close')"
+          @click="closeModal"
           :class="{
             'u-button_red': confirm_before_closing,
           }"
@@ -70,6 +70,7 @@ export default {
       upload_percentages: 0,
       list_of_added_metas: [],
       list_of_added_files: [],
+      should_stop_upload: false,
     };
   },
   watch: {
@@ -89,6 +90,7 @@ export default {
     }, 500);
   },
   beforeDestroy() {
+    this.interruptTransfers();
     this.$emit("importedMedias", this.list_of_added_metas);
   },
   computed: {
@@ -106,6 +108,8 @@ export default {
       if (!this.$refs.filesList) return;
 
       for (let i = 0; i < this.$refs.filesList.length; i++) {
+        if (this.should_stop_upload) break;
+
         const fileComponent = this.$refs.filesList[i];
         if (fileComponent.status === "waiting") {
           try {
@@ -120,7 +124,20 @@ export default {
       if (meta_filename) this.list_of_added_metas.push(meta_filename);
       if (filename) this.list_of_added_files.push(filename);
     },
+    interruptTransfers() {
+      this.should_stop_upload = true;
+      if (!this.$refs.filesList?.length) return;
+      this.$refs.filesList.forEach((file_component) => {
+        file_component.cancelSend?.();
+      });
+    },
+    closeModal() {
+      if (this.confirm_before_closing) this.interruptTransfers();
+      this.$emit("close");
+    },
     abortFile(index) {
+      const file_component = this.$refs.filesList?.[index];
+      file_component?.cancelSend?.();
       this.files_to_upload.splice(index, 1);
     },
     hideFile(index) {

@@ -658,7 +658,14 @@ export default function () {
           additional_meta,
         });
       },
-      async uploadFile({ path, filename, file, additional_meta, onProgress }) {
+      async uploadFile({
+        path,
+        filename,
+        file,
+        additional_meta,
+        onProgress,
+        abort_signal,
+      }) {
         // if no file binary to send, we'll only create a meta file with additional_meta
         let data;
         let headers;
@@ -675,6 +682,7 @@ export default function () {
         let res = await this.$axios
           .post(`${path}/_upload`, data, {
             headers,
+            signal: abort_signal,
             onUploadProgress: (progressEvent) => {
               if (onProgress) onProgress(progressEvent);
             },
@@ -904,10 +912,14 @@ export default function () {
       },
 
       processError(err) {
-        let { code, err_infos } = err?.response?.data;
+        const response_data = err?.response?.data || {};
+        let { code, err_infos } = response_data;
+        if (!code && err?.code) code = err.code;
 
         if (code) {
-          if (code === "token_does_not_exist") {
+          if (code === "ERR_CANCELED") {
+            // Request cancellation is expected in some UX flows (e.g. interrupted upload).
+          } else if (code === "token_does_not_exist") {
             this.resetToken();
           } else if (code === "token_expired") {
             this.resetToken();
@@ -924,8 +936,10 @@ export default function () {
               " Mo. Please try again with a smaller file.";
             this.$eventHub.$emit("app.file_size_limit_exceeded", msg);
           } else if (code === "ENOENT") code = "folder_is_missing";
-          // this.$alertify.delay(4000).error("Message d'erreur : " + code);
-          console.error("processError – " + code);
+          if (code !== "ERR_CANCELED") {
+            // this.$alertify.delay(4000).error("Message d'erreur : " + code);
+            console.error("processError – " + code);
+          }
         } else console.error("processError – NO ERROR CODES");
 
         this.setAuthorizationHeader();

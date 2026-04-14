@@ -926,6 +926,8 @@ module.exports = (function () {
               upload_max_file_size_in_mo,
             };
             throw size_err;
+          } else if (rejected?.code === "upload_aborted") {
+            throw rejected;
           } else {
             dev.error(`Failed to handle form`, rejected);
             const save_err = new Error("Failed to save file");

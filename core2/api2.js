@@ -2673,6 +2673,20 @@ module.exports = (function () {
     const code = err?.code ?? "upload_failed";
     const err_infos = err?.err_infos ?? undefined;
 
+    if (code === "upload_aborted") {
+      dev.logverbose(
+        `Upload interrupted by client for ${context.path_to_folder}`
+      );
+      try {
+        if (!res.headersSent) {
+          res.status(499).send({ code, err_infos });
+        }
+      } catch (e) {
+        // Response may have already been sent or connection closed
+      }
+      return;
+    }
+
     const error_msg = `Failed to upload file to ${context.path_to_folder}: ${message}`;
 
     dev.error(error_msg);
