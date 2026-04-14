@@ -149,7 +149,10 @@ export default {
     previewContent(section) {
       const sub_content = section._main_text?.$content;
       if (sub_content) {
-        return sub_content.substring(0, 300) + " […]";
+        if (sub_content.length > 300)
+          return sub_content.substring(0, 300) + " […]";
+
+        return sub_content;
       }
       return false;
     },
