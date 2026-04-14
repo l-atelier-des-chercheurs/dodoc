@@ -24,7 +24,10 @@
       </button>
     </div>
     <div class="_gridItem--content">
-      <div v-if="!area_current_file" class="_gridItem--actions">
+      <div
+        v-if="!area_current_file && !area_has_source_media"
+        class="_gridItem--actions"
+      >
         <button
           type="button"
           class="u-button u-button_bleuvert"
@@ -55,14 +58,19 @@
       <div
         v-else
         class="_gridItem--media"
+        :class="{ '_gridItem--media_missing': area_media_is_missing }"
         :style="{
           '--object-fit': area_objectFit,
           '--object-position': area_objectPosition,
         }"
       >
-        <MediaContent :file="area_current_file" :resolution="1600" />
+        <p v-if="area_media_is_missing" class="u-warning">
+          {{ $t("source_media_missing") }}
+        </p>
+        <MediaContent v-else :file="area_current_file" :resolution="1600" />
         <div class="_gridItem--mediaActions">
           <button
+            v-if="!area_media_is_missing"
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             :title="
@@ -149,6 +157,9 @@ export default {
     area_source_media() {
       return this.area?.source_medias?.[0];
     },
+    area_has_source_media() {
+      return Boolean(this.area_source_media);
+    },
     area_file_from_source_medias() {
       if (!this.area_source_media) return;
       return this.getSourceMedia({
@@ -158,6 +169,9 @@ export default {
     },
     area_current_file() {
       return this.area_file_from_source_medias;
+    },
+    area_media_is_missing() {
+      return this.area_has_source_media && !this.area_current_file;
     },
     area_is_text() {
       return (
@@ -410,5 +424,10 @@ export default {
   flex-flow: row wrap;
   gap: calc(var(--spacing) / 2);
   margin: calc(var(--spacing) / 2);
+}
+
+._gridItem--media_missing {
+  min-height: 120px;
+  padding: calc(var(--spacing) / 2);
 }
 </style>
