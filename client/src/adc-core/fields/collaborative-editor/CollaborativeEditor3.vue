@@ -378,6 +378,44 @@ export default {
                   if (this.$listeners.onEnter) {
                     return this.$listeners.onEnter(range, context);
                   }
+
+                  // Keep logical active text formats for the next line.
+                  const format_keys_to_keep = [
+                    "font",
+                    "size",
+                    "color",
+                    "background",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "script",
+                    "code",
+                    "lineheight",
+                  ];
+                  const formats_to_keep = {};
+                  format_keys_to_keep.forEach((format_key) => {
+                    if (
+                      typeof current_format[format_key] !== "undefined" &&
+                      current_format[format_key] !== false
+                    ) {
+                      formats_to_keep[format_key] = current_format[format_key];
+                    }
+                  });
+
+                  if (Object.keys(formats_to_keep).length > 0) {
+                    requestAnimationFrame(() => {
+                      Object.entries(formats_to_keep).forEach(
+                        ([format_key, format_value]) => {
+                          this.editor.format(
+                            format_key,
+                            format_value,
+                            Quill.sources.SILENT
+                          );
+                        }
+                      );
+                    });
+                  }
                   return true;
                 },
               },
