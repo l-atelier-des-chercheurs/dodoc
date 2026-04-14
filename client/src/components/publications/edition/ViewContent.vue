@@ -35,13 +35,13 @@
       </select>
     </div>
 
-    <div v-if="show_source_html_toggle" class="_toggleHTML">
+    <!-- <div v-if="show_source_html_toggle" class="_toggleHTML">
       <ToggleInput
         :content="show_source_html"
         :label="$t('show_source_html')"
         @update:content="$emit('update:show_source_html', $event)"
       />
-    </div>
+    </div> -->
 
     <div class="_viewContent--content">
       <PagedViewer
@@ -889,7 +889,7 @@ export default {
   ::v-deep {
     ._toggleHTML {
       ._label {
-        color: white;
+        // color: white;
       }
     }
   }
@@ -904,19 +904,17 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 10;
-  background-color: var(--c-gris_clair);
   margin: calc(var(--spacing) / 2);
   border-radius: var(--border-radius);
+  background-color: white;
 
   ::v-deep {
     > * {
       padding: calc(var(--spacing) / 2);
-      background-color: var(--c-gris_fonce);
-      border: 2px solid white;
       border-radius: var(--border-radius);
     }
     ._label {
-      color: white;
+      // color: white;
     }
   }
 }

@@ -119,7 +119,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
-    this.$emit("update:show_source_html", false);
+    // this.$emit("update:show_source_html", false);
   },
   watch: {},
   computed: {
