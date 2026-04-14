@@ -648,8 +648,9 @@ export default {
             .map((m) => (m[2] ? parseInt(m[2], 10) : 0))
         );
         const is_part_of_chain = chain_cell_indexes.size > 1;
+        const is_text_cell = media?.$type === "text";
 
-        if (is_part_of_chain) {
+        if (is_part_of_chain || is_text_cell) {
           cell.setAttribute("data-grid-area-is-chain-index", chain_index);
         }
         cell.style.gridColumnStart = area.column_start;
