@@ -346,6 +346,18 @@ export default {
   source_project: "Source project",
   source_files: "Source medias",
   source_media_missing: "Source media is missing",
+  edition_no_errors: "No errors",
+  edition_error_on_chapter: "Error on chapter {chapter_number}: {error_detail}",
+  edition_error_media_not_found: "media not found ({reference})",
+  edition_error_media_not_found_on_cell:
+    "media not found on cell {cell_id} ({reference})",
+  edition_error_text_overflow_on_cell: "text overflows on cell {cell_id}",
+  unknown_media_reference: "unknown media",
+  edition_errors_count: "No error | {count} error | {count} errors",
+  missing_medias_count:
+    "No missing media | {count} missing media | {count} missing medias",
+  text_overflows_count:
+    "No text overflow | {count} text overflow | {count} text overflows",
   media_pickers_instr: "Select medias to import.",
   already_present: "Already present",
   sent: "Sent",

@@ -35,6 +35,15 @@
       </select>
     </div>
 
+    <ErrorBar
+      v-if="can_edit"
+      :all_chapters="all_chapters"
+      :publication="publication"
+      :content_html="content_html"
+      :view_mode="view_mode"
+      @openChapter="$emit('openChapter', $event)"
+    />
+
     <!-- <div v-if="show_source_html_toggle" class="_toggleHTML">
       <ToggleInput
         :content="show_source_html"
@@ -87,6 +96,7 @@ import { renderMedia as renderMediaFunction } from "@/components/publications/ed
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
+import ErrorBar from "@/components/publications/edition/ErrorBar.vue";
 
 import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
@@ -108,6 +118,7 @@ export default {
   components: {
     PagedViewer,
     DocViewer,
+    ErrorBar,
     ShowSourceHTML: () =>
       import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
@@ -654,8 +665,8 @@ export default {
             media.source_medias
           );
           cell.innerHTML = text;
-        } else if (media?.$status === "missing") {
-          cell.innerHTML = `<div class="u-instructions">${this.$t(
+        } else if (source_media && (!media || media?.$status === "missing")) {
+          cell.innerHTML = `<div class="u-instructions media-missing">${this.$t(
             "source_media_missing"
           )}</div>`;
         } else if (media?.$type === "image") {
@@ -918,4 +929,5 @@ export default {
     }
   }
 }
+
 </style>

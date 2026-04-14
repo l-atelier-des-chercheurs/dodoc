@@ -1020,6 +1020,20 @@ export default {
   source_project: "Projet source",
   source_files: "Fichiers sources",
   source_media_missing: "Le média source est manquant",
+  edition_no_errors: "Aucune erreur",
+  edition_error_on_chapter:
+    "Erreur au chapitre {chapter_number} : {error_detail}",
+  edition_error_media_not_found: "média introuvable ({reference})",
+  edition_error_media_not_found_on_cell:
+    "média introuvable dans la cellule {cell_id} ({reference})",
+  edition_error_text_overflow_on_cell:
+    "le texte déborde dans la cellule {cell_id}",
+  unknown_media_reference: "média inconnu",
+  edition_errors_count: "Aucune erreur | {count} erreur | {count} erreurs",
+  missing_medias_count:
+    "Aucun média manquant | {count} média manquant | {count} médias manquants",
+  text_overflows_count:
+    "Aucun débordement de texte | {count} débordement de texte | {count} débordements de texte",
   media_pickers_instr:
     "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
   already_present: "Déjà présent",
