@@ -648,7 +648,6 @@ export default {
             .map((m) => (m[2] ? parseInt(m[2], 10) : 0))
         );
         const is_part_of_chain = chain_cell_indexes.size > 1;
-        debugger;
 
         if (is_part_of_chain) {
           cell.setAttribute("data-grid-area-is-chain-index", chain_index);
@@ -929,5 +928,4 @@ export default {
     }
   }
 }
-
 </style>

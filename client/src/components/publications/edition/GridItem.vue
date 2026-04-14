@@ -17,7 +17,8 @@
       <button
         type="button"
         class="u-button u-button_verysmall"
-        @click="removeAreaText"
+        :disabled="!can_remove_area_content"
+        @click="removeAreaContent"
       >
         <b-icon icon="trash" style="font-size: var(--icon-size)" />
         {{ $t("remove") }}
@@ -96,14 +97,6 @@
           >
             <b-icon icon="image" style="font-size: var(--icon-size)" />
             {{ $t("change") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red u-button_small"
-            @click="removeAreaMedia"
-          >
-            <b-icon icon="trash" style="font-size: var(--icon-size)" />
-            {{ $t("remove") }}
           </button>
         </div>
       </div>
@@ -185,6 +178,9 @@ export default {
     area_objectPosition() {
       return this.area?.objectPosition || "center";
     },
+    can_remove_area_content() {
+      return this.area_has_source_media;
+    },
   },
   methods: {
     updateChapterFromGridAreas(new_grid_areas) {
@@ -263,7 +259,7 @@ export default {
       this.updateChapterFromGridAreas(new_grid_areas);
     },
 
-    async removeAreaText() {
+    async removeAreaContent() {
       const areaId = this.area.id;
       const file_to_delete = this.area_current_file;
 
@@ -289,22 +285,6 @@ export default {
           path: file_to_delete.$path,
         });
       }
-    },
-
-    removeAreaMedia() {
-      const areaId = this.area.id;
-
-      const new_grid_areas = this.chapter.grid_areas.map((area) => {
-        if (area.id === areaId) {
-          return {
-            ...area,
-            source_medias: [],
-          };
-        }
-        return area;
-      });
-
-      this.updateChapterFromGridAreas(new_grid_areas);
     },
 
     toggleObjectFit() {

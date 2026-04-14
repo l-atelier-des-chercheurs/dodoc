@@ -109,6 +109,22 @@ export default {
         (s) => this.getFilename(s.$path) === this.opened_section_meta_filename
       );
     },
+    new_chapter_filename() {
+      const existing_filenames = new Set(
+        this.sections
+          .map((section) => section?._main_text?.$path)
+          .filter(Boolean)
+          .map((path) => this.getFilename(path))
+      );
+
+      let chapter_index = 1;
+      let chapter_filename = `chapter-${chapter_index}.txt`;
+      while (existing_filenames.has(chapter_filename)) {
+        chapter_index++;
+        chapter_filename = `chapter-${chapter_index}.txt`;
+      }
+      return chapter_filename;
+    },
   },
   methods: {
     openSection(path) {
@@ -125,7 +141,7 @@ export default {
       };
 
       if (type === "text") {
-        const filename = this.new_section_title + " text.txt";
+        const filename = this.new_chapter_filename;
         const { meta_filename } = await this.$api.uploadText({
           path: this.publication.$path,
           filename,
@@ -151,6 +167,8 @@ export default {
           this.$t("story") + " " + this.new_section_index;
         additional_meta.section_type = "story";
       }
+
+      additional_meta.filename = this.new_chapter_filename;
 
       const new_section_meta = await this.createSection2({
         publication: this.publication,
