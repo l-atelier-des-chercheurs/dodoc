@@ -420,10 +420,7 @@
                   type="button"
                   class="u-button u-button_orange u-button_inline _captureButton"
                   :key="selected_mode + '_pause'"
-                  v-if="
-                    (selected_mode === 'video' || selected_mode === 'audio') &&
-                    is_recording
-                  "
+                  v-if="show_pause_recording_button"
                   @mousedown.stop.prevent="pauseOrResumeCapture()"
                   @touchstart.stop.prevent="pauseOrResumeCapture()"
                 >
@@ -1215,6 +1212,15 @@ export default {
     },
   },
   computed: {
+    show_pause_recording_button() {
+      if (!["video", "audio"].includes(this.selected_mode)) return false;
+      if (!this.is_recording) return false;
+
+      // In live dubbing from Make, pausing recording desyncs with reference video playback.
+      if (this.origin === "make" && this.selected_mode === "audio") return false;
+
+      return true;
+    },
     show_mode_selector() {
       return (
         !this.media_to_validate &&

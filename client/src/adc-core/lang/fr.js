@@ -349,6 +349,7 @@ export default {
   list_of_projects: "Liste des projets",
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
+  no_files_found: "Aucun fichier trouvé",
   no_publications: "Aucune publication à afficher",
 
   none_f: "Aucune",

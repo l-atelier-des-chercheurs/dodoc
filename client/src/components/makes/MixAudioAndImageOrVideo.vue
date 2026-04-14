@@ -69,17 +69,19 @@
                 {{ $t("resources") }}
               </button>
             </div>
-            {{ $t("or") }}
-            <div class="_liveDubbingBtn">
-              <button
-                type="button"
-                class="u-button u-button_red"
-                @click="record_audio_live = true"
-              >
-                <b-icon icon="record-circle-fill" />
-                {{ $t("live_dubbing") }}
-              </button>
-            </div>
+            <template v-if="can_record_audio_live">
+              {{ $t("or") }}
+              <div class="_liveDubbingBtn">
+                <button
+                  type="button"
+                  class="u-button u-button_red"
+                  @click="record_audio_live = true"
+                >
+                  <b-icon icon="record-circle-fill" />
+                  {{ $t("live_dubbing") }}
+                </button>
+              </div>
+            </template>
             <!-- {{ $t("or") }}
             <button
               type="button"
@@ -90,7 +92,7 @@
               {{ $t("no_sound") }}
             </button> -->
           </template>
-          <div class="_recordAudioLive" v-else>
+          <div class="_recordAudioLive" v-else-if="can_record_audio_live">
             <button
               type="button"
               class="u-button u-button_red u-button_small"
@@ -205,7 +207,11 @@ export default {
     this.$eventHub.$off("capture.isRecording", this.onRecording);
     this.$eventHub.$off("capture.isRecordingStopped", this.onRecordingStopped);
   },
-  watch: {},
+  watch: {
+    can_record_audio_live(new_value) {
+      if (!new_value) this.record_audio_live = false;
+    },
+  },
   computed: {
     project_path() {
       let { space_slug, project_slug } = this.decomposePath(this.make.$path);
@@ -226,6 +232,11 @@ export default {
     },
     selected_image_media() {
       return this.getMediaFromFilename(this.make.base_image_filename);
+    },
+    can_record_audio_live() {
+      if (this.make.type === "mix_audio_and_video")
+        return Boolean(this.make.base_video_filename);
+      return true;
     },
     reference_media() {
       if (this.make.type === "mix_audio_and_image")

@@ -191,6 +191,7 @@ export default {
   no_projects: "No project to show",
   no_publications: "No publications to show",
   no_files: "No file",
+  no_files_found: "No files found",
   not_specified: "Not specified",
   not_specified_f: "Not specified",
   none_f: "None",
