@@ -317,8 +317,10 @@ export default {
           path: chapter._main_text.$path,
         });
       }
-      await this.$api.deleteItem({
-        path: chapter.$path,
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        section: chapter,
       });
     },
     getChapterPosition(chapter_path) {
