@@ -141,23 +141,17 @@ import {
   lineHeightArr,
 } from "./imports/defaults.js";
 
-// var Parchment = Quill.import("parchment");
-// var lineHeightConfig = {
-//   scope: Parchment.Scope.BLOCK,
-//   whitelist: lineHeightArr,
-// };
-// var lineHeightClass = new Parchment.Attributor.Class(
-//   "lineheight",
-//   "ql-line-height",
-//   lineHeightConfig
-// );
-// var lineHeightStyle = new Parchment.Attributor.Style(
-//   "lineheight",
-//   "line-height",
-//   lineHeightConfig
-// );
-// Parchment.register(lineHeightClass);
-// Parchment.register(lineHeightStyle);
+const Parchment = Quill.import("parchment");
+const line_height_config = {
+  scope: Parchment.Scope.BLOCK,
+  whitelist: lineHeightArr.filter(Boolean),
+};
+const line_height_style = new Parchment.Attributor.Style(
+  "lineheight",
+  "line-height",
+  line_height_config
+);
+Quill.register(line_height_style, true);
 var Size = Quill.import("attributors/style/size");
 Size.whitelist = fontSizeArr;
 Quill.register(Size, true);
@@ -420,8 +414,8 @@ export default {
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
         container.push([{ size: fontSizeArr }]);
-      // if (reference_formats.includes("lineheight"))
-      //   container.push([{ lineheight: lineHeightArr }]);
+      if (reference_formats.includes("lineheight"))
+        container.push([{ lineheight: lineHeightArr }]);
 
       let formatting_opt = [];
       const basic_formatting = [
@@ -522,18 +516,12 @@ export default {
             );
           }
         },
-        line_height_select: function (new_line_height) {
-          new_line_height;
-          // var range = this.quill.getSelection();
-          // if (range) {
-          //   this.quill.format(
-          //     range.index,
-          //     range.length,
-          //     "line-height",
-          //     +new_line_height,
-          //     "user"
-          //   );
-          // }
+        lineheight: function (new_line_height) {
+          if (!new_line_height) {
+            this.quill.format("lineheight", false, Quill.sources.USER);
+            return;
+          }
+          this.quill.format("lineheight", new_line_height, Quill.sources.USER);
         },
       };
 
@@ -888,6 +876,12 @@ export default {
       > * {
         position: relative;
         // padding: 0;
+      }
+
+      /* Script fonts need a bit more breathing room to avoid descender collisions. */
+      [style*="font-family"][style*="Marelle"],
+      [style*="font-family"][style*="Belle Allure"] {
+        line-height: 1.55;
       }
     }
 
