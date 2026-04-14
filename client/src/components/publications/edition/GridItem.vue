@@ -14,15 +14,19 @@
         </template>
       </h3>
 
-      <button
-        type="button"
-        class="u-button u-button_verysmall"
-        :disabled="!can_remove_area_content"
-        @click="removeAreaContent"
+      <RemoveMenu
+        :show_button_text="false"
+        :modal_title="$t('remove_area')"
+        :modal_expl="$t('remove_area_confirm')"
+        @remove="removeArea"
       >
-        <b-icon icon="trash" style="font-size: var(--icon-size)" />
-        {{ $t("remove") }}
-      </button>
+        <template #trigger>
+          <button type="button" class="u-button u-button_verysmall">
+            <b-icon icon="trash" style="font-size: var(--icon-size)" />
+            {{ $t("remove") }}
+          </button>
+        </template>
+      </RemoveMenu>
     </div>
     <div class="_gridItem--content">
       <div
@@ -178,9 +182,6 @@ export default {
     area_objectPosition() {
       return this.area?.objectPosition || "center";
     },
-    can_remove_area_content() {
-      return this.area_has_source_media;
-    },
   },
   methods: {
     updateChapterFromGridAreas(new_grid_areas) {
@@ -259,32 +260,14 @@ export default {
       this.updateChapterFromGridAreas(new_grid_areas);
     },
 
-    async removeAreaContent() {
-      const areaId = this.area.id;
-      const file_to_delete = this.area_current_file;
+    async removeArea() {
+      const area_id = this.area.id;
+      this.$eventHub.$emit("gridArea.delete", area_id);
 
-      const new_grid_areas = this.chapter.grid_areas.map((area) => {
-        if (area.id === areaId) {
-          return {
-            ...area,
-            source_medias: [],
-          };
-        }
-        return area;
-      });
-
+      const new_grid_areas = this.chapter.grid_areas.filter(
+        (area) => area.id !== area_id
+      );
       await this.updateChapterFromGridAreas(new_grid_areas);
-
-      // Only delete the actual text file when it's local to the publication
-      if (
-        file_to_delete?.$path &&
-        file_to_delete.$type === "text" &&
-        file_to_delete.$path.startsWith(this.publication.$path + "/")
-      ) {
-        await this.$api.deleteItem({
-          path: file_to_delete.$path,
-        });
-      }
     },
 
     toggleObjectFit() {
