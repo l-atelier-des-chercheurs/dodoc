@@ -1,6 +1,6 @@
 <template>
   <div class="_errorBar">
-    <span v-if="issue_list.length === 0">
+    <span v-if="issue_list.length === 0" class="u-instructions">
       {{ $t("edition_no_errors") }}
     </span>
     <button
@@ -367,14 +367,22 @@ export default {
   bottom: 0;
   left: 0;
   z-index: 10;
-  margin: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) / 4) calc(var(--spacing) / 4);
+  // margin: calc(var(--spacing) / 4);
+  border-top-right-radius: var(--border-radius);
   max-width: min(70ch, calc(100% - var(--spacing)));
   max-height: 45%;
   overflow: auto;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
+  background: var(--c-gris_fonce);
+  color: white;
   gap: calc(var(--spacing) / 4);
+
+  .u-instructions {
+    color: inherit;
+  }
 }
 
 ._errorBar--btn {
