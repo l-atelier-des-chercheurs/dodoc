@@ -460,9 +460,11 @@ export function handleChainOverflow(cell, page, warningText) {
   const cell_id = cell.getAttribute("data-grid-area-id");
   // Only search for chain cells within the same page
   const chain_cells = page.querySelectorAll(
-    `.grid-cell[data-grid-area-id="${cell_id}"]`
+    `.grid-cell[data-grid-area-id="${cell_id}"][data-grid-area-is-chain-index]`
   );
   const chain_cells_array = Array.from(chain_cells);
+
+  if (chain_cells_array.length === 0) return;
 
   // sort chain cells by data-grid-area-is-chain-index ascending
   chain_cells_array.sort((a, b) => {

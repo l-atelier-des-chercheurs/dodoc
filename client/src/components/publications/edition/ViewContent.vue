@@ -160,7 +160,6 @@ export default {
       return this.publication.$files.find((f) => f.cover_type === "front");
     },
     custom_styles_unnested() {
-      debugger;
       if (
         this.opened_style_file_meta === "default" ||
         this.style_files?.length === 0
@@ -631,11 +630,14 @@ export default {
         }
 
         // check if the cell is part of a chain
-        const is_part_of_chain =
-          grid_areas.filter((a) => {
-            const m = a.id.match(/^([A-Z]+)(\d*)$/);
-            return m && m[1] === cell_id;
-          }).length > 1;
+        const chain_cell_indexes = new Set(
+          grid_areas
+            .map((a) => a.id.match(/^([A-Z]+)(\d*)$/))
+            .filter((m) => m && m[1] === cell_id)
+            .map((m) => (m[2] ? parseInt(m[2], 10) : 0))
+        );
+        const is_part_of_chain = chain_cell_indexes.size > 1;
+        debugger;
 
         if (is_part_of_chain) {
           cell.setAttribute("data-grid-area-is-chain-index", chain_index);

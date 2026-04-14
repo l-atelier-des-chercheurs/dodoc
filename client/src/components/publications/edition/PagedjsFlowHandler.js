@@ -21,7 +21,9 @@ export class PagedjsFlowHandler extends Handler {
     pages.forEach((page) => {
       const pageCells = [];
       const pageElement = page.element; // Access the DOM element of the page
-      const cells = pageElement.querySelectorAll(".grid-cell");
+      const cells = pageElement.querySelectorAll(
+        ".grid-cell[data-grid-area-is-chain-index]"
+      );
       cells.forEach((cell) => pageCells.push(cell));
 
       // 2. Group cells by their Chain ID (data-grid-area-id)
@@ -29,7 +31,8 @@ export class PagedjsFlowHandler extends Handler {
 
       pageCells.forEach((cell) => {
         const chainId = cell.getAttribute("data-grid-area-id");
-        if (!chainId) return;
+        const chain_index_attr = cell.getAttribute("data-grid-area-is-chain-index");
+        if (!chainId || chain_index_attr === null) return;
 
         if (!chains[chainId]) {
           chains[chainId] = [];
