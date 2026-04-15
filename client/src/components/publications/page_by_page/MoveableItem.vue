@@ -687,7 +687,8 @@ export default {
     aspect-ratio: unset;
 
     border-radius: var(--set-borderRadius);
-    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+      blur(var(--set-blur, 0px));
 
     overflow: hidden;
 
@@ -715,7 +716,8 @@ export default {
   ._publicationModule[data-type="shape"] {
     padding: var(--set-margins);
     opacity: var(--set-opacity);
-    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+      blur(var(--set-blur, 0px));
 
     fill: var(--set-backgroundColor);
     stroke: var(--set-outlineColor);
