@@ -137,9 +137,20 @@ import ReconnectingWebSocket from "reconnectingwebsocket";
 import {
   fonts as default_fonts,
   formats as default_formats,
-  fontSizeArr,
   lineHeightArr,
 } from "./imports/defaults.js";
+
+const toolbar_font_size_arr = [
+  "10px",
+  "12px",
+  false,
+  "16px",
+  "20px",
+  "28px",
+  "36px",
+  "48px",
+  "__custom__",
+];
 
 const Parchment = Quill.import("parchment");
 const line_height_config = {
@@ -156,7 +167,9 @@ if (LineHeightStyleAttributor) {
   Quill.register(line_height_style, true);
 }
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = fontSizeArr;
+if (Object.prototype.hasOwnProperty.call(Size, "whitelist")) {
+  delete Size.whitelist;
+}
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
@@ -438,6 +451,7 @@ export default {
         this.editor.history.clear();
       }
 
+      this.setCustomSizeOptionLabel();
       this.setStatusButton();
     },
 
@@ -454,7 +468,7 @@ export default {
       if (reference_formats.includes("header"))
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
-        container.push([{ size: fontSizeArr }]);
+        container.push([{ size: toolbar_font_size_arr }]);
       if (reference_formats.includes("lineheight"))
         container.push([{ lineheight: lineHeightArr }]);
 
@@ -557,6 +571,17 @@ export default {
             );
           }
         },
+        size: (new_size) => {
+          if (new_size === "__custom__") {
+            this.applyCustomTextSize();
+            return;
+          }
+          if (!new_size) {
+            this.editor.format("size", false, Quill.sources.USER);
+            return;
+          }
+          this.editor.format("size", new_size, Quill.sources.USER);
+        },
         lineheight: function (new_line_height) {
           if (!new_line_height) {
             this.quill.format("lineheight", false, Quill.sources.USER);
@@ -570,6 +595,63 @@ export default {
         container,
         handlers,
       };
+    },
+    applyCustomTextSize() {
+      if (!this.editor) return;
+
+      const current_size = this.editor.getFormat()?.size;
+      const suggested_size =
+        this.parseCustomTextSize(current_size)?.replace("px", "") || "16";
+      const custom_size_raw = window.prompt(
+        `${this.$t("text_size")} (px)`,
+        suggested_size
+      );
+      if (custom_size_raw === null) return;
+
+      const custom_size = this.parseCustomTextSize(custom_size_raw);
+      if (!custom_size) return;
+
+      this.editor.format("size", custom_size, Quill.sources.USER);
+    },
+    setCustomSizeOptionLabel() {
+      const custom_label = this.$t("custom");
+      this.$el
+        .querySelectorAll(".ql-size .ql-picker-label")
+        .forEach((el) => el.setAttribute("data-label", custom_label));
+
+      this.$el
+        .querySelectorAll(
+          '.ql-size .ql-picker-label[data-value="__custom__"], .ql-size .ql-picker-item[data-value="__custom__"]'
+        )
+        .forEach((el) => {
+          el.setAttribute("data-value", "__custom__");
+          el.setAttribute("data-label", custom_label);
+        });
+
+      this.$el
+        .querySelectorAll('select.ql-size option[value="__custom__"]')
+        .forEach((option_el) => {
+          option_el.textContent = custom_label;
+        });
+    },
+    parseCustomTextSize(raw_value) {
+      if (raw_value === undefined || raw_value === null) return null;
+      const cleaned_value = String(raw_value)
+        .trim()
+        .replace(",", ".")
+        .replace(/px$/i, "")
+        .trim();
+      if (!cleaned_value) return null;
+
+      const parsed_value = Number(cleaned_value);
+      if (!Number.isFinite(parsed_value)) return null;
+
+      const clamped_value = Math.min(200, Math.max(6, parsed_value));
+      const normalized_value = Number.isInteger(clamped_value)
+        ? clamped_value.toString()
+        : clamped_value.toFixed(2).replace(/\.?0+$/, "");
+
+      return `${normalized_value}px`;
     },
     getEditorContent() {
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
@@ -1339,6 +1421,13 @@ export default {
       &[data-value="1.65"]::before {
         content: "Aéré" !important;
       }
+    }
+  }
+
+  .ql-picker.ql-size {
+    .ql-picker-label[data-value="__custom__"]::before,
+    .ql-picker-item[data-value="__custom__"]::before {
+      content: attr(data-label) !important;
     }
   }
 
