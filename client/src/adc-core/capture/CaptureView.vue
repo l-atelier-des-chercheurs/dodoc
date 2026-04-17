@@ -92,6 +92,7 @@
             ref="equalizerElement"
             :stream="stream"
             :is_recording="is_recording"
+            :type="'Full'"
           />
 
           <transition-group
@@ -2268,8 +2269,8 @@ export default {
 
   .m_audioEqualizer {
     position: relative;
-    width: 64px;
-    height: 36px;
+    width: 68px;
+    height: 34px;
     background-color: transparent !important;
     border-radius: 4px;
     overflow: hidden;
