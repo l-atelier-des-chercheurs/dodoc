@@ -1257,6 +1257,7 @@ export default {
   methods: {
     async stopStream() {
       console.log("CaptureView: METHODS • stopStream");
+      this.video_recording_is_paused = false;
 
       // Stop all tracks in the current stream
       if (this.stream) {
@@ -1695,6 +1696,7 @@ export default {
     },
     stopRecording() {
       if (!this.is_recording) return;
+      this.video_recording_is_paused = false;
       const duration = this.getAccurateRecordingDurationInSeconds();
       const duration_in_ms = Math.max(1, Math.round(duration * 1000));
       console.log("METHODS • CaptureView: stopRecording", duration_in_ms);
@@ -1808,6 +1810,7 @@ export default {
       this.recording_started_at_ms = undefined;
       this.recording_paused_at_ms = undefined;
       this.recording_paused_total_ms = 0;
+      this.video_recording_is_paused = false;
     },
 
     getImageDataFromFeed({ width, height } = {}) {
@@ -1868,6 +1871,7 @@ export default {
 
     startRecordFeed(options) {
       return new Promise(() => {
+        this.video_recording_is_paused = false;
         const finalStream = new MediaStream();
 
         if (options.type === "video") {
