@@ -47,7 +47,7 @@ export default {
       this.startEqualizer();
     },
     is_recording() {
-      if (!this.is_recording) this.resetVisualState();
+      // if (!this.is_recording) this.resetVisualState();
     },
   },
   computed: {
@@ -103,6 +103,9 @@ export default {
       }
 
       const ctx = canvas.getContext("2d");
+      const recording_color =
+        getComputedStyle(this.$el).getPropertyValue("--c-rouge").trim() ||
+        "red";
       const background_color = this.is_tiny ? "#ececec" : "#eaeaea";
       ctx.fillStyle = background_color;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -135,7 +138,7 @@ export default {
       }
       this.is_active = this.activity_hold_ticks > 0;
 
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 2;
       ctx.lineCap = "butt";
 
       ctx.beginPath();
@@ -149,7 +152,7 @@ export default {
         if (x < 0) return;
         const line_height = Math.max(2, level * max_wave_amplitude);
         const y = center_y - line_height / 2;
-        ctx.strokeStyle = is_recording ? "red" : "black";
+        ctx.strokeStyle = is_recording ? recording_color : "#BBB";
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.lineTo(x, y + line_height);
@@ -167,7 +170,7 @@ export default {
 .m_audioEqualizer {
   width: 100%;
   height: 100%;
-  border-radius: 0.6rem;
+
   overflow: hidden;
 
   canvas {

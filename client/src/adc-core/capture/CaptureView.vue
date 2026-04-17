@@ -91,7 +91,7 @@
             v-if="selected_mode === 'audio' && !media_to_validate"
             ref="equalizerElement"
             :stream="stream"
-            :is_recording="is_recording"
+            :is_recording="is_recording && !video_recording_is_paused"
             :type="'Full'"
           />
 
@@ -690,7 +690,7 @@
                   >
                     <AudioEqualizer
                       :stream="stream"
-                      :is_recording="is_recording"
+                      :is_recording="is_recording && !video_recording_is_paused"
                       :type="'Tiny'"
                     />
                   </div>
@@ -1218,7 +1218,8 @@ export default {
       if (!this.is_recording) return false;
 
       // In live dubbing from Make, pausing recording desyncs with reference video playback.
-      if (this.origin === "make" && this.selected_mode === "audio") return false;
+      if (this.origin === "make" && this.selected_mode === "audio")
+        return false;
 
       return true;
     },
