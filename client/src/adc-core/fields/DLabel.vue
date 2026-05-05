@@ -1,7 +1,7 @@
 <template>
   <div class="_dLabel">
     <div class="_labelLine" @click.stop="toggleInstructions">
-      <span v-if="icon" class="_labelIcon">
+      <span v-if="icon" class="_labelIcon" :style="icon_styles">
         <b-icon :icon="icon" />
       </span>
       <component

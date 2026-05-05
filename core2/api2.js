@@ -313,6 +313,16 @@ module.exports = (function () {
       _restrictToContributors,
       _removeFiles
     );
+    app.post(
+      [
+        "/_api2/:folder_type/_removefolders",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_removefolders",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_removefolders",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _removeFolders
+    );
     app.get(
       [
         "/_api2/",
@@ -624,6 +634,7 @@ module.exports = (function () {
   async function loadIndex(req, res) {
     dev.logapi();
     let d = {};
+
     d.schema = global.settings.schema;
     d.debug_mode = dev.isDebug();
     d.is_livereload = dev.isLivereload();
@@ -1207,6 +1218,65 @@ module.exports = (function () {
       _notifyFolderRemoved(path_to_type, path_to_folder);
     } catch (err) {
       _handleRemoveFolderError(err, res, { path_to_folder, token_path });
+    }
+  }
+
+  async function _removeFolders(req, res, next) {
+    const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization);
+    const { folder_slugs } = req.body;
+
+    dev.logapi({ path_to_type, folder_slugs });
+
+    if (!Array.isArray(folder_slugs) || folder_slugs.length === 0)
+      return res.status(400).json({ code: "invalid_folder_slugs" });
+    if (folder_slugs.length > 100)
+      return res.status(400).json({ code: "batch_too_large" });
+
+    const unique_folder_slugs = [...new Set(folder_slugs)];
+    const success = [];
+    const failed = [];
+
+    for (const folder_slug of unique_folder_slugs) {
+      const path_to_folder = path.join(path_to_type, folder_slug);
+      try {
+        await folder.removeFolder({
+          path_to_type,
+          path_to_folder,
+        });
+        await auth.removeAllTokensForFolder({ token_path: path_to_folder });
+        success.push(folder_slug);
+      } catch (err) {
+        failed.push({ folder_slug, code: err.code || "unknown_error" });
+      }
+    }
+
+    const outcome =
+      failed.length === 0
+        ? "success"
+        : success.length === 0
+        ? "error"
+        : "partial";
+
+    journal.log({
+      from: "api2",
+      event: "remove_folders",
+      details: {
+        outcome,
+        path_to_type,
+        success,
+        failed,
+        author_path: token_path,
+      },
+    });
+
+    res.status(200).json({ success, failed });
+
+    if (success.length > 0) {
+      for (const folder_slug of success) {
+        const path_to_folder = path.join(path_to_type, folder_slug);
+        _notifyFolderRemoved(path_to_type, path_to_folder);
+      }
     }
   }
 

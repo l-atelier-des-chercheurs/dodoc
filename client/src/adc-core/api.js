@@ -261,8 +261,7 @@ export default function () {
         if (index === -1) {
           this.getAndTrackUsers();
         } else {
-          if (!this.users[index].meta)
-            this.$set(this.users[index], "meta", {});
+          if (!this.users[index].meta) this.$set(this.users[index], "meta", {});
           Object.entries(changed_data).map(([key, value]) => {
             this.$set(this.users[index].meta, key, value);
           });
@@ -902,6 +901,20 @@ export default function () {
           this.$alertify
             .delay(4000)
             .error(`${failed.length} file(s) could not be deleted.`);
+        return { success, failed };
+      },
+      async deleteFolders({ path, folder_slugs }) {
+        const response = await this.$axios
+          .post(`${path}/_removefolders`, { folder_slugs })
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        const { success, failed } = response.data;
+        this.$eventHub.$emit("hooks.deleteFolders", { path, success, failed });
+        if (failed.length > 0)
+          this.$alertify
+            .delay(4000)
+            .error(`${failed.length} folder(s) could not be deleted.`);
         return { success, failed };
       },
 
