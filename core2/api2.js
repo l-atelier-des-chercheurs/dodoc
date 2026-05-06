@@ -13,6 +13,7 @@ const folder = require("./folder"),
   users = require("./users"),
   sessionStore = require("./sessionStore"),
   journal = require("./journal"),
+  history = require("./history"),
   recoverPassword = require("./recover-password"),
   dev = require("./dev-log");
 
@@ -44,6 +45,17 @@ module.exports = (function () {
 
     app.get("/_api2/_logs", _getLogs);
     app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
+
+    app.get(
+      [
+        "/_api2/:folder_type/:folder_slug/_history",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/_history",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug/_history",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdmins,
+      _getFolderHistory
+    );
 
     app.get("/_api2/_users", _generalPasswordCheck, _getAllUsers);
     app.patch("/_api2/_users/:id", _generalPasswordCheck, _updateUser);
@@ -806,6 +818,17 @@ module.exports = (function () {
 
       res.status(200).json({ new_folder_slug });
 
+      // Record the initial field state so history is complete from creation.
+      history
+        .appendCreated({
+          path_to_folder: utils.convertToSlashPath(path_to_folder),
+          meta: new_folder_meta,
+          author_path: token_path,
+        })
+        .catch((err) =>
+          dev.error("Failed to write creation history: " + err.message)
+        );
+
       journal.log({
         from: "api2",
         event: "create_folder",
@@ -1043,6 +1066,19 @@ module.exports = (function () {
           author_path: token_path,
         },
       });
+
+      // 4. Append per-field history (fire-and-forget)
+      if (data && Object.keys(data).length > 0) {
+        history
+          .appendUpdated({
+            path_to_folder: utils.convertToSlashPath(path_to_folder),
+            data,
+            author_path: token_path,
+          })
+          .catch((err) =>
+            dev.error("Failed to append update history: " + err.message)
+          );
+      }
 
       // 5. Send response
       res.status(200).json({ status: "ok" });
@@ -2921,6 +2957,19 @@ module.exports = (function () {
     });
 
     res.status(500).send({ code, err_infos });
+  }
+
+  async function _getFolderHistory(req, res) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    try {
+      const entries = await history.getEntries({
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+      });
+      res.json({ entries });
+    } catch (err) {
+      dev.error("Failed to get folder history: " + err.message);
+      res.json({ entries: [] });
+    }
   }
 
   return API;

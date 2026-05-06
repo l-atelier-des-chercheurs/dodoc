@@ -843,6 +843,14 @@ export default function () {
         this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
+      async getFieldHistory({ path }) {
+        const response = await this.$axios
+          .get(`${path}/_history`)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data.entries || [];
+      },
       async regenerateThumbs({ path }) {
         const response = await this.$axios
           .patch(`${path}/_regenerateThumbs`)
