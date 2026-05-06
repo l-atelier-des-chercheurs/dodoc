@@ -1,5 +1,5 @@
 <template>
-  <div class="_coverField">
+  <div class="_coverField" :style="cover_field_style">
     <div class="_hasImage" v-if="cover_thumb">
       <img
         :src="cover_thumb"
@@ -38,7 +38,7 @@
       </span>
     </div>
 
-    <template v-if="context === 'full' && can_edit">
+    <template v-if="can_edit">
       <button
         type="button"
         v-if="!cover_thumb"
@@ -59,7 +59,7 @@
         v-if="edit_mode"
         :path="path"
         :label="label_title"
-        :ratio="ratio"
+        :ratio="normalized_ratio"
         :preview_format="preview_format"
         :existing_preview="existing_preview"
         :available_options="available_options"
@@ -108,6 +108,19 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    normalized_ratio() {
+      if (!this.ratio) return null;
+      if (this.ratio === "square") return "1 / 1";
+      return this.ratio;
+    },
+    cover_field_style() {
+      if (!this.normalized_ratio) return {};
+      return {
+        position: "relative",
+        width: "100%",
+        aspectRatio: this.normalized_ratio,
+      };
+    },
     label_title() {
       if (this.title) return this.title;
       return this.$t("pick_cover");
@@ -160,12 +173,15 @@ export default {
 }
 
 ._hasImage {
+  position: absolute;
+  inset: 0;
+
   img {
-    position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: scale-down;
-    cursor: pointer;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 }
 
