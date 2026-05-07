@@ -1,5 +1,5 @@
 <template>
-  <BaseModal2 :title="title" :size="'large'" @close="$emit('close')">
+  <BaseModal2 :title="title" :size="'x-large'" @close="$emit('close')">
     <div class="_pickMediaFromProject">
       <LoaderSpinner v-if="is_loading" />
       <template v-else>
