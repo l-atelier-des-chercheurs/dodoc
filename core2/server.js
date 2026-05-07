@@ -113,11 +113,6 @@ module.exports = function () {
           res.setHeader("Cache-Control", "no-cache");
           return;
         }
-        if (filePath.endsWith(path.sep + "bundle.js")) {
-          res.setHeader("Cache-Control", "no-cache");
-          return;
-        }
-
         // Vite emits hashed assets in /assets; those can be cached aggressively.
         if (filePath.includes(path.sep + "assets" + path.sep)) {
           res.setHeader("Cache-Control", "public, max-age=31536000, immutable");

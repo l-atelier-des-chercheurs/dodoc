@@ -276,6 +276,18 @@ export default {
         return { aspectRatio: 29.7 / 21 };
       if (this.aspect_ratio === "custom")
         return { aspectRatio: this.custom_aspect_ratio };
+      // Generic "A / B" string fallback
+      const parts = this.aspect_ratio
+        .split("/")
+        .map((s) => parseFloat(s.trim()));
+      if (
+        parts.length === 2 &&
+        !isNaN(parts[0]) &&
+        !isNaN(parts[1]) &&
+        parts[1] !== 0
+      ) {
+        return { aspectRatio: parts[0] / parts[1] };
+      }
       return {};
     },
     cropper_src() {

@@ -132,27 +132,40 @@ export default function () {
       reconnectSocket() {
         this.socket.connect();
       },
+      normalizeRoomPath(room) {
+        if (typeof room !== "string") return "";
+
+        const normalized_room = room
+          .replaceAll("\\", "/")
+          .trim()
+          .replace(/^\/+/, "")
+          .replace(/\/+$/, "")
+          .replace(/\/{2,}/g, "/");
+
+        return normalized_room;
+      },
       join({ room }) {
-        // join room only if not tracking
-        if (!this.rooms_joined.includes(room)) {
-          // console.log("JOIN – room isnt tracked, joining", room);
-          this.apiJoinRoom({ room });
-        } else {
-          // console.log("JOIN – room already tracked", room);
-        }
-        // we push this room anyway, so that when we remove it we keep tracking until all has been removed
-        this.rooms_joined.push(room);
+        const normalized_room = this.normalizeRoomPath(room);
+        if (!normalized_room) return;
+
+        const is_first_subscription = !this.rooms_joined.includes(normalized_room);
+        // We always track locally first so reconnect logic can rejoin later.
+        this.rooms_joined.push(normalized_room);
+        if (is_first_subscription) this.apiJoinRoom({ room: normalized_room });
       },
       leave({ room }) {
+        const normalized_room = this.normalizeRoomPath(room);
+        if (!normalized_room) return;
+
         const index_to_remove = this.rooms_joined.findIndex(
-          (rj) => rj === room
+          (rj) => rj === normalized_room
         );
-        this.rooms_joined.splice(index_to_remove, 1);
+        if (index_to_remove !== -1) this.rooms_joined.splice(index_to_remove, 1);
         // if room isnt tracked anymore
-        if (!this.rooms_joined.includes(room)) {
+        if (!this.rooms_joined.includes(normalized_room)) {
           // console.log("LEAVE – room isnt tracked anymore, delete store", room);
-          this.socket.emit("leaveRoom", { room });
-          this.$delete(this.store, room);
+          if (this.socket) this.socket.emit("leaveRoom", { room: normalized_room });
+          this.$delete(this.store, normalized_room);
         } else {
           // console.log("LEAVE – room still tracked", room);
         }
@@ -163,12 +176,18 @@ export default function () {
           (value, index, array) => array.indexOf(value) === index
         );
         for (const path of paths) {
-          await this.updateStore(path);
-          this.apiJoinRoom({ room: path });
+          const normalized_path = this.normalizeRoomPath(path);
+          if (!normalized_path) continue;
+          await this.updateStore(normalized_path);
+          this.apiJoinRoom({ room: normalized_path });
         }
       },
       apiJoinRoom({ room }) {
-        let infos = { room };
+        const normalized_room = this.normalizeRoomPath(room);
+        if (!normalized_room) return;
+        if (!this.socket) return;
+
+        let infos = { room: normalized_room };
         if (this.tokenpath.token && this.tokenpath.token_path) {
           infos.token = this.tokenpath.token;
           infos.token_path = this.tokenpath.token_path;
@@ -290,7 +309,8 @@ export default function () {
 
       folderCreated({ path, path_to_type, path_to_folder, meta }) {
         // Handle both old format (path) and new format (path_to_type)
-        const type_path = path_to_type || path;
+        const type_path = this.normalizeRoomPath(path_to_type || path);
+        if (!type_path) return;
 
         // only update store if content is tracked
         if (!this.rooms_joined.includes(type_path)) {
