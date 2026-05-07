@@ -2505,6 +2505,7 @@ module.exports = (function () {
     const session = sessionStore.findSession(sessionID);
     if (!session) return res.status(401).json({ code: "session_not_found" });
     if (session.userID !== id)
+    if (!sessionStore.isUserInSession(sessionID, id))
       return res.status(403).json({ code: "not_allowed" });
 
     const { path } = req.body;
