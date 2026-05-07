@@ -9,6 +9,8 @@ const utils = require("./utils"),
   archives = require("./archives");
 
 module.exports = (function () {
+  const SEQUENTIAL_SLUG_STATE_FILENAME = ".slug-sequence.json";
+
   const API = {
     getFolders: async ({ path_to_type, detailed = false }) => {
       dev.logfunction({ path_to_type });
@@ -106,19 +108,16 @@ module.exports = (function () {
     createFolder: async ({ path_to_type, data }) => {
       dev.logfunction({ path_to_type, data });
 
-      let folder_slug = `untitled`;
-      if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
-
       let { $cover, ...meta } = data;
-
-      folder_slug = await _preventFolderOverride({
-        path_to_type,
-        folder_slug,
-      });
 
       let valid_meta = await _cleanFields({
         meta,
         path_to_type,
+      });
+
+      const folder_slug = await _resolveFolderSlug({
+        path_to_type,
+        data,
       });
 
       valid_meta.$date_created = valid_meta.$date_modified =
@@ -639,6 +638,84 @@ module.exports = (function () {
       new_folder_slug = `${folder_slug}-${index}`;
     }
     return new_folder_slug;
+  }
+
+  async function _resolveFolderSlug({ path_to_type, data }) {
+    let folder_slug = `untitled`;
+    if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
+
+    const item_in_schema = utils.parseAndCheckSchema({
+      relative_path: path_to_type,
+    });
+    if (item_in_schema?.slug_naming === "sequence") {
+      const slug_sequence_start = Number.isInteger(
+        item_in_schema.slug_sequence_start
+      )
+        ? item_in_schema.slug_sequence_start
+        : 1;
+      return _getNextSequentialFolderSlug({
+        path_to_type,
+        slug_sequence_start,
+      });
+    }
+
+    return _preventFolderOverride({
+      path_to_type,
+      folder_slug,
+    });
+  }
+
+  async function _getNextSequentialFolderSlug({
+    path_to_type,
+    slug_sequence_start = 1,
+  }) {
+    const normalized_start =
+      Number.isInteger(slug_sequence_start) && slug_sequence_start > 0
+        ? slug_sequence_start
+        : 1;
+
+    const folders_slugs = await _getFolderSlugs({ path_to_type });
+    const max_existing_numeric_slug = folders_slugs.reduce((max, slug) => {
+      if (!/^\d+$/.test(slug)) return max;
+      const numeric_slug = Number(slug);
+      return Number.isFinite(numeric_slug) ? Math.max(max, numeric_slug) : max;
+    }, 0);
+
+    const full_path_to_type = utils.getPathToUserContent(path_to_type);
+    const full_path_to_state_file = path.join(
+      full_path_to_type,
+      SEQUENTIAL_SLUG_STATE_FILENAME
+    );
+
+    let last_id_in_state = 0;
+    try {
+      const state = await fs.readJSON(full_path_to_state_file);
+      if (Number.isInteger(state?.last_id) && state.last_id > 0)
+        last_id_in_state = state.last_id;
+    } catch (err) {
+      // Missing or invalid state file: fallback to current folders.
+    }
+
+    let next_id = Math.max(
+      normalized_start - 1,
+      max_existing_numeric_slug,
+      last_id_in_state
+    );
+
+    do {
+      next_id += 1;
+    } while (folders_slugs.includes(String(next_id)));
+
+    await fs.ensureDir(full_path_to_type);
+    await fs.writeJSON(
+      full_path_to_state_file,
+      {
+        last_id: next_id,
+      },
+      { spaces: 2 }
+    );
+
+    return String(next_id);
   }
 
   async function _removeFolderForGood({ path_to_folder }) {
