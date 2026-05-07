@@ -4,6 +4,7 @@
     :class="{
       'is--infiniteViewer': viewer_type === 'infinite-viewer',
       'is--editable': can_edit,
+      'is--previewMode': is_preview_mode,
     }"
   >
     <component :is="'style'" v-html="highlight_opened_pages" />
@@ -60,6 +61,10 @@ export default {
     },
     can_edit: Boolean,
     opened_chapter_meta_filename: String,
+    is_preview_mode: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     PanZoom3,
@@ -425,7 +430,7 @@ export default {
 
     /* Show grid structure in edit mode */
     @media screen {
-      &.is--editable {
+      &.is--editable:not(.is--previewMode) {
         /* Show grid lines on the grid container */
         /* Add visible border to each grid cell */
 
@@ -599,6 +604,37 @@ export default {
       .pagedjs_margin-left-middle,
       .pagedjs_margin-left-bottom {
         box-shadow: 0 0 0 1px inset var(--color-marginBox);
+      }
+
+      &.is--previewMode {
+        .editChapterBtn {
+          display: none !important;
+        }
+
+        .pagedjs_pagebox,
+        .pagedjs_margin-top-left-corner-holder,
+        .pagedjs_margin-top,
+        .pagedjs_margin-top-left,
+        .pagedjs_margin-top-center,
+        .pagedjs_margin-top-right,
+        .pagedjs_margin-top-right-corner-holder,
+        .pagedjs_margin-bottom-left-corner-holder,
+        .pagedjs_margin-bottom,
+        .pagedjs_margin-bottom-left,
+        .pagedjs_margin-bottom-center,
+        .pagedjs_margin-bottom-right,
+        .pagedjs_margin-bottom-right-corner-holder,
+        .pagedjs_margin-right,
+        .pagedjs_margin-right-top,
+        .pagedjs_margin-right-middle,
+        .pagedjs_margin-right-bottom,
+        .pagedjs_margin-left,
+        .pagedjs_margin-left-top,
+        .pagedjs_margin-left-middle,
+        .pagedjs_margin-left-bottom {
+          box-shadow: none !important;
+          outline: none !important;
+        }
       }
     }
 

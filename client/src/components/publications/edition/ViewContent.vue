@@ -17,7 +17,6 @@
           </button>
         </div>
       </div>
-
       <select
         size="small"
         v-if="style_files?.length > 0"
@@ -33,6 +32,16 @@
         </option>
         <option value="default">{{ $t("default_styles") }}</option>
       </select>
+    </div>
+    <div
+      class="_previewToggle u-displayAsPublic"
+      v-if="can_edit && view_mode === 'book'"
+    >
+      <ToggleInput
+        :content="is_preview_mode"
+        :label="$t('preview')"
+        @update:content="is_preview_mode = $event"
+      />
     </div>
 
     <ErrorBar
@@ -61,6 +70,7 @@
         :content_html="content_html"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
+        :is_preview_mode="is_preview_mode"
         @openChapter="$emit('openChapter', $event)"
         @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
         @updateNumberOfBookPages="updateNumberOfBookPages"
@@ -125,6 +135,7 @@ export default {
   data() {
     return {
       is_loading: false,
+      is_preview_mode: false,
       available_view_modes: [
         {
           label: this.$t("webpage"),
@@ -908,6 +919,19 @@ export default {
 
   @media print {
     display: none;
+  }
+}
+
+._previewToggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  margin: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  ::v-deep > * {
+    pointer-events: auto;
   }
 }
 
