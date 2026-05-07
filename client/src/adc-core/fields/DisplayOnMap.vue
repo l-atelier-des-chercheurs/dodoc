@@ -85,20 +85,6 @@
 
     <div class="_leftTopMenu">
       <div class="_buttonRow" v-if="has_current_position_button">
-        <div
-          class="_buttonRow"
-          v-if="!['image', 'color'].includes(map_baselayer)"
-        >
-          <button
-            type="button"
-            class="u-button _searchButton"
-            @click="toggleSearch"
-            :title="$t('search')"
-          >
-            <b-icon class="inlineSVG" icon="search" />
-          </button>
-        </div>
-
         <!-- hidden if electron, need to find alternative strategy -->
         <button
           type="button"
@@ -130,6 +116,20 @@
         </button>
         <button type="button" class="u-button" @click="zoomOut">
           <b-icon class="inlineSVG" icon="dash" />
+        </button>
+      </div>
+
+      <div
+        class="_buttonRow"
+        v-if="!['image', 'color'].includes(map_baselayer)"
+      >
+        <button
+          type="button"
+          class="u-button _searchButton"
+          @click="toggleSearch"
+          :title="$t('search')"
+        >
+          <b-icon class="inlineSVG" icon="search" />
         </button>
       </div>
 
