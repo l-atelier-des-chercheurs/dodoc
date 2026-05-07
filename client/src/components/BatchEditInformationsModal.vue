@@ -21,6 +21,7 @@
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
+            :mode="'always_active'"
             @input="($event) => saveInformations({ field: 'caption', value: $event })"
           />
         </div>
@@ -32,6 +33,7 @@
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
+            :mode="'always_active'"
             @input="
               ($event) => saveInformations({ field: '$credits', value: $event })
             "
@@ -95,7 +97,7 @@
         </p>
       </template>
     </div>
-    <template #footer>
+    <template slot="footer">
       <SaveCancelButtons
         :is_saving="is_saving"
         :allow_save="allow_save"
