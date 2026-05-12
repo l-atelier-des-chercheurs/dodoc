@@ -2164,8 +2164,12 @@ module.exports = (function () {
         },
       });
 
-      // 4. Send response
-      res.status(200).json({ status: "ok" });
+      // 4. Send response with a minimal but useful payload
+      res.status(200).json({
+        status: "ok",
+        changed_data,
+        path_to_meta: utils.convertToSlashPath(path_to_meta),
+      });
 
       // 5. Notify subscribers (after response)
       _notifyFileUpdated(path_to_folder, path_to_meta, changed_data);

@@ -56,7 +56,7 @@ export default {
       );
       chat_read_indexes[chat_path] = chat_read_index;
 
-      const { meta_filename } = await this.$api.updateMeta({
+      await this.$api.updateMeta({
         path: this.author_chat_read_index_media.$path,
         new_meta: {
           chat_read_indexes,

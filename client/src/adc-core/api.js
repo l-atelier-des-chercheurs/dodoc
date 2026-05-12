@@ -404,6 +404,7 @@ export default function () {
       },
       fileUpdated({ path_to_folder, path_to_meta, changed_data }) {
         const folder = this.store[path_to_folder];
+        if (!folder || !folder.$files) return;
         const file = folder.$files.find((file) => file.$path === path_to_meta);
         if (file)
           Object.entries(changed_data).map(([key, value]) => {
@@ -860,6 +861,19 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
+        const { changed_data } = response.data || {};
+        if (changed_data && Object.keys(changed_data).length > 0) {
+          const path_to_meta = path.split("?")[0];
+          const last_slash_index = path_to_meta.lastIndexOf("/");
+          if (last_slash_index > 0) {
+            const path_to_folder = path_to_meta.slice(0, last_slash_index);
+            this.fileUpdated({
+              path_to_folder,
+              path_to_meta,
+              changed_data,
+            });
+          }
+        }
         this.$eventHub.$emit("hooks.updateMeta", { path });
         return response.data;
       },
