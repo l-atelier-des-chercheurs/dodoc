@@ -1080,8 +1080,12 @@ module.exports = (function () {
           );
       }
 
-      // 5. Send response
-      res.status(200).json({ status: "ok" });
+      // 5. Send response with changed fields for optimistic client updates
+      res.status(200).json({
+        status: "ok",
+        changed_data,
+        path_to_folder: utils.convertToSlashPath(path_to_folder),
+      });
 
       // 6. Notify subscribers (after response)
       _notifyFolderUpdated(path_to_type, path_to_folder, changed_data);

@@ -861,15 +861,24 @@ export default function () {
           .catch((err) => {
             throw this.processError(err);
           });
-        const { changed_data } = response.data || {};
+        const { changed_data, path_to_meta: response_path_to_meta } =
+          response.data || {};
         if (changed_data && Object.keys(changed_data).length > 0) {
-          const path_to_meta = path.split("?")[0];
-          const last_slash_index = path_to_meta.lastIndexOf("/");
-          if (last_slash_index > 0) {
-            const path_to_folder = path_to_meta.slice(0, last_slash_index);
-            this.fileUpdated({
-              path_to_folder,
-              path_to_meta,
+          const clean_path = path.split("?")[0];
+          if (response_path_to_meta) {
+            const path_to_meta = response_path_to_meta;
+            const last_slash_index = path_to_meta.lastIndexOf("/");
+            if (last_slash_index > 0) {
+              const path_to_folder = path_to_meta.slice(0, last_slash_index);
+              this.fileUpdated({
+                path_to_folder,
+                path_to_meta,
+                changed_data,
+              });
+            }
+          } else {
+            this.folderUpdated({
+              path_to_folder: clean_path,
               changed_data,
             });
           }
