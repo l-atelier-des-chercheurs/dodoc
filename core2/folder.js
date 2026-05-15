@@ -148,8 +148,9 @@ module.exports = (function () {
         path_to_type,
       });
 
-      const folder_slug = await _resolveFolderSlug({
+      const folder_slug = await _allocateNewFolderSlug({
         path_to_type,
+        mode: "create",
         data,
       });
 
@@ -401,13 +402,10 @@ module.exports = (function () {
 
       const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
 
-      let folder_slug =
-        is_copy_or_move === "copy"
-          ? source_folder_slug + "-copy"
-          : source_folder_slug;
-      folder_slug = await _preventFolderOverride({
+      const folder_slug = await _allocateNewFolderSlug({
         path_to_type: path_to_destination_type,
-        folder_slug,
+        mode: is_copy_or_move === "copy" ? "copy" : "move",
+        source_folder_slug,
       });
 
       const path_to_destination_folder = path.join(
@@ -673,14 +671,23 @@ module.exports = (function () {
     return new_folder_slug;
   }
 
-  async function _resolveFolderSlug({ path_to_type, data }) {
-    let folder_slug = `untitled`;
-    if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
+  async function _allocateNewFolderSlug({
+    path_to_type,
+    mode,
+    data = null,
+    source_folder_slug = "",
+  }) {
+    dev.logfunction({ path_to_type, mode });
 
     const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_type,
     });
-    if (item_in_schema?.slug_naming === "sequence") {
+
+    const use_sequence =
+      item_in_schema?.slug_naming === "sequence" &&
+      (mode === "create" || mode === "copy");
+
+    if (use_sequence) {
       const slug_sequence_start = Number.isInteger(
         item_in_schema.slug_sequence_start
       )
@@ -690,6 +697,17 @@ module.exports = (function () {
         path_to_type,
         slug_sequence_start,
       });
+    }
+
+    let folder_slug;
+    if (mode === "create") {
+      folder_slug = data?.requested_slug
+        ? utils.slug(data.requested_slug)
+        : "untitled";
+    } else if (mode === "copy") {
+      folder_slug = source_folder_slug + "-copy";
+    } else {
+      folder_slug = source_folder_slug;
     }
 
     return _preventFolderOverride({
