@@ -110,11 +110,18 @@ export default {
       //     .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
-      if (this.$root.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(`Disconnected ${reason}`);
+      if (!this.$root.debug_mode) return;
+      // After sleep, background tab, or flaky Wi-Fi, Socket.IO often drops with
+      // these reasons and reconnects by itself — not worth error toasts.
+      const benign_when_idle = ["ping timeout", "transport close"];
+      if (benign_when_idle.includes(reason)) {
+        console.info(`[socket] disconnected (${reason}), reconnecting when possible`);
+        return;
+      }
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
       // if (this.$root.debug_mode)
