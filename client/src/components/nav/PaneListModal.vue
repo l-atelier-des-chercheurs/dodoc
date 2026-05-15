@@ -23,7 +23,6 @@
 </template>
 <script>
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
-import DodocIcon from "@/mixins/DodocIcon.js";
 
 export default {
   props: {
@@ -32,7 +31,6 @@ export default {
     can_edit: Boolean,
   },
   components: { BaseModal2 },
-  mixins: [DodocIcon],
   data() {
     return {
       local_disabled: [],

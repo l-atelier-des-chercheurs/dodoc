@@ -84,14 +84,12 @@
 </template>
 
 <script>
-import AuthorsMixin from "@/mixins/Authors.js";
 import ResourceFilesGrid from "./ResourceFilesGrid.vue";
 
 export default {
   components: {
     ResourceFilesGrid,
   },
-  mixins: [AuthorsMixin],
   props: {
     project_path: {
       type: String,

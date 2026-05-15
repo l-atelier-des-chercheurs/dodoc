@@ -37,10 +37,7 @@
 </template>
 
 <script>
-import DodocIcon from "@/mixins/DodocIcon.js";
-
 export default {
-  mixins: [DodocIcon],
   props: {
     pane: {
       type: Object,

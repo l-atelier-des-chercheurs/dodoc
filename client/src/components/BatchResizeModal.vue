@@ -73,8 +73,6 @@
 <script>
 import RadioSwitch from "@/adc-core/ui/RadioSwitch.vue";
 import SelectField2 from "@/adc-core/fields/SelectField2.vue";
-import Medias from "@/mixins/Medias.js";
-import Paths from "@/mixins/Paths.js";
 import { replaceOriginalWithNewFile } from "@/utils/replaceOriginalMedia.js";
 import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
 
@@ -89,7 +87,6 @@ export default {
     RadioSwitch,
     SelectField2,
   },
-  mixins: [Medias, Paths],
   data() {
     return {
       image_quality_picked: "source",

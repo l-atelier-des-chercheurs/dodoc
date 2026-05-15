@@ -100,10 +100,8 @@
 
 <script>
 import GridArea from "./GridArea.vue";
-import Medias from "../../../mixins/Medias.js";
 
 export default {
-  mixins: [Medias],
   props: {
     chapter: {
       type: Object,

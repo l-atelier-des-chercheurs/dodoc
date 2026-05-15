@@ -146,7 +146,6 @@
 <script>
 import { SlickList, SlickItem, HandleDirective } from "vue-slicksort";
 import MediaPicker from "@/components/publications/MediaPicker.vue";
-import PathsMixin from "@/mixins/Paths.js";
 
 export default {
   props: {
@@ -160,7 +159,6 @@ export default {
     SlickList,
     MediaPicker,
   },
-  mixins: [PathsMixin],
   directives: { handle: HandleDirective },
   data() {
     return {
