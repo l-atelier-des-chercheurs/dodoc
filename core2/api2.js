@@ -30,6 +30,7 @@ module.exports = (function () {
     app.get("/_perf", loadPerf);
 
     app.use("/_api2/{*index}", [cors(_corsCheck)]);
+    app.use("/_api2", _api2ResponseLog);
 
     app.get(
       "/_api2/_networkInfos",
@@ -401,6 +402,28 @@ module.exports = (function () {
       const path_to_type = utils.getContainingFolder(path_to_folder);
       _updateParentFoldersCountAndBroadcast(path_to_folder, path_to_type);
     });
+  }
+
+  /** Logs each _api2 request/response timing and payload size when Content-Length is set */
+  function _api2ResponseLog(req, res, next) {
+    const started_ms = Date.now();
+    const route_label = `${req.method} ${req.originalUrl || req.url}`;
+
+    dev.logapi(`Requested ${route_label}`);
+
+    res.on("finish", () => {
+      const elapsed_ms = Date.now() - started_ms;
+      const content_length = res.getHeader("Content-Length");
+      const size_part =
+        content_length != null && content_length !== ""
+          ? `, payload ${content_length} bytes`
+          : "";
+      dev.logapi(
+        `Finished ${route_label}, status ${res.statusCode}, took ${elapsed_ms} ms${size_part}`
+      );
+    });
+
+    next();
   }
 
   function _corsCheck(req, callback) {
@@ -800,13 +823,10 @@ module.exports = (function () {
     const { path_to_type } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
 
-    dev.logapi({ path_to_type });
-
     try {
       let d = await folder.getFolders({ path_to_type });
 
       // todo : filter depending on $status, only authors see folders
-      dev.logpackets(`Successfully got folders ${path_to_type}`);
       journal.log({
         from: "api2",
         event: "get_folders",
