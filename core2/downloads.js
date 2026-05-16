@@ -56,6 +56,59 @@ module.exports = (function () {
       }
     },
 
+    downloadFolderType: async ({
+      path_to_type,
+      res,
+      token_path = "",
+    }) => {
+      // TODO: optionally omit `_bin` beside slug folders here for lighter / more portable bundles (mirror disk otherwise).
+      dev.logapi({ path_to_type });
+
+      const full_path = utils.getPathToUserContent(path_to_type);
+      try {
+        if (!(await fs.pathExists(full_path))) {
+          return res.status(404).send({ code: "not_found" });
+        }
+
+        const filename = utils.getZipFolderTypeFilename({ path_to_type });
+        res.header("Content-Type", "application/zip");
+        res.header("Content-Disposition", `attachment; filename="${filename}"`);
+
+        const archive = archiver("zip", { zlib: { level: 0 } });
+        archive.on("warning", (err) => {
+          throw err;
+        });
+        archive.on("error", (err) => {
+          throw err;
+        });
+        archive.pipe(res);
+
+        archive.directory(full_path, false);
+
+        archive.finalize();
+
+        dev.logpackets(
+          `Successfully started download folder type ${path_to_type}`
+        );
+        journal.log({
+          from: "api2",
+          event: "download_folder_type",
+          details: {
+            outcome: "success",
+            path_to_type,
+            author_path: token_path,
+          },
+        });
+
+        dev.log("download folder type started");
+      } catch (err) {
+        _handleDownloadFolderTypeError(err, res, {
+          path_to_type,
+          token_path,
+        });
+      }
+    },
+
     downloadSources: async ({
       path_to_folder,
       res,
@@ -170,6 +223,27 @@ module.exports = (function () {
     });
 
     res.status(500).send({ code, err_infos });
+  }
+
+  function _handleDownloadFolderTypeError(err, res, context) {
+    const { message, code, err_infos } = err;
+    const error_msg = `Failed to download folder type ${context.path_to_type}: ${message}`;
+
+    dev.error(error_msg);
+    journal.log({
+      from: "api2",
+      event: "download_folder_type",
+      details: {
+        outcome: "error",
+        path_to_type: context.path_to_type,
+        error_message: message,
+        author_path: context.token_path,
+      },
+    });
+
+    if (!res.headersSent) {
+      res.status(500).send({ code, err_infos });
+    }
   }
 
   return API;

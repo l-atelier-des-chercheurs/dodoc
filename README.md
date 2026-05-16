@@ -365,6 +365,17 @@ Then the following routes will redirect to:
 - /spaces/bonjour/projects/elephant-with-plywood.zip
   --> downloads a zip file with all the content of that folder
 
+- /spaces.zip
+  --> downloads a zip of the **`spaces`** directory under your content folder as-is: slug folders, dotfiles such as `.slug-sequence.json`, **`_bin`**, etc.—same hierarchy as on disk.
+
+- /spaces/bonjour/projects.zip
+  --> same for **projects** under that space (`/spaces/bonjour/projects/`).
+
+- /spaces/bonjour/projects/elephant-with-plywood/publications.zip
+  --> deepest type step in this example schema (`publications` under that project folder).
+
+Actual HTTP routes use the **`/_api2/...`** prefix (e.g. `/_api2/spaces/bonjour/projects.zip`). Folder-type archives require **local admin rights** like the usual **Download** permission for `.zip`; for a root type like **`_api2/projects.zip`** (schema-dependent), ACL falls back on instance admins (path `"."`). The journal logs `download_folder_type` for those requests.
+
 ### Permission
 
 For an existing folder:

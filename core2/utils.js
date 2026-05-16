@@ -1009,6 +1009,20 @@ module.exports = (function () {
       }
     },
 
+    getZipFolderTypeFilename({ path_to_type }) {
+      try {
+        const appname = global.appInfos.name;
+        const version_number = global.appInfos.version.split(".")[0];
+        const path_slug = path_to_type
+          ? path_to_type.split(path.sep).join("_")
+          : "type";
+        return `${appname}_v${version_number}_type_${path_slug}.zip`;
+      } catch (err) {
+        dev.error(err);
+        return "download.zip";
+      }
+    },
+
     getDependenciesWithVersions() {
       try {
         const packageJsonPath = path.join(global.appRoot, "package.json");

@@ -278,6 +278,16 @@ module.exports = (function () {
     );
     app.get(
       [
+        "/_api2/:folder_type.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type.zip",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type.zip",
+      ],
+      _generalPasswordCheck,
+      _restrictToLocalAdminsForFolderTypeZip,
+      _downloadFolderType
+    );
+    app.get(
+      [
         "/_api2/:folder_type/:folder_slug.zip",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug.zip",
         "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/:subsub_folder_slug.zip",
@@ -594,6 +604,26 @@ module.exports = (function () {
       if (res) return res.status(403).send({ code: "not_allowed" });
     }
   }
+
+  async function _restrictToLocalAdminsForFolderTypeZip(req, res, next) {
+    const { path_to_folder } = utils.makePathFromReq(req);
+    const acl_path = path_to_folder || ".";
+    dev.logapi({ path_to_folder: acl_path });
+
+    const allowed = await _canAdminFolder({
+      path_to_folder: acl_path,
+      req,
+    });
+
+    if (allowed) {
+      dev.log(allowed);
+      return next();
+    } else {
+      dev.error(`not allowed to admin folder for type zip ${acl_path}`);
+      if (res) return res.status(403).send({ code: "not_allowed" });
+    }
+  }
+
   async function _restrictIfPrivate(req, res, next) {
     const { path_to_type, path_to_folder } = utils.makePathFromReq(req);
     dev.logapi({ path_to_folder });
@@ -1549,6 +1579,24 @@ module.exports = (function () {
 
     await downloads.downloadFolder({
       path_to_folder,
+      path_to_type,
+      res,
+      token_path,
+    });
+  }
+
+  async function _downloadFolderType(req, res, next) {
+    const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+
+    try {
+      utils.parseAndCheckSchema({ relative_path: path_to_type });
+    } catch (err) {
+      dev.error(`download folder type schema: ${err.message}`);
+      return res.status(404).send({ code: "not_found" });
+    }
+
+    await downloads.downloadFolderType({
       path_to_type,
       res,
       token_path,
