@@ -8,10 +8,30 @@
  * @param {Object} axiosInstance - The axios instance to add logging to
  */
 
+import Vue from "vue";
+
+function formatAxiosRequestLabel(request) {
+  const method = (request.method || "get").toUpperCase();
+  const path = request.url || "/";
+  return `${method} ${path}`;
+}
+
+function notifyAxiosRequest(request) {
+  const label = formatAxiosRequestLabel(request);
+  if (
+    Vue.prototype.$alertify &&
+    typeof Vue.prototype.$alertify.log === "function"
+  ) {
+    Vue.prototype.$alertify.delay(3000).log(label);
+  }
+}
+
 export function setupAxiosDebugLogger(axiosInstance) {
   // Request interceptor
   axiosInstance.interceptors.request.use(
     (request) => {
+      notifyAxiosRequest(request);
+
       const startTime = Date.now();
       request._startTime = startTime;
 

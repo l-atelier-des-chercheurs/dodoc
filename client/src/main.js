@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import { init_title_popper } from "@/utils/title-popper";
+import { init_toast_notifications } from "@/utils/toast-notifications";
 
 import "./utils/icons";
 
@@ -10,6 +11,7 @@ import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
 
 Vue.config.productionTip = false;
 init_title_popper();
+init_toast_notifications(Vue);
 
 const publicPath =
   window.app_infos.page_is_standalone_html === true
@@ -27,58 +29,6 @@ import {
   findMissingTranslations,
 } from "@/adc-core/lang/i18n.js";
 
-// Modern toast notifications
-import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css";
-
-Vue.use(Toast, {
-  position: "bottom-left",
-  timeout: 4000,
-  closeOnClick: true,
-  pauseOnFocusLoss: false,
-  closeButton: "button",
-  transition: "Vue-Toastification__fade",
-  maxToasts: 10,
-});
-
-// Create a compatibility layer for the old alertify API
-Vue.prototype.$alertify = {
-  delay: (time) => ({
-    error: (message) => Vue.prototype.$toast.error(message, { timeout: time }),
-    success: (message) =>
-      Vue.prototype.$toast.success(message, { timeout: time }),
-    log: (message) => Vue.prototype.$toast.info(message, { timeout: time }),
-  }),
-  closeLogOnClick: (enabled) => ({
-    delay: (time) => ({
-      error: (message) =>
-        Vue.prototype.$toast.error(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-      success: (message) =>
-        Vue.prototype.$toast.success(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-      log: (message) =>
-        Vue.prototype.$toast.info(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-    }),
-    error: (message) =>
-      Vue.prototype.$toast.error(message, { closeOnClick: enabled }),
-    success: (message) =>
-      Vue.prototype.$toast.success(message, { closeOnClick: enabled }),
-    log: (message) =>
-      Vue.prototype.$toast.info(message, { closeOnClick: enabled }),
-  }),
-  error: (message) => Vue.prototype.$toast.error(message),
-  success: (message) => Vue.prototype.$toast.success(message),
-  log: (message) => Vue.prototype.$toast.info(message),
-};
-
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
@@ -95,14 +45,6 @@ Vue.use(VuePlyr, {
       "fullscreen",
     ],
     iconUrl: "",
-  },
-});
-Vue.directive("uppercase", {
-  bind(el, _, vnode) {
-    el.addEventListener("input", (e) => {
-      e.target.value = e.target.value.toUpperCase();
-      vnode.componentInstance.$emit("input", e.target.value.toUpperCase());
-    });
   },
 });
 
