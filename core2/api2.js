@@ -346,6 +346,15 @@ module.exports = (function () {
       _restrictToLocalAdmins,
       _removeFolders
     );
+    app.post(
+      [
+        "/_api2/:folder_type/_getfolders",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/_getfolders",
+        "/_api2/:folder_type/:folder_slug/:sub_folder_type/:sub_folder_slug/:subsub_folder_type/_getfolders",
+      ],
+      _generalPasswordCheck,
+      _getFoldersBySlugs
+    );
     app.get(
       [
         "/_api2/",
@@ -1323,22 +1332,14 @@ module.exports = (function () {
     if (folder_slugs.length > 100)
       return res.status(400).json({ code: "batch_too_large" });
 
-    const unique_folder_slugs = [...new Set(folder_slugs)];
-    const success = [];
-    const failed = [];
+    const { success, failed } = await folder.removeFolders({
+      path_to_type,
+      folder_slugs,
+    });
 
-    for (const folder_slug of unique_folder_slugs) {
+    for (const folder_slug of success) {
       const path_to_folder = path.join(path_to_type, folder_slug);
-      try {
-        await folder.removeFolder({
-          path_to_type,
-          path_to_folder,
-        });
-        await auth.removeAllTokensForFolder({ token_path: path_to_folder });
-        success.push(folder_slug);
-      } catch (err) {
-        failed.push({ folder_slug, code: err.code || "unknown_error" });
-      }
+      await auth.removeAllTokensForFolder({ token_path: path_to_folder });
     }
 
     const outcome =
@@ -1368,6 +1369,59 @@ module.exports = (function () {
         _notifyFolderRemoved(path_to_type, path_to_folder);
       }
     }
+  }
+
+  async function _getFoldersBySlugs(req, res, next) {
+    const { path_to_type } = utils.makePathFromReq(req);
+    const { token_path } = JSON.parse(req.headers.authorization || "{}");
+    const { folder_slugs, no_files = false, detailed = false } = req.body;
+
+    dev.logapi({ path_to_type, folder_slugs, no_files, detailed });
+
+    if (!Array.isArray(folder_slugs) || folder_slugs.length === 0)
+      return res.status(400).json({ code: "invalid_folder_slugs" });
+    if (folder_slugs.length > 500)
+      return res.status(400).json({ code: "batch_too_large" });
+
+    const { folders, failed } = await folder.getFoldersBySlugs({
+      path_to_type,
+      folder_slugs,
+      no_files,
+      detailed,
+      can_read_folder: async ({ path_to_folder }) => {
+        const folder_is_private = await auth.isFolderPrivate({
+          path_to_folder,
+        });
+        if (!folder_is_private) return true;
+        return _canContributeToFolder({
+          path_to_type,
+          path_to_folder,
+          req,
+        });
+      },
+    });
+
+    const outcome =
+      failed.length === 0
+        ? "success"
+        : folders.length === 0
+        ? "error"
+        : "partial";
+
+    journal.log({
+      from: "api2",
+      event: "get_folders_by_slugs",
+      details: {
+        outcome,
+        path_to_type,
+        folders_count: folders.length,
+        failed,
+        author_path: token_path,
+      },
+    });
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.status(200).json({ folders, failed });
   }
 
   async function _uploadFile(req, res, next) {

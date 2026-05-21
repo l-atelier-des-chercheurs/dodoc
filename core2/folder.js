@@ -49,6 +49,48 @@ module.exports = (function () {
       return all_folders_with_meta;
     },
 
+    getFoldersBySlugs: async ({
+      path_to_type,
+      folder_slugs,
+      detailed = false,
+      no_files = false,
+      can_read_folder = async () => true,
+    }) => {
+      dev.logfunction({
+        path_to_type,
+        folder_slugs_count: folder_slugs?.length,
+        detailed,
+        no_files,
+      });
+
+      const unique_folder_slugs = [...new Set(folder_slugs)];
+      const folders = [];
+      const failed = [];
+
+      for (const folder_slug of unique_folder_slugs) {
+        const path_to_folder = path.join(path_to_type, folder_slug);
+        try {
+          const allowed = await can_read_folder({ path_to_folder });
+          if (!allowed) {
+            failed.push({ folder_slug, code: "folder_private" });
+            continue;
+          }
+
+          let folder_meta = await API.getFolder({
+            path_to_folder,
+            detailed,
+          });
+          if (!no_files)
+            folder_meta.$files = await file.getFiles({ path_to_folder });
+          folders.push(folder_meta);
+        } catch (err) {
+          failed.push({ folder_slug, code: err.code || "unknown_error" });
+        }
+      }
+
+      return { folders, failed };
+    },
+
     getFolder: async ({ path_to_folder, detailed }) => {
       dev.logfunction({ path_to_folder, detailed });
 
@@ -461,6 +503,29 @@ module.exports = (function () {
       } catch (err) {
         throw err;
       }
+    },
+
+    removeFolders: async ({ path_to_type, folder_slugs }) => {
+      dev.logfunction({ path_to_type, folder_slugs_count: folder_slugs?.length });
+
+      const unique_folder_slugs = [...new Set(folder_slugs)];
+      const success = [];
+      const failed = [];
+
+      for (const folder_slug of unique_folder_slugs) {
+        const path_to_folder = path.join(path_to_type, folder_slug);
+        try {
+          await API.removeFolder({
+            path_to_type,
+            path_to_folder,
+          });
+          success.push(folder_slug);
+        } catch (err) {
+          failed.push({ folder_slug, code: err.code || "unknown_error" });
+        }
+      }
+
+      return { success, failed };
     },
 
     login: async ({ path_to_folder, submitted_password }) => {

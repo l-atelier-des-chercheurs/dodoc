@@ -601,6 +601,50 @@ export default function () {
 
         return folder;
       },
+      async getFoldersBySlugs({
+        path,
+        folder_slugs,
+        no_files = false,
+        detailed_infos = false,
+      }) {
+        const batch_size = 500;
+        const normalized_path = this.normalizeRoomPath(path);
+        const unique_folder_slugs = [...new Set(folder_slugs)];
+        const use_store = detailed_infos === false && no_files === false;
+        const all_folders = [];
+        const all_failed = [];
+
+        for (let i = 0; i < unique_folder_slugs.length; i += batch_size) {
+          const folder_slugs_batch = unique_folder_slugs.slice(
+            i,
+            i + batch_size
+          );
+          const response = await this.$axios
+            .post(`${normalized_path}/_getfolders`, {
+              folder_slugs: folder_slugs_batch,
+              no_files,
+              detailed: detailed_infos,
+            })
+            .catch((err) => {
+              throw this.processError(err);
+            });
+
+          const { folders = [], failed = [] } = response.data;
+          all_folders.push(...folders);
+          all_failed.push(...failed);
+        }
+
+        if (use_store) {
+          for (const folder of all_folders) {
+            if (folder?.$path) {
+              this.$set(this.store, folder.$path, folder);
+              this.markStoreFresh(folder.$path);
+            }
+          }
+        }
+
+        return { folders: all_folders, failed: all_failed };
+      },
 
       async getPublicFolder({ path, superadmintoken }) {
         path += "/_public";
