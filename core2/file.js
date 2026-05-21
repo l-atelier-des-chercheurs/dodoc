@@ -287,6 +287,10 @@ module.exports = (function () {
 
       const bin_size = await utils.getFolderSize(bin_folder_path);
 
+      bin_files.sort(
+        (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
+      );
+
       return {
         size: bin_size,
         items: bin_files,
@@ -373,6 +377,16 @@ module.exports = (function () {
         });
 
         const { remove_permanently } = await require("./settings").get();
+
+        if (remove_permanently !== true) {
+          const relative_path_to_meta =
+            path_to_meta || path.join(path_to_folder, meta_filename);
+          await API.updateFile({
+            path_to_folder,
+            path_to_meta: relative_path_to_meta,
+            data: {},
+          });
+        }
 
         try {
           for (const file_folder_names of _all_files_and_folders) {

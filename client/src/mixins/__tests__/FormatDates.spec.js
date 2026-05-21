@@ -113,4 +113,42 @@ describe("FormatDates mixin", () => {
       expect(formatted).not.toMatch(/T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     });
   });
+
+  describe("formatRemovedDateTime", () => {
+    it("formats recent removal in french", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-21T14:32:00"));
+      vm.$i18n.locale = "fr";
+
+      const formatted = vm.formatRemovedDateTime("2026-05-21T14:27:00");
+      expect(formatted).toBe("Supprimé il y a 5 minutes");
+    });
+
+    it("formats yesterday removal in french", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-21T14:32:00"));
+      vm.$i18n.locale = "fr";
+
+      const formatted = vm.formatRemovedDateTime("2026-05-20T16:30:00");
+      expect(formatted).toBe("Supprimé hier à 16h30");
+    });
+
+    it("formats day before yesterday removal in french", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-21T14:32:00"));
+      vm.$i18n.locale = "fr";
+
+      const formatted = vm.formatRemovedDateTime("2026-05-19T12:20:00");
+      expect(formatted).toBe("Supprimé avant-hier à 12h20");
+    });
+
+    it("formats older removal in french", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-21T14:32:00"));
+      vm.$i18n.locale = "fr";
+
+      const formatted = vm.formatRemovedDateTime("2026-05-18T13:12:00");
+      expect(formatted).toBe("Supprimé le 18/05/2026 à 13h12");
+    });
+  });
 });

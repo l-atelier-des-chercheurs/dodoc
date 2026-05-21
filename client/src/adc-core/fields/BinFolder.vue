@@ -87,7 +87,9 @@ export default {
         });
 
       this.bin_folder_size = bin_content.size;
-      this.bin_items = bin_content.items;
+      this.bin_items = (bin_content.items || []).sort(
+        (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
+      );
     },
     // async emptyBin(path) {
     //   await this.$api.emptyBin({ path });

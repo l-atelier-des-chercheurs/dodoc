@@ -17,12 +17,9 @@
           class="u-spacingBottom"
           :show_detail_initially="true"
         />
-        <DateDisplay
-          :title="$t('date_removed')"
-          :date="item.$date_modified"
-          class="u-spacingBottom"
-          :show_detail_initially="true"
-        />
+        <div class="u-metaField u-spacingBottom">
+          <div>{{ formatRemovedDateTime(item.$date_modified) }}</div>
+        </div>
         <div class=""></div>
       </div>
       <div class="u-sameRow _btns">
