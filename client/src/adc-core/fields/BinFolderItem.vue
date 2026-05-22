@@ -10,17 +10,19 @@
             :can_edit="false"
           />
         </div>
-        <SizeDisplay v-if="item.$infos.size" :size="item.$infos.size" />
-        <DateDisplay
-          :title="$t('date_created')"
-          :date="item.$date_created"
-          class="u-spacingBottom"
-          :show_detail_initially="true"
-        />
-        <div class="u-metaField u-spacingBottom">
-          <div>{{ formatRemovedDateTime(item.$date_modified) }}</div>
+        <div>
+          <SizeDisplay v-if="item.$infos.size" :size="item.$infos.size" />
+          <DateDisplay
+            :title="$t('date_created')"
+            :date="item.$date_created"
+            class="u-spacingBottom"
+          />
+          <DateDisplay
+            :title="$t('date_removed')"
+            :date="item.$date_modified"
+            class="u-spacingBottom"
+          />
         </div>
-        <div class=""></div>
       </div>
       <div class="u-sameRow _btns">
         <button
@@ -100,12 +102,13 @@ export default {
   position: relative;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
 }
 ._projectThumb--infos--preview {
   width: 100px;
+  flex: 0 0 auto;
   pointer-events: none;
 }
 ._btns {

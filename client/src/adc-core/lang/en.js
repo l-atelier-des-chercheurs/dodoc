@@ -1361,7 +1361,7 @@ export default {
   restore: "Restore",
   remove_for_good: "Remove for good",
   bin_is_empty: "The trash is empty",
-  date_removed: "Date removed",
+  date_removed: "Removed on",
   current_resolution: "Current resolution",
   gallery: "Gallery",
   removed_successfully: "Removed successfully",
