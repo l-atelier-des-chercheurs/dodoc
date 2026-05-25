@@ -20,3 +20,10 @@
 .Vue-Toastification__toast--info {
   background-color: var(--c-gris_fonce) !important;
 }
+
+@media print {
+  .Vue-Toastification__container,
+  .alertify-logs {
+    display: none !important;
+  }
+}
