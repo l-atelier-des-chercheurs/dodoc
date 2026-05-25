@@ -7,8 +7,7 @@
     }"
     :style="map_styles"
   >
-    <LoaderSpinner v-if="map_image_loading" class="_mapLoader" />
-    <div class="_map" ref="map" v-show="!map_image_loading" />
+    <div class="_map" ref="map" />
 
     <div
       ref="popUp"
@@ -545,7 +544,6 @@ export default {
       hidden_geometries: [],
 
       start_map_print: false,
-      map_image_loading: false,
       preloaded_base_image: null,
       start_map_run_id: 0,
       map_ready_emit_timeout: null,
@@ -774,7 +772,8 @@ export default {
       });
 
       const response = await fetch(img_src, { credentials: "include" });
-      if (!response.ok) throw new Error(`failed_to_load_base_image_${response.status}`);
+      if (!response.ok)
+        throw new Error(`failed_to_load_base_image_${response.status}`);
 
       const blob = await response.blob();
       const blob_url = URL.createObjectURL(blob);
@@ -789,7 +788,8 @@ export default {
 
         return {
           url: blob_url,
-          width: element.naturalWidth || this.map_base_media.$infos?.width || 1000,
+          width:
+            element.naturalWidth || this.map_base_media.$infos?.width || 1000,
           height:
             element.naturalHeight || this.map_base_media.$infos?.height || 1000,
           element,
@@ -803,31 +803,25 @@ export default {
     async startMapAsync({ keep_loc_and_zoom = false } = {}) {
       const run_id = ++this.start_map_run_id;
 
-      let zoom = 6;
-      let center;
-
       if (this.map_baselayer === "image") {
         if (!this.map_base_media) return;
 
-        this.map_image_loading = true;
         this.revokePreloadedBaseImage();
-
         try {
           this.preloaded_base_image = await this.preloadBaseImage();
         } catch (err) {
           console.error(err);
-          this.$alertify.delay(4000).error(this.$t("failed_to_load_resources"));
-          this.map_image_loading = false;
           this.scheduleMapReadyNotification();
           return;
         }
 
         if (run_id !== this.start_map_run_id) return;
-        this.map_image_loading = false;
-        await this.$nextTick();
       } else {
         this.revokePreloadedBaseImage();
       }
+
+      let zoom = 6;
+      let center;
 
       // destroy map if exist
       if (this.map) {
@@ -1142,26 +1136,18 @@ export default {
             this.map.updateSize();
             this.fitMapViewToContent();
 
-          let ready_watch_started = false;
-          const startReadyWatchOnce = () => {
-            if (ready_watch_started) return;
-            ready_watch_started = true;
-            waitForRenderPasses();
-          };
+            const emitReady = () => {
+              if (this.map_ready_emit_timeout)
+                clearTimeout(this.map_ready_emit_timeout);
+              if (this.map_ready_fallback_timeout) {
+                clearTimeout(this.map_ready_fallback_timeout);
+                this.map_ready_fallback_timeout = null;
+              }
+              this.map_ready_emit_timeout = setTimeout(() => {
+                this.$emit("mapReady");
+              }, 500);
+            };
 
-          const emitReady = () => {
-            if (this.map_ready_emit_timeout)
-              clearTimeout(this.map_ready_emit_timeout);
-            if (this.map_ready_fallback_timeout) {
-              clearTimeout(this.map_ready_fallback_timeout);
-              this.map_ready_fallback_timeout = null;
-            }
-            this.map_ready_emit_timeout = setTimeout(() => {
-              this.$emit("mapReady");
-            }, 500);
-          };
-
-          const waitForRenderPasses = () => {
             let render_passes = 0;
             const onRenderComplete = () => {
               render_passes++;
@@ -1179,32 +1165,6 @@ export default {
             this.map_ready_fallback_timeout = setTimeout(() => {
               emitReady();
             }, 5_000);
-          };
-
-          if (this.map_baselayer === "image" && this.background_layer) {
-            if (this.preloaded_base_image) {
-              startReadyWatchOnce();
-              return;
-            }
-
-            const source = this.background_layer.getSource();
-            if (source?.getState?.() === "ready") {
-              startReadyWatchOnce();
-              return;
-            }
-
-            source?.once?.("imageloadend", () => {
-              this.fitMapViewToContent();
-              startReadyWatchOnce();
-            });
-            source?.once?.("imageloaderror", startReadyWatchOnce);
-            this.map_ready_fallback_timeout = setTimeout(() => {
-              startReadyWatchOnce();
-            }, 2_000);
-            return;
-          }
-
-          startReadyWatchOnce();
           });
         });
       });
@@ -2548,16 +2508,6 @@ export default {
   background-color: var(--c-gris_clair);
 
   flex: 1 1 320px;
-
-  ._mapLoader {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--c-gris_clair);
-    z-index: 2;
-  }
 
   &.is--small {
     width: 600px;
