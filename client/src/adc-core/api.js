@@ -204,7 +204,39 @@ export default function () {
         const normalized_room = this.normalizeRoomPath(room);
         if (!normalized_room || normalized_room.startsWith("task_")) return;
         if (!this.isStoreStale(normalized_room)) return;
-        await this.fetchAndStore(normalized_room);
+
+        const response = await this.$axios.get(normalized_room).catch((err) => {
+          throw this.processError(err);
+        });
+        const content = response.data;
+
+        if (Array.isArray(content)) {
+          const existing = this.store[normalized_room];
+          if (Array.isArray(existing)) {
+            existing.splice(0, existing.length, ...content);
+          } else {
+            this.$set(this.store, normalized_room, content);
+          }
+          this.markStoreFresh(normalized_room);
+          return this.store[normalized_room];
+        }
+
+        if (typeof content === "object" && content !== null) {
+          const store_key = content.$path || normalized_room;
+          const existing = this.store[store_key];
+          if (existing && typeof existing === "object" && !Array.isArray(existing)) {
+            this.folderUpdated({
+              path_to_folder: store_key,
+              changed_data: content,
+            });
+          } else {
+            this.$set(this.store, store_key, content);
+            this.markStoreFresh(store_key);
+          }
+          return this.store[store_key];
+        }
+
+        return content;
       },
       join({ room, pinned = false }) {
         const normalized_room = this.normalizeRoomPath(room);
@@ -246,7 +278,11 @@ export default function () {
 
       async rejoinRooms() {
         for (const room of this.getSubscribedRooms()) {
-          await this.refreshStoreForRoom(room);
+          try {
+            await this.refreshStoreForRoom(room);
+          } catch (err) {
+            console.warn(`Failed to refresh store for room ${room}`, err);
+          }
           this.apiJoinRoom({ room });
         }
       },
@@ -465,12 +501,17 @@ export default function () {
       },
 
       fileCreated({ path_to_folder, meta }) {
-        const folder = this.store[path_to_folder];
-        if (!folder)
+        const folder_path = this.normalizeRoomPath(path_to_folder);
+        if (!folder_path) return;
+
+        const folder = this.store[folder_path];
+        if (!folder) {
           if (this.debug_mode)
             this.$alertify
               .delay(4000)
-              .error("Folder missing in store : " + path_to_folder);
+              .error("Folder missing in store : " + folder_path);
+          return;
+        }
         if (!folder.$files) this.$set(folder, "$files", new Array());
         folder.$files.push(meta);
         this.$eventHub.$emit("file.created", { meta });
