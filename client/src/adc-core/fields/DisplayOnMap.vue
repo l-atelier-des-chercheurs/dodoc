@@ -544,6 +544,8 @@ export default {
       hidden_geometries: [],
 
       start_map_print: false,
+      map_ready_emit_timeout: null,
+      map_ready_fallback_timeout: null,
 
       // Circle drawing state
       circle_center: null,
@@ -564,6 +566,9 @@ export default {
     // }, 500);
   },
   beforeDestroy() {
+    if (this.map_ready_emit_timeout) clearTimeout(this.map_ready_emit_timeout);
+    if (this.map_ready_fallback_timeout)
+      clearTimeout(this.map_ready_fallback_timeout);
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
@@ -1030,6 +1035,48 @@ export default {
         )
           this.map.getView().setZoom(15);
       }
+
+      this.scheduleMapReadyNotification();
+    },
+    scheduleMapReadyNotification() {
+      if (this.map_ready_emit_timeout) clearTimeout(this.map_ready_emit_timeout);
+      if (this.map_ready_fallback_timeout)
+        clearTimeout(this.map_ready_fallback_timeout);
+
+      this.$nextTick(() => {
+        if (!this.map) return;
+
+        this.map.updateSize();
+
+        const emitReady = () => {
+          if (this.map_ready_emit_timeout) clearTimeout(this.map_ready_emit_timeout);
+          if (this.map_ready_fallback_timeout) {
+            clearTimeout(this.map_ready_fallback_timeout);
+            this.map_ready_fallback_timeout = null;
+          }
+          this.map_ready_emit_timeout = setTimeout(() => {
+            this.$emit("mapReady");
+          }, 500);
+        };
+
+        let render_passes = 0;
+        const onRenderComplete = () => {
+          render_passes++;
+          if (render_passes < 2) {
+            this.map.once("rendercomplete", onRenderComplete);
+            this.map.renderSync();
+            return;
+          }
+          emitReady();
+        };
+
+        this.map.once("rendercomplete", onRenderComplete);
+        this.map.renderSync();
+
+        this.map_ready_fallback_timeout = setTimeout(() => {
+          emitReady();
+        }, 5_000);
+      });
     },
     zoomIn() {
       var view = this.map.getView();
@@ -2709,6 +2756,20 @@ export default {
 ._searchButton {
   svg {
     pointer-events: none;
+  }
+}
+
+@media print {
+  ._leftTopMenu,
+  ._bottomMenu,
+  ._popup {
+    display: none !important;
+  }
+
+  ::v-deep .ol-geocoder,
+  ::v-deep .ol-scale-line,
+  ::v-deep .ol-full-screen {
+    display: none !important;
   }
 }
 </style>

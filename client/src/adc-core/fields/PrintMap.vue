@@ -148,20 +148,19 @@ export default {
         const mapCanvas = this.$refs.mapCanvas;
         mapCanvas.width = new_map_width;
         mapCanvas.height = new_map_height;
-        const mapContext = mapCanvas.getContext("2d");
+        const map_context = mapCanvas.getContext("2d");
+        const map_target = map.getTargetElement();
 
         Array.prototype.forEach.call(
-          document.querySelectorAll(".ol-layer"),
-          async (layer) => {
+          map_target.querySelectorAll(".ol-layer"),
+          (layer) => {
             if (this.print_only_basemap)
               if (!layer.className?.includes("ol-basemap")) return;
 
             const canvas = layer.querySelector("canvas");
             if (canvas.width > 0) {
               const opacity = canvas.parentNode.style.opacity;
-              mapContext.globalAlpha = opacity === "" ? 1 : Number(opacity);
-              // Draw the layer as usual
-              mapContext.drawImage(canvas, 0, 0);
+              map_context.globalAlpha = opacity === "" ? 1 : Number(opacity);
 
               const transform = canvas.style.transform;
               // Get the transform parameters from the style's transform matrix
@@ -172,15 +171,15 @@ export default {
                 .map(Number);
               // Apply the transform to the export map context
               CanvasRenderingContext2D.prototype.setTransform.apply(
-                mapContext,
+                map_context,
                 matrix
               );
-              mapContext.drawImage(canvas, 0, 0);
+              map_context.drawImage(canvas, 0, 0);
             }
           }
         );
-        mapContext.globalAlpha = 1;
-        mapContext.setTransform(1, 0, 0, 1, 0, 0);
+        map_context.globalAlpha = 1;
+        map_context.setTransform(1, 0, 0, 1, 0, 0);
 
         const page_canvas = this.$refs.pageCanvas;
         page_canvas.width = paper_width;

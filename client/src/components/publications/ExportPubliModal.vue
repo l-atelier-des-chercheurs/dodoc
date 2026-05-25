@@ -264,6 +264,11 @@ export default {
         }
       }
 
+      if (this.publication.template === "cartography") {
+        instructions.display = "all";
+        if (this.pane_infos?.view) instructions.view = this.pane_infos.view;
+      }
+
       if (this.export_mode === "pdf") {
         if (this.pdf_pages_to_export_mode === "current")
           instructions.page = !this.is_spread

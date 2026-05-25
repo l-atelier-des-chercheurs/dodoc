@@ -1,11 +1,15 @@
 <template>
   <div
     class="_mapView"
-    :data-display="display"
-    :data-viewpane-hidden="!viewpane_visible"
+    :data-display="effective_display"
+    :data-print-layout="print_layout"
+    :data-viewpane-hidden="!show_viewpane"
   >
-    <component :is="display === 'adjacent' ? 'splitpanes' : 'div'">
-      <component :is="display === 'adjacent' ? 'pane' : 'div'" min-size="5">
+    <component :is="effective_display === 'adjacent' ? 'splitpanes' : 'div'">
+      <component
+        :is="effective_display === 'adjacent' ? 'pane' : 'div'"
+        min-size="5"
+      >
         <div class="_mapContainerWrapper">
           <DisplayOnMap
             :key="opened_view_meta_filename"
@@ -36,6 +40,7 @@
                 value: $event,
               })
             "
+            @mapReady="onDisplayMapReady"
           >
             <div class="" slot="popup_message" v-if="can_edit">
               <div v-if="!opened_view_meta_filename">
@@ -87,8 +92,8 @@
       </component>
       <transition name="viewpane-slide" mode="out-in">
         <component
-          v-if="viewpane_visible"
-          :is="display === 'adjacent' ? 'pane' : 'div'"
+          v-if="show_viewpane"
+          :is="effective_display === 'adjacent' ? 'pane' : 'div'"
           min-size="5"
         >
           <ViewPane
@@ -121,6 +126,10 @@ export default {
       type: String,
       default: "adjacent",
     },
+    print_layout: {
+      type: Boolean,
+      default: false,
+    },
     can_edit: Boolean,
   },
   components: {
@@ -147,6 +156,7 @@ export default {
       opened_pin_path: undefined,
       default_view_color: "#fc4b60",
       viewpane_visible: true,
+      map_ready_reported: false,
     };
   },
   created() {},
@@ -174,6 +184,14 @@ export default {
     },
   },
   computed: {
+    effective_display() {
+      if (this.print_layout) return "linear";
+      return this.display;
+    },
+    show_viewpane() {
+      if (this.print_layout) return true;
+      return this.viewpane_visible;
+    },
     // layers() {
     //   return this.getSectionsWithProps({
     //     publication: this.publication,
@@ -409,6 +427,11 @@ export default {
     toggleViewpane() {
       this.viewpane_visible = !this.viewpane_visible;
     },
+    onDisplayMapReady() {
+      if (this.map_ready_reported) return;
+      this.map_ready_reported = true;
+      this.$emit("mapReady");
+    },
   },
 };
 </script>
@@ -486,6 +509,73 @@ export default {
   ::v-deep ._sectionsList {
     padding-left: calc(var(--spacing) * 3) !important;
     padding-right: calc(var(--spacing) * 3) !important;
+  }
+
+  @media print {
+    border-radius: 0;
+    overflow: visible;
+    height: auto;
+
+    ._viewpaneToggle {
+      display: none !important;
+    }
+
+    ::v-deep .splitpanes__splitter {
+      display: none !important;
+    }
+
+    ::v-deep .splitpanes__pane:first-child,
+    ::v-deep .splitpanes__pane:last-child {
+      width: 100% !important;
+      display: block !important;
+    }
+
+    &[data-print-layout="true"] {
+      ._mapContainerWrapper {
+        page-break-inside: avoid;
+        height: 33vh;
+        min-height: 8cm;
+        width: 100%;
+      }
+
+      ._mapContainer {
+        height: 100% !important;
+      }
+
+      ::v-deep ._viewPane {
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 15mm !important;
+      }
+
+      ::v-deep ._sectionsList {
+        overflow: visible !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+    }
+
+    &[data-display="linear"]:not([data-print-layout="true"]) {
+      ._mapContainer {
+        height: 14cm;
+      }
+    }
+
+    &[data-display="adjacent"]:not([data-print-layout="true"]) {
+      ._mapContainer {
+        height: 50vh;
+        min-height: 12cm;
+      }
+    }
+
+    ::v-deep {
+      ._sectionsSummary {
+        display: none;
+      }
+      ._navBtns {
+        display: none;
+      }
+    }
   }
 }
 
