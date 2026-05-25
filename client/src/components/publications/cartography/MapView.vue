@@ -533,8 +533,7 @@ export default {
     &[data-print-layout="true"] {
       ._mapContainerWrapper {
         page-break-inside: avoid;
-        height: 33vh;
-        min-height: 8cm;
+        height: 25vh;
         width: 100%;
       }
 
