@@ -657,7 +657,7 @@ export default {
 }
 
 ._orderSelect {
-  width: 16ch;
+  width: 24ch;
 }
 
 ._searchField {
