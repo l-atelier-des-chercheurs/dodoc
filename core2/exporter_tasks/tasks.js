@@ -506,28 +506,59 @@ module.exports = (function () {
     video_bitrate,
   }) {
     return new Promise(async (resolve, reject) => {
+      const filters = [
+        {
+          filter: "scale",
+          options: `${output_width}:${output_height}:force_original_aspect_ratio=decrease`,
+          inputs: "0:v",
+          outputs: "v_scaled",
+        },
+        {
+          filter: "pad",
+          options: `${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
+          inputs: "v_scaled",
+          outputs: "v_padded",
+        },
+        {
+          filter: "setsar",
+          options: "1",
+          inputs: "v_padded",
+          outputs: "v_sar",
+        },
+        {
+          filter: "fps",
+          options: "fps=30",
+          inputs: "v_sar",
+          outputs: "vout",
+        },
+        {
+          filter: "anullsrc",
+          options: "channel_layout=stereo:sample_rate=44100",
+          outputs: "silence",
+        },
+        {
+          filter: "apad",
+          inputs: "silence",
+          outputs: "aout",
+        },
+      ];
+
       const ffmpeg_cmd = ffmpegTracker
         .createTrackedFfmpeg()
         .input(temp_image_path)
         .duration(image_duration)
         .loop()
-        .outputFPS(30)
         .withVideoCodec("libx264")
         .withAudioCodec("aac")
         .withVideoBitrate(video_bitrate)
-        .complexFilter("anullsrc=channel_layout=stereo:sample_rate=44100[silence]")
+        .complexFilter(filters)
         .addOptions([
-          "-map 0:v",
-          "-map [silence]",
-          "-af apad",
+          "-map [vout]",
+          "-map [aout]",
+          "-shortest",
           "-tune stillimage",
-        ])
-        .videoFilter([
-          `scale=w=${output_width}:h=${output_height}:force_original_aspect_ratio=decrease`,
-          `pad=${output_width}:${output_height}:(ow-iw)/2:(oh-ih)/2`,
-          "setsar=1/1",
-        ])
-        .addOptions(["-shortest", "-bsf:v h264_mp4toannexb"]);
+          "-bsf:v h264_mp4toannexb",
+        ]);
 
       ffmpeg_cmd
         .toFormat("mp4")
