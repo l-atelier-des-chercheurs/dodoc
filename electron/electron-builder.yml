@@ -88,8 +88,6 @@ mac:
     NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.
     NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.
     NSScreenCaptureDescription: Merci d'accorder l'accès à l'affichage pour réaliser des enregistrements.
-    com.apple.security.device.audio-input: true
-    com.apple.security.device.camera: true
 
 linux:
   artifactName: dodoc-${version}-linux-{arch}.${ext}
