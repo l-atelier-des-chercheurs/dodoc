@@ -386,7 +386,7 @@ export default {
   panes_visible_in_project_instr:
     "Choose which panes are available in this project. Only these will appear in the bar above.",
   panes_hidden_in_project_instr:
-    "Shown panes are checked. Uncheck a pane to hide it from the project bar.",
+    "Shown panes are checked. Uncheck a pane to hide it from the project bar. This setting applies to all contributors.",
   capture: "Capture",
   collect: "Collect",
   make: "Make",
