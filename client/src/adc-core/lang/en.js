@@ -926,7 +926,7 @@ export default {
     "Resolution selection is not compatible with screenshot.",
   take_picture: "Take a photo",
   delay: "Self-timer",
-  timelapse: "time-lapse",
+  timelapse: "Time-lapse",
   live: "Live",
   img_per_second: "Frames per second",
 

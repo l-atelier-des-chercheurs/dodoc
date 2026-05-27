@@ -283,6 +283,7 @@
         :onion_skin_opacity.sync="onion_skin_opacity"
         :stopmotion_frame_rate.sync="stopmotion_frame_rate"
         @insertMedia="(meta_filename) => $emit('insertMedia', meta_filename)"
+        @exportStarted="onStopmotionExportStarted"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
       />
@@ -1501,10 +1502,25 @@ export default {
       this.media_is_being_sent = false;
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
+      this.is_validating_stopmotion_video = false;
 
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;
+    },
+    onStopmotionExportStarted({ task_id }) {
+      const checkIfEnded = ({ task_id: ended_task_id, event, message }) => {
+        if (ended_task_id !== task_id) return;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+
+        if (event === "completed") {
+          const meta_filename = this.getFilename(message.file?.$path);
+          if (meta_filename) this.$emit("insertMedia", meta_filename);
+        } else {
+          this.$alertify.delay(4000).error(message);
+        }
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
     },
 
     captureKeyListener(event) {
