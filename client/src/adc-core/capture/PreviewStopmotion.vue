@@ -60,7 +60,7 @@
                   v-model="new_output_format"
                   size="small"
                   name="output_format"
-                  :id="output_format"
+                  id="output_format"
                 >
                   <option :value="'gif'">{{ $t("gif") }}</option>
                   <option :value="'mp4'">{{ $t("video") }}</option>
@@ -196,12 +196,14 @@ export default {
 
 ._fps {
   position: absolute;
+  z-index: 2;
 
   display: flex;
   justify-content: center;
   bottom: 0;
   width: 100%;
   padding: calc(var(--spacing) / 1);
+  padding-right: calc(var(--spacing) * 3);
 
   > * {
     background: var(--c-noir);
@@ -210,6 +212,15 @@ export default {
       color: white;
     }
     padding: calc(var(--spacing) / 4);
+  }
+
+  .u-sameRow {
+    align-items: flex-end;
+
+    > div {
+      flex: 1 1 0;
+      min-width: 8.5rem;
+    }
   }
 }
 
