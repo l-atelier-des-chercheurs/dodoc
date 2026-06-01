@@ -6,7 +6,7 @@
     >
       <legend>{{ $t("layout") }}</legend>
       <div class="_optionsRow">
-        <div class="_selects--starts_on_page" v-if="view_mode === 'book'">
+        <div class="_selects--starts_on_page" v-if="show_starts_on_page">
           <DLabel :str="$t('starts_on_page')" />
           <SelectField2
             :field_name="'section_starts_on_page'"
@@ -59,6 +59,7 @@ import GridAreas from "@/components/publications/edition/GridAreas.vue";
 export default {
   props: {
     chapter: Object,
+    chapters: Array,
     publication: Object,
     view_mode: String,
   },
@@ -69,6 +70,26 @@ export default {
     return {};
   },
   computed: {
+    cover_media() {
+      return this.publication.$files?.find((f) => f.cover_type === "front");
+    },
+    has_cover() {
+      return (
+        this.cover_media &&
+        (this.cover_media.$content ||
+          this.cover_media.source_medias?.length > 0)
+      );
+    },
+    is_first_chapter() {
+      if (!this.chapters?.length) return false;
+      return this.chapters[0]?.$path === this.chapter?.$path;
+    },
+    show_starts_on_page() {
+      return (
+        this.view_mode === "book" &&
+        !(this.is_first_chapter && !this.has_cover)
+      );
+    },
     starts_on_page_options() {
       if (
         this.chapter.section_type === "gallery" ||

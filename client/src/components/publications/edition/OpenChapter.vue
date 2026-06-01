@@ -112,6 +112,7 @@
 
       <ChapterLayout
         :chapter="chapter"
+        :chapters="chapters"
         :publication="publication"
         :view_mode="view_mode"
       />
