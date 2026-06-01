@@ -8,8 +8,8 @@
       v-else
       ref="foldersList"
       :folders="spaces"
-      :pinned_folders="settings.spaces_pinned"
-      :path="path"
+      :pinned_folders="spaces_pinned"
+      :path="''"
       :can_edit="is_instance_admin"
       :folder_type="'space'"
       :pin_field_name="'spaces_pinned'"
@@ -119,7 +119,16 @@ export default {
     this.$api.leave({ room: this.path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    spaces_pinned() {
+      if (
+        !this.settings?.spaces_pinned ||
+        !Array.isArray(this.settings.spaces_pinned)
+      )
+        return [];
+      return this.settings.spaces_pinned;
+    },
+  },
   methods: {
     openNewSpace(new_folder_slug) {
       this.show_create_modal = false;
