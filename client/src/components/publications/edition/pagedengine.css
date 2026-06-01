@@ -250,6 +250,17 @@ hr {
   margin-bottom: 0;
 }
 
+.edition .grid-content--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.edition .grid-content--empty .u-instructions {
+  margin: 0;
+}
+
 .media-container {
   display: flex;
   flex-flow: row nowrap;

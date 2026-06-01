@@ -599,7 +599,7 @@ export default {
 
     parseGrid(chapter) {
       if (!chapter.grid_areas || chapter.grid_areas.length === 0)
-        return `<div class="grid"><i>${this.$t("no_areas_defined")}</i></div>`;
+        return `<div class="grid"><div class="grid-content grid-content--empty"><p class="u-instructions">${this.$t("no_areas_defined")}</p></div></div>`;
 
       // Use row_count and column_count from chapter
       const col_count = chapter.column_count || 6;
