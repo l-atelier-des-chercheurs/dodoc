@@ -1,6 +1,5 @@
 const path = require("path"),
   fs = require("fs-extra"),
-  pad = require("pad-left"),
   writeFileAtomic = require("write-file-atomic"),
   { v4: uuidv4 } = require("uuid");
 
@@ -208,16 +207,25 @@ class Exporter {
         this.ffmpeg_cmd
           .withVideoCodec("libx264")
           .withVideoBitrate(video_bitrate)
-          .input("anullsrc")
-          .inputFormat("lavfi");
+          .withAudioCodec("aac");
       }
 
-      this.ffmpeg_cmd
+      let render_cmd = this.ffmpeg_cmd
         .duration(images.length / frame_rate)
         .size(`${output_width}x${output_height}`)
         .outputFPS(output_frame_rate)
         .autopad()
-        .addOptions(["-preset slow", "-tune animation"])
+        .addOptions(["-preset slow", "-tune animation"]);
+
+      if (output_format !== "gif") {
+        render_cmd = render_cmd
+          .complexFilter(
+            "anullsrc=channel_layout=stereo:sample_rate=44100[silence]"
+          )
+          .addOptions(["-map 0:v", "-map [silence]", "-shortest"]);
+      }
+
+      render_cmd
         .toFormat(output_format === "gif" ? "gif" : "mp4")
         .on("start", (commandLine) => {
           dev.log("Spawned Ffmpeg with command: \n" + commandLine);
@@ -303,7 +311,7 @@ class Exporter {
       const source = utils.getPathToUserContent(path_to_image);
       const destination = path.join(
         full_path_to_folder_in_cache,
-        "img-" + pad(index, 4, "0") + ".jpeg"
+        "img-" + String(index).padStart(4, "0") + ".jpeg"
       );
 
       await utils.convertAndCopyImage({
@@ -332,10 +340,14 @@ class Exporter {
       let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
-      if (this.instructions.page) {
-        query.page = this.instructions.page;
-        query.make_preview = true;
-      }
+      if (this.instructions.page) query.page = this.instructions.page;
+      if (this.instructions.view_mode)
+        query.view_mode = this.instructions.view_mode;
+      if (this.instructions.style) query.style = this.instructions.style;
+      if (this.instructions.display) query.display = this.instructions.display;
+      if (this.instructions.view) query.view = this.instructions.view;
+      if (this.instructions.make_preview === true) query.make_preview = true;
+
       const superadmintoken = auth.getSuperadminToken();
       query.superadmintoken = superadmintoken;
 
@@ -397,10 +409,6 @@ class Exporter {
       let url = this._createURLFromPath(this.path_to_folder);
 
       let query = {};
-      if (this.instructions.page) {
-        query.page = this.instructions.page;
-        query.make_preview = true;
-      }
 
       // use superadmin token
       const superadmintoken = auth.getSuperadminToken();
@@ -525,6 +533,11 @@ class Exporter {
             "_client"
           );
           await fs.copy(full_path_to_client_dist, destination_path);
+
+          // cleanup unused files
+          await fs.remove(path.join(destination_path, "bundle.js"));
+          await fs.remove(path.join(destination_path, "build.js"));
+          await fs.remove(path.join(destination_path, "assets"));
 
           this._notifyProgress(80);
 
@@ -909,7 +922,7 @@ class Exporter {
         task: "convertImage",
       },
       {
-        exts: [".flv", ".mov", ".avi", ".webm", ".mp4", ".mkv", ".wmv"],
+        exts: [".flv", ".mov", ".avi", ".webm", ".mp4", ".mkv", ".wmv", ".qt"],
         task: "convertVideo",
       },
       {

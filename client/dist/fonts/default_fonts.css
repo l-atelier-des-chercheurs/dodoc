@@ -687,6 +687,30 @@
     url("luciole/Luciole-BoldItalic.woff") format("woff");
 }
 
+/* Webfont: Marelle-Regular */
+@font-face {
+  font-family: "Marelle";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/Marelle-Regular.woff2") format("woff2");
+}
+
+/* Webfont: MarelleBaton-Regular */
+@font-face {
+  font-family: "Marelle Baton";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/MarelleBaton-Regular.woff2") format("woff2");
+}
+
+/* Webfont: MarelleLIGNES-Regular */
+@font-face {
+  font-family: "Marelle LIGNES";
+  font-style: normal;
+  font-weight: 400;
+  src: url("marelle/MarelleLIGNES-Regular.woff2") format("woff2");
+}
+
 @font-face {
   font-family: "Belle Allure CE";
   font-style: normal;
@@ -790,4 +814,36 @@
   font-style: italic;
   font-weight: 700;
   src: url('rubik/rubik-v31-latin-700italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* faune-regular - latin */
+@font-face {
+  font-family: "Faune";
+  font-style: normal;
+  font-weight: 400;
+  src: url("faune/Faune-Text_Regular.woff2") format("woff2");
+}
+
+/* faune-italic - latin */
+@font-face {
+  font-family: "Faune";
+  font-style: italic;
+  font-weight: 400;
+  src: url("faune/Faune-Text_Italic.woff2") format("woff2");
+}
+
+/* faune-700 - latin */
+@font-face {
+  font-family: "Faune";
+  font-style: normal;
+  font-weight: 700;
+  src: url("faune/Faune-Text_Bold.woff2") format("woff2");
+}
+
+/* faune-700italic - latin */
+@font-face {
+  font-family: "Faune";
+  font-style: italic;
+  font-weight: 700;
+  src: url("faune/Faune-Display_Bold_Italic.woff2") format("woff2");
 }

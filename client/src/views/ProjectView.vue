@@ -34,6 +34,7 @@
             :can_edit="can_contribute_to_project && !display_as_public"
             :project="project"
             :panes.sync="projectpanes"
+            @updateDisabledPanes="updateDisabledPanes"
           />
           <!-- <hr v-else class="_separator" /> -->
           <div class="_panes">
@@ -58,9 +59,11 @@ import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import PaneList2 from "@/components/nav/PaneList2.vue";
 import ProjectPanes from "@/components/ProjectPanes.vue";
 import NotFound from "@/components/NotFound.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
     ProjectPresentation,
     PaneList2,
@@ -175,6 +178,11 @@ export default {
 
       this.is_loading = false;
       this.project = project;
+
+      // Update document title with actual project name
+      if (this.project) {
+        this.updateDocumentTitle(this.project.title);
+      }
     },
     async getSpace() {
       const path = this.createPath({
@@ -200,7 +208,7 @@ export default {
         JSON.stringify(this.$route.query) === JSON.stringify(query)
       )
         return false;
-      this.$router.replace({ query });
+      this.$router.push({ query });
     },
     closeOnRemove({ path }) {
       if (path === this.project.$path) {
@@ -213,6 +221,12 @@ export default {
           this.getParent(this.createURLFromPath(this.project.$path))
         );
       }
+    },
+    async updateDisabledPanes(disabled_panes) {
+      await this.$api.updateMeta({
+        path: this.project.$path,
+        new_meta: { disabled_panes },
+      });
     },
   },
 };

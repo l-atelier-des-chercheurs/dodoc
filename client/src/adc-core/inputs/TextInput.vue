@@ -137,8 +137,13 @@ export default {
       default: false,
     },
     custom_formats: {
-      type: Array,
+      type: [Array, Boolean],
       default: () => ["bold", "italic", "link"],
+      validator(value) {
+        if (value === false) return true;
+        if (Array.isArray(value)) return true;
+        return false;
+      },
     },
     intercept_enter: {
       type: Boolean,

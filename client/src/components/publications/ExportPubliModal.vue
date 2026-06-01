@@ -12,7 +12,8 @@
     <template
       v-if="
         export_mode === 'pdf' &&
-        ['page_by_page', 'edition'].includes(publication.template)
+        ['page_by_page', 'edition'].includes(publication.template) &&
+        page_count > 1
       "
     >
       <DLabel
@@ -50,7 +51,7 @@
 
       <div
         class="u-instructions"
-        v-if="pdf_pages_to_export_mode === 'custom' && total_number_of_pages"
+        v-if="pdf_pages_to_export_mode === 'custom' && page_count"
       >
         <template v-if="is_spread">
           {{
@@ -62,15 +63,17 @@
         <template v-else>
           {{
             $t("total_number_of_pages_in_publication", {
-              total: total_number_of_pages,
+              total: page_count,
             })
           }}
         </template>
       </div>
     </template>
 
-    <template v-if="export_mode === 'png'">
-      <template v-if="publication.template === 'page_by_page'">
+    <template v-if="export_mode === 'png' && page_count > 1">
+      <template
+        v-if="['page_by_page', 'edition'].includes(publication.template)"
+      >
         <div class="u-spacingBottom" />
 
         <div class="">
@@ -102,6 +105,7 @@
     <ExportItemAndSaveOrDownload
       v-if="task_instructions"
       :publication_path="publication.$path"
+      :can_save_to_project="can_save_to_project"
       :instructions="task_instructions"
       @close="task_instructions = false"
     />
@@ -115,6 +119,7 @@ export default {
     modal_title: String,
     publication: Object,
     pane_infos: Object,
+    can_save_to_project: Boolean,
   },
   components: {
     ExportItemAndSaveOrDownload,
@@ -154,8 +159,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    available_export_options() {
+      return this.export_options;
+    },
     page_count() {
-      return this.publication.pages.length;
+      if (this.publication.template === "edition")
+        return this.publication.number_of_book_pages || 0;
+      return this.publication.pages?.length || 0;
     },
     is_spread() {
       return this.publication.page_spreads === true;
@@ -175,13 +185,9 @@ export default {
       }
       return false;
     },
-    total_number_of_pages() {
-      if (!this.publication.pages) return false;
-      return this.publication.pages.length;
-    },
     total_number_of_spreads() {
-      if (!this.total_number_of_pages) return false;
-      return Math.floor(this.total_number_of_pages / 2) + 1;
+      if (!this.page_count) return false;
+      return Math.floor(this.page_count / 2) + 1;
     },
     current_spread_number() {
       if (this.pane_infos?.page_id && this.publication.page_spreads) {
@@ -198,14 +204,6 @@ export default {
         return Math.floor((page_number + 1) / 2) + 1;
       }
       return false;
-    },
-    custom_resolution_unit() {
-      if (
-        this.publication.layout_mode === "print" ||
-        this.publication.template === "edition"
-      )
-        return "mm";
-      return "px";
     },
     url_to_print_from() {
       const route = this.$router.resolve({
@@ -252,10 +250,24 @@ export default {
 
       if (export_type === "webpage") instructions.layout_mode = "screen";
       if (
-        this.publication.template === "page_by_page" &&
+        ["page_by_page", "edition"].includes(this.publication.template) &&
         this.export_mode === "png"
       )
         instructions.page = this.page_to_export_as_image;
+
+      if (this.publication.template === "edition") {
+        instructions.view_mode = "book";
+
+        // check if there is a style filename selected, add it
+        if (this.pane_infos?.style) {
+          instructions.style = this.pane_infos.style;
+        }
+      }
+
+      if (this.publication.template === "cartography") {
+        instructions.display = "all";
+        if (this.pane_infos?.view) instructions.view = this.pane_infos.view;
+      }
 
       if (this.export_mode === "pdf") {
         if (this.pdf_pages_to_export_mode === "current")
@@ -264,7 +276,7 @@ export default {
             : this.current_spread_number;
         else if (this.pdf_pages_to_export_mode === "custom")
           instructions.page = this.specific_pdf_page_or_spread_to_export;
-        // else instructions.page = "1-" + this.total_number_of_pages;
+        // else instructions.page = "1-" + this.page_count;
       }
 
       if (this.is_spread) instructions.page_width *= 2;

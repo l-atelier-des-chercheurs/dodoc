@@ -236,6 +236,12 @@ export default {
     toggleNewModuleEdit({ meta_filename }) {
       setTimeout(() => {
         console.log(`emit module.enable_edit.${meta_filename}`);
+        const module_path = this.publication.$path + "/" + meta_filename;
+        this.$eventHub.$emit(`publication.story.scrollTo.${module_path}`, {
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 50);
     },

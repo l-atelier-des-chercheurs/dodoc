@@ -80,7 +80,7 @@
           </template>
           <button
             type="button"
-            class="u-buttonLink"
+            class="u-button u-button_icon"
             @click="$emit('removeMediaAtIndex', { index })"
           >
             <b-icon icon="trash" />

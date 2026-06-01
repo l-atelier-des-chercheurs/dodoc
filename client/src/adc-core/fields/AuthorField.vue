@@ -6,7 +6,6 @@
       :tag="tag"
       :instructions="instructions"
     />
-
     <transition-group tag="div" class="_authors" name="listComplete" appear>
       <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
         {{ $t("everyone") }}
@@ -18,12 +17,14 @@
           v-for="author_path in authors_paths"
           :path="author_path"
           :key="author_path"
-          :mode="'link'"
+          :mode="disable_links ? undefined : 'link'"
           :show_image_only="show_image_only"
         />
       </template>
-      <div v-else class="t-500" key="noone">
-        {{ $t("noone") }}
+      <div v-else class="" key="noone">
+        <small>
+          {{ $t("noone") }}
+        </small>
       </div>
       <EditBtn
         key="editbtn"
@@ -132,8 +133,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    disable_links: {
+      type: Boolean,
+      default: false,
+    },
   },
-  components: {},
+  components: {
+    AuthorPicker: () => import("@/adc-core/inputs/AuthorPicker.vue"),
+  },
   data() {
     return {
       edit_mode: false,

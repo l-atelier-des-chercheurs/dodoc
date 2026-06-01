@@ -6,5 +6,4 @@
 "$status" = "private"
 "$origin" = "collect"
 "$type" = "image"
-"$optimized" = true
 caption = '<p class=""> </p>'

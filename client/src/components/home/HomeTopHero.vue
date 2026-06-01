@@ -217,8 +217,9 @@ export default {
 
 ._sessionTitle {
   display: block;
-  font-weight: 500;
-  letter-spacing: -0.015em;
+  font-weight: 300;
+  // letter-spacing: -0.015em;
+  font-style: italic;
   margin-bottom: calc(var(--spacing) * 1);
 }
 

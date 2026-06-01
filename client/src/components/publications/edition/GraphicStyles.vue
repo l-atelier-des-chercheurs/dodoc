@@ -15,7 +15,7 @@
         type="button"
         v-for="style_file in style_files"
         :key="style_file.$path"
-        class="u-button"
+        class="u-button u-button_small"
         :class="{
           'is--active': opened_style_file?.$path === style_file.$path,
         }"
@@ -25,7 +25,7 @@
       </button>
       <button
         type="button"
-        class="u-button"
+        class="u-button u-button_small"
         :class="{
           'is--active': opened_style_file?.$path === 'default',
         }"
@@ -35,7 +35,7 @@
       </button>
       <button
         type="button"
-        class="u-button u-button_bleumarine"
+        class="u-button u-button_small u-button_bleumarine"
         @click="show_create_css_modal = true"
       >
         {{ $t("create_custom_stylesheet") }}
@@ -49,7 +49,7 @@
         <DLabel :str="$t('name')" />
         <TextInput
           :content.sync="new_css_title"
-          :maxlength="40"
+          :maxlength="60"
           :required="true"
           :autofocus="true"
           ref="titleInput"
@@ -63,6 +63,7 @@
             class="u-button u-button_bleuvert"
             @click="createCustomStylesheet"
           >
+            <b-icon icon="plus-circle" />
             {{ $t("create_and_open") }}
           </button>
         </template>
@@ -118,7 +119,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
-    this.$emit("update:show_source_html", false);
+    // this.$emit("update:show_source_html", false);
   },
   watch: {},
   computed: {
@@ -192,7 +193,7 @@ export default {
   height: 100%;
   overflow: auto;
   z-index: 10;
-  background-color: var(--c-noir);
+  background-color: #333;
 
   display: flex;
   flex-flow: column nowrap;
@@ -205,18 +206,16 @@ export default {
   gap: calc(var(--spacing) / 2);
   overflow-x: auto;
 
-  background-color: #000;
-  background-color: var(--c-noir);
-
   // border-bottom: 2px solid var(--c-gris_fonce);
-  padding: calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 2);
+
+  button {
+    white-space: nowrap;
+  }
 }
 
 ._openedStyleFile {
   flex: 1 1 auto;
-  background-color: #000;
-  background-color: #303841;
-  background-color: #333;
 }
 
 ._defaultStyles {

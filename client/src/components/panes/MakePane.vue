@@ -1,7 +1,7 @@
 <template>
   <div class="_makePane">
     <div class="_makePane--content">
-      <div v-if="!opened_make_slug">
+      <div v-if="!opened_make_slug" class="_makePane--content--create">
         <RadioSwitch
           v-if="can_edit"
           :content.sync="current_view"
@@ -413,8 +413,12 @@ export default {
 ._makePane--content {
   width: 100%;
   margin: 0 auto;
+  // padding: calc(var(--spacing) * 1);
+  padding-bottom: calc(var(--spacing) * 5);
+}
+
+._makePane--content--create {
   padding: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 10);
 }
 
 .m_recipes--type {

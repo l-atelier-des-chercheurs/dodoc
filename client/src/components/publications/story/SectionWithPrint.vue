@@ -76,12 +76,11 @@ export default {
 }
 
 ._section {
-  margin: calc(var(--spacing) * 4) 0;
+  padding: 0;
   page-break-inside: avoid;
   page-break-after: always;
 
   @media print {
-    margin: 0;
     // padding-top: calc(var(--spacing) * 2);
   }
 }

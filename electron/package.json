@@ -1,0 +1,33 @@
+{
+  "name": "dodoc-electron",
+  "productName": "do•doc",
+  "version": "13.0.35",
+  "description": "do•doc Electron wrapper",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "debug": "electron --inspect=5858 . -- --debug --verbose",
+    "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -p always",
+    "dist:win-store": "electron-builder --win appx",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "engines": {
+    "node": "24.14.0",
+    "npm": "*"
+  },
+  "electronmon": {
+    "patterns": [
+      "!../client/**",
+      "!../tokens.json"
+    ]
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.3",
+    "electron": "40.8.5",
+    "electron-builder": "^26.8.1",
+    "electronmon": "^2.0.4"
+  }
+}

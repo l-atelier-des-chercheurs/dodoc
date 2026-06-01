@@ -9,11 +9,12 @@
         @input="$emit('input', $event.target.value)"
         :placeholder="search_placeholder"
         :name="name"
+        :title="search_placeholder"
       />
       <transition name="pagechange">
         <button
           type="button"
-          class="u-suffix u-button u-button_bleumarine"
+          class="u-button u-button_icon"
           style="flex: 0 0 auto"
           v-if="value.length > 0"
           @click="$emit('input', '')"
@@ -45,6 +46,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._searchInput {
-  width: 55ch;
+  // width: 55ch;
 }
 </style>

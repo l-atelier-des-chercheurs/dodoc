@@ -15,26 +15,26 @@
         class="u-spacingBottom"
       >
         <div class="u-spacingBottom">
+          <DLabel :str="$t('caption')" />
           <CollaborativeEditor3
-            :label="$t('caption')"
             :content="''"
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
-            @save="
-              ($event) => saveInformations({ field: 'caption', value: $event })
-            "
+            :mode="'always_active'"
+            @input="($event) => saveInformations({ field: 'caption', value: $event })"
           />
         </div>
         <div class="u-spacingBottom">
+          <DLabel :str="$t('credit/reference')" />
           <CollaborativeEditor3
-            :label="$t('credit/reference')"
             :field_to_edit="'$credits'"
             :content="''"
             :custom_formats="['bold', 'italic', 'link', 'emoji']"
             :is_collaborative="false"
             :can_edit="true"
-            @save="
+            :mode="'always_active'"
+            @input="
               ($event) => saveInformations({ field: '$credits', value: $event })
             "
           />
@@ -97,6 +97,14 @@
         </p>
       </template>
     </div>
+    <template slot="footer">
+      <SaveCancelButtons
+        :is_saving="is_saving"
+        :allow_save="allow_save"
+        @save="saveAllInformations"
+        @cancel="$emit('close')"
+      />
+    </template>
   </BaseModal2>
 </template>
 <script>
@@ -111,10 +119,13 @@ export default {
       required: true,
     },
   },
-  components: {},
+  components: {
+    PositionPicker: () => import("@/adc-core/inputs/PositionPicker.vue"),
+  },
   data() {
     return {
       saving_media_index: null,
+      is_saving: false,
 
       selected_option: "",
       options: [
@@ -147,61 +158,72 @@ export default {
 
       set_$authors: [],
       keep_existing_authors: true,
+
+      draft_updates: {},
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
   watch: {},
-  computed: {},
-  methods: {
-    async saveInformations({ field, value }) {
-      this.saving_media_index = 0;
-
-      for (const media of this.selected_medias) {
-        const new_meta = {
-          [field]: value,
-        };
-        await this.$api.updateMeta({
-          path: media.$path,
-          new_meta,
-        });
-        this.saving_media_index++;
-
-        if (field === "$location") {
-          this.set_location = value;
-        }
-      }
-      setTimeout(() => {
-        this.saving_media_index = null;
-      }, 2000);
+  computed: {
+    allow_save() {
+      return Object.keys(this.draft_updates).length > 0;
     },
-    async saveArray(value, field) {
+  },
+  methods: {
+    saveInformations({ field, value }) {
+      this.$set(this.draft_updates, field, value);
+
+      if (field === "$location") this.set_location = value;
+    },
+    saveArray(value, field) {
+      if (field === "keywords") this.set_keywords = value;
+      if (field === "$authors") this.set_$authors = value;
+      this.$set(this.draft_updates, field, value);
+    },
+    shouldKeepExisting(field) {
+      if (field === "keywords") return this.keep_existing_keywords;
+      if (field === "$authors") return this.keep_existing_authors;
+      return false;
+    },
+    async saveAllInformations() {
+      if (!this.allow_save || this.is_saving) return;
+
+      this.is_saving = true;
       this.saving_media_index = 0;
 
-      let array_to_save = value;
+      try {
+        for (const media of this.selected_medias) {
+          const new_meta = {};
 
-      // todo : keep existing keywords
-      for (const media of this.selected_medias) {
-        let new_array = array_to_save;
+          for (const [field, value] of Object.entries(this.draft_updates)) {
+            if (Array.isArray(value)) {
+              let new_array = value;
+              if (this.shouldKeepExisting(field)) {
+                const existing_array = media[field] || [];
+                new_array = [...new Set([...existing_array, ...value])];
+              }
+              new_meta[field] = new_array;
+            } else {
+              new_meta[field] = value;
+            }
+          }
 
-        if (this[`keep_existing_${field}`]) {
-          const existing_array = media[field] || [];
-          new_array = [...existing_array, ...array_to_save];
-          new_array = [...new Set(new_array)];
+          await this.$api.updateMeta({
+            path: media.$path,
+            new_meta,
+          });
+          this.saving_media_index++;
         }
 
-        await this.$api.updateMeta({
-          path: media.$path,
-          new_meta: { [field]: new_array },
-        });
-        this.saving_media_index++;
+        this.$emit("close");
+      } finally {
+        this.is_saving = false;
+        setTimeout(() => {
+          this.saving_media_index = null;
+        }, 2000);
       }
-      this.$set(this, `set_${field}`, value);
-
-      setTimeout(() => {
-        this.saving_media_index = null;
-      }, 2000);
     },
   },
 };

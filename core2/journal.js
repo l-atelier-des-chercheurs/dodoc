@@ -18,6 +18,7 @@ module.exports = (function () {
     shutdown: () => _handleCleanShutdown(),
 
     getLogs: () => _getLogs(),
+    downloadLog: ({ filename, res }) => _downloadLog({ filename, res }),
   };
 
   function _createTimestamp(date = new Date()) {
@@ -291,7 +292,7 @@ module.exports = (function () {
           startDate,
           endDate,
           duration,
-          download_url: `/journal/${filename}`,
+          download_url: `/_api2/_logs/${encodeURIComponent(filename)}`,
         };
       })
     );
@@ -304,6 +305,31 @@ module.exports = (function () {
     });
 
     return logs;
+  }
+
+  async function _downloadLog({ filename, res }) {
+    if (
+      !filename ||
+      path.basename(filename) !== filename ||
+      path.extname(filename) !== ".jsonl"
+    ) {
+      return res.status(400).send({ code: "invalid_filename" });
+    }
+
+    const journal_path = path.join(global.pathToUserContent, "journal");
+    const file_path = path.join(journal_path, filename);
+    const resolved_journal_path = path.resolve(journal_path) + path.sep;
+    const resolved_file_path = path.resolve(file_path);
+
+    if (!resolved_file_path.startsWith(resolved_journal_path)) {
+      return res.status(403).send({ code: "not_allowed" });
+    }
+
+    if (!(await fs.pathExists(resolved_file_path))) {
+      return res.status(404).send({ code: "not_found" });
+    }
+
+    return res.download(resolved_file_path, filename);
   }
 
   return API;

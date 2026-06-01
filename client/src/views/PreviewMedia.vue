@@ -12,9 +12,9 @@
           @load="onIframeLoad"
         ></iframe>
         <ThreeDPreview
-          v-else-if="media_type === 'stl'"
+          v-else-if="['stl', 'obj'].includes(media_type)"
           class="_content"
-          :file_type="'stl'"
+          :file_type="media_type"
           :src="preview_url"
         />
       </template>
@@ -64,8 +64,10 @@
 </template>
 <script>
 import CaptionCreditsPage from "@/components/publications/modules/CaptionCreditsPage.vue";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
+  mixins: [PublicationReady],
   props: {},
   components: {
     ThreeDPreview: () => import("@/adc-core/fields/ThreeDPreview.vue"),
@@ -81,6 +83,10 @@ export default {
   },
   async created() {},
   async mounted() {
+    if (this.previewing_for === "node") {
+      this.setPublicationReadyState(false);
+    }
+
     if (this.$route.query.path_to_meta && this.previewing_for === "user") {
       this.media = await this.$api
         .getFile({
@@ -92,6 +98,10 @@ export default {
     }
 
     this.is_loading = false;
+
+    if (this.previewing_for === "node") {
+      this.$nextTick(() => this.scheduleNodePreviewReadyForCapture());
+    }
   },
   beforeDestroy() {},
   watch: {},
@@ -112,7 +122,22 @@ export default {
     },
   },
   methods: {
-    onIframeLoad() {},
+    scheduleNodePreviewReadyForCapture() {
+      if (this.media_type === "pdf") return;
+      if (["stl", "obj"].includes(this.media_type)) {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            setTimeout(() => this.setPublicationReadyState(true), 800);
+          });
+        });
+        return;
+      }
+      this.setPublicationReadyState(true);
+    },
+    onIframeLoad() {
+      if (this.previewing_for !== "node" || this.media_type !== "pdf") return;
+      setTimeout(() => this.setPublicationReadyState(true), 800);
+    },
     openQRCodeScanner() {
       this.show_qr_code_scanner = true;
     },

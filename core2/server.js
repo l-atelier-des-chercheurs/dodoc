@@ -2,7 +2,6 @@ var express = require("express");
 
 var http = require("http");
 var https = require("https");
-var fs = require("fs");
 var path = require("path"),
   compression = require("compression");
 const helmet = require("helmet");
@@ -12,7 +11,8 @@ const sockets = require("./sockets"),
   api2 = require("./api2"),
   journal = require("./journal"),
   serverRTC = require("./serverRTC.js"),
-  dev = require("./dev-log");
+  dev = require("./dev-log"),
+  { loadHttpsOptions } = require("./load-ssl");
 // cors_for_ressources = require("./cors_for_ressources"),
 
 module.exports = function () {
@@ -46,18 +46,10 @@ module.exports = function () {
   // Apply rate limiting only to _api2 endpoints
   app.use("/_api2", apiSpeedLimiter);
 
-  // only for HTTPS, works without asking for a certificate
-  const options = {
-    key: fs.readFileSync(
-      global.settings.privateKeyPath ||
-        path.join(__dirname, "ssl", "selfsigned.key")
-    ),
-    cert: fs.readFileSync(
-      global.settings.certificatePath ||
-        path.join(__dirname, "ssl", "selfsigned.crt")
-    ),
-    passphrase: global.settings.passphrase || "",
-  };
+  const https_options =
+    global.settings.protocol === "https"
+      ? loadHttpsOptions(global.settings, __dirname)
+      : null;
 
   if (
     global.settings.protocol === "https" &&
@@ -76,7 +68,7 @@ module.exports = function () {
 
   let server =
     global.settings.protocol === "https"
-      ? https.createServer(options, app)
+      ? https.createServer(https_options, app)
       : http.createServer(app);
 
   dev.logverbose("Starting server 2");
@@ -88,9 +80,21 @@ module.exports = function () {
   app.set("views", global.appRoot); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
-  // prevent access to general admin and folders meta.txt
+  // prevent access to internal/sensitive files that live in content root
   app.use(function (req, res, next) {
-    if (req.url.includes("/meta.txt"))
+    let normalized_path = req.path || req.url || "";
+    try {
+      normalized_path = decodeURIComponent(normalized_path);
+    } catch (err) {}
+
+    const is_meta_file = normalized_path.includes("/meta.txt");
+    const is_tokens_file =
+      normalized_path === "/tokens.json" ||
+      normalized_path.endsWith("/tokens.json");
+    const is_journal_folder =
+      normalized_path === "/journal" || normalized_path.startsWith("/journal/");
+
+    if (is_meta_file || is_tokens_file || is_journal_folder)
       res.status(403).send(`Access not allowed.`);
     // TODO: allow loading medias from domains that admin has allowed (set to ”domain1”, ”domain2”, ”domain3”, etc., or to "all")
     // else if (!(cors_for_ressources.allowed(req, res, next)))
@@ -101,11 +105,24 @@ module.exports = function () {
   app.use(express.static(global.pathToUserContent));
   app.use(
     "/_client",
-    express.static(path.join(global.appRoot, "client", "dist"))
+    express.static(path.join(global.appRoot, "client", "dist"), {
+      setHeaders: (res, filePath) => {
+        // `build.js` is the ES module entry. It must not be cached "forever"
+        // (we don't add `?v=` to it, because that breaks ESM singleton identity).
+        if (filePath.endsWith(path.sep + "build.js")) {
+          res.setHeader("Cache-Control", "no-cache");
+          return;
+        }
+        // Vite emits hashed assets in /assets; those can be cached aggressively.
+        if (filePath.includes(path.sep + "assets" + path.sep)) {
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      },
+    })
   );
 
   // app.use(express.urlencoded({ extended: true }));
-  app.use(express.json({ limit: "1mb" })); // To parse the incoming requests with JSON payloads
+  app.use(express.json({ limit: "4mb" })); // To parse the incoming requests with JSON payloads
   app.locals.pretty = true;
 
   journal.log({

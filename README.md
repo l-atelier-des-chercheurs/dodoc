@@ -28,14 +28,11 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 # Branches
 
-- **main** --> default branch, latest stable version, in Electron (offline app). See release page for Linux/Mac/Windows installers.
-- **main-node** --> latest stable version without Electron, to use on online servers.
+- **main** --> default branch, latest stable version. Unified branch supporting both Electron (offline app) and Node (server) modes. See release page for Linux/Mac/Windows installers.
 
-- **main-dev** --> fixes and small improvements on top of the current version, in Electron. Used for testing before merging changes to **main**.
-- **main-dev-node** --> fixes and small improvements on top of the current version, for servers. Used for testing before merging changes to - **main-node**.
+- **main-dev** --> fixes and small improvements on top of the current version. Used for testing before merging changes to **main**.
 
-- **next** --> code for the next major version, in Electron. Use at your own risks.
-- **next-node** --> code for the next major version, without Electron. Use at your own risks.
+- **next** --> code for the next major version. Unified branch supporting both Electron and Node modes. Use at your own risks.
 
 `npm install sharp@0.31.3`
 
@@ -53,52 +50,103 @@ See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developp
 
 ## Method 3 — the dev way
 
-To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and run the following commands:
+To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and follow the instructions below based on your use case.
 
-```
+### Node version (for servers/VPS)
+
+For running do•doc on a server with Puppeteer (for PDF/screenshot generation):
+
+```bash
 npm install
+npm start
 ```
 
-Available scripts:
+**Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
 
-- run the app with minimal logging, as fast as possible:
+Available scripts for Node mode:
 
-```
-npm run start
+- `npm start` - run the app with minimal logging
+- `npm run debug` - run the app with debug logging
+
+### Electron version (for desktop app)
+
+For running do•doc as a desktop application with Electron:
+
+```bash
+npm install
+cd electron
+npm install
+npm start
 ```
 
-- run the app to debug locally:
+**Note:** When building Electron app, electron-builder automatically excludes puppeteer, typescript, and platform-folders from the final package to reduce app size. Both modes work from the same dependencies.
 
-```
-npm run debug
-```
+Available scripts for Electron mode (run from `/electron` folder):
 
-- run the app in debug mode, with client code and vite/hot-module-replacement:
+- `npm start` - run the Electron app with minimal logging
+- `npm run debug` - run the app to debug locally
+- `npm run debug-lr` - run the app in debug mode with live reload
+- `npm run pack` - package the app (without creating installer)
+- `npm run dist` - build distributable installers
 
-```
-npm run debug-lr
-```
+For development with live reload (client-side code):
 
 You need to open a second terminal to run the vite/livereload server:
 
-```
+```bash
 cd client
 npm i
 npm run dev
 ```
 
-### On Ubuntu
+### On Ubuntu (Electron only)
 
-Because of recent security changes on Ubuntu, you may encount the following error on npm start or debug:
-`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
+Because of recent security changes on Ubuntu, you may encounter the following error on npm start or debug:
+`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/electron/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
 
 To fix, use the following commands:
 
-```
-cd ./node_modules/ electron/dist/
+```bash
+cd electron/node_modules/electron/dist/
 sudo chown root chrome-sandbox
 chmod 4755 chrome-sandbox
 ```
+
+### HTTPS for local development
+
+HTTPS is required for WebSockets, camera/geolocation APIs, and other secure-context features. The backend uses self-signed certs by default, which browsers reject. Use **mkcert** for locally-trusted certificates:
+
+```bash
+# Install mkcert (macOS)
+brew install mkcert
+mkcert -install   # trust the local CA, run once
+
+# Generate certs and update settings.json
+npm run setup-https
+```
+
+Restart the server and open https://localhost:8080 — the browser will trust the certificate.
+
+## Method 4 — the docker way
+
+This method makes the installation of do•doc a bit simpler.
+You need to have `docker` installed on your machine.
+
+### The docker compose way
+
+Run `docker compose up -d`, wait for it to initialize completely, and visit `https://localhost:8080`.
+Your data is persistent (in ./dodoc-data directory).
+
+### Or the docker manual way
+
+If you prefer to customise the container, the basic pattern for starting a do•doc instance is:
+
+```
+$ docker run --name my-dodoc -p 8080:8080 -v ./dodoc-data:/home/node/Documents -d ghcr.io/l-atelier-des-chercheurs/dodoc:latest
+```
+
+Your data is persistent (in ./dodoc-data directory).
+Then, access it via `https://localhost:8080`.
 
 # After installation
 
@@ -140,6 +188,7 @@ Default values are:
 - $date_created     (Date)                                when the folder was created
 - $date_modified    (Date)                                when the folder was last edited
 - $files_count      (Number)                              number of files in that folder
+- $folders_count    (Number)                              total count of content folders across all subfolder types (e.g., for a space: number of projects; for a project: total of publications + makes + stopmotions)
 - $date_last_file   (Date)                                when the last file was uploaded
 - $files            (Array)                               list of all the files in this folder (see Files below) (bypass with no_files=true to improve performance where files are not needed)
 - $status           (String, editable)                    determines whether the folder gets listed
@@ -170,7 +219,7 @@ Default values are:
 - $type             (String, editable)                    type of media file among the following: _image, video, audio, stl, text, pdf, other_
 - $status           (String, editable)                    determines whether the file gets listed when getFiles is called by non-authors
 - $origin           (String, editable)                    used to indicate the origin of the media (capture page, upload, etc.)
-- $optimized        (Boolean, editable)                   used to indicate whether the media has been optimized or not
+- $processing        (Array, editable)                    used to list processing applied to media (blurred, cropped, resized, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
 - $content          (String, editable)                    text content of a file
 - $credits          (String, editable)                    Credits for media
@@ -315,6 +364,17 @@ Then the following routes will redirect to:
 
 - /spaces/bonjour/projects/elephant-with-plywood.zip
   --> downloads a zip file with all the content of that folder
+
+- /spaces.zip
+  --> downloads a zip of the **`spaces`** directory under your content folder as-is: slug folders, dotfiles such as `.slug-sequence.json`, **`_bin`**, etc.—same hierarchy as on disk.
+
+- /spaces/bonjour/projects.zip
+  --> same for **projects** under that space (`/spaces/bonjour/projects/`).
+
+- /spaces/bonjour/projects/elephant-with-plywood/publications.zip
+  --> deepest type step in this example schema (`publications` under that project folder).
+
+Actual HTTP routes use the **`/_api2/...`** prefix (e.g. `/_api2/spaces/bonjour/projects.zip`). Folder-type archives require **local admin rights** like the usual **Download** permission for `.zip`; for a root type like **`_api2/projects.zip`** (schema-dependent), ACL falls back on instance admins (path `"."`). The journal logs `download_folder_type` for those requests.
 
 ### Permission
 

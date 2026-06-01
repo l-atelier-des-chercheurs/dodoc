@@ -94,7 +94,7 @@
                 class="u-button u-button_orange"
                 @click="show_optimize_modal = true"
               >
-                <b-icon :icon="'file-play-fill'" />
+                <b-icon icon="sliders" />
                 {{ $t("convert_shorten") }}
               </button>
             </div>
@@ -125,8 +125,17 @@
           >
             <b-icon icon="x-lg" />
           </button>
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            key="cancel"
+            v-else-if="status === 'sending'"
+            @click="$emit('skip')"
+          >
+            <b-icon icon="x-lg" />
+          </button>
           <LoaderSpinner
-            v-else-if="['creating_thumb', 'sending'].includes(status)"
+            v-else-if="status === 'creating_thumb'"
             key="loading"
           />
           <button
@@ -146,7 +155,7 @@
             type="button"
             v-else
             key="retry"
-            class="u-button u-button_bleuvert"
+            class="u-button u-button_bleuvert u-button_small"
             @click="retrySend"
           >
             {{ $t("retry") }}
@@ -165,6 +174,7 @@ export default {
     index_indicator: String,
     path: String,
     allow_caption_edition: Boolean,
+    additional_meta: Object,
   },
   components: {
     OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
@@ -174,6 +184,7 @@ export default {
       status: "waiting",
       upload_percentage: undefined,
       preview: undefined,
+      upload_abort_controller: undefined,
 
       new_file_caption: "",
       sent_file: undefined,
@@ -189,6 +200,7 @@ export default {
   },
   mounted() {},
   beforeDestroy() {
+    this.cancelSend();
     if (this.preview) URL.revokeObjectURL(this.preview);
   },
   watch: {},
@@ -205,11 +217,17 @@ export default {
   },
   methods: {
     async uploadFile() {
+      this.cancelSend();
+      this.upload_abort_controller = new AbortController();
       this.status = "sending";
       this.upload_percentage = 0;
 
       let additional_meta = {};
-      additional_meta.$origin = "collect";
+
+      if (this.additional_meta) {
+        Object.assign(additional_meta, this.additional_meta);
+      }
+
       if (this.file.lastModified)
         additional_meta.$date_created = this.file.lastModified;
       if (this.connected_as?.$path)
@@ -231,15 +249,31 @@ export default {
           file: this.file,
           additional_meta,
           onProgress,
+          abort_signal: this.upload_abort_controller.signal,
         })
         .catch((err) => {
+          if (err?.code === "ERR_CANCELED") {
+            this.status = "waiting";
+            this.upload_percentage = undefined;
+            throw err;
+          }
           this.status = "error";
-          if (err.code !== "file_size_limit_exceeded")
+          if (err.code === "file_size_limit_exceeded") {
+            const max_size_mo =
+              err.err_infos?.upload_max_file_size_in_mo ?? 10000;
+            const msg = this.$t("file_size_limit_exceeded", {
+              maxSize: max_size_mo,
+            });
+            this.$alertify.delay(6000).error(msg);
+            this.error = msg;
+          } else {
             this.$alertify.delay(4000).error(err.message);
-          this.error = err.message;
+            this.error = err.message;
+          }
           throw err;
         });
 
+      this.upload_abort_controller = undefined;
       this.upload_percentage = 100;
       this.status = "sent";
 
@@ -251,9 +285,14 @@ export default {
 
       this.$emit("uploaded", { filename: this.file.name, meta_filename });
     },
-    cancelSend() {},
+    cancelSend() {
+      if (this.upload_abort_controller) {
+        this.upload_abort_controller.abort();
+        this.upload_abort_controller = undefined;
+      }
+    },
     retrySend() {
-      // todo
+      this.uploadFile().catch(() => {});
     },
   },
 };
@@ -316,7 +355,7 @@ export default {
     transform-origin: left center;
 
     transition: all 0.2s;
-    background-color: var(--active-color);
+    background-color: var(--c-orange);
   }
 
   ._uploadFile--progressBar--percent {
@@ -388,7 +427,7 @@ export default {
   flex: 0 0 70px;
 }
 ._uploadFile--action {
-  flex: 0 0 70px;
+  flex: 0 0 15ch;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;

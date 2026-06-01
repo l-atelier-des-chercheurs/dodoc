@@ -67,14 +67,14 @@ module.exports = (function () {
           }
         } else if (effect_type === "colored_filter") {
           if (effect_opts?.color_filter?.startsWith("#")) {
-            ffmpeg_cmd
-              .input(
-                `color=${effect_opts.color_filter}:s=${video_width}x${video_height}`
-              )
-              .inputFormat("lavfi");
+            complexFilters.push({
+              filter: "color",
+              options: `c=${effect_opts.color_filter}:s=${video_width}x${video_height}`,
+              outputs: "color_bg",
+            });
             complexFilters.push({
               filter: "blend=shortest=1:all_mode=overlay:all_opacity=1",
-              inputs: "output",
+              inputs: ["output", "color_bg"],
               outputs: "output",
             });
             if (keep_audio_track) {

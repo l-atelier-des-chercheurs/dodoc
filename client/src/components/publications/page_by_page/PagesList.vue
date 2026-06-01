@@ -9,17 +9,20 @@
 
         <div class="u-spacingBottom" />
 
-        <RangeValueInput
-          :label="$t('previews_size')"
-          :value="previews_size"
-          :can_toggle="false"
-          :min="20"
-          :max="600"
-          :step="1"
-          :ticks="[20, 50, 100, 200, 400, 600]"
-          :default_value="200"
-          @save="previews_size = $event"
-        />
+        <div class="_previewsSizeInput">
+          <RangeValueInput
+            :label="$t('previews_size')"
+            :value="previews_size"
+            :can_toggle="false"
+            :min="20"
+            :max="600"
+            :step="1"
+            :ticks="[20, 50, 100, 200, 400, 600]"
+            :default_value="200"
+            :suffix="'%'"
+            @save="previews_size = $event"
+          />
+        </div>
       </div>
 
       <transition-group
@@ -489,6 +492,10 @@ export default {
 }
 ._createPage {
   margin-right: calc(var(--spacing) * 1);
+}
+
+._previewsSizeInput input {
+  max-width: 100px;
 }
 
 ._setPreviewSize {

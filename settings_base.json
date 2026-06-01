@@ -7,7 +7,7 @@
   "cache_content": true,
   "bonjour_domain": false,
   "versioning": true,
-  "tokenIsValidForXDays": 60,
+  "tokenIsValidForXDays": 30,
 
   "contentPath": "dodoc",
 
@@ -202,6 +202,12 @@
               },
               "publications_pinned": {
                 "type": "array"
+              },
+              "todolists_order": {
+                "type": "array"
+              },
+              "disabled_panes": {
+                "type": "array"
               }
             },
             "$files": {
@@ -221,6 +227,39 @@
               }
             },
             "$folders": {
+              "notes_todo": {
+                "fields": {
+                  "title": {
+                    "type": "string",
+                    "unique": true
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "notes_list": {
+                    "type": "array"
+                  }
+                },
+                "$files": {
+                  "thumbs": {
+                    "resolutions": [50, 220, 440, 1600]
+                  },
+                  "fields": {
+                    "title": {
+                      "type": "string",
+                      "unique": true
+                    },
+                    "state": {
+                      "type": "string",
+                      "options": ["todo", "done", "canceled"],
+                      "default": "todo"
+                    },
+                    "done_date": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
               "stopmotions": {
                 "fields": {
                   "images_list": {
@@ -412,6 +451,9 @@
                   },
                   "pagn_bottom": {
                     "type": "number"
+                  },
+                  "number_of_book_pages": {
+                    "type": "number"
                   }
                 },
                 "$files": {
@@ -466,6 +508,12 @@
                     },
                     "column_count": {
                       "type": "number"
+                    },
+                    "row_count": {
+                      "type": "number"
+                    },
+                    "grid_areas": {
+                      "type": "array"
                     },
                     "main_text_meta": {
                       "type": "string"
@@ -537,6 +585,9 @@
                       "type": "number"
                     },
                     "drop_shadow": {
+                      "type": "number"
+                    },
+                    "blur": {
                       "type": "number"
                     },
                     "locked": {
@@ -612,6 +663,7 @@
         }
       },
       "chats": {
+        "$can_be_created_by": "logged-in",
         "fields": {
           "title": {
             "type": "string",
@@ -622,6 +674,9 @@
           },
           "last_message_count": {
             "type": "number"
+          },
+          "linked_project_path": {
+            "type": "string"
           }
         },
         "$files": {

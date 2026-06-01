@@ -7,6 +7,7 @@
     <template v-else-if="publication">
       <PublicationTopbar
         class="_publicationOpen--topbar"
+        v-if="!(publication.template === 'page_by_page' && pane_infos.page_id)"
         :publication="publication"
         :pane_infos="pane_infos"
         :can_edit="can_edit"

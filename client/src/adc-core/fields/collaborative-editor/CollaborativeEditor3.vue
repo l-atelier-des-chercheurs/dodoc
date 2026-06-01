@@ -17,6 +17,8 @@
       v-if="show_archives"
       :path="path"
       :current_content="content"
+      :save_format="save_format"
+      :content_type="content_type"
       @close="show_archives = false"
       @restore="restoreVersion"
     />
@@ -37,7 +39,7 @@
         @click="show_markdown_help = !show_markdown_help"
       >
         <b-icon icon="patch-question" />
-        <span>{{ $t("markdown_help") }}</span>
+        {{ $t("markdown_help") }}
       </button>
       <MarkdownHelpModal
         v-if="show_markdown_help"
@@ -53,53 +55,49 @@
 
       <slot name="custom_buttons" />
 
-      <div class="_archiveSaveContainer">
-        <template v-if="editor_is_enabled && !is_disabling_editor">
-          <!-- <button type="button" class="u-button _editBtn" @click="toggleEdit">
-            <b-icon icon="check-circle-fill" :aria-label="$t('stop_edit')" />
-            <span>{{ $t("stop_edit") }}</span>
-          </button> -->
-
-          <transition name="pagechange" mode="out-in">
-            <div
-              class="u-button _savingStatus"
-              v-if="is_loading_or_saving"
-              key="saving"
-            >
-              <LoaderSpinner />
-              {{ $t("saving") }}
-            </div>
-            <div
-              class="u-button _savedStatus"
-              v-else-if="show_saved_icon"
-              key="saved"
-            >
-              <b-icon icon="check-circle" />
-              {{ $t("saved") }}
-            </div>
-            <!-- <span v-else key="connected">
+      <div
+        class="_archiveSaveContainer"
+        v-if="editor_is_enabled && !is_disabling_editor"
+      >
+        <transition name="pagechange" mode="out-in">
+          <div
+            class="u-button _savingStatus"
+            v-if="is_loading_or_saving"
+            key="saving"
+          >
+            <LoaderSpinner />
+            {{ $t("saving") }}
+          </div>
+          <div
+            class="u-button _savedStatus"
+            v-else-if="show_saved_icon"
+            key="saved"
+          >
+            <b-icon icon="check-circle" />
+            {{ $t("saved") }}
+          </div>
+          <!-- <span v-else key="connected">
                 <b>{{ $t(rtc.connection_state) }}</b>
               </span> -->
-            <button
-              type="button"
-              class="u-button _archivesBtn"
-              v-else-if="field_to_edit === '$content' && path"
-              @click="show_archives = !show_archives"
-            >
-              <b-icon icon="archive" />
-              <span>{{ $t("history") }}</span>
-            </button>
-          </transition>
-          <EditBtn
-            class="_editBtn"
-            v-if="
-              (is_collaborative && !is_loading_or_saving) || path !== undefined
-            "
-            :btn_type="'check'"
-            :label_position="'left'"
-            @click="saveContent"
-          />
-        </template>
+          <button
+            type="button"
+            class="u-button u-button_white _archivesBtn"
+            v-else-if="field_to_edit === '$content' && path"
+            @click="show_archives = !show_archives"
+          >
+            <b-icon icon="archive" />
+            {{ $t("history") }}
+          </button>
+        </transition>
+        <EditBtn
+          class="_editBtn"
+          v-if="
+            (is_collaborative && !is_loading_or_saving) || path !== undefined
+          "
+          :btn_type="'check'"
+          :label_position="'left'"
+          @click="saveContent"
+        />
       </div>
     </div>
 
@@ -113,7 +111,7 @@
         <EditBtn
           v-if="can_edit && !editor_is_enabled"
           :label_position="'left'"
-          @click="enableEditor"
+          @click="startEditorFromButton"
         />
       </div>
       <div
@@ -139,29 +137,39 @@ import ReconnectingWebSocket from "reconnectingwebsocket";
 import {
   fonts as default_fonts,
   formats as default_formats,
-  fontSizeArr,
   lineHeightArr,
 } from "./imports/defaults.js";
 
-// var Parchment = Quill.import("parchment");
-// var lineHeightConfig = {
-//   scope: Parchment.Scope.BLOCK,
-//   whitelist: lineHeightArr,
-// };
-// var lineHeightClass = new Parchment.Attributor.Class(
-//   "lineheight",
-//   "ql-line-height",
-//   lineHeightConfig
-// );
-// var lineHeightStyle = new Parchment.Attributor.Style(
-//   "lineheight",
-//   "line-height",
-//   lineHeightConfig
-// );
-// Parchment.register(lineHeightClass);
-// Parchment.register(lineHeightStyle);
+const toolbar_font_size_arr = [
+  "10px",
+  "12px",
+  false,
+  "16px",
+  "20px",
+  "28px",
+  "36px",
+  "48px",
+  "__custom__",
+];
+
+const Parchment = Quill.import("parchment");
+const line_height_config = {
+  scope: Parchment.Scope.BLOCK,
+  whitelist: lineHeightArr.filter(Boolean),
+};
+const LineHeightStyleAttributor = Parchment.StyleAttributor;
+if (LineHeightStyleAttributor) {
+  const line_height_style = new LineHeightStyleAttributor(
+    "lineheight",
+    "line-height",
+    line_height_config
+  );
+  Quill.register(line_height_style, true);
+}
 var Size = Quill.import("attributors/style/size");
-Size.whitelist = fontSizeArr;
+if (Object.prototype.hasOwnProperty.call(Size, "whitelist")) {
+  delete Size.whitelist;
+}
 Quill.register(Size, true);
 
 const FontAttributor = Quill.import("attributors/style/font");
@@ -176,6 +184,13 @@ class DividerBlot extends BlockEmbed {}
 DividerBlot.blotName = "divider";
 DividerBlot.tagName = "hr";
 Quill.register(DividerBlot);
+
+var Block = Quill.import("blots/block");
+class WarningBlot extends Block {}
+WarningBlot.blotName = "warning";
+WarningBlot.tagName = "DIV";
+WarningBlot.className = "u-warning";
+Quill.register(WarningBlot);
 
 import MediaBlot from "./imports/MediaBlot.js";
 import CardEditableModule from "./imports/CardEditableModule.js";
@@ -197,12 +212,16 @@ export default {
     path: String,
     sharedb_id: String,
     content: String,
+    placeholder: {
+      type: String,
+      default: "…",
+    },
     field_to_edit: {
       type: String,
       default: "$content",
     },
     scrollingContainer: HTMLElement,
-    custom_formats: Array,
+    custom_formats: [Array, Boolean],
     can_edit: Boolean,
     is_collaborative: {
       type: Boolean,
@@ -218,6 +237,10 @@ export default {
       default: "normal",
     },
     no_padding: Boolean,
+    autofocus: {
+      type: Boolean,
+      default: false,
+    },
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -269,13 +292,24 @@ export default {
       this.can_edit &&
       (this.mode === "always_active" || this.mode === "edit_on_mounted")
     )
-      this.enableEditor();
+      await this.enableEditor();
 
-    this.$eventHub.$on("media.enableEditor." + this.path, this.enableEditor);
+    if (this.autofocus) {
+      this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
+      this.editor.focus();
+    }
+
+    this.$eventHub.$on(
+      "media.enableEditor." + this.path,
+      this.startEditorFromButton
+    );
     this.$eventHub.$on("media.disableEditor." + this.path, this.disableEditor);
   },
   beforeDestroy() {
-    this.$eventHub.$off("media.enableEditor." + this.path, this.enableEditor);
+    this.$eventHub.$off(
+      "media.enableEditor." + this.path,
+      this.startEditorFromButton
+    );
     this.$eventHub.$off("media.disableEditor." + this.path, this.disableEditor);
     this.disableEditor();
   },
@@ -286,9 +320,10 @@ export default {
         (this.is_collaborative && !this.editor_is_enabled)
       ) {
         this.$nextTick(() => {
-          if (this.content !== this.editor.root.innerHTML)
-            // this.editor.root.innerHTML = (this.content);
-            this.editor.root.innerHTML = this.$sanitize(this.content);
+          const incoming_content = this.content || "";
+          if (this.getEditorContent() !== incoming_content) {
+            this.setEditorContent(incoming_content);
+          }
         });
       }
     },
@@ -313,6 +348,21 @@ export default {
     },
   },
   methods: {
+    setEditorContent(content, change_source = "init") {
+      if (!this.editor) return;
+
+      if (this.save_format === "raw") {
+        const normalized = (content || "").replace(/\r\n?/g, "\n");
+        const text = normalized.endsWith("\n") ? normalized : normalized + "\n";
+        this.editor.setContents([{ insert: text }], change_source);
+      } else {
+        const sanitized_content = this.$sanitize(content || "");
+        const delta = this.editor.clipboard.convert({
+          html: sanitized_content,
+        });
+        this.editor.setContents(delta, change_source);
+      }
+    },
     async initEditor() {
       const toolbar = this.makeToolbar();
 
@@ -326,11 +376,59 @@ export default {
               enter: {
                 key: "Enter",
                 handler: (range, context) => {
+                  const current_format = (context && context.format) || {};
+                  const in_blockquote_or_warning =
+                    current_format.blockquote || current_format.warning;
+
+                  if (in_blockquote_or_warning) {
+                    this.editor.insertText(range.index, "\n");
+                    this.editor.setSelection(range.index + 1);
+                    this.editor.format("blockquote", false);
+                    this.editor.format("warning", false);
+                    return false;
+                  }
+
                   if (this.$listeners.onEnter) {
                     return this.$listeners.onEnter(range, context);
                   }
-                  // Return true to allow default Enter behavior
-                  // Return false to prevent default behavior
+
+                  // Keep logical active text formats for the next line.
+                  const format_keys_to_keep = [
+                    "font",
+                    "size",
+                    "color",
+                    "background",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strike",
+                    "script",
+                    "code",
+                    "lineheight",
+                  ];
+                  const formats_to_keep = {};
+                  format_keys_to_keep.forEach((format_key) => {
+                    if (
+                      typeof current_format[format_key] !== "undefined" &&
+                      current_format[format_key] !== false
+                    ) {
+                      formats_to_keep[format_key] = current_format[format_key];
+                    }
+                  });
+
+                  if (Object.keys(formats_to_keep).length > 0) {
+                    requestAnimationFrame(() => {
+                      Object.entries(formats_to_keep).forEach(
+                        ([format_key, format_value]) => {
+                          this.editor.format(
+                            format_key,
+                            format_value,
+                            Quill.sources.SILENT
+                          );
+                        }
+                      );
+                    });
+                  }
                   return true;
                 },
               },
@@ -340,32 +438,20 @@ export default {
         },
         bounds: this.$refs.editor,
         theme: "snow",
-        formats: this.custom_formats || default_formats,
-        placeholder: "",
+        formats: (this.custom_formats || default_formats).filter(
+          (f) => f !== "emoji"
+        ),
+        placeholder: this.capitalize(this.placeholder),
         readOnly: !this.editor_is_enabled,
         scrollingContainer: this.scrollingContainer,
       });
 
-      if (this.content) {
-        if (this.save_format === "raw") {
-          // const _content = this.$sanitize(this.content);
-          // this.editor.root.innerHTML = _content;
-          // this.editor.clipboard.dangerouslyPasteHTML(_content);
-          // this.editor.setContents(this.editor.getContents(), "init");
-          const normalized = this.content.replace(/\r\n?/g, "\n");
-          const text = normalized.endsWith("\n")
-            ? normalized
-            : normalized + "\n";
-          this.editor.setContents([{ insert: text }], "init");
-        } else {
-          // this.editor.setText(this.content);
-          // this.editor.root.innerHTML = this.content;
-          const delta = this.editor.clipboard.convert({ html: this.content });
-          this.editor.setContents(delta, "init");
-        }
+      if (this.content || this.content === "") {
+        this.setEditorContent(this.content);
         this.editor.history.clear();
       }
 
+      this.setCustomSizeOptionLabel();
       this.setStatusButton();
     },
 
@@ -382,9 +468,9 @@ export default {
       if (reference_formats.includes("header"))
         container.push([{ header: [false, 1, 2, 3] }]);
       if (reference_formats.includes("size"))
-        container.push([{ size: fontSizeArr }]);
-      // if (reference_formats.includes("lineheight"))
-      //   container.push([{ lineheight: lineHeightArr }]);
+        container.push([{ size: toolbar_font_size_arr }]);
+      if (reference_formats.includes("lineheight"))
+        container.push([{ lineheight: lineHeightArr }]);
 
       let formatting_opt = [];
       const basic_formatting = [
@@ -395,6 +481,7 @@ export default {
         "link",
         "emoji",
         "blockquote",
+        "warning",
       ];
       basic_formatting.map((bf) => {
         if (reference_formats.includes(bf)) formatting_opt.push(bf);
@@ -484,18 +571,23 @@ export default {
             );
           }
         },
-        line_height_select: function (new_line_height) {
-          new_line_height;
-          // var range = this.quill.getSelection();
-          // if (range) {
-          //   this.quill.format(
-          //     range.index,
-          //     range.length,
-          //     "line-height",
-          //     +new_line_height,
-          //     "user"
-          //   );
-          // }
+        size: (new_size) => {
+          if (new_size === "__custom__") {
+            this.applyCustomTextSize();
+            return;
+          }
+          if (!new_size) {
+            this.editor.format("size", false, Quill.sources.USER);
+            return;
+          }
+          this.editor.format("size", new_size, Quill.sources.USER);
+        },
+        lineheight: function (new_line_height) {
+          if (!new_line_height) {
+            this.quill.format("lineheight", false, Quill.sources.USER);
+            return;
+          }
+          this.quill.format("lineheight", new_line_height, Quill.sources.USER);
         },
       };
 
@@ -503,6 +595,63 @@ export default {
         container,
         handlers,
       };
+    },
+    applyCustomTextSize() {
+      if (!this.editor) return;
+
+      const current_size = this.editor.getFormat()?.size;
+      const suggested_size =
+        this.parseCustomTextSize(current_size)?.replace("px", "") || "16";
+      const custom_size_raw = window.prompt(
+        `${this.$t("text_size")} (px)`,
+        suggested_size
+      );
+      if (custom_size_raw === null) return;
+
+      const custom_size = this.parseCustomTextSize(custom_size_raw);
+      if (!custom_size) return;
+
+      this.editor.format("size", custom_size, Quill.sources.USER);
+    },
+    setCustomSizeOptionLabel() {
+      const custom_label = this.$t("custom");
+      this.$el
+        .querySelectorAll(".ql-size .ql-picker-label")
+        .forEach((el) => el.setAttribute("data-label", custom_label));
+
+      this.$el
+        .querySelectorAll(
+          '.ql-size .ql-picker-label[data-value="__custom__"], .ql-size .ql-picker-item[data-value="__custom__"]'
+        )
+        .forEach((el) => {
+          el.setAttribute("data-value", "__custom__");
+          el.setAttribute("data-label", custom_label);
+        });
+
+      this.$el
+        .querySelectorAll('select.ql-size option[value="__custom__"]')
+        .forEach((option_el) => {
+          option_el.textContent = custom_label;
+        });
+    },
+    parseCustomTextSize(raw_value) {
+      if (raw_value === undefined || raw_value === null) return null;
+      const cleaned_value = String(raw_value)
+        .trim()
+        .replace(",", ".")
+        .replace(/px$/i, "")
+        .trim();
+      if (!cleaned_value) return null;
+
+      const parsed_value = Number(cleaned_value);
+      if (!Number.isFinite(parsed_value)) return null;
+
+      const clamped_value = Math.min(200, Math.max(6, parsed_value));
+      const normalized_value = Number.isInteger(clamped_value)
+        ? clamped_value.toString()
+        : clamped_value.toFixed(2).replace(/\.?0+$/, "");
+
+      return `${normalized_value}px`;
     },
     getEditorContent() {
       if (!this.editor.getText() || this.editor.getText() === "\n") return "";
@@ -522,6 +671,9 @@ export default {
         .forEach((el) => el.classList && el.classList.remove("is--selected"));
       return t.innerHTML;
     },
+    capitalize(text) {
+      return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
+    },
     insertAtCursor(text) {
       var index = this.editor.getSelection(true)?.index;
       if (index !== undefined) {
@@ -537,10 +689,13 @@ export default {
       if (this.$refs.editBtn)
         this.$el.querySelector(".ql-toolbar").appendChild(this.$refs.editBtn);
     },
-    toggleEdit() {
-      if (!this.editor_is_enabled) this.enableEditor();
-      else this.disableEditor();
+    async startEditorFromButton() {
+      if (this.editor_is_enabled || !this.can_edit) return false;
+      await this.enableEditor();
+      this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
+      this.editor.focus();
     },
+
     async enableEditor() {
       if (this.editor_is_enabled || !this.can_edit) return false;
 
@@ -556,8 +711,6 @@ export default {
       //   const fontLastUsed = localStorage.getItem("fontLastUsed");
       //   this.editor.format("font", fontLastUsed);
       // }
-
-      this.editor.setSelection(this.editor.getLength(), Quill.sources.SILENT);
 
       this.$emit(`contentIsEdited`, {
         $toolbar: this.toolbar_el,
@@ -613,11 +766,7 @@ export default {
     },
 
     restoreVersion(content) {
-      this.editor.root.innerHTML = content;
-      // do not use, it doesnt respect \n
-      // const value = content;
-      // const delta = this.editor.clipboard.convert(value);
-      // this.editor.setContents(delta, "user");
+      this.setEditorContent(content, "user");
       this.show_archives = false;
     },
     updateInput() {
@@ -799,6 +948,9 @@ export default {
       height: auto;
       overflow: visible;
       color: inherit;
+      border: none;
+      --block_line_height: 1.42;
+      --script_font_line_height_multiplier: 1.7;
 
       background-color: transparent;
 
@@ -813,11 +965,27 @@ export default {
         max-width: 30ch;
       }
 
-      blockquote {
+      blockquote,
+      .ql-code-block-container {
         padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
         margin: calc(var(--spacing) * 1) 0;
         border: none;
         border-left: 2px solid var(--c-gris);
+      }
+
+      .u-warning {
+        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
+        padding-left: calc(var(--spacing) * 4);
+        margin: calc(var(--spacing) * 1) 0;
+      }
+
+      .ql-code-block-container {
+        border-color: transparent;
+        font-family: "Fira Code", monospace;
+
+        ::selection {
+          background-color: var(--c-gris_fonce);
+        }
       }
 
       pre.ql-syntax {
@@ -833,6 +1001,23 @@ export default {
       > * {
         position: relative;
         // padding: 0;
+      }
+      > *[style*="line-height:1.25"],
+      > *[style*="line-height: 1.25"] {
+        --block_line_height: 1.25;
+      }
+      > *[style*="line-height:1.65"],
+      > *[style*="line-height: 1.65"] {
+        --block_line_height: 1.65;
+      }
+
+      /* Script fonts use a multiplier on the block line-height from the picker. */
+      [style*="font-family"][style*="Marelle"],
+      [style*="font-family"][style*="Belle Allure"] {
+        line-height: calc(
+          var(--block_line_height, 1.42) *
+            var(--script_font_line_height_multiplier, 1.12)
+        );
       }
     }
 
@@ -850,6 +1035,11 @@ export default {
   ::v-deep {
     .ql-editor {
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+      min-height: 10rem;
+
+      &.ql-editor.ql-blank::before {
+        left: calc(var(--spacing) / 2);
+      }
     }
   }
 }
@@ -862,6 +1052,9 @@ export default {
     }
     .ql-formats {
       display: none;
+    }
+    .ql-editor.ql-blank::before {
+      left: 0;
     }
   }
 }
@@ -876,6 +1069,10 @@ export default {
       border-bottom-left-radius: var(--input-border-radius);
       border-bottom-right-radius: var(--input-border-radius);
       // border-radius: var(--input-border-radius);
+
+      &:has(.ql-editor:focus-visible) {
+        border-left-color: var(--c-gris);
+      }
     }
   }
 }
@@ -914,7 +1111,7 @@ export default {
 
   display: flex;
   flex-flow: row wrap;
-  // gap: calc(var(--spacing) / 4);
+  gap: calc(var(--spacing) / 4);
   justify-content: flex-start;
   align-items: center;
 
@@ -932,10 +1129,38 @@ export default {
   &::after {
     display: none;
   }
+
+  // override ql-snow.css
   button,
   svg {
     display: inherit;
     color: currentColor;
+  }
+
+  .u-button {
+    display: inherit;
+    color: currentColor;
+
+    &:hover,
+    &:focus-visible,
+    &.is--active {
+      &:not([disabled]) {
+        color: black;
+      }
+    }
+  }
+
+  .u-button_orange {
+    // color: white;
+    background-color: var(--c-orange);
+
+    &:hover,
+    &:focus-visible,
+    &.is--active {
+      &:not([disabled]) {
+        background-color: var(--c-orange_fonce);
+      }
+    }
   }
 
   button,
@@ -951,7 +1176,8 @@ export default {
   ._savingStatus,
   ._savedStatus,
   ._archivesBtn {
-    min-width: 9.5rem;
+    // min-width: 8.5rem;
+    background-color: inherit;
   }
   ._savedStatus {
     background-color: var(--c-vert);
@@ -974,6 +1200,7 @@ export default {
   .ql-color-picker .ql-picker-options {
     // to prevent overflow issues with pagemenu overflow
     width: var(--quill-options-size);
+    width: calc(var(--quill-options-size) * 1.6);
   }
 
   .ql-picker {
@@ -1014,17 +1241,40 @@ export default {
     }
   }
 
+  // Warning block button styling
+  .ql-warning {
+    svg {
+      display: none;
+    }
+    &:after {
+      content: "⚠";
+      color: currentColor;
+      font-size: var(--quill-buttons-size);
+      line-height: 1;
+    }
+
+    &:hover,
+    &.ql-active {
+      color: #06c;
+    }
+  }
+
   .ql-formats {
     // margin-right: calc(var(--spacing) / 2);
     // margin-bottom: calc(var(--spacing) / 2);
     margin: 0;
     display: flex;
     flex-flow: row nowrap;
-    border: 2px solid var(--toolbar-bg);
+    // border: 2px solid var(--toolbar-bg);
     border-radius: var(--input-border-radius);
     background: #fff;
 
-    button,
+    button {
+      border-radius: var(--input-border-radius);
+      transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    button:not(.u-button),
     > *:not(.ql-size):not(.ql-lineheight):not(.ql-header):not(.ql-font)
       .ql-picker-label {
       display: flex;
@@ -1068,13 +1318,19 @@ export default {
         .ql-picker-label,
         .ql-picker-item {
           &::before {
-            content: "Normal (1.42)" !important;
+            content: "Normal" !important;
           }
           &[data-value],
           &[data-value] {
             &::before {
               content: attr(data-value) !important;
             }
+          }
+          &[data-value="1.25"]::before {
+            content: "Tight" !important;
+          }
+          &[data-value="1.65"]::before {
+            content: "Spacious" !important;
           }
         }
       }
@@ -1087,6 +1343,25 @@ export default {
 
     .ql-picker-label::before {
       // line-height: var(--button-size);
+    }
+
+    .ql-active,
+    .ql-picker.ql-expanded {
+      // background-color: var(--c-gris_clair);
+      // outline: 2px solid var(--c-gris);
+      // border-color: var(--c-gris);
+      // border-width: 2px;
+      // border-style: solid;
+      // border-radius: var(--input-border-radius);
+      // padding: 2px;
+      border-radius: var(--input-border-radius);
+      border: none;
+      box-shadow: 0 1px 4px inset rgba(0, 0, 0, 0.2);
+
+      .ql-picker-label {
+        border-radius: var(--input-border-radius);
+        border: none;
+      }
     }
   }
 
@@ -1134,6 +1409,28 @@ export default {
     }
   }
 
+  html[lang="fr"] .ql-picker.ql-lineheight {
+    .ql-picker-label,
+    .ql-picker-item {
+      &::before {
+        content: "Normal" !important;
+      }
+      &[data-value="1.25"]::before {
+        content: "Serré" !important;
+      }
+      &[data-value="1.65"]::before {
+        content: "Aéré" !important;
+      }
+    }
+  }
+
+  .ql-picker.ql-size {
+    .ql-picker-label[data-value="__custom__"]::before,
+    .ql-picker-item[data-value="__custom__"]::before {
+      content: attr(data-label) !important;
+    }
+  }
+
   // .ql-picker.ql-size .ql-picker-label[data-value="75%"]::before,
   // .ql-picker.ql-size .ql-picker-item[data-value="75%"]::before {
   //   content: "Small";
@@ -1173,6 +1470,16 @@ export default {
 
   .ql-picker.ql-size .ql-picker-label[data-value]::before {
     font-size: 100% !important;
+  }
+  .ql-picker-label[data-value="Belle Allure CE"] {
+    line-height: 2.2;
+  }
+
+  /* Marelle LIGNES includes built-in guideline glyphs:
+     tighten its preview so it doesn't overflow picker rows. */
+  .ql-picker.ql-font .ql-picker-label {
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 
@@ -1221,20 +1528,28 @@ select.ql-ui {
   justify-content: center;
   align-items: center;
 
+  &:empty {
+    display: none;
+  }
+
   ._archiveSaveContainer {
     border: 2px solid var(--toolbar-bg);
     border-radius: var(--input-border-radius);
     overflow: hidden;
-    background: #fff;
+    // background: #fff;
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
 
-    ._editBtn {
-      background-color: var(--c-bleuvert) !important;
-      border-radius: 0 !important;
-    }
+    // ._editBtn {
+    //   background-color: var(--c-bleuvert) !important;
+    //   border-radius: 0 !important;
+    // }
+  }
+
+  ._editBtn {
+    background-color: var(--c-bleuvert);
   }
 
   ._markdownHelpBtn {

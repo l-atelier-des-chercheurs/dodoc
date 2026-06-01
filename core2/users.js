@@ -37,7 +37,10 @@ module.exports = (function () {
       return user;
     },
     userLeft: (id) => {
+      const has_user = users.some((u) => u.id === id);
+      if (!has_user) return false;
       users = users.filter((u) => u.id !== id);
+      return true;
     },
     cleanupUsers: async () => {
       if (!io) return;
@@ -57,8 +60,7 @@ module.exports = (function () {
 
         // Remove stale users and emit notifications
         staleUsers.forEach((user) => {
-          users = users.filter((u) => u.id !== user.id);
-          notifier.emit("userLeft", user.id);
+          if (API.userLeft(user.id)) notifier.emit("userLeft", user.id);
         });
 
         return staleUsers.length; // Return number of cleaned up users

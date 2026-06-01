@@ -2,7 +2,7 @@
   <div>
     <form v-if="!connected_as" @submit.prevent="login">
       <fieldset>
-        <legend class="u-label">{{ $t("your_account") }}</legend>
+        <legend>{{ $t("your_account") }}</legend>
 
         <transition name="pagechange" mode="out-in">
           <div v-if="!author_to_login_to" key="search">
@@ -122,9 +122,6 @@
       </fieldset>
 
       <LoaderSpinner v-if="connection_status === 'pending'" />
-      <div class="" v-else-if="connection_status === 'success'">
-        {{ $t("logged_in") }}
-      </div>
     </form>
   </div>
 </template>

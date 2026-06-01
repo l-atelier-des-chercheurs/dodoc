@@ -61,16 +61,15 @@
                 <span v-else>—</span>
               </td>
               <td>
-                <a
-                  :href="logInfo.download_url"
-                  :download="logInfo.filename"
-                  target="_blank"
+                <button
+                  type="button"
                   class="u-buttonLink"
+                  @click="downloadLog(logInfo)"
                 >
                   {{
                     $t("download") + " (" + formatBytes(logInfo.filesize) + ")"
                   }}
-                </a>
+                </button>
               </td>
             </tr>
           </tbody>
@@ -127,6 +126,13 @@ export default {
     },
     async refreshLogs() {
       await this.loadLogs();
+    },
+    async downloadLog(log_info) {
+      try {
+        await this.$api.downloadLog({ filename: log_info.filename });
+      } catch (error) {
+        console.error("Failed to download log:", error);
+      }
     },
   },
 };

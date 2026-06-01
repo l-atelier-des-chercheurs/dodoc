@@ -14,7 +14,7 @@
       class="_popup"
       :class="{
         'is--pin': clicked_location.module,
-        'is--shown': has_module_content_to_show,
+        'is--shown': show_popup,
       }"
     >
       <div class="_popupShadow" />
@@ -55,14 +55,43 @@
         >
           <slot name="popup_message" />
         </div>
+        <div
+          v-else-if="
+            !clicked_location.module &&
+            !popup_message &&
+            (clicked_location.latitude != null ||
+              clicked_location.longitude != null)
+          "
+          class="_popupMessage _popupCoords"
+        >
+          {{ $t("latitude") }}: {{ clicked_location.latitude }}°<br />
+          {{ $t("longitude") }}: {{ clicked_location.longitude }}°
+        </div>
+        <div
+          v-if="
+            (popup_message ||
+              clicked_location.module ||
+              clicked_location.latitude != null ||
+              clicked_location.longitude != null) &&
+            $slots.hasOwnProperty('popup_footer')
+          "
+          class="_popupFooter"
+        >
+          <slot name="popup_footer" />
+        </div>
       </div>
     </div>
     <div id="mouse-position" />
 
     <div class="_leftTopMenu">
-      <div class="_buttonRow" v-if="!$root.app_infos.is_electron">
+      <div class="_buttonRow" v-if="has_current_position_button">
         <!-- hidden if electron, need to find alternative strategy -->
-        <button type="button" class="u-button" @click="getCurrentPosition">
+        <button
+          type="button"
+          class="u-button"
+          :title="$t('current_position')"
+          @click="getCurrentPosition"
+        >
           <span class="u-icon">
             <svg
               viewBox="0 0 24 24"
@@ -94,7 +123,12 @@
         class="_buttonRow"
         v-if="!['image', 'color'].includes(map_baselayer)"
       >
-        <button type="button" class="u-button" @click="toggleSearch">
+        <button
+          type="button"
+          class="u-button _searchButton"
+          @click="toggleSearch"
+          :title="$t('search')"
+        >
           <b-icon class="inlineSVG" icon="search" />
         </button>
       </div>
@@ -144,7 +178,7 @@
           </template>
         </button>
       </div>
-      <div class="_buttonRow">
+      <div class="_buttonRow" v-if="can_show_print_button">
         <button
           type="button"
           class="u-button"
@@ -159,7 +193,7 @@
           </template> -->
         </button>
         <PrintMap
-          v-if="start_map_print"
+          v-if="start_map_print && can_show_print_button"
           :map="map"
           :map_baselayer_bw="map_baselayer_bw"
           @close="start_map_print = false"
@@ -186,7 +220,10 @@
             </small>
           </template>
           <template v-else-if="'Select' === current_draw_mode">
-            <small class="_instr u-instructions" v-if="!selected_feature">
+            <small
+              class="_instr u-instructions"
+              v-if="!selected_features.length"
+            >
               {{ $t("select_by_clicking") }}
             </small>
             <template v-else>
@@ -198,7 +235,10 @@
 
               <!-- Shape info display -->
               <div
-                v-if="['Circle', 'Polygon'].includes(selected_feature_type)"
+                v-if="
+                  selected_features.length === 1 &&
+                  ['Circle', 'Polygon'].includes(selected_feature_type)
+                "
                 class="_circleInfo"
               >
                 <div
@@ -236,7 +276,7 @@
               />
 
               <ColorInput
-                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                v-if="selected_features_have_fillable"
                 :can_toggle="false"
                 :live_editing="true"
                 :allow_transparent="true"
@@ -251,7 +291,7 @@
               />
 
               <RangeValueInput
-                v-if="['Polygon', 'Circle'].includes(selected_feature_type)"
+                v-if="selected_features_have_fillable"
                 :can_toggle="false"
                 :label="$t('fill_opacity')"
                 :value="selected_feature.get('fill_opacity')"
@@ -394,6 +434,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    can_print_map: {
+      type: Boolean,
+      default: false,
+    },
     can_edit: Boolean,
   },
   components: {
@@ -497,8 +541,13 @@ export default {
       map_select_mode: undefined,
       selected_feature_id: undefined,
       map_translate: undefined,
+      hidden_geometries: [],
 
       start_map_print: false,
+      preloaded_base_image: null,
+      start_map_run_id: 0,
+      map_ready_emit_timeout: null,
+      map_ready_fallback_timeout: null,
 
       // Circle drawing state
       circle_center: null,
@@ -519,6 +568,10 @@ export default {
     // }, 500);
   },
   beforeDestroy() {
+    this.revokePreloadedBaseImage();
+    if (this.map_ready_emit_timeout) clearTimeout(this.map_ready_emit_timeout);
+    if (this.map_ready_fallback_timeout)
+      clearTimeout(this.map_ready_fallback_timeout);
     this.$eventHub.$off("publication.map.navigateTo", this.navigateTo);
     this.$eventHub.$off("publication.map.openPin", this.openPin);
     this.$eventHub.$off("publication.map.disableTools", this.disableTools);
@@ -529,6 +582,12 @@ export default {
     pins: {
       handler() {
         this.loadPins();
+        if (this.isPixelBasedBaselayer() && this.map) {
+          this.$nextTick(() => {
+            this.map.updateSize();
+            this.fitMapViewToContent();
+          });
+        }
       },
       deep: true,
     },
@@ -568,6 +627,14 @@ export default {
     },
   },
   computed: {
+    can_show_print_button() {
+      return this.can_print_map && this.map_baselayer !== "image";
+    },
+    has_current_position_button() {
+      return (
+        !this.$root.app_infos.is_electron && this.map_baselayer !== "image"
+      );
+    },
     map_styles() {
       let styles = {};
       if (this.opened_view_color)
@@ -591,8 +658,17 @@ export default {
       return `data:image/svg+xml;base64, ${b64}`;
     },
     selected_feature() {
+      if (this.selected_features.length > 0) return this.selected_features[0];
       if (!this.selected_feature_id) return undefined;
       return this.draw_vector_source?.getFeatureById(this.selected_feature_id);
+    },
+    selected_features() {
+      return this.map_select_mode?.getFeatures?.().getArray?.() || [];
+    },
+    selected_features_have_fillable() {
+      return this.selected_features.some((feature) =>
+        ["Polygon", "Circle"].includes(feature.getGeometry()?.getType?.())
+      );
     },
     selected_feature_type() {
       if (!this.selected_feature) return undefined;
@@ -628,6 +704,17 @@ export default {
       const areaInSquareMeters = this.calculatePolygonArea(polygon);
       return this.formatArea(areaInSquareMeters);
     },
+
+    show_popup() {
+      const has_clicked_coords =
+        this.clicked_location.latitude != null ||
+        this.clicked_location.longitude != null;
+      return (
+        this.has_module_content_to_show ||
+        (this.can_click && has_clicked_coords) ||
+        (!this.clicked_location.latitude && !this.clicked_location.longitude)
+      );
+    },
     has_module_content_to_show() {
       if (!this.clicked_location.module)
         return Object.prototype.hasOwnProperty.call(
@@ -647,7 +734,92 @@ export default {
     },
   },
   methods: {
+    isPixelBasedBaselayer() {
+      return ["image", "color"].includes(this.map_baselayer);
+    },
+    getCurrentProjectionExtent() {
+      return this.map?.getView()?.getProjection()?.getExtent();
+    },
+    clampCenterToProjectionExtent(center) {
+      const projection_extent = this.getCurrentProjectionExtent();
+      if (!projection_extent || !Array.isArray(center) || center.length < 2)
+        return center;
+
+      const [min_x, min_y, max_x, max_y] = projection_extent;
+      const center_x = Number(center[0]);
+      const center_y = Number(center[1]);
+      if (!Number.isFinite(center_x) || !Number.isFinite(center_y))
+        return center;
+
+      return [
+        Math.min(Math.max(center_x, min_x), max_x),
+        Math.min(Math.max(center_y, min_y), max_y),
+      ];
+    },
     startMap({ keep_loc_and_zoom = false } = {}) {
+      this.startMapAsync({ keep_loc_and_zoom });
+    },
+    revokePreloadedBaseImage() {
+      if (this.preloaded_base_image?.revoke) this.preloaded_base_image.revoke();
+      this.preloaded_base_image = null;
+    },
+    async preloadBaseImage() {
+      if (!this.map_base_media) throw new Error("missing base image");
+
+      const img_src = this.makeMediaFileURL({
+        $path: this.map_base_media.$path,
+        $media_filename: this.map_base_media.$media_filename,
+      });
+
+      const response = await fetch(img_src, { credentials: "include" });
+      if (!response.ok)
+        throw new Error(`failed_to_load_base_image_${response.status}`);
+
+      const blob = await response.blob();
+      const blob_url = URL.createObjectURL(blob);
+
+      try {
+        const element = await new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error("failed_to_decode_base_image"));
+          img.src = blob_url;
+        });
+
+        return {
+          url: blob_url,
+          width:
+            element.naturalWidth || this.map_base_media.$infos?.width || 1000,
+          height:
+            element.naturalHeight || this.map_base_media.$infos?.height || 1000,
+          element,
+          revoke: () => URL.revokeObjectURL(blob_url),
+        };
+      } catch (err) {
+        URL.revokeObjectURL(blob_url);
+        throw err;
+      }
+    },
+    async startMapAsync({ keep_loc_and_zoom = false } = {}) {
+      const run_id = ++this.start_map_run_id;
+
+      if (this.map_baselayer === "image") {
+        if (!this.map_base_media) return;
+
+        this.revokePreloadedBaseImage();
+        try {
+          this.preloaded_base_image = await this.preloadBaseImage();
+        } catch (err) {
+          console.error(err);
+          this.scheduleMapReadyNotification();
+          return;
+        }
+
+        if (run_id !== this.start_map_run_id) return;
+      } else {
+        this.revokePreloadedBaseImage();
+      }
+
       let zoom = 6;
       let center;
 
@@ -661,7 +833,12 @@ export default {
         this.map = null;
       }
 
-      olProj.useGeographic();
+      if (run_id !== this.start_map_run_id) return;
+
+      // Image/color baselayers use pixel projections, which cannot be
+      // transformed from EPSG:4326 user projection.
+      if (this.isPixelBasedBaselayer()) olProj.clearUserProjection();
+      else olProj.useGeographic();
 
       const { view, background_layer } = this.createViewAndBackgroundLayer({
         center,
@@ -895,43 +1072,102 @@ export default {
 
       ////////////////////////////////////////////////////////////////////////// SET VIEW
 
-      if (!keep_loc_and_zoom) {
-        let extent;
+      if (!keep_loc_and_zoom) this.fitMapViewToContent();
 
-        if (this.map_baselayer !== "image") {
-          let extents = [];
-          if (this.pins_vector_source.getFeatures().length > 0)
-            extents.push(this.pins_vector_source.getExtent());
+      this.scheduleMapReadyNotification();
+    },
+    fitMapViewToContent() {
+      if (!this.map) return;
 
-          if (this.draw_vector_source.getFeatures().length > 0)
-            extents.push(this.draw_vector_source.getExtent());
+      let extent;
 
-          if (extents.length > 0) {
-            if (extents.length === 1) extent = extents[0];
-            else if (extents.length === 2)
-              extent = extend(extents[0], extents[1]);
-          }
-        } else {
-          extent = this.map.getView().getProjection().getExtent();
+      if (this.isPixelBasedBaselayer()) {
+        extent = this.map.getView().getProjection().getExtent();
+      } else {
+        let extents = [];
+        if (this.pins_vector_source?.getFeatures().length > 0)
+          extents.push(this.pins_vector_source.getExtent());
+
+        if (this.draw_vector_source?.getFeatures().length > 0)
+          extents.push(this.draw_vector_source.getExtent());
+
+        if (extents.length > 0) {
+          if (extents.length === 1) extent = extents[0];
+          else if (extents.length === 2) extent = extend(extents[0], extents[1]);
         }
-
-        if (extent) {
-          let padding =
-            this.map_baselayer === "image" ? [0, 0, 0, 0] : [50, 50, 50, 50];
-          this.map.getView().fit(extent, {
-            padding,
-          });
-        }
-
-        if (this.start_zoom) {
-          this.map.getView().setZoom(this.start_zoom);
-        } else if (
-          // prevent zoom from being too high (even though it may be correct for the extent)
-          this.map_baselayer !== "image" &&
-          this.map.getView().getZoom() > 15
-        )
-          this.map.getView().setZoom(15);
       }
+
+      if (!extent) return;
+
+      const padding = this.isPixelBasedBaselayer()
+        ? [0, 0, 0, 0]
+        : [50, 50, 50, 50];
+      this.map.getView().fit(extent, {
+        padding,
+        size: this.map.getSize(),
+      });
+
+      if (this.start_zoom) {
+        this.map.getView().setZoom(this.start_zoom);
+      } else if (
+        !this.isPixelBasedBaselayer() &&
+        this.map.getView().getZoom() > 15
+      ) {
+        this.map.getView().setZoom(15);
+      }
+    },
+    scheduleMapReadyNotification() {
+      if (this.map_ready_emit_timeout) clearTimeout(this.map_ready_emit_timeout);
+      if (this.map_ready_fallback_timeout)
+        clearTimeout(this.map_ready_fallback_timeout);
+
+      this.$nextTick(() => {
+        if (!this.map) {
+          this.$emit("mapReady");
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          if (!this.map) return;
+
+          requestAnimationFrame(() => {
+            if (!this.map) return;
+
+            this.map.updateSize();
+            this.fitMapViewToContent();
+
+            const emitReady = () => {
+              if (this.map_ready_emit_timeout)
+                clearTimeout(this.map_ready_emit_timeout);
+              if (this.map_ready_fallback_timeout) {
+                clearTimeout(this.map_ready_fallback_timeout);
+                this.map_ready_fallback_timeout = null;
+              }
+              this.map_ready_emit_timeout = setTimeout(() => {
+                this.$emit("mapReady");
+              }, 500);
+            };
+
+            let render_passes = 0;
+            const onRenderComplete = () => {
+              render_passes++;
+              if (render_passes < 2) {
+                this.map.once("rendercomplete", onRenderComplete);
+                this.map.renderSync();
+                return;
+              }
+              emitReady();
+            };
+
+            this.map.once("rendercomplete", onRenderComplete);
+            this.map.renderSync();
+
+            this.map_ready_fallback_timeout = setTimeout(() => {
+              emitReady();
+            }, 5_000);
+          });
+        });
+      });
     },
     zoomIn() {
       var view = this.map.getView();
@@ -966,6 +1202,8 @@ export default {
       }, 100);
     },
     getCurrentPosition() {
+      if (this.isPixelBasedBaselayer()) return;
+
       this.is_looking_for_gps_coords = true;
       var options = {
         enableHighAccuracy: true,
@@ -998,8 +1236,28 @@ export default {
       // not working in Electron, use something like http://ip-api.com/json https://www.reddit.com/r/electronjs/comments/hbxick/comment/fvq96v6/?utm_source=reddit&utm_medium=web2x&context=3 ?
       navigator.geolocation.getCurrentPosition(success, error, options);
     },
-    toggleSearch() {
+    toggleSearch(event) {
       this.$el.querySelector("#gcd-button-control").click();
+      // get top right of button
+
+      this.$nextTick(() => {
+        const button = event.target;
+        // Calculate position of the button relative to this.$el
+        const elRect = this.$el.getBoundingClientRect();
+        const btnRect = button.getBoundingClientRect();
+
+        const top = btnRect.top - elRect.top;
+        const left = btnRect.left - elRect.left;
+        const width = btnRect.width;
+
+        const search_container = this.$el.querySelector(
+          ".ol-geocoder.gcd-gl-container"
+        );
+        search_container.style.top = `${top - 1}px`;
+        // 1rem = 16px (default browser size)
+        const spacing_val = (16 * 1) / 2; // if you need to multiply, modify accordingly
+        search_container.style.left = `${left + width + spacing_val}px`;
+      });
     },
     printMap() {
       this.start_map_print = true;
@@ -1013,13 +1271,22 @@ export default {
           throw new Error(`missing base image`);
         }
 
-        const img_width = this.map_base_media.$infos?.width;
-        const img_height = this.map_base_media.$infos?.height;
-        const img_src = this.makeMediaFileURL({
-          $path: this.map_base_media.$path,
-          $media_filename: this.map_base_media.$media_filename,
-        });
+        const img_width =
+          this.preloaded_base_image?.width ||
+          this.map_base_media.$infos?.width ||
+          1000;
+        const img_height =
+          this.preloaded_base_image?.height ||
+          this.map_base_media.$infos?.height ||
+          1000;
+        const img_src =
+          this.preloaded_base_image?.url ||
+          this.makeMediaFileURL({
+            $path: this.map_base_media.$path,
+            $media_filename: this.map_base_media.$media_filename,
+          });
         const attributions = this.map_base_media.caption;
+        const preloaded_element = this.preloaded_base_image?.element;
 
         const extent = [0, 0, img_width, img_height];
         const projection = new olProjection({
@@ -1035,6 +1302,8 @@ export default {
           center,
           zoom,
           maxZoom: 6,
+          extent,
+          constrainOnlyCenter: true,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
@@ -1042,6 +1311,14 @@ export default {
             url: img_src,
             projection,
             imageExtent: extent,
+            imageLoadFunction: (image, src) => {
+              const target = image.getImage();
+              if (preloaded_element?.complete) {
+                target.src = preloaded_element.src;
+                return;
+              }
+              target.src = src;
+            },
           }),
           className: "ol-layer ol-basemap",
         });
@@ -1071,6 +1348,8 @@ export default {
           center,
           zoom,
           maxZoom: 6,
+          extent,
+          constrainOnlyCenter: true,
         });
         background_layer = new olImageLayer({
           source: new olStatic({
@@ -1106,7 +1385,7 @@ export default {
       }
 
       this.current_zoom = zoom;
-      this.current_view = center;
+      // this.current_view = center;
       return { view, background_layer };
     },
 
@@ -1432,6 +1711,9 @@ export default {
       // used to stop current animation if there are any
       // see https://github.com/openlayers/openlayers/issues/3714#issuecomment-263266468
       this.view.setRotation(0);
+      if (this.isPixelBasedBaselayer()) {
+        center = this.clampCenterToProjectionExtent(center);
+      }
       const duration = 1400;
       this.view.animate({
         center,
@@ -1542,6 +1824,7 @@ export default {
         var id = this.makeRandomIdForShape(type);
         new_feature.setId(id);
         new_feature.set("type_of_pin", "geometry");
+        new_feature.set("coordinate_space", this.getCurrentCoordinateSpace());
 
         // Assign a z-index higher than all existing features
         const existingFeatures = this.draw_vector_source.getFeatures();
@@ -1557,9 +1840,9 @@ export default {
           // Automatically select the newly created shape
           this.selected_feature_id = id;
           // Switch to select mode to show the selection UI
-          this.toggleTool({
-            draw_mode: { key: "Select" },
-          });
+          // this.toggleTool({
+          //   draw_mode: { key: "Select" },
+          // });
         });
         tip = idleTip;
         this.draw_can_be_finished = false;
@@ -1868,9 +2151,70 @@ export default {
       const geom_str = this.convertFeaturesToStr();
       this.$emit("saveGeom", geom_str);
     },
+    getCurrentCoordinateSpace() {
+      return this.isPixelBasedBaselayer() ? "pixel" : "gps";
+    },
+    isGpsCoordinatePair(coord_pair) {
+      if (!Array.isArray(coord_pair) || coord_pair.length < 2) return false;
+      const longitude = Number(coord_pair[0]);
+      const latitude = Number(coord_pair[1]);
+      if (!Number.isFinite(longitude) || !Number.isFinite(latitude))
+        return false;
+      return (
+        longitude >= -180 &&
+        longitude <= 180 &&
+        latitude >= -90 &&
+        latitude <= 90
+      );
+    },
+    extractGeometryCoordinateSamples(geometry_payload) {
+      if (!geometry_payload) return [];
+
+      if (geometry_payload.type === "Circle")
+        return geometry_payload.center ? [geometry_payload.center] : [];
+
+      if (geometry_payload.type === "LineString")
+        return Array.isArray(geometry_payload.coords)
+          ? geometry_payload.coords
+          : [];
+
+      if (geometry_payload.type === "Polygon")
+        return Array.isArray(geometry_payload.coords?.[0])
+          ? geometry_payload.coords[0]
+          : [];
+
+      return [];
+    },
+    inferGeometryCoordinateSpace(geometry_payload) {
+      const explicit_coordinate_space = geometry_payload?.coordinate_space;
+      if (["gps", "pixel"].includes(explicit_coordinate_space))
+        return explicit_coordinate_space;
+
+      const coordinate_samples =
+        this.extractGeometryCoordinateSamples(geometry_payload);
+      if (!coordinate_samples.length) return this.getCurrentCoordinateSpace();
+
+      const all_coordinates_look_gps = coordinate_samples.every((coord_pair) =>
+        this.isGpsCoordinatePair(coord_pair)
+      );
+      if (!all_coordinates_look_gps) return "pixel";
+
+      if (geometry_payload?.type === "Circle") {
+        const radius = Number(geometry_payload.radius);
+        if (Number.isFinite(radius) && radius > 180) return "pixel";
+      }
+
+      return "gps";
+    },
+    isGeometryCompatibleWithCurrentBaselayer(geometry_payload) {
+      const current_coordinate_space = this.getCurrentCoordinateSpace();
+      const geometry_coordinate_space =
+        this.inferGeometryCoordinateSpace(geometry_payload);
+      return geometry_coordinate_space === current_coordinate_space;
+    },
     convertFeaturesToStr() {
       const features = this.draw_vector_source.getFeatures();
-      return features.reduce((acc, f) => {
+      const visible_geometries = features.reduce((acc, f) => {
         const type = f.getGeometry().getType();
 
         let obj = {};
@@ -1899,11 +2243,16 @@ export default {
 
         const z_index = f.get("z_index");
         if (z_index) obj.z_index = z_index;
+        const coordinate_space = f.get("coordinate_space");
+        if (coordinate_space) obj.coordinate_space = coordinate_space;
+        else obj.coordinate_space = this.getCurrentCoordinateSpace();
 
         acc.push(obj);
 
         return acc;
       }, []);
+
+      return visible_geometries.concat(this.hidden_geometries || []);
     },
     loadPins() {
       this.pins_vector_source.clear();
@@ -1959,11 +2308,17 @@ export default {
     },
     loadGeom() {
       this.draw_vector_source.clear();
+      this.hidden_geometries = [];
 
       try {
         let features = [];
 
         this.geometries?.map((p) => {
+          if (!this.isGeometryCompatibleWithCurrentBaselayer(p)) {
+            this.hidden_geometries.push(p);
+            return;
+          }
+
           let feature_cont;
 
           if (p.type === "Polygon" && p.coords)
@@ -1985,11 +2340,14 @@ export default {
           if (p.fill_opacity !== undefined)
             feature_cont.fill_opacity = p.fill_opacity;
           if (p.z_index !== undefined) feature_cont.z_index = p.z_index;
+          feature_cont.coordinate_space =
+            p.coordinate_space || this.inferGeometryCoordinateSpace(p);
 
           const feature = new olFeature(feature_cont);
           if (p.id) feature.setId(p.id);
           else feature.setId(this.makeRandomIdForShape(p.type));
           feature.set("type_of_pin", "geometry");
+          feature.set("coordinate_space", feature_cont.coordinate_space);
 
           // Set z-index if not present (for existing features)
           if (!feature.get("z_index")) {
@@ -2024,22 +2382,32 @@ export default {
     startSelectMode() {
       this.selected_feature_id = undefined;
       this.map_select_mode = new olSelect({
+        multi: true,
         style: (feature, resolution) =>
           this.makeGeomStyle({ feature, resolution, is_selected: true }),
       });
       this.map.addInteraction(this.map_select_mode);
-      this.map_select_mode.on("select", (e) => {
-        if (e.target.getFeatures().getLength() > 0) {
-          const feature_selected = e.target.getFeatures().getArray()[0];
-          const id = feature_selected.getId();
-          if (id) return (this.selected_feature_id = id);
-        }
-        this.selected_feature_id = undefined;
+      this.map_select_mode.on("select", () => {
+        this.syncSelectedFeatureIdFromCollection();
       });
 
       this.startTranslate();
       // clashes with translate on linestring
       // this.startModify();
+    },
+    syncSelectedFeatureIdFromCollection() {
+      const selected_features = this.selected_features;
+      if (selected_features.length > 0) {
+        const first_selected = selected_features[0];
+        const id = first_selected?.getId?.();
+        if (id) return (this.selected_feature_id = id);
+      }
+      this.selected_feature_id = undefined;
+    },
+    getSelectedFeaturesForEdit() {
+      if (this.selected_features.length > 0) return this.selected_features;
+      if (!this.selected_feature) return [];
+      return [this.selected_feature];
     },
     startTranslate() {
       this.map_translate = new olTranslate({
@@ -2071,28 +2439,34 @@ export default {
       this.map.removeInteraction(this.map_modify);
     },
     removeSelected() {
-      if (!this.selected_feature) return false;
-      const f = this.draw_vector_source.getFeatureById(
-        this.selected_feature_id
-      );
-      this.draw_vector_source.removeFeature(f);
+      const selected_features = this.getSelectedFeaturesForEdit();
+      if (!selected_features.length) return false;
+      selected_features.forEach((feature) => {
+        this.draw_vector_source.removeFeature(feature);
+      });
+      this.map_select_mode?.getFeatures?.().clear();
       this.selected_feature_id = undefined;
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
     updateDrawing({ prop, val }) {
-      if (!this.selected_feature) return false;
-      const f = this.draw_vector_source.getFeatureById(
-        this.selected_feature_id
-      );
-      f.set(prop, val);
+      const selected_features = this.getSelectedFeaturesForEdit();
+      if (!selected_features.length) return false;
+      selected_features.forEach((feature) => {
+        const geometry_type = feature.getGeometry()?.getType?.();
+        const supports_fill = ["Polygon", "Circle"].includes(geometry_type);
+        if (["fill_color", "fill_opacity"].includes(prop) && !supports_fill)
+          return;
+        feature.set(prop, val);
+      });
       this.$nextTick(() => {
         this.saveGeom();
       });
     },
     endSelectMode() {
       this.map.removeInteraction(this.map_select_mode);
+      this.map_select_mode?.getFeatures?.().clear();
       this.selected_feature_id = undefined;
     },
     keyPressed(event) {
@@ -2138,7 +2512,7 @@ export default {
   &.is--small {
     width: 600px;
     max-width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 3/2;
     border-radius: 4px;
     overflow: hidden;
   }
@@ -2149,12 +2523,15 @@ export default {
   background-color: var(--map-background-color);
 
   ::v-deep {
+    .ol-geocoder.gcd-gl-container {
+      font-size: inherit;
+    }
     .ol-geocoder {
       position: absolute;
       top: calc(6rem);
       left: calc(var(--spacing) / 1 + 2rem + 2px);
 
-      font-size: 0.8em;
+      // font-size: 0.8em;
       border-radius: 2px;
 
       .gcd-gl-btn {
@@ -2170,41 +2547,57 @@ export default {
         height: auto;
         width: 0;
         overflow: hidden;
-        border-radius: 0;
+        border-radius: 2px;
         margin: 0;
-        background: transparent;
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
 
         &.gcd-gl-expanded {
           width: calc(14rem + 2px);
+          padding: 1px;
         }
       }
       .gcd-gl-input {
         width: 100%;
-        border-radius: 3px;
         left: 0;
         top: 0;
         padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
         padding-right: 2em;
-        height: calc(2rem + 2px);
+        border-radius: 2px;
+        font-size: inherit;
+        height: calc(2rem);
         position: relative;
-        border: 1px solid var(--c-gris_fonce);
+        border: none;
+        background: white;
 
         &:focus-visible {
           box-shadow: none;
           border-color: var(--active-color);
         }
       }
-      .gcd-gl-search:after {
-        content: "→";
 
-        line-height: 1;
-        font-weight: 800;
+      .gcd-gl-search {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: center;
+        margin-right: calc(var(--spacing) / 4);
+      }
+      .gcd-gl-search:after {
+        content: "🔍";
+        // content: "→";
+
+        font-family: "Fira Code";
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.5rem;
+        height: 1.5rem;
+
         background: var(--active-color);
         color: white;
-        display: inline-block;
-        border-radius: 50%;
-        margin-top: 3px;
-        padding: 4px;
+        border-radius: 3px;
         font-size: 90%;
       }
     }
@@ -2243,7 +2636,7 @@ export default {
   bottom: 9px;
   left: -48px;
   min-width: 280px;
-  opacity: 0;
+  // opacity: 0;
 
   font-size: var(--sl-font-size-normal);
 
@@ -2325,7 +2718,7 @@ export default {
   overflow: auto;
 
   ::v-deep ._publicationModule ._collaborativeEditor {
-    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1) 0;
+    padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
   }
 
   ::v-deep ._captionField {
@@ -2335,7 +2728,17 @@ export default {
 }
 
 ._popupMessage {
-  padding: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+}
+
+._popupCoords {
+  font-size: var(--sl-font-size-small);
+  color: var(--sl-color-neutral-600);
+}
+
+._popupFooter {
+  margin: calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+  border-top: 1px solid var(--sl-color-neutral-200);
 }
 
 ._leftTopMenu {
@@ -2365,15 +2768,15 @@ export default {
 
   button {
     position: relative;
-    background: white;
 
     padding: 0;
     color: var(--c-noir);
+    background: white;
     height: 2rem;
     min-width: 2rem;
 
-    background-color: white;
-    border: 2px solid transparent;
+    // background: white;
+    // border: 2px solid transparent;
     border-radius: 0;
     margin-bottom: 1px;
     pointer-events: auto;
@@ -2387,7 +2790,8 @@ export default {
 
     &.is--active {
       background-color: var(--ol-background-color);
-      border-color: var(--current-view-color, --active-color);
+      // border-color: var(--current-view-color, --active-color);
+      box-shadow: none;
     }
 
     &:first-child {
@@ -2454,6 +2858,26 @@ export default {
 
   .u-metaField {
     margin-bottom: 0;
+  }
+}
+
+._searchButton {
+  svg {
+    pointer-events: none;
+  }
+}
+
+@media print {
+  ._leftTopMenu,
+  ._bottomMenu,
+  ._popup {
+    display: none !important;
+  }
+
+  ::v-deep .ol-geocoder,
+  ::v-deep .ol-scale-line,
+  ::v-deep .ol-full-screen {
+    display: none !important;
   }
 }
 </style>

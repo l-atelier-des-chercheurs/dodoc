@@ -1,0 +1,11 @@
+services:
+  dodoc-node:
+    image: ghcr.io/l-atelier-des-chercheurs/dodoc:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - dodoc-data:/home/node/Documents/dodoc
+    restart: always
+
+volumes:
+  dodoc-data:

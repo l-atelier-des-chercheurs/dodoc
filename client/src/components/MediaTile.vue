@@ -52,11 +52,23 @@
     />
 
     <!-- bottom right -->
-    <div v-if="has_coordinates || tile_mode === 'table'" class="">
-      <div v-if="has_coordinates" class="_hasCoordinates">
+    <div class="_bottomRightIndicators">
+      <div v-if="has_coordinates">
         <b-icon class="_indicator" icon="pin-map-fill" />
       </div>
-      <span v-else v-text="'-'" />
+      <div
+        v-if="is_optimized"
+        class="_optimized"
+        :title="$t('already_optimized')"
+      >
+        <b-icon class="_indicator" icon="sliders" />
+      </div>
+      <div v-if="is_cropped" class="_cropped" :title="$t('cropped')">
+        <b-icon class="_indicator" icon="bounding-box" />
+      </div>
+      <div v-if="is_blurred" class="_blurred" :title="$t('blurred')">
+        <b-icon class="_indicator" icon="dash-circle-dotted" />
+      </div>
     </div>
 
     <template>
@@ -132,6 +144,20 @@ export default {
     has_coordinates() {
       return this.file.$location;
     },
+    is_optimized() {
+      const p = this.file.$processing;
+      return (
+        Array.isArray(p) && (p.includes("optimized") || p.includes("resized"))
+      );
+    },
+    is_cropped() {
+      const p = this.file.$processing;
+      return Array.isArray(p) && p.includes("cropped");
+    },
+    is_blurred() {
+      const p = this.file.$processing;
+      return Array.isArray(p) && p.includes("blurred");
+    },
     is_own_media() {
       return this.isOwnItem({ folder: this.file });
     },
@@ -203,13 +229,13 @@ export default {
 
   &.was--focused,
   &.was--imported {
-    border: 2px solid var(--c-noir);
+    border: 2px solid white;
     margin: 2px;
     padding: 4px;
     // background-color: var(--c-noir);
   }
   &.was--imported {
-    border-color: var(--c-noir);
+    border-color: white;
     // border-color: rgba(255, 255, 255, 0.4);
     animation: fadeImport 0.6s ease-in-out 3 alternate;
   }
@@ -317,8 +343,7 @@ export default {
       }
 
       &._content,
-      &._index,
-      &._hasCoordinates {
+      &._index {
         flex: 0 0 30px;
       }
       &._alreadySelected {
@@ -352,14 +377,14 @@ export default {
   position: absolute;
   inset: 0;
   width: 100%;
-  background: transparent;
-  opacity: 0.3;
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 0;
   transition: all 0.1s linear;
 
   &:hover {
-    background: white;
-    // background: rgba(255, 255, 255, 0.35);
-    transition: none;
+    opacity: 1;
+    // background: white;
+    // transition: none;
   }
 }
 
@@ -372,6 +397,24 @@ export default {
 
   ._mediaTile[data-tilemode="medium"] & {
     bottom: 20px;
+  }
+}
+
+._bottomRightIndicators {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+
+  ._mediaTile[data-tilemode="table"] & {
+    position: relative;
+  }
+  ._mediaTile[data-tilemode="medium"] & {
+    bottom: 1.5rem;
   }
 }
 
@@ -446,39 +489,18 @@ export default {
 }
 
 ._indicator {
-  background: rgba(0, 0, 0, 0.85);
-  color: white;
+  display: block;
+  background: white;
+  color: black;
   border-radius: 2px;
   line-height: 1;
-  font-weight: 600;
+  // font-weight: 600;
   padding: calc(var(--spacing) / 8);
   margin: calc(var(--spacing) / 8);
   font-size: var(--input-font-size-small);
   text-transform: uppercase;
 }
 
-._hasCoordinates {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: auto !important;
-
-  svg {
-    // color: var(--c-bleumarine);
-
-    padding: 2px;
-    width: 1rem;
-    display: block;
-    height: 1rem;
-  }
-
-  ._mediaTile[data-tilemode="table"] & {
-    position: relative;
-  }
-  ._mediaTile[data-tilemode="medium"] & {
-    bottom: 1.5rem;
-  }
-}
 ._favSwitch {
   position: absolute;
   top: 0;

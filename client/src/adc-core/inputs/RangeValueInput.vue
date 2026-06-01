@@ -33,16 +33,19 @@
         />
       </div>
 
-      <!-- <div class="u-defaultValue" v-if="value !== default_value">
-      {{ $t("default_value") }} =
-      <button
-        type="button"
-        class="u-button u-button_bleumarine u-button_small"
-        @click="$emit('save', default_value)"
+      <div
+        class="u-defaultValue"
+        v-if="local_value !== default_value && !can_toggle"
       >
-        {{ default_value }}
-      </button>
-    </div> -->
+        {{ $t("default_value") }} =
+        <button
+          type="button"
+          class="u-button u-button_bleumarine u-button_verysmall"
+          @click="resetToDefault"
+        >
+          {{ default_value }}
+        </button>
+      </div>
     </ToggledSection>
   </div>
 </template>
@@ -104,11 +107,18 @@ export default {
     },
   },
   computed: {},
-  methods: {},
+  methods: {
+    resetToDefault() {
+      this.local_value = this.default_value;
+      this.$emit("input", this.default_value);
+      this.$emit("save", this.default_value);
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
 ._rangeInput {
+  position: relative;
 }
 ._inputRange {
   flex: 1 1 60px;
@@ -116,7 +126,7 @@ export default {
   margin: 0;
 }
 ._numberField {
-  flex: 2 0 0px;
+  flex: 0 0 12ch;
 }
 
 ::v-deep {
@@ -124,8 +134,12 @@ export default {
     // background: blue;
     &.is--beingEdited {
       // background: red;
-      flex: 6 0 0;
+      // flex: 6 0 0;
     }
   }
+}
+.u-defaultValue {
+  position: absolute;
+  right: 0;
 }
 </style>

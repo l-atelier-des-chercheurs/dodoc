@@ -82,7 +82,7 @@ export default {
           additional_meta,
           onProgress: (progressEvent) => {
             this.transfer_percent = parseInt(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              Math.round((progressEvent.loaded * 99) / progressEvent.total)
             );
           },
         })

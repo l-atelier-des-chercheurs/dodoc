@@ -1,5 +1,9 @@
 <template>
-  <BaseModal2 :size="modal_size" @close="removeAndCloseModal">
+  <BaseModal2
+    :title="$t('webpage')"
+    :size="modal_size"
+    @close="removeAndCloseModal"
+  >
     <template v-if="is_exporting">
       <div class="u-instructions u-spacingBottom">
         {{ $t("export_in_progress") }}
@@ -33,30 +37,33 @@
         />
         <div class="u-spacingBottom" />
         <ShowExportedFileInfos :file="created_doc" />
-
-        <a
-          :disabled="!export_href"
-          :download="created_doc.$media_filename"
-          :href="export_href"
-          target="_blank"
-          class="u-buttonLink"
-        >
-          {{ $t("download") }}
-        </a>
       </template>
       <template slot="footer">
         <button type="button" class="u-button" @click="removeAndCloseModal">
           <b-icon icon="arrow-left-short" />
           {{ $t("back") }}
         </button>
+
         <button
           type="button"
+          v-if="can_save_to_project === true"
           class="u-button u-button_red"
           @click="saveToProject"
         >
           <span class="u-icon" v-html="dodoc_icon_collect" />
           {{ $t("save_to_project") }}
         </button>
+
+        <a
+          :disabled="!export_href"
+          :download="created_doc.$media_filename"
+          :href="export_href"
+          target="_blank"
+          class="u-button u-button_bleuvert"
+        >
+          <b-icon icon="download" />
+          {{ $t("download") }}
+        </a>
       </template>
     </template>
   </BaseModal2>
@@ -68,6 +75,7 @@ export default {
   props: {
     publication_path: String,
     instructions: Object,
+    can_save_to_project: Boolean,
   },
   components: { ShowExportedFileInfos },
   data() {

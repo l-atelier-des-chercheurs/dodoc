@@ -1,7 +1,7 @@
 <template>
   <div class="_widthHeightField">
     <fieldset>
-      <legend class="u-label">{{ $t("format") }}</legend>
+      <legend>{{ $t("format") }}</legend>
 
       <EditBtn
         v-if="can_edit && !edit_mode"

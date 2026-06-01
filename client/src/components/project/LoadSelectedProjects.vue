@@ -1,5 +1,8 @@
 <template>
-  <div class="_loadSelectedProjects">
+  <div
+    class="_loadSelectedProjects"
+    :class="{ 'is--mobileView': $root.is_mobile_view }"
+  >
     <!-- {{ fetch_err }} -->
     <div v-for="project in projects" :key="project.$path">
       <ProjectPresentation
@@ -56,12 +59,15 @@ export default {
 <style lang="scss" scoped>
 ._loadSelectedProjects {
   position: relative;
-  margin-bottom: calc(var(--spacing) / 2);
 
   display: grid;
   grid-auto-rows: max-content;
   grid-gap: calc(var(--spacing) / 2);
   align-items: stretch;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 20%));
+
+  @media (max-width: 468px) {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
 }
 </style>

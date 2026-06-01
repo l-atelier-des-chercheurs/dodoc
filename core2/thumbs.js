@@ -1,5 +1,6 @@
 const path = require("path"),
   fs = require("fs-extra"),
+  { spawn } = require("child_process"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
@@ -13,6 +14,14 @@ const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar.unpacked"
 );
 ffmpeg.setFfmpegPath(ffmpegPath);
+
+function _logFfmpegCommand({ context, command_line }) {
+  dev.log(
+    `THUMBS • FFMPEG (${context}) • BIN ${ffmpegPath} • CMD ${command_line}`
+  );
+}
+
+let _has_pdftoppm = undefined;
 
 module.exports = (function () {
   const API = {
@@ -69,7 +78,7 @@ module.exports = (function () {
             ext: "png",
           },
         ];
-      } else if (media_type === "stl") {
+      } else if (["stl", "obj"].includes(media_type)) {
         settings = [
           {
             camera_angle: [10, 50, 100],
@@ -300,7 +309,7 @@ module.exports = (function () {
                 full_media_path,
                 full_path_to_thumb,
               });
-            else if (media_type === "stl")
+            else if (["stl", "obj"].includes(media_type))
               await _makeSTLThumbs({
                 full_media_path,
                 full_path_to_thumb,
@@ -586,14 +595,26 @@ module.exports = (function () {
   }) {
     return new Promise((resolve, reject) => {
       dev.logfunction({ thumb_name, thumb_folder, timemark_key });
+      dev.logfunction({
+        context: "video_screenshot",
+        ffmpeg_path: ffmpegPath,
+      });
 
       ffmpeg(full_media_path)
+        .on("start", (command_line) => {
+          _logFfmpegCommand({ context: "video_screenshot", command_line });
+        })
         // setup event handlers
         .on("end", () => {
           return resolve();
         })
-        .on("error", (err) => {
-          dev.error(`ffmpeg failed: ${err.message}`);
+        .on("error", (err, stdout, stderr) => {
+          dev.error({
+            context: "video_screenshot",
+            ffmpeg_path: ffmpegPath,
+            message: err?.message || err,
+            stderr,
+          });
           return reject(err.message);
         })
         .screenshots({
@@ -610,17 +631,24 @@ module.exports = (function () {
 
       ffmpeg()
         .input(full_media_path)
-        .input(`color=white:s=3000x2000`)
-        .inputFormat("lavfi")
         .complexFilter(
-          "[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[1:v][fg]overlay=format=auto"
+          "color=c=white:s=3000x2000[bg];[0:a]aformat=channel_layouts=mono,showwavespic=s=3000x2000:colors=#fc4b60[fg];[bg][fg]overlay=format=auto"
         )
         .outputOptions(["-vframes 1"])
+        .on("start", (command_line) => {
+          _logFfmpegCommand({ context: "audio_waveform", command_line });
+        })
         // setup event handlers
         .on("end", () => {
           return resolve();
         })
-        .on("error", function (err) {
+        .on("error", function (err, stdout, stderr) {
+          dev.error({
+            context: "audio_waveform",
+            ffmpeg_path: ffmpegPath,
+            message: err?.message || err,
+            stderr,
+          });
           return reject(err.message);
         })
         .save(full_path_to_thumb);
@@ -649,6 +677,23 @@ module.exports = (function () {
     page,
   }) {
     dev.logfunction({ full_media_path, full_path_to_thumb, page });
+
+    if (await _isPdftoppmAvailable()) {
+      try {
+        await _makePDFThumbsWithPdftoppm({
+          full_media_path,
+          full_path_to_thumb,
+          page,
+        });
+        dev.logverbose(`Made PDF thumb with pdftoppm`, full_path_to_thumb);
+        return;
+      } catch (err) {
+        dev.logverbose(`pdftoppm failed, falling back to webpreview`, {
+          message: err?.message || String(err),
+        });
+      }
+    }
+
     try {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;
@@ -684,6 +729,109 @@ module.exports = (function () {
       dev.error(err);
       throw new Error("failed to capture screenshot");
     }
+  }
+
+  async function _isPdftoppmAvailable() {
+    if (typeof _has_pdftoppm === "boolean") return _has_pdftoppm;
+
+    try {
+      await _runProcess({
+        command: "pdftoppm",
+        args: ["-v"],
+        timeout_ms: 5000,
+        allow_non_zero_exit: true,
+      });
+      _has_pdftoppm = true;
+    } catch (err) {
+      _has_pdftoppm = false;
+      dev.logverbose(`pdftoppm is not available`, {
+        message: err?.message || String(err),
+      });
+    }
+
+    return _has_pdftoppm;
+  }
+
+  async function _makePDFThumbsWithPdftoppm({
+    full_media_path,
+    full_path_to_thumb,
+    page = 1,
+  }) {
+    const ext = path.extname(full_path_to_thumb) || ".png";
+    const output_base = full_path_to_thumb.slice(0, -ext.length);
+
+    await fs.ensureDir(path.dirname(full_path_to_thumb));
+
+    await _runProcess({
+      command: "pdftoppm",
+      args: [
+        "-f",
+        `${page}`,
+        "-singlefile",
+        "-png",
+        full_media_path,
+        output_base,
+      ],
+      timeout_ms: 20000,
+    });
+
+    if (!(await fs.pathExists(full_path_to_thumb))) {
+      throw new Error("pdftoppm did not generate expected output file");
+    }
+  }
+
+  function _runProcess({
+    command,
+    args = [],
+    timeout_ms = 10000,
+    allow_non_zero_exit = false,
+  }) {
+    return new Promise((resolve, reject) => {
+      let stdout = "";
+      let stderr = "";
+      let is_settled = false;
+
+      const proc = spawn(command, args, {
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+
+      const timeout = setTimeout(() => {
+        if (is_settled) return;
+        is_settled = true;
+        proc.kill("SIGKILL");
+        reject(new Error(`Process timeout for ${command}`));
+      }, timeout_ms);
+
+      proc.stdout.on("data", (d) => {
+        stdout += String(d);
+      });
+      proc.stderr.on("data", (d) => {
+        stderr += String(d);
+      });
+
+      proc.on("error", (err) => {
+        if (is_settled) return;
+        is_settled = true;
+        clearTimeout(timeout);
+        reject(err);
+      });
+
+      proc.on("close", (code) => {
+        if (is_settled) return;
+        is_settled = true;
+        clearTimeout(timeout);
+
+        if (code !== 0 && !allow_non_zero_exit) {
+          const err = new Error(
+            `${command} exited with code ${code}: ${stderr || stdout}`
+          );
+          err.code = "process_non_zero_exit";
+          err.exit_code = code;
+          return reject(err);
+        }
+        resolve({ stdout, stderr, code });
+      });
+    });
   }
 
   async function _makeLinkThumbs({ full_media_path, full_path_to_thumb }) {
@@ -781,9 +929,10 @@ module.exports = (function () {
       $('meta[property="og:image"]').attr("content") ||
       $('meta[property="og:image:url"]').attr("content") ||
       $('meta[property="image"]').attr("content") ||
-      $('meta[name="og:image"]').attr("content") ||
-      $('link[rel="shortcut icon"]').attr("href") ||
-      $('link[rel="icon"]').attr("href");
+      $('meta[name="og:image"]').attr("content");
+    // Commented out favicon fallbacks to prevent stretched favicon previews
+    // $('link[rel="shortcut icon"]').attr("href") ||
+    // $('link[rel="icon"]').attr("href");
 
     if (image) page_meta.image = image;
 

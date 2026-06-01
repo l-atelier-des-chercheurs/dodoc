@@ -1,0 +1,29 @@
+.Vue-Toastification__toast.Vue-Toastification__toast {
+  padding: calc(var(--spacing) / 1);
+  min-height: 2rem;
+  margin-bottom: calc(var(--spacing) / 2);
+
+  .Vue-Toastification__toast-body {
+    font-size: inherit;
+  }
+}
+
+.Vue-Toastification__toast--success {
+  background-color: var(--c-bleuvert) !important;
+}
+.Vue-Toastification__toast--error {
+  background-color: var(--c-rouge) !important;
+}
+.Vue-Toastification__toast--warning {
+  background-color: var(--c-orange) !important;
+}
+.Vue-Toastification__toast--info {
+  background-color: var(--c-gris_fonce) !important;
+}
+
+@media print {
+  .Vue-Toastification__container,
+  .alertify-logs {
+    display: none !important;
+  }
+}

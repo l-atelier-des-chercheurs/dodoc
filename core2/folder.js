@@ -25,21 +25,70 @@ module.exports = (function () {
       });
 
       let all_folders_with_meta = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (let folder_slug of folders_slugs) {
         const path_to_folder = path.join(path_to_type, folder_slug);
         const folder_meta = await API.getFolder({
           path_to_folder,
           detailed,
         }).catch((err) => {
-          if (err.code === "ENOENT")
-            dev.error(`Failed to get folder`, err.message);
-          else throw err;
+          dev.error(`Failed to get folder`, err.message);
+          return null;
         });
         if (folder_meta) all_folders_with_meta.push(folder_meta);
-        await new Promise(setImmediate);
+
+        // Yield only if enough time has passed
+        if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+          await new Promise(setImmediate);
+          lastYield = Date.now();
+        }
       }
 
       return all_folders_with_meta;
+    },
+
+    getFoldersBySlugs: async ({
+      path_to_type,
+      folder_slugs,
+      detailed = false,
+      no_files = false,
+      can_read_folder = async () => true,
+    }) => {
+      dev.logfunction({
+        path_to_type,
+        folder_slugs_count: folder_slugs?.length,
+        detailed,
+        no_files,
+      });
+
+      const unique_folder_slugs = [...new Set(folder_slugs)];
+      const folders = [];
+      const failed = [];
+
+      for (const folder_slug of unique_folder_slugs) {
+        const path_to_folder = path.join(path_to_type, folder_slug);
+        try {
+          const allowed = await can_read_folder({ path_to_folder });
+          if (!allowed) {
+            failed.push({ folder_slug, code: "folder_private" });
+            continue;
+          }
+
+          let folder_meta = await API.getFolder({
+            path_to_folder,
+            detailed,
+          });
+          if (!no_files)
+            folder_meta.$files = await file.getFiles({ path_to_folder });
+          folders.push(folder_meta);
+        } catch (err) {
+          failed.push({ folder_slug, code: err.code || "unknown_error" });
+        }
+      }
+
+      return { folders, failed };
     },
 
     getFolder: async ({ path_to_folder, detailed }) => {
@@ -104,6 +153,32 @@ module.exports = (function () {
 
       return folder_meta;
     },
+    getFoldersCount: async ({ path_to_folder }) => {
+      dev.logfunction({ path_to_folder });
+
+      const item_in_schema = utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
+      if (!item_in_schema || !item_in_schema.$folders) {
+        return 0;
+      }
+
+      let total_count = 0;
+      const folder_types = Object.keys(item_in_schema.$folders);
+
+      for (const folder_type of folder_types) {
+        const path_to_type = path.join(path_to_folder, folder_type);
+        try {
+          const folders_slugs = await _getFolderSlugs({ path_to_type });
+          total_count += folders_slugs.length;
+        } catch (err) {
+          // Folder type doesn't exist yet, skip it
+          if (err.code !== "ENOENT") throw err;
+        }
+      }
+
+      return total_count;
+    },
 
     createFolder: async ({ path_to_type, data }) => {
       dev.logfunction({ path_to_type, data });
@@ -115,8 +190,9 @@ module.exports = (function () {
         path_to_type,
       });
 
-      const folder_slug = await _resolveFolderSlug({
+      const folder_slug = await _allocateNewFolderSlug({
         path_to_type,
+        mode: "create",
         data,
       });
 
@@ -368,13 +444,10 @@ module.exports = (function () {
 
       const source_folder_slug = utils.getSlugFromPath(path_to_source_folder);
 
-      let folder_slug =
-        is_copy_or_move === "copy"
-          ? source_folder_slug + "-copy"
-          : source_folder_slug;
-      folder_slug = await _preventFolderOverride({
+      const folder_slug = await _allocateNewFolderSlug({
         path_to_type: path_to_destination_type,
-        folder_slug,
+        mode: is_copy_or_move === "copy" ? "copy" : "move",
+        source_folder_slug,
       });
 
       const path_to_destination_folder = path.join(
@@ -432,6 +505,29 @@ module.exports = (function () {
       }
     },
 
+    removeFolders: async ({ path_to_type, folder_slugs }) => {
+      dev.logfunction({ path_to_type, folder_slugs_count: folder_slugs?.length });
+
+      const unique_folder_slugs = [...new Set(folder_slugs)];
+      const success = [];
+      const failed = [];
+
+      for (const folder_slug of unique_folder_slugs) {
+        const path_to_folder = path.join(path_to_type, folder_slug);
+        try {
+          await API.removeFolder({
+            path_to_type,
+            path_to_folder,
+          });
+          success.push(folder_slug);
+        } catch (err) {
+          failed.push({ folder_slug, code: err.code || "unknown_error" });
+        }
+      }
+
+      return { success, failed };
+    },
+
     login: async ({ path_to_folder, submitted_password }) => {
       dev.logfunction({ path_to_folder, submitted_password });
 
@@ -478,6 +574,10 @@ module.exports = (function () {
         path_to_type: bin_folder_path,
         detailed: true,
       });
+
+      bin_folders.sort(
+        (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
+      );
 
       return {
         size: bin_size,
@@ -640,14 +740,23 @@ module.exports = (function () {
     return new_folder_slug;
   }
 
-  async function _resolveFolderSlug({ path_to_type, data }) {
-    let folder_slug = `untitled`;
-    if (data?.requested_slug) folder_slug = utils.slug(data.requested_slug);
+  async function _allocateNewFolderSlug({
+    path_to_type,
+    mode,
+    data = null,
+    source_folder_slug = "",
+  }) {
+    dev.logfunction({ path_to_type, mode });
 
     const item_in_schema = utils.parseAndCheckSchema({
       relative_path: path_to_type,
     });
-    if (item_in_schema?.slug_naming === "sequence") {
+
+    const use_sequence =
+      item_in_schema?.slug_naming === "sequence" &&
+      (mode === "create" || mode === "copy");
+
+    if (use_sequence) {
       const slug_sequence_start = Number.isInteger(
         item_in_schema.slug_sequence_start
       )
@@ -657,6 +766,17 @@ module.exports = (function () {
         path_to_type,
         slug_sequence_start,
       });
+    }
+
+    let folder_slug;
+    if (mode === "create") {
+      folder_slug = data?.requested_slug
+        ? utils.slug(data.requested_slug)
+        : "untitled";
+    } else if (mode === "copy") {
+      folder_slug = source_folder_slug + "-copy";
+    } else {
+      folder_slug = source_folder_slug;
     }
 
     return _preventFolderOverride({

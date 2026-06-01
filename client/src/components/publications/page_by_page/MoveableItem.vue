@@ -291,6 +291,7 @@ export default {
         "--set-borderRadius":
           (this.turnCMtoPX(this.publimodule.border_radius) || 0) + "px",
         "--set-dropShadow": this.publimodule.drop_shadow,
+        "--set-blur": (this.turnCMtoPX(this.publimodule.blur) || 0) + "px",
         "--set-backgroundColor":
           this.publimodule.background_color || "transparent",
         "--set-outlineColor": this.publimodule.outline_color || "black",
@@ -549,10 +550,14 @@ export default {
     outline: 2px dotted var(--c-orange) !important;
 
     ::v-deep {
-      // ._collaborativeEditor .ql-editor {
-      //   background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
-      //   padding-bottom: 250px;
-      // }
+      .ql-container {
+        border: none !important;
+      }
+      .ql-editor {
+        //   background: linear-gradient(rgba(255, 255, 255, 0.6) 55%, transparent);
+        //   padding-bottom: 250px;
+        padding: 0;
+      }
     }
   }
 
@@ -656,7 +661,8 @@ export default {
 
       border-radius: var(--set-borderRadius);
 
-      filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+      filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+        blur(var(--set-blur, 0px));
       overflow: hidden;
 
       background: var(--set-backgroundColor);
@@ -681,7 +687,8 @@ export default {
     aspect-ratio: unset;
 
     border-radius: var(--set-borderRadius);
-    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+      blur(var(--set-blur, 0px));
 
     overflow: hidden;
 
@@ -697,22 +704,20 @@ export default {
     //   width: 320px !important;
     // }
 
-    > ._content > ._floatingEditBtn {
-      display: none;
+    > ._content > ._floatingEditBtn > * {
+      left: auto;
+      right: 0;
     }
-
-    .ql-editor {
-      padding: 0;
-    }
-    ._toolbarAndEditorContainer {
-      background: transparent;
+    ._floatingEditBtn {
+      display: none !important;
     }
   }
 
   ._publicationModule[data-type="shape"] {
     padding: var(--set-margins);
     opacity: var(--set-opacity);
-    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)));
+    filter: drop-shadow(0px 4px 20px rgba(0, 0, 0, var(--set-dropShadow, 0)))
+      blur(var(--set-blur, 0px));
 
     fill: var(--set-backgroundColor);
     stroke: var(--set-outlineColor);

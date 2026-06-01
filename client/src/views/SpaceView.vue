@@ -18,39 +18,57 @@
         />
       </div>
 
-      <ProjectsTester v-if="false" :path="projects_path" />
+      <!-- <ProjectsTester :path="projects_path" /> -->
 
       <div class="_projectsList">
-        <div class="u-sameRow u-spacingBottom">
-          <DLabel :str="$t('list_of_projects')" :tag="'h2'" />
+        <div class="_projectsList--header">
+          <DLabel :str="$t('list_of_projects')" :tag="'h1'" />
+
+          <div v-if="can_contribute_to_space" class="u-sameRow">
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small"
+              @click="show_create_modal = true"
+            >
+              <b-icon icon="plus" :label="$t('create')" />
+              {{ $t("create") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small"
+              v-if="can_contribute_to_space"
+              @click="show_import_modal = true"
+            >
+              <b-icon icon="upload" :label="$t('import')" />
+              {{ $t("import_a_project") }}
+            </button>
+          </div>
         </div>
 
-        <ProjectsListWithFilter
+        <FoldersListWithFilter
           v-if="projects !== undefined"
-          :projects_pinned="space.projects_pinned"
-          :space_path="space.$path"
-          :projects="projects"
+          ref="listWithFilter"
+          :folders="projects"
+          :pinned_folders="space.projects_pinned"
+          :path="space.$path"
           :can_edit="can_edit_space"
+          :folder_type="'project'"
+          :pin_field_name="'projects_pinned'"
+          :pin_label="$t('projects_pinned')"
+          :available_view_modes="['tiny', 'medium', 'map']"
+          :default_view_mode="'tiny'"
         >
-          <button
-            type="button"
-            class="u-button u-button_red u-button_small"
-            v-if="can_contribute_to_space"
-            @click="show_create_modal = true"
-          >
-            <b-icon icon="plus" :label="$t('create')" />
-            {{ $t("create") }}
-          </button>
-          <button
-            type="button"
-            class="u-button u-button_red u-button_small"
-            v-if="can_contribute_to_space"
-            @click="show_import_modal = true"
-          >
-            <b-icon icon="upload" :label="$t('import')" />
-            {{ $t("import_a_project") }}
-          </button>
-        </ProjectsListWithFilter>
+          <template #item="{ item, view_mode }">
+            <ProjectPresentation
+              :project="item"
+              :context="view_mode"
+              :display_original_space="false"
+              :can_edit="false"
+              @toggleFilter="toggleFilter($event)"
+            />
+          </template>
+        </FoldersListWithFilter>
+
         <CreateFolder
           v-if="show_create_modal"
           :modal_name="$t('create_a_project')"
@@ -78,14 +96,18 @@
   </div>
 </template>
 <script>
-import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
+import FoldersListWithFilter from "@/components/FoldersListWithFilter.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 import SpacePresentation from "@/components/space/SpacePresentation.vue";
 import NotFound from "@/components/NotFound.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle],
   components: {
-    ProjectsListWithFilter,
+    FoldersListWithFilter,
+    ProjectPresentation,
     SpacePresentation,
     ProjectsTester: () => import("@/adc-core/tests/ProjectsTester.vue"),
     NotFound,
@@ -150,6 +172,11 @@ export default {
           else this.fetch_space_error_message = err.code;
           throw err;
         });
+
+      // Update document title with actual space name
+      if (this.space) {
+        this.updateDocumentTitle(this.space.title);
+      }
     },
     async getProjects() {
       this.projects = await this.$api
@@ -174,6 +201,11 @@ export default {
         this.$router.push("/");
       }
     },
+    toggleFilter(event) {
+      if (this.$refs.listWithFilter) {
+        this.$refs.listWithFilter.toggleFilter(event);
+      }
+    },
   },
 };
 </script>
@@ -196,5 +228,14 @@ export default {
 ._projectsList {
   margin: calc(var(--spacing) * 1) auto 0;
   // padding: calc(var(--spacing) * 1);
+}
+
+._projectsList--header {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--spacing) / 1);
 }
 </style>

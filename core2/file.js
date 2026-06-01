@@ -96,6 +96,9 @@ module.exports = (function () {
       });
 
       let metas = [];
+      let lastYield = Date.now();
+      const YIELD_INTERVAL_MS = 50;
+
       for (const meta_filename of meta_filenames) {
         try {
           // dev.logverbose(`reading ${meta_filename}`);
@@ -108,7 +111,12 @@ module.exports = (function () {
           if (embed_source) meta = await _embedSourceMedias({ meta });
 
           metas.push(meta);
-          await new Promise(setImmediate);
+
+          // Yield only if enough time has passed
+          if (Date.now() - lastYield >= YIELD_INTERVAL_MS) {
+            await new Promise(setImmediate);
+            lastYield = Date.now();
+          }
         } catch (err) {
           dev.error(err);
         }
@@ -148,7 +156,7 @@ module.exports = (function () {
           media_filename
         );
 
-      if (media_type) {
+      if (media_type && media_filename) {
         const _thumbs = await thumbs
           .makeThumbForMedia({
             media_type,
@@ -203,11 +211,21 @@ module.exports = (function () {
 
       // update meta file
       if (new_meta && Object.keys(new_meta).length) {
-        const clean_meta = await utils.cleanNewMeta({
+        const item_in_schema = utils.parseAndCheckSchema({
           relative_path: path_to_meta,
-          new_meta,
         });
-        Object.assign(meta, clean_meta);
+
+        if (item_in_schema?.$files?.fields) {
+          const clean_meta = utils.validateMeta({
+            fields: item_in_schema.$files.fields,
+            new_meta,
+            context: "update",
+          });
+          Object.assign(meta, clean_meta);
+        } else {
+          // No schema validation available, use new_meta as-is
+          Object.assign(meta, new_meta);
+        }
 
         // if file has $media_filename
         // if (new.hasOwnProperty("$media_filename") && meta.$media_filename) {
@@ -269,6 +287,10 @@ module.exports = (function () {
 
       const bin_size = await utils.getFolderSize(bin_folder_path);
 
+      bin_files.sort(
+        (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
+      );
+
       return {
         size: bin_size,
         items: bin_files,
@@ -312,19 +334,30 @@ module.exports = (function () {
 
       let { $media_filename, $type } = await utils.readMetaFile(path_to_meta);
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
+      cache.delete({
+        key: path_to_meta,
+      });
 
       if ($type) {
-        const $thumbs = await thumbs
-          .makeThumbForMedia({
-            media_type: $type,
-            media_filename: $media_filename,
-            path_to_folder,
-          })
-          .catch((err) => {
-            if (err.message) dev.error(err.message);
-            else dev.error(err);
-          });
-        if ($thumbs) return { $thumbs };
+        const $thumbs = await thumbs.makeThumbForMedia({
+          media_type: $type,
+          media_filename: $media_filename,
+          path_to_folder,
+        });
+
+        const no_thumbs_were_generated =
+          !$thumbs ||
+          $thumbs === "no_preview" ||
+          (typeof $thumbs === "object" && Object.keys($thumbs).length === 0);
+
+        if (no_thumbs_were_generated) {
+          const err = new Error("No thumbnails were generated");
+          err.code = "failed_to_regenerate_thumbs";
+          err.err_infos = { path_to_meta, meta_filename, media_type: $type };
+          throw err;
+        }
+
+        return { $thumbs };
       }
       return { $thumbs: {} };
     },
@@ -344,6 +377,16 @@ module.exports = (function () {
         });
 
         const { remove_permanently } = await require("./settings").get();
+
+        if (remove_permanently !== true) {
+          const relative_path_to_meta =
+            path_to_meta || path.join(path_to_folder, meta_filename);
+          await API.updateFile({
+            path_to_folder,
+            path_to_meta: relative_path_to_meta,
+            data: {},
+          });
+        }
 
         try {
           for (const file_folder_names of _all_files_and_folders) {
@@ -601,8 +644,10 @@ module.exports = (function () {
           new_meta.$type = "stl";
           break;
         case ".mp3":
+        case ".weba":
         case ".wav":
         case ".aac":
+        case ".m4a":
         case ".ogg":
           new_meta.$type = "audio";
           break;
@@ -640,6 +685,13 @@ module.exports = (function () {
     }
 
     if (additional_meta.$credits) new_meta.$credits = additional_meta.$credits;
+
+    if (
+      additional_meta.$processing &&
+      Array.isArray(additional_meta.$processing)
+    ) {
+      new_meta.$processing = additional_meta.$processing;
+    }
 
     return new_meta;
   }
@@ -737,13 +789,37 @@ module.exports = (function () {
       utils.getContainingFolder(utils.convertToLocalPath(meta.$path))
     );
 
+    const makeMissingMediaNotice = ({ source_media, key, err }) => {
+      const requested_meta_filename = source_media?.[key];
+      return {
+        $status: "missing",
+        $error: "source_media_missing",
+        $requested_meta_filename: requested_meta_filename,
+        $requested_meta_path: requested_meta_filename
+          ? utils.convertToSlashPath(
+              path.join(source_folder, requested_meta_filename)
+            )
+          : undefined,
+        $error_code: err?.code || "missing_source_media",
+      };
+    };
+
     const findSourceMedia = async (source_media, key) => {
-      if (source_media.hasOwnProperty(key)) {
-        const path_to_meta = path.join(source_folder, source_media[key]);
+      if (!source_media?.hasOwnProperty(key)) return;
+
+      const path_to_meta = path.join(source_folder, source_media[key]);
+      try {
         const source_media_meta = await API.getFile({
           path_to_meta,
         });
         return source_media_meta;
+      } catch (err) {
+        dev.error(
+          `Missing source media while embedding: ${source_media[key]} (${
+            err?.code || "unknown_error"
+          })`
+        );
+        return makeMissingMediaNotice({ source_media, key, err });
       }
     };
 
@@ -856,19 +932,21 @@ module.exports = (function () {
           req,
           upload_max_file_size_in_mo,
         })
-        .catch((err) => {
-          if (err === "file_size_limit_exceeded") {
-            const err = new Error("File size limit exceeded");
-            err.code = "file_size_limit_exceeded";
-            err.err_infos = {
+        .catch((rejected) => {
+          if (rejected === "file_size_limit_exceeded") {
+            const size_err = new Error("File size limit exceeded");
+            size_err.code = "file_size_limit_exceeded";
+            size_err.err_infos = {
               upload_max_file_size_in_mo,
             };
-            throw err;
+            throw size_err;
+          } else if (rejected?.code === "upload_aborted") {
+            throw rejected;
           } else {
-            dev.error(`Failed to handle form`, err);
-            const err = new Error("Failed to save file");
-            err.code = "failed_to_save_file";
-            throw err;
+            dev.error(`Failed to handle form`, rejected);
+            const save_err = new Error("Failed to save file");
+            save_err.code = "failed_to_save_file";
+            throw save_err;
           }
         });
 

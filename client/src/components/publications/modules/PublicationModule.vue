@@ -229,11 +229,14 @@
           </div>
 
           <div class="_saveBtn">
-            <EditBtn
-              :btn_type="'check'"
-              :label_position="'left'"
+            <button
+              type="button"
+              class="u-button u-button_icon"
+              :title="$t('save')"
               @click="disableEdit"
-            />
+            >
+              <b-icon icon="check-lg" />
+            </button>
           </div>
           <div class="_repickNotice" v-if="is_repicking_location">
             <div class="_repickNotice--content">
@@ -409,6 +412,7 @@
               ? $t('add_caption')
               : undefined
           "
+          :placeholder="''"
           :field_to_edit="'caption'"
           :content="publimodule.caption"
           :path="publimodule.$path"
@@ -437,9 +441,8 @@
                 caption: first_media.caption,
               })
             "
-          >
-            {{ first_media.caption }}
-          </button>
+            v-html="$sanitize(first_media.caption)"
+          />
         </div>
       </div>
     </div>
@@ -536,9 +539,9 @@ export default {
     edit_mode() {
       // if text bloc in text bloc module
       if (this.$refs.textBloc)
-        if (this.edit_mode) {
+        if (this.edit_mode)
           this.$nextTick(() => this.$refs.textBloc.enableEditor());
-        } else this.$refs.textBloc.disableEditor();
+        else this.$refs.textBloc.disableEditor();
       else {
         // this.$nextTick(() => {
         //   const edit_btn = this.$el.querySelector(
@@ -710,13 +713,25 @@ export default {
     disableEdit() {
       this.$emit("update:module_being_edited", undefined);
     },
-    scrollToModule(behavior = "auto") {
+    scrollToModule(scroll_options = {}) {
+      const { behavior, block, inline } =
+        typeof scroll_options === "string"
+          ? {
+              behavior: scroll_options,
+              block: "start",
+              inline: "nearest",
+            }
+          : {
+              behavior: scroll_options.behavior || "auto",
+              block: scroll_options.block || "start",
+              inline: scroll_options.inline || "nearest",
+            };
       if (this.$el) {
         console.log("scrollToModule " + this.publimodule.$path);
         this.$el.scrollIntoView({
           behavior,
-          block: "start",
-          inline: "nearest",
+          block,
+          inline,
         });
       }
     },
@@ -889,7 +904,8 @@ export default {
 
     padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
     background: var(--active-color);
-    box-shadow: var(--panel-shadows);
+    // border: 2px solid var(--active-color);
+    // box-shadow: var(--panel-shadows);
 
     border-radius: 12px;
     gap: calc(var(--spacing) / 2);
@@ -976,7 +992,7 @@ export default {
     position: absolute;
     top: 0;
     left: 100%;
-    margin: calc(var(--spacing) / 2);
+    // margin: calc(var(--spacing) / 2);
   }
 }
 

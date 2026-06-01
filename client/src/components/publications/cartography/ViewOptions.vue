@@ -54,9 +54,14 @@
             :field_name="'map_baselayer'"
             :path="view.$path"
             :value="view.map_baselayer || 'OSM'"
-            :options="map_baselayer_options"
+            :options="map_baselayer_options_with_restrictions"
             :hide_validation="true"
             :can_edit="true"
+          />
+          <small
+            v-if="map_baselayer_switch_explanation"
+            class="u-instructions _baselayer_switch_explanation"
+            v-html="map_baselayer_switch_explanation"
           />
         </div>
 
@@ -126,6 +131,10 @@ export default {
   props: {
     view: Object,
     default_view_color: String,
+    has_positioned_medias: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     SingleBaseMediaPicker,
@@ -214,6 +223,42 @@ export default {
     publication_path() {
       return this.getParent(this.view.$path);
     },
+    current_map_baselayer() {
+      return this.view?.map_baselayer || "OSM";
+    },
+    is_pixel_based_baselayer() {
+      return ["image", "color"].includes(this.current_map_baselayer);
+    },
+    map_baselayer_options_with_restrictions() {
+      if (!this.has_positioned_medias) return this.map_baselayer_options;
+
+      return this.map_baselayer_options.map((option) => {
+        if (option.disabled === true) return option;
+
+        const is_pixel_option = ["image", "color"].includes(option.key);
+        const is_gps_option = !is_pixel_option;
+
+        if (this.is_pixel_based_baselayer && is_gps_option)
+          return {
+            ...option,
+            disabled: true,
+          };
+
+        if (!this.is_pixel_based_baselayer && is_pixel_option)
+          return {
+            ...option,
+            disabled: true,
+          };
+
+        return option;
+      });
+    },
+    map_baselayer_switch_explanation() {
+      if (!this.has_positioned_medias) return false;
+      if (this.is_pixel_based_baselayer)
+        return this.$t("map_baselayer_switch_locked_image");
+      return this.$t("map_baselayer_switch_locked_gps");
+    },
   },
   methods: {
     async updateView({ field, value }) {
@@ -261,5 +306,10 @@ export default {
   border-radius: 4px;
   overflow: hidden;
   background: white;
+}
+
+._baselayer_switch_explanation {
+  display: block;
+  margin-top: calc(var(--spacing) / 4);
 }
 </style>

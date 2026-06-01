@@ -10,7 +10,6 @@ const path = require("path"),
   exifr = require("exifr"),
   crypto = require("crypto"),
   archiver = require("archiver"),
-  { promisify } = require("util"),
   fastFolderSize = require("fast-folder-size"),
   fetch = require("node-fetch"),
   ffmpegTracker = require("./ffmpeg-tracker");
@@ -164,6 +163,8 @@ module.exports = (function () {
         $preview: { type: "string" },
         $credits: { type: "string" },
         $location: { type: "object" },
+        $origin: { type: "string" },
+        $processing: { type: "array" },
         $contributors: { type: "any" },
         $authors: { type: "any" },
         $password: { type: "string" },
@@ -176,7 +177,7 @@ module.exports = (function () {
       // Check for fields in new_meta that don't exist in schema
       for (const field_name in new_meta) {
         if (!fields.hasOwnProperty(field_name)) {
-          // dev.error(`Field "${field_name}" is not defined in schema`);
+          dev.error(`Field "${field_name}" is not defined in schema`);
           // const err = new Error(
           //   `Field "${field_name}" is not defined in schema`
           // );
@@ -240,20 +241,8 @@ module.exports = (function () {
           }
         });
       }
-      // see cleanNewMeta
 
       return meta;
-    },
-    async cleanNewMeta({ relative_path, new_meta }) {
-      dev.logfunction({ relative_path, new_meta });
-      // todo check fields in schema, make sure user added fields are allowed and with the right formatting
-      // merge with validateMeta ?
-      const item_in_schema = API.parseAndCheckSchema({
-        relative_path,
-      });
-      item_in_schema;
-
-      return new_meta;
     },
 
     getLocalIPs() {
@@ -319,6 +308,37 @@ module.exports = (function () {
       await fs.ensureDir(destination_full_folder_path);
 
       return new Promise((resolve, reject) => {
+        let settled = false;
+        const makeUploadAbortedError = () => {
+          const aborted_err = new Error("Upload aborted");
+          aborted_err.code = "upload_aborted";
+          return aborted_err;
+        };
+        const settleReject = (err) => {
+          if (settled) return;
+          settled = true;
+          reject(err);
+        };
+        const settleResolve = (value) => {
+          if (settled) return;
+          settled = true;
+          resolve(value);
+        };
+        const isSizeLimitError = (err) => {
+          if (err?.code === 1009) return true;
+          const err_msg = err?.message ?? "";
+          return (
+            err_msg.includes("maxFileSize") ||
+            err_msg.includes("maxTotalFileSize")
+          );
+        };
+        const rejectFileSizeLimit = () => {
+          dev.error(
+            `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
+          );
+          return settleReject("file_size_limit_exceeded");
+        };
+
         const form = new IncomingForm({
           uploadDir: destination_full_folder_path,
           multiples: false,
@@ -347,40 +367,39 @@ module.exports = (function () {
 
         form
           .on("error", (err) => {
-            if (err.code === 1009) {
-              dev.error(
-                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
-              );
-              return reject("file_size_limit_exceeded");
-            } else {
-              return reject(err);
+            if (isSizeLimitError(err)) return rejectFileSizeLimit();
+            if (err?.code === "ECONNRESET") {
+              return settleReject(makeUploadAbortedError());
             }
+            return settleReject(err);
           })
-          .on("aborted", (err) => {
-            if (err.code === 1009) {
-              dev.error(
-                `File size limit exceeded. Maximum file size is ${upload_max_file_size_in_mo} Mo.`
-              );
-              return reject("file_size_limit_exceeded");
-            }
-            return reject(err);
-          });
+          .on("aborted", () => settleReject(makeUploadAbortedError()));
 
         form.once("end", async () => {
           dev.logverbose(`File downloaded`);
           dev.logverbose({ file });
 
-          if (!file || !file.filepath)
-            return reject(new Error("No file to parse"));
+          if (!file || !file.filepath) {
+            if (req?.aborted) return settleReject(makeUploadAbortedError());
+            return settleReject(new Error("No file to parse"));
+          }
 
-          return resolve({
+          return settleResolve({
             originalFilename: file.originalFilename,
             path_to_temp_file: file.filepath,
             user_additional_meta,
           });
         });
 
-        form.parse(req);
+        // formidable v3 may also reject parse() promise; catch it to avoid
+        // triggering the global unhandledRejection handler.
+        Promise.resolve(form.parse(req)).catch((err) => {
+          if (isSizeLimitError(err)) return rejectFileSizeLimit();
+          if (req?.aborted || err?.code === "ECONNRESET") {
+            return settleReject(makeUploadAbortedError());
+          }
+          return settleReject(err);
+        });
       });
     },
 
@@ -781,8 +800,14 @@ module.exports = (function () {
 
         // Set output format and options
         if (video_bitrate === "no_video") {
-          // Audio-only export - use ADTS AAC format
-          ffmpeg_cmd.toFormat("adts");
+          // Audio-only export - use MP4/M4A container for browser-safe duration/seek.
+          ffmpeg_cmd
+            .inputOptions(["-fflags +genpts"])
+            .toFormat("mp4")
+            .addOptions([
+              "-movflags +faststart",
+              "-avoid_negative_ts make_zero",
+            ]);
         } else if (format === "mp4") {
           ffmpeg_cmd
             .toFormat("mp4")
@@ -920,13 +945,55 @@ module.exports = (function () {
 
     async getFolderSize(...paths) {
       const full_folder_path = API.getPathToUserContent(...paths);
-      const fastFolderSizeAsync = promisify(fastFolderSize);
+
+      const getFolderSizeNative = async (folder_path) => {
+        let total_size = 0;
+        let entries = [];
+
+        try {
+          entries = await fs.readdir(folder_path, { withFileTypes: true });
+        } catch (err) {
+          dev.error(err);
+          return 0;
+        }
+
+        for (const entry of entries) {
+          const entry_path = path.join(folder_path, entry.name);
+
+          try {
+            if (entry.isSymbolicLink()) continue;
+
+            if (entry.isDirectory()) {
+              total_size += await getFolderSizeNative(entry_path);
+            } else if (entry.isFile()) {
+              const stat = await fs.stat(entry_path);
+              total_size += stat.size;
+            }
+          } catch (err) {
+            // Ignore unreadable entries to keep size requests resilient.
+            dev.error(err);
+          }
+        }
+
+        return total_size;
+      };
+
+      if (process.platform === "win32") {
+        return await getFolderSizeNative(full_folder_path);
+      }
+
       try {
-        const bin_size = await fastFolderSizeAsync(full_folder_path);
+        const bin_size = await new Promise((resolve, reject) =>
+          fastFolderSize(full_folder_path, (err, size) => {
+            if (err) return reject(err);
+            if (!Number.isFinite(size)) return reject(new Error("Invalid folder size"));
+            resolve(size);
+          })
+        );
         return bin_size;
       } catch (err) {
         dev.error(err);
-        return 0;
+        return await getFolderSizeNative(full_folder_path);
       }
     },
     getZipFolderFilename({ path_to_folder, path_to_type }) {
@@ -936,6 +1003,20 @@ module.exports = (function () {
         const appname = global.appInfos.name;
         const version_number = global.appInfos.version.split(".")[0];
         return `${appname}_v${version_number}_${type_slug}_${folder_slug}.zip`;
+      } catch (err) {
+        dev.error(err);
+        return "download.zip";
+      }
+    },
+
+    getZipFolderTypeFilename({ path_to_type }) {
+      try {
+        const appname = global.appInfos.name;
+        const version_number = global.appInfos.version.split(".")[0];
+        const path_slug = path_to_type
+          ? path_to_type.split(path.sep).join("_")
+          : "type";
+        return `${appname}_v${version_number}_type_${path_slug}.zip`;
       } catch (err) {
         dev.error(err);
         return "download.zip";

@@ -19,17 +19,9 @@ module.exports = (function () {
 
   const API = {
     /**
-     * Initialize the ffmpeg tracker and set up exit handlers
+     * Initialize the ffmpeg tracker and start periodic reporting
      */
     init() {
-      // Set up process exit handlers for Node.js
-      if (!global.is_electron) {
-        process.on("SIGINT", this.handleExit);
-        process.on("SIGTERM", this.handleExit);
-        process.on("exit", this.handleExit);
-      }
-      // For Electron, the cleanup is called from electron.js before-quit event
-
       // Start periodic reporting of active processes
       this.startReporting();
     },
@@ -43,7 +35,9 @@ module.exports = (function () {
       reportingInterval = setInterval(() => {
         const count = trackedProcesses.length;
         if (count > 0) {
-          dev.log(`FFMPEG-TRACKER • ${count} active process(es) running`);
+          dev.logverbose(
+            `FFMPEG-TRACKER • ${count} active process(es) running`
+          );
         }
       }, 1000);
     },
@@ -63,7 +57,7 @@ module.exports = (function () {
      */
     killAllProcesses() {
       if (trackedProcesses.length > 0) {
-        dev.log(
+        dev.logverbose(
           `FFMPEG-TRACKER • Killing ${trackedProcesses.length} process(es)...`
         );
         trackedProcesses.forEach((cmd) => {
@@ -74,16 +68,16 @@ module.exports = (function () {
           }
         });
         trackedProcesses = [];
-        dev.log(`FFMPEG-TRACKER • All processes killed`);
+        dev.logverbose(`FFMPEG-TRACKER • All processes killed`);
       }
       this.stopReporting();
     },
 
     /**
-     * Handle process exit - kill all ffmpeg processes
+     * Called on process exit - kill all ffmpeg processes and stop reporting
      */
-    handleExit: () => {
-      dev.log("FFMPEG-TRACKER • Handling process exit...");
+    onExit() {
+      dev.logverbose("FFMPEG-TRACKER • Handling process exit...");
       API.killAllProcesses();
     },
 

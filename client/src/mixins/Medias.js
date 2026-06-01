@@ -11,7 +11,8 @@ export default {
           if ($thumbs["50pc"]) thumb_path = $thumbs["50pc"][resolution];
           else thumb_path = $thumbs[0][resolution];
         if ($type === "audio") thumb_path = $thumbs.waveform[resolution];
-        if ($type === "stl") thumb_path = $thumbs["0"][resolution];
+        if ($type === "stl" || $type === "obj")
+          thumb_path = $thumbs["0"][resolution];
         if ($type === "pdf") thumb_path = $thumbs["page-1"][resolution];
         if ($type === "url") thumb_path = $thumbs["ogimage"][resolution];
       } catch (err) {
@@ -65,6 +66,8 @@ export default {
       // - meta_filename_in_project, meaning media belongs to project path
       // - path, meaning media has full path to project or publi media (legacy)
 
+      if (!source_media) return;
+
       let source_path = undefined;
       let meta_filename = undefined;
 
@@ -109,6 +112,38 @@ export default {
         ({ $path }) => $path === folder_path + "/" + meta_filename
       );
     },
+    getGridEmbeddedSourceMedias({ grid_areas = [] }) {
+      const source_medias = [];
+
+      const makeSourceMediaKey = (source_media) => {
+        if (source_media?.meta_filename_in_project)
+          return `project:${source_media.meta_filename_in_project}`;
+        if (source_media?.meta_filename)
+          return `publication:${source_media.meta_filename}`;
+        if (source_media?.path) return `path:${source_media.path}`;
+        return false;
+      };
+
+      grid_areas.forEach((area) => {
+        if (!Array.isArray(area?.source_medias)) return;
+
+        area.source_medias.forEach((source_media) => {
+          const source_media_key = makeSourceMediaKey(source_media);
+          if (!source_media_key) return;
+          if (
+            source_medias.some(
+              (sm) => makeSourceMediaKey(sm) === source_media_key
+            )
+          )
+            return;
+
+          const { _media, ...clean_source_media } = source_media;
+          source_medias.push(clean_source_media);
+        });
+      });
+
+      return source_medias;
+    },
 
     transformURL({ url: og_url, autoplay }) {
       function addhttp(url) {
@@ -123,7 +158,7 @@ export default {
       }
 
       if (
-        urlContains(cleaned_up_url, ["peertube."]) &&
+        urlContains(cleaned_up_url, ["peertube.fr"]) &&
         urlContains(cleaned_up_url, ["/w/"])
       )
         return {
@@ -329,6 +364,7 @@ export default {
         ".avi",
         ".mkv",
         ".wmv",
+        ".qt",
       ];
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
@@ -351,6 +387,7 @@ export default {
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
     dataURLtoBlob(dataurl) {
+      if (!dataurl) return null;
       var arr = dataurl.split(","),
         mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]),

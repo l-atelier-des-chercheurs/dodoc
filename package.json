@@ -1,7 +1,7 @@
 {
   "name": "dodoc",
   "productName": "do•doc",
-  "version": "12.0.27",
+  "version": "13.0.35",
   "description": "do•doc is a documentation tool for creativity.",
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "homepage": "https://github.com/l-atelier-des-chercheurs/dodoc#readme",
@@ -16,75 +16,67 @@
     "url": "https://github.com/l-atelier-des-chercheurs/dodoc/issues"
   },
   "scripts": {
-    "start": "electron .",
-    "debug": "electron --inspect=5858 . -- --debug --verbose",
-    "debug-lr": "electronmon --inspect=5858 . -- --debug --verbose --livereload",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "dist:win-store": "electron-builder --win appx",
-    "postinstall": "electron-builder install-app-deps && npm install --include=optional sharp && node scripts/cleanup-ffprobe.js"
+    "start": "node .",
+    "debug": "node . --inspect=5858 -- --debug --verbose",
+    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
+    "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js",
+    "preversion": "npm run build --prefix client && git add client/dist",
+    "sync:electron-version": "ROOT_VERSION=$(node -p \"require('./package.json').version\") && npm version --no-git-tag-version \"$ROOT_VERSION\" --prefix electron",
+    "version": "npm run sync:electron-version && git add electron/package.json electron/package-lock.json",
+    "postversion": "git push --follow-tags",
+    "setup-https": "node scripts/setup-https-certs.js"
   },
   "engines": {
-    "node": "22.19.0",
+    "node": "24.14.0",
     "npm": "*"
-  },
-  "electronmon": {
-    "patterns": [
-      "!client/**",
-      "!tokens.json"
-    ]
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "archiver": "^7.0.1",
     "bonjour-service": "^1.3.0",
     "chalk": "^5.6.2",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "compression": "^1.8.1",
-    "cors": "^2.8.5",
-    "electron-store": "^10.1.0",
-    "electron-window-state": "^5.0.3",
+    "cors": "^2.8.6",
+    "electron-store": "^11.0.2",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
-    "express": "^5.1.0",
-    "express-slow-down": "^3.0.0",
+    "express": "^5.2.1",
+    "express-slow-down": "^3.1.0",
     "fast-folder-size": "^2.4.0",
-    "ffmpeg-static": "^5.2.0",
+    "ffmpeg-static": "^5.3.0",
     "ffprobe-static": "^3.1.0",
     "fluent-ffmpeg": "^2.1.3",
     "formidable": "^3.5.4",
-    "fs-extra": "^11.3.2",
+    "fs-extra": "^11.3.4",
     "heic-decode": "^2.1.0",
     "helmet": "^8.1.0",
-    "lru-cache": "^11.2.2",
+    "lru-cache": "^11.3.5",
     "md5-file": "^5.0.0",
     "node-fetch": "^2.7.0",
-    "nodemailer": "^7.0.6",
-    "pad-left": "^2.1.0",
+    "nodemailer": "^7.0.13",
     "path": "^0.12.7",
+    "platform-folders": "^0.6.1",
     "portscanner": "^2.2.0",
-    "pug": "^3.0.3",
+    "pug": "^3.0.4",
+    "puppeteer": "^24.40.0",
     "rich-text": "^4.1.0",
     "sharedb": "^5.2.2",
     "sharedb-logger": "^0.1.4",
     "sharp": "^0.34.5",
     "slugg": "^1.2.1",
-    "socket.io": "^4.8.1",
+    "socket.io": "^4.8.3",
     "unzipper": "^0.12.3",
     "uuid": "^13.0.0",
     "websocket-json-stream": "0.0.3",
-    "write-file-atomic": "^6.0.0",
-    "ws": "^8.18.3"
+    "write-file-atomic": "^7.0.1",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
-    "@electron/rebuild": "^4.0.1",
-    "electron": "^37.6.1",
-    "electron-builder": "^26.0.12",
-    "electronmon": "^2.0.3",
-    "node-gyp": "^11.4.2"
+    "node-gyp": "^12.2.0"
   },
   "optionalDependencies": {
-    "bufferutil": "4.0.9",
+    "bufferutil": "4.1.0",
     "extractd": "^2.1.2"
   }
 }

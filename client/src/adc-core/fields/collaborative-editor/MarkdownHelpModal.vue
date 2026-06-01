@@ -89,7 +89,7 @@ Un deuxième paragraphe."
     />
     <p>
       Pour plus d'informations, fermez cette fenêtre et cliquez sur le bouton
-      <b>Importer des médias</b>.
+      <b>Importer</b>.
     </p>
 
     <h3>Mettre en forme du texte</h3>

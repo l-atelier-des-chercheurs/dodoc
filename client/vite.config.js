@@ -9,13 +9,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue2(),
-    cssInjectedByJsPlugin(),
-    mkcert(),
-    vueJsx(),
-    visualizer({ open: true }),
-  ],
+  plugins: [vue2(), cssInjectedByJsPlugin(), mkcert(), vueJsx()],
   css: {
     preprocessorOptions: {
       scss: {
@@ -63,6 +57,7 @@ export default defineConfig({
         {
           format: "es",
           entryFileNames: "build.js",
+          plugins: [visualizer({ filename: "stats.html", open: true })],
         },
       ],
     },

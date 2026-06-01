@@ -1,5 +1,6 @@
 <template>
   <div class="_viewContent">
+    <!-- <pre>{{ css_styles }}</pre> -->
     <div class="_viewMode">
       <div class="_viewMode--buttons">
         <div
@@ -16,15 +17,6 @@
           </button>
         </div>
       </div>
-      <!-- <select
-        :value="view_mode"
-        size="small"
-        @change="$emit('changeView', $event.target.value)"
-      >
-        <option value="book">{{ $t("book") }}</option>
-        <option value="html">{{ $t("webpage") }}</option>
-      </select> -->
-
       <select
         size="small"
         v-if="style_files?.length > 0"
@@ -41,27 +33,47 @@
         <option value="default">{{ $t("default_styles") }}</option>
       </select>
     </div>
+    <div
+      class="_previewToggle u-displayAsPublic"
+      v-if="can_edit && view_mode === 'book'"
+    >
+      <ToggleInput
+        :content="is_preview_mode"
+        :label="$t('preview')"
+        @update:content="is_preview_mode = $event"
+      />
+    </div>
 
-    <div v-if="show_source_html_toggle" class="_toggleHTML">
+    <ErrorBar
+      v-if="can_edit"
+      :all_chapters="all_chapters"
+      :publication="publication"
+      :content_html="content_html"
+      :view_mode="view_mode"
+      @openChapter="$emit('openChapter', $event)"
+    />
+
+    <!-- <div v-if="show_source_html_toggle" class="_toggleHTML">
       <ToggleInput
         :content="show_source_html"
         :label="$t('show_source_html')"
         @update:content="$emit('update:show_source_html', $event)"
       />
-    </div>
+    </div> -->
 
     <div class="_viewContent--content">
       <PagedViewer
         v-if="view_mode === 'book'"
         :content_nodes="content_nodes"
-        :format_mode="format_mode"
         :viewer_type="viewer_type"
         :css_styles="css_styles"
-        :show_source_html="show_source_html"
+        :content_html="content_html"
         :opened_chapter_meta_filename="opened_chapter_meta_filename"
         :can_edit="can_edit"
+        :is_preview_mode="is_preview_mode"
         @openChapter="$emit('openChapter', $event)"
         @updateChaptersPositions="$emit('updateChaptersPositions', $event)"
+        @updateNumberOfBookPages="updateNumberOfBookPages"
       />
       <DocViewer
         v-else
@@ -71,6 +83,12 @@
         @openChapter="$emit('openChapter', $event)"
       />
     </div>
+    <ShowSourceHTML
+      v-if="show_source_html"
+      :content_html="content_html"
+      :css_styles="css_styles"
+      :opened_chapter_meta_filename="opened_chapter_meta_filename"
+    />
     <LoaderSpinner v-if="is_loading" />
   </div>
 </template>
@@ -81,11 +99,14 @@ import markdownItAttrs from "markdown-it-attrs";
 import markdownItBracketedSpans from "markdown-it-bracketed-spans";
 import LinkAttributes from "markdown-it-link-attributes";
 import hljs from "highlight.js/lib/common";
+import DOMPurify from "dompurify";
 
 import { generate } from "lean-qr";
+import { renderMedia as renderMediaFunction } from "@/components/publications/edition/renderMedia.js";
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
+import ErrorBar from "@/components/publications/edition/ErrorBar.vue";
 
 import pagedengine from "@/components/publications/edition/pagedengine.css?raw";
 import default_styles from "@/components/publications/edition/default_styles.css?raw";
@@ -107,20 +128,24 @@ export default {
   components: {
     PagedViewer,
     DocViewer,
+    ErrorBar,
+    ShowSourceHTML: () =>
+      import("@/components/publications/edition/ShowSourceHTML.vue"),
   },
   data() {
     return {
       is_loading: false,
+      is_preview_mode: false,
       available_view_modes: [
+        {
+          label: this.$t("webpage"),
+          value: "web",
+          icon: "window-sidebar",
+        },
         {
           label: this.$t("book"),
           value: "book",
           icon: "book",
-        },
-        {
-          label: this.$t("webpage"),
-          value: "html",
-          icon: "window-sidebar",
         },
       ],
       // custom_styles_nested: "",
@@ -162,7 +187,10 @@ export default {
         this.style_files?.length === 0
       ) {
         return default_styles;
-      } else if (!this.opened_style_file_meta) {
+      } else if (
+        !this.opened_style_file_meta ||
+        this.opened_style_file_meta === "first"
+      ) {
         return this.style_files[0];
       } else {
         return (
@@ -219,6 +247,8 @@ export default {
           _chapter.content = this.parseGallery(chapter.source_medias);
         } else if (chapter.section_type === "story") {
           _chapter.content = this.parseStory(chapter);
+        } else if (chapter.section_type === "grid") {
+          _chapter.content = this.parseGrid(chapter);
         }
 
         nodes.chapters.push(_chapter);
@@ -237,10 +267,80 @@ export default {
         });
     },
     css_styles() {
-      return `
-      ${pagedengine || ""}
-      ${this.custom_styles_unnested}
-      `;
+      let css_styles = [];
+
+      css_styles.push(
+        `/****************** paged.js engine styles (added by do•doc) ******************/\n` +
+          pagedengine
+      );
+
+      css_styles.push(
+        `/****************** page size ${this.format_mode} ******************/\n` +
+          `@page {
+          size: ${this.format_mode};
+        }`
+      );
+
+      css_styles.push(
+        `/****************** custom styles ${
+          this.opened_style_file_meta || "default"
+        } ******************/\n` + (this.custom_styles_unnested || "")
+      );
+
+      return css_styles.join("\n\n");
+    },
+    content_html() {
+      const nodes = this.content_nodes;
+
+      let html = "";
+
+      if (nodes.cover) {
+        html = `<!-- ${this.$t("cover")} -->`;
+        html += `<section class="cover" id="cover" data-layout-mode="${nodes.cover.layout_mode}">`;
+        if (nodes.cover.title)
+          html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
+        if (nodes.cover.image_url)
+          html += `<div class="coverImage"><img src="${nodes.cover.image_url}" /></div>`;
+        html += `</section>\n\n`;
+      }
+
+      nodes.chapters.forEach((chapter) => {
+        let starts_on_page = chapter.starts_on_page;
+        if (
+          !starts_on_page &&
+          (chapter.section_type === "gallery" ||
+            chapter.section_type === "grid")
+        ) {
+          starts_on_page = "page";
+        }
+
+        html += `
+          <!-- ${chapter.title} -->`;
+        html += `<section class="chapter"
+          data-starts-on-page="${starts_on_page}"
+          data-chapter-meta-filename="${chapter.meta_filename}"
+          data-chapter-title="${chapter.title}"
+          data-chapter-type="${chapter.section_type}"
+        >`;
+        if (
+          chapter.title &&
+          chapter.section_type !== "gallery" &&
+          chapter.section_type !== "grid"
+        )
+          html += `<h1 class="chapterTitle">${chapter.title}</h1>`;
+        if (chapter.content)
+          html += `
+        <div class="chapterContent${
+          chapter.section_type === "grid" ? " grid" : ""
+        }"
+          style="--column-count: ${chapter.column_count};"
+        >${chapter.content}</div>`;
+        html += `</section>`;
+      });
+
+      html += ``;
+
+      return html;
     },
   },
   methods: {
@@ -320,13 +420,6 @@ export default {
     },
 
     parseMarkdownWithMarkedownIt(content, source_medias) {
-      // Preprocess content to handle multiple line breaks
-      // Convert multiple consecutive newlines to HTML breaks
-      // content = content.replace(/\n{3,}/g, (match) => {
-      //   const breakCount = match.length - 2; // Keep one paragraph break, add extra <br> tags
-      //   return "\n\n" + "<br>\n".repeat(breakCount);
-      // });
-
       const md = markdownit({
         breaks: true,
         linkify: true,
@@ -378,7 +471,7 @@ export default {
         },
       });
       md.use(markdownItCsc, {
-        renderMedia: ({ meta_src, alt, width, height, title }) =>
+        renderMedia: ({ meta_src, alt, width, height, title, size, tag }) =>
           this.renderMedia({
             meta_src,
             source_medias,
@@ -386,6 +479,8 @@ export default {
             width,
             height,
             title,
+            size,
+            tag,
           }),
         transformURL: (url) => this.transformURL(url),
       });
@@ -398,7 +493,20 @@ export default {
       });
 
       const result = md.render(content);
-      const sanitized_result = this.$sanitize(result);
+      // Allow iframes for PDFs and other embedded content
+      const sanitized_result = DOMPurify.sanitize(result, {
+        ADD_TAGS: ["iframe"],
+        ADD_ATTR: [
+          "src",
+          "frameborder",
+          "type",
+          "style",
+          "width",
+          "height",
+          "allowfullscreen",
+          "allow",
+        ],
+      });
 
       return sanitized_result;
     },
@@ -409,9 +517,9 @@ export default {
         )}</i></div>`;
 
       const medias = source_medias
-        .map((media) => {
+        .map((source_media) => {
           return this.getSourceMedia({
-            source_media: media,
+            source_media,
             folder_path: this.publication.$path,
           });
         })
@@ -420,6 +528,12 @@ export default {
       let html = `<div class="gallery"><div class="gallery-content" data-number-of-medias="${medias.length}" >`;
 
       medias.forEach((media) => {
+        if (media?.$status === "missing") {
+          html += `<figure class="media gallery--item media-missing"><i>${this.$t(
+            "source_media_missing"
+          )}</i></figure>`;
+          return;
+        }
         html += `<figure class="media gallery--item">
           <img src="${this.makeMediaFileURL({
             $path: media.$path,
@@ -465,6 +579,8 @@ export default {
             md_string += `(video: ${meta_filename})`;
           } else if (media.$type === "audio") {
             md_string += `(audio: ${meta_filename})`;
+          } else if (media.$type === "pdf") {
+            md_string += `(pdf: ${meta_filename})`;
           } else if (media.$type === "embed") {
             md_string += `(embed: ${meta_filename})`;
           }
@@ -479,6 +595,112 @@ export default {
       );
 
       return html;
+    },
+
+    parseGrid(chapter) {
+      if (!chapter.grid_areas || chapter.grid_areas.length === 0)
+        return `<div class="grid"><i>${this.$t("no_areas_defined")}</i></div>`;
+
+      // Use row_count and column_count from chapter
+      const col_count = chapter.column_count || 6;
+      const row_count = chapter.row_count || 6;
+
+      let html = document.createElement("div");
+      html.className = "grid";
+      let grid_content = document.createElement("div");
+      grid_content.className = "grid-content";
+      grid_content.style.setProperty("--col-count", col_count);
+      grid_content.style.setProperty("--row-count", row_count);
+
+      const grid_areas = chapter.grid_areas;
+
+      grid_areas.forEach((area) => {
+        let media;
+        const objectFit = area?.objectFit || "cover";
+        const objectPosition = area?.objectPosition || "center";
+
+        const source_media = area?.source_medias?.[0];
+        if (source_media) {
+          media = this.getSourceMedia({
+            source_media,
+            folder_path: this.publication.$path,
+          });
+        }
+
+        if (!media && source_media) {
+          // try to find in chapter source_medias
+          const local_media = chapter?.source_medias?.find(
+            (sm) =>
+              sm?.meta_filename_in_project ===
+              source_media?.meta_filename_in_project
+          );
+          if (local_media) media = local_media._media;
+        }
+
+        let cell = document.createElement("div");
+        cell.className = "grid-cell";
+
+        // Parse ID to get letter part and number part
+        const match = area.id.match(/^([A-Z]+)(\d*)$/);
+        const cell_id = match ? match[1] : area.id;
+        const chain_index = match && match[2] ? parseInt(match[2]) : 0;
+
+        cell.setAttribute("data-grid-area-id", cell_id);
+
+        if (media && media.$type) {
+          cell.setAttribute("data-grid-area-type", media.$type);
+        }
+
+        // check if the cell is part of a chain
+        const chain_cell_indexes = new Set(
+          grid_areas
+            .map((a) => a.id.match(/^([A-Z]+)(\d*)$/))
+            .filter((m) => m && m[1] === cell_id)
+            .map((m) => (m[2] ? parseInt(m[2], 10) : 0))
+        );
+        const is_part_of_chain = chain_cell_indexes.size > 1;
+        const is_text_cell = media?.$type === "text";
+
+        if (is_part_of_chain || is_text_cell) {
+          cell.setAttribute("data-grid-area-is-chain-index", chain_index);
+        }
+        cell.style.gridColumnStart = area.column_start;
+        cell.style.gridColumnEnd = area.column_end;
+        cell.style.gridRowStart = area.row_start;
+        cell.style.gridRowEnd = area.row_end;
+
+        if (media?.$type === "text") {
+          const content = media.$content || "";
+          const text = this.parseMarkdownWithMarkedownIt(
+            content,
+            media.source_medias
+          );
+          cell.innerHTML = text;
+        } else if (source_media && (!media || media?.$status === "missing")) {
+          cell.innerHTML = `<div class="u-instructions media-missing">${this.$t(
+            "source_media_missing"
+          )}</div>`;
+        } else if (media?.$type === "image") {
+          const img = document.createElement("img");
+          img.src = this.makeMediaFileURL({
+            $path: media.$path,
+            $media_filename: media.$media_filename,
+          });
+          img.style.width = "100%";
+          img.style.height = "100%";
+          img.style.objectFit = objectFit;
+          img.style.objectPosition = objectPosition;
+          cell.appendChild(document.createTextNode("\n"));
+          cell.appendChild(img);
+        } else if (media?.$type === "video") {
+        } else {
+        }
+
+        grid_content.appendChild(cell);
+      });
+      html.appendChild(grid_content);
+
+      return html.innerHTML;
     },
 
     getMediaSrc(meta_src, source_medias) {
@@ -521,121 +743,36 @@ export default {
 
       return media;
     },
-    renderMedia({ media, meta_src, source_medias, alt, width, height, title }) {
-      let media_html = "";
-      let is_qr_code = false;
-      let custom_classes = ["media"];
-
-      // Handle special title attributes for styling and dimensions
-      if (title?.startsWith("=")) {
-        if (title.startsWith("=full-page")) {
-          if (this.view_mode === "book") {
-            custom_classes.push("_isFullPage");
-            if (title.startsWith("=full-page-cover")) {
-              custom_classes.push("_isFullPageCover");
-            }
-          }
-        } else {
-          [width, height] = title
-            .slice(1)
-            .split("x")
-            .map((v) => v.trim())
-            .filter(Boolean);
-        }
-      }
-
-      // Handle external URLs (http/https)
-      if (meta_src && meta_src.startsWith("http")) {
-        media_html = `
-          <img src="${meta_src}"
-            alt="${alt}"
-            ${width ? ` width="${width}"` : ""}
-            ${height ? ` height="${height}"` : ""}
-          />
-        `;
-      } else {
-        // Handle local media
-        if (!media) {
-          media = this.getMediaSrc(meta_src, source_medias);
-        }
-
-        if (!media)
-          return {
-            html: `<figure class="${custom_classes.join(
-              " "
-            )}"><i>Media not found</i></figure>`,
-            is_qr_code: false,
-          };
-
-        const src = this.makeMediaFileURL({
-          $path: media.$path,
-          $media_filename: media.$media_filename,
-        });
-
-        if (!width && !height) {
-          width = media.$infos.width;
-          height = media.$infos.height;
-        }
-
-        if (media.$type === "text") {
-          media_html = media.$content;
-        } else if (media.$type === "image") {
-          media_html = `
-            <img src="${src}"
-              alt="${alt}"
-              ${width ? ` width="${width}"` : ""}
-              ${height ? ` height="${height}"` : ""}
-            />
-          `;
-        } else {
-          if (this.view_mode === "book") {
-            is_qr_code = true;
-            custom_classes.push("_isqrcode");
-            media_html = this.makeQREmbedForQR({
-              alt,
-              width,
-              height,
-              media,
-            });
-          } else {
-            if (media.$type === "video") {
-              media_html = `
-                <video src="${src}" controls
-                  alt="${alt}"
-                  ${width ? ` width="${width}"` : ""}
-                  ${height ? ` height="${height}"` : ""}
-                />
-              `;
-            } else if (media.$type === "audio") {
-              media_html = `
-                <audio src="${src}" controls
-                  alt="${alt}"
-                  ${width ? ` width="${width}"` : ""}
-                  ${height ? ` height="${height}"` : ""}
-                />
-              `;
-            }
-          }
-        }
-      }
-
-      // Add caption if alt text is provided
-      if (alt) {
-        media_html += `<figcaption class="mediaCaption"><span>${alt}</span></figcaption>`;
-      }
-
-      let style_attr = "";
-      if (width || height) {
-        const _width = width ? `width: ${width};` : "";
-        const _height = height ? `height: ${height};` : "";
-        style_attr = ` style="${_width}${_height}"`;
-      }
-
-      const html = `<figure class="${custom_classes.join(
-        " "
-      )}"${style_attr}>${media_html}</figure>`;
-
-      return { html, is_qr_code };
+    renderMedia({
+      media,
+      meta_src,
+      source_medias,
+      alt,
+      width,
+      height,
+      title,
+      size,
+      tag,
+    }) {
+      return renderMediaFunction({
+        media,
+        meta_src,
+        source_medias,
+        alt,
+        width,
+        height,
+        title,
+        size,
+        tag,
+        context: {
+          view_mode: this.view_mode,
+          getMediaSrc: this.getMediaSrc.bind(this),
+          makeMediaFileURL: this.makeMediaFileURL.bind(this),
+          makeQREmbedForQR: this.makeQREmbedForQR.bind(this),
+          makeQREmbedForExternalURL: this.makeQREmbedForExternalURL.bind(this),
+          getMissingMediaNoticeText: () => this.$t("source_media_missing"),
+        },
+      });
     },
     makeQREmbedForQR({ alt, width, height, media }) {
       const url =
@@ -659,6 +796,12 @@ export default {
                 ${this.formatDurationToHoursMinutesSeconds(
                   media.$infos.duration
                 )}
+              </div>`;
+      } else if (media.$type === "pdf") {
+        // Show PDF name for PDFs
+        const pdf_name = media.title || media.$media_filename || this.$t("pdf");
+        html += `<div class="mediaDuration">
+                ${pdf_name}
               </div>`;
       }
 
@@ -689,6 +832,34 @@ export default {
       }
       return html;
     },
+    makeQREmbedForExternalURL({ url, alt, width, height }) {
+      const code = generate(url);
+      const data_url = code.toDataURL({ scale: 10 });
+
+      let html = `
+        <a href="${url}" target="_blank" rel="noopener" data-url="url">
+          <img class="_qrCode" src="${data_url}" alt="QR code for link" />
+        </a>
+      `;
+      html += `<div class="mediaInfos">`;
+      html += `<div class="mediaDuration">${url}</div>`;
+      html += `<div class="mediaSourceCaption">${alt || ""}</div>`;
+      html += `</div>`;
+      return html;
+    },
+    async updateNumberOfBookPages(number_of_book_pages) {
+      if (
+        this.publication.number_of_book_pages === number_of_book_pages ||
+        !this.can_edit
+      )
+        return;
+      await this.$api.updateMeta({
+        path: this.publication.$path,
+        new_meta: {
+          number_of_book_pages,
+        },
+      });
+    },
   },
 };
 </script>
@@ -702,6 +873,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    overflow: auto;
   }
 }
 
@@ -740,7 +912,7 @@ export default {
   ::v-deep {
     ._toggleHTML {
       ._label {
-        color: white;
+        // color: white;
       }
     }
   }
@@ -750,24 +922,35 @@ export default {
   }
 }
 
+._previewToggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  margin: calc(var(--spacing) / 2);
+  pointer-events: none;
+
+  ::v-deep > * {
+    pointer-events: auto;
+  }
+}
+
 ._toggleHTML {
   position: absolute;
   bottom: 0;
   left: 0;
   z-index: 10;
-  background-color: var(--c-gris_clair);
-  margin: calc(var(--spacing) / 1);
+  margin: calc(var(--spacing) / 2);
   border-radius: var(--border-radius);
+  background-color: white;
 
   ::v-deep {
     > * {
       padding: calc(var(--spacing) / 2);
-      background-color: var(--c-gris_fonce);
-      border: 2px solid white;
       border-radius: var(--border-radius);
     }
     ._label {
-      color: white;
+      // color: white;
     }
   }
 }

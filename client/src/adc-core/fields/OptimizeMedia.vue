@@ -1,7 +1,7 @@
 <template>
   <BaseModal2 :title="label" :size="modal_width" @close="closeModal">
     <div class="_cont">
-      <div v-if="media.$optimized === true" class="u-spacingBottom">
+      <div v-if="has_processing" class="u-spacingBottom">
         {{ $t("already_optimized") }}
       </div>
       <div v-if="optimization_strongly_recommended" class="u-spacingBottom">
@@ -60,6 +60,7 @@
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
 import VideoAudioImageQualityPicker from "@/adc-core/fields/VideoAudioImageQualityPicker.vue";
 import OptimizeMediaModal from "@/adc-core/modals/OptimizeMediaModal.vue";
+import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
 
 export default {
   props: {
@@ -116,6 +117,9 @@ export default {
     media_height() {
       return this.media.$infos?.height;
     },
+    has_processing() {
+      return this.media.$processing?.includes("optimized") ?? false;
+    },
     base_instructions() {
       let suggested_file_name = "converted";
 
@@ -137,10 +141,11 @@ export default {
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
         }),
-        additional_meta: {
+
+        additional_meta: getCopyableMediaMeta(this.media, {
           $origin: "collect",
-          $optimized: true,
-        },
+          $processing: ["optimized"],
+        }),
       };
 
       if (this.extract_selection) {

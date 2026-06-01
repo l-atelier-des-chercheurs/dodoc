@@ -40,7 +40,7 @@
         @submit.prevent="createAuthor"
       >
         <fieldset>
-          <legend class="u-label">{{ $t("new_account") }}</legend>
+          <legend>{{ $t("new_account") }}</legend>
 
           <TextInput
             :content.sync="new_author_name"
@@ -251,6 +251,10 @@ export default {
             new_cover_data: this.new_cover,
             // onProgress,
           });
+        }
+
+        if (!this.is_instance_admin) {
+          window.location.reload();
         }
 
         // not working

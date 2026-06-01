@@ -36,7 +36,7 @@
 
       <form class="input-validation-required" v-if="show_create_category">
         <fieldset>
-          <legend class="u-label">
+          <legend>
             {{ $t("create_suggestion_list_for") }}
           </legend>
           <div class="u-sameRow">
