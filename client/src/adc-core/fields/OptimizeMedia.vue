@@ -53,6 +53,7 @@
       :media="media"
       :instructions="base_instructions"
       @close="show_optimization_modal = false"
+      @closeParentModal="closeAfterOptimizationAction"
     />
   </BaseModal2>
 </template>
@@ -60,7 +61,6 @@
 import TrimMedia from "@/adc-core/fields/TrimMedia.vue";
 import VideoAudioImageQualityPicker from "@/adc-core/fields/VideoAudioImageQualityPicker.vue";
 import OptimizeMediaModal from "@/adc-core/modals/OptimizeMediaModal.vue";
-import { getCopyableMediaMeta } from "@/utils/mediaMeta.js";
 
 export default {
   props: {
@@ -142,10 +142,10 @@ export default {
           $media_filename: this.media.$media_filename,
         }),
 
-        additional_meta: getCopyableMediaMeta(this.media, {
+        additional_meta: {
           $origin: "collect",
           $processing: ["optimized"],
-        }),
+        },
       };
 
       if (this.extract_selection) {
@@ -159,6 +159,10 @@ export default {
   methods: {
     startOptimization() {
       this.show_optimization_modal = true;
+    },
+    closeAfterOptimizationAction() {
+      this.show_optimization_modal = false;
+      this.$emit("close");
     },
     closeModal() {
       this.$emit("close");

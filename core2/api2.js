@@ -1466,10 +1466,27 @@ module.exports = (function () {
   }
 
   async function _export(req, res, next) {
-    const { path_to_folder, path_to_parent_folder, meta_filename, data } =
-      utils.makePathFromReq(req);
+    const {
+      path_to_folder,
+      path_to_parent_folder,
+      meta_filename,
+      path_to_meta,
+      data,
+    } = utils.makePathFromReq(req);
     const { token_path } = JSON.parse(req.headers.authorization || "{}");
     dev.logapi({ path_to_folder, path_to_parent_folder, data });
+
+    if (data.recipe === "optimize_media" && path_to_meta) {
+      try {
+        const source_meta = await utils.readMetaFile(path_to_meta);
+        data.additional_meta = utils.getCopyableMediaMeta(
+          source_meta,
+          data.additional_meta || {}
+        );
+      } catch (err) {
+        dev.error("Failed to read source meta for optimize", err);
+      }
+    }
 
     const folder_to_export_to =
       data.export_to_parent_folder === true && path_to_parent_folder !== "."

@@ -245,6 +245,41 @@ module.exports = (function () {
       return meta;
     },
 
+    getCopyableMediaMeta(media, overrides = {}) {
+      const META_KEYS_NOT_COPIED = [
+        "$path",
+        "$media_filename",
+        "$infos",
+        "$type",
+        "$thumbs",
+        "$date_uploaded",
+        "$date_modified",
+        "$date_created",
+      ];
+
+      const additional_meta = {};
+      if (media && typeof media === "object") {
+        for (const key of Object.keys(media)) {
+          if (META_KEYS_NOT_COPIED.includes(key)) continue;
+          const value = media[key];
+          if (value === undefined) continue;
+          additional_meta[key] = value;
+        }
+      }
+
+      const result = { ...additional_meta, ...overrides };
+      if (Object.prototype.hasOwnProperty.call(overrides, "$processing")) {
+        const existing = Array.isArray(additional_meta.$processing)
+          ? additional_meta.$processing
+          : [];
+        const to_append = Array.isArray(overrides.$processing)
+          ? overrides.$processing
+          : [overrides.$processing];
+        result.$processing = [...existing, ...to_append];
+      }
+      return result;
+    },
+
     getLocalIPs() {
       const nets = networkInterfaces();
       const results = [];

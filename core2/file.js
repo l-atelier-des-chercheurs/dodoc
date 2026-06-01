@@ -446,10 +446,22 @@ module.exports = (function () {
 
       additional_meta.$date_created = +new Date();
 
-      const meta = await _initMeta({
+      const item_in_schema = utils.parseAndCheckSchema({
+        relative_path: path_to_folder,
+      });
+      const fields = item_in_schema?.$files?.fields || {};
+
+      const extracted_meta = await _initMeta({
         additional_meta,
         filename: new_filename,
+        path_to_media: destination_path,
       });
+
+      const validated_meta = utils.validateMeta({
+        fields,
+        new_meta: additional_meta,
+      });
+      const meta = Object.assign({}, validated_meta, extracted_meta);
 
       const meta_filename = await _preventFileOverride({
         path_to_folder,
