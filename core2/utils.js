@@ -75,6 +75,46 @@ module.exports = (function () {
     parseDate(date) {
       return new Date(date);
     },
+    /**
+     * Normalize a user-editable calendar date to ISO 8601 date (YYYY-MM-DD).
+     * Accepts empty, YYYY-MM-DD, or parseable ISO/datetime strings.
+     * Returns "" for empty, null when invalid.
+     */
+    normalizeCalendarDate(raw) {
+      if (raw === null || raw === undefined) return "";
+      if (typeof raw === "number") {
+        const parsed = new Date(raw);
+        if (Number.isNaN(parsed.getTime())) return null;
+        return API.formatCalendarDateFromDate(parsed);
+      }
+
+      const value = String(raw).trim();
+      if (!value) return "";
+
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        const [year, month, day] = value.split("-").map((part) => Number(part));
+        const parsed = new Date(year, month - 1, day);
+        if (
+          Number.isNaN(parsed.getTime()) ||
+          parsed.getFullYear() !== year ||
+          parsed.getMonth() !== month - 1 ||
+          parsed.getDate() !== day
+        ) {
+          return null;
+        }
+        return value;
+      }
+
+      const parsed = new Date(value);
+      if (Number.isNaN(parsed.getTime())) return null;
+      return API.formatCalendarDateFromDate(parsed);
+    },
+    formatCalendarDateFromDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    },
     async readMetaFile(...paths) {
       dev.logfunction({ paths });
 
@@ -212,6 +252,18 @@ module.exports = (function () {
           ) {
             meta[field_name] = new_meta[field_name];
             // TODO Validator
+          } else if (
+            new_meta.hasOwnProperty(field_name) &&
+            opt.type === "date"
+          ) {
+            const normalized = API.normalizeCalendarDate(new_meta[field_name]);
+            if (normalized === null) {
+              const err = new Error(`Invalid date for field ${field_name}`);
+              err.code = "invalid_date_field";
+              err.err_infos = field_name;
+              throw err;
+            }
+            meta[field_name] = normalized;
           } else if (
             new_meta.hasOwnProperty(field_name) &&
             opt.type === "boolean" &&

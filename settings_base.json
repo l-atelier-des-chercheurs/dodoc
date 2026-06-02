@@ -733,10 +733,10 @@
             "type": "string"
           },
           "start_date": {
-            "type": "string"
+            "type": "date"
           },
           "end_date": {
-            "type": "string"
+            "type": "date"
           }
         },
         "$files": {}
