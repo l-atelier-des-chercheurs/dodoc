@@ -355,8 +355,6 @@ export default {
         ".flac",
         ".ac3",
         ".opus",
-        ".m4r",
-        ".m4a",
         ".alac",
 
         ".flv",
@@ -383,6 +381,7 @@ export default {
         ".ogg",
         ".mp3",
         ".aac",
+        ".m4a",
       ];
       return ext.some((e) => filename.toLowerCase().endsWith(e));
     },
