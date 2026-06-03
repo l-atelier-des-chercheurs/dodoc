@@ -59,7 +59,11 @@
           <SectionWithPrint :publication="publication" />
         </div>
         <div v-else-if="publication.template === 'cartography'">
-          <MapForPrint :publication="publication" />
+          <MapForPrint
+            v-if="is_cartography_print_export"
+            :publication="publication"
+          />
+          <MapExport v-else :publication="publication" />
         </div>
         <div v-else-if="publication.template === 'edition'">
           <EditionExport :publication="publication" />
@@ -87,6 +91,8 @@ export default {
       import("@/components/publications/story/SectionWithPrint.vue"),
     MapForPrint: () =>
       import("@/components/publications/cartography/MapForPrint.vue"),
+    MapExport: () =>
+      import("@/components/publications/cartography/MapExport.vue"),
     EditionExport: () =>
       import("@/components/publications/edition/EditionExport.vue"),
   },
@@ -152,6 +158,9 @@ export default {
     },
     is_server_making_pdf_or_png_preview() {
       return this.$route.query?.superadmintoken !== undefined;
+    },
+    is_cartography_print_export() {
+      return this.is_server_making_pdf_or_png_preview;
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;

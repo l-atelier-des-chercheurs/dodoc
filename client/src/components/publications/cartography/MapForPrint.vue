@@ -54,10 +54,7 @@ export default {
     };
   },
   created() {
-    if (
-      this.$route.query?.display === "section" ||
-      window.app_infos.page_is_standalone_html
-    )
+    if (this.$route.query?.display === "section")
       this.display_mode = "section";
 
     this.pending_maps_count = this.expected_maps_count;

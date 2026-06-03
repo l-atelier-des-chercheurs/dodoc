@@ -173,8 +173,9 @@ export default {
         query = { display: "slides" };
       else if (this.publication.template === "story_with_sections")
         query = { display: "section" };
-      else if (this.publication.template === "cartography")
-        query = { display: "section" };
+      else if (this.publication.template === "cartography") {
+        if (this.pane_infos?.view) query = { view: this.pane_infos.view };
+      }
 
       const route = this.$router.resolve({
         path: this.createURLFromPath(this.publication.$path),
