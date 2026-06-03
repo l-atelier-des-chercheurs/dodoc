@@ -136,6 +136,7 @@ export default {
       this.$eventHub.$on("task.ended", checkIfEnded);
     },
     async keepBoth() {
+      this.optimized_file = undefined;
       this.$emit("closeParentModal");
     },
     async replaceOriginal() {

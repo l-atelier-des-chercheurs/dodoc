@@ -53,6 +53,7 @@
       :media="media"
       :instructions="base_instructions"
       @close="show_optimization_modal = false"
+      @closeParentModal="closeAfterOptimizationAction"
     />
   </BaseModal2>
 </template>
@@ -159,6 +160,10 @@ export default {
   methods: {
     startOptimization() {
       this.show_optimization_modal = true;
+    },
+    closeAfterOptimizationAction() {
+      this.show_optimization_modal = false;
+      this.$emit("close");
     },
     closeModal() {
       this.$emit("close");
