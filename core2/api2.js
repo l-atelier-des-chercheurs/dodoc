@@ -799,6 +799,7 @@ module.exports = (function () {
     if (hero_thumb) d.hero_thumb = `./thumbs/${hero_thumb}`;
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
+    d.stadia_maps_api_key = global.settings.stadia_maps_api_key || "";
 
     res.render("index", d);
   }

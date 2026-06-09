@@ -510,6 +510,7 @@ class Exporter {
         {
           page_is_standalone_html: true,
           folder_data,
+          stadia_maps_api_key: global.settings.stadia_maps_api_key || "",
         },
         async (err, html) => {
           ////////////////////////////////////////////////////////////// HTML

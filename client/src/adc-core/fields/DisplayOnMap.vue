@@ -548,6 +548,7 @@ export default {
       start_map_run_id: 0,
       map_ready_emit_timeout: null,
       map_ready_fallback_timeout: null,
+      basemap_tile_error_notified: false,
 
       // Circle drawing state
       circle_center: null,
@@ -605,6 +606,7 @@ export default {
         this.loadGeom();
     },
     map_baselayer(val, oldVal) {
+      this.basemap_tile_error_notified = false;
       if (val !== oldVal && (val === "image" || oldVal === "image"))
         this.startMap();
       else this.startMap({ keep_loc_and_zoom: true });
@@ -627,6 +629,17 @@ export default {
     },
   },
   computed: {
+    needs_exported_tile_api_key() {
+      return (
+        window.app_infos.page_is_standalone_html === true &&
+        window.location.protocol === "file:"
+      );
+    },
+    exported_map_api_key() {
+      if (!this.needs_exported_tile_api_key) return undefined;
+      const api_key = window.app_infos.stadia_maps_api_key;
+      return api_key || undefined;
+    },
     can_show_print_button() {
       return this.can_print_map && this.map_baselayer !== "image";
     },
@@ -1364,7 +1377,7 @@ export default {
         // TODO check if center is contained in extent (see containsXY)
         center = center || [5.39057449011251, 43.310173305629576];
 
-        const maxZoom = this.map_baselayer.includes("IGN") ? 19 : 21;
+        const maxZoom = this.map_baselayer.includes("IGN") ? 18 : 21;
         view = new olView({
           center,
           zoom,
@@ -1379,8 +1392,7 @@ export default {
           className: "ol-layer ol-basemap",
         });
         background_layer.getSource().on("tileloaderror", (err) => {
-          console.error(err.tile.l);
-          this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
+          this.onBasemapTileLoadError(err);
         });
       }
 
@@ -1389,32 +1401,53 @@ export default {
       return { view, background_layer };
     },
 
+    onBasemapTileLoadError(err) {
+      console.error(err.tile?.l || err);
+      if (this.basemap_tile_error_notified) return;
+      this.basemap_tile_error_notified = true;
+      this.$alertify.delay(4000).error(this.$t("failed_loading_tiles"));
+    },
+
+    getStadiaMapsSourceOptions(layer, { retina = true } = {}) {
+      const options = {
+        layer,
+        retina,
+      };
+      const api_key = this.exported_map_api_key;
+      if (api_key) options.apiKey = api_key;
+      return options;
+    },
+
     createSource(type) {
       if (type === "OSM") {
+        const api_key = this.exported_map_api_key;
+        if (api_key) {
+          return new olSourceStadiaMaps(
+            this.getStadiaMapsSourceOptions("osm_bright")
+          );
+        }
         return new olSourceOSM({
           wrapX: false,
           noWrap: true,
         });
       } else if (type === "stadia_alidade_smooth") {
-        return new olSourceStadiaMaps({
-          layer: "alidade_smooth",
-          retina: true, // Set to false for stamen_watercolor
-        });
+        return new olSourceStadiaMaps(
+          this.getStadiaMapsSourceOptions("alidade_smooth")
+        );
       } else if (type === "stadia_alidade_smooth_dark") {
-        return new olSourceStadiaMaps({
-          layer: "alidade_smooth_dark",
-          retina: true, // Set to false for stamen_watercolor
-        });
+        return new olSourceStadiaMaps(
+          this.getStadiaMapsSourceOptions("alidade_smooth_dark")
+        );
       } else if (type === "stadia_toner") {
-        return new olSourceStadiaMaps({
-          layer: "stamen_toner",
-          retina: true, // Set to false for stamen_watercolor
-        });
+        return new olSourceStadiaMaps(
+          this.getStadiaMapsSourceOptions("stamen_toner")
+        );
       } else if (type === "stadia_watercolor") {
-        return new olSourceStadiaMaps({
-          layer: "stamen_watercolor",
-          retina: false,
-        });
+        return new olSourceStadiaMaps(
+          this.getStadiaMapsSourceOptions("stamen_watercolor", {
+            retina: false,
+          })
+        );
       } else if (["IGN_SAT", "IGN_MAP"].includes(type)) {
         const resolutions = [
           156543.03392804103, 78271.5169640205, 39135.75848201024,
