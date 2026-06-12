@@ -5,6 +5,8 @@ html
     meta(charset='utf-8')
     meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5.0")
     meta(name="apple-mobile-web-app-capable" content="yes")
+    if page_is_standalone_html
+      meta(name="referrer" content="origin-when-cross-origin")
 
     if !enable_indexing
       meta(name="pinterest" content="nopin")
@@ -28,7 +30,8 @@ html
         debug_mode: !{debug_mode || false},
         is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
         page_is_standalone_html: !{page_is_standalone_html || false},
-      
+        stadia_maps_api_key: !{JSON.stringify(stadia_maps_api_key || "")},
+
         instance_meta: {
           name: !{JSON.stringify(name_of_instance || "")},
           presentation: !{JSON.stringify(presentation_of_instance || "")},
