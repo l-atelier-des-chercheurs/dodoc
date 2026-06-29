@@ -89,6 +89,16 @@ Available scripts for Electron mode (run from `/electron` folder):
 - `npm run pack` - package the app (without creating installer)
 - `npm run dist` - build distributable installers
 
+### TODO — macOS universal build
+
+Since v13, CI builds on Apple Silicon runners and only publishes an **arm64** DMG (`dodoc-*-macos.dmg`). Intel Macs (x86_64) are no longer supported by the release artifacts (v12 shipped separate `-macos-intel` and `-macos-arm` DMGs).
+
+- [ ] Ship a **universal** macOS binary (x64 + arm64) in a single DMG — preferred over two separate installers (simpler releases page, one notarization pass).
+- [ ] In `electron/electron-builder.yml`, set `mac.target` to `dmg` with `arch: [x64, arm64]`.
+- [ ] Update `.github/workflows/build.yml` to verify the universal `.app` (e.g. `dist/mac-universal/`).
+- [ ] Validate native modules (`sharp`, `bufferutil`) on both architectures in CI.
+- [ ] Fallback: if the universal build fails in CI, revert to two DMGs like v12 (`-macos-intel` / `-macos-arm`).
+
 For development with live reload (client-side code):
 
 You need to open a second terminal to run the vite/livereload server:
