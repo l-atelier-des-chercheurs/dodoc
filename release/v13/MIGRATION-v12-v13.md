@@ -23,12 +23,22 @@ Fichiers publiés par CI (noms réels, version **13.0.35** ou tag bêta courant)
 
 | Plateforme | Fichier |
 |------------|---------|
-| macOS | `dodoc-13.0.35-macos.dmg` |
+| macOS (Apple Silicon) | `dodoc-13.0.35-macos-arm.dmg` |
+| macOS (Intel) | `dodoc-13.0.35-macos-intel.dmg` |
 | Windows | `dodoc-13.0.35-windows.exe` |
 | Linux (AppImage x64) | `dodoc-13.0.35-x86_64.AppImage` |
 | Linux (AppImage arm64) | `dodoc-13.0.35-arm64.AppImage` |
 
 ### macOS
+
+Deux installateurs sont publiés — choisir celui qui correspond à votre Mac :
+
+| Fichier | Pour |
+|---------|------|
+| `dodoc-*-macos-arm.dmg` | **Apple Silicon** (puce M1, M2, M3, M4, …) |
+| `dodoc-*-macos-intel.dmg` | Mac **Intel** (x86_64, en général antérieurs à fin 2020) |
+
+Pas sûr ? **Pomme → À propos de ce Mac** : une ligne **Puce** indique Apple Silicon (`arm`) ; une ligne **Processeur** (ex. « Intel Core i5 ») indique Intel. Sur Apple Silicon, le build ARM est recommandé (natif) ; le build Intel peut tourner via Rosetta mais est plus lent. Un Mac Intel **ne peut pas** exécuter le build ARM.
 
 Si l’application ne s’ouvre pas à cause de la quarantaine, voir le sujet forum dédié ou : clic droit → Ouvrir.
 

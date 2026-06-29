@@ -51,7 +51,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            build: linux
+          - os: windows-latest
+            build: windows
+          # Apple Silicon runner — native arm64 DMG (cross-compiling x64 here is brittle for native deps)
+          - os: macos-latest
+            build: mac
+            mac_arch: arm64
+          # Intel runner — native x64 DMG (macos-15-intel also works until Aug 2027)
+          - os: macos-26-intel
+            build: mac
+            mac_arch: x64
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v4
@@ -66,7 +78,7 @@ jobs:
           cd electron
           npm install
       - name: Package Electron app (macOS)
-        if: matrix.os == 'macos-latest'
+        if: matrix.build == 'mac'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -76,9 +88,9 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           cd electron
-          npm run dist -- --mac dmg
+          npm run dist -- --mac dmg --${{ matrix.mac_arch }}
       - name: Package Electron app (non-macOS)
-        if: matrix.os != 'macos-latest'
+        if: matrix.build != 'mac'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -87,9 +99,10 @@ jobs:
           cd electron
           npm run dist
       - name: check macOS image
-        if: matrix.os == 'macos-latest'
+        if: matrix.build == 'mac'
         run: |
-          echo "🔍 verify signature"
-          codesign -dv electron/dist/mac-arm64/do•doc.app
-          echo "🔍 verify notarisation"
-          spctl -a -vvv -t open -vvv --context context:primary-signature electron/dist/mac-arm64/do•doc.app
+          app="electron/dist/mac-${{ matrix.mac_arch }}/do•doc.app"
+          echo "🔍 verify signature (${{ matrix.mac_arch }} on ${{ matrix.os }})"
+          codesign -dv "${app}"
+          echo "🔍 verify notarisation (${{ matrix.mac_arch }} on ${{ matrix.os }})"
+          spctl -a -vvv -t open -vvv --context context:primary-signature "${app}"

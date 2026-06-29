@@ -44,6 +44,15 @@ Note 2: bufferutil seems to be necessary specifically for intel macOS.
 
 Download the latest release from the [release page](https://github.com/l-atelier-des-chercheurs/dodoc/releases).
 
+**macOS** ships two signed DMGs — use the one that matches your Mac:
+
+| File | For |
+|------|-----|
+| `dodoc-*-macos-arm.dmg` | **Apple Silicon** (M1, M2, M3, M4, …) |
+| `dodoc-*-macos-intel.dmg` | **Intel** Macs (x86_64, typically sold before late 2020) |
+
+Not sure which you have? **Apple menu → About This Mac**: a **Chip** line means Apple Silicon (`arm`); a **Processor** line (e.g. “Intel Core i5”) means Intel. Apple Silicon Macs can run the Intel build via Rosetta, but the ARM build is native and recommended. Intel Macs **cannot** run the ARM build.
+
 ## Method 2 — the long way
 
 See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developpement/426
@@ -88,16 +97,6 @@ Available scripts for Electron mode (run from `/electron` folder):
 - `npm run debug-lr` - run the app in debug mode with live reload
 - `npm run pack` - package the app (without creating installer)
 - `npm run dist` - build distributable installers
-
-### TODO — macOS universal build
-
-Since v13, CI builds on Apple Silicon runners and only publishes an **arm64** DMG (`dodoc-*-macos.dmg`). Intel Macs (x86_64) are no longer supported by the release artifacts (v12 shipped separate `-macos-intel` and `-macos-arm` DMGs).
-
-- [ ] Ship a **universal** macOS binary (x64 + arm64) in a single DMG — preferred over two separate installers (simpler releases page, one notarization pass).
-- [ ] In `electron/electron-builder.yml`, set `mac.target` to `dmg` with `arch: [x64, arm64]`.
-- [ ] Update `.github/workflows/build.yml` to verify the universal `.app` (e.g. `dist/mac-universal/`).
-- [ ] Validate native modules (`sharp`, `bufferutil`) on both architectures in CI.
-- [ ] Fallback: if the universal build fails in CI, revert to two DMGs like v12 (`-macos-intel` / `-macos-arm`).
 
 For development with live reload (client-side code):
 

@@ -75,7 +75,6 @@ appx:
   # If you need custom capabilities, you'll need to provide a custom appxmanifest.xml template
 
 mac:
-  artifactName: dodoc-${version}-macos.${ext}
   category: public.app-category.education
   icon: build/icon.icns
   hardenedRuntime: true
@@ -88,6 +87,13 @@ mac:
     NSMicrophoneUsageDescription: Merci d'accorder l'accès au micro pour réaliser des enregistrements.
     NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.
     NSScreenCaptureDescription: Merci d'accorder l'accès à l'affichage pour réaliser des enregistrements.
+  target:
+    - target: dmg
+      arch: x64
+      artifactName: dodoc-${version}-macos-intel.${ext}
+    - target: dmg
+      arch: arm64
+      artifactName: dodoc-${version}-macos-arm.${ext}
 
 linux:
   artifactName: dodoc-${version}-linux-{arch}.${ext}
