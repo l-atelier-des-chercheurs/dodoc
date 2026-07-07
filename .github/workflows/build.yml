@@ -106,7 +106,12 @@ jobs:
       - name: check macOS image
         if: matrix.build == 'mac'
         run: |
-          app="electron/dist/mac-${{ matrix.mac_arch }}/do•doc.app"
+          if [ "${{ matrix.mac_arch }}" = "arm64" ]; then
+            app="electron/dist/mac-arm64/do•doc.app"
+          else
+            # x64 is electron-builder's default mac arch → output folder is `mac`, not `mac-x64`
+            app="electron/dist/mac/do•doc.app"
+          fi
           echo "🔍 verify signature (${{ matrix.mac_arch }} on ${{ matrix.os }})"
           codesign -dv "${app}"
           echo "🔍 verify notarisation (${{ matrix.mac_arch }} on ${{ matrix.os }})"
