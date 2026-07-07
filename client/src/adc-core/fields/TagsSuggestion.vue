@@ -59,8 +59,8 @@ export default {
   methods: {
     async loadSuggestions(tag_type) {
       const path = `categories/${tag_type}`;
-      const suggestions = await this.$api
-        .getFolders({
+      const category = await this.$api
+        .getFolder({
           path,
         })
         .catch((err) => {
@@ -68,8 +68,8 @@ export default {
           err;
           return;
         });
-      return suggestions?.list_of_suggestions
-        ? suggestions.list_of_suggestions
+      return category?.list_of_suggestions
+        ? category.list_of_suggestions
         : [];
     },
   },
