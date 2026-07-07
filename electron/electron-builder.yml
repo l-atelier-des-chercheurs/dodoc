@@ -88,12 +88,7 @@ mac:
     NSCameraUsageDescription: Merci d'accorder l'accès à la caméra pour réaliser des enregistrements.
     NSScreenCaptureDescription: Merci d'accorder l'accès à l'affichage pour réaliser des enregistrements.
   target:
-    - target: dmg
-      arch: x64
-      artifactName: dodoc-${version}-macos-intel.${ext}
-    - target: dmg
-      arch: arm64
-      artifactName: dodoc-${version}-macos-arm.${ext}
+    - dmg
 
 linux:
   artifactName: dodoc-${version}-linux-{arch}.${ext}

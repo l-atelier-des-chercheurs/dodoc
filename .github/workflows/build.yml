@@ -88,7 +88,12 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           cd electron
-          npm run dist -- --mac dmg --${{ matrix.mac_arch }}
+          if [ "${{ matrix.mac_arch }}" = "x64" ]; then
+            mac_artifact_name='dodoc-${version}-macos-intel.${ext}'
+          else
+            mac_artifact_name='dodoc-${version}-macos-arm.${ext}'
+          fi
+          npm run dist -- --mac dmg --${{ matrix.mac_arch }} --config.mac.artifactName="${mac_artifact_name}"
       - name: Package Electron app (non-macOS)
         if: matrix.build != 'mac'
         env:
