@@ -137,6 +137,8 @@ You need to have `docker` installed on your machine.
 Run `docker compose up -d`, wait for it to initialize completely, and visit `https://localhost:8080`.
 Your data is persistent (in ./dodoc-data directory).
 
+The official image ships with Poppler (`pdftoppm`) for faster PDF thumbnail generation. Without it, do•doc falls back to Puppeteer/Chromium.
+
 ### Or the docker manual way
 
 If you prefer to customise the container, the basic pattern for starting a do•doc instance is:

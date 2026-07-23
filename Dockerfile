@@ -28,8 +28,8 @@ RUN npm ci --only=production
 
 FROM node:24.14.0-slim
 
-# Install chromium
-RUN apt update && apt install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*
+# Install chromium (Puppeteer fallback) and poppler-utils (pdftoppm for PDF thumbnails)
+RUN apt update && apt install -y --no-install-recommends chromium poppler-utils && rm -rf /var/lib/apt/lists/*
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
