@@ -31,6 +31,7 @@ html
         is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
         page_is_standalone_html: !{page_is_standalone_html || false},
         stadia_maps_api_key: !{JSON.stringify(stadia_maps_api_key || "")},
+        public_url: !{JSON.stringify(public_url || "")},
 
         instance_meta: {
           name: !{JSON.stringify(name_of_instance || "")},

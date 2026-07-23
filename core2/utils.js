@@ -1158,6 +1158,19 @@ module.exports = (function () {
         return `Error reading dependencies: ${err.message}`;
       }
     },
+
+    /**
+     * Canonical public URL for user-facing links (emails, PDF, QR, share).
+     * Reads public_url first, then legacy url. Optional fallback to homeURL.
+     */
+    getPublicUrl({ fallback_to_home_url = false } = {}) {
+      let raw = (global.settings.public_url || global.settings.url || "").trim();
+      if (!raw && fallback_to_home_url && global.appInfos?.homeURL) {
+        raw = global.appInfos.homeURL;
+      }
+      if (!raw) return "";
+      return raw.replace(/\/+$/, "");
+    },
   };
 
   return API;

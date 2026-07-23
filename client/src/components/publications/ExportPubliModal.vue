@@ -113,6 +113,7 @@
 </template>
 <script>
 import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAndSaveOrDownload.vue";
+import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
 
 export default {
   props: {
@@ -209,7 +210,7 @@ export default {
       const route = this.$router.resolve({
         path: this.createURLFromPath(this.publication.$path),
       });
-      return window.location.origin + route.href;
+      return resolveAppPublicOrigin() + route.href;
     },
     current_info() {
       let html = this.$t("current_f") + " (";

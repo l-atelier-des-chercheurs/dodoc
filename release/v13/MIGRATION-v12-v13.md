@@ -78,6 +78,15 @@ Image : `ghcr.io/l-atelier-des-chercheurs/dodoc:13.0.35` (ou le tag de la bêta 
 
 ### YunoHost / hébergement packagé
 
+L’image officielle inclut **Poppler** (`pdftoppm`) pour la génération rapide des vignettes PDF. Sans ce binaire, do•doc retombe sur Puppeteer/Chromium (plus lent). Si vous construisez votre propre image, ajoutez le paquet `poppler-utils` :
+
+```dockerfile
+RUN apt update && apt install -y --no-install-recommends chromium poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+### YunoHost
+
 - Mettre à jour la version de Node vers **24.14.0**.
 - Suivre la procédure du package YunoHost une fois la version 13 publiée.
 - En cas de souci après mise à jour, vérifier que `settings.json` et le chemin `contentPath` sont inchangés.
@@ -92,6 +101,8 @@ Vos réglages personnalisés sont conservés. Quelques valeurs par défaut ont c
 |-----------|-----|-----|
 | `tokenIsValidForXDays` | 60 | 30 |
 | Branches Git | `main` / `main-node` | branche unifiée |
+| URL publique | `url` | `public_url` (`url` reste accepté) |
+| `domain` (settings) | présent, inutilisé | supprimé — utiliser `public_url` |
 
 Nouveaux types / champs dans le schéma (ajoutés automatiquement pour les nouveaux contenus) :
 

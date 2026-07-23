@@ -18,6 +18,8 @@
   </div>
 </template>
 <script>
+import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
+
 export default {
   props: {
     file: Object,
@@ -40,7 +42,7 @@ export default {
       //   $media_filename: this.file.$media_filename,
       // });
       return (
-        window.location.origin +
+        resolveAppPublicOrigin() +
         "/_previewmedia?path_to_meta=" +
         this.file.$path
       );

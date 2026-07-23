@@ -511,6 +511,7 @@ class Exporter {
           page_is_standalone_html: true,
           folder_data,
           stadia_maps_api_key: global.settings.stadia_maps_api_key || "",
+          public_url: utils.getPublicUrl(),
         },
         async (err, html) => {
           ////////////////////////////////////////////////////////////// HTML
@@ -1107,7 +1108,8 @@ class Exporter {
     const path_without_space = path_to_folder
       .replace("spaces" + path.sep, "+")
       .replace("projects" + path.sep, "");
-    return global.appInfos.homeURL + "/" + path_without_space;
+    const base_url = utils.getPublicUrl({ fallback_to_home_url: true });
+    return base_url + "/" + path_without_space;
   }
 }
 

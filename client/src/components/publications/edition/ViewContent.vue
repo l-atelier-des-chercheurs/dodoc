@@ -102,6 +102,7 @@ import hljs from "highlight.js/lib/common";
 import DOMPurify from "dompurify";
 
 import { generate } from "lean-qr";
+import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
 import { renderMedia as renderMediaFunction } from "@/components/publications/edition/renderMedia.js";
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
@@ -776,7 +777,9 @@ export default {
     },
     makeQREmbedForQR({ alt, width, height, media }) {
       const url =
-        window.location.origin + "/_previewmedia?path_to_meta=" + media.$path;
+        resolveAppPublicOrigin() +
+        "/_previewmedia?path_to_meta=" +
+        media.$path;
 
       const code = generate(url);
       const dataUrl = code.toDataURL({ scale: 10 });

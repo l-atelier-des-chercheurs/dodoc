@@ -1,5 +1,5 @@
 {
-  "domain": "",
+  "public_url": "",
   "protocol": "https",
   "host": "localhost",
   "desired_port": 8080,

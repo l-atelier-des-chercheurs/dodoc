@@ -800,6 +800,7 @@ module.exports = (function () {
 
     d.custom_fonts = (await _loadCustomFonts()) || {};
     d.stadia_maps_api_key = global.settings.stadia_maps_api_key || "";
+    d.public_url = utils.getPublicUrl();
 
     res.render("index", d);
   }

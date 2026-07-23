@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 
 const dev = require("./dev-log");
+const utils = require("./utils");
 
 module.exports = (function () {
   const API = {
@@ -54,9 +55,9 @@ module.exports = (function () {
      * @returns {boolean}
      */
     canSendMail() {
-      if (!global.settings.mailer?.host || !global.settings.url) {
+      if (!global.settings.mailer?.host || !utils.getPublicUrl()) {
         dev.log(
-          "Mailer settings are not defined, make sure to set them in settings.json (mailer + url fields)"
+          "Mailer settings are not defined, make sure to set them in settings.json (mailer + public_url fields)"
         );
         return false;
       }

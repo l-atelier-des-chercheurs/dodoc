@@ -142,6 +142,7 @@
 import DuplicatePublication from "@/components/publications/DuplicatePublication.vue";
 import ExportPubliModal from "@/components/publications/ExportPubliModal.vue";
 import SharePublication from "@/components/publications/SharePublication.vue";
+import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
 
 export default {
   props: {
@@ -182,7 +183,7 @@ export default {
         query,
       });
 
-      return window.location.origin + route.href;
+      return resolveAppPublicOrigin() + route.href;
     },
   },
   methods: {

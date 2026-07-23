@@ -156,7 +156,7 @@ When starting the app for the first time, a message will tell you about an admin
 
 More advanced settings are available to all by duplicating the settings.example.json file and renaming it to settings.json. You can override the default settings_base.json values with ones you need:
 
-- set the url where dodoc will be accessed (used for emails sent to users) (for example, https://test.dodoc.fr)
+- set `public_url` to the canonical URL where do•doc is accessed by users (used for emails, PDF links, QR codes and sharing). Example: `https://test.dodoc.fr`. The legacy `url` field is still accepted as a fallback.
 
 - adapt the port used on startup, useful when hosting multiple dodoc on the same server (possible values: any port not already used, for example 443 or 8000)
 
