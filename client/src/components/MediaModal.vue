@@ -173,6 +173,12 @@
               </div>
             </div>
           </div>
+          <div class="" v-if="file.$date_created">
+            <DateDisplay
+              :title="$t('date_created')"
+              :date="file.$date_created"
+            />
+          </div>
           <div class="">
             <DateDisplay
               :title="$t('date_uploaded')"

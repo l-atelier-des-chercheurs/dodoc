@@ -229,7 +229,7 @@ export default {
       }
 
       if (this.file.lastModified)
-        additional_meta.$date_created = this.file.lastModified;
+        additional_meta.$client_file_last_modified = this.file.lastModified;
       if (this.connected_as?.$path)
         additional_meta.$authors = [this.connected_as.$path];
 

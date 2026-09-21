@@ -17,6 +17,126 @@ const path = require("path"),
 sharp.cache(false);
 
 module.exports = (function () {
+const IMAGE_EXTS_FOR_CREATION_DATE = new Set([
+  ".jpg",
+  ".jpeg",
+  ".tif",
+  ".tiff",
+  ".heic",
+  ".heif",
+  ".avif",
+  ".webp",
+  ".png",
+]);
+const MEDIA_EXTS_FOR_CREATION_DATE = new Set([
+  ".mp4",
+  ".m4v",
+  ".mov",
+  ".webm",
+  ".mkv",
+  ".avi",
+  ".mp3",
+  ".m4a",
+  ".aac",
+  ".wav",
+  ".ogg",
+  ".weba",
+  ".flac",
+]);
+
+function coerceToValidDate(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  // Ignore clearly bogus / epoch-zero dates
+  if (date.getFullYear() < 1980) return null;
+  return date;
+}
+
+function parsePdfInfoDate(raw) {
+  if (!raw) return null;
+  const value = String(raw).trim();
+  // PDF date: D:YYYYMMDDHHmmSSOHH'mm' or shorter
+  const match = value.match(
+    /^D:(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?(\d{2})?(.*)$/
+  );
+  if (!match) return coerceToValidDate(value);
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4] || 0);
+  const minute = Number(match[5] || 0);
+  const second = Number(match[6] || 0);
+  const tz_raw = (match[7] || "").trim();
+
+  let iso = `${String(year).padStart(4, "0")}-${String(month).padStart(
+    2,
+    "0"
+  )}-${String(day).padStart(2, "0")}T${String(hour).padStart(2, "0")}:${String(
+    minute
+  ).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
+
+  if (tz_raw.startsWith("Z") || tz_raw === "Z") {
+    iso += "Z";
+  } else {
+    const tz_match = tz_raw.match(/^([+-])(\d{2})'?(\d{2})'?/);
+    if (tz_match) {
+      iso += `${tz_match[1]}${tz_match[2]}:${tz_match[3]}`;
+    }
+  }
+
+  return coerceToValidDate(iso);
+}
+
+async function extractCreationDateFromImage(path_to_media) {
+  const exif = await exifr.parse(path_to_media, {
+    pick: [
+      "DateTimeOriginal",
+      "CreateDate",
+      "DateCreated",
+      "ModifyDate",
+      "DateTimeDigitized",
+    ],
+  });
+  if (!exif) return null;
+
+  return (
+    coerceToValidDate(exif.DateTimeOriginal) ||
+    coerceToValidDate(exif.CreateDate) ||
+    coerceToValidDate(exif.DateCreated) ||
+    coerceToValidDate(exif.DateTimeDigitized) ||
+    coerceToValidDate(exif.ModifyDate) ||
+    null
+  );
+}
+
+async function extractCreationDateFromPdf(path_to_media) {
+  const data = await fs.readFile(path_to_media);
+  const text = data.toString("latin1");
+
+  // Prefer top-level XMP CreateDate (not nested Pantry / Ingredients)
+  const xmp_start = text.indexOf("<x:xmpmeta");
+  const xmp_end = text.indexOf("</x:xmpmeta>", xmp_start);
+  if (xmp_start >= 0 && xmp_end > xmp_start) {
+    const xmp = text.slice(xmp_start, xmp_end);
+    // Strip pantry blocks so ingredient CreateDates are ignored
+    const xmp_without_pantry = xmp.replace(
+      /<xmpMM:Pantry\b[\s\S]*?<\/xmpMM:Pantry>/gi,
+      ""
+    );
+    const xmp_match =
+      xmp_without_pantry.match(
+        /<xmp:CreateDate[^>]*>([^<]+)<\/xmp:CreateDate>/i
+      ) || xmp_without_pantry.match(/\bxmp:CreateDate="([^"]+)"/i);
+    const from_xmp = coerceToValidDate(xmp_match?.[1]);
+    if (from_xmp) return from_xmp;
+  }
+
+  const info_match = text.match(/\/CreationDate\s*\(([^)]+)\)/);
+  return parsePdfInfoDate(info_match?.[1]);
+}
+
   const API = {
     parseMeta(d) {
       return TOML.parse(d);
@@ -965,6 +1085,14 @@ module.exports = (function () {
 
           let streams = metadata.streams;
 
+          const creation_time =
+            coerceToValidDate(metadata.format?.tags?.creation_time) ||
+            coerceToValidDate(
+              metadata.streams?.find((s) => s.tags?.creation_time)?.tags
+                ?.creation_time
+            ) ||
+            null;
+
           return resolve({
             duration,
             location,
@@ -972,6 +1100,7 @@ module.exports = (function () {
             height,
             ratio,
             streams,
+            creation_time,
           });
         });
       });
@@ -1005,6 +1134,82 @@ module.exports = (function () {
 
     async getGPSFromFile(full_media_path) {
       return await exifr.gps(full_media_path);
+    },
+
+    /**
+     * Read an embedded creation date from the media file when available.
+     * Covers common image EXIF/XMP, ffprobe creation_time for A/V, and PDF
+     * Info/XMP CreateDate (ignores XMP Pantry ingredient dates).
+     * @returns {Date|null}
+     */
+    async extractEmbeddedCreationDate({ path_to_media }) {
+      if (!path_to_media) return null;
+
+      const ext = path.extname(path_to_media).toLowerCase();
+
+      try {
+        if (IMAGE_EXTS_FOR_CREATION_DATE.has(ext)) {
+          return await extractCreationDateFromImage(path_to_media);
+        }
+
+        if (MEDIA_EXTS_FOR_CREATION_DATE.has(ext)) {
+          const { creation_time } = await API.getVideoMetaData({
+            path: path_to_media,
+          });
+          return creation_time || null;
+        }
+
+        if (ext === ".pdf") {
+          return await extractCreationDateFromPdf(path_to_media);
+        }
+      } catch (err) {
+        dev.error(
+          `Failed to extract embedded creation date from ${path_to_media}:`,
+          err
+        );
+      }
+
+      return null;
+    },
+
+    /**
+     * Resolve $date_created for a newly imported/created file.
+     * Priority: explicit meta > embedded metadata > browser lastModified > fs times > now.
+     */
+    async resolveFileCreationDate({
+      path_to_media,
+      explicit_date,
+      client_last_modified,
+    } = {}) {
+      const from_explicit = coerceToValidDate(explicit_date);
+      if (from_explicit) return from_explicit;
+
+      if (path_to_media) {
+        const from_embedded = await API.extractEmbeddedCreationDate({
+          path_to_media,
+        });
+        if (from_embedded) return from_embedded;
+      }
+
+      const from_client = coerceToValidDate(client_last_modified);
+      if (from_client) return from_client;
+
+      if (path_to_media) {
+        try {
+          const stats = await fs.stat(path_to_media);
+          const from_birth = coerceToValidDate(stats.birthtimeMs);
+          if (from_birth) return from_birth;
+          const from_mtime = coerceToValidDate(stats.mtimeMs);
+          if (from_mtime) return from_mtime;
+        } catch (err) {
+          dev.error(
+            `Failed to stat file for creation date ${path_to_media}:`,
+            err
+          );
+        }
+      }
+
+      return API.getCurrentDate();
     },
 
     convertToSlashPath(p) {
