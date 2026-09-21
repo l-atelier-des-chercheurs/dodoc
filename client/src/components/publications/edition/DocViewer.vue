@@ -62,7 +62,10 @@
   </div>
 </template>
 <script>
+import PublicationReady from "@/mixins/PublicationReady.js";
+
 export default {
+  mixins: [PublicationReady],
   props: {
     content_nodes: {
       type: Object,
@@ -79,11 +82,23 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.signalPublicationReadyAfterRender();
+  },
   beforeDestroy() {},
   watch: {
     opened_chapter_meta_filename() {
       this.$nextTick(() => this.scrollToTop());
+      this.signalPublicationReadyAfterRender();
+    },
+    css_styles() {
+      this.signalPublicationReadyAfterRender();
+    },
+    content_nodes: {
+      handler() {
+        this.signalPublicationReadyAfterRender();
+      },
+      deep: true,
     },
   },
   computed: {

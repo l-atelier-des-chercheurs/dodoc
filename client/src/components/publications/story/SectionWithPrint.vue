@@ -24,8 +24,10 @@
 <script>
 import SectionsList from "@/components/publications/story/SectionsList.vue";
 import SingleSection from "@/components/publications/story/SingleSection.vue";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
+  mixins: [PublicationReady],
   props: {
     publication: Object,
   },
@@ -45,9 +47,21 @@ export default {
     )
       this.display_mode = "section";
   },
-  mounted() {},
+  mounted() {
+    this.signalPublicationReadyAfterRender();
+  },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    sections: {
+      handler() {
+        this.signalPublicationReadyAfterRender();
+      },
+      deep: true,
+    },
+    display_mode() {
+      this.signalPublicationReadyAfterRender();
+    },
+  },
   computed: {
     opened_section_meta_filename() {
       const query = JSON.parse(JSON.stringify(this.$route.query));

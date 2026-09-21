@@ -2,6 +2,7 @@ const dev = require("./dev-log");
 const binCleanup = require("./bin-cleanup");
 const cacheManager = require("./cache-manager");
 const ffmpegTracker = require("./ffmpeg-tracker");
+const puppeteer = require("./puppeteer");
 
 let exitHandled = false;
 
@@ -33,6 +34,12 @@ async function runExitCleanup() {
       ffmpegTracker.onExit();
     } catch (err) {
       dev.error("Error during ffmpeg cleanup:", err);
+    }
+
+    try {
+      await puppeteer.closeSharedBrowser();
+    } catch (err) {
+      dev.error("Error during puppeteer cleanup:", err);
     }
 
     dev.log("Exit cleanup completed");
