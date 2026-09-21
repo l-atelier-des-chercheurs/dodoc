@@ -444,6 +444,7 @@ module.exports = (function () {
       );
       await fs.copy(full_path_to_file, destination_path);
 
+      // Exports are new artifacts: creation date is now (not the source media's).
       additional_meta.$date_created = +new Date();
 
       const item_in_schema = utils.parseAndCheckSchema({

@@ -98,6 +98,8 @@ export default {
       const additional_meta = getCopyableMediaMeta(this.media, {
         $origin: "collect",
         $processing: [this.processing_label],
+        // Same capture lineage: keep the source creation date
+        $date_created: this.media.$date_created,
       });
 
       const onProgress = (progressEvent) => {
