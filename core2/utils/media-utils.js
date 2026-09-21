@@ -42,40 +42,49 @@ function coerceToValidDate(value) {
   return date;
 }
 
-function parsePdfInfoDate(raw) {
-  if (!raw) return null;
-  const value = String(raw).trim();
-  // PDF date: D:YYYYMMDDHHmmSSOHH'mm' or shorter
+/**
+ * Parse a PDF date string (PDF spec §7.9.4).
+ * Adapted from pdf-lib's parseDate (MIT) — Hopding/pdf-lib.
+ * @see https://github.com/Hopding/pdf-lib/blob/master/src/utils/strings.ts
+ */
+function parsePdfDate(date_str) {
+  if (!date_str) return null;
+  const value = String(date_str).trim();
+
   const match = value.match(
-    /^D:(\d{4})(\d{2})(\d{2})(\d{2})?(\d{2})?(\d{2})?(.*)$/
+    /^D:(\d\d\d\d)(\d\d)?(\d\d)?(\d\d)?(\d\d)?(\d\d)?([+\-Z])?(\d\d)?'?(\d\d)?'?$/
   );
   if (!match) return coerceToValidDate(value);
 
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const hour = Number(match[4] || 0);
-  const minute = Number(match[5] || 0);
-  const second = Number(match[6] || 0);
-  const tz_raw = (match[7] || "").trim();
+  const [
+    ,
+    year,
+    month = "01",
+    day = "01",
+    hours = "00",
+    mins = "00",
+    secs = "00",
+    offset_sign = "Z",
+    offset_hours = "00",
+    offset_mins = "00",
+  ] = match;
 
-  let iso = `${String(year).padStart(4, "0")}-${String(month).padStart(
-    2,
-    "0"
-  )}-${String(day).padStart(2, "0")}T${String(hour).padStart(2, "0")}:${String(
-    minute
-  ).padStart(2, "0")}:${String(second).padStart(2, "0")}`;
+  const tz_offset =
+    offset_sign === "Z" ? "Z" : `${offset_sign}${offset_hours}:${offset_mins}`;
 
-  if (tz_raw.startsWith("Z") || tz_raw === "Z") {
-    iso += "Z";
-  } else {
-    const tz_match = tz_raw.match(/^([+-])(\d{2})'?(\d{2})'?/);
-    if (tz_match) {
-      iso += `${tz_match[1]}${tz_match[2]}:${tz_match[3]}`;
-    }
+  return coerceToValidDate(
+    `${year}-${month}-${day}T${hours}:${mins}:${secs}${tz_offset}`
+  );
+}
+
+function decodePdfHexString(hex) {
+  const cleaned = String(hex).replace(/[^0-9A-Fa-f]/g, "");
+  if (!cleaned) return null;
+  let text = "";
+  for (let i = 0; i < cleaned.length; i += 2) {
+    text += String.fromCharCode(parseInt(cleaned.slice(i, i + 2), 16));
   }
-
-  return coerceToValidDate(iso);
+  return text;
 }
 
 async function extractCreationDateFromImage(path_to_media) {
@@ -122,8 +131,14 @@ async function extractCreationDateFromPdf(path_to_media) {
     if (from_xmp) return from_xmp;
   }
 
-  const info_match = text.match(/\/CreationDate\s*\(([^)]+)\)/);
-  return parsePdfInfoDate(info_match?.[1]);
+  // Info dict: literal string (D:...) or hex string
+  const literal_match = text.match(/\/CreationDate\s*\(([^)]+)\)/);
+  if (literal_match) return parsePdfDate(literal_match[1]);
+
+  const hex_match = text.match(/\/CreationDate\s*<([0-9A-Fa-f]+)>/);
+  if (hex_match) return parsePdfDate(decodePdfHexString(hex_match[1]));
+
+  return null;
 }
 
 module.exports = function createMediaUtils(API) {
