@@ -246,7 +246,6 @@ module.exports = (function () {
         }).catch((err) => {
           if (err.message !== "content_not_changed") throw new Error(err);
         });
-        // TODO remove thumbs
       }
 
       meta.$date_modified = utils.getCurrentDate();
