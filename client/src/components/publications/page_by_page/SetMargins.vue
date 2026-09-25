@@ -1,7 +1,7 @@
 <template>
   <div>
     <fieldset>
-      <legend class="u-label">{{ $t("margins") }}</legend>
+      <legend>{{ $t("margins") }}</legend>
       <div class="u-instructions">
         <small>{{ $t("margins_instructions") }}</small>
       </div>

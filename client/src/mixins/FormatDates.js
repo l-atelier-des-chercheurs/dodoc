@@ -112,5 +112,61 @@ export default {
       dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
       return dt.toISOString().slice(0, 16);
     },
+    formatRecentDateTime(date) {
+      const parsed_date = new Date(date);
+      if (Number.isNaN(parsed_date.getTime())) return "";
+
+      const now_date = new Date();
+      const start_of_today = new Date(now_date);
+      start_of_today.setHours(0, 0, 0, 0);
+
+      const start_of_target_day = new Date(parsed_date);
+      start_of_target_day.setHours(0, 0, 0, 0);
+
+      const day_diff = Math.round(
+        (start_of_today.getTime() - start_of_target_day.getTime()) /
+          (24 * 60 * 60 * 1000)
+      );
+
+      const locale = this.$i18n?.locale || "en";
+
+      if (day_diff === 0) {
+        const diff_seconds = Math.round(
+          (parsed_date.getTime() - now_date.getTime()) / 1000
+        );
+        const abs_diff_seconds = Math.abs(diff_seconds);
+        const relative_time_formatter = new Intl.RelativeTimeFormat(locale, {
+          numeric: "auto",
+        });
+
+        if (abs_diff_seconds < 60) {
+          return relative_time_formatter.format(diff_seconds, "second");
+        }
+        if (abs_diff_seconds < 3600) {
+          return relative_time_formatter.format(
+            Math.round(diff_seconds / 60),
+            "minute"
+          );
+        }
+        return relative_time_formatter.format(
+          Math.round(diff_seconds / 3600),
+          "hour"
+        );
+      }
+
+      if (day_diff === 1) {
+        if (locale.startsWith("fr")) {
+          const hours = String(parsed_date.getHours()).padStart(2, "0");
+          const minutes = String(parsed_date.getMinutes()).padStart(2, "0");
+          return `Hier, à ${hours}h${minutes}`;
+        }
+        return `Yesterday, at ${parsed_date.toLocaleTimeString(locale, {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+      }
+
+      return this.formatDateTimeToPrecise(parsed_date);
+    },
   },
 };

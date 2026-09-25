@@ -1,17 +1,19 @@
 <template>
   <div class="_recentlyEdited" v-if="show_recently_edited">
-    <div class="_title">
-      <DLabel :str="$t('projects_you_edited_last')" />
-    </div>
-    <button
-      type="button"
-      class="u-button u-button_icon _closeBtn"
-      @click="show_recently_edited = false"
-    >
-      <b-icon icon="x-lg" />
-    </button>
-    <div v-if="paths.length > 0" class="_content">
-      <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
+    <div class="_recentlyEdited--content">
+      <div class="_title">
+        <DLabel :str="$t('projects_you_edited_last')" />
+      </div>
+      <button
+        type="button"
+        class="u-button u-button_icon _closeBtn"
+        @click="show_recently_edited = false"
+      >
+        <b-icon icon="x-lg" />
+      </button>
+      <div v-if="paths.length > 0" class="_content">
+        <LoadSelectedProjects :key="paths.join('.')" :paths="paths" />
+      </div>
     </div>
   </div>
 </template>
@@ -45,29 +47,32 @@ export default {
 </script>
 <style lang="scss" scoped>
 ._recentlyEdited {
-  position: relative;
+  // position: absolute;
+  // top: 0;
   // right: 0;
-  // top: 55px;
-  // width: 140px;
-  // max-height: 300px;
-  // z-index: 100;
-  padding: calc(var(--spacing) / 2);
-  margin: calc(var(--spacing) * 2) auto;
-  // padding-top: calc(var(--spacing) / 2);
-  // background: var(--c-bleumarine);
-  background: var(--c-gris_clair);
-  // color: white;
-  max-width: min(var(--max-column-width), var(--max-column-width-px));
+  // max-width: 320px;
+  z-index: 10000;
 
-  border-radius: var(--border-radius) 0 0 var(--border-radius);
-  // box-shadow: var(--panel-shadows);
-  // display: flex;
-  // flex-direction: row;
+  > ._recentlyEdited--content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    // box-shadow: var(--panel-shadows);
+    margin: calc(var(--spacing) * 2) auto;
 
-  overflow: auto;
+    max-width: min(var(--max-column-width), var(--max-column-width-px));
 
-  > * {
-    max-height: 30vh;
+    padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 2);
+    border-radius: var(--border-radius);
+    background: var(--c-gris_clair);
+
+    ::v-deep {
+      ._projectInfos--topContent {
+        display: flex;
+        flex-flow: row nowrap;
+      }
+    }
   }
 
   ::v-deep label {

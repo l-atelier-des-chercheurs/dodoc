@@ -4,7 +4,7 @@
       <DLabel :str="$t('title')" />
       <TextInput
         :content.sync="new_publication_title"
-        :maxlength="40"
+        :maxlength="60"
         :required="true"
         :autofocus="true"
         ref="titleInput"

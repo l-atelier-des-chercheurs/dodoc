@@ -5,13 +5,13 @@
       :key="/* slicklist stays active otherwise */ slicklist_key"
       class="_listOfFiles"
       axis="y"
-      :value="medias_with_linked"
-      @input="$emit('reorderMedias', $event)"
+      :value="local_items"
+      @input="reorderMedias"
       :useDragHandle="true"
     >
       <SlickItem
-        v-for="({ _linked_media }, index) in medias_with_linked"
-        :key="_linked_media.$path"
+        v-for="(media, index) in local_items"
+        :key="(media._linked_media && media._linked_media.$path) || index"
         :index="index"
         class="_reorderedFile"
       >
@@ -24,24 +24,25 @@
         </button>
         <component
           :is="mode === 'source' ? 'DownloadFile' : 'span'"
-          v-if="_linked_media && _linked_media.$path"
+          v-if="media._linked_media && media._linked_media.$path"
           class="_link"
-          :file="_linked_media"
+          :file="media._linked_media"
         >
           <button
             type="button"
             class="_link--previewBtn"
             v-if="
+              media._linked_media &&
               ['image', 'video', 'audio', 'pdf', 'stl', 'url'].includes(
-                _linked_media.$type
+                media._linked_media.$type
               )
             "
-            @click.prevent="show_media_preview_for = _linked_media"
+            @click.prevent="show_media_preview_for = media._linked_media"
           >
             <MediaContent
               class="_preview"
               :context="'preview'"
-              :file="_linked_media"
+              :file="media._linked_media"
               :resolution="220"
             />
           </button>
@@ -50,7 +51,7 @@
           </div>
 
           <BaseModal2
-            v-if="show_media_preview_for === _linked_media"
+            v-if="show_media_preview_for === media._linked_media"
             @close="show_media_preview_for = null"
           >
             <MediaContent
@@ -64,21 +65,30 @@
 
           <span
             class="_link--filename"
-            v-text="_linked_media.$media_filename"
+            v-text="media._linked_media && media._linked_media.$media_filename"
           />
-          <template v-if="_linked_media.$infos.size && mode === 'source'">
+          <template
+            v-if="
+              media._linked_media &&
+              media._linked_media.$infos &&
+              media._linked_media.$infos.size &&
+              mode === 'source'
+            "
+          >
             <!-- |&nbsp; -->
             <span
               class="u-instructions _link--filesize"
-              v-text="formatBytes(_linked_media.$infos.size)"
+              v-text="formatBytes(media._linked_media.$infos.size)"
             />
           </template>
 
-          <b-icon
-            v-if="mode === 'source'"
-            class="_download"
-            icon="file-earmark-arrow-down-fill"
-          />
+          <button type="button" class="u-button u-button_icon _download">
+            <b-icon
+              v-if="mode === 'source'"
+              class=""
+              icon="file-earmark-arrow-down-fill"
+            />
+          </button>
         </component>
 
         <div class="_removeItem" v-if="edit_mode">
@@ -92,8 +102,30 @@
       </SlickItem>
     </SlickList>
 
-    <div v-if="edit_mode" class="_addBtnSection">
+    <div
+      v-if="
+        edit_mode ||
+        (mode === 'source' && download_all_meta_filenames.length > 0)
+      "
+      class="_addBtnSection"
+    >
       <button
+        v-if="mode === 'source' && download_all_meta_filenames.length > 0"
+        type="button"
+        class="u-button u-button_small"
+        :disabled="is_downloading_sources"
+        @click="downloadAllSources"
+      >
+        <b-icon
+          v-if="is_downloading_sources"
+          icon="arrow-repeat"
+          class="_spinner"
+        />
+        <b-icon v-else icon="file-earmark-arrow-down" />
+        {{ $t("download_all") }}
+      </button>
+      <button
+        v-if="edit_mode"
         type="button"
         class="u-button u-button_bleuvert u-button_small"
         @click="show_media_picker = true"
@@ -132,22 +164,68 @@ export default {
     return {
       show_media_picker: false,
       show_media_preview_for: null,
+      local_items: undefined,
+      is_downloading_sources: false,
     };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    medias_with_linked: {
+      handler() {
+        this.local_items = this.medias_with_linked || [];
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   computed: {
     slicklist_key() {
       let key = this.edit_mode + "_";
-      this.medias_with_linked.forEach((media) => {
-        key += media._linked_media.$path + "_";
+      const list = this.local_items || [];
+      list.forEach((media) => {
+        key += media._linked_media?.$path + "_";
       });
       return key;
     },
+    download_all_folder_path() {
+      const items = this.local_items || [];
+      const first = items.find((m) => m._linked_media?.$path);
+      return first ? this.getParent(first._linked_media.$path) : null;
+    },
+    download_all_meta_filenames() {
+      const folder = this.download_all_folder_path;
+      if (!folder) return [];
+      const items = this.local_items || [];
+      return items
+        .filter(
+          (m) =>
+            m._linked_media?.$path &&
+            this.getParent(m._linked_media.$path) === folder
+        )
+        .map((m) => this.getFilename(m._linked_media.$path));
+    },
   },
-  methods: {},
+  methods: {
+    reorderMedias(items) {
+      this.local_items = items;
+      this.$emit("reorderMedias", items);
+    },
+    async downloadAllSources() {
+      const path = this.download_all_folder_path;
+      const meta_filenames = this.download_all_meta_filenames;
+      if (!path || meta_filenames.length === 0) return;
+      this.is_downloading_sources = true;
+      try {
+        await this.$api.downloadSources({ path, meta_filenames });
+      } catch (err) {
+        this.$alertify?.error(this.$t("failed_to_download"));
+      } finally {
+        this.is_downloading_sources = false;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -188,7 +266,7 @@ export default {
 
   &:hover,
   &:focus-visible {
-    background: var(--c-gris);
+    // background: var(--c-gris);
   }
 
   ._link {
@@ -282,9 +360,25 @@ export default {
 ._removeItem,
 ._download {
   margin: calc(var(--spacing) / 4);
+
+  &:last-child {
+    margin-right: calc(var(--spacing) / 1);
+  }
 }
 
 ._dragHandle {
   cursor: grab;
+}
+
+._spinner {
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>

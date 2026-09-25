@@ -54,11 +54,7 @@
           >
             {{ $t("more_informations") }}
           </button> -->
-          <EditBtn
-            v-if="can_edit"
-            :label="$t('more_informations')"
-            @click="show_modal = true"
-          />
+          <EditBtn v-if="can_edit" class="_edit" @click="show_modal = true" />
         </div>
       </div>
     </div>
@@ -184,5 +180,25 @@ export default {
 
 ._indicators {
   // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
+}
+
+._edit {
+  /* Hide edit button by default on devices that support hover */
+  @media (hover: hover) {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  /* Always show on touch devices */
+  @media (hover: none) {
+    opacity: 1;
+  }
+}
+
+/* Show edit button on hover for devices that support hover */
+._adminsAndContributorsField:hover ._edit {
+  @media (hover: hover) {
+    opacity: 1;
+  }
 }
 </style>

@@ -25,14 +25,12 @@
           v-if="view_mode === 'book' && pages_positions?.first_page"
           :key="pages_positions.first_page"
         >
-          p.{{ pages_positions.first_page }}
           <template
             v-if="pages_positions.first_page !== pages_positions.last_page"
           >
-            <b-icon icon="arrow-right-short" /> p.{{
-              pages_positions.last_page
-            }}
+            pp. {{ pages_positions.first_page }}-{{ pages_positions.last_page }}
           </template>
+          <template v-else>p. {{ pages_positions.first_page }}</template>
         </div>
       </transition>
     </div>
@@ -61,9 +59,16 @@
       <div class="_item--content">
         <div
           class="_item--content--text"
-          v-if="section.section_type === 'text' && previewContent(section)"
+          v-if="section.section_type === 'text'"
         >
-          <CollaborativeEditor3 :content="previewContent(section)" />
+          <template v-if="previewContent(section)">
+            {{ previewContent(section) }}
+          </template>
+          <template v-else>
+            <span class="u-instructions">
+              {{ $t("no_content") }}
+            </span>
+          </template>
         </div>
         <div
           v-else-if="
@@ -75,7 +80,24 @@
             <MediaContent :file="media" />
           </div>
         </div>
-        <div v-else class="u-instructions">{{ $t("no_content") }}</div>
+        <div
+          v-else-if="section.section_type === 'grid'"
+          class="_item--content--grid"
+        >
+          <span
+            class="u-instructions"
+            v-if="section.grid_areas && section.grid_areas.length > 0"
+          >
+            {{
+              $tc("areas_used", section.grid_areas.length, {
+                count: section.grid_areas.length,
+              })
+            }}
+          </span>
+          <span v-else class="u-instructions">
+            {{ $t("no_areas_defined") }}
+          </span>
+        </div>
       </div>
 
       <button
@@ -127,7 +149,10 @@ export default {
     previewContent(section) {
       const sub_content = section._main_text?.$content;
       if (sub_content) {
-        return sub_content.substring(0, 200) + "...";
+        if (sub_content.length > 300)
+          return sub_content.substring(0, 300) + " […]";
+
+        return sub_content;
       }
       return false;
     },
@@ -201,7 +226,7 @@ export default {
 
 ._selects--order {
   width: auto;
-  min-width: 5ch;
+  min-width: 6ch;
   flex: 0 0 auto;
   position: relative;
   z-index: 2;
@@ -236,6 +261,15 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+._item--content--text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  font-size: var(--sl-font-size-small);
 }
 
 ._openButton {

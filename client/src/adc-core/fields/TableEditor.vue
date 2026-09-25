@@ -41,6 +41,8 @@
               <div class="column-header">
                 <CellEdit
                   :cell="header"
+                  :table_path="path"
+                  :table_file="table_file"
                   :can_edit="can_edit"
                   @update="updateCell({ row: 0, column: index, value: $event })"
                 />
@@ -77,6 +79,8 @@
             <td v-for="(cell, cellIndex) in row" :key="cellIndex">
               <CellEdit
                 :cell="cell"
+                :table_path="path"
+                :table_file="table_file"
                 :can_edit="can_edit"
                 @update="
                   updateCell({
@@ -158,6 +162,7 @@ export default {
   props: {
     content: String,
     path: String,
+    table_file: Object,
     can_edit: Boolean,
   },
   components: {
@@ -185,24 +190,89 @@ export default {
       let content = [];
       try {
         content = JSON.parse(this.content);
-        let max_number_of_items_in_row = content.reduce((max, row) => {
-          return Math.max(max, row.length);
-        }, 0);
-        content = content.map((row) =>
-          row.concat(
-            Array.from(
-              { length: max_number_of_items_in_row - row.length },
-              () => ""
-            )
-          )
-        );
+        if (!Array.isArray(content)) content = [[]];
       } catch (e) {
         content = [[]];
       }
+      if (!content.length) content = [[]];
+      let max_number_of_items_in_row = content.reduce((max, row) => {
+        const row_length = Array.isArray(row) ? row.length : 0;
+        return Math.max(max, row_length);
+      }, 0);
+      if (max_number_of_items_in_row < 1) max_number_of_items_in_row = 1;
+
+      content = content.map((row) => {
+        const safe_row = Array.isArray(row) ? row : [];
+        const normalized_row = safe_row.map((cell) => this.normalizeCell(cell));
+        return normalized_row.concat(
+          Array.from(
+            { length: max_number_of_items_in_row - normalized_row.length },
+            () => this.makeEmptyCell()
+          )
+        );
+      });
       return content;
     },
   },
   methods: {
+    makeEmptyCell() {
+      return {
+        content_type: "",
+        content: "",
+        source_medias: [],
+        media_width: null,
+      };
+    },
+    normalizeCell(cell) {
+      if (typeof cell === "string") {
+        return {
+          ...this.makeEmptyCell(),
+          content: cell,
+        };
+      }
+      if (!cell || typeof cell !== "object") return this.makeEmptyCell();
+
+      const normalized_cell = {
+        ...this.makeEmptyCell(),
+        ...cell,
+      };
+      if (typeof normalized_cell.content !== "string")
+        normalized_cell.content = "";
+      if (!Array.isArray(normalized_cell.source_medias))
+        normalized_cell.source_medias = [];
+      return normalized_cell;
+    },
+    cloneTable() {
+      return this.table_content.map((row) =>
+        row.map((cell) => this.normalizeCell(cell))
+      );
+    },
+    collectTableSourceMedias({ table }) {
+      const source_medias_map = new Map();
+
+      table.forEach((row) => {
+        row.forEach((cell) => {
+          const normalized_cell = this.normalizeCell(cell);
+          const source_medias = normalized_cell.source_medias || [];
+          source_medias.forEach((source_media) => {
+            if (!source_media || typeof source_media !== "object") return;
+
+            let source_media_key = "";
+            if (source_media.meta_filename)
+              source_media_key = `meta_filename:${source_media.meta_filename}`;
+            else if (source_media.meta_filename_in_project)
+              source_media_key = `meta_filename_in_project:${source_media.meta_filename_in_project}`;
+            else if (source_media.path)
+              source_media_key = `path:${source_media.path}`;
+            else source_media_key = JSON.stringify(source_media);
+
+            if (!source_medias_map.has(source_media_key))
+              source_medias_map.set(source_media_key, source_media);
+          });
+        });
+      });
+      return Array.from(source_medias_map.values());
+    },
     toggleColumnReorderingMode() {
       this.isReorderingColumns = !this.isReorderingColumns;
       if (!this.isReorderingColumns) {
@@ -213,40 +283,40 @@ export default {
       this.isReorderingRows = !this.isReorderingRows;
     },
     async updateCell({ row, column, value }) {
-      const updated_table = [...this.table_content];
-      updated_table[row][column] = value;
+      const updated_table = this.cloneTable();
+      updated_table[row][column] = this.normalizeCell(value);
       await this.updateTable(updated_table);
     },
     async addCol() {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       for (let i = 0; i < updated_table.length; i++) {
-        updated_table[i].push({ content: "" });
+        updated_table[i].push(this.makeEmptyCell());
       }
       await this.updateTable(updated_table);
     },
     async removeCol() {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       for (let i = 0; i < updated_table.length; i++) {
         updated_table[i].pop();
       }
       await this.updateTable(updated_table);
     },
     async addRow() {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       const last_row = updated_table[updated_table.length - 1];
       const last_row_length = last_row.length || 1;
       updated_table.push(
-        Array.from({ length: last_row_length }, () => ({ content: "" }))
+        Array.from({ length: last_row_length }, () => this.makeEmptyCell())
       );
       await this.updateTable(updated_table);
     },
     async removeRow() {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       updated_table.pop();
       await this.updateTable(updated_table);
     },
     async moveColumn(columnIndex, direction) {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       const newIndex = direction === "left" ? columnIndex - 1 : columnIndex + 1;
 
       if (newIndex < 0 || newIndex >= updated_table[0].length) return;
@@ -261,7 +331,7 @@ export default {
       await this.updateTable(updated_table);
     },
     async moveRow(rowIndex, direction) {
-      const updated_table = [...this.table_content];
+      const updated_table = this.cloneTable();
       // Add 1 to rowIndex because table_body is sliced from index 1 (after header)
       const actualRowIndex = rowIndex + 1;
       const newIndex =
@@ -277,8 +347,10 @@ export default {
       await this.updateTable(updated_table);
     },
     async updateTable(table) {
+      const source_medias = this.collectTableSourceMedias({ table });
       const new_meta = {
         $content: JSON.stringify(table, null, 4),
+        source_medias,
       };
       await this.$api.updateMeta({
         path: this.path,

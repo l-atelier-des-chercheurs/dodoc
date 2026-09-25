@@ -4,6 +4,7 @@
       class="_mapContainer"
       :pins="pins"
       :is_small="false"
+      :can_print_map="true"
       @update:opened_pin_path="pinClicked($event)"
     />
   </div>
@@ -63,6 +64,6 @@ export default {
 <style lang="scss" scoped>
 ._mediaMap {
   width: 100%;
-  height: 90%;
+  height: calc(100% - 50px - 55px);
 }
 </style>

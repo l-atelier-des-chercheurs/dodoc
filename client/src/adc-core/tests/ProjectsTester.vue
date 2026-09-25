@@ -5,7 +5,7 @@
     <template v-if="!routine_is_started">
       <button
         type="button"
-        class="u-button u-button_red u-button_big"
+        class="u-button u-button_red"
         @click="startRoutine"
       >
         start
@@ -14,7 +14,7 @@
     <template v-else>
       <button
         type="button"
-        class="u-button u-button_red u-button_big"
+        class="u-button u-button_red"
         @click="stopRoutine"
       >
         stop routine

@@ -1,6 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
+import { init_title_popper } from "@/utils/title-popper";
+import { init_toast_notifications } from "@/utils/toast-notifications";
 
 import "./utils/icons";
 
@@ -8,6 +10,8 @@ import "./utils/icons";
 import "bootstrap-vue/dist/bootstrap-vue-icons.min.css";
 
 Vue.config.productionTip = false;
+init_title_popper();
+init_toast_notifications(Vue);
 
 const publicPath =
   window.app_infos.page_is_standalone_html === true
@@ -25,58 +29,6 @@ import {
   findMissingTranslations,
 } from "@/adc-core/lang/i18n.js";
 
-// Modern toast notifications
-import Toast from "vue-toastification";
-import "vue-toastification/dist/index.css";
-
-Vue.use(Toast, {
-  position: "bottom-left",
-  timeout: 4000,
-  closeOnClick: true,
-  pauseOnFocusLoss: false,
-  closeButton: "button",
-  transition: "Vue-Toastification__fade",
-  maxToasts: 10,
-});
-
-// Create a compatibility layer for the old alertify API
-Vue.prototype.$alertify = {
-  delay: (time) => ({
-    error: (message) => Vue.prototype.$toast.error(message, { timeout: time }),
-    success: (message) =>
-      Vue.prototype.$toast.success(message, { timeout: time }),
-    log: (message) => Vue.prototype.$toast.info(message, { timeout: time }),
-  }),
-  closeLogOnClick: (enabled) => ({
-    delay: (time) => ({
-      error: (message) =>
-        Vue.prototype.$toast.error(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-      success: (message) =>
-        Vue.prototype.$toast.success(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-      log: (message) =>
-        Vue.prototype.$toast.info(message, {
-          timeout: time,
-          closeOnClick: enabled,
-        }),
-    }),
-    error: (message) =>
-      Vue.prototype.$toast.error(message, { closeOnClick: enabled }),
-    success: (message) =>
-      Vue.prototype.$toast.success(message, { closeOnClick: enabled }),
-    log: (message) =>
-      Vue.prototype.$toast.info(message, { closeOnClick: enabled }),
-  }),
-  error: (message) => Vue.prototype.$toast.error(message),
-  success: (message) => Vue.prototype.$toast.success(message),
-  log: (message) => Vue.prototype.$toast.info(message),
-};
-
 import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
@@ -93,14 +45,6 @@ Vue.use(VuePlyr, {
       "fullscreen",
     ],
     iconUrl: "",
-  },
-});
-Vue.directive("uppercase", {
-  bind(el, _, vnode) {
-    el.addEventListener("input", (e) => {
-      e.target.value = e.target.value.toUpperCase();
-      vnode.componentInstance.$emit("input", e.target.value.toUpperCase());
-    });
   },
 });
 
@@ -178,6 +122,8 @@ import SingleTag from "@/adc-core/ui/SingleTag.vue";
 Vue.component("SingleTag", SingleTag);
 import ReorderedList from "@/adc-core/ui/ReorderedList.vue";
 Vue.component("ReorderedList", ReorderedList);
+import NavOverlay from "@/adc-core/ui/NavOverlay.vue";
+Vue.component("NavOverlay", NavOverlay);
 import CustomResolutionInput from "@/adc-core/fields/CustomResolutionInput.vue";
 Vue.component("CustomResolutionInput", CustomResolutionInput);
 
@@ -197,8 +143,6 @@ import TextInput from "@/adc-core/inputs/TextInput.vue";
 Vue.component("TextInput", TextInput);
 import NumberInput from "@/adc-core/inputs/NumberInput.vue";
 Vue.component("NumberInput", NumberInput);
-import PositionPicker from "@/adc-core/inputs/PositionPicker.vue";
-Vue.component("PositionPicker", PositionPicker);
 import ColorInput from "@/adc-core/inputs/ColorInput.vue";
 Vue.component("ColorInput", ColorInput);
 import SearchInput from "@/adc-core/inputs/SearchInput.vue";
@@ -210,8 +154,6 @@ import ToggledSection from "@/adc-core/inputs/ToggledSection.vue";
 Vue.component("ToggledSection", ToggledSection);
 import RangeValueInput from "@/adc-core/inputs/RangeValueInput.vue";
 Vue.component("RangeValueInput", RangeValueInput);
-import AuthorPicker from "@/adc-core/inputs/AuthorPicker.vue";
-Vue.component("AuthorPicker", AuthorPicker);
 import CreateFolder from "@/adc-core/modals/CreateFolder.vue";
 Vue.component("CreateFolder", CreateFolder);
 import ImportFolder from "@/adc-core/modals/ImportFolder.vue";
@@ -237,10 +179,10 @@ import MediaContent from "@/adc-core/fields/MediaContent.vue";
 Vue.component("MediaContent", MediaContent);
 import FullscreenView from "@/adc-core/fields/FullscreenView.vue";
 Vue.component("FullscreenView", FullscreenView);
-import CollaborativeEditor2 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor2.vue";
-Vue.component("CollaborativeEditor2", CollaborativeEditor2);
 import CollaborativeEditor3 from "@/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue";
 Vue.component("CollaborativeEditor3", CollaborativeEditor3);
+import TextEditor from "@/adc-core/fields/collaborative-editor/TextEditor.vue";
+Vue.component("TextEditor", TextEditor);
 import TableEditor from "@/adc-core/fields/TableEditor.vue";
 Vue.component("TableEditor", TableEditor);
 import AuthorTag from "@/adc-core/fields/AuthorTag.vue";
@@ -312,7 +254,6 @@ Array.prototype.move = function (from, to) {
   this.splice(to, 0, this.splice(from, 1)[0]);
 };
 
-import "axios-debug-log/enable";
 import axios from "axios";
 const instance = axios.create({
   baseURL: window.location.origin + "/_api2",
@@ -321,15 +262,13 @@ const instance = axios.create({
   // },
 });
 
-instance.interceptors.request.use((request) => {
-  // if (debug_mode)
-  //   alertify.delay(4000).log(
-  //     `⤒ — ${request.method} + ${request.url}
-  //     ${request.data ? `+ ` + JSON.stringify(request.data).slice(0, 30) : ""}
-  //     `
-  //   );
-  return request;
-});
+// Conditionally load axios debug logger only when debug_mode is enabled
+if (debug_mode) {
+  import("@/utils/axios-debug-logger.js").then(({ setupAxiosDebugLogger }) => {
+    setupAxiosDebugLogger(instance);
+  });
+}
+
 Vue.prototype.$axios = instance;
 
 new Vue({

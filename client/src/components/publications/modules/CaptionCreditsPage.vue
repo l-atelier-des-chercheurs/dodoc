@@ -21,7 +21,10 @@
 
         <div
           class="u-spacingBottom"
-          v-if="media.caption || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.caption) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
           <CollaborativeEditor3
             :label="$t('caption')"
@@ -35,7 +38,10 @@
         </div>
         <div
           class="u-spacingBottom"
-          v-if="media.$credits || canEditLinkedMedia(media.$path) !== false"
+          v-if="
+            !isHTMLEmpty(media.$credits) ||
+            canEditLinkedMedia(media.$path) !== false
+          "
         >
           <CollaborativeEditor3
             :label="$t('credit/reference')"
@@ -93,8 +99,8 @@ export default {
         return false;
       if (
         this.canEditLinkedMedia(this.media.$path) === false &&
-        !this.media.$credits &&
-        !this.media.caption
+        this.isHTMLEmpty(this.media.$credits) &&
+        this.isHTMLEmpty(this.media.caption)
       )
         return false;
 
@@ -102,21 +108,33 @@ export default {
     },
   },
   methods: {
+    isHTMLEmpty(html) {
+      if (!html) return true;
+
+      // Create a temporary div to parse HTML and get plain text
+      const temp = document.createElement("div");
+      temp.innerHTML = html;
+      const text = this.cleanUpString(temp.innerText);
+      return text.length === 0;
+    },
     canEditLinkedMedia(path) {
       if (!path || !this.publication_path || !this.can_edit) return false;
 
       const media_parent_folder = this.getParent(path);
 
       // media is directly inside publication
-      let folder = this.publication_path;
-      if (media_parent_folder === folder) {
-        if (this.canLoggedinEditFolder({ folder })) return "local";
+      if (media_parent_folder === this.publication_path) {
+        return this.can_edit;
       }
 
-      // media is linked to parent
-      folder = this.getParent(this.getParent(this.publication_path));
-      if (media_parent_folder === folder)
-        if (this.canLoggedinEditFolder({ folder })) return "link";
+      const project_path = this.getParent(
+        this.getParent(this.publication_path)
+      );
+      // media is linked to parent project
+      if (media_parent_folder === project_path) {
+        const project = this.getFromCache(project_path);
+        return this.canLoggedinContributeToFolder({ folder: project });
+      }
 
       return false;
     },

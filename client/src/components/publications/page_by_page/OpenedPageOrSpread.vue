@@ -10,11 +10,12 @@
         class="_spreadNavigator--content"
         @click.self="setActiveModule(false)"
       >
-        <div class="_sideCont">
+        <div class="_sideCont" v-if="show_sidebar">
           <div class="_content">
             <PageMenu
               :can_edit="can_edit"
               :pages="pages"
+              :spreads="spreads"
               :active_page_number="active_page_number"
               :active_spread_index="active_spread_index"
               :is_spread="is_spread"
@@ -39,104 +40,119 @@
               @update:scale="scale = $event"
               @prevPage="prevPage()"
               @nextPage="nextPage()"
+              @goToPage="setPageActive($event)"
               @createPage="$emit('createPage')"
               @close="setPageActive(false)"
             />
           </div>
         </div>
         <div class="_pagePan">
-          <PanZoom2
-            :scale.sync="scale"
-            :content-width="page_width"
-            :content-height="page_height"
-            :magnification="current_page_magnification"
+          <NavOverlay
+            :show_sidebar.sync="show_sidebar"
+            :can_prev="active_page_number > 0"
+            :can_next="active_page_number < pages.length - 1"
+            @prev="prevPage"
+            @next="nextPage"
+            @close="setPageActive(false)"
           >
-            <transition name="pagechange" mode="out-in">
-              <div
-                class="_pageCont"
-                @click.self="setActiveModule(false)"
-                :key="
-                  is_spread
-                    ? 'spread-' + JSON.stringify(active_spread.map((s) => s.id))
-                    : 'page-' + page_opened_id
-                "
-              >
-                <SinglePage
-                  v-if="!is_spread"
-                  class="_spreadNavigator--page is--active"
-                  :context="'full'"
-                  :page_modules="
-                    getModulesForPage({ modules, page_id: page_opened_id })
+            <PanZoom3
+              :zoom="scale"
+              @scroll-end="scale = $event.zoom"
+              :content-width="page_width"
+              :content-height="page_height"
+              :magnification="current_page_magnification"
+              :layout_mode="layout_mode"
+            >
+              <transition name="pagechange" mode="out-in">
+                <div
+                  class="_pageCont"
+                  @click.self="setActiveModule(false)"
+                  :key="
+                    is_spread
+                      ? 'spread-' +
+                        JSON.stringify(active_spread.map((s) => s.id))
+                      : 'page-' + page_opened_id
                   "
-                  :page_width="page_width"
-                  :page_height="page_height"
-                  :layout_mode="layout_mode"
-                  :page_color="current_page.page_color"
-                  :scale="scale"
-                  :show_grid="page_settings.show_grid"
-                  :snap_to_grid="page_settings.snap_to_grid"
-                  :grid_z_index="page_settings.grid_z_index"
-                  :gridstep_in_mm="page_settings.gridstep_in_mm"
-                  :margins="margins"
-                  :page_number="active_page_number"
-                  :pagination="pagination"
-                  :hide_pagination="current_page.hide_pagination === true"
-                  :active_module="active_module"
-                  :can_edit="can_edit && !display_as_public"
-                  @close="setPageActive(false)"
-                />
+                >
+                  <SinglePage
+                    v-if="!is_spread"
+                    class="_spreadNavigator--page is--active"
+                    :context="'full'"
+                    :page_modules="
+                      getModulesForPage({ modules, page_id: page_opened_id })
+                    "
+                    :page_width="page_width"
+                    :page_height="page_height"
+                    :layout_mode="layout_mode"
+                    :page_color="current_page.page_color"
+                    :scale="scale"
+                    :show_grid="page_settings.show_grid"
+                    :snap_to_grid="page_settings.snap_to_grid"
+                    :grid_z_index="page_settings.grid_z_index"
+                    :gridstep_in_mm="page_settings.gridstep_in_mm"
+                    :margins="margins"
+                    :page_number="active_page_number"
+                    :pagination="pagination"
+                    :hide_pagination="current_page.hide_pagination === true"
+                    :active_module="active_module"
+                    :can_edit="can_edit && !display_as_public"
+                    @close="setPageActive(false)"
+                  />
 
-                <template v-else>
-                  <div
-                    v-for="(page, index) in active_spread"
-                    :key="page.id ? page.id : index"
-                    class="_spreadNavigator--page"
-                    :class="{
-                      'is--active': page.id === page_opened_id,
-                    }"
-                  >
-                    <template v-if="page">
-                      <SinglePage
-                        :context="'full'"
-                        :page_modules="
-                          getModulesForPage({ modules, page_id: page.id })
-                        "
-                        :page_width="page_width"
-                        :page_height="page_height"
-                        :layout_mode="layout_mode"
-                        :page_color="page.page_color"
-                        :scale="scale"
-                        :show_grid="page_settings.show_grid"
-                        :snap_to_grid="page_settings.snap_to_grid"
-                        :grid_z_index="page_settings.grid_z_index"
-                        :gridstep_in_mm="page_settings.gridstep_in_mm"
-                        :margins="margins"
-                        :page_number="getCorrectPageNumber(page.id)"
-                        :pagination="pagination"
-                        :hide_pagination="current_page.hide_pagination === true"
-                        :active_module="active_module"
-                        :page_is_left="index === 0"
-                        :can_edit="
-                          can_edit &&
-                          page.id === page_opened_id &&
-                          !display_as_public
-                        "
-                        @close="setPageActive(false)"
-                      />
-                      <template v-if="page.id !== page_opened_id">
-                        <button
-                          type="button"
-                          class="_openAdjacentPageBtn"
-                          @mousedown.self="setPageActive(page.id)"
+                  <template v-else>
+                    <div
+                      v-for="(page, index) in active_spread"
+                      :key="page.id ? page.id : index"
+                      class="_spreadNavigator--page"
+                      :class="{
+                        'is--active': page.id === page_opened_id,
+                      }"
+                    >
+                      <template v-if="page">
+                        <SinglePage
+                          :context="'full'"
+                          :page_modules="
+                            getModulesForPage({ modules, page_id: page.id })
+                          "
+                          :page_width="page_width"
+                          :page_height="page_height"
+                          :layout_mode="layout_mode"
+                          :page_color="page.page_color"
+                          :scale="scale"
+                          :show_grid="page_settings.show_grid"
+                          :snap_to_grid="page_settings.snap_to_grid"
+                          :grid_z_index="page_settings.grid_z_index"
+                          :gridstep_in_mm="page_settings.gridstep_in_mm"
+                          :margins="margins"
+                          :page_number="getCorrectPageNumber(page.id)"
+                          :pagination="pagination"
+                          :hide_pagination="
+                            current_page.hide_pagination === true
+                          "
+                          :active_module="active_module"
+                          :page_is_left="index === 0"
+                          :can_edit="
+                            can_edit &&
+                            page.id === page_opened_id &&
+                            !display_as_public
+                          "
+                          @close="setPageActive(false)"
                         />
+                        <template v-if="page.id !== page_opened_id">
+                          <button
+                            type="button"
+                            class="_openAdjacentPageBtn"
+                            @mousedown.self="setPageActive(page.id)"
+                          />
+                        </template>
                       </template>
-                    </template>
-                    <div v-else class="_noPage" />
-                  </div>
-                </template>
-              </div>
-            </transition>
-          </PanZoom2>
+                      <div v-else class="_noPage" />
+                    </div>
+                  </template>
+                </div>
+              </transition>
+            </PanZoom3>
+          </NavOverlay>
         </div>
       </div>
     </div>
@@ -145,7 +161,7 @@
 <script>
 import PageMenu from "@/components/publications/page_by_page/PageMenu.vue";
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
-import PanZoom2 from "@/components/publications/page_by_page/PanZoom2.vue";
+import PanZoom3 from "@/components/publications/page_by_page/PanZoom3.vue";
 
 export default {
   props: {
@@ -166,7 +182,7 @@ export default {
   components: {
     PageMenu,
     SinglePage,
-    PanZoom2,
+    PanZoom3,
   },
   data() {
     return {
@@ -182,12 +198,16 @@ export default {
       display_as_public: false,
 
       active_module_path: false,
+      show_sidebar: true,
     };
   },
   created() {
     this.$eventHub.$on(`module.setActive`, this.setActiveModule);
     document.addEventListener("keydown", this.keyPressed);
     this.loadSettings();
+
+    if (localStorage.getItem("publication.show_sidebar") === "false")
+      this.show_sidebar = false;
   },
   mounted() {},
   beforeDestroy() {
@@ -221,6 +241,9 @@ export default {
         this.saveSettings();
       },
       deep: true,
+    },
+    show_sidebar() {
+      localStorage.setItem("publication.show_sidebar", this.show_sidebar);
     },
   },
   computed: {
@@ -517,7 +540,7 @@ export default {
 
   height: 100%;
   background: white;
-  border-right: 2px solid var(--c-gris);
+  border-right: 2px solid var(--c-gris_clair);
 
   overflow-x: visible;
   overflow-y: auto;
@@ -530,6 +553,7 @@ export default {
   }
 }
 ._pagePan {
+  position: relative;
   width: 100%;
   height: 100%;
 }

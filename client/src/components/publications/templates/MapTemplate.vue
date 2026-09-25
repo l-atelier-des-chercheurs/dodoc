@@ -8,14 +8,12 @@
     />
     <PublicationSettings v-if="can_edit">
       {{ $t("nothing_to_show") }}
-      <!-- <MapSettings :publication="publication" :path="publication.$path" /> -->
     </PublicationSettings>
   </div>
 </template>
 <script>
 import MapView from "@/components/publications/cartography/MapView.vue";
 import PublicationSettings from "@/components/publications/PublicationSettings.vue";
-// import MapSettings from "@/components/publications/cartography/MapSettings.vue";
 
 export default {
   props: {
@@ -26,7 +24,6 @@ export default {
   components: {
     MapView,
     PublicationSettings,
-    // MapSettings,
   },
   data() {
     return {};

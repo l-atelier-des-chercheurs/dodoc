@@ -2,6 +2,7 @@
   <div class="_chaptersSummary">
     <div class="_content">
       <!-- <DLabel :str="$t('content')" /> -->
+
       <transition-group
         tag="div"
         name="listComplete"
@@ -20,34 +21,41 @@
           :pages_positions="getPagesPositions(section.$path)"
           @open="openSection(section.$path)"
           @moveSection="moveSection"
-          @remove="$emit('removeChapter', section)"
         />
 
         <div key="'add'" class="_addSection">
           <button
             type="button"
-            class="u-button u-button_bleuvert u-button_small"
+            class="u-button u-button_small u-button_white"
             @click="createSection({ type: 'text' })"
           >
-            <b-icon icon="plus" />
+            <b-icon icon="fonts" />
             {{ $t("text") }}
           </button>
-          <button
+          <!-- <button
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'gallery' })"
           >
             <b-icon icon="plus" />
             {{ $t("gallery") }}
-          </button>
+          </button> -->
           <button
+            type="button"
+            class="u-button u-button_small u-button_white"
+            @click="createSection({ type: 'grid' })"
+          >
+            <b-icon icon="grid-3x2-gap-fill" />
+            {{ $t("grid") }}
+          </button>
+          <!-- <button
             type="button"
             class="u-button u-button_bleuvert u-button_small"
             @click="createSection({ type: 'story' })"
           >
             <b-icon icon="plus" />
             {{ $t("story") }}
-          </button>
+          </button> -->
         </div>
       </transition-group>
     </div>
@@ -101,6 +109,22 @@ export default {
         (s) => this.getFilename(s.$path) === this.opened_section_meta_filename
       );
     },
+    new_chapter_filename() {
+      const existing_filenames = new Set(
+        this.sections
+          .map((section) => section?._main_text?.$path)
+          .filter(Boolean)
+          .map((path) => this.getFilename(path))
+      );
+
+      let chapter_index = 1;
+      let chapter_filename = `chapter-${chapter_index}.txt`;
+      while (existing_filenames.has(chapter_filename)) {
+        chapter_index++;
+        chapter_filename = `chapter-${chapter_index}.txt`;
+      }
+      return chapter_filename;
+    },
   },
   methods: {
     openSection(path) {
@@ -113,11 +137,11 @@ export default {
     // },
     async createSection({ type = "text" } = {}) {
       let additional_meta = {
-        section_starts_on_page: "right",
+        section_starts_on_page: "page",
       };
 
       if (type === "text") {
-        const filename = this.new_section_title + " text.txt";
+        const filename = this.new_chapter_filename;
         const { meta_filename } = await this.$api.uploadText({
           path: this.publication.$path,
           filename,
@@ -134,11 +158,17 @@ export default {
         additional_meta.section_title =
           this.$t("gallery") + " " + this.new_section_index;
         additional_meta.section_type = "gallery";
+      } else if (type === "grid") {
+        additional_meta.section_title =
+          this.$t("grid") + " " + this.new_section_index;
+        additional_meta.section_type = "grid";
       } else if (type === "story") {
         additional_meta.section_title =
           this.$t("story") + " " + this.new_section_index;
         additional_meta.section_type = "story";
       }
+
+      additional_meta.filename = this.new_chapter_filename;
 
       const new_section_meta = await this.createSection2({
         publication: this.publication,

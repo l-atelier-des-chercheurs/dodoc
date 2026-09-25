@@ -1,112 +1,71 @@
 <template>
-  <div class="_cropAdjustMedia">
-    <BaseModal2
-      :title="$t('crop_adjust')"
-      :size="'full'"
-      @close="$emit('close')"
-    >
-      <div class="_cont">
-        <div class="_steps">
-          <span
-            class="_step"
-            v-for="(step, index) in ['crop', 'adjust', 'export']"
-            :key="step"
-          >
-            <component :is="step === current_step ? 'strong' : 'span'">
-              {{ $t(step) }}
-            </component>
-            <b-icon
-              v-if="index !== 2"
-              icon="chevron-right"
-              aria-role="presentation"
-            />
-          </span>
-        </div>
-
-        <div class="_panes">
-          <CropMedia
-            v-if="current_step === 'crop'"
-            :media="media"
-            @updateCrop="updateCrop"
+  <BaseModal2 :title="$t('crop_adjust')" :size="'full'" @close="$emit('close')">
+    <div class="_cont">
+      <div class="_steps">
+        <span
+          class="_step"
+          v-for="(step, index) in ['crop', 'adjust', 'export']"
+          :key="step"
+        >
+          <component :is="step === current_step ? 'strong' : 'span'">
+            {{ $t(step) }}
+          </component>
+          <b-icon
+            v-if="index !== 2"
+            icon="chevron-right"
+            aria-role="presentation"
           />
-          <AdjustMedia
-            v-if="current_step === 'adjust'"
-            :image="cropped_image"
-            @back="current_step = 'crop'"
-            @updateAdjust="updateAdjust"
-          />
-          <div v-if="current_step === 'export'" class="_exportPane">
-            <img :src="final_image" />
-            <div class="_btnRow">
-              <button
-                type="button"
-                class="u-button u-button_white"
-                @click="goBack"
-              >
-                <b-icon icon="arrow-left-short" />
-                {{ $t("previous") }}
-              </button>
-
-              <button
-                type="button"
-                class="u-button u-button_bleuvert"
-                @click="buttonSaveAsNew"
-              >
-                <b-icon icon="file-plus" />
-                {{ $t("save_as_new_media") }}
-              </button>
-              <button
-                type="button"
-                class="u-button u-button_red"
-                @click="replaceOriginal"
-              >
-                <b-icon icon="save2-fill" />
-                {{ $t("replace_original") }}
-              </button>
-              <div class="_download_media_without_validation">
-                <small>
-                  <a
-                    ref=""
-                    :href="final_image_blob"
-                    :download="final_image_filename"
-                    target="_blank"
-                  >
-                    {{ $t("or_download_media_on_device") }}
-                    <template v-if="final_image_blob">
-                      — {{ formatBytes(final_image_blob.size) }}
-                    </template>
-                  </a>
-                </small>
-              </div>
-
-              <div class="_spinner" v-if="is_saving" key="loader">
-                <AnimatedCounter :value="media_being_sent_percent" />
-              </div>
-            </div>
-          </div>
-        </div>
+        </span>
       </div>
-    </BaseModal2>
-  </div>
+
+      <div class="_panes">
+        <CropMedia
+          v-if="current_step === 'crop'"
+          :media="media"
+          @updateCrop="updateCrop"
+        />
+        <AdjustMedia
+          v-if="current_step === 'adjust'"
+          :image="cropped_image"
+          @back="current_step = 'crop'"
+          @updateAdjust="updateAdjust"
+        />
+        <ExportProcessedMedia
+          v-if="current_step === 'export'"
+          :media="media"
+          :available_save_actions="available_save_actions"
+          :preview_image="final_image"
+          :final_image_blob="final_image_blob"
+          :final_image_filename="final_image_filename"
+          processing_label="cropped"
+          @back="goBack"
+          @close="$emit('close')"
+        />
+      </div>
+    </div>
+  </BaseModal2>
 </template>
 <script>
 import CropMedia from "./CropMedia.vue";
 import AdjustMedia from "./AdjustMedia.vue";
+import ExportProcessedMedia from "./ExportProcessedMedia.vue";
 
 export default {
   props: {
     media: Object,
     project_path: String,
+    available_save_actions: {
+      type: Array,
+      default: () => ["saveAsNew", "replaceOriginal", "download"],
+    },
   },
   components: {
     CropMedia,
     AdjustMedia,
+    ExportProcessedMedia,
   },
   data() {
     return {
-      is_saving: false,
-      media_being_sent_percent: 0,
-
       current_step: "crop",
 
       cropped_image: null,
@@ -118,7 +77,6 @@ export default {
   },
   created() {},
   mounted() {},
-  beforeDestroy() {},
   watch: {
     saturation(value) {},
   },
@@ -145,94 +103,10 @@ export default {
     goBack() {
       this.current_step = "adjust";
     },
-    async buttonSaveAsNew() {
-      await this.saveAsNew();
-      this.$emit("closeParentModal");
-    },
-    async saveAsNew() {
-      console.log("saveAsNew");
-      this.is_saving = true;
-
-      const path = this.getParent(this.media.$path);
-
-      // copy over caption, $credits, keywords, $authors, $location if exists
-      let additional_meta = { $origin: "collect" };
-      if (this.media.caption) additional_meta.caption = this.media.caption;
-      if (this.media.$credits) additional_meta.$credits = this.media.$credits;
-      if (this.media.keywords) additional_meta.keywords = this.media.keywords;
-      if (this.media.$authors) additional_meta.$authors = this.media.$authors;
-      if (this.media.$location)
-        additional_meta.$location = this.media.$location;
-
-      const onProgress = (progressEvent) => {
-        this.media_being_sent_percent = parseInt(
-          Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        );
-      };
-
-      const { uploaded_meta, meta_filename } = await this.$api
-        .uploadFile({
-          path,
-          filename: this.final_image_filename,
-          file: this.final_image_blob,
-          additional_meta,
-          onProgress,
-        })
-        .catch((err) => {
-          this.$alertify
-            .closeLogOnClick(true)
-            .delay(4000)
-            .error(this.$t("media_couldnt_be_sent"));
-          throw err;
-        });
-
-      this.is_saving = false;
-      return { uploaded_meta, meta_filename };
-    },
-    async replaceOriginal() {
-      // not very clean… Should rework with specific API route ? $api.updateContent ?
-      const { uploaded_meta, meta_filename } = await this.saveAsNew();
-      const temp_path = this.getParent(this.media.$path) + "/" + meta_filename;
-
-      const old_media_filename = this.media.$media_filename;
-      const new_media_filename = uploaded_meta.$media_filename;
-
-      // set $media_filename from temp to the new filename
-      await this.$api.updateMeta({
-        path: this.media.$path,
-        new_meta: {
-          $media_filename: new_media_filename,
-        },
-      });
-
-      // set $media_filename of temp to the old media file
-      await this.$api.updateMeta({
-        path: temp_path,
-        new_meta: {
-          $media_filename: old_media_filename,
-        },
-      });
-
-      await this.$api.deleteItem({
-        path: temp_path,
-      });
-
-      this.$emit("closeParentModal");
-    },
   },
 };
 </script>
 <style lang="scss" scoped>
-._btnRow {
-  position: relative;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  align-items: center;
-  gap: calc(var(--spacing) / 2);
-  padding: calc(var(--spacing) / 2);
-}
-
 ._steps {
   flex: 0 0 auto;
 
@@ -258,57 +132,5 @@ export default {
 ._panes {
   flex: 1 1 0;
   overflow-y: auto;
-}
-
-._exportPane {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-
-  img {
-    flex: 1 1 0;
-    width: 100%;
-    overflow: hidden;
-    object-fit: contain;
-    background-color: var(--c-noir);
-    padding: calc(var(--spacing) / 2);
-  }
-
-  ._btnRow {
-    flex: 0 0 auto;
-  }
-}
-
-._spinner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(2px);
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-._download_media_without_validation {
-  // background-color: var(--c-noir);
-  padding: 0 calc(var(--spacing) / 2) calc(var(--spacing) / 4);
-  // margin-top: calc(-0.5 * var(--spacing));
-  margin-bottom: -0.2em;
-  line-height: 1;
-  text-align: right;
-
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-
-  a {
-    color: var(--c-noir);
-  }
 }
 </style>

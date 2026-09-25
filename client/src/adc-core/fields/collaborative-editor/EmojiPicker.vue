@@ -111,7 +111,9 @@ export default {
   }
 
   .emoji-mart-search input {
-    border-color: var(--c-gris);
+    font-size: inherit;
+    padding: calc(var(--spacing) / 2);
+    border-color: transparent;
     border-radius: var(--input-border-radius);
 
     &:focus {

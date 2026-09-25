@@ -217,8 +217,10 @@
 </template>
 <script>
 import SinglePage from "@/components/publications/page_by_page/SinglePage.vue";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
+  mixins: [PublicationReady],
   props: {
     publication: Object,
     is_serversidepreview: Boolean,
@@ -261,12 +263,30 @@ export default {
         this.fitZoomToPage();
       });
     }
+
+    this.signalPublicationReadyAfterRender();
   },
   beforeDestroy() {
     this.$eventHub.$off("publication.togglePage", this.togglePage);
     document.removeEventListener("keydown", this.keyPressed);
   },
-  watch: {},
+  watch: {
+    pages_to_show: {
+      handler() {
+        this.signalPublicationReadyAfterRender();
+      },
+      deep: true,
+    },
+    spreads_to_show: {
+      handler() {
+        this.signalPublicationReadyAfterRender();
+      },
+      deep: true,
+    },
+    display_mode() {
+      this.signalPublicationReadyAfterRender();
+    },
+  },
   computed: {
     page_dimensions_to_px() {
       if (this.publication.layout_mode === "print")

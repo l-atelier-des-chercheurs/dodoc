@@ -17,35 +17,48 @@
         </button>
       </div>
 
-      <template v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :allow_save="allow_save"
-          @save="updateLongLatZoom"
-          @cancel="cancel"
-        />
-      </template>
-
       <DisplayOnMap
-        v-if="pins.length > 0 || edit_mode"
+        v-if="has_position || edit_mode"
         :key="map_key"
         :pins="pins"
         :start_zoom="zoom"
         :can_click="edit_mode"
         @newPositionClicked="newPositionClicked"
         @zoomUpdated="zoomUpdated"
-      />
+      >
+        <template #popup_footer v-if="edit_mode">
+          <button
+            type="button"
+            class="u-button u-button_small u-button_bleuvert"
+            :disabled="!allow_save"
+            @click="updateLongLatZoom"
+          >
+            <b-icon icon="check-circle-fill" />
+            {{ $t("save") }}
+          </button>
+        </template>
+      </DisplayOnMap>
       <div v-else class="u-instructions">
         {{ $t("no_position") }}
       </div>
       <div v-if="!edit_mode && can_edit" class="_editBtn">
         <EditBtn
           :label_position="'left'"
-          :is_unfolded="true"
+          :btn_type="has_position ? 'edit' : 'add'"
           @click="enableEditMode"
         />
       </div>
-      <details v-if="pins.length > 0 || edit_mode">
+
+      <!-- <template v-if="edit_mode">
+        <SaveCancelButtons
+          class="_scb"
+          :allow_save="allow_save"
+          @save="updateLongLatZoom"
+          @cancel="cancel"
+        />
+      </template> -->
+
+      <details v-if="has_position || edit_mode">
         <summary class="u-buttonLink">
           {{ $t("more_informations") }}
         </summary>
@@ -138,10 +151,16 @@ export default {
   computed: {
     allow_save() {
       return (
-        this.longitude !== this.content?.longitude ||
-        this.latitude !== this.content?.latitude ||
-        this.zoom !== this.content?.zoom
+        !!this.longitude &&
+        !!this.latitude &&
+        !!this.zoom &&
+        (this.longitude !== this.content?.longitude ||
+          this.latitude !== this.content?.latitude ||
+          this.zoom !== this.content?.zoom)
       );
+    },
+    has_position() {
+      return this.pins.length > 0;
     },
     pins() {
       if (this.content) {
@@ -214,6 +233,7 @@ export default {
 <style lang="scss" scoped>
 ._positionPicker {
   position: relative;
+  min-height: 3rem;
 }
 ._editBtn {
   position: absolute;

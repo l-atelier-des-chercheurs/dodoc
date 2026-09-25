@@ -1,5 +1,12 @@
 <template>
-  <div class="m_audioEqualizer">
+  <div
+    class="m_audioEqualizer"
+    :class="{
+      'is--tiny': is_tiny,
+      'is--active': is_active,
+      'is--recording': is_recording,
+    }"
+  >
     <canvas ref="canvas" width="1280" height="720" />
   </div>
 </template>
@@ -20,8 +27,11 @@ export default {
     return {
       audio_activity: undefined,
       current_audio_level: 0,
-      audioHistory: [],
-      maxHistoryPoints: 1000,
+      display_audio_level: 0,
+      is_active: false,
+      activity_hold_ticks: 0,
+      animation_frame_id: undefined,
+      level_history: [],
     };
   },
   created() {},
@@ -29,77 +39,129 @@ export default {
     this.startEqualizer();
   },
   beforeDestroy() {
-    this.audio_activity.destroy();
+    this.stopDrawing();
+    if (this.audio_activity) this.audio_activity.destroy();
   },
   watch: {
     stream() {
       this.startEqualizer();
     },
     is_recording() {
-      this.audioHistory = [];
+      // if (!this.is_recording) this.resetVisualState();
     },
   },
-  computed: {},
+  computed: {
+    is_tiny() {
+      return this.type === "Tiny";
+    },
+    activity_threshold() {
+      return this.is_tiny ? 0.05 : 0.03;
+    },
+  },
   methods: {
+    resetVisualState() {
+      this.current_audio_level = 0;
+      this.display_audio_level = 0;
+      this.is_active = false;
+      this.activity_hold_ticks = 0;
+      this.level_history = [];
+    },
+    stopDrawing() {
+      if (!this.animation_frame_id) return;
+      window.cancelAnimationFrame(this.animation_frame_id);
+      this.animation_frame_id = undefined;
+    },
     startEqualizer() {
       if (this.audio_activity) this.audio_activity.destroy();
+      this.stopDrawing();
+      this.resetVisualState();
 
       if (typeof this.stream !== "object") return;
 
-      this.audio_activity = audioActivity(this.stream, (level) => {
-        this.current_audio_level = level;
-      });
-      this.drawVolume();
+      this.audio_activity = audioActivity(
+        this.stream,
+        { activity_threshold: this.activity_threshold },
+        (level) => {
+          this.current_audio_level = level;
+        }
+      );
+      this.animation_frame_id = window.requestAnimationFrame(() =>
+        this.drawVolume()
+      );
     },
     drawVolume() {
       const canvas = this.$refs.canvas;
       if (!canvas) return;
 
       const dpr = 1;
-      // const dpr = window.devicePixelRatio || 1;
-      const w = this.$el.clientWidth * dpr;
-      const h = this.$el.clientHeight * dpr;
-      if (w !== canvas.width || h !== canvas.height) {
-        canvas.width = w;
-        canvas.height = h;
-      }
+      const canvas_width = Math.max(1, this.$el.clientWidth * dpr);
+      const canvas_height = Math.max(1, this.$el.clientHeight * dpr);
 
-      const max_history_points = this.maxHistoryPoints;
-      // const max_history_points = !this.is_recording
-      //   ? this.maxHistoryPoints
-      //   : Infinity;
-
-      // const smoothed_level = this.current_audio_level;
-      // const latest_level = this.audioHistory.at(-1) || 0;
-      // const smoothed_level = (latest_level * 3 + this.current_audio_level) / 4;
-
-      this.audioHistory.push(this.current_audio_level);
-
-      if (this.audioHistory.length > max_history_points) {
-        this.audioHistory.shift();
+      if (canvas_width !== canvas.width || canvas_height !== canvas.height) {
+        canvas.width = canvas_width;
+        canvas.height = canvas_height;
       }
 
       const ctx = canvas.getContext("2d");
-      ctx.fillStyle = "white";
+      const recording_color =
+        getComputedStyle(this.$el).getPropertyValue("--c-rouge").trim() ||
+        "red";
+      const background_color = this.is_tiny ? "#ececec" : "#eaeaea";
+      ctx.fillStyle = background_color;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      if (!this.is_recording) ctx.fillStyle = "#333";
-      else ctx.fillStyle = "#fc4b60";
+      const smoothing_factor = 0.2;
+      this.display_audio_level +=
+        (this.current_audio_level - this.display_audio_level) *
+        smoothing_factor;
 
-      const pointWidth = canvas.width / this.audioHistory.length;
-      const maxHeight = canvas.height * 1.6;
+      const center_y = canvas.height / 2;
+      const center_x = Math.floor(canvas.width * 0.66);
+      const max_wave_amplitude = this.is_tiny
+        ? canvas.height * 0.42
+        : canvas.height * 0.48;
+      const history_size = center_x + 1;
+      while (this.level_history.length < history_size)
+        this.level_history.push([undefined, false]);
+      if (this.level_history.length > history_size)
+        this.level_history = this.level_history.slice(
+          this.level_history.length - history_size
+        );
 
-      this.audioHistory.forEach((level, index) => {
-        const x = index * pointWidth;
-        const width = pointWidth;
-        const height = Math.max(level * maxHeight, 2);
-        const y = canvas.height / 2 - height / 2;
-        // if (index === 0) ctx.moveTo(x, 0);
-        // ctx.lineTo(x, y);
-        ctx.fillRect(x, y, width, height);
+      this.level_history.unshift([this.display_audio_level, this.is_recording]);
+      if (this.level_history.length > history_size) this.level_history.pop();
+
+      if (this.display_audio_level > this.activity_threshold) {
+        this.activity_hold_ticks = this.is_tiny ? 3 : 4;
+      } else {
+        this.activity_hold_ticks = Math.max(0, this.activity_hold_ticks - 1);
+      }
+      this.is_active = this.activity_hold_ticks > 0;
+
+      ctx.lineWidth = 2;
+      ctx.lineCap = "butt";
+
+      ctx.beginPath();
+      ctx.moveTo(0, center_y);
+      ctx.lineTo(canvas.width, center_y);
+      ctx.stroke();
+
+      this.level_history.forEach(([level, is_recording], index) => {
+        if (typeof level === "undefined") return;
+        const x = center_x - index;
+        if (x < 0) return;
+        const line_height = Math.max(2, level * max_wave_amplitude);
+        const y = center_y - line_height / 2;
+        ctx.strokeStyle = is_recording ? recording_color : "#BBB";
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + line_height);
+        ctx.stroke();
       });
 
-      window.requestAnimationFrame(this.drawVolume);
+      this.animation_frame_id = window.requestAnimationFrame(() =>
+        this.drawVolume()
+      );
     },
   },
 };
@@ -108,14 +170,22 @@ export default {
 .m_audioEqualizer {
   width: 100%;
   height: 100%;
-  object-fit: scale-down;
+
+  overflow: hidden;
 
   canvas {
     display: block;
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    background-color: #eaeaea;
+  }
 
-    background-color: white;
+  &.is--tiny {
+    border-radius: 0.35rem;
+
+    canvas {
+      background-color: #ececec;
+    }
   }
 }
 </style>

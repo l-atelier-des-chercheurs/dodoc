@@ -66,6 +66,7 @@
               :content="message.$content"
               :path="message.$path"
               :input_type="'editor'"
+              :mode="'edit_on_mounted'"
               :custom_formats="['bold', 'italic', 'link', 'emoji']"
               :minlength="0"
               :maxlength="max_message_length"

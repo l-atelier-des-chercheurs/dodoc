@@ -2,7 +2,7 @@
 
 # == Base for build ==
 
-FROM node:22.14-slim AS build-base
+FROM node:24.14.0-slim AS build-base
 
 RUN apt update && apt install -y --no-install-recommends \
     build-essential \
@@ -21,14 +21,15 @@ ENV NODE_ENV=production
 # Install server dependencies
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 COPY package*.json ./
+COPY scripts/ ./scripts/
 RUN npm ci --only=production
 
 # == Serving ==
 
-FROM node:22.14-slim
+FROM node:24.14.0-slim
 
-# Install chromium
-RUN apt update && apt install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*
+# Install chromium (Puppeteer fallback) and poppler-utils (pdftoppm for PDF thumbnails)
+RUN apt update && apt install -y --no-install-recommends chromium poppler-utils && rm -rf /var/lib/apt/lists/*
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
@@ -39,6 +40,8 @@ EXPOSE 8080
 USER node
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 
+# Configure Data Folder
+RUN mkdir -p /home/node/Documents/dodoc; chown -R node:node /home/node/Documents/dodoc
 COPY . .
 COPY --from=build-server /src/l-atelier-des-chercheurs/dodoc/node_modules node_modules
 

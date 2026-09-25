@@ -1,21 +1,24 @@
 <template>
-  <div class="_coverField">
+  <div class="_coverField" :style="cover_field_style">
     <div class="_hasImage" v-if="cover_thumb">
       <img
         :src="cover_thumb"
         :data-isround="preview_format === 'circle'"
         role="presentation"
       />
-      <!-- // not actually useful since we dont know the size it will be shown at -->
-      <!-- :srcset="cover_thumb_srcset" -->
-
       <template v-if="context === 'full'">
-        <div class="_fsButton">
+        <!-- <div class="_fsButton">
           <EditBtn
             :btn_type="'fullscreen'"
             @click="show_cover_fullscreen = true"
           />
-        </div>
+        </div> -->
+        <button
+          type="button"
+          class="_fsButton"
+          @click="show_cover_fullscreen = true"
+          :title="$t('fullscreen')"
+        ></button>
         <FullscreenView
           v-if="show_cover_fullscreen"
           @close="show_cover_fullscreen = false"
@@ -35,25 +38,34 @@
       </span>
     </div>
 
-    <div class="_editingPane" v-if="context === 'full' && can_edit">
-      <EditBtn
-        v-if="!edit_mode"
-        :label_position="'left'"
-        :is_unfolded="!cover_thumb"
-        :label="!cover_thumb ? $t('add') : undefined"
-        @click="enableEditMode"
-      />
+    <template v-if="can_edit">
+      <button
+        type="button"
+        v-if="!cover_thumb"
+        class="_addCoverBtn"
+        @click="edit_mode = true"
+        :title="$t('add_cover')"
+      >
+        <b-icon icon="plus-circle-fill" :scale="2" />
+      </button>
+      <div class="_editCoverBtn" v-else>
+        <EditBtn
+          :label_position="'left'"
+          :is_unfolded="false"
+          @click="edit_mode = true"
+        />
+      </div>
       <ImageSelect
         v-if="edit_mode"
         :path="path"
         :label="label_title"
-        :ratio="ratio"
+        :ratio="normalized_ratio"
         :preview_format="preview_format"
         :existing_preview="existing_preview"
         :available_options="available_options"
         @close="edit_mode = false"
       />
-    </div>
+    </template>
   </div>
 </template>
 <script>
@@ -71,6 +83,7 @@ export default {
       type: String,
       default: "pattern",
     },
+    resolution: Number,
     available_options: {
       type: Array,
       default: () => ["import", "project", "capture"],
@@ -95,20 +108,26 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    normalized_ratio() {
+      if (!this.ratio) return null;
+      if (this.ratio === "square") return "1 / 1";
+      return this.ratio;
+    },
+    cover_field_style() {
+      if (!this.normalized_ratio) return {};
+      return {
+        position: "relative",
+        width: "100%",
+        aspectRatio: this.normalized_ratio,
+      };
+    },
     label_title() {
       if (this.title) return this.title;
       return this.$t("pick_cover");
     },
     cover_thumb() {
-      return this.coverMakeRelativeURLFromThumbs(
-        this.context === "full" ? 2000 : 640
-      );
-    },
-    cover_thumb_srcset() {
-      return `
-        ${this.coverMakeRelativeURLFromThumbs(320)} 320w, 
-        ${this.coverMakeRelativeURLFromThumbs(640)} 640w
-      `;
+      const res = this.resolution || (this.context === "full" ? 2000 : 640);
+      return this.coverMakeRelativeURLFromThumbs(res);
     },
     cover_full() {
       return this.coverMakeRelativeURLFromThumbs(2000);
@@ -118,9 +137,6 @@ export default {
     },
   },
   methods: {
-    enableEditMode() {
-      this.edit_mode = true;
-    },
     coverMakeRelativeURLFromThumbs(res = 640) {
       return this.makeRelativeURLFromThumbs({
         $thumbs: this.cover,
@@ -136,6 +152,7 @@ export default {
 ._coverField {
   position: absolute;
   inset: 0;
+  z-index: 1;
   overflow: hidden;
 
   --color1: var(--c-gris_clair);
@@ -156,11 +173,15 @@ export default {
 }
 
 ._hasImage {
+  position: absolute;
+  inset: 0;
+
   img {
-    position: absolute;
     width: 100%;
     height: 100%;
-    object-fit: scale-down;
+    object-fit: cover;
+    object-position: center;
+    display: block;
   }
 }
 
@@ -216,10 +237,52 @@ export default {
   }
 }
 
+._editCoverBtn {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: calc(var(--spacing) / 1);
+  transition: opacity 0.2s ease;
+
+  @media (hover: hover) {
+    ._coverField:not(:hover) & {
+      opacity: 0;
+    }
+  }
+}
+
 ._fsButton {
   position: absolute;
   left: 0;
   bottom: 0;
-  margin: calc(var(--spacing) / 1);
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+._addCoverBtn {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 200%;
+  color: var(--active-color);
+  background: rgba(255, 255, 255, 0.5);
+  transition: opacity 0.2s ease;
+
+  .u-button_icon {
+    font-size: 2rem;
+  }
+
+  @media (hover: hover) {
+    &:not(:hover) {
+      opacity: 0;
+    }
+  }
 }
 </style>

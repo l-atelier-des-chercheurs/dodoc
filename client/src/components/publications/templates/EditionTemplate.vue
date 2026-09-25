@@ -1,7 +1,7 @@
 <template>
   <div class="_editionTemplate">
     <splitpanes v-if="can_edit" class="_splitpanes">
-      <pane v-if="show_edit_pane">
+      <pane v-if="show_edit_pane" min-size="10">
         <div class="_chapterSummary">
           <div class="_chapterSummary--content">
             <div class="_showPreviewBtn">
@@ -17,7 +17,6 @@
               :opened_section_meta_filename="opened_section_meta_filename"
               :view_mode="view_mode"
               :chapters_positions="chapters_positions"
-              @removeChapter="removeChapter"
               @toggleSection="
                 $emit('updatePane', { key: 'chapter', value: $event })
               "
@@ -57,13 +56,13 @@
             :chapter_position="getChapterPosition(opened_chapter.$path)"
             :view_mode="view_mode"
             @remove="removeChapter(opened_chapter)"
-            @close="$emit('updatePane', { key: 'chapter', value: false })"
+            @close="closeChapter"
             @prev="openChapter(-1)"
             @next="openChapter(1)"
           />
         </transition>
       </pane>
-      <pane v-if="show_preview_pane">
+      <pane v-if="show_preview_pane" min-size="10">
         <div class="_viewer">
           <ViewContent
             :publication="publication"
@@ -71,7 +70,9 @@
             :view_mode="view_mode"
             :opened_style_file_meta="opened_style_file_meta"
             :show_source_html.sync="show_source_html"
-            :show_source_html_toggle="can_edit && view_mode === 'book'"
+            :show_source_html_toggle="
+              can_edit && view_mode === 'book' && show_graphic_styles
+            "
             :can_edit="can_edit"
             @openChapter="
               $emit('updatePane', { key: 'chapter', value: $event })
@@ -156,7 +157,7 @@ export default {
   watch: {},
   computed: {
     view_mode() {
-      return this.pane_infos?.view_mode || "book";
+      return this.pane_infos?.view_mode || "web";
     },
     all_chapters() {
       return this.getSectionsWithProps({
@@ -207,15 +208,28 @@ export default {
       return this.pane_infos?.edit_graphics === true;
     },
     opened_style_file_meta() {
-      return this.pane_infos?.style || "first";
+      return this.pane_infos?.style || "default";
     },
     meta_filenames_already_present() {
       let current = [],
-        other = [];
+        other = [],
+        cover = [];
+
+      const all_medias = this.publication.$files;
+
+      try {
+        if (all_medias.find((f) => f.cover_type === "front")) {
+          const cover_media = all_medias.find((f) => f.cover_type === "front");
+          if (cover_media?.source_medias)
+            cover.push(cover_media?.source_medias[0].meta_filename_in_project);
+        }
+      } catch (error) {}
 
       this.all_chapters.forEach((chapter) => {
-        if (Array.isArray(chapter.source_medias)) {
-          chapter.source_medias.forEach((sm) => {
+        const listMediasOnMeta = (source_medias) => {
+          if (!source_medias || !Array.isArray(source_medias)) return;
+          source_medias.forEach((sm) => {
+            if (!sm.meta_filename_in_project) return;
             if (
               this.getFilename(chapter.$path) ===
               this.opened_section_meta_filename
@@ -225,10 +239,46 @@ export default {
               other.push(sm.meta_filename_in_project);
             }
           });
+        };
+
+        if (
+          chapter.section_type === "text" &&
+          Array.isArray(chapter.source_medias)
+        ) {
+          listMediasOnMeta(chapter.source_medias);
+        } else if (
+          chapter.section_type === "grid" &&
+          Array.isArray(chapter.grid_areas)
+        ) {
+          chapter.grid_areas.forEach((area) => {
+            if (area.source_medias && Array.isArray(area.source_medias)) {
+              if (
+                area.source_medias[0]?.hasOwnProperty(
+                  "meta_filename_in_project"
+                )
+              ) {
+                listMediasOnMeta(area.source_medias);
+              } else if (
+                area.source_medias[0]?.hasOwnProperty("meta_filename")
+              ) {
+                const text_media_in_grid_area = all_medias.find((f) =>
+                  f.$path.endsWith("/" + area.source_medias[0].meta_filename)
+                );
+                if (text_media_in_grid_area) {
+                  listMediasOnMeta(text_media_in_grid_area?.source_medias);
+                }
+              }
+            }
+          });
         }
       });
 
       return [
+        {
+          label: this.$t("on_the_cover"),
+          medias: cover,
+          color: "var(--c-bleuvert)",
+        },
         {
           label: this.$t("in_this_section"),
           medias: current,
@@ -243,6 +293,9 @@ export default {
     },
   },
   methods: {
+    closeChapter() {
+      this.$emit("updatePane", { key: "chapter", value: false });
+    },
     openChapter(dir) {
       const idx = this.all_chapters.findIndex((f) =>
         f.$path.endsWith(this.opened_section_meta_filename)
@@ -264,8 +317,10 @@ export default {
           path: chapter._main_text.$path,
         });
       }
-      await this.$api.deleteItem({
-        path: chapter.$path,
+      await this.removeSection2({
+        publication: this.publication,
+        group: "sections_list",
+        section: chapter,
       });
     },
     getChapterPosition(chapter_path) {

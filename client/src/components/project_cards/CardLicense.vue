@@ -32,30 +32,21 @@
       />
 
       <!-- pour plus tard, voir https://github.com/l-atelier-des-chercheurs/dodoc/issues/513 -->
+
       <RadioCheckboxField
-        v-if="can_edit || (!can_edit && project.license !== 'custom_license')"
         :label="$t('license')"
-        :show_label="false"
+        :show_label="true"
         :instructions="$t('licence_instructions')"
         :field_name="'license'"
         :input_type="'radio'"
-        :content="project.license"
+        :content="effective_license"
         :path="project.$path"
         :can_edit="can_edit"
         :options="license_options"
-      />
-      <DLabel v-else :str="$t('license')" />
-      <TitleField
-        v-if="project.license === 'custom_license'"
-        ref="custom_license_field"
-        :label="$t('custom_license')"
-        :show_label="can_edit"
-        :field_name="'custom_license'"
-        :content="project.custom_license || $t('fill_out_your_license')"
-        :path="project.$path"
-        :input_type="'editor'"
-        :custom_formats="['bold', 'italic', 'link', 'emoji']"
-        :can_edit="can_edit"
+        allow_custom_option="html"
+        :custom_option_label="$t('custom_license')"
+        :custom_option_placeholder="$t('fill_out_your_license')"
+        :custom_option_formats="['bold', 'italic', 'link', 'emoji']"
       />
     </div>
   </DetailsPane>
@@ -78,7 +69,7 @@ export default {
       license_options: [
         {
           key: "",
-          label: this.$t("not_specified"),
+          label: this.$t("not_specified_f"),
         },
         {
           key: "creativecommons_by_sa",
@@ -94,26 +85,25 @@ export default {
           label: this.$t("copyleft"),
           instructions: this.$t("copyleft_explanations"),
         },
-        {
-          key: "custom_license",
-          label: this.$t("custom_license"),
-        },
       ],
     };
   },
-  created() {},
+  created() {
+    this.migrateCustomLicenseIfNeeded();
+  },
   mounted() {},
   beforeDestroy() {},
-  watch: {
-    "project.license": function (newVal) {
-      if (newVal === "custom_license") {
-        this.$nextTick(() => {
-          this.$refs.custom_license_field.enableEditMode();
-        });
-      }
-    },
-  },
+  watch: {},
   computed: {
+    effective_license() {
+      if (
+        this.project.license === "custom_license" &&
+        this.project.custom_license
+      ) {
+        return this.project.custom_license;
+      }
+      return this.project.license || "";
+    },
     has_items() {
       return !!(
         this.project.license ||
@@ -122,7 +112,31 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    async migrateCustomLicenseIfNeeded() {
+      if (
+        !this.project.custom_license ||
+        this.project.license !== "custom_license"
+      )
+        return;
+      try {
+        await this.$api.updateMeta({
+          path: this.project.$path,
+          new_meta: {
+            license: this.project.custom_license,
+            custom_license: "",
+          },
+        });
+        this.project.license = this.project.custom_license;
+        this.project.custom_license = "";
+      } catch (e) {
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .error(this.$t("couldntbesaved"));
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped></style>

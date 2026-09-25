@@ -1,10 +1,17 @@
 <template>
-  <BaseModal2 :title="modal_name || $t('create')" @close="$emit('close')">
+  <BaseModal2
+    :title="modal_name || $t('create')"
+    :confirm_before_closing="content_is_changed"
+    @close="$emit('close')"
+  >
     <form class="input-validation-required" @submit.prevent="createFolder">
+      <div v-if="$slots.instructions" class="u-spacingBottom">
+        <slot name="instructions" />
+      </div>
       <DLabel :str="$t('title')" />
       <TextInput
         :content.sync="new_folder_title"
-        :maxlength="40"
+        :maxlength="60"
         :required="true"
         :autofocus="true"
         ref="titleInput"
@@ -61,6 +68,7 @@
         :loading="is_creating_folder"
         @click="createFolder"
       >
+        <b-icon icon="plus-circle" />
         {{ $t("create_and_open") }}
       </button>
     </template>
@@ -71,6 +79,7 @@ export default {
   props: {
     modal_name: String,
     path: String,
+    additional_meta: { type: Object, default: () => ({}) },
     private_status_explanations: String,
     public_status_explanations: String,
     default_folder_status: { type: String, default: "public" },
@@ -96,6 +105,9 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    content_is_changed() {
+      return this.new_folder_title !== "";
+    },
     // modal_name() {
     //   if (this.type_of_folder === "space") return this.$t("create_a_space");
     //   else if (this.type_of_folder === "project")
@@ -127,6 +139,7 @@ export default {
         const new_folder_slug = await this.$api.createFolder({
           path: this.path,
           additional_meta: {
+            ...this.additional_meta,
             title: this.new_folder_title,
             requested_slug: this.new_folder_title,
             $status:

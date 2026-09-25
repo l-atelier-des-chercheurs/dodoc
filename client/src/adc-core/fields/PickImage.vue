@@ -15,6 +15,7 @@
           />
         </svg>
         <span>
+          &thinsp;
           {{ _instructions }}
         </span>
       </label>
@@ -65,9 +66,9 @@
       </button>
 
       <BaseModal2
-        :title="$t('capture')"
         :size="'full'"
         v-if="enable_capture_mode"
+        :nopadding="true"
         @close="enable_capture_mode = false"
       >
         <CaptureView

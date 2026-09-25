@@ -52,7 +52,13 @@ export default {
       )
         return true;
 
-      // todo : check if parent folder match as well
+      // check if parent folder match as well
+      if (folder.$admins === "parent_contributors") {
+        const parent_path = this.getParent(this.getParent(folder.$path));
+        return this.canLoggedinContributeToFolder({
+          folder: this.$api.store[parent_path],
+        });
+      }
 
       return false;
     },
@@ -72,21 +78,23 @@ export default {
     canLoggedinSeeFolder({ folder }) {
       // todo do this API side
       // invisible is the old name for private
-      if (folder.$status !== "invisible" && folder.$status !== "private")
-        return true;
-      if (!this.connected_as) return false;
-      if (this.is_instance_admin) return true;
-      if (
-        Array.isArray(folder.$admins) &&
-        folder.$admins.includes(this.connected_as.$path)
-      )
-        return true;
-      if (
-        Array.isArray(folder.$contributors) &&
-        folder.$contributors.includes(this.connected_as.$path)
-      )
-        return true;
-      return false;
+      if (!["invisible", "private"].includes(folder.$status)) return true;
+      // private should be visible only to editors
+      return this.canLoggedinContributeToFolder({ folder });
+
+      // if (!this.connected_as) return false;
+      // if (this.is_instance_admin) return true;
+      // if (
+      //   Array.isArray(folder.$admins) &&
+      //   folder.$admins.includes(this.connected_as.$path)
+      // )
+      //   return true;
+      // if (
+      //   Array.isArray(folder.$contributors) &&
+      //   folder.$contributors.includes(this.connected_as.$path)
+      // )
+      //   return true;
+      // return false;
     },
     canPublicSeeFolder({ folder }) {
       // if instance is protected by general password, we need to make sur that the folder has $public: true

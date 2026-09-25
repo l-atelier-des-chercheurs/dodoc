@@ -47,22 +47,16 @@
       <div
         class="m_captureview--videoPane--top"
         v-show="!is_validating_stopmotion_video"
-        :class="{
-          'is--being_streamed':
-            (stream_sharing_informations_status &&
-              stream_sharing_informations_status.enabled) ||
-            (stream_access_informations_status &&
-              stream_access_informations_status.enabled),
-        }"
       >
         <div class="m_captureview--videoPane--top--videoContainer">
           <div class="_videoEl" :style="`opacity: ${show_videos ? 1 : 0}`">
             <video
+              v-if="showVideoElement"
               ref="videoElement"
               autoplay
               playsinline
               :src-object.prop.camel="stream"
-              :controls="stream_type === 'RemoteSources'"
+              :controls="false"
               muted
               :style="`opacity: ${enable_effects ? '0' : '1'}`"
             />
@@ -97,7 +91,8 @@
             v-if="selected_mode === 'audio' && !media_to_validate"
             ref="equalizerElement"
             :stream="stream"
-            :is_recording="is_recording"
+            :is_recording="is_recording && !video_recording_is_paused"
+            :type="'Full'"
           />
 
           <transition-group
@@ -114,101 +109,8 @@
                 timer_recording_in_seconds !== false
               "
               :key="'duration'"
-              v-html="timer_recording_in_seconds"
+              v-html="formatDurationToHuman(timer_recording_in_seconds)"
             />
-
-            <div
-              v-if="
-                selected_mode === 'stopmotion' &&
-                timelapse_mode_enabled &&
-                !timelapse_event
-              "
-              :key="'timelapse_interval'"
-              class="record_options"
-            >
-              <div>
-                <span>{{ $t("interval_between_pictures") }}</span>
-                <input
-                  type="number"
-                  min="1"
-                  v-model.number="timelapse_interval"
-                />
-                <span>{{ $t("seconds") }}</span>
-              </div>
-            </div>
-
-            <div
-              v-if="
-                stream_sharing_informations_status &&
-                stream_sharing_informations_status.enabled &&
-                stream_type === 'LocalSources'
-              "
-              :key="
-                'stream_share_name-' + stream_sharing_informations_status.name
-              "
-            >
-              <label class="u-label">
-                <span v-html="$t('stream_currently_shared_with_name:')" />
-                <span>
-                  <strong>{{ stream_sharing_informations_status.name }}</strong>
-                </span>
-                <br />
-                <span
-                  v-if="
-                    stream_sharing_informations_status.peers_connected &&
-                    stream_sharing_informations_status.peers_connected.length >
-                      0
-                  "
-                >
-                  {{ $t("other_users_connected") }} =
-                  {{
-                    stream_sharing_informations_status.peers_connected.length
-                  }}
-                </span>
-              </label>
-            </div>
-
-            <div
-              v-else-if="
-                stream_access_informations_status &&
-                stream_access_informations_status.enabled &&
-                stream_type === 'RemoteSources'
-              "
-              :key="
-                'stream_share_name-' + stream_access_informations_status.callee
-              "
-            >
-              <label class="u-label">
-                <span v-html="$t('stream_shown:')" />
-                <span>
-                  <strong>{{
-                    stream_access_informations_status.callee
-                  }}</strong>
-                </span>
-              </label>
-            </div>
-
-            <div
-              v-if="
-                delay_mode_enabled &&
-                !is_recording &&
-                !media_to_validate &&
-                !delay_event
-              "
-              :key="'delay_interval'"
-              class="record_options"
-            >
-              <div>
-                <span>{{ $t("delay") }}</span>
-                <input
-                  type="number"
-                  v-model.number="delay_seconds"
-                  min="1"
-                  max="60"
-                />
-                <span>{{ $t("seconds") }}</span>
-              </div>
-            </div>
           </transition-group>
 
           <transition name="scaleInFade" mode="out-in">
@@ -225,8 +127,6 @@
               class="_delay_timer is--small is--timelapse"
               v-html="timelapse_time_before_next_picture"
             />
-            <!-- necessary to handle timely out-in transition -->
-            <!-- <span v-else /> -->
           </transition>
 
           <transition name="onionSkin" mode="in-out">
@@ -353,6 +253,24 @@
           <transition name="fade_fast">
             <LoaderSpinner class="_loader" v-if="is_loading_stream" />
           </transition>
+
+          <CaptureDurationModal
+            v-if="duration_modal_mode"
+            :mode="duration_modal_mode"
+            :value="
+              duration_modal_mode === 'timelapse'
+                ? timelapse_interval
+                : delay_seconds
+            "
+            :enabled="
+              duration_modal_mode === 'timelapse'
+                ? timelapse_mode_enabled
+                : delay_mode_enabled
+            "
+            @close="closeDurationModal()"
+            @save="saveDurationModal($event)"
+            @disable="disableDurationMode()"
+          />
         </div>
       </div>
 
@@ -365,6 +283,7 @@
         :onion_skin_opacity.sync="onion_skin_opacity"
         :stopmotion_frame_rate.sync="stopmotion_frame_rate"
         @insertMedia="(meta_filename) => $emit('insertMedia', meta_filename)"
+        @exportStarted="onStopmotionExportStarted"
         @close="closeStopmotionPanel"
         @showPreviousImage="onion_skin_img = $event"
       />
@@ -399,7 +318,7 @@
                 >
                   <button
                     type="button"
-                    class="u-button u-button_red _settingsBtn"
+                    class="u-button u-button_icon _settingsBtn"
                     :class="{ 'is--active': show_capture_settings }"
                     @click="show_capture_settings = !show_capture_settings"
                     :content="$t('settings')"
@@ -431,15 +350,11 @@
                   <button
                     type="button"
                     v-if="selected_mode !== 'audio'"
-                    class="u-button u-button_bleumarine _settingsBtn"
+                    class="u-button u-button_icon _settingsBtn _effectsBtn"
                     :class="{ 'is--active': show_effects_pane }"
                     @click="show_effects_pane = !show_effects_pane"
                     :content="$t('effects')"
                   >
-                    <!-- v-tippy="{
-                      placement: 'right',
-                      delay: [600, 0],
-                    }" -->
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 168 168"
@@ -507,7 +422,7 @@
                   type="button"
                   class="u-button u-button_orange u-button_inline _captureButton"
                   :key="selected_mode + '_pause'"
-                  v-if="selected_mode === 'video' && is_recording"
+                  v-if="show_pause_recording_button"
                   @mousedown.stop.prevent="pauseOrResumeCapture()"
                   @touchstart.stop.prevent="pauseOrResumeCapture()"
                 >
@@ -606,7 +521,7 @@
                       'is--active': capture_button_pressed,
                     }"
                     :disabled="is_sending_image"
-                    :key="selected_mode + is_recording"
+                    :key="selected_mode + '_start'"
                     @mousedown.stop.prevent="setCaptureInit()"
                     @touchstart.stop.prevent="setCaptureInit()"
                   >
@@ -649,7 +564,7 @@
                     v-else-if="is_recording"
                     class="u-button u-button_orange u-button_inline _captureButton"
                     :disabled="is_sending_image"
-                    :key="selected_mode + is_recording"
+                    :key="selected_mode + '_stop'"
                     @mousedown.stop.prevent="stopRecording()"
                     @touchstart.stop.prevent="stopRecording()"
                   >
@@ -684,13 +599,9 @@
                     type="button"
                     class="_enable_timelapse_button"
                     :class="{ 'is--active': timelapse_mode_enabled }"
-                    v-if="
-                      selected_mode === 'stopmotion' &&
-                      !timelapse_event &&
-                      !delay_event
-                    "
+                    v-if="selected_mode === 'stopmotion' && !delay_event"
                     :content="$t('timelapse')"
-                    @click="timelapse_mode_enabled = !timelapse_mode_enabled"
+                    @click="openDurationModal('timelapse')"
                   >
                     <svg
                       version="1.1"
@@ -716,6 +627,12 @@
                   c0,1.3-0.8,2.5-2.1,2.9l-19,5.9C23.6,49.4,23.3,49.4,23,49.4z"
                       />
                     </svg>
+                    <span
+                      v-if="timelapse_mode_enabled"
+                      class="_enable_timelapse_button--value"
+                    >
+                      {{ timelapse_interval }}
+                    </span>
                   </button>
                 </transition>
 
@@ -726,7 +643,7 @@
                     v-if="!is_recording && !delay_event"
                     :class="{ 'is--active': delay_mode_enabled }"
                     :content="$t('delay')"
-                    @click="delay_mode_enabled = !delay_mode_enabled"
+                    @click="openDurationModal('delay')"
                   >
                     <svg
                       version="1.1"
@@ -757,6 +674,12 @@
                         height="5.7"
                       />
                     </svg>
+                    <span
+                      v-if="delay_mode_enabled"
+                      class="_enable_timelapse_button--value"
+                    >
+                      {{ delay_seconds }}
+                    </span>
                   </button>
                 </transition>
               </div>
@@ -768,7 +691,7 @@
                   >
                     <AudioEqualizer
                       :stream="stream"
-                      :is_recording="is_recording"
+                      :is_recording="is_recording && !video_recording_is_paused"
                       :type="'Tiny'"
                     />
                   </div>
@@ -981,6 +904,7 @@ import StopmotionList from "./StopmotionList.vue";
 import AudioEqualizer from "./AudioEqualizer.vue";
 import VectoMode from "./VectoMode.vue";
 import LinesMode from "./LinesMode.vue";
+import CaptureDurationModal from "./CaptureDurationModal.vue";
 
 // import adapter from "webrtc-adapter";
 
@@ -1031,11 +955,13 @@ export default {
     AudioEqualizer,
     VectoMode,
     LinesMode,
+    CaptureDurationModal,
   },
   data() {
     return {
       is_sending_image: false,
       is_loading_stream: true,
+      is_destroying_capture_view: false,
 
       invisible_canvas: undefined,
 
@@ -1083,7 +1009,7 @@ export default {
       // },
 
       stream: undefined,
-      stream_type: undefined,
+      showVideoElement: true, // Control video element visibility for proper cleanup
 
       audio_output_deviceId: undefined,
 
@@ -1096,6 +1022,9 @@ export default {
       is_recording: false,
       timer_recording_in_seconds: false,
       recording_timer_interval: undefined,
+      recording_started_at_ms: undefined,
+      recording_paused_at_ms: undefined,
+      recording_paused_total_ms: 0,
 
       stopmotion_frame_rate: 4,
       timelapse_mode_enabled: false,
@@ -1107,6 +1036,7 @@ export default {
       delay_seconds: 5,
       delay_event: false,
       delay_remaining_time: false,
+      duration_modal_mode: false,
 
       recorder: null,
 
@@ -1135,9 +1065,6 @@ export default {
       lines_contrast: 1,
       lines_density: 0.25,
 
-      stream_sharing_informations_status: {},
-      stream_access_informations_status: {},
-
       enable_effects: false,
       update_last_video_imageData: undefined,
     };
@@ -1162,14 +1089,6 @@ export default {
     this.checkCapturePanelSize();
     this.$eventHub.$on(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$on(`window.resized`, this.checkCapturePanelSize);
-    this.$eventHub.$on(
-      `stream.newSharingInformations`,
-      this.updateStreamSharing
-    );
-    this.$eventHub.$on(
-      `stream.newDistantAccessInformations`,
-      this.updateDistantStream
-    );
     this.$eventHub.$on("capture.stopRecording", this.stopRecording);
 
     this.$refs.videoElement.volume = 0;
@@ -1177,36 +1096,45 @@ export default {
       "loadedmetadata",
       this.refreshVideoActualSize
     );
+
+    // Handle page visibility changes to release camera when tab is hidden
   },
-  beforeDestroy() {
+  async beforeDestroy() {
+    console.log("CaptureView: beforeDestroy - cleaning up camera resources");
+    this.is_destroying_capture_view = true;
+
     this.$eventHub.$off(`activity_panels_resized`, this.checkCapturePanelSize);
     this.$eventHub.$off(`window.resized`, this.checkCapturePanelSize);
-    this.$eventHub.$off(
-      `stream.newSharingInformations`,
-      this.updateStreamSharing
-    );
-    this.$eventHub.$off(
-      `stream.newDistantAccessInformations`,
-      this.updateDistantStream
-    );
     this.$eventHub.$off("capture.stopRecording", this.stopRecording);
 
     document.removeEventListener("keyup", this.captureKeyListener);
 
     this.ask_before_leaving_capture = false;
 
+    // Stop any active recording first
+    if (this.is_recording) {
+      console.log("CaptureView: Stopping active recording before destroy");
+      this.stopRecording();
+    }
+
     this.stopFrameGrabber();
     this.stopTimelapseInterval();
     this.cancelDelay();
     this.eraseTimer();
+    await this.stopStream();
+
+    // Ensure video element is removed
+    this.showVideoElement = false;
 
     if (this.update_last_video_imageData)
       window.cancelAnimationFrame(this.update_last_video_imageData);
 
-    this.$refs.videoElement.removeEventListener(
-      "loadedmetadata",
-      this.refreshVideoActualSize
-    ); //turn off the event handler
+    if (this.$refs.videoElement) {
+      this.$refs.videoElement.removeEventListener(
+        "loadedmetadata",
+        this.refreshVideoActualSize
+      ); //turn off the event handler
+    }
   },
   watch: {
     selected_mode(val, oldVal) {
@@ -1286,6 +1214,16 @@ export default {
     },
   },
   computed: {
+    show_pause_recording_button() {
+      if (!["video", "audio"].includes(this.selected_mode)) return false;
+      if (!this.is_recording) return false;
+
+      // In live dubbing from Make, pausing recording desyncs with reference video playback.
+      if (this.origin === "make" && this.selected_mode === "audio")
+        return false;
+
+      return true;
+    },
     show_mode_selector() {
       return (
         !this.media_to_validate &&
@@ -1318,14 +1256,63 @@ export default {
     },
   },
   methods: {
+    async stopStream() {
+      console.log("CaptureView: METHODS • stopStream");
+      this.video_recording_is_paused = false;
+
+      // Stop all tracks in the current stream
+      if (this.stream) {
+        console.log(
+          "CaptureView: Stopping stream tracks:",
+          this.stream.getTracks().length
+        );
+        this.stream.getTracks().forEach((track) => {
+          console.log("CaptureView: Stopping track:", track.kind, track.label);
+          track.stop();
+        });
+        this.stream = null;
+      }
+
+      // Remove video element from DOM to fully release camera
+      console.log("CaptureView: Removing video element from DOM");
+      this.showVideoElement = false;
+
+      // Stop any active recorder
+      if (this.recorder) {
+        console.log("CaptureView: Stopping recorder");
+        try {
+          this.recorder.stopRecording();
+          this.recorder.destroy();
+          this.recorder = null;
+        } catch (err) {
+          console.warn("CaptureView: Error stopping recorder:", err);
+        }
+      }
+
+      // Reset stream-related state
+      this.is_loading_stream = false;
+      this.show_live_feed = false;
+    },
     hasFinishedLoading() {
       this.is_loading_stream = false;
       this.show_live_feed = true;
     },
-    setStream({ stream, type }) {
+    setStream(stream) {
+      console.log("CaptureView: METHODS • setStream", stream);
+
+      // If a late stream arrives while closing the pane, stop it immediately.
+      if (this.is_destroying_capture_view) {
+        stream?.getTracks?.().forEach((track) => track.stop());
+        return;
+      }
+
       this.stream = stream;
-      this.stream_type = type;
-      this.$refs.videoElement.volume = 0;
+      this.showVideoElement = true;
+      this.$nextTick(() => {
+        if (this.$refs.videoElement) {
+          this.$refs.videoElement.volume = 0;
+        }
+      });
       this.enable_effects = false;
     },
     updateSelectedColor({ e, type }) {
@@ -1382,12 +1369,6 @@ export default {
         g: frame.data[1],
         b: frame.data[2],
       };
-    },
-    updateStreamSharing(val) {
-      this.stream_sharing_informations_status = val;
-    },
-    updateDistantStream(val) {
-      this.stream_access_informations_status = val;
     },
     refreshVideoActualSize() {
       this.getVideoActualSize()
@@ -1521,10 +1502,25 @@ export default {
       this.media_is_being_sent = false;
       this.media_being_sent_percent = 100;
       this.media_to_validate = false;
+      this.is_validating_stopmotion_video = false;
 
       this.is_recording = false;
       this.ask_before_leaving_capture = false;
       this.show_live_feed = true;
+    },
+    onStopmotionExportStarted({ task_id }) {
+      const checkIfEnded = ({ task_id: ended_task_id, event, message }) => {
+        if (ended_task_id !== task_id) return;
+        this.$eventHub.$off("task.ended", checkIfEnded);
+
+        if (event === "completed") {
+          const meta_filename = this.getFilename(message.file?.$path);
+          if (meta_filename) this.$emit("insertMedia", meta_filename);
+        } else {
+          this.$alertify.delay(4000).error(message);
+        }
+      };
+      this.$eventHub.$on("task.ended", checkIfEnded);
     },
 
     captureKeyListener(event) {
@@ -1583,6 +1579,36 @@ export default {
       } else {
         this.setCapture();
       }
+    },
+    openDurationModal(mode) {
+      if (!["delay", "timelapse"].includes(mode)) return;
+      this.duration_modal_mode = mode;
+    },
+    closeDurationModal() {
+      this.duration_modal_mode = false;
+    },
+    saveDurationModal(value) {
+      if (this.duration_modal_mode === "timelapse") {
+        this.timelapse_interval = value;
+        this.timelapse_mode_enabled = true;
+      } else if (this.duration_modal_mode === "delay") {
+        this.delay_seconds = value;
+        this.delay_mode_enabled = true;
+      }
+      this.closeDurationModal();
+    },
+    disableDurationMode() {
+      if (this.duration_modal_mode === "timelapse") {
+        this.stopTimelapseInterval();
+        this.timelapse_mode_enabled = false;
+        if (this.selected_mode === "stopmotion" && this.is_recording) {
+          this.is_recording = false;
+        }
+      } else if (this.duration_modal_mode === "delay") {
+        this.cancelDelay();
+        this.delay_mode_enabled = false;
+      }
+      this.closeDurationModal();
     },
     startDelay() {
       let time_passed = 0;
@@ -1686,7 +1712,10 @@ export default {
     },
     stopRecording() {
       if (!this.is_recording) return;
-      const duration = this.timer_recording_in_seconds;
+      this.video_recording_is_paused = false;
+      const duration = this.getAccurateRecordingDurationInSeconds();
+      const duration_in_ms = Math.max(1, Math.round(duration * 1000));
+      console.log("METHODS • CaptureView: stopRecording", duration_in_ms);
 
       if (this.selected_mode === "stopmotion" && this.timelapse_mode_enabled) {
         this.is_recording = false;
@@ -1704,7 +1733,7 @@ export default {
           this.recorder.destroy();
           this.recorder = null;
 
-          ysFixWebmDuration(video_blob, duration * 1000, {
+          ysFixWebmDuration(video_blob, duration_in_ms, {
             logger: false,
           }).then((fixed_video_blob) => {
             this.media_to_validate = {
@@ -1730,14 +1759,14 @@ export default {
             .querySelector("canvas")
             .toDataURL("image/png");
 
-          ysFixWebmDuration(audio_blob, duration * 1000, {
+          ysFixWebmDuration(audio_blob, duration_in_ms, {
             logger: false,
           }).then((fixed_audio_blob) => {
             this.media_to_validate = {
               preview,
               rawData: fixed_audio_blob,
               objectURL: URL.createObjectURL(fixed_audio_blob),
-              temp_name: "audio.wav",
+              temp_name: "audio.weba",
               type: "audio",
             };
           });
@@ -1748,13 +1777,34 @@ export default {
     pauseOrResumeCapture() {
       if (this.recorder.state !== "paused") {
         this.video_recording_is_paused = true;
+        this.recording_paused_at_ms = Date.now();
         this.pauseTimer();
         this.recorder.pauseRecording();
       } else {
         this.video_recording_is_paused = false;
+        if (this.recording_paused_at_ms) {
+          this.recording_paused_total_ms +=
+            Date.now() - this.recording_paused_at_ms;
+          this.recording_paused_at_ms = undefined;
+        }
         this.unpauseTimer();
         this.recorder.resumeRecording();
       }
+    },
+    getAccurateRecordingDurationInSeconds() {
+      if (!this.recording_started_at_ms) {
+        return Number(this.timer_recording_in_seconds) || 0;
+      }
+
+      let paused_ms = this.recording_paused_total_ms;
+      if (this.recording_paused_at_ms)
+        paused_ms += Date.now() - this.recording_paused_at_ms;
+
+      const elapsed_ms = Math.max(
+        0,
+        Date.now() - this.recording_started_at_ms - paused_ms
+      );
+      return +(elapsed_ms / 1000).toFixed(3);
     },
 
     startTimer() {
@@ -1773,6 +1823,10 @@ export default {
     eraseTimer() {
       this.timer_recording_in_seconds = false;
       window.clearInterval(this.recording_timer_interval);
+      this.recording_started_at_ms = undefined;
+      this.recording_paused_at_ms = undefined;
+      this.recording_paused_total_ms = 0;
+      this.video_recording_is_paused = false;
     },
 
     getImageDataFromFeed({ width, height } = {}) {
@@ -1833,6 +1887,7 @@ export default {
 
     startRecordFeed(options) {
       return new Promise(() => {
+        this.video_recording_is_paused = false;
         const finalStream = new MediaStream();
 
         if (options.type === "video") {
@@ -1859,6 +1914,9 @@ export default {
           this.recorder.startRecording();
           this.is_recording = true;
           this.timer_recording_in_seconds = 0;
+          this.recording_started_at_ms = Date.now();
+          this.recording_paused_at_ms = undefined;
+          this.recording_paused_total_ms = 0;
           this.$eventHub.$emit("capture.isRecording", options.type);
           this.startTimer();
         } catch (err) {
@@ -1888,7 +1946,7 @@ export default {
       const extensions = {
         image: "jpeg",
         video: "webm",
-        audio: "wav",
+        audio: "weba",
         svg: "svg",
       };
       const filename = `${
@@ -1907,6 +1965,7 @@ export default {
       let additional_meta = {
         fav,
         $origin: this.origin,
+        $type: this.media_to_validate.type,
       };
 
       if (this.connected_as?.$path)
@@ -1963,6 +2022,11 @@ export default {
     cancelValidation() {
       this.media_to_validate = false;
     },
+    preventNonInteger(event) {
+      if (event.key === "." || event.key === ",") {
+        event.preventDefault();
+      }
+    },
   },
 };
 </script>
@@ -2018,10 +2082,6 @@ export default {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
-
-    &.is--being_streamed {
-      border-bottom: 5px solid var(--c-rouge);
-    }
   }
 
   .m_captureview--videoPane--bottom {
@@ -2179,13 +2239,8 @@ export default {
   color: transparent;
 
   --c-text-stroke: var(--c-rouge);
-  --c-text-shadow: rgba(0, 0, 0, 0.2);
   color: var(--c-rouge_fonce);
-
   -webkit-text-stroke: 1vmin var(--c-text-stroke);
-  // text-shadow: 1vmin 1vmin 0 var(--c-text-shadow),
-  //   -1px -1px 0 var(--c-text-shadow), 1px -1px 0 var(--c-text-shadow),
-  //   -1px 1px 0 var(--c-text-shadow), 1px 1px 0 var(--c-text-shadow);
 
   &.is--small {
     font-size: 10vmin;
@@ -2197,13 +2252,6 @@ export default {
     }
   }
 }
-
-// @container video-pane (height < 400px) {
-//   ._delay_timer {
-//     font-size: 10vmin;
-//     -webkit-text-stroke: 0.2vmin var(--c-text-stroke);
-//   }
-// }
 
 ._capture_options {
   position: absolute;
@@ -2223,59 +2271,17 @@ export default {
     display: inline-block;
     margin: 0 auto;
     background-color: var(--c-rouge);
-    padding: 0 calc(var(--spacing) / 8);
-    font-size: var(--sl-font-size-normal);
+    padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1)
+      calc(var(--spacing) / 3);
+
+    min-width: 6ch;
 
     margin-bottom: calc(var(--spacing) / 8);
+    font-size: var(--sl-font-size-large);
     color: white;
-    border-radius: 4px;
+    border-radius: 2rem;
+    line-height: 1;
     pointer-events: auto;
-  }
-
-  .record_options {
-    max-width: 450px;
-    margin: 0 auto;
-    // .padding-verysmall;
-    pointer-events: auto;
-    // .font-small;
-
-    > * {
-      margin-bottom: 0;
-      background-color: var(--c-rouge);
-
-      color: white;
-      padding: 0 calc(var(--spacing) / 4);
-      border-radius: 4px;
-      width: auto;
-
-      display: flex;
-      align-items: center;
-    }
-
-    input {
-      min-width: 2em;
-      max-width: 4em;
-      height: 1.4em;
-      margin: 2px;
-      padding: 0 2px;
-      width: auto;
-      width: auto;
-      text-align: center;
-      color: white;
-
-      background-color: var(--c-rouge_clair);
-
-      border-bottom: 0px;
-
-      &:active,
-      &:focus {
-        border-bottom-color: var(--c-rouge_fonce);
-      }
-    }
-
-    .record_options--timer {
-      font-size: 2em;
-    }
   }
 }
 
@@ -2284,8 +2290,8 @@ export default {
 
   .m_audioEqualizer {
     position: relative;
-    width: 64px;
-    height: 36px;
+    width: 68px;
+    height: 34px;
     background-color: transparent !important;
     border-radius: 4px;
     overflow: hidden;
@@ -2361,6 +2367,7 @@ export default {
   width: 28px;
   height: 28px;
   display: block;
+  position: relative;
   min-height: 0;
   line-height: 0;
   border-radius: 50%;
@@ -2372,6 +2379,21 @@ export default {
   svg {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  ._enable_timelapse_button--value {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 1.4em;
+    height: 1.4em;
+    padding: 0 0.35em;
+    border-radius: 999px;
+    background: var(--c-noir);
+    color: #fff;
+    font-size: 11px;
+    line-height: 1.4em;
+    text-align: center;
   }
 
   &.is--active {

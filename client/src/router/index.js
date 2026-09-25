@@ -49,12 +49,6 @@ const routes = [
     name: "UI (dev only)",
     component: () => import("@/views/UIView.vue"),
   },
-  // {
-  //   path: "/=:event_slug",
-  //   name: "Événement",
-  //   component: () =>
-  //     import(/* webpackChunkName: "AuthorView" */ "@/views/EventView.vue"),
-  // },
   {
     // route to display a single media with caption/credits and
     // with qr scan option, and to generate preview for PDF and STL server-side

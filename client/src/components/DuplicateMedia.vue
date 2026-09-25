@@ -27,6 +27,8 @@
             </p>
           </div>
 
+          <DLabel :str="$t('destination_project')" />
+
           <SpaceProjectPicker
             class="u-spacingBottom"
             :path="paths ? paths[0] : path"

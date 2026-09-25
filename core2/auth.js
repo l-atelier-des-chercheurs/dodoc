@@ -121,17 +121,22 @@ module.exports = (function () {
 
       return;
     },
-    canFolderBeCreatedByAll({ path_to_type }) {
+    getFolderCreationPolicy({ path_to_type }) {
       try {
         const item_in_schema = utils.parseAndCheckSchema({
           relative_path: path_to_type,
         });
-        if (item_in_schema && item_in_schema.$can_be_created_by === "everyone")
-          return true;
+        return item_in_schema?.$can_be_created_by;
       } catch (err) {
         err;
       }
       return false;
+    },
+    canFolderBeCreatedByAll({ path_to_type }) {
+      return API.getFolderCreationPolicy({ path_to_type }) === "everyone";
+    },
+    canFolderBeCreatedByLoggedIn({ path_to_type }) {
+      return API.getFolderCreationPolicy({ path_to_type }) === "logged-in";
     },
     async isFolderOpenedToAll({ field, path_to_folder = "" }) {
       const folder_meta = await folder.getFolder({ path_to_folder });
@@ -210,6 +215,25 @@ module.exports = (function () {
         if (tp.token_path === token_path) delete tokens[token];
       });
       API.updateTokensFile();
+    },
+    async removeAllTokensForFolderExcept({ token_path, except_token }) {
+      const normalized_path = utils.convertToSlashPath(token_path);
+      let revoked_count = 0;
+      Object.entries(tokens).forEach(([token, token_data]) => {
+        if (
+          token_data.token_path === normalized_path &&
+          token !== except_token
+        ) {
+          delete tokens[token];
+          revoked_count++;
+        }
+      });
+      if (revoked_count > 0) {
+        await API.updateTokensFile();
+        console.log(
+          `Revoked ${revoked_count} token(s) for folder after password change`
+        );
+      }
     },
     getTokenData(token) {
       if (!tokens.hasOwnProperty(token)) {

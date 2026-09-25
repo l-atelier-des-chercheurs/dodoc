@@ -68,7 +68,11 @@ export default {
   watch: {},
   computed: {},
   methods: {
-    showDropzone() {
+    showDropzone({ media_type } = {}) {
+      if (!this.isMediaTypeAllowed(media_type)) {
+        this.show_dropzone = false;
+        return;
+      }
       this.show_dropzone = true;
     },
     hideDropzone() {
@@ -99,8 +103,13 @@ export default {
     },
     droppedMediaInDodoc($event) {
       const file = JSON.parse($event.dataTransfer.getData("text/plain"));
+      if (!this.isMediaTypeAllowed(file?.$type)) return;
       this.$eventHub.$emit("dragfile.success");
       this.$emit("mediaDropped", file);
+    },
+    isMediaTypeAllowed(media_type) {
+      if (!this.media_types_allowed?.length) return true;
+      return this.media_types_allowed.includes(media_type);
     },
   },
 };

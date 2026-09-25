@@ -64,6 +64,12 @@ export default {
   padding-bottom: 70vh;
   background: white;
 
+  @media print {
+    height: auto;
+    overflow: visible;
+    padding-bottom: 0;
+  }
+
   // background: var(--panel-color);
   // border: var(--panel-borders);
   // box-shadow: var(--panel-shadows);

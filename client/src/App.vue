@@ -43,7 +43,6 @@
 import FullUI from "@/FullUI.vue";
 
 export default {
-  props: {},
   components: {
     FullUI,
     PublicationView: () => import("@/views/PublicationView.vue"),
@@ -53,7 +52,6 @@ export default {
       router_is_loading: true,
     };
   },
-  created() {},
   mounted() {
     setTimeout(() => {
       this.router_is_loading = false;
@@ -143,17 +141,23 @@ export default {
   --c-bleu: hsl(211, 63%, 47%);
   --c-bleu_clair: hsl(211, 63%, 77%);
   --c-noir: hsl(0, 0%, 15%);
-  --c-gris: hsl(195, 0%, 83%);
-  --c-gris_clair: hsl(195, 0%, 96%);
-  --c-gris_fonce: hsl(195, 0%, 45%);
+  --c-gris: hsl(0, 0%, 83%);
+  --c-gris_clair: hsl(0, 0%, 96%);
+  --c-gris_fonce: hsl(0, 0%, 45%);
+
+  --g-100: hsl(0, 0%, 96%);
+  --g-200: hsl(0, 0%, 90%);
+  --g-300: hsl(0, 0%, 83%);
+  --g-400: hsl(0, 0%, 75%);
+  --g-500: hsl(0, 0%, 60%);
+  --g-600: hsl(0, 0%, 45%);
+
   --c-vert: hsl(143, 69%, 55%);
   --c-vert_fonce: hsl(143, 69%, 40%);
 
   --dropzone-color1: transparent;
   --dropzone-color2: var(--c-orange);
 
-  // --c-bodybg: white;
-  --c-bodybg: hsl(51, 33%, 98%);
   --c-bodybg: white;
 
   // --c-bodybg: hsl(48, 19%, 98%);
@@ -173,27 +177,19 @@ export default {
   --scrollbar-height: 1px;
   --scrollbar-padding: 3px;
   --scrollbar-border: 2px;
-  --scrollbar-color: 2px;
   --c-barbgcolor: rgba(255, 255, 255, 0);
   --c-thumbcolor: black;
   --label-color: var(--c-gris_fonce);
   --border-radius: 6px;
 
   --input-font-family: inherit;
-  --input-font-size: 1rem;
-  --input-font-size-x-small: 0.6rem;
-  --input-font-size-small: 0.8rem;
-  --input-font-size-big: 1.2rem;
-  --input-font-weight: inherit;
-  --input-height: 2.5em;
-  --input-height-large: 3em;
-  // --input-height-big: 3em;
-  --input-height-small: 1.6rem;
+  --input-font-size: var(--sl-font-size-normal);
+  --input-font-size-x-small: var(--sl-font-size-x-small);
+  --input-font-size-small: var(--sl-font-size-small);
+  --input-height: 2.5rem;
+  --input-height-small: 1.75rem;
 
   --input-color: var(--body-color);
-  --input-border-color: var(--c-gris_fonce);
-  --input-border-color-focus: var(--active-color);
-  --input-border-width: 3px;
   --input-border-radius: 6px;
   --input-bg-color: var(--color-white);
   --input-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
@@ -210,15 +206,14 @@ export default {
 
   --color-capture: var(--c-rouge);
   --color-collect: var(--c-orange);
+  --color-notes_todo: var(--c-gris_fonce);
+  --color-chats: var(--c-rouge);
   --color-make: var(--c-bleumarine);
   --color-publish: var(--c-bleuvert);
 
   --active-color: var(--c-bleuvert);
 
   --sl-font-mono: "Fira Mono";
-  --padding: var(--spacing);
-
-  $sizes: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900;
 
   --sl-font-size-normal: 1rem;
 
@@ -256,7 +251,7 @@ body {
 
 ::selection {
   // background: hsla(211, 63%, 77%, 0.5);
-  background: hsla(174, 70%, 71%, 0.5);
+  background: hsla(174, 0%, 81%, 0.5);
 }
 
 html {
@@ -323,14 +318,14 @@ strong {
 h1 {
   margin: 0;
   font-size: var(--sl-font-size-xx-large);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 h2 {
   margin: 0;
   font-size: var(--sl-font-size-x-large);
   // font-style: italic;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.2;
 }
 h3 {
@@ -414,12 +409,12 @@ img {
 .splitpanes--vertical > .splitpanes__splitter {
   width: 2px;
   margin-left: -1px;
-  border-right: 1px solid var(--c-noir);
+  border-right: 2px solid var(--c-noir);
 }
 .splitpanes--horizontal > .splitpanes__splitter {
   margin-top: -1px;
   height: 2px;
-  border-bottom: 1px solid var(--c-noir);
+  border-bottom: 2px solid var(--c-noir);
 }
 
 .splitpanes__splitter:before {
@@ -459,26 +454,29 @@ img {
 }
 
 .splitpanes__splitter:after {
-  --icon-width: 1.5em;
+  --icon-size: 1.75rem;
 
   content: "";
   position: absolute;
-  left: calc(50% - var(--icon-width) / 2 + 1px);
+  left: calc(50% - var(--icon-size) / 2 + 1px);
   top: auto;
-  bottom: calc(10% - var(--icon-width) / 2);
+  bottom: calc(10% - var(--icon-size) / 2);
   pointer-events: none;
 
-  width: var(--icon-width);
-  height: var(--icon-width);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 2px;
-  line-height: 1;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: var(--input-border-radius);
+  font-family: "Fira Code";
+  font-weight: 700;
   background-color: var(--c-noir);
   color: white;
+  background-repeat: no-repeat;
+  background-position: center;
+  text-align: center;
+  background-size: 80%;
+  line-height: 1.6;
+  // border: 1px solid var(--c-noir);
+  //
 
   transition: transform 0.4s;
   opacity: 1;
@@ -494,11 +492,18 @@ img {
 
 // Vertical splitter (left-right double arrow)
 .splitpanes--vertical > .splitpanes__splitter:after {
-  content: "↔";
+  width: calc(var(--icon-size) * 1.5);
+  left: calc(50% - var(--icon-size) * 1.5 / 2 + 1px);
+  content: "<->";
+}
+.splitpanes--vertical > .splitpanes__splitter:hover:after {
 }
 
 // Horizontal splitter (up-down double arrow)
 .splitpanes--horizontal > .splitpanes__splitter:after {
+  content: "↕";
+}
+.splitpanes--horizontal > .splitpanes__splitter:hover:after {
   content: "↕";
 }
 
@@ -781,18 +786,5 @@ img {
   &-leave-to {
     opacity: 0;
   }
-}
-
-.Vue-Toastification__toast--success {
-  background-color: var(--c-bleuvert) !important;
-}
-.Vue-Toastification__toast--error {
-  background-color: var(--c-rouge) !important;
-}
-.Vue-Toastification__toast--warning {
-  background-color: var(--c-orange) !important;
-}
-.Vue-Toastification__toast--info {
-  background-color: var(--c-gris_fonce) !important;
 }
 </style>

@@ -23,21 +23,14 @@ module.exports = (function () {
 
       // Initial cache cleanup
       await this.cleanupCache();
-
-      // Set up process exit handlers for Node.js
-      if (!global.is_electron) {
-        process.on("SIGINT", this.handleExit);
-        process.on("SIGTERM", this.handleExit);
-        process.on("exit", this.handleExit);
-      }
     },
 
     async cleanup() {
       try {
         if (global.pathToCache) {
-          dev.log("Cleaning up cache...");
+          dev.logverbose("Cleaning up cache...");
           await fs.remove(global.pathToCache);
-          dev.log("Cache cleanup completed");
+          dev.logverbose("Cache cleanup completed");
         }
       } catch (err) {
         dev.error("Error during cache cleanup:", err);
@@ -70,7 +63,7 @@ module.exports = (function () {
           // Check if file is older than MAX_CACHE_AGE
           if (Date.now() - stats.mtime.getTime() > MAX_CACHE_AGE) {
             await fs.remove(filePath);
-            dev.log(`Removed old cache file: ${file}`);
+            dev.logverbose(`Removed old cache file: ${file}`);
           }
         }
 
@@ -80,11 +73,10 @@ module.exports = (function () {
       }
     },
 
-    handleExit: async () => {
-      dev.log("Handling process exit...");
+    async onExit() {
+      dev.logverbose("Stopping cache cleanup interval and cleaning up...");
       API.stopCleanupInterval();
       await API.cleanup();
-      process.exit(0);
     },
   };
 
@@ -92,7 +84,7 @@ module.exports = (function () {
     const cache_folder_path = path.join(paths.getCacheFolder(), "dodoc_cache");
     try {
       await utils.testWriteFileInFolder(cache_folder_path);
-      dev.log(`Cache folder set to`, cache_folder_path);
+      dev.logverbose(`Cache folder set to`, cache_folder_path);
     } catch (err) {
       dev.error(`-> failed to write to cache folder`, err);
       throw err;

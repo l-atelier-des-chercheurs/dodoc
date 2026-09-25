@@ -2,22 +2,37 @@
   <div class="_allProjects">
     <transition name="fade_fast" :duration="150" mode="out-in">
       <LoaderSpinner v-if="is_loading" />
-      <ProjectsListWithFilter
+      <FoldersListWithFilter
         v-else
-        :projects="filtered_projects"
+        ref="listWithFilter"
+        :folders="filtered_projects"
         :display_original_space="true"
-      />
+        :folder_type="'project'"
+        :available_view_modes="['tiny', 'medium', 'map']"
+        :default_view_mode="'tiny'"
+      >
+        <template #item="{ item, view_mode }">
+          <ProjectPresentation
+            :project="item"
+            :context="view_mode"
+            :display_original_space="true"
+            :can_edit="false"
+            @toggleFilter="toggleFilter($event)"
+          />
+        </template>
+      </FoldersListWithFilter>
     </transition>
   </div>
 </template>
 <script>
-import ProjectsListWithFilter from "@/components/ProjectsListWithFilter.vue";
+import FoldersListWithFilter from "@/components/FoldersListWithFilter.vue";
+import ProjectPresentation from "@/components/ProjectPresentation.vue";
 
 export default {
   props: {
     show_only_my_projects: Boolean,
   },
-  components: { ProjectsListWithFilter },
+  components: { FoldersListWithFilter, ProjectPresentation },
   data() {
     return {
       all_projects: [],
@@ -54,7 +69,13 @@ export default {
       return _projects;
     },
   },
-  methods: {},
+  methods: {
+    toggleFilter(event) {
+      if (this.$refs.listWithFilter) {
+        this.$refs.listWithFilter.toggleFilter(event);
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

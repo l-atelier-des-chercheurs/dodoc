@@ -1,7 +1,7 @@
 <template>
   <div>
     <fieldset>
-      <legend class="u-label">{{ $t("pagination") }}</legend>
+      <legend>{{ $t("pagination") }}</legend>
       <div class="u-instructions">
         <small>{{ $t("pagination_instructions") }}</small>
         <small v-if="is_spread"

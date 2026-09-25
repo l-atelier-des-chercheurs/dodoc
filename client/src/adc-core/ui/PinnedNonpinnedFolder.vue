@@ -17,7 +17,9 @@
             class="_list _list_pinned"
             :class="{
               'is--mobileView': $root.is_mobile_view,
-              'is--grid': direction === 'horizontal',
+              'is--grid': direction === 'grid',
+              'is--tiny': view_mode === 'tiny',
+              'is--medium': view_mode === 'medium',
             }"
             name="listComplete"
             appear
@@ -79,7 +81,9 @@
       class="_nonpinned _list"
       :class="{
         'is--mobileView': $root.is_mobile_view,
-        'is--grid': direction === 'horizontal',
+        'is--grid': direction === 'grid',
+        'is--tiny': view_mode === 'tiny',
+        'is--medium': view_mode === 'medium',
       }"
       name="listComplete"
       appear
@@ -116,7 +120,11 @@ export default {
     folders: Array,
     can_edit: Boolean,
     direction: {
-      default: "horizontal",
+      default: "list",
+      type: String,
+    },
+    view_mode: {
+      default: "grid",
       type: String,
     },
   },
@@ -195,6 +203,7 @@ export default {
 ._item {
   position: relative;
   z-index: 1;
+  min-width: 0;
 }
 
 ._pinSpace {
@@ -227,17 +236,27 @@ export default {
 ._list {
   &.is--grid {
     display: grid;
-    // width: 100%;
     grid-auto-rows: max-content;
-    grid-gap: var(--item-gap, calc(var(--spacing) / 1));
-    align-items: stretch;
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(min(100%, var(--item-width, 320px)), 1fr)
-    );
+    gap: var(--item-gap, calc(var(--spacing) / 1));
+    align-items: start;
+    align-content: start;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+
+    &.is--medium {
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+    &.is--tiny {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+
+    @media (max-width: 360px) {
+      grid-template-columns: 1fr;
+    }
   }
-  &:not(.is--grid) > * {
-    margin-bottom: calc(var(--spacing) / 2);
+  &:not(.is--grid) {
+    ._item {
+      margin-bottom: calc(var(--spacing) / 2);
+    }
   }
 
   &.is--mobileView {

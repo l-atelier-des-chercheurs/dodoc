@@ -50,6 +50,7 @@
             v-if="selected_files.length > 0"
             :files_to_import="selected_files"
             :path="font_path"
+            :additional_meta="{ $origin: 'settings' }"
             @close="selected_files = []"
           />
         </div>

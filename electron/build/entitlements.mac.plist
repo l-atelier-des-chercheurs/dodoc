@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<!-- Electron / Chromium (required for hardened runtime) -->
+		<key>com.apple.security.cs.allow-jit</key>
+		<true/>
+		<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+		<true/>
+		<key>com.apple.security.cs.allow-dyld-environment-variables</key>
+		<true/>
+
+		<!-- Media capture -->
+		<key>com.apple.security.device.microphone</key>
+		<true/>
+		<key>com.apple.security.device.camera</key>
+		<true/>
+		<key>com.apple.security.device.screen-capture</key>
+		<true/>
+
+		<!-- Network (local HTTPS server + external requests) -->
+		<key>com.apple.security.network.server</key>
+		<true/>
+		<key>com.apple.security.network.client</key>
+		<true/>
+
+		<!-- File picker dialogs -->
+		<key>com.apple.security.files.user-selected.read-write</key>
+		<true/>
+	</dict>
+</plist>

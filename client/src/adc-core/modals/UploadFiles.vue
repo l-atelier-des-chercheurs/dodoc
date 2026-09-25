@@ -22,6 +22,7 @@
           :path="path"
           :index_indicator="index + 1 + '/' + files_to_upload.length"
           :allow_caption_edition="allow_caption_edition"
+          :additional_meta="additional_meta"
           ref="filesList"
           @skip="abortFile(index)"
           @hide="hideFile(index)"
@@ -34,7 +35,7 @@
         <button
           type="button"
           class="u-button"
-          @click="$emit('close')"
+          @click="closeModal"
           :class="{
             'u-button_red': confirm_before_closing,
           }"
@@ -43,7 +44,7 @@
             {{ $t("cancel") }}
           </template>
           <template v-else> -->
-          {{ confirm_before_closing ? $t("interrupt") : $t("close") }}
+          {{ confirm_before_closing ? $t("interrupt") : $t("done") }}
           <!-- </template> -->
         </button>
       </template>
@@ -58,6 +59,7 @@ export default {
     files_to_import: Array,
     path: String,
     allow_caption_edition: Boolean,
+    additional_meta: Object,
   },
   components: {
     UploadFile,
@@ -68,6 +70,7 @@ export default {
       upload_percentages: 0,
       list_of_added_metas: [],
       list_of_added_files: [],
+      should_stop_upload: false,
     };
   },
   watch: {
@@ -87,6 +90,7 @@ export default {
     }, 500);
   },
   beforeDestroy() {
+    this.interruptTransfers();
     this.$emit("importedMedias", this.list_of_added_metas);
   },
   computed: {
@@ -104,9 +108,15 @@ export default {
       if (!this.$refs.filesList) return;
 
       for (let i = 0; i < this.$refs.filesList.length; i++) {
+        if (this.should_stop_upload) break;
+
         const fileComponent = this.$refs.filesList[i];
         if (fileComponent.status === "waiting") {
-          await fileComponent.uploadFile();
+          try {
+            await fileComponent.uploadFile();
+          } catch (e) {
+            // ignore
+          }
         }
       }
     },
@@ -114,7 +124,20 @@ export default {
       if (meta_filename) this.list_of_added_metas.push(meta_filename);
       if (filename) this.list_of_added_files.push(filename);
     },
+    interruptTransfers() {
+      this.should_stop_upload = true;
+      if (!this.$refs.filesList?.length) return;
+      this.$refs.filesList.forEach((file_component) => {
+        file_component.cancelSend?.();
+      });
+    },
+    closeModal() {
+      if (this.confirm_before_closing) this.interruptTransfers();
+      this.$emit("close");
+    },
     abortFile(index) {
+      const file_component = this.$refs.filesList?.[index];
+      file_component?.cancelSend?.();
       this.files_to_upload.splice(index, 1);
     },
     hideFile(index) {

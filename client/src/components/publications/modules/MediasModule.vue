@@ -21,6 +21,7 @@
           @pickMedias="pickMedias"
           @removeMediaAtIndex="removeMediaAtIndex"
           @updateMediaOpt="updateMediaOpt"
+          @updateWidthFractions="updateWidthFractions"
         />
         <FilesList
           v-else-if="publimodule.module_type === 'files'"
@@ -142,14 +143,26 @@ export default {
     },
     reorderMedias(new_order) {
       const source_medias = new_order.map((m) => {
-        delete m._linked_media;
-        return m;
+        const { _linked_media, ...rest } = m;
+        return rest;
       });
       this.$emit("updateMeta", { source_medias });
     },
     updateMediaOpt({ index, opt }) {
       const source_medias = this.publimodule.source_medias.slice();
       Object.assign(source_medias[index], opt);
+      this.$emit("updateMeta", { source_medias });
+    },
+    updateWidthFractions(fractions) {
+      const source_medias = this.publimodule.source_medias.slice();
+      fractions.forEach((width_fraction, index) => {
+        if (source_medias[index]) {
+          source_medias[index] = {
+            ...source_medias[index],
+            width_fraction,
+          };
+        }
+      });
       this.$emit("updateMeta", { source_medias });
     },
   },

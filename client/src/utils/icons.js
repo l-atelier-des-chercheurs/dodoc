@@ -104,6 +104,7 @@ import {
   BIconXSquare,
   BIconPlusSquare,
   BIconListOl,
+  BIconListCheck,
   BIconGrid3x2GapFill,
   BIconGridFill,
   BIconMapFill,
@@ -147,6 +148,8 @@ import {
   BIconEyeSlashFill,
   BIconBoundingBox,
   BIconRulers,
+  BIconSliders,
+  BIconSignpost,
   BIconClock,
   BIconFilter,
   BIconThreeDots,
@@ -166,6 +169,16 @@ import {
   BIconArrowUpRightSquareFill,
   BIconGlobe,
   BIconPaletteFill,
+  BIconCollection,
+  BIconEnvelope,
+  BIconArrowRepeat,
+  BIconFileEarmarkText,
+  BIconLayoutSidebar,
+  BIconLayoutSidebarInset,
+  BIconLayoutSidebarReverse,
+  BIconLayoutSidebarInsetReverse,
+  BIconDashCircleDotted,
+  BIconEraser,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -267,6 +280,7 @@ Vue.component("BIconPlusCircleFill", BIconPlusCircleFill);
 Vue.component("BIconXSquare", BIconXSquare);
 Vue.component("BIconPlusSquare", BIconPlusSquare);
 Vue.component("BIconListOl", BIconListOl);
+Vue.component("BIconListCheck", BIconListCheck);
 Vue.component("BIconGrid3x2GapFill", BIconGrid3x2GapFill);
 Vue.component("BIconGridFill", BIconGridFill);
 Vue.component("BIconMapFill", BIconMapFill);
@@ -312,6 +326,8 @@ Vue.component("BIconEyeFill", BIconEyeFill);
 Vue.component("BIconEyeSlashFill", BIconEyeSlashFill);
 Vue.component("BIconBoundingBox", BIconBoundingBox);
 Vue.component("BIconRulers", BIconRulers);
+Vue.component("BIconSliders", BIconSliders);
+Vue.component("BIconSignpost", BIconSignpost);
 Vue.component("BIconClock", BIconClock);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);
@@ -332,3 +348,13 @@ Vue.component("BIconArrowUpRightSquare", BIconArrowUpRightSquare);
 Vue.component("BIconArrowUpRightSquareFill", BIconArrowUpRightSquareFill);
 Vue.component("BIconGlobe", BIconGlobe);
 Vue.component("BIconPaletteFill", BIconPaletteFill);
+Vue.component("BIconCollection", BIconCollection);
+Vue.component("BIconEnvelope", BIconEnvelope);
+Vue.component("BIconArrowRepeat", BIconArrowRepeat);
+Vue.component("BIconFileEarmarkText", BIconFileEarmarkText);
+Vue.component("BIconLayoutSidebar", BIconLayoutSidebar);
+Vue.component("BIconLayoutSidebarInset", BIconLayoutSidebarInset);
+Vue.component("BIconLayoutSidebarReverse", BIconLayoutSidebarReverse);
+Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
+Vue.component("BIconDashCircleDotted", BIconDashCircleDotted);
+Vue.component("BIconEraser", BIconEraser);

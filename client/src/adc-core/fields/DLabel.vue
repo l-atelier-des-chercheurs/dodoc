@@ -1,6 +1,9 @@
 <template>
   <div class="_dLabel">
     <div class="_labelLine" @click.stop="toggleInstructions">
+      <span v-if="icon" class="_labelIcon" :style="icon_styles">
+        <b-icon :icon="icon" />
+      </span>
       <component
         :is="tag"
         :class="tag === 'label' ? 'u-label' : ''"
@@ -9,10 +12,9 @@
         {{ str }}
       </component>
       <template v-if="instructions || hasToggleInstructionsListener">
-        &nbsp;
         <button
           type="button"
-          class="u-button u-button_icon _icon"
+          class="u-button u-button_icon u-button_small _icon"
           :style="icon_styles"
         >
           <b-icon
@@ -39,6 +41,7 @@ export default {
       default: "label",
     },
     for_input: String,
+    icon: String,
   },
   components: {},
   data() {
@@ -77,7 +80,7 @@ export default {
 ._labelLine {
   display: flex;
   align-items: center;
-  font-size: var(--sl-font-size-small);
+  // font-size: var(--sl-font-size-small);
 
   .u-label {
     // color: currentColor;
@@ -87,9 +90,14 @@ export default {
   }
 }
 
+._labelIcon {
+  margin-right: calc(var(--spacing) / 4);
+  flex-shrink: 0;
+}
 ._icon {
-  font-size: var(--sl-font-size-x-small);
   padding: 0;
+  margin-top: -5px;
+  margin-bottom: -5px;
   margin-left: calc(var(--spacing) / 4);
 }
 ._instr {

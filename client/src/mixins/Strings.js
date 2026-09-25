@@ -13,6 +13,7 @@ export default {
       return _ref.includes(_input);
     },
     normalizeStringForSearch(str) {
+      if (!str) return "";
       return str
         .toLowerCase()
         .normalize("NFD")

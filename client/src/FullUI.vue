@@ -5,7 +5,7 @@
       @close="show_disconnect_modal = false"
     />
     <TrackAuthorChanges />
-    <DynamicCursor v-if="!$root.is_touch_device" />
+    <!-- <DynamicCursor v-if="!$root.is_touch_device" /> -->
 
     <transition name="pagetransition" mode="out-in">
       <div class="_spinner" v-if="$root.is_loading" key="loader">
@@ -103,25 +103,32 @@ export default {
   computed: {},
   methods: {
     socketConnected() {
-      if (this.$root.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(`Connected or reconnected with id ${this.$api.socket.id}`);
+      // if (this.$root.debug_mode)
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(4000)
+      //     .success(`Connected or reconnected with id ${this.$api.socket.id}`);
     },
     socketDisconnected(reason) {
-      if (this.$root.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(`Disconnected ${reason}`);
+      if (!this.$root.debug_mode) return;
+      // After sleep, background tab, or flaky Wi-Fi, Socket.IO often drops with
+      // these reasons and reconnects by itself — not worth error toasts.
+      const benign_when_idle = ["ping timeout", "transport close"];
+      if (benign_when_idle.includes(reason)) {
+        console.info(`[socket] disconnected (${reason}), reconnecting when possible`);
+        return;
+      }
+      this.$alertify
+        .closeLogOnClick(true)
+        .delay(4000)
+        .error(`Disconnected ${reason}`);
     },
     socketConnectError(reason) {
-      if (this.$root.debug_mode)
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(`Connect error ${reason}`);
+      // if (this.$root.debug_mode)
+      //   this.$alertify
+      //     .closeLogOnClick(true)
+      //     .delay(4000)
+      //     .error(`Connect error ${reason}`);
     },
     showDisconnectModal() {
       this.show_disconnect_modal = true;

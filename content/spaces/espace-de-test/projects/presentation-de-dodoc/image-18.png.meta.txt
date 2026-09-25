@@ -7,4 +7,3 @@
 "$origin" = "collect"
 "$type" = "image"
 caption = ""
-"$optimized" = true

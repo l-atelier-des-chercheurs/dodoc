@@ -19,6 +19,7 @@
           </div>
 
           <br />
+          <DLabel :str="$t('destination_project')" />
 
           <SpaceProjectPicker
             class="u-spacingBottom"
@@ -30,7 +31,7 @@
             <DLabel :str="$t('title_of_copy')" />
             <TextInput
               :content.sync="new_title"
-              :maxlength="40"
+              :maxlength="60"
               :required="true"
               ref="titleInput"
             />

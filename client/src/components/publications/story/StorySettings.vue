@@ -4,6 +4,7 @@
       class="u-spacingBottom"
       :label="$t('story_width')"
       :value="publication.story_width"
+      :can_toggle="false"
       :min="320"
       :max="2400"
       :step="1"

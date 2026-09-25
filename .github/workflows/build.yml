@@ -1,0 +1,95 @@
+name: Build/release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  meta:
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.app_version.outputs.current_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Get app version
+        id: app_version
+        run: |
+          echo "Reading package.json from package.json"
+          PACKAGE_VERSION=$(jq -r '.version' package.json)
+          echo "current_version=${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
+  docker:
+    runs-on: ubuntu-latest
+    needs: meta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set image name
+        id: image_name
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ steps.image_name.outputs.image }}:${{ needs.meta.outputs.app_version }}
+            ${{ steps.image_name.outputs.image }}:latest
+
+  electron:
+    runs-on: ${{ matrix.os }}
+    needs: meta
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24.14.0
+      - name: Install Electron dependencies
+        run: |
+          npm install
+          cd electron
+          npm install
+      - name: Package Electron app (macOS)
+        if: matrix.os == 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          cd electron
+          npm run dist -- --mac dmg
+      - name: Package Electron app (non-macOS)
+        if: matrix.os != 'macos-latest'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+          CSC_LINK: ${{ secrets.CSC_LINK }}
+        run: |
+          cd electron
+          npm run dist
+      - name: check macOS image
+        if: matrix.os == 'macos-latest'
+        run: |
+          echo "🔍 verify signature"
+          codesign -dv electron/dist/mac-arm64/do•doc.app
+          echo "🔍 verify notarisation"
+          spctl -a -vvv -t open -vvv --context context:primary-signature electron/dist/mac-arm64/do•doc.app

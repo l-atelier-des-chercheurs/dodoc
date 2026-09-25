@@ -4,7 +4,7 @@
     :data-context="context"
     :class="{
       'is--own': is_own_space,
-      'u-card2': context === 'list',
+      'u-card2': ['medium', 'tiny'].includes(context),
     }"
   >
     <div class="_spaceCover">
@@ -89,14 +89,20 @@
       <div class="">
         <TitleField
           :field_name="'title'"
-          :label="context === 'full' ? $t('title') : ''"
+          :label="$t('space_title')"
           :show_label="context === 'full' && can_edit"
           class="_title"
-          :tag="context === 'full' ? 'h1' : 'h2'"
+          :tag="
+            context === 'full'
+              ? 'h1'
+              : ['medium'].includes(context)
+              ? 'h2'
+              : 'h3'
+          "
           :content="space.title"
           :path="space.$path"
           :required="true"
-          :maxlength="40"
+          :maxlength="60"
           :can_edit="can_edit"
         />
         <!-- :label="can_edit ? $t('subtitle') : undefined" -->
@@ -139,7 +145,7 @@
 
     <router-link
       class="js--showCursor _openSpace"
-      v-if="context === 'list'"
+      v-if="['medium', 'tiny'].includes(context)"
       :to="{ path: createURLFromPath(space.$path) }"
       :title="$t('open') + ' ' + space.title"
     />
@@ -207,7 +213,7 @@ export default {
   // max-width: 120ch;
 
   padding: 0;
-  border-radius: 6px;
+  border-radius: 10px;
   background: white;
   // padding: calc(var(--spacing) * 1);
 
@@ -217,12 +223,25 @@ export default {
     max-width: 800px;
     margin: calc(var(--spacing) * 2) auto;
   }
-  &[data-context="list"] {
+  &[data-context="medium"] {
     flex-flow: row nowrap;
+    border-radius: 4px;
     // box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 
     ._spaceCover {
-      max-width: 120px;
+      max-width: 180px;
+      border-radius: 2px;
+    }
+  }
+
+  &[data-context="tiny"] {
+    flex-flow: column nowrap;
+    gap: calc(var(--spacing) / 4);
+
+    ._spaceCover {
+      max-width: none;
+      width: 100%;
+      border-radius: 2px;
     }
   }
 }
@@ -237,7 +256,7 @@ export default {
   aspect-ratio: 1/1;
   align-self: flex-start;
   // border: 1px solid var(--c-gris);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   flex: 1 2 240px;
   // max-width: 120px;
@@ -257,6 +276,16 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) / 1);
+
+  ._spacePresentation[data-context="medium"] & {
+    //
+  }
+  ._spacePresentation[data-context="tiny"] & {
+    gap: calc(var(--spacing) / 4);
+    min-width: 0;
+    width: 100%;
+    flex: 1 1 auto;
+  }
 }
 ._title {
   ::v-deep {
@@ -266,11 +295,23 @@ export default {
       font-style: italic;
     }
   }
+
+  ._spacePresentation[data-context="medium"] & {
+    //
+  }
+  ._spacePresentation[data-context="tiny"] & {
+    ::v-deep h2 {
+      font-size: var(--sl-font-size-medium);
+    }
+  }
 }
 ._subtitle {
   color: var(--c-gris_fonce);
 
-  ._spacePresentation[data-context="list"] & {
+  ._spacePresentation[data-context="medium"] & {
+    font-size: var(--sl-font-size-small);
+  }
+  ._spacePresentation[data-context="tiny"] & {
     font-size: var(--sl-font-size-small);
   }
   // font-weight: 400;
@@ -295,6 +336,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
 ._icon {

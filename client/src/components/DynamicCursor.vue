@@ -118,7 +118,7 @@ export default {
 }
 </style>
 <style lang="scss">
-.js--showCursor {
-  cursor: none;
-}
+// .js--showCursor {
+//   cursor: none;
+// }
 </style>

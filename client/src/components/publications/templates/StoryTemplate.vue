@@ -99,8 +99,10 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import PublicationModule from "@/components/publications/modules/PublicationModule.vue";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
+  mixins: [PublicationReady],
   props: {
     publication: Object,
     can_edit: Boolean,
@@ -116,9 +118,18 @@ export default {
     };
   },
   created() {},
-  async mounted() {},
+  async mounted() {
+    if (!this.can_edit) this.signalPublicationReadyAfterRender();
+  },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    modules_list: {
+      handler() {
+        if (!this.can_edit) this.signalPublicationReadyAfterRender();
+      },
+      deep: true,
+    },
+  },
   computed: {
     story_styles() {
       const width = (this.publication.story_width || 800) + "px";
@@ -236,6 +247,12 @@ export default {
     toggleNewModuleEdit({ meta_filename }) {
       setTimeout(() => {
         console.log(`emit module.enable_edit.${meta_filename}`);
+        const module_path = this.publication.$path + "/" + meta_filename;
+        this.$eventHub.$emit(`publication.story.scrollTo.${module_path}`, {
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
         this.$eventHub.$emit(`module.enable_edit.${meta_filename}`);
       }, 50);
     },

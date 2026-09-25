@@ -24,13 +24,15 @@
         <template v-else>–</template>
       </div>
 
-      <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
-        <b-icon
-          :icon="
-            !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
-          "
-        />
-      </div>
+      <transition name="fade" mode="out-in">
+        <div v-if="can_be_toggled" :key="currently_open" class="_openIcon">
+          <b-icon
+            :icon="
+              !currently_open ? 'chevron-bar-expand' : 'chevron-bar-contract'
+            "
+          />
+        </div>
+      </transition>
     </summary>
     <div class="">
       <transition name="fade_fast" mode="out-in">
@@ -109,8 +111,8 @@ export default {
 <style lang="scss" scoped>
 ._detailsPane {
   background: white;
-  border-bottom: none;
-  border-radius: 8px;
+  // border-bottom: none;
+  border-radius: var(--panel-radius);
   overflow: hidden;
 
   &:hover,

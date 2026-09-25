@@ -48,7 +48,7 @@
               :content="event.title"
               :path="event.$path"
               :required="true"
-              :maxlength="40"
+              :maxlength="60"
               :tag="'h1'"
               :can_edit="can_edit_event"
             />

@@ -19,7 +19,9 @@
         />
       </div>
       <div v-else-if="publication" key="publication" ref="fsContainer">
-        <template v-if="!is_serversidepreview && !is_fullscreen">
+        <template
+          v-if="!is_serversidepreview && !is_server_making_pdf_or_png_preview"
+        >
           <transition name="pagechange" mode="out-in">
             <div class="_pubTopbar" v-if="show_topbar">
               <PublicationTopbar
@@ -57,7 +59,11 @@
           <SectionWithPrint :publication="publication" />
         </div>
         <div v-else-if="publication.template === 'cartography'">
-          <MapForPrint :publication="publication" />
+          <MapForPrint
+            v-if="is_cartography_print_export"
+            :publication="publication"
+          />
+          <MapExport v-else :publication="publication" />
         </div>
         <div v-else-if="publication.template === 'edition'">
           <EditionExport :publication="publication" />
@@ -68,12 +74,13 @@
 </template>
 
 <script>
-import screenfull from "screenfull";
-
 import PublicationTopbar from "@/components/publications/PublicationTopbar.vue";
+import DynamicTitle from "@/mixins/DynamicTitle.js";
+import PublicationReady from "@/mixins/PublicationReady.js";
 
 export default {
   props: {},
+  mixins: [DynamicTitle, PublicationReady],
   components: {
     PublicationTopbar,
     PageExport: () =>
@@ -84,6 +91,8 @@ export default {
       import("@/components/publications/story/SectionWithPrint.vue"),
     MapForPrint: () =>
       import("@/components/publications/cartography/MapForPrint.vue"),
+    MapExport: () =>
+      import("@/components/publications/cartography/MapExport.vue"),
     EditionExport: () =>
       import("@/components/publications/edition/EditionExport.vue"),
   },
@@ -94,7 +103,6 @@ export default {
       fetch_publication_error: undefined,
       show_topbar: false,
 
-      is_fullscreen: false,
       is_serversidepreview: false,
     };
   },
@@ -125,6 +133,11 @@ export default {
           }
         });
 
+    // Update document title with actual publication name
+    if (this.publication) {
+      this.updateDocumentTitle(this.publication.title);
+    }
+
     // not pushing changes to presentation for performance reasons – though this could be useful at some point?
     // this.$api.join({ room: this.project.$path });
     // this.$api.join({ room: this.publication_path });
@@ -135,19 +148,19 @@ export default {
     // this.$api.leave({ room: this.project.$path });
     // this.$api.leave({ room: this.publication_path });
   },
-  watch: {
-    is_fullscreen() {
-      // this.$nextTick(() => {
-      // this.fitZoomToPage();
-      // });
-    },
-  },
+  watch: {},
   computed: {
     project_path() {
       return this.createPath({
         space_slug: this.$route.params.space_slug,
         project_slug: this.$route.params.project_slug,
       });
+    },
+    is_server_making_pdf_or_png_preview() {
+      return this.$route.query?.superadmintoken !== undefined;
+    },
+    is_cartography_print_export() {
+      return this.is_server_making_pdf_or_png_preview;
     },
     publication_path() {
       return `${this.project_path}/publications/${this.$route.params.publication_slug}`;
@@ -156,7 +169,9 @@ export default {
       let margins = 15;
       if (
         this.publication &&
-        ["page_by_page", "edition"].includes(this.publication.template)
+        ["page_by_page", "edition", "cartography"].includes(
+          this.publication.template
+        )
       )
         margins = 0;
       return `
@@ -175,6 +190,10 @@ export default {
 
   @media screen {
     // margin: 0 calc(var(--spacing) * 2);
+  }
+
+  &.is--serversidepreview {
+    padding: calc(var(--spacing) * 2);
   }
 }
 </style>

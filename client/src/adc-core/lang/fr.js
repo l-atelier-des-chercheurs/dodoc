@@ -22,15 +22,30 @@ export default {
   select_all: "Sélectionner tout",
   back: "Retour",
   save: "Enregistrer",
+  set_timer: "Régler le minuteur",
+  disable_timer: "Désactiver le minuteur",
   input_url: "URL vers un site à intégrer",
   input_url_instr: "Indiquez ici une URL vers une ressource.",
   image_url: "URL vers une image",
   image_url_instr:
     "Indiquez ici une URL vers une image (en .jpg, .jpeg, .png, .gif, .webp, .svg, .bmp ou .tiff).",
+  file_url: "URL vers un fichier",
+  file_url_instr:
+    "Indiquez ici une URL vers n'importe quel fichier avec une extension (ex: .pdf, .jpeg, .exe, .ino, .zip, etc.).",
   import_from_url: "Importer depuis une URL",
-  example_image_url: "Exemple d’URL d'image",
-  importing_from_url: "Importation depuis l’URL…",
-  preview_of_image: "Aperçu de l’image",
+  example_file_url: "Exemple d'URL de fichier",
+  importing_from_url: "Importation depuis l'URL…",
+  preview_of_image: "Aperçu de l'image",
+  preview_of_file: "Aperçu du fichier",
+  video_preview_not_supported: "Aperçu vidéo non supporté",
+  audio_preview_not_supported: "Aperçu audio non supporté",
+  pdf_preview_not_supported: "Aperçu PDF non supporté",
+  executable_file_warning:
+    "⚠️ Fichier exécutable - Soyez prudent lors de l'exécution",
+  code_file: "Fichier de code",
+  archive_file: "Fichier d'archive",
+  file_size_limit_exceeded:
+    "Fichier trop volumineux - Taille maximale : {maxSize} MB",
   failed_to_import_from_url: "Échec de l'importation de l’image depuis l’URL",
   url_to_open: "URL de la page à ouvrir",
   embed: "Intégrer",
@@ -92,7 +107,9 @@ export default {
   submit: "Valider",
   search_in_title_desc_kw:
     "Chercher dans les titres, descriptions, mots-clés, machines et matériaux.",
-  search_by_name: "Chercher dans les noms ou pseudonymes",
+  search_in_title: "Chercher dans les titres.",
+  search_by_name: "Chercher par nom",
+  search_by_author_name: "Chercher dans les noms ou pseudonymes",
   search_by_title_or_subtitle: "Chercher dans les titres ou sous-titres",
 
   search: "Chercher",
@@ -148,8 +165,9 @@ export default {
   signup_password_users_instructions:
     "Si vous ne connaissez pas le mot de passe, vous pouvez le demander par courriel à l’adresse suivante",
 
-  login: "se connecter",
+  login: "Se Connecter",
   logout: "se déconnecter",
+  logging_out: "Déconnexion en cours…",
   name_or_pseudonym: "Nom ou pseudonyme",
   email: "Courriel",
   email_instr:
@@ -162,9 +180,9 @@ export default {
   admin: "Administrateur·rice",
   create: "Créer",
   existing: "Existant",
-  create_account: "créer un compte",
-  your_account: "votre compte",
-  new_account: "nouveau compte",
+  create_account: "Créer un compte",
+  your_account: "Votre compte",
+  new_account: "Nouveau compte",
   account_group: "Groupe (pour les comptes)",
   group: "Groupe",
   show_list: "Afficher la liste",
@@ -202,7 +220,8 @@ export default {
   back_to_publications: "Retour aux publications",
   generate_preview: "Générer un aperçu",
   nothing_to_show: "Rien à afficher",
-  make_publication_public: "Rendre la publication visible à tous",
+  make_publication_public:
+    "Rendre la publication visible à tous, sans mot de passe général",
 
   story: "Récit",
   story_with_sections: "Récit",
@@ -224,9 +243,12 @@ export default {
   section_title: "Titre du chapitre",
   section: "Chapitre",
   in_this_section: "Dans ce chapitre",
+  on_the_cover: "Sur la couverture",
   in_another_section: "Dans un autre chapitre",
   change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",
+  remove_area: "Supprimer cette zone",
+  remove_area_confirm: "Êtes-vous sûr de vouloir supprimer cette zone ?",
 
   untitled: "Sans titre",
   responsive: "Fluide",
@@ -327,10 +349,12 @@ export default {
   list_of_projects: "Liste des projets",
   no_projects: "Aucun projet à afficher",
   no_files: "Aucun fichier",
+  no_files_found: "Aucun fichier trouvé",
   no_publications: "Aucune publication à afficher",
 
   none_f: "Aucune",
   not_specified: "Non renseigné",
+  not_specified_f: "Non spécifiée",
   none: "Aucun·e",
   reset_all: "Retirer tout",
   filter: "Filtrer",
@@ -389,6 +413,7 @@ export default {
 
   no_accounts_yet: "Aucun compte créé pour le moment",
   add_accounts: "Rajouter des comptes",
+  add_by_group: "Ajouter par groupe",
   restart_to_apply:
     "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
   restart: "Fermer et redémarrer",
@@ -400,6 +425,9 @@ export default {
   latest_changes_to_project: "Dernières modifications au projet",
 
   download: "Télécharger",
+  download_all: "Tout télécharger",
+  download_selected: "Télécharger la sélection",
+  failed_to_download: "Échec du téléchargement",
   download_project: "Télécharger le projet {name}",
   download_project_instr:
     "Vous pourrez l’importer dans n’importe quel autre do•doc (hors ligne ou en ligne, tant qu’il est en version 11 ou 12).",
@@ -501,8 +529,6 @@ export default {
   export_montage: "Exporter le montage",
   export_stomotion: "Exporter l’animation",
 
-  video_to_rework: "Vidéo à retrailler",
-
   pick_audio: "Choisissez le son à utiliser",
   pick_image: "Choisissez l’image à utiliser",
   pick_video: "Choisissez la vidéo à utiliser",
@@ -533,10 +559,8 @@ export default {
   transparent: "Transparent",
   couldnt_load_getusermedia: "Impossible de charger la caméra ou le micro",
   failed_listing_devices: "Impossible de lister les appareils",
-  failed_to_start_stream_sharing: "Échec du démarrage du partage de flux",
   failed_to_start_recording: "Échec du démarrage de l’enregistrement",
   new_user_connected_to_stream: "Nouvel utilisateur connecté au flux",
-  no_stream_found_while_sharing: "Aucun flux trouvé pendant le partage",
   media_couldnt_be_sent: "Échec de la sauvegarde du média",
 
   space: "Espace",
@@ -651,6 +675,10 @@ export default {
   lines_angle: "Angle des lignes",
   number_of_colors: "Nombre de couleurs",
   blur: "Flou",
+  brush_size: "Taille du pinceau",
+  feather: "Adoucissement",
+  blur_radius: "Rayon du flou",
+  clear: "Effacer",
   hue: "Teinte",
   saturation: "Saturation",
   lightness: "Clarté",
@@ -749,7 +777,7 @@ export default {
 
   take_picture: "Prendre une photo",
   delay: "Retardateur",
-  timelapse: "time-lapse",
+  timelapse: "Déclenchement automatique (time-lapse)",
   live: "Direct",
   img_per_second: "Images par seconde",
 
@@ -783,6 +811,7 @@ export default {
   video: "Vidéo",
   audio: "Son",
   text: "Texte",
+  text_overflow: "texte en excès",
   lines: "Lignes",
   vecto: "Formes",
   pdf: "PDF",
@@ -826,13 +855,9 @@ export default {
   name_of_stream: "Nom du flux",
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
-  failed_to_share_stream: "Le partage du flux n’a pas pu avoir lieu",
   stream_local_mode: "sur cet appareil",
   stream_remote_mode: "do•doc distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
-  share_stream: "Partager ce flux",
-  "stream_currently_shared_with_name:":
-    "Flux vidéo/audio partagé sous le nom&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
@@ -858,8 +883,16 @@ export default {
   create_an_event: "Créer un événement",
   create_a_publication: "Créer une publication",
 
-  add_media: "Ajouter un média",
+  add_image: "Ajouter une image",
   add_medias: "Ajouter des médias",
+  add_media: "Ajouter un média",
+  add_grid_area: "Ajouter une zone de grille",
+  areas_used:
+    "Aucune zone définie | {count} zone définie | {count} zones définies",
+  click_empty_cell_to_add_area:
+    "Cliquez sur une cellule vide pour ajouter une zone",
+  max_grid_area_reached:
+    "Nombre maximum de zones atteint (de A à Z). Supprimez une zone pour en ajouter une nouvelle.",
   add_link: "Ajouter un lien",
   add_text: "Ajouter du texte",
 
@@ -885,7 +918,7 @@ export default {
   instance_admin_instructions:
     "Peuvent accéder à tous les contenus, les modifier et les supprimer (espaces, projets, comptes, sujets de discussion, etc.). Ils ont accès à ces réglages et peuvent les modifier.",
   instance_contrib_instructions:
-    "Peuvent uniquement créer des espaces et des sujets de discussion et les administrer.",
+    "Peuvent uniquement créer des espaces et les administrer.",
 
   space_admin_instructions:
     "Les référents d’un espace peuvent le modifier ou le supprimer, ainsi que tous ses contenus (y compris ceux qui sont privés). Ils peuvent aussi modifier la liste des référents et des contributeurs.",
@@ -930,7 +963,7 @@ export default {
   not_allowed_to_contribute_contact_referent:
     "Vous n’avez pas la possibilité de contribuer, contactez un référent pour pouvoir le faire",
 
-  or_paste_an_image: "Ou coller une image depuis le presse-papier",
+  or_paste_an_image: "Ou collez une image depuis le presse-papier",
   media_was_saved: "Média enregistré",
   no_image_in_clipboard: "Votre presse-papier ne contient pas d’images",
   project_was_removed: "Ce projet vient d’être supprimé",
@@ -940,6 +973,8 @@ export default {
     "Vous n’avez pas les droits pour créer des projets dans l’espace de destination",
   not_allowed_to_copy_to_project:
     "Vous n’avez pas les droits pour ajouter des médias dans ce projet.",
+  not_allowed_to_remix_folder:
+    "Ce projet n'autorise pas le remix. Contactez ses référents si nécessaire.",
   name_taken: "Ce nom est déjà utilisé",
   action_not_allowed: "Cette action n’est pas autorisée",
   account_created: "Votre compte a été créé",
@@ -986,6 +1021,20 @@ export default {
   source_project: "Projet source",
   source_files: "Fichiers sources",
   source_media_missing: "Le média source est manquant",
+  edition_no_errors: "Aucune erreur",
+  edition_error_on_chapter:
+    "Erreur au chapitre {chapter_number} : {error_detail}",
+  edition_error_media_not_found: "média introuvable ({reference})",
+  edition_error_media_not_found_on_cell:
+    "média introuvable dans la cellule {cell_id} ({reference})",
+  edition_error_text_overflow_on_cell:
+    "le texte déborde dans la cellule {cell_id}",
+  unknown_media_reference: "média inconnu",
+  edition_errors_count: "Aucune erreur | {count} erreur | {count} erreurs",
+  missing_medias_count:
+    "Aucun média manquant | {count} média manquant | {count} médias manquants",
+  text_overflows_count:
+    "Aucun débordement de texte | {count} débordement de texte | {count} débordements de texte",
   media_pickers_instr:
     "Choisissez le nom du projet qui contient les médias que vous souhaitez utiliser. Si les médias appartiennent à un autre projet, ils seront d’abord importés dans le projet actuel.",
   already_present: "Déjà présent",
@@ -1010,10 +1059,15 @@ export default {
   general_informations: "Informations sur l’instance",
 
   panes: "Panneaux",
+  panes_visible_in_project_instr:
+    "Choisissez les panneaux disponibles dans ce projet. Seuls ceux-ci apparaîtront dans la barre ci‑dessus.",
+  panes_hidden_in_project_instr:
+    "Les panneaux affichés sont cochés. Décochez un panneau pour le masquer de la barre du projet. Ce réglage s’applique à tous les contributeurs.",
   capture: "Capter",
   collect: "Collecter",
   make: "Fabriquer",
   publish: "Publier",
+  notes_todo: "Tâches",
 
   projects_you_edited_last: "Derniers projets que vous avez modifiés",
 
@@ -1094,6 +1148,10 @@ export default {
   IGN_MAP: "Carte IGN (en France uniquement)",
   IGN_SAT: "Photos satellite IGN (en France uniquement)",
   image_or_drawing: "Image ou dessin",
+  map_baselayer_switch_locked_image:
+    "Des médias sont déjà positionnés sur ce fond image. Supprimez leurs positions avant de passer à un fond GPS.",
+  map_baselayer_switch_locked_gps:
+    "Des médias sont déjà positionnés avec des coordonnées GPS. Vous pouvez uniquement changer de fond GPS.",
   bw_filter: "Filtre noir et blanc",
   failed_loading_tiles:
     "Échec du chargement du fond de carte, vous pouvez essayer de dézoomer.",
@@ -1179,6 +1237,9 @@ export default {
 
   already_optimized:
     "Ce média a déjà été converti, le convertir à nouveau risque de dégrader sa qualité de manière importante.",
+  resized: "Redimensionné",
+  cropped: "Recadré",
+  blurred: "Flouté",
   preview_new: "Créer une nouvelle version",
   wont_remove_original: "Ne supprimera pas l’original",
   replace_original: "Remplacer l’original",
@@ -1194,6 +1255,7 @@ export default {
   very_close: "Très près",
   enable_indexing: "Permettre l’indexation par les moteurs de recherche",
   crop_adjust: "Recadrer/retoucher",
+  to_blur: "Flouter/anonymiser",
   aspect_ratio: "Rapport largeur/hauteur",
   square: "Carré",
   original: "Original",
@@ -1210,6 +1272,8 @@ export default {
   navigate_to_page: "Naviguer vers une page",
 
   regenerate_thumbs: "Regénérer l’aperçu",
+  failed_to_regenerate_thumbs: "Échec de la régénération de l’aperçu",
+  thumbs_regenerated: "Aperçu régénéré",
   embed_link: "Lien d’intégration",
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
@@ -1254,10 +1318,12 @@ export default {
 
   connected_currently: "Connecté actuellement",
 
-  confirm_save_changes:
-    "Des modifications ont eu lieu, souhaitez-vous les enregistrer ?",
+  confirm_save_changes: "Vous avez des modifications non enregistrées.",
+  confirm_cancel_changes: "Vous avez des modifications non enregistrées.",
+  continue_editing: "Continuer l’édition",
+  discard_changes: "Abandonner",
   close_without_saving: "Fermer sans enregistrer",
-
+  done: "Terminé",
   start_by_uploading_images: "Commencez par importer vos images ci-dessous",
   or: "ou",
   live_dubbing: "Doublage en direct",
@@ -1304,7 +1370,9 @@ export default {
   text_top_image_down: "Texte en haut, image en bas",
   image_top_text_down: "Image en haut, texte en bas",
   in_flow: "À la suite",
-  next_page: "Prochaine page",
+  toggle_sidebar: "Afficher/Masquer le panneau latéral",
+  previous_page: "Page précédente",
+  next_page: "Page suivante",
   next_left_page: "Prochaine page de gauche",
   next_right_page: "Prochaine page de droite",
   no_content: "Pas de contenu",
@@ -1331,6 +1399,21 @@ export default {
   multisupport_embed_img_instr:
     "Pour ajouter des médias depuis internet, vous pouvez aussi copier-coller les balises suivantes :",
   attributes_for_embeds: "Attributs pour les balises :",
+  embed_example_image: "Intégrer une image",
+  embed_example_video: "Intégrer une vidéo",
+  embed_example_audio: "Intégrer un audio",
+  embed_example_pdf: "Intégrer un PDF",
+  embed_example_peertube: "Intégrer une vidéo PeerTube",
+  embed_example_youtube: "Intégrer une vidéo YouTube",
+  embed_example_scratch: "Intégrer un projet Scratch",
+  embed_attr_caption: "Ajouter une légende au média",
+  embed_attr_class: "Ajouter une classe CSS personnalisée",
+  embed_attr_float_left: "Faire flotter le média à gauche",
+  embed_attr_float_right: "Faire flotter le média à droite",
+  embed_attr_size_full: "Afficher le média en pleine largeur",
+  embed_attr_size_full_cover:
+    "Afficher le média en pleine largeur avec recouvrement",
+  embed_attr_width: "Définir la largeur du média en centimètres",
   show_source_html: "Afficher le code source HTML",
   reset: "Réinitialiser",
 
@@ -1338,6 +1421,8 @@ export default {
   restore_projects: "Restaurer des projets supprimés",
   bin: "Corbeille",
   items_in_bin: "Éléments dans la corbeille",
+  bin_removal_notice:
+    "Les éléments dans la corbeille sont automatiquement supprimés après 30 jours.",
   restore: "Restaurer",
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
@@ -1365,7 +1450,7 @@ export default {
   no_media_selected: "Aucun média sélectionné",
   forgot_password: "Mot de passe oublié ?",
   folder_not_public:
-    "Ce contenu n’est pas publique, pour y accéder son auteur doit le rendre publique.",
+    "Ce contenu n’est pas public, pour y accéder son auteur doit le rendre public.",
   width_alignment_grid_only_non_mobile:
     "La largeur du module et son alignement (au milieu ou à droite) ne s’appliquent que si la largeur de l’écran le permet (plus de 767 pixels).",
 
@@ -1376,7 +1461,7 @@ export default {
   chats: "Discussions",
   enable_chats: "Activer la fonctionnalité de discussion",
   enable_chats_instructions:
-    "La fonctionnalité de discussion permet de créer des sujets où les utilisateurs sélectionnés peuvent échanger des messages. Une fois actif, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
+    "La fonctionnalité de discussion permet aux utilisateurs connectés de créer des sujets, puis d’y échanger des messages selon les droits du sujet. Les visiteurs non connectés ne peuvent pas créer de sujet. Une fois activée, cliquez sur la bulle en haut à droite de l’écran pour y accéder.",
   list_of_topics: "Liste des sujets",
   create_a_topic: "Créer un sujet",
   not_allowed_to_post_messages:
@@ -1424,6 +1509,10 @@ export default {
     "Recherche des coordonnées GPS de votre appareil...",
   gps_coordinates_found: "Coordonnées GPS trouvées.",
   column_count: "Nombre de colonnes",
+  row_count: "Nombre de lignes",
+  columns: "colonnes",
+  rows: "lignes",
+  grid_dimensions: "Dimensions de la grille",
   restore_publications: "Restaurer des publications supprimées",
   restore_medias: "Restaurer des médias supprimés",
 
@@ -1467,13 +1556,25 @@ export default {
 
   all_content: "Tout le contenu",
   all_publications: "Toutes les publications",
-  bandwidth_very_low_for_stream_sharing:
-    "Bande passante très faible pour le partage de flux",
   camera_access_refused: "Accès à la caméra refusé",
   disconnect_warning: "Avertissement de déconnexion",
   failed_to_find_block_line: "Impossible de trouver la ligne du bloc",
   folder_copied: "Dossier copié",
-  "importer depuis un site": "Importer depuis un site",
+  from_website: "Depuis un site",
+  resources: "Ressources",
+  free_resources: "Ressources libres",
+  free_resources_description:
+    "Accéder à des médias libres depuis des collections en ligne (nécessite une connexion internet)",
+  import_from_project: "Importer depuis un projet",
+  import_from_project_description:
+    "Utiliser des médias de ce projet ou d’un autre du même espace",
+  resources_picker: "Sélecteur de ressources",
+  loading_resources: "Chargement des ressources…",
+  downloading: "Téléchargement…",
+  failed_to_load_resources: "Échec du chargement des ressources",
+  resource_imported_successfully: "Ressource importée avec succès",
+  failed_to_import_resource: "Échec de l'importation de la ressource",
+
   media_type_not_handled: "Type de média non géré",
   no_padding: "Pas de remplissage",
   no_page_selected: "Aucune page sélectionnée",
@@ -1487,7 +1588,6 @@ export default {
   on_this_list: "Sur cette liste",
   other_users_connected: "Autres utilisateurs connectés",
   show_cursor: "Afficher le curseur",
-  stream_sharing_media_error: "Erreur de média lors du partage de flux",
   side_by_side: "Côte à côte",
   new_line: "À la suite",
   latest_version_available: "Dernière version disponible",
@@ -1502,5 +1602,33 @@ export default {
   running_newer_version:
     "Vous utilisez une version plus récente que la dernière version disponible ({version}).",
   radius: "Rayon",
-  area: "Surface",
+  area: "Zone",
+  no_areas_defined: "Aucune zone de grille définie",
+  non_contributor: "Non contributeur",
+  space_title: "Titre de l’espace",
+
+  new_note_todo: "Nouvelle tâche",
+  list_of_notes_todo: "Aucune tâche | {count} tâche | {count} tâches",
+  archived:
+    "Aucune tâche archivée | {count} tâche archivée | {count} tâches archivées",
+  done_on: "Terminé le",
+  task_list: "Liste de tâches",
+
+  create_list: "Créer une liste",
+  create_list_instructions:
+    "Créez une nouvelle liste pour organiser vos tâches.",
+  no_notes_to_show: "Aucune note à afficher",
+  note_content: "Contenu de la note…",
+  linked_project: "Projet en lien",
+  object_fit: "Remplissage",
+  chain_count: "{count} zone | {count} zones",
+  continue: "Continuer",
+  no_linked_project: "Aucun projet en lien",
+  no_spaces: "Aucun espace à afficher",
+
+  add_cover: "Ajouter une couverture",
+
+  back_to_content: "Revenir au contenu",
+  click_on_another_cell_to_continue:
+    "Cliquez sur une cellule vide pour créer un bloc chaîné.",
 };

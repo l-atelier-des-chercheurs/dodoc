@@ -1,7 +1,7 @@
 <template>
   <BaseModal2 :title="label" :size="modal_width" @close="closeModal">
     <div class="_cont">
-      <div v-if="media.$optimized === true" class="u-spacingBottom">
+      <div v-if="has_processing" class="u-spacingBottom">
         {{ $t("already_optimized") }}
       </div>
       <div v-if="optimization_strongly_recommended" class="u-spacingBottom">
@@ -53,6 +53,7 @@
       :media="media"
       :instructions="base_instructions"
       @close="show_optimization_modal = false"
+      @closeParentModal="closeAfterOptimizationAction"
     />
   </BaseModal2>
 </template>
@@ -116,6 +117,9 @@ export default {
     media_height() {
       return this.media.$infos?.height;
     },
+    has_processing() {
+      return this.media.$processing?.includes("optimized") ?? false;
+    },
     base_instructions() {
       let suggested_file_name = "converted";
 
@@ -137,9 +141,10 @@ export default {
           $path: this.media.$path,
           $media_filename: this.media.$media_filename,
         }),
+
         additional_meta: {
           $origin: "collect",
-          $optimized: true,
+          $processing: ["optimized"],
         },
       };
 
@@ -154,6 +159,10 @@ export default {
   methods: {
     startOptimization() {
       this.show_optimization_modal = true;
+    },
+    closeAfterOptimizationAction() {
+      this.show_optimization_modal = false;
+      this.$emit("close");
     },
     closeModal() {
       this.$emit("close");

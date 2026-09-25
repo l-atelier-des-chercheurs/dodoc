@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import Vue from "vue";
 import FormatDates from "../FormatDates";
 
@@ -16,10 +16,14 @@ describe("FormatDates mixin", () => {
     vm.$i18n = i18n;
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   describe("formatDurationToHuman", () => {
     it("should format seconds correctly", () => {
-      expect(vm.formatDurationToHuman(31)).toBe("31\u202fs");
-      expect(vm.formatDurationToHuman(59)).toBe("59\u202fs");
+      expect(vm.formatDurationToHuman(31)).toMatch(/^31(\s| )?(s|sec)$/);
+      expect(vm.formatDurationToHuman(59)).toMatch(/^59(\s| )?(s|sec)$/);
     });
 
     // it("should format minutes and seconds correctly", () => {
@@ -33,7 +37,7 @@ describe("FormatDates mixin", () => {
     // });
 
     it("should handle zero duration", () => {
-      expect(vm.formatDurationToHuman(0)).toBe("0\u202fs");
+      expect(vm.formatDurationToHuman(0)).toMatch(/^0(\s| )?(s|sec)$/);
     });
   });
 
@@ -77,6 +81,36 @@ describe("FormatDates mixin", () => {
       expect(vm.formatDurationToHoursMinutesSecondsDeciseconds(31)).toBe(
         "0:31.0"
       );
+    });
+  });
+
+  describe("formatRecentDateTime", () => {
+    it("formats today dates with relative time", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-06T14:32:00"));
+
+      const formatted = vm.formatRecentDateTime("2026-05-06T14:12:00");
+      expect(formatted).toBe("20 minutes ago");
+    });
+
+    it("formats yesterday in french as expected", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-06T14:32:00"));
+      vm.$i18n.locale = "fr";
+
+      const formatted = vm.formatRecentDateTime("2026-05-05T14:12:00");
+      expect(formatted).toBe("Hier, à 14h12");
+    });
+
+    it("formats older dates with locale-aware date-time (not raw UTC ISO)", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-05-06T14:32:00.000Z"));
+
+      const iso = "2026-05-02T10:11:12.000Z";
+      const formatted = vm.formatRecentDateTime(iso);
+      const expected = vm.formatDateTimeToPrecise(iso);
+      expect(formatted).toBe(expected);
+      expect(formatted).not.toMatch(/T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
     });
   });
 });

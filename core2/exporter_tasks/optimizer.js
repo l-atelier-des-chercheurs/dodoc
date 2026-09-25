@@ -73,17 +73,25 @@ module.exports = (function () {
         let totalTime;
 
         ffmpeg_cmd.input(source);
+        ffmpeg_cmd.inputOptions(["-fflags +genpts"]);
 
         // if (audio_bitrate === "no_audio") ffmpeg_cmd.noAudio();
-        if (audio_bitrate)
-          ffmpeg_cmd.withAudioCodec("aac").withAudioBitrate(audio_bitrate);
+        ffmpeg_cmd
+          .withAudioCodec("aac")
+          .withAudioBitrate(audio_bitrate || 192)
+          .audioFilter("aresample=async=1:first_pts=0");
 
-        destination = destination + ".aac";
+        destination = destination + ".m4a";
 
         if (trim_start !== undefined && trim_end !== undefined)
           ffmpeg_cmd.inputOptions([`-ss ${trim_start}`, `-to ${trim_end}`]);
 
         ffmpeg_cmd
+          .toFormat("mp4")
+          .outputOptions([
+            "-movflags +faststart",
+            "-avoid_negative_ts make_zero",
+          ])
           .on("start", (commandLine) => {
             dev.logverbose("Spawned Ffmpeg with command: \n" + commandLine);
           })
@@ -120,8 +128,8 @@ module.exports = (function () {
     }) {
       try {
         if (video_bitrate === "no_video") {
-          // For audio-only, just extract audio and rename to .aac
-          const audioDestination = destination + ".aac";
+          // For audio-only, extract audio to M4A for consistent browser playback.
+          const audioDestination = destination + ".m4a";
 
           await utils.convertVideoToStandardFormat({
             source,

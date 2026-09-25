@@ -16,7 +16,9 @@ export default {
   props: {
     location_to_add_to_medias: Object,
   },
-  components: {},
+  components: {
+    PositionPicker: () => import("@/adc-core/inputs/PositionPicker.vue"),
+  },
   data() {
     return {};
   },

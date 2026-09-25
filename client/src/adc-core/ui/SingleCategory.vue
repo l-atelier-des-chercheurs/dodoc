@@ -22,7 +22,7 @@
           :path="category.$path"
           tag="h3"
           :required="true"
-          :maxlength="20"
+          :maxlength="30"
           :can_edit="false"
         />
       </div>

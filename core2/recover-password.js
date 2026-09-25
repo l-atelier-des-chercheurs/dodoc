@@ -32,10 +32,11 @@ module.exports = (function () {
       // abusing and changing password for other accounts…
       try {
         const encoded_path_to_folder = encodeURIComponent(path_to_folder);
-        const reset_link = `${global.settings.url}/reset-password?token=${reset_token}&path=${encoded_path_to_folder}`;
+        const public_url = utils.getPublicUrl();
+        const reset_link = `${public_url}/reset-password?token=${reset_token}&path=${encoded_path_to_folder}`;
         const info = await mail.sendMail({
           to: folder_meta.email,
-          ...createEmailContent({ reset_link }),
+          ...createEmailContent({ reset_link, public_url }),
         });
         const anonymized_email = info.envelope.to[0].replace(
           /@.*$/,
@@ -88,12 +89,12 @@ module.exports = (function () {
     },
   };
 
-  function createEmailContent({ reset_link }) {
+  function createEmailContent({ reset_link, public_url }) {
     return {
       subject: "Reset your password / Réinitialisation de votre mot de passe",
       text: `Hello,
 
-You have requested to reset your password for your account on ${global.settings.url}.
+You have requested to reset your password for your account on ${public_url}.
 
 Please open the following link to set a new password:
 ${reset_link}
@@ -109,7 +110,7 @@ The do•doc Team
 
 Bonjour,
 
-Vous avez demandé la réinitialisation de votre mot de passe pour votre compte sur ${global.settings.url}.
+Vous avez demandé la réinitialisation de votre mot de passe pour votre compte sur ${public_url}.
 
 Veuillez ouvrir le lien suivant dans votre navigateur pour définir un nouveau mot de passe :
 ${reset_link}
@@ -121,7 +122,7 @@ Si vous n'avez pas demandé cette réinitialisation de mot de passe, vous pouvez
 Cordialement,
 L'équipe do•doc`,
       html: `<p>Hello,</p>
-<p>You have requested to reset your password for your account on ${global.settings.url}.</p>
+<p>You have requested to reset your password for your account on ${public_url}.</p>
 <p>Please click on the following link to set a new password:<br>
 <a href="${reset_link}">${reset_link}</a></p>
 <p>This link will expire in 1 hour.</p>
@@ -132,7 +133,7 @@ The do•doc Team</p>
 <hr>
 
 <p>Bonjour,</p>
-<p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte sur ${global.settings.url}.</p>
+<p>Vous avez demandé la réinitialisation de votre mot de passe pour votre compte sur ${public_url}.</p>
 <p>Veuillez cliquer sur le lien suivant pour définir un nouveau mot de passe :<br>
 <a href="${reset_link}">${reset_link}</a></p>
 <p>Ce lien expirera dans 1 heure.</p>

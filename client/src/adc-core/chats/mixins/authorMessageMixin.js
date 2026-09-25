@@ -8,6 +8,8 @@ export default {
       const chat_read_index = this.connected_as.$files.find((f) =>
         f.$path.includes("chat-read-index")
       );
+      // we use a file with chat_read_indexes so that only the user gets
+      // real time updates on the read index, and if the author is private, nobody will be able to see this information
       return chat_read_index;
     },
     author_chat_read_index() {
@@ -54,7 +56,7 @@ export default {
       );
       chat_read_indexes[chat_path] = chat_read_index;
 
-      const { meta_filename } = await this.$api.updateMeta({
+      await this.$api.updateMeta({
         path: this.author_chat_read_index_media.$path,
         new_meta: {
           chat_read_indexes,

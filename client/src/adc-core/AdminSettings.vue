@@ -290,7 +290,7 @@ export default {
           key: "fonts",
         },
         {
-          text: this.$t("chats") + " (experimental)",
+          text: this.$t("chats"),
           key: "chats",
         },
         {

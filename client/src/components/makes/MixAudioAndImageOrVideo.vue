@@ -59,16 +59,29 @@
               :media_type_to_pick="'audio'"
             />
             {{ $t("or") }}
-            <div class="_liveDubbingBtn">
+            <div class="_resourcesPickerBtn">
               <button
                 type="button"
-                class="u-button u-button_red"
-                @click="record_audio_live = true"
+                class="u-button u-button_orange"
+                @click="show_resources_picker = true"
               >
-                <b-icon icon="record-circle-fill" />
-                {{ $t("live_dubbing") }}
+                <b-icon icon="collection" />
+                {{ $t("resources") }}
               </button>
             </div>
+            <template v-if="can_record_audio_live">
+              {{ $t("or") }}
+              <div class="_liveDubbingBtn">
+                <button
+                  type="button"
+                  class="u-button u-button_red"
+                  @click="record_audio_live = true"
+                >
+                  <b-icon icon="record-circle-fill" />
+                  {{ $t("live_dubbing") }}
+                </button>
+              </div>
+            </template>
             <!-- {{ $t("or") }}
             <button
               type="button"
@@ -79,7 +92,7 @@
               {{ $t("no_sound") }}
             </button> -->
           </template>
-          <div class="_recordAudioLive" v-else>
+          <div class="_recordAudioLive" v-else-if="can_record_audio_live">
             <button
               type="button"
               class="u-button u-button_red u-button_small"
@@ -146,18 +159,32 @@
       :reference_media="reference_media"
       @close="show_render_modal = false"
     />
+
+    <ResourcesPicker
+      v-if="show_resources_picker"
+      :project_path="project_path"
+      :pick_from_types="['audio']"
+      @pickResources="handleResourcesPick"
+      @close="show_resources_picker = false"
+    />
   </div>
 </template>
 <script>
 import SingleBaseMediaPicker from "@/components/makes/SingleBaseMediaPicker.vue"; // eslint-disable-line
 import ExportSaveMakeModal2 from "@/components/makes/ExportSaveMakeModal2.vue";
 import CaptureView from "@/adc-core/capture/CaptureView.vue";
+import ResourcesPicker from "@/components/publications/modules/ResourcesPicker.vue";
 
 export default {
   props: {
     make: Object,
   },
-  components: { SingleBaseMediaPicker, ExportSaveMakeModal2, CaptureView },
+  components: {
+    SingleBaseMediaPicker,
+    ExportSaveMakeModal2,
+    CaptureView,
+    ResourcesPicker,
+  },
   data() {
     return {
       show_render_modal: false,
@@ -167,6 +194,7 @@ export default {
 
       record_audio_live: false,
       stop_recording_with_video: true,
+      show_resources_picker: false,
     };
   },
 
@@ -179,7 +207,11 @@ export default {
     this.$eventHub.$off("capture.isRecording", this.onRecording);
     this.$eventHub.$off("capture.isRecordingStopped", this.onRecordingStopped);
   },
-  watch: {},
+  watch: {
+    can_record_audio_live(new_value) {
+      if (!new_value) this.record_audio_live = false;
+    },
+  },
   computed: {
     project_path() {
       let { space_slug, project_slug } = this.decomposePath(this.make.$path);
@@ -200,6 +232,11 @@ export default {
     },
     selected_image_media() {
       return this.getMediaFromFilename(this.make.base_image_filename);
+    },
+    can_record_audio_live() {
+      if (this.make.type === "mix_audio_and_video")
+        return Boolean(this.make.base_video_filename);
+      return true;
     },
     reference_media() {
       if (this.make.type === "mix_audio_and_image")
@@ -252,6 +289,14 @@ export default {
         new_meta,
       });
       this.record_audio_live = false;
+    },
+    async handleResourcesPick(resources) {
+      if (resources && resources.length > 0) {
+        const selectedResource = resources[0];
+        const meta_filename = this.getFilename(selectedResource.$path);
+        await this.setAudioMetaFilename(meta_filename);
+        this.show_resources_picker = false;
+      }
     },
     getMediaFromFilename(meta_filename_in_project) {
       if (meta_filename_in_project)
@@ -373,6 +418,9 @@ export default {
   gap: calc(var(--spacing) * 1);
 }
 ._liveDubbingBtn {
+  padding: calc(var(--spacing) / 4);
+}
+._resourcesPickerBtn {
   padding: calc(var(--spacing) / 4);
 }
 </style>

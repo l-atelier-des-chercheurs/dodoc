@@ -22,6 +22,7 @@
 
       <RadioCheckboxField
         :label="$t('skill_level')"
+        show_label="true"
         :field_name="'level'"
         :input_type="'radio'"
         :content="project.level"
@@ -43,6 +44,7 @@
     <div class="u-spacingBottom">
       <RadioCheckboxField
         :label="$t('target_audience')"
+        show_label="true"
         :field_name="'target_audience'"
         :input_type="'checkbox'"
         :content="project.target_audience"
@@ -62,6 +64,7 @@
     <div class="">
       <RadioCheckboxField
         :label="$t('disciplines')"
+        show_label="true"
         :field_name="'disciplines'"
         :input_type="'checkbox'"
         :content="project.disciplines"

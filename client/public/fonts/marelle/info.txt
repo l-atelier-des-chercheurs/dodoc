@@ -1,0 +1,13 @@
+Marelle font files were sourced from:
+https://forge.apps.education.fr/marelle/marelle.forge.apps.education.fr
+
+Webfont files:
+- Marelle-Regular.woff2
+- MarelleBaton-Regular.woff2
+- MarelleLIGNES-Regular.woff2
+
+Version reference:
+- commit 8bb22eba2ad139e11b424804ae8a203c187d25df
+
+License:
+- SIL Open Font License (OFL)

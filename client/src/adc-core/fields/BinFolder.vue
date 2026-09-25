@@ -9,6 +9,10 @@
           <p class="u-instructions">{{ $t("bin_is_empty") }}</p>
         </div>
         <div v-else key="content">
+          <div class="u-notice u-spacingBottom">
+            <b-icon icon="info-circle" />
+            {{ $t("bin_removal_notice") }}
+          </div>
           <div class="_infos">
             <div class="u-metaField">
               <DLabel :str="$t('items_in_bin')" />
@@ -83,7 +87,9 @@ export default {
         });
 
       this.bin_folder_size = bin_content.size;
-      this.bin_items = bin_content.items;
+      this.bin_items = (bin_content.items || []).sort(
+        (a, b) => +new Date(b.$date_modified) - +new Date(a.$date_modified)
+      );
     },
     // async emptyBin(path) {
     //   await this.$api.emptyBin({ path });

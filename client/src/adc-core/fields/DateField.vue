@@ -12,7 +12,12 @@
       <EditBtn v-if="can_edit" @click="edit_mode = true" />
     </div>
     <div v-else>
-      <input :type="input_type" v-model="local_date" step="1" />
+      <input
+        :type="input_type"
+        :value="input_value"
+        step="1"
+        @input="onInput"
+      />
       <div class="_footer" v-if="edit_mode">
         <SaveCancelButtons class="_scb" @save="updateMeta" @cancel="cancel" />
       </div>
@@ -20,6 +25,8 @@
   </div>
 </template>
 <script>
+import { toDateInputValue } from "@/utils/date_input.js";
+
 export default {
   props: {
     field_name: String,
@@ -44,7 +51,7 @@ export default {
     return {
       edit_mode: false,
       is_saving: false,
-      local_date: this.date,
+      local_date: toDateInputValue(this.date),
     };
   },
   created() {},
@@ -52,10 +59,16 @@ export default {
   beforeDestroy() {},
   watch: {
     date() {
-      this.local_date = this.date;
+      this.local_date = toDateInputValue(this.date);
     },
   },
   computed: {
+    input_value() {
+      if (this.input_type === "date") {
+        return toDateInputValue(this.local_date);
+      }
+      return this.local_date;
+    },
     format_date() {
       if (!this.date) return "–";
 
@@ -65,14 +78,22 @@ export default {
     },
   },
   methods: {
+    onInput(event) {
+      this.local_date =
+        event && event.target ? String(event.target.value || "") : "";
+    },
     cancel() {
-      this.local_date = this.date;
+      this.local_date = toDateInputValue(this.date);
       this.edit_mode = false;
     },
     async updateMeta() {
       this.is_saving = true;
+      const field_value =
+        this.input_type === "date"
+          ? toDateInputValue(this.local_date)
+          : this.local_date;
       const new_meta = {
-        [this.field_name]: this.local_date,
+        [this.field_name]: field_value,
       };
 
       await this.$api.updateMeta({

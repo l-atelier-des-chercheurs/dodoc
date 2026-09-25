@@ -22,6 +22,8 @@ export default {
   select_all: "Seleziona tutto",
   back: "Indietro",
   save: "Salva",
+  set_timer: "Imposta timer",
+  disable_timer: "Disattiva timer",
   input_url: "URL verso un sito da integrare",
   input_url_instr: "Indica una URL vero una risorsa.",
   url_to_open: "URL della pagina da aprire",
@@ -41,6 +43,8 @@ export default {
   add: "Aggiungi",
   add_item: "Aggiungi un elemento",
   add_files: "Aggiungi file",
+  file_size_limit_exceeded:
+    "File troppo grande. Dimensione massima: {maxSize} MB.",
   hide_already_present_medias: `
     Nascondi i media già inclusi nella pubblicazione | 
     Nascondi i {count} media già inclusi nella pubblicazione
@@ -84,7 +88,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   submit: "Invia",
   search_in_title_desc_kw:
     "Cerca nei titoli, nelle descrizioni, nelle parole chiave, nelle macchine e nei materiali.",
-  search_by_name: "Cerca nei nomi o nei nickname",
+  search_by_name: "Cerca per nome",
+  search_by_author_name: "Cerca nei nomi o nei nickname",
   search_by_title_or_subtitle: "Cerca nei titoli e sottotitoli",
 
   search: "Cerca",
@@ -154,8 +159,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   create: "Crea",
   existing: "Esistente",
   create_account: "Crea un account",
-  your_account: "il tuo account",
-  new_account: "nuovo account",
+  your_account: "Il tuo account",
+  new_account: "Nuovo account",
   account_group: "Gruppo (per gli account)",
   group: "Gruppo",
   show_list: "Visualizza l'elenco",
@@ -213,9 +218,12 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   section_title: "Titolo del capitolo",
   section: "Capitolo",
   in_this_section: "In questo capitolo",
+  on_the_cover: "Sulla copertina",
   in_another_section: "In un altro capitolo",
   change_section: "Sposta verso un altro capitolo",
   remove_section: "Elimina il capitolo",
+  remove_area: "Elimina questa zona",
+  remove_area_confirm: "Sei sicuro di voler eliminare questa zona?",
 
   untitled: "Senza titolo",
   responsive: "Fluido",
@@ -319,6 +327,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   none_f: "Nessuna",
   not_specified: "Non specificato",
+  not_specified_f: "Non specificata",
   none: "Nessuna.o",
   reset_all: "Resetta tutto",
   filter: "Filtra",
@@ -385,6 +394,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   latest_changes_to_project: "Ultime modifiche al progetto",
 
   download: "Scarica",
+  download_all: "Scarica tutto",
+  download_selected: "Scarica selezionati",
+  failed_to_download: "Download fallito",
   download_project: "Scarica il progetto {name}",
   download_project_instr:
     "È possibile importarlo in qualsiasi altro do•doc (offline o online, purché sia la versione 11 o 12).",
@@ -484,8 +496,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   export_montage: "Esporta il montaggio",
   export_stomotion: "Esporta l’animazione",
 
-  video_to_rework: "Video da rivedere",
-
   pick_audio: "Scegli l'audio da utilizzare",
   pick_image: "Scegli l’immagine da utilizzare",
   pick_video: "Scegli il video da utilizzare",
@@ -516,12 +526,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   couldnt_load_getusermedia:
     "Impossibile caricare la fotocamera o il microfono",
   failed_listing_devices: "Impossibile elencare i dispositivi",
-  failed_to_start_stream_sharing:
-    "Avvio della condivisione delllo streaming non riuscito",
   failed_to_start_recording: "Avvio della registrazione non riuscito",
   new_user_connected_to_stream: "Nuovo utente connesso allo streaming",
-  no_stream_found_while_sharing:
-    "Nessuno streaming  trovato durante la condivisione",
   media_couldnt_be_sent: "Salvataggio del media non riuscito",
 
   space: "Spazio",
@@ -636,6 +642,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   lines_angle: "Angolo delle linee",
   number_of_colors: "Numero dei colori",
   blur: "Sfocatura",
+  blur_radius: "Raggio sfocatura",
   hue: "Tonalità",
   saturation: "Saturazione",
   lightness: "Chiarezza",
@@ -806,13 +813,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   name_of_stream: "Nome dello stream",
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
-  failed_to_share_stream: "Non è stato possibile condividere il feed",
   stream_local_mode: "su questo dispositivo",
   stream_remote_mode: "do•doc remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
-  share_stream: "Condividi questo stream",
-  "stream_currently_shared_with_name:":
-    "Stream video/audio condiviso con il nome&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",
@@ -838,7 +841,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   create_an_event: "Crea un evento",
   create_a_publication: "Crea una pubblicazione",
 
-  add_media: "Aggiungi media",
+  add_image: "Aggiungi immagine",
   add_medias: "Aggiungi più media",
   add_link: "Aggiungi un link",
   add_text: "Aggiungi un testo",
@@ -863,9 +866,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   add_to_instance_admin: "Aggiungi come amministratore d'istanza",
   instance_admin_instructions:
-    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle. // TODO add mention that they can also create discution topics",
-  instance_contrib_instructions:
-    "Possono solo creare spazi e amministrarli. // TODO add Discussion topics next to space",
+    "Possono accedere a tutti i contenuti, modificarli e eliminarli (spazi, progetti, account, ecc.). Hanno accesso a queste regole e possono modificarle.",
+  instance_contrib_instructions: "Possono solo creare spazi e amministrarli.",
 
   space_admin_instructions:
     "I referenti di uno spazio possono modificarlo o eliminarlo, compresi tutti i suoi contenuti (anche quelli privati). Possono anche modificare l'elenco dei referenti e dei contributori.",
@@ -918,6 +920,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "Non hai i diritti per creare progetti nello spazio di destinazione",
   not_allowed_to_copy_to_project:
     "Non hai i diritti per aggiungere i media a questo progetto",
+  not_allowed_to_remix_folder:
+    "Questo progetto non consente il remix. Contatta i suoi referenti se necessario.",
   name_taken: "Questo nome è già in uso",
   action_not_allowed: "Questa azione non è autorizzata",
   account_created: "Il tuo account è stato creato",
@@ -987,6 +991,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   general_informations: "Informazioni sull'istanza",
 
   panes: "Pannello",
+  panes_visible_in_project_instr:
+    "Scegli quali pannelli sono disponibili in questo progetto. Solo questi appariranno nella barra sopra.",
+  panes_hidden_in_project_instr:
+    "I pannelli visibili sono selezionati. Deseleziona un pannello per nasconderlo dalla barra del progetto. Questa impostazione si applica a tutti i contributori.",
   capture: "Cattura",
   collect: "Colleziona",
   make: "Costruisci",
@@ -1067,6 +1075,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   IGN_MAP: "Carta IGN (solo in Francia)",
   IGN_SAT: "Foto satellitare IGN (solo in Francia)",
   image_or_drawing: "Immagine o disegno",
+  map_baselayer_switch_locked_image:
+    "Alcuni media sono gia posizionati su questo sfondo immagine. Rimuovi le loro posizioni prima di passare a uno sfondo GPS.",
+  map_baselayer_switch_locked_gps:
+    "Alcuni media sono gia posizionati con coordinate GPS. Puoi passare solo tra sfondi GPS.",
   bw_filter: "Filtro bianco e nero",
   failed_loading_tiles:
     "Errore nel caricamento dello sfondo della mappa, puoi provare a ridurre lo zoom",
@@ -1150,6 +1162,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   already_optimized:
     "Questo media è già stato convertito e una nuova conversione rischia di degradarne significativamente la qualità.",
+  resized: "Ridimensionato",
+  cropped: "Ritagliato",
+  blurred: "Sfocato",
   preview_new: "Crea una nuova versione",
   wont_remove_original: "Non eliminerà l’originale",
   replace_original: "Sostituisci l’originale",
@@ -1181,6 +1196,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   navigate_to_page: "Naviga verso una pagina",
 
   regenerate_thumbs: "Rigenera l'anteprima",
+  failed_to_regenerate_thumbs: "Impossibile rigenerare l'anteprima",
+  thumbs_regenerated: "Anteprima rigenerata",
   embed_link: "Link per l'embedding",
   direct_link_to_file:
     "Questo link punta direttamente al file multimediale e può essere utilizzato in altre applicazioni o siti web. La pagina di questo link non conterrà la didascalia o altre informazioni sul media.",
@@ -1227,7 +1244,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   connected_currently: "Connesso attualmente",
 
-  confirm_save_changes: "Ci sono state delle modifiche, vuoi salvarle?",
+  confirm_save_changes: "Ci sono modifiche non salvate.",
+  confirm_cancel_changes: "Ci sono modifiche non salvate.",
+  continue_editing: "Continua a modificare",
+  discard_changes: "Annulla modifiche",
   close_without_saving: "Chiudi senza salvare",
 
   start_by_uploading_images: "Inizia importando le immagini di seguito",
@@ -1304,4 +1324,24 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   warning_wont_be_able_to_edit:
     "Attenzione! Modificando questa impostazione, questo contenuto non potrà più essere modificato.",
   forgot_password: "Hai dimenticato la password?",
+
+  from_website: "Da un sito web",
+  resources: "Risorse",
+  free_resources: "Risorse gratuite",
+  free_resources_description: "Accedi a media gratuiti da collezioni online",
+  import_from_project: "Importa dal progetto",
+  import_from_project_description:
+    "Usa media dai tuoi progetti o da un altro progetto del tuo spazio",
+  resources_picker: "Selettore di risorse",
+  loading_resources: "Caricamento delle risorse…",
+  downloading: "Download in corso…",
+  failed_to_load_resources: "Impossibile caricare le risorse",
+  resource_imported_successfully: "Risorsa importata con successo",
+  failed_to_import_resource: "Impossibile importare la risorsa",
+  space_title: "Titolo dello spazio",
+
+  create_list: "Crea un elenco",
+  create_list_instructions:
+    "Crea un nuovo elenco per organizzare le tue note e attività.",
+  no_notes_to_show: "Nessuna nota da mostrare",
 };

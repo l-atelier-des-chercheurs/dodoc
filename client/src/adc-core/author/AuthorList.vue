@@ -37,12 +37,11 @@
       </template>
 
       <fieldset v-if="connected_as && current_mode === 'login'">
-        <legend class="u-label">{{ $t("your_account") }}</legend>
+        <legend>{{ $t("your_account") }}</legend>
 
         <AuthorCard
           :key="connected_as.$path"
           :author="connected_as"
-          :context="'preview'"
           class="u-spacingBottom"
           @navToPage="$emit('close')"
         />
@@ -67,6 +66,12 @@
           {{ $t("show_all_accounts") }}
         </router-link>
       </template>
+
+      <BaseModal2 v-if="is_logging_out" :size="'small'">
+        <div class="u-instructions" style="text-align: center">
+          {{ $t("logging_out") }}
+        </div>
+      </BaseModal2>
     </div>
   </BaseModal2>
 </template>
@@ -93,6 +98,7 @@ export default {
       show_authors_list: false,
       authors: [],
       path: "authors",
+      is_logging_out: false,
     };
   },
   created() {},
@@ -100,13 +106,10 @@ export default {
     this.authors = await this.$api.getFolders({
       path: this.path,
     });
-    this.$api.join({ room: this.path });
     // if no authors, then switch to register
     if (this.authors.length === 0) this.current_mode = "create";
   },
-  beforeDestroy() {
-    this.$api.leave({ room: this.path });
-  },
+  beforeDestroy() {},
   watch: {
     $route() {
       // if navigating to another route, lets close modal
@@ -127,9 +130,13 @@ export default {
     },
     async logout() {
       try {
+        this.is_logging_out = true;
         this.reponse = await this.$api.logoutFromFolder();
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       } catch (err) {
+        this.is_logging_out = false;
         this.response = err;
         this.$alertify.delay(4000).error(err);
         return false;

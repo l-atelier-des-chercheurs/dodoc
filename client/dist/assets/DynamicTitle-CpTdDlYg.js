@@ -1,0 +1,1 @@
+const c={methods:{updateDocumentTitle(e){var n,o;const t=((o=(n=window.app_infos)==null?void 0:n.instance_meta)==null?void 0:o.name)||"do•doc";e?document.title=`${e} - ${t}`:document.title=t}}};export{c as D};

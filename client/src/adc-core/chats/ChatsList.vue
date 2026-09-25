@@ -2,7 +2,7 @@
   <div class="_chatsList">
     <component
       :is="in_modal ? 'BaseModal2' : 'div'"
-      :size="$root.is_mobile_view ? 'full' : 'large'"
+      :size="modal_size"
       :nopadding="true"
       @close="closeModal"
     >
@@ -20,10 +20,15 @@
           </button>
         </div>
         <div class="_chatsList--content">
+          <div class="u-divCentered" v-if="is_loading" key="loader">
+            <LoaderSpinner />
+          </div>
+
+          <template v-else>
           <button
             type="button"
             class="u-button u-button_red u-spacingBottom _createChat"
-            v-if="is_instance_admin || is_instance_contributor"
+            v-if="connected_as"
             @click="show_create_chat_modal = true"
           >
             <b-icon icon="plus-lg" />
@@ -48,6 +53,7 @@
               @toggle="toggleChat"
             />
           </PinnedNonpinnedFolder>
+          </template>
         </div>
       </div>
 
@@ -55,8 +61,12 @@
         <div
           v-if="opened_chat_slug"
           class="_openedChatContainer"
-          :class="{ 'is--fullscreen': in_modal }"
+          :class="{
+            'is--fullscreen': in_modal,
+            'is--mobileview': $root.is_mobile_view,
+          }"
         >
+          <!-- <div class="_openedChatContainer--overlay" /> -->
           <OpenedChat
             :key="opened_chat_slug"
             :chat_slug="opened_chat_slug"
@@ -96,14 +106,15 @@ export default {
       chats: [],
       path: "chats",
       fetch_chats_error: null,
+      is_loading: true,
       show_create_chat_modal: false,
       opened_chat_slug: null,
       open_in_modal: false,
     };
   },
   async created() {
-    this.loadSettings();
-    await this.loadChats();
+    await Promise.all([this.loadSettings(), this.loadChats()]);
+    this.is_loading = false;
     this.$api.join({ room: this.path });
   },
   mounted() {},
@@ -112,6 +123,11 @@ export default {
   },
   watch: {},
   computed: {
+    modal_size() {
+      if (this.$root.is_mobile_view) return "full";
+      if (this.opened_chat_slug) return "large";
+      return "medium";
+    },
     in_modal() {
       return this.open_in_modal || this.$root.is_mobile_view;
     },
@@ -199,6 +215,7 @@ export default {
 
   &.is--mobileview {
     height: calc(100vh - var(--spacing) * 1);
+    --side-padding: 0px;
     // overflow: hidden;
   }
 }
@@ -267,5 +284,14 @@ export default {
   &.is--fullscreen {
     --side-padding: 20vw;
   }
+  &.is--mobileview {
+    --side-padding: 0px;
+  }
+}
+._openedChatContainer--overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
 }
 </style>
