@@ -8,6 +8,9 @@ const CAPTURE_READY_WAIT_MS = 8_000;
 // PDF/PNG export: edition (paged.js) and heavy pubs need longer than 8s.
 const EXPORT_READY_WAIT_MS = 30_000;
 const READY_SETTLE_MS = 400;
+// Drop the shared Chrome once captures stop, so each app does not keep
+// a few hundred MB resident on a multi-app server.
+const BROWSER_IDLE_MS = 60_000;
 
 const BROWSER_ARGS = [
   "--no-sandbox",
@@ -20,6 +23,40 @@ const BROWSER_ARGS = [
 
 let shared_browser = null;
 let browser_launch_promise = null;
+let browser_close_promise = null;
+let idle_close_timer = null;
+let active_browser_jobs = 0;
+
+function cancelIdleClose() {
+  if (!idle_close_timer) return;
+  clearTimeout(idle_close_timer);
+  idle_close_timer = null;
+}
+
+function scheduleIdleClose() {
+  cancelIdleClose();
+  if (active_browser_jobs > 0) return;
+  idle_close_timer = setTimeout(() => {
+    idle_close_timer = null;
+    if (active_browser_jobs > 0) return;
+    closeSharedBrowser().catch((err) => {
+      dev.error("Failed to close idle Puppeteer browser:", err);
+    });
+  }, BROWSER_IDLE_MS);
+  if (typeof idle_close_timer.unref === "function") {
+    idle_close_timer.unref();
+  }
+}
+
+function beginBrowserJob() {
+  cancelIdleClose();
+  active_browser_jobs += 1;
+}
+
+function endBrowserJob() {
+  active_browser_jobs = Math.max(0, active_browser_jobs - 1);
+  if (active_browser_jobs === 0) scheduleIdleClose();
+}
 
 function getLaunchOptions() {
   const options = {
@@ -34,31 +71,51 @@ function getLaunchOptions() {
 }
 
 async function acquireBrowser() {
+  cancelIdleClose();
+  if (browser_close_promise) {
+    await browser_close_promise.catch(() => {});
+  }
   if (shared_browser && shared_browser.isConnected()) {
     return shared_browser;
   }
   if (browser_launch_promise) {
     return browser_launch_promise;
   }
-  browser_launch_promise = puppeteer.launch(getLaunchOptions()).then((browser) => {
-    shared_browser = browser;
-    browser_launch_promise = null;
-    browser.on("disconnected", () => {
-      shared_browser = null;
+  browser_launch_promise = puppeteer
+    .launch(getLaunchOptions())
+    .then((browser) => {
+      shared_browser = browser;
+      browser_launch_promise = null;
+      browser.on("disconnected", () => {
+        if (shared_browser === browser) shared_browser = null;
+      });
+      return browser;
+    })
+    .catch((err) => {
+      browser_launch_promise = null;
+      throw err;
     });
-    return browser;
-  });
   return browser_launch_promise;
 }
 
 async function closeSharedBrowser() {
-  if (browser_launch_promise) {
-    await browser_launch_promise.catch(() => {});
-  }
-  if (shared_browser) {
-    await shared_browser.close().catch(() => {});
+  cancelIdleClose();
+  if (browser_close_promise) return browser_close_promise;
+
+  browser_close_promise = (async () => {
+    if (browser_launch_promise) {
+      await browser_launch_promise.catch(() => {});
+    }
+    const browser = shared_browser;
     shared_browser = null;
-  }
+    if (browser) {
+      await browser.close().catch(() => {});
+    }
+  })().finally(() => {
+    browser_close_promise = null;
+  });
+
+  return browser_close_promise;
 }
 
 async function closePage(page) {
@@ -135,12 +192,13 @@ module.exports = (function () {
     closeSharedBrowser,
 
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
+      beginBrowserJob();
       let page;
-      let page_timeout = setTimeout(async () => {
-        await closePage(page);
-        const err = new Error("Failed to capture screenshot");
-        err.code = "timeout";
-        throw err;
+      // Must not throw: an async timer rejection is unhandled and exits the app.
+      // Closing the page makes the pending capture reject into the catch below.
+      let page_timeout = setTimeout(() => {
+        dev.error(`screenshot timeout for ${url}`);
+        closePage(page);
       }, 20_000);
 
       try {
@@ -194,6 +252,8 @@ module.exports = (function () {
         clearTimeout(page_timeout);
         await closePage(page);
         throw err;
+      } finally {
+        endBrowserJob();
       }
     },
 
@@ -205,17 +265,17 @@ module.exports = (function () {
       printToPDF_pagesize,
       reportProgress,
     }) => {
+      beginBrowserJob();
       if (reportProgress) reportProgress(0);
 
       let page;
 
-      let page_timeout = setTimeout(async () => {
+      // Must not throw: an async timer rejection is unhandled and exits the app.
+      // Closing the page makes the pending export reject into the catch below.
+      let page_timeout = setTimeout(() => {
         dev.error(`page timeout for ${url}`);
-        clearTimeout(page_timeout);
-        await closePage(page);
-        const err = new Error("Failed to capture media screenshot");
-        err.code = "failed_to_capture_media_screenshot_page-timeout";
-        throw err;
+        page_timeout = null;
+        closePage(page);
       }, 120_000);
 
       let stopTimeoutAndClosePage = async () => {
@@ -308,6 +368,8 @@ module.exports = (function () {
       } catch (err) {
         await stopTimeoutAndClosePage();
         throw err;
+      } finally {
+        endBrowserJob();
       }
     },
   };
