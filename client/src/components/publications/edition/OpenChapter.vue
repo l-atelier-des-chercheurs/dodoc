@@ -68,6 +68,14 @@
         />
 
         <DropDown :right="true" :show_label="false">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="$emit('duplicate')"
+          >
+            <b-icon icon="file-plus" />
+            {{ $t("duplicate") }}
+          </button>
           <RemoveMenu @remove="$emit('remove')" />
         </DropDown>
       </div>
