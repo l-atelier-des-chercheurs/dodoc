@@ -2,6 +2,7 @@
   <BaseModal2
     :title="$t('list_of_versions')"
     class="_modal"
+    :size="'large'"
     @close="$emit('close')"
   >
     <div class="_archives" v-if="archives">
