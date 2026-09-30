@@ -61,6 +61,15 @@ module.exports = (function () {
         } else {
           dev.logverbose(`Bin cleanup completed: no items to remove`);
         }
+
+        const removedArchives = await _cleanupOldArchives(now);
+        if (removedArchives > 0) {
+          dev.log(
+            `Archive cleanup completed: removed ${removedArchives} version(s) older than 30 days`
+          );
+        } else {
+          dev.logverbose(`Archive cleanup completed: no versions to remove`);
+        }
       } catch (err) {
         dev.error("Error during bin cleanup:", err);
       }
@@ -188,6 +197,67 @@ module.exports = (function () {
       }
     }
 
+    return removedCount;
+  }
+
+  /**
+   * Remove text archives older than MAX_BIN_AGE.
+   * Each archived file is named with the timestamp of the version.
+   */
+  async function _cleanupOldArchives(now) {
+    const archivesRoot = utils.getPathToUserContent("archives");
+    if (!(await fs.pathExists(archivesRoot))) return 0;
+
+    let removedCount = 0;
+
+    async function traverse(currentPath) {
+      let entries = [];
+      try {
+        entries = await fs.readdir(currentPath, { withFileTypes: true });
+      } catch (err) {
+        if (err.code !== "EACCES" && err.code !== "ENOENT") {
+          dev.error(`Error reading archives folder ${currentPath}:`, err);
+        }
+        return;
+      }
+
+      for (const entry of entries) {
+        const fullPath = path.join(currentPath, entry.name);
+
+        if (entry.isDirectory()) {
+          await traverse(fullPath);
+          try {
+            const remaining = await fs.readdir(fullPath);
+            if (remaining.length === 0) await fs.rmdir(fullPath);
+          } catch (err) {
+            if (err.code !== "ENOENT" && err.code !== "ENOTEMPTY") {
+              dev.error(`Error removing empty archives folder ${entry.name}:`, err);
+            }
+          }
+          continue;
+        }
+
+        const timestamp = Number(path.parse(entry.name).name);
+        if (!Number.isFinite(timestamp)) continue;
+
+        const age = now - timestamp;
+        if (age <= MAX_BIN_AGE) continue;
+
+        try {
+          await fs.remove(fullPath);
+          removedCount++;
+          dev.logverbose(
+            `Removed old archive: ${entry.name} (${Math.round(
+              age / (24 * 60 * 60 * 1000)
+            )} days old)`
+          );
+        } catch (err) {
+          dev.error(`Error removing archive ${entry.name}:`, err);
+        }
+      }
+    }
+
+    await traverse(archivesRoot);
     return removedCount;
   }
 
