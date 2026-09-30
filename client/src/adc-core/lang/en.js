@@ -144,6 +144,7 @@ export default {
 
   login: "Login",
   logout: "Logout",
+  logging_in: "Logging in…",
   logging_out: "Logging out…",
   name_or_pseudonym: "Name or nickname",
   email: "Email",

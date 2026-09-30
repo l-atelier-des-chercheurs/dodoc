@@ -167,6 +167,7 @@ export default {
 
   login: "Se Connecter",
   logout: "se déconnecter",
+  logging_in: "Connexion en cours…",
   logging_out: "Déconnexion en cours…",
   name_or_pseudonym: "Nom ou pseudonyme",
   email: "Courriel",

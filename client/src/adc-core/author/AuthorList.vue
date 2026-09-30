@@ -1,7 +1,7 @@
 <template>
   <BaseModal2
     :title="$t('contributors')"
-    :is_closable="is_closable"
+    :is_closable="is_closable && !is_logging_in && !is_logging_out"
     @close="$emit('close')"
   >
     <div>
@@ -28,6 +28,7 @@
           v-if="current_mode === 'login'"
           :authors="sorted_authors"
           @close="$emit('close')"
+          @loggedIn="onLoggedIn"
         />
         <CreateAuthor
           v-else-if="current_mode === 'create'"
@@ -67,9 +68,13 @@
         </router-link>
       </template>
 
-      <BaseModal2 v-if="is_logging_out" :size="'small'">
+      <BaseModal2
+        v-if="is_logging_in || is_logging_out"
+        :size="'small'"
+        :is_closable="false"
+      >
         <div class="u-instructions" style="text-align: center">
-          {{ $t("logging_out") }}
+          {{ is_logging_in ? $t("logging_in") : $t("logging_out") }}
         </div>
       </BaseModal2>
     </div>
@@ -98,6 +103,7 @@ export default {
       show_authors_list: false,
       authors: [],
       path: "authors",
+      is_logging_in: false,
       is_logging_out: false,
     };
   },
@@ -127,6 +133,12 @@ export default {
   methods: {
     suggestLogin(path) {
       this.$eventHub.$emit("login.suggest", path);
+    },
+    onLoggedIn() {
+      this.is_logging_in = true;
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     },
     async logout() {
       try {
