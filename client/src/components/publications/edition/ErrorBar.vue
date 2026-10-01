@@ -47,6 +47,8 @@ export default {
   },
   beforeDestroy() {
     this.teardownErrorObserver();
+    this.$eventHub.$emit("edition.textOverflow", {});
+    this.$root.edition_text_overflow_cells = {};
   },
   watch: {
     content_html() {
@@ -118,6 +120,23 @@ export default {
         return a.label.localeCompare(b.label);
       });
       this.issue_list = issues;
+      this.emitTextOverflowCells(issues);
+    },
+    emitTextOverflowCells(issues) {
+      const overflow_cells_by_chapter = {};
+      issues.forEach((issue) => {
+        const overflow_marker = "::overflow::";
+        if (!issue?.id?.includes(overflow_marker)) return;
+        const cell_id = issue.id.split(overflow_marker)[1];
+        const chapter_meta_filename = issue.chapter_meta_filename;
+        if (!cell_id || !chapter_meta_filename) return;
+        if (!overflow_cells_by_chapter[chapter_meta_filename]) {
+          overflow_cells_by_chapter[chapter_meta_filename] = [];
+        }
+        overflow_cells_by_chapter[chapter_meta_filename].push(cell_id);
+      });
+      this.$root.edition_text_overflow_cells = overflow_cells_by_chapter;
+      this.$eventHub.$emit("edition.textOverflow", overflow_cells_by_chapter);
     },
     collectMissingMediaIssues(issues, added_issue_ids) {
       this.all_chapters.forEach((chapter, chapter_index) => {

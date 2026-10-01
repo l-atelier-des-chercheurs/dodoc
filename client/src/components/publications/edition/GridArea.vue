@@ -5,8 +5,10 @@
       '_gridArea--selected': isSelected,
       '_gridArea--dragging': isDragging,
       '_gridArea--updating': isUpdating,
+      '_gridArea--textOverflow': has_text_overflow,
     }"
     :style="clampedGridStyle"
+    :title="has_text_overflow ? $t('text_overflow') : null"
     @click="$emit('select', area.id)"
     @mousedown="$emit('drag-start', area.id, $event)"
   >
@@ -15,8 +17,13 @@
       <div class="_spinner"></div>
     </div>
 
-    <!-- Area label -->
-    <div class="_gridArea--label">
+    <!-- Area label: click scrolls to content; mousedown.stop avoids starting a drag -->
+    <div
+      class="_gridArea--label"
+      :class="{ '_gridArea--label_link': can_link_to_content }"
+      @mousedown.stop
+      @click.stop="onLabelClick"
+    >
       <strong>{{ area.id }}</strong>
       <span v-if="area_type" class="_gridArea--type"
         >({{ $t(area_type) }})</span
@@ -96,6 +103,14 @@ export default {
     area_type: String,
     is_last_of_text_chain: Boolean,
     is_being_chained: Boolean,
+    has_text_overflow: {
+      type: Boolean,
+      default: false,
+    },
+    can_link_to_content: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     clampedGridStyle() {
@@ -128,7 +143,12 @@ export default {
       return this.updatingAreaId === this.area.id;
     },
   },
-  methods: {},
+  methods: {
+    onLabelClick() {
+      if (!this.can_link_to_content) return;
+      this.$emit("scrollToContent", this.area.id);
+    },
+  },
 };
 </script>
 
@@ -167,13 +187,52 @@ export default {
     pointer-events: none;
   }
 
+  &._gridArea--textOverflow {
+    border-color: var(--c-rouge);
+    border-style: solid;
+    background: var(--c-rouge);
+    color: white;
+
+    ._deleteAreaBtn,
+    ._resizeHandle {
+      color: white;
+    }
+
+    ._chainButtonBtn {
+      color: var(--c-noir);
+    }
+  }
+
+  &._gridArea--selected._gridArea--textOverflow {
+    box-shadow: 0 0 0 2px var(--c-rouge);
+  }
+
   ._gridArea--label {
     display: flex;
     justify-content: center;
     align-items: center;
-    // font-weight: 600;
     user-select: none;
-    pointer-events: none;
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  ._gridArea--label_link {
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--c-bleuvert);
+    }
+  }
+
+  &._gridArea--textOverflow ._gridArea--label_link {
+    &:hover,
+    &:focus-visible {
+      color: white;
+      opacity: 0.9;
+    }
   }
 }
 
@@ -186,6 +245,10 @@ export default {
   color: var(--c-gris_fonce);
   text-transform: lowercase;
   margin-left: 0.5em;
+
+  ._gridArea--textOverflow & {
+    color: inherit;
+  }
 }
 ._loadingOverlay {
   position: absolute;
