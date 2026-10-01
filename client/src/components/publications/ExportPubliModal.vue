@@ -129,6 +129,7 @@
       :publication_path="publication.$path"
       :can_save_to_project="can_save_to_project"
       :instructions="task_instructions"
+      :title="task_title"
       @close="task_instructions = false"
     />
   </BaseModal2>
@@ -150,6 +151,7 @@ export default {
   data() {
     return {
       task_instructions: false,
+      task_title: "",
       page_to_export_as_image: 1,
       pdf_pages_to_export_mode: "all",
       specific_pdf_page_or_spread_to_export: "",
@@ -273,6 +275,32 @@ export default {
       }
       return 1;
     },
+    // returns [first_page, last_page] from a "n" or "a-b" page query,
+    // converting spread numbers to page numbers for PDF exports
+    pageRangeFromQuery(page, export_type) {
+      if (page == null || page === "") return false;
+      const [start, end = start] = String(page).split("-").map(Number);
+      if (!Number.isInteger(start) || !Number.isInteger(end)) return false;
+      if (this.is_spread && export_type === "pdf") {
+        // spread 1 = page 1, spread n = pages 2n-2 and 2n-1
+        const first_page = Math.max(1, 2 * start - 2);
+        let last_page = 2 * end - 1;
+        if (this.page_count) last_page = Math.min(last_page, this.page_count);
+        return [first_page, last_page];
+      }
+      return [start, end];
+    },
+    makeTaskTitle(export_type, page_range) {
+      if (export_type === "webpage") return this.$t("webpage");
+      if (export_type === "png") {
+        if (!page_range) return this.$t("image");
+        return this.$t("image_of_page", { page: page_range[0] });
+      }
+      if (!page_range) return this.$t("pdf");
+      const [start, end] = page_range;
+      if (start === end) return this.$t("pdf_of_page", { page: start });
+      return this.$t("pdf_of_pages", { start, end });
+    },
     async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
@@ -315,7 +343,8 @@ export default {
           mode: "booklet",
           signature_size: this.signature_size,
         };
-        instructions.suggested_file_name += "-" + this.$t("booklet_suffix");
+        instructions.suggested_file_name += "-imp";
+        this.task_title = this.$t("pdf_with_imposition");
         this.task_instructions = instructions;
         return;
       }
@@ -332,6 +361,14 @@ export default {
       }
       instructions.url_query = url_query;
       instructions.page_count = this.pageCountForPrintExport(url_query);
+
+      const page_range = this.pageRangeFromQuery(url_query.page, export_type);
+      if (page_range) {
+        const [start, end] = page_range;
+        instructions.suggested_file_name +=
+          start === end ? `-p${start}` : `-p${start}-${end}`;
+      }
+      this.task_title = this.makeTaskTitle(export_type, page_range);
 
       if (this.is_spread) instructions.page_width *= 2;
       this.task_instructions = instructions;

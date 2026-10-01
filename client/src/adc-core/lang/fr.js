@@ -1448,7 +1448,10 @@ export default {
     "Les pages sont réorganisées deux par deux sur des feuilles deux fois plus larges qu’une page. Imprimez en recto-verso en retournant sur le bord court, puis pliez chaque cahier en deux et agrafez-le ou cousez-le.",
   pages_per_signature: "Pages par cahier",
   single_signature: "Un seul cahier (piqûre à cheval)",
-  booklet_suffix: "livret",
+  pdf_with_imposition: "PDF avec imposition",
+  pdf_of_page: "PDF de la page {page}",
+  pdf_of_pages: "PDF des pages {start} à {end}",
+  image_of_page: "Image de la page {page}",
   "type:": "Type : {type}",
 
   failed_to_export: "Échec de l’exportation",

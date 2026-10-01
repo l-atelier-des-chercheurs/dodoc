@@ -1,6 +1,6 @@
 <template>
   <BaseModal2
-    :title="$t('webpage')"
+    :title="modal_title"
     :size="modal_size"
     @close="removeAndCloseModal"
   >
@@ -75,6 +75,7 @@ export default {
   props: {
     publication_path: String,
     instructions: Object,
+    title: String,
     can_save_to_project: Boolean,
   },
   components: { ShowExportedFileInfos },
@@ -93,6 +94,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    modal_title() {
+      if (this.title) return this.title;
+      if (this.instructions.recipe === "pdf") return this.$t("pdf");
+      if (this.instructions.recipe === "png") return this.$t("image");
+      if (this.instructions.recipe === "webpage") return this.$t("webpage");
+      return this.$t("export");
+    },
     modal_size() {
       return this.is_exporting ? "small" : "large";
     },
