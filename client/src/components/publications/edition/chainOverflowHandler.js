@@ -1,33 +1,57 @@
 /**
- * Chain overflow handler for grid cells
- * Handles text overflow in chained grid cells by moving content to the next cell
+ * Chain overflow handler for grid cells.
+ * Flows overflowing text A → A1 → A2; only the last cell may show a warning.
  */
 
-/**
- * Check if a cell has overflow
- * @param {HTMLElement} cell - The cell to check
- * @returns {boolean} - True if cell has overflow
- */
-export function checkCellOverflow(cell) {
-  const cellHeight = cell.clientHeight;
-  const cellScrollHeight = cell.scrollHeight;
-  // Use a small tolerance (2px) to account for rounding and sub-pixel rendering
-  const hasOverflow = cellScrollHeight > cellHeight + 2;
-  // console.log(`checkCellOverflow: height=${cellHeight}, scrollHeight=${cellScrollHeight}, overflow=${hasOverflow}`, cell);
-  return hasOverflow;
+export const OVERFLOW_TOLERANCE_PX = 2;
+const FALSE_POSITIVE_SLACK_PX = 8;
+const REPLACED_TAGS = new Set([
+  "img",
+  "video",
+  "iframe",
+  "canvas",
+  "svg",
+  "hr",
+  "br",
+]);
+
+export function checkCellOverflow(cell, slack = OVERFLOW_TOLERANCE_PX) {
+  if (!cell) return false;
+  return cell.scrollHeight > cell.clientHeight + slack;
 }
 
-/**
- * Safely get bounding client rect, handling cases where element might not be in DOM
- * @param {Element|Range} element - Element or Range to measure
- * @returns {DOMRect|null} - Bounding rect or null if not available
- */
+export function getChainIndex(cell) {
+  const raw = cell?.getAttribute("data-grid-area-is-chain-index");
+  const index = parseInt(raw, 10);
+  return Number.isNaN(index) ? 0 : index;
+}
+
+export function sortChainCells(cells) {
+  return [...cells].sort((a, b) => getChainIndex(a) - getChainIndex(b));
+}
+
+function isOverflowWarning(node) {
+  return (
+    node?.nodeType === Node.ELEMENT_NODE &&
+    node.classList?.contains("_textOverflowWarning")
+  );
+}
+
+function getMovableChildNodes(cell) {
+  return Array.from(cell.childNodes).filter((node) => {
+    if (isOverflowWarning(node)) return false;
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent.trim().length > 0;
+    }
+    return node.nodeType === Node.ELEMENT_NODE;
+  });
+}
+
 export function safeGetBoundingClientRect(element) {
   if (!element) {
     return null;
   }
 
-  // Range objects can always try getBoundingClientRect
   if (element instanceof Range) {
     try {
       return element.getBoundingClientRect();
@@ -36,14 +60,11 @@ export function safeGetBoundingClientRect(element) {
     }
   }
 
-  // For Node objects, check if they're in the DOM and visible
   if (element.nodeType !== undefined) {
-    // Check if element is in the DOM
     if (element.isConnected === false) {
       return null;
     }
 
-    // For elements, check visibility
     if (element.nodeType === Node.ELEMENT_NODE) {
       try {
         const style = window.getComputedStyle(element);
@@ -51,80 +72,122 @@ export function safeGetBoundingClientRect(element) {
           return null;
         }
       } catch (e) {
-        // Can't get computed style, might not be in DOM
         return null;
       }
     }
   }
 
   try {
-    const rect = element.getBoundingClientRect();
-    // Check if rect is valid (not all zeros, which might indicate element is not visible)
-    if (
-      rect.width === 0 &&
-      rect.height === 0 &&
-      rect.top === 0 &&
-      rect.left === 0
-    ) {
-      // This might be a hidden element, but we'll still return it
-      // as it could be a legitimate zero-size element
-    }
-    return rect;
+    return element.getBoundingClientRect();
   } catch (e) {
-    // Element might not have offsetParent (not in layout)
     return null;
   }
 }
 
+function targetExceedsCell(target, cellRect, cellHeight, tolerance) {
+  let rects = [];
+  try {
+    if (typeof target.getClientRects === "function") {
+      rects = Array.from(target.getClientRects());
+    }
+  } catch (e) {
+    rects = [];
+  }
+  if (rects.length === 0) {
+    const rect = safeGetBoundingClientRect(target);
+    if (rect) rects = [rect];
+  }
+
+  return rects.some((rect) => rect.bottom - cellRect.top > cellHeight + tolerance);
+}
+
+function acceptCutOffNode(node) {
+  if (isOverflowWarning(node)) return NodeFilter.FILTER_REJECT;
+  if (node.nodeType !== Node.ELEMENT_NODE) return NodeFilter.FILTER_ACCEPT;
+
+  const tagName = node.tagName.toLowerCase();
+  if (REPLACED_TAGS.has(tagName)) return NodeFilter.FILTER_ACCEPT;
+  if (tagName === "script" || tagName === "style") {
+    return NodeFilter.FILTER_REJECT;
+  }
+  return NodeFilter.FILTER_SKIP;
+}
+
+function findCutOffViaCaret(cell, cellRect) {
+  const x = cellRect.left + Math.min(8, Math.max(1, cellRect.width / 2));
+  const y = cellRect.bottom - 1;
+
+  let node;
+  let offset = 0;
+  try {
+    if (typeof document.caretPositionFromPoint === "function") {
+      const pos = document.caretPositionFromPoint(x, y);
+      if (pos) {
+        node = pos.offsetNode;
+        offset = pos.offset;
+      }
+    } else if (typeof document.caretRangeFromPoint === "function") {
+      const range = document.caretRangeFromPoint(x, y);
+      if (range) {
+        node = range.startContainer;
+        offset = range.startOffset;
+      }
+    }
+  } catch (e) {
+    return null;
+  }
+
+  if (!node || !cell.contains(node)) return null;
+
+  const remainder = document.createRange();
+  try {
+    remainder.setStart(node, offset);
+    remainder.setEnd(cell, cell.childNodes.length);
+  } catch (e) {
+    return null;
+  }
+
+  const remainder_text = remainder.toString().trim();
+  let has_replaced = false;
+  try {
+    has_replaced = Boolean(
+      remainder.cloneContents().querySelector("img, video, iframe, canvas, svg, hr")
+    );
+  } catch (e) {
+    has_replaced = false;
+  }
+
+  if (!remainder_text && !has_replaced) return null;
+  return { node, offset };
+}
+
+function findFirstOverflowingChild(cell, cellRect, cellHeight, tolerance) {
+  for (const child of getMovableChildNodes(cell)) {
+    if (targetExceedsCell(child, cellRect, cellHeight, tolerance)) {
+      return child;
+    }
+  }
+  return null;
+}
+
 /**
  * Find the cut-off point in a cell where content overflows
- * @param {HTMLElement} cell - The cell to check
- * @returns {{node: Text|null, offset: number}} - Cut-off point with text node and offset
+ * @param {HTMLElement} cell
+ * @returns {{node: Node|null, offset: number}}
  */
 export function findCutOffPoint(cell) {
   const cellHeight = cell.clientHeight;
   const cellRect = safeGetBoundingClientRect(cell);
   if (!cellRect) {
-    console.warn("findCutOffPoint: Could not get cell rect");
     return { node: null, offset: 0 };
   }
-  const tolerance = 2;
 
-  // Debug max bottom found
-  let maxRelativeBottom = 0;
-
-  // Use TreeWalker to get all text nodes and atomic elements in document order
   const walker = document.createTreeWalker(
     cell,
     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-    {
-      acceptNode: (node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          // Check if atomic/replaced element
-          const tagName = node.tagName.toLowerCase();
-          const isReplaced = [
-            "img",
-            "video",
-            "iframe",
-            "canvas",
-            "svg",
-            "hr",
-            "br",
-          ].includes(tagName);
-          if (isReplaced) return NodeFilter.FILTER_ACCEPT;
-          // Skip script and style
-          if (tagName === "script" || tagName === "style") {
-            return NodeFilter.FILTER_REJECT;
-          }
-          // Visit children for containers
-          return NodeFilter.FILTER_SKIP;
-        }
-        return NodeFilter.FILTER_ACCEPT;
-      },
-    }
+    { acceptNode: acceptCutOffNode }
   );
 
-  // Walk through nodes
   let node;
   while ((node = walker.nextNode())) {
     if (node.nodeType === Node.TEXT_NODE) {
@@ -133,7 +196,6 @@ export function findCutOffPoint(cell) {
         continue;
       }
 
-      // Split text into words (keeping whitespace)
       const words = [];
       let pos = 0;
       const wordRegex = /\S+/g;
@@ -142,14 +204,12 @@ export function findCutOffPoint(cell) {
       while ((match = wordRegex.exec(text)) !== null) {
         if (match.index > pos) {
           words.push({
-            text: text.substring(pos, match.index),
             start: pos,
             end: match.index,
             isWord: false,
           });
         }
         words.push({
-          text: match[0],
           start: match.index,
           end: match.index + match[0].length,
           isWord: true,
@@ -157,115 +217,76 @@ export function findCutOffPoint(cell) {
         pos = match.index + match[0].length;
       }
       if (pos < text.length) {
-        words.push({
-          text: text.substring(pos),
-          start: pos,
-          end: text.length,
-          isWord: false,
-        });
+        words.push({ start: pos, end: text.length, isWord: false });
       }
 
-      // Check each word
       for (const word of words) {
-        if (!word.isWord && word.text.trim().length === 0) {
-          continue;
-        }
+        if (!word.isWord) continue;
 
         const testRange = document.createRange();
         try {
           testRange.setStart(node, word.start);
           testRange.setEnd(node, word.end);
-
-          const rect = safeGetBoundingClientRect(testRange);
-
-          if (!rect) {
-            console.warn(
-              "findCutOffPoint: Can't measure range, assuming cutoff"
-            );
-            testRange.detach();
-            return { node: node, offset: word.start };
-          }
-
-          const relativeBottom = rect.bottom - cellRect.top;
-          if (relativeBottom > maxRelativeBottom)
-            maxRelativeBottom = relativeBottom;
-
-          if (relativeBottom > cellHeight + tolerance) {
-            console.log(
-              `findCutOffPoint: Found cutoff at word: "${word.text}". Word bottom: ${relativeBottom}, Cell height: ${cellHeight}, Tolerance: ${tolerance}`
-            );
-            testRange.detach();
-            return { node: node, offset: word.start };
+          if (
+            targetExceedsCell(
+              testRange,
+              cellRect,
+              cellHeight,
+              OVERFLOW_TOLERANCE_PX
+            )
+          ) {
+            return { node, offset: word.start };
           }
         } catch (e) {
-          console.error("findCutOffPoint: Error measuring range", e);
-          testRange.detach();
-          return { node: node, offset: word.start };
+          return { node, offset: word.start };
         } finally {
-          if (testRange) {
+          try {
             testRange.detach();
+          } catch (err) {
+            /* Range.detach is a no-op in modern browsers */
           }
         }
       }
-    } else {
-      // Element node (Image, etc)
-      const rect = safeGetBoundingClientRect(node);
-      if (rect) {
-        const relativeBottom = rect.bottom - cellRect.top;
-        if (relativeBottom > maxRelativeBottom)
-          maxRelativeBottom = relativeBottom;
-
-        if (relativeBottom > cellHeight + tolerance) {
-          console.log(
-            `findCutOffPoint: Found cutoff at element <${node.tagName}>. Bottom: ${relativeBottom}, Cell height: ${cellHeight}`
-          );
-          return { node: node, offset: 0 };
-        }
-      }
+    } else if (
+      targetExceedsCell(node, cellRect, cellHeight, OVERFLOW_TOLERANCE_PX)
+    ) {
+      return { node, offset: 0 };
     }
   }
 
-  // No cut-off point found (all content is visible)
-  console.log(
-    `findCutOffPoint: No cutoff found. Max text bottom: ${maxRelativeBottom}, Cell height: ${cellHeight}, ScrollHeight: ${cell.scrollHeight}`
+  const caret_cut = findCutOffViaCaret(cell, cellRect);
+  if (caret_cut) return caret_cut;
+
+  const overflowing_child = findFirstOverflowingChild(
+    cell,
+    cellRect,
+    cellHeight,
+    OVERFLOW_TOLERANCE_PX
   );
+  if (overflowing_child) {
+    return { node: overflowing_child, offset: 0 };
+  }
+
   return { node: null, offset: 0 };
 }
 
-/**
- * Split DOM tree at textNode/offset and collect the right-hand side nodes
- * @param {HTMLElement} container
- * @param {Node} startNode
- * @param {number} offset
- */
 function splitAndCollectNodes(container, startNode, offset) {
   const nodesToMove = [];
 
-  // 1. Determine the node to move
   let nodeToMove;
   if (startNode.nodeType === Node.TEXT_NODE) {
-    if (offset < startNode.textContent.length) {
-      nodeToMove = startNode.splitText(offset);
-    } else {
-      // Offset at end, nothing to split in this node,
-      // but we might need to split parents if there are siblings after
-      nodeToMove = startNode.splitText(offset); // returns empty text node
-    }
+    nodeToMove = startNode.splitText(offset);
   } else {
-    // It's an element, move the whole element
     nodeToMove = startNode;
   }
 
-  // 2. Walk up and split parents
   let currentRight = nodeToMove;
   let parent = currentRight.parentNode;
 
   while (parent && parent !== container) {
-    // Create split parent (shallow clone)
     const rightParent = parent.cloneNode(false);
-    if (rightParent.id) rightParent.removeAttribute("id"); // Remove ID to avoid duplicates
+    if (rightParent.id) rightParent.removeAttribute("id");
 
-    // Move currentRight and all subsequent siblings to rightParent
     let sibling = currentRight;
     while (sibling) {
       const next = sibling.nextSibling;
@@ -273,7 +294,6 @@ function splitAndCollectNodes(container, startNode, offset) {
       sibling = next;
     }
 
-    // Insert rightParent into grandparent, after parent
     if (parent.parentNode) {
       parent.parentNode.insertBefore(rightParent, parent.nextSibling);
     }
@@ -282,11 +302,6 @@ function splitAndCollectNodes(container, startNode, offset) {
     parent = parent.parentNode;
   }
 
-  // At this point, parent === container.
-  // currentRight is the root of the right-side tree (direct child of container).
-  // It is already inserted in container after currentLeft.
-
-  // Now collect currentRight and all its following siblings in container.
   let node = currentRight;
   while (node) {
     nodesToMove.push(node);
@@ -296,18 +311,18 @@ function splitAndCollectNodes(container, startNode, offset) {
   return nodesToMove;
 }
 
-// Clean up empty nodes in the path from startNode up to container
 function cleanupEmptyPath(startNode, container) {
   let current = startNode;
   while (current && current !== container) {
     const parent = current.parentNode;
 
-    // Check if node is effectively empty
     let isEmpty = false;
     if (current.nodeType === Node.TEXT_NODE) {
       isEmpty = current.textContent.length === 0;
     } else if (current.nodeType === Node.ELEMENT_NODE) {
-      // It's empty if it has no children, OR if all children are empty text nodes
+      if (isOverflowWarning(current)) {
+        break;
+      }
       if (current.childNodes.length === 0) {
         isEmpty = true;
       } else {
@@ -315,7 +330,7 @@ function cleanupEmptyPath(startNode, container) {
           if (child.nodeType === Node.TEXT_NODE) {
             return child.textContent.trim().length > 0;
           }
-          return true; // Assume other elements have content
+          return !isOverflowWarning(child);
         });
         isEmpty = !hasContent;
       }
@@ -324,119 +339,113 @@ function cleanupEmptyPath(startNode, container) {
     if (isEmpty) {
       current.remove();
     } else {
-      // If not empty, parent won't be empty either (it contains current)
       break;
     }
     current = parent;
   }
 }
 
-/**
- * Move overflow content from current cell to next cell
- * @param {HTMLElement} currentCell - Cell with overflow
- * @param {HTMLElement} nextCell - Next cell in chain to receive overflow
- * @returns {boolean} - True if content was moved successfully
- */
+function prependFragmentToCell(nextCell, fragment) {
+  clearOverflowWarning(nextCell);
+
+  if (!fragment.hasChildNodes()) return false;
+
+  const nextCellText = nextCell.textContent?.trim() || "";
+  if (nextCellText.length === 0) {
+    nextCell.innerHTML = "";
+    nextCell.appendChild(fragment);
+  } else {
+    const firstChild = nextCell.firstChild;
+    if (firstChild) {
+      nextCell.insertBefore(fragment, firstChild);
+    } else {
+      nextCell.appendChild(fragment);
+    }
+  }
+  return true;
+}
+
+function moveCollectedNodes(currentCell, nodesToMove, nextCell, cleanupNode) {
+  if (!nodesToMove.length) return false;
+
+  const fragment = document.createDocumentFragment();
+  nodesToMove.forEach((node) => {
+    if (node.parentNode && currentCell.contains(node)) {
+      fragment.appendChild(node);
+    }
+  });
+
+  if (cleanupNode && currentCell.contains(cleanupNode)) {
+    cleanupEmptyPath(cleanupNode, currentCell);
+  }
+
+  return prependFragmentToCell(nextCell, fragment);
+}
+
 export function moveOverflowToNextCell(currentCell, nextCell) {
-  console.log("moveOverflowToNextCell start", { currentCell, nextCell });
   const cutOffPoint = findCutOffPoint(currentCell);
 
   if (!cutOffPoint.node) {
-    console.log("moveOverflowToNextCell: No cut-off point found");
     return false;
   }
 
   const startNode = cutOffPoint.node;
   const offset = cutOffPoint.offset;
-
-  if (startNode.nodeType === Node.TEXT_NODE) {
-    console.log(
-      `moveOverflowToNextCell: Found cut-off at offset ${offset} in text: "${startNode.textContent.substring(
-        0,
-        20
-      )}..."`
-    );
-  } else {
-    console.log(
-      `moveOverflowToNextCell: Found cut-off at element <${startNode.tagName}>`
-    );
-  }
-
-  // Capture parent for cleanup if startNode moves entirely
   let cleanupNode = startNode;
   if (startNode.nodeType !== Node.TEXT_NODE) {
     cleanupNode = startNode.parentNode;
   }
 
-  // Split DOM and collect nodes to move
   const nodesToMove = splitAndCollectNodes(currentCell, startNode, offset);
-
-  // Move nodes to next cell
-  if (nodesToMove.length > 0) {
-    console.log(
-      `moveOverflowToNextCell: Moving ${nodesToMove.length} nodes to next cell`
-    );
-
-    // Create fragment and move nodes
-    const fragment = document.createDocumentFragment();
-    nodesToMove.forEach((node) => {
-      // Only move if node is still in the DOM and part of currentCell (it should be)
-      if (node.parentNode && currentCell.contains(node)) {
-        fragment.appendChild(node);
-      }
-    });
-
-    // Cleanup empty nodes left behind in currentCell
-    if (startNode.nodeType === Node.TEXT_NODE) {
-      cleanupEmptyPath(startNode, currentCell);
-    } else {
-      // If we moved an element, startNode is gone. Check its original parent.
-      if (cleanupNode && currentCell.contains(cleanupNode)) {
-        cleanupEmptyPath(cleanupNode, currentCell);
-      }
-    }
-
-    // Clear any existing overflow warning from next cell
-    const existingWarning = nextCell.querySelector("._textOverflowWarning");
-    if (existingWarning) {
-      existingWarning.remove();
-    }
-    nextCell.classList.remove("has--textOverflow");
-
-    // If fragment has children, add them to next cell
-    if (fragment.hasChildNodes()) {
-      // If next cell is empty or only has whitespace, replace content
-      const nextCellText = nextCell.textContent?.trim() || "";
-      if (nextCellText.length === 0) {
-        nextCell.innerHTML = "";
-        nextCell.appendChild(fragment);
-      } else {
-        // Prepend to existing content
-        const firstChild = nextCell.firstChild;
-        if (firstChild) {
-          nextCell.insertBefore(fragment, firstChild);
-        } else {
-          nextCell.appendChild(fragment);
-        }
-      }
-
-      return true;
-    }
-  }
-
-  return false;
+  return moveCollectedNodes(currentCell, nodesToMove, nextCell, cleanupNode);
 }
 
 /**
- * Show overflow warning on a cell
- * @param {HTMLElement} cell - Cell to show warning on
- * @param {string} warningText - Translated warning text to display
+ * When word-level splitting cannot find a cut, move the first overflowing
+ * block (or the last block if layout APIs are inconclusive) to the next cell.
  */
+export function moveOverflowingTailToNextCell(currentCell, nextCell) {
+  const children = getMovableChildNodes(currentCell);
+  if (children.length === 0) return false;
+
+  const overflow_amount = currentCell.scrollHeight - currentCell.clientHeight;
+  const cellRect = safeGetBoundingClientRect(currentCell);
+  const overflowing_child =
+    cellRect &&
+    findFirstOverflowingChild(
+      currentCell,
+      cellRect,
+      currentCell.clientHeight,
+      OVERFLOW_TOLERANCE_PX
+    );
+
+  if (
+    !overflowing_child &&
+    overflow_amount <= FALSE_POSITIVE_SLACK_PX
+  ) {
+    return false;
+  }
+
+  const start_node = overflowing_child || children[children.length - 1];
+  const cleanupNode =
+    start_node.nodeType === Node.TEXT_NODE
+      ? start_node
+      : start_node.parentNode;
+  const nodesToMove = splitAndCollectNodes(currentCell, start_node, 0);
+  return moveCollectedNodes(currentCell, nodesToMove, nextCell, cleanupNode);
+}
+
+export function clearOverflowWarning(cell) {
+  if (!cell) return;
+  cell.querySelectorAll("._textOverflowWarning").forEach((el) => el.remove());
+  cell.classList.remove("has--textOverflow");
+}
+
 export function showOverflowWarning(cell, warningText) {
-  // Remove existing warning if any
-  const existingWarning = cell.querySelector("._textOverflowWarning");
-  if (existingWarning) {
-    return; // Warning already exists
+  if (!cell) return;
+  if (cell.querySelector("._textOverflowWarning")) {
+    cell.classList.add("has--textOverflow");
+    return;
   }
 
   cell.classList.add("has--textOverflow");
@@ -451,68 +460,60 @@ export function showOverflowWarning(cell, warningText) {
 }
 
 /**
- * Handle overflow in a chain of cells
- * @param {HTMLElement} cell - Starting cell in the chain
- * @param {HTMLElement} page - Page element to search for chain cells within (only cells on this page)
- * @param {string} warningText - Translated warning text to display
+ * Flow overflow along a chain. Intermediate cells never get a warning.
  */
+export function flowContentThroughChain(
+  cells,
+  {
+    last_cell_warning_text = "Text Overflow",
+    check_overflow = checkCellOverflow,
+    move_overflow = moveOverflowToNextCell,
+    move_overflow_tail = moveOverflowingTailToNextCell,
+  } = {}
+) {
+  const ordered = sortChainCells(cells);
+  if (ordered.length === 0) return ordered;
+
+  ordered.forEach(clearOverflowWarning);
+
+  const max_moves_per_cell = Math.max(ordered.length * 10, 20);
+
+  for (let i = 0; i < ordered.length - 1; i++) {
+    const current_cell = ordered[i];
+    const next_cell = ordered[i + 1];
+    let move_count = 0;
+
+    while (
+      check_overflow(current_cell) &&
+      move_count < max_moves_per_cell
+    ) {
+      move_count++;
+      let moved = move_overflow(current_cell, next_cell);
+      if (!moved) {
+        moved = move_overflow_tail(current_cell, next_cell);
+      }
+      if (!moved) break;
+    }
+
+    clearOverflowWarning(current_cell);
+  }
+
+  const last_cell = ordered[ordered.length - 1];
+  if (check_overflow(last_cell)) {
+    showOverflowWarning(last_cell, last_cell_warning_text);
+  } else {
+    clearOverflowWarning(last_cell);
+  }
+
+  return ordered;
+}
+
 export function handleChainOverflow(cell, page, warningText) {
   const cell_id = cell.getAttribute("data-grid-area-id");
-  // Only search for chain cells within the same page
   const chain_cells = page.querySelectorAll(
     `.grid-cell[data-grid-area-id="${cell_id}"][data-grid-area-is-chain-index]`
   );
-  const chain_cells_array = Array.from(chain_cells);
-
-  if (chain_cells_array.length === 0) return;
-
-  // sort chain cells by data-grid-area-is-chain-index ascending
-  chain_cells_array.sort((a, b) => {
-    const a_index = parseInt(a.getAttribute("data-grid-area-is-chain-index"));
-    const b_index = parseInt(b.getAttribute("data-grid-area-is-chain-index"));
-    return a_index - b_index;
+  flowContentThroughChain(Array.from(chain_cells), {
+    last_cell_warning_text: warningText,
   });
-
-  // Process each cell in the chain
-  // Use a safety counter to prevent infinite loops
-  let maxIterations = chain_cells_array.length * 10; // Allow multiple passes
-  let iterationCount = 0;
-
-  for (
-    let i = 0;
-    i < chain_cells_array.length && iterationCount < maxIterations;
-    i++
-  ) {
-    iterationCount++;
-    const currentCell = chain_cells_array[i];
-
-    // Check if current cell has overflow
-    const hasOverflow = checkCellOverflow(currentCell);
-
-    if (!hasOverflow) {
-      continue; // No overflow, move to next cell
-    }
-
-    // Find the next cell in the chain
-    const nextCell = chain_cells_array[i + 1];
-
-    if (!nextCell) {
-      // No next cell available, show overflow warning
-      showOverflowWarning(currentCell, warningText);
-      break;
-    }
-
-    // Find the cut-off point and move overflow content to next cell
-    const moved = moveOverflowToNextCell(currentCell, nextCell);
-
-    if (!moved) {
-      // Couldn't move content (might be empty or unbreakable)
-      showOverflowWarning(currentCell, warningText);
-      break;
-    }
-
-    // Restart from the beginning to check all cells again
-    // This handles cascading overflow
-    i = -1; // Will be incremented to 0 in next iteration
-  }
 }
