@@ -9,133 +9,139 @@
       />
     </div>
 
-    <div v-if="has_free_page_format" class="u-spacingBottom">
-      <DLabel :str="$t('format')" />
-      <div class="u-inputGroup">
-        <select v-model="page_format">
-          <option
-            v-for="name in Object.keys(iso_formats)"
-            :key="name"
-            :value="name"
-          >
-            {{ name }}
-          </option>
-        </select>
-        <select v-model="page_orientation">
-          <option value="portrait">{{ $t("portrait") }}</option>
-          <option value="landscape">{{ $t("landscape") }}</option>
-        </select>
-      </div>
-    </div>
-
-    <template v-if="can_impose_booklet">
-      <div class="u-spacingBottom">
-        <ToggleInput
-          :content.sync="impose_booklet"
-          :label="$t('booklet_imposition')"
-          :options="{
-            true: $t('booklet_imposition_explanations'),
-          }"
-        />
-      </div>
-      <div v-if="impose_booklet" class="u-spacingBottom">
-        <DLabel :str="$t('pages_per_signature')" />
-        <select v-model.number="signature_size">
-          <option :value="0">{{ $t("single_signature") }}</option>
-          <option v-for="size in signature_sizes" :key="size" :value="size">
-            {{ size }}
-          </option>
-        </select>
-      </div>
-      <BookletImpositionSchema
-        v-if="impose_booklet && page_count > 0"
-        class="u-spacingBottom"
-        :page_count="page_count"
-        :signature_size="signature_size"
-        :page_width="page_width"
-        :page_height="page_height"
-      />
-    </template>
-
-    <template
-      v-if="
-        export_mode === 'pdf' &&
-        ['page_by_page', 'edition'].includes(publication.template) &&
-        page_count > 1 &&
-        !impose_booklet
-      "
+    <DetailsPane
+      v-if="export_mode === 'pdf'"
+      :header="$t('advanced_options')"
+      :icon="'sliders'"
+      :is_open_initially="false"
     >
-      <DLabel
-        :str="!is_spread ? $t('pages_to_export') : $t('spreads_to_export')"
-      />
-      <div class="u-inputGroup">
-        <select v-model="pdf_pages_to_export_mode">
-          <option value="all">
-            {{ !is_spread ? $t("all_pages") : $t("all_spreads") }}
-          </option>
-          <option
-            v-if="
-              (!is_spread && current_page_number !== false) ||
-              (is_spread && current_spread_number !== false)
-            "
-            value="current"
-          >
-            {{ current_info }}
-          </option>
-          <option value="custom">{{ $t("custom") }}</option>
-        </select>
-
-        <input
-          v-if="pdf_pages_to_export_mode === 'custom'"
-          size="large"
-          type="text"
-          v-model="specific_pdf_page_or_spread_to_export"
-          :placeholder="
-            !is_spread
-              ? $t('page_number_or_interval')
-              : $t('spread_number_or_interval')
-          "
-        />
+      <div v-if="has_free_page_format" class="u-spacingBottom">
+        <DLabel :str="$t('format')" />
+        <div class="u-inputGroup">
+          <select v-model="page_format">
+            <option
+              v-for="name in Object.keys(iso_formats)"
+              :key="name"
+              :value="name"
+            >
+              {{ name }}
+            </option>
+          </select>
+          <select v-model="page_orientation">
+            <option value="portrait">{{ $t("portrait") }}</option>
+            <option value="landscape">{{ $t("landscape") }}</option>
+          </select>
+        </div>
       </div>
+
+      <template v-if="can_impose_booklet">
+        <div class="u-spacingBottom">
+          <ToggleInput
+            :content.sync="impose_booklet"
+            :label="$t('booklet_imposition')"
+            :options="{
+              true: $t('booklet_imposition_explanations'),
+            }"
+          />
+        </div>
+        <div v-if="impose_booklet" class="u-spacingBottom">
+          <DLabel :str="$t('pages_per_signature')" />
+          <select v-model.number="signature_size">
+            <option :value="0">{{ $t("single_signature") }}</option>
+            <option v-for="size in signature_sizes" :key="size" :value="size">
+              {{ size }}
+            </option>
+          </select>
+        </div>
+        <BookletImpositionSchema
+          v-if="impose_booklet && page_count > 0"
+          class="u-spacingBottom"
+          :page_count="page_count"
+          :signature_size="signature_size"
+          :page_width="page_width"
+          :page_height="page_height"
+        />
+      </template>
 
       <div
-        class="u-instructions"
-        v-if="pdf_pages_to_export_mode === 'custom' && page_count"
+        v-if="
+          ['page_by_page', 'edition'].includes(publication.template) &&
+          page_count > 1 &&
+          !impose_booklet
+        "
+        class="u-spacingBottom"
       >
-        <template v-if="is_spread">
-          {{
-            $t("total_number_of_spreads_in_publication", {
-              total: total_number_of_spreads,
-            })
-          }}
-        </template>
-        <template v-else>
-          {{
-            $t("total_number_of_pages_in_publication", {
-              total: page_count,
-            })
-          }}
-        </template>
-      </div>
-    </template>
+        <DLabel
+          :str="!is_spread ? $t('pages_to_export') : $t('spreads_to_export')"
+        />
+        <div class="u-inputGroup">
+          <select v-model="pdf_pages_to_export_mode">
+            <option value="all">
+              {{ !is_spread ? $t("all_pages") : $t("all_spreads") }}
+            </option>
+            <option
+              v-if="
+                (!is_spread && current_page_number !== false) ||
+                (is_spread && current_spread_number !== false)
+              "
+              value="current"
+            >
+              {{ current_info }}
+            </option>
+            <option value="custom">{{ $t("custom") }}</option>
+          </select>
 
-    <template v-if="can_pick_image_quality">
-      <div class="u-spacingBottom" />
-      <DLabel :str="$t('embedded_images_quality')" />
-      <select v-model="image_quality">
-        <option value="high">{{ $t("image_quality_high") }}</option>
-        <option value="medium">{{ $t("image_quality_medium") }}</option>
-        <option value="draft">{{ $t("image_quality_draft") }}</option>
-        <option value="source">{{ $t("image_quality_source") }}</option>
-      </select>
-      <div class="u-instructions">
-        {{
-          image_quality === "source"
-            ? $t("image_quality_source_instructions")
-            : $t("image_quality_dpi_instructions")
-        }}
+          <input
+            v-if="pdf_pages_to_export_mode === 'custom'"
+            size="large"
+            type="text"
+            v-model="specific_pdf_page_or_spread_to_export"
+            :placeholder="
+              !is_spread
+                ? $t('page_number_or_interval')
+                : $t('spread_number_or_interval')
+            "
+          />
+        </div>
+
+        <div
+          class="u-instructions"
+          v-if="pdf_pages_to_export_mode === 'custom' && page_count"
+        >
+          <template v-if="is_spread">
+            {{
+              $t("total_number_of_spreads_in_publication", {
+                total: total_number_of_spreads,
+              })
+            }}
+          </template>
+          <template v-else>
+            {{
+              $t("total_number_of_pages_in_publication", {
+                total: page_count,
+              })
+            }}
+          </template>
+        </div>
       </div>
-    </template>
+
+      <div v-if="can_pick_image_quality">
+        <DLabel :str="$t('embedded_images_quality')" />
+        <select v-model="image_quality">
+          <option value="high">{{ $t("image_quality_high") }}</option>
+          <option value="medium">{{ $t("image_quality_medium") }}</option>
+          <option value="draft">{{ $t("image_quality_draft") }}</option>
+          <option value="source">{{ $t("image_quality_source") }}</option>
+        </select>
+        <div class="u-instructions">
+          {{
+            image_quality === "source"
+              ? $t("image_quality_source_instructions")
+              : $t("image_quality_dpi_instructions")
+          }}
+        </div>
+      </div>
+    </DetailsPane>
 
     <template v-if="export_mode === 'png' && page_count > 1">
       <template
