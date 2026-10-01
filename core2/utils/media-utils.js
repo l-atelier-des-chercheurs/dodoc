@@ -2,6 +2,7 @@ const path = require("path"),
   fs = require("fs-extra"),
   sharp = require("sharp"),
   exifr = require("exifr"),
+  { parseDate } = require("@cantoo/pdf-lib"),
   ffmpegTracker = require("../ffmpeg-tracker");
 
 sharp.cache(false);
@@ -42,39 +43,11 @@ function coerceToValidDate(value) {
   return date;
 }
 
-/**
- * Parse a PDF date string (PDF spec §7.9.4).
- * Adapted from pdf-lib's parseDate (MIT) — Hopding/pdf-lib.
- * @see https://github.com/Hopding/pdf-lib/blob/master/src/utils/strings.ts
- */
+// Parse a PDF date string (D:YYYYMMDDHHmmSSOHH'mm'), fall back to Date parsing
 function parsePdfDate(date_str) {
   if (!date_str) return null;
   const value = String(date_str).trim();
-
-  const match = value.match(
-    /^D:(\d\d\d\d)(\d\d)?(\d\d)?(\d\d)?(\d\d)?(\d\d)?([+\-Z])?(\d\d)?'?(\d\d)?'?$/
-  );
-  if (!match) return coerceToValidDate(value);
-
-  const [
-    ,
-    year,
-    month = "01",
-    day = "01",
-    hours = "00",
-    mins = "00",
-    secs = "00",
-    offset_sign = "Z",
-    offset_hours = "00",
-    offset_mins = "00",
-  ] = match;
-
-  const tz_offset =
-    offset_sign === "Z" ? "Z" : `${offset_sign}${offset_hours}:${offset_mins}`;
-
-  return coerceToValidDate(
-    `${year}-${month}-${day}T${hours}:${mins}:${secs}${tz_offset}`
-  );
+  return coerceToValidDate(parseDate(value) || value);
 }
 
 function decodePdfHexString(hex) {
