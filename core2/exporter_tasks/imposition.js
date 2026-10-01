@@ -1,7 +1,8 @@
 const fs = require("fs-extra"),
   { PDFDocument } = require("@cantoo/pdf-lib");
 
-const utils = require("../utils");
+const utils = require("../utils"),
+  { getBookletOrder } = require("../../shared/booklet_imposition.mjs");
 
 module.exports = (function () {
   const API = {
@@ -20,7 +21,7 @@ module.exports = (function () {
         source_pdf.getPageIndices()
       );
 
-      const sides = API.getBookletOrder({ page_count, signature_size });
+      const sides = getBookletOrder({ page_count, signature_size });
       for (const [left, right] of sides) {
         const sheet = output_pdf.addPage([width * 2, height]);
         if (pages[left]) sheet.drawPage(pages[left], { x: 0, y: 0 });
@@ -30,27 +31,6 @@ module.exports = (function () {
       const destination = await utils.createUniqueFilenameInCache("pdf");
       await fs.writeFile(destination, await output_pdf.save());
       return destination;
-    },
-
-    // returns a list of [left, right] page indexes, one per sheet side (front
-    // then back), indexes >= page_count are blank pages
-    getBookletOrder({ page_count, signature_size = 0 }) {
-      const round_to_four = (n) => Math.ceil(n / 4) * 4;
-
-      const signature_length =
-        signature_size > 0 ? round_to_four(signature_size) : round_to_four(page_count);
-
-      const sides = [];
-      for (let offset = 0; offset < page_count; offset += signature_length) {
-        const n = round_to_four(
-          Math.min(signature_length, page_count - offset)
-        );
-        for (let k = 0; k < n / 4; k++) {
-          sides.push([offset + n - 1 - 2 * k, offset + 2 * k]);
-          sides.push([offset + 2 * k + 1, offset + n - 2 - 2 * k]);
-        }
-      }
-      return sides;
     },
   };
 

@@ -28,6 +28,14 @@
           </option>
         </select>
       </div>
+      <BookletImpositionSchema
+        v-if="impose_booklet && page_count > 0"
+        class="u-spacingBottom"
+        :page_count="page_count"
+        :signature_size="signature_size"
+        :page_width="page_width"
+        :page_height="page_height"
+      />
     </template>
 
     <template
@@ -136,6 +144,7 @@
 </template>
 <script>
 import ExportItemAndSaveOrDownload from "@/components/publications/ExportItemAndSaveOrDownload.vue";
+import BookletImpositionSchema from "@/components/publications/BookletImpositionSchema.vue";
 import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
 
 export default {
@@ -147,6 +156,7 @@ export default {
   },
   components: {
     ExportItemAndSaveOrDownload,
+    BookletImpositionSchema,
   },
   data() {
     return {
