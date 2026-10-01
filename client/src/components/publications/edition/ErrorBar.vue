@@ -292,7 +292,12 @@ export default {
       let media_match = null;
       while ((media_match = media_tag_regex.exec(text_content)) !== null) {
         const media_type = media_match[1].toLowerCase();
-        const meta_src = media_match[2].trim();
+        // strip attributes (caption: …, width: …) like markdownItCsc does
+        const tag_content = media_match[2].trim();
+        const first_attr_match = /\s+[\w-]+:\s+/.exec(tag_content);
+        const meta_src = first_attr_match
+          ? tag_content.substring(0, first_attr_match.index).trim()
+          : tag_content;
         addReference({
           key: `tag::${media_type}::${meta_src}`,
           meta_src,
