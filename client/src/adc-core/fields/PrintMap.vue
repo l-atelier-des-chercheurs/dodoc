@@ -43,7 +43,6 @@
   </BaseModal2>
 </template>
 <script>
-import { jsPDF } from "jspdf";
 
 export default {
   props: {
@@ -245,34 +244,41 @@ export default {
       map.getView().setResolution(viewResolution / scaling);
     },
 
-    printMap() {
+    async printMap() {
       this.is_making_print = true;
 
-      const {
-        orientation,
-        format,
-        paper_width_in_mm,
-        paper_height_in_mm,
-        page_canvas,
-      } = this.print_options;
+      try {
+        const { paper_width_in_mm, paper_height_in_mm, page_canvas } =
+          this.print_options;
 
-      const pdf = new jsPDF({
-        orientation,
-        unit: "mm",
-        format,
-      });
+        const { PDFDocument } = await import("@cantoo/pdf-lib");
 
-      pdf.addImage(
-        page_canvas.toDataURL("image/jpeg"),
-        "JPEG",
-        0,
-        0,
-        paper_width_in_mm,
-        paper_height_in_mm
-      );
-      pdf.save("map.pdf");
+        const mm_to_pt = 72 / 25.4;
+        const pdf = await PDFDocument.create();
+        const page = pdf.addPage([
+          paper_width_in_mm * mm_to_pt,
+          paper_height_in_mm * mm_to_pt,
+        ]);
+        const image = await pdf.embedJpg(page_canvas.toDataURL("image/jpeg"));
+        page.drawImage(image, {
+          x: 0,
+          y: 0,
+          width: page.getWidth(),
+          height: page.getHeight(),
+        });
 
-      this.is_making_print = false;
+        const pdf_bytes = await pdf.save();
+        const url = URL.createObjectURL(
+          new Blob([pdf_bytes], { type: "application/pdf" })
+        );
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "map.pdf";
+        a.click();
+        URL.revokeObjectURL(url);
+      } finally {
+        this.is_making_print = false;
+      }
     },
   },
 };
