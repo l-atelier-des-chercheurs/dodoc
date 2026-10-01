@@ -21,6 +21,7 @@
         <img
           v-if="!zoom_on_click"
           :src="full_thumb"
+          :data-print-sources="print_sources_attr"
           class="_mediaContent--image"
           :loading="img_loading"
         />
@@ -307,7 +308,18 @@ export default {
         resolution: this.resolution,
       });
     },
+    // set by PDF exports (ExportPubliModal): high / medium / source
+    print_sources() {
+      const image_quality = this.$route?.query?.image_quality;
+      if (!image_quality || this.file.$type !== "image") return false;
+      return this.makeImageSourcesForPrint(this.file, image_quality);
+    },
+    print_sources_attr() {
+      if (!this.print_sources?.sources) return undefined;
+      return JSON.stringify(this.print_sources.sources);
+    },
     full_thumb() {
+      if (this.print_sources) return this.print_sources.src;
       if (
         this.file.$type === "image" &&
         this.file.$media_filename.endsWith(".gif")

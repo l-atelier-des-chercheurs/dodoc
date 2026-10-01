@@ -1,3 +1,8 @@
+import {
+  getPrintDPI,
+  upgradeImagesForPrint,
+} from "@/utils/printImageQuality.js";
+
 /** Same event type as Puppeteer / Electron offscreen capture (core2/puppeteer.js). */
 export const ready_for_export_event = "READY_FOR_EXPORT";
 
@@ -33,6 +38,14 @@ export default {
       );
     },
 
+    // PDF exports: once laid out, give each image the size it is printed at
+    async switchImagesToPrintSizes(el) {
+      await upgradeImagesForPrint(
+        el,
+        getPrintDPI(this.$route?.query?.image_quality)
+      );
+    },
+
     signalPublicationReadyAfterRender({ wait_for_images = true } = {}) {
       this.setPublicationReadyState(false);
 
@@ -40,6 +53,7 @@ export default {
         if (wait_for_images) {
           await this.waitForImagesInElement(this.$el);
         }
+        await this.switchImagesToPrintSizes(this.$el);
         setTimeout(() => this.setPublicationReadyState(true), 100);
       });
     },

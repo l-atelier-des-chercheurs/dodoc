@@ -1,3 +1,5 @@
+import { imageSourceAttributes } from "@/utils/printImageQuality.js";
+
 // Helper function to build style attribute from width/height using CSS variables
 export function buildStyleAttribute(width, height) {
   if (!width && !height) return "";
@@ -49,6 +51,7 @@ function renderMediaHTML({
   makeQREmbedForQR,
   media,
   use_qr_code = false,
+  image_sources,
 }) {
   const iframe_style_attr = buildStyleAttribute(width, height);
   const img_style_attr = buildStyleAttribute(width, height);
@@ -75,7 +78,9 @@ function renderMediaHTML({
         pdf_style || ""
       }></iframe>`;
     case "image":
-      return `<img src="${src}"${alt_attr}${img_style_attr} />`;
+      return `<img ${imageSourceAttributes(
+        image_sources || { src }
+      )}${alt_attr}${img_style_attr} />`;
     case "embed":
       // External embed (e.g. PeerTube, YouTube) as iframe in HTML view
       const embed_style = iframe_style_attr || ' style="width: 100%; min-height: 400px;"';
@@ -104,6 +109,7 @@ function renderMediaHTML({
  * @param {Function} params.context.makeMediaFileURL - Function to create media file URLs
  * @param {Function} params.context.makeQREmbedForQR - Function to create QR code embeds
  * @param {Function} params.context.makeQREmbedForExternalURL - Function to create QR for external embed URLs
+ * @param {Function} params.context.makeImageSources - Optional, returns { src, sources } for an image media (see makeImageSourcesForPrint)
  * @param {string} params.tag - Shortcode tag (e.g. "embed", "pdf", "image")
  * @returns {Object} Object with `html` and `is_qr_code` properties
  */
@@ -126,6 +132,7 @@ export function renderMedia({
     makeQREmbedForQR = () => "",
     makeQREmbedForExternalURL = () => "",
     getMissingMediaNoticeText = () => "Source media is missing",
+    makeImageSources = null,
   } = context;
 
   let media_html = "";
@@ -254,6 +261,10 @@ export function renderMedia({
       makeQREmbedForQR,
       media,
       use_qr_code,
+      image_sources:
+        media_type === "image" && makeImageSources
+          ? makeImageSources(media)
+          : undefined,
     });
   }
 

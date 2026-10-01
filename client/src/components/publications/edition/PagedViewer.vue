@@ -195,7 +195,8 @@ export default {
                 this.addChapterShortcuts();
                 this.reportChapterPositions();
               }
-              setTimeout(() => {
+              setTimeout(async () => {
+                await this.switchImagesToPrintSizes(bookpreview);
                 this.is_loading = false;
                 this.is_generating_book = false;
                 this.setPublicationReadyState(true);

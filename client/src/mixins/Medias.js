@@ -3,6 +3,7 @@ import {
   parseMetaSrcLookupAttempts,
   sourceMediaRefsMatch,
 } from "@/utils/sourceMediaRefs.js";
+import { getPrintDPI } from "@/utils/printImageQuality.js";
 
 export default {
   computed: {},
@@ -80,6 +81,60 @@ export default {
       if (!window.app_infos.page_is_standalone_html)
         return window.location.origin + full_path;
       else return full_path;
+    },
+    // For PDF exports with a capped image quality: start from the largest
+    // thumb and list every usable size, so upgradeImagesForPrint can switch
+    // to the one matching the printed size.
+    // Returns { src } alone when the source file should be used directly.
+    makeImageSourcesForPrint(media, image_quality) {
+      const src = this.makeMediaFileURL({
+        $path: media.$path,
+        $media_filename: media.$media_filename,
+      });
+      if (
+        !getPrintDPI(image_quality) ||
+        media.$type !== "image" ||
+        media.$media_filename.endsWith(".gif") ||
+        !media.$thumbs ||
+        typeof media.$thumbs !== "object" ||
+        window.app_infos.page_is_standalone_html
+      )
+        return { src };
+
+      const source_long_side = Math.max(
+        media.$infos?.width || 0,
+        media.$infos?.height || 0
+      );
+      if (!source_long_side) return { src };
+
+      const path_to_parent = media.$path.substring(
+        0,
+        media.$path.lastIndexOf("/")
+      );
+      const sources = Object.keys(media.$thumbs)
+        .map(Number)
+        // thumbs as large as the source are upscaled: the source is better
+        .filter((size) => Number.isFinite(size) && size < source_long_side)
+        .sort((a, b) => a - b)
+        .map((size) => {
+          const thumb_url = this.makeRelativeURLFromThumbs({
+            $type: media.$type,
+            $path: path_to_parent,
+            $thumbs: media.$thumbs,
+            resolution: size,
+          });
+          return {
+            size,
+            url: new URL(thumb_url, window.location.origin + "/").href,
+          };
+        });
+      if (sources.length === 0) return { src };
+
+      sources.push({ size: source_long_side, url: src });
+
+      // the largest thumb is wider than any printed box: switching to
+      // another size afterwards does not change the layout
+      return { src: sources[sources.length - 2].url, sources };
     },
     getSourceMedia({ source_media, folder_path }) {
       // three cases : source_media contains

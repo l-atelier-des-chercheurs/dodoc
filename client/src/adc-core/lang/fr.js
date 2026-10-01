@@ -1449,6 +1449,12 @@ export default {
   pages_per_signature: "Pages par cahier",
   single_signature: "Un seul cahier (piqûre à cheval)",
   pdf_with_imposition: "PDF avec imposition",
+  embedded_images_quality: "Qualité des images intégrées dans le document",
+  image_quality_high: "Haute (300 dpi)",
+  image_quality_medium: "Moyenne (150 dpi)",
+  image_quality_source: "Utiliser directement les fichiers sources",
+  image_quality_source_instructions:
+    "Utiliser les fichiers sources peut créer des PDF beaucoup plus lourds.",
   booklet_sheet_format: "Feuille : {width} × {height} mm{format}, imprimée en recto-verso",
   booklet_summary: "{signatures} cahier(s) · {sheets} feuille(s) au total",
   booklet_blank_pages: "{count} page(s) blanche(s) ajoutée(s) à la fin",

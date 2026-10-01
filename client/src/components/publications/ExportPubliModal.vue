@@ -100,6 +100,19 @@
       </div>
     </template>
 
+    <template v-if="can_pick_image_quality">
+      <div class="u-spacingBottom" />
+      <DLabel :str="$t('embedded_images_quality')" />
+      <select v-model="image_quality">
+        <option value="high">{{ $t("image_quality_high") }}</option>
+        <option value="medium">{{ $t("image_quality_medium") }}</option>
+        <option value="source">{{ $t("image_quality_source") }}</option>
+      </select>
+      <div class="u-instructions">
+        {{ $t("image_quality_source_instructions") }}
+      </div>
+    </template>
+
     <template v-if="export_mode === 'png' && page_count > 1">
       <template
         v-if="['page_by_page', 'edition'].includes(publication.template)"
@@ -168,6 +181,7 @@ export default {
       impose_booklet: false,
       signature_size: 0,
       signature_sizes: [4, 8, 12, 16, 20, 24, 28, 32],
+      image_quality: "high",
 
       page_width: this.publication.page_width || 210,
       page_height: this.publication.page_height || 297,
@@ -214,6 +228,9 @@ export default {
         ["page_by_page", "edition"].includes(this.publication.template) &&
         (this.publication.layout_mode || "print") === "print"
       );
+    },
+    can_pick_image_quality() {
+      return this.export_mode === "pdf";
     },
     export_mode_icon() {
       if (this.export_mode === "pdf") return "file-pdf";
@@ -336,6 +353,8 @@ export default {
         url_query.view_mode = "book";
         if (this.pane_infos?.style) url_query.style = this.pane_infos.style;
       }
+      if (this.can_pick_image_quality)
+        url_query.image_quality = this.image_quality;
       if (this.publication.template === "cartography") {
         url_query.display = "all";
         if (this.pane_infos?.view) url_query.view = this.pane_infos.view;
