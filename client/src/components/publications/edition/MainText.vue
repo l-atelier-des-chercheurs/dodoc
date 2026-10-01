@@ -98,13 +98,10 @@ export default {
       // Add the CSC plugin
       md.use(markdownItCsc, {
         getMediaSrc: (src) => {
-          const folder_path = this.publication_path;
-
-          let source_media = this.transformMediaSrc(src);
-
-          return this.getSourceMedia({
-            source_media,
-            folder_path,
+          return this.resolveMediaFromMetaSrc({
+            meta_src: src,
+            source_medias: this.medias_holder?.source_medias,
+            folder_path: this.publication_path,
           });
         },
         vue_instance: this,
@@ -123,18 +120,7 @@ export default {
         const srcIndex = token.attrIndex("src");
         if (srcIndex >= 0) {
           const meta_src = token.attrs[srcIndex][1];
-          const folder_path = this.publication_path;
-          const media = this.getSourceMedia({
-            source_media: {
-              meta_filename_in_project: meta_src,
-            },
-            folder_path,
-          });
-          if (media) {
-            source_medias.push({
-              meta_filename_in_project: meta_src,
-            });
-          }
+          this.pushResolvedSourceMediaRef(meta_src, source_medias);
         }
         // Pass token to default renderer
         return defaultRender(tokens, idx, options, env, self);
@@ -148,17 +134,7 @@ export default {
           ["image", "video", "audio", "pdf"].includes(token.tag) &&
           token.content
         ) {
-          const meta_src = token.content;
-          const folder_path = this.publication_path;
-
-          const source_media = this.transformMediaSrc(meta_src);
-          const media = this.getSourceMedia({
-            source_media,
-            folder_path,
-          });
-          if (media) {
-            source_medias.push(source_media);
-          }
+          this.pushResolvedSourceMediaRef(token.content, source_medias);
         }
         // Call the original renderer if it exists, otherwise return empty string
         return originalCscRenderer ? originalCscRenderer(tokens, idx) : "";
@@ -207,19 +183,25 @@ export default {
       }
     },
 
-    transformMediaSrc(meta_src) {
-      if (meta_src.startsWith("./")) {
-        return {
-          meta_filename: meta_src.substring(2),
-        };
-      } else if (meta_src.startsWith("../")) {
-        return {
-          meta_filename_in_project: meta_src.substring(3),
-        };
-      } else {
-        return {
-          meta_filename_in_project: meta_src,
-        };
+    pushResolvedSourceMediaRef(meta_src, source_medias) {
+      const folder_path = this.publication_path;
+      const media = this.resolveMediaFromMetaSrc({
+        meta_src,
+        source_medias: this.medias_holder?.source_medias,
+        folder_path,
+      });
+      if (!media) return;
+
+      for (const source_media of this.parseMetaSrcLookupAttempts(meta_src)) {
+        if (
+          this.getSourceMedia({
+            source_media,
+            folder_path,
+          })
+        ) {
+          source_medias.push(source_media);
+          return;
+        }
       }
     },
   },

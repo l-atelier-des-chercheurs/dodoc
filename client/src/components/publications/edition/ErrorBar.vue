@@ -152,10 +152,8 @@ export default {
               source_media,
               folder_path: this.publication.$path,
             });
-            const local_media = chapter?.source_medias?.find(
-              (sm) =>
-                sm?.meta_filename_in_project ===
-                source_media?.meta_filename_in_project
+            const local_media = chapter?.source_medias?.find((sm) =>
+              this.sourceMediaRefsMatch(sm, source_media)
             )?._media;
             const resolved_media = media || local_media;
 
@@ -299,41 +297,11 @@ export default {
       return refs;
     },
     getMediaSrc(meta_src, source_medias) {
-      if (!meta_src) return;
-
-      let source_media;
-
-      if (meta_src.startsWith("./")) {
-        meta_src = meta_src.substring(2);
-        source_media = {
-          meta_filename: meta_src,
-        };
-      } else if (meta_src.startsWith("../")) {
-        meta_src = meta_src.substring(3);
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      } else {
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      }
-
-      let media = this.getSourceMedia({
-        source_media,
+      return this.resolveMediaFromMetaSrc({
+        meta_src,
+        source_medias,
         folder_path: this.publication.$path,
       });
-
-      if (!media && source_medias?.length > 0) {
-        const local_media = source_medias.find(
-          (sm) => sm.meta_filename_in_project === meta_src
-        );
-        if (local_media) media = local_media._media;
-      }
-
-      if (!media) return;
-
-      return media;
     },
     pushIssue({
       issues,

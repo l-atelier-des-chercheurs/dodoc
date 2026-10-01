@@ -1,6 +1,27 @@
+import {
+  findSourceMediaEntry,
+  parseMetaSrcLookupAttempts,
+  sourceMediaRefsMatch,
+} from "@/utils/sourceMediaRefs.js";
+
 export default {
   computed: {},
   methods: {
+    sourceMediaRefsMatch,
+    parseMetaSrcLookupAttempts(meta_src) {
+      return parseMetaSrcLookupAttempts(meta_src);
+    },
+    resolveMediaFromMetaSrc({ meta_src, source_medias, folder_path }) {
+      if (!meta_src) return;
+
+      for (const source_media of parseMetaSrcLookupAttempts(meta_src)) {
+        const media = this.getSourceMedia({ source_media, folder_path });
+        if (media) return media;
+      }
+
+      const entry = findSourceMediaEntry(source_medias, meta_src);
+      if (entry?._media) return entry._media;
+    },
     makeRelativeURLFromThumbs({ $type, $path, $thumbs, resolution }) {
       if (!$thumbs) return false;
 
