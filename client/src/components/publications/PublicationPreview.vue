@@ -112,11 +112,11 @@ export default {
 
       const instructions = {
         recipe: "png",
-        page: 1,
         page_width: this.publication.page_width,
         page_height: this.publication.page_height,
         layout_mode: this.publication.layout_mode || "print",
-        make_preview: true,
+        url_query: { make_preview: "true", page: "1" },
+        page_count: 1,
       };
 
       const current_task_id = await this.$api.generatePreviewForPublication({

@@ -231,6 +231,16 @@ export default {
       if (this.current_page_number === i) return `• ${i}`;
       return i;
     },
+    pageCountForPrintExport(url_query) {
+      const page = url_query?.page;
+      if (page == null || page === "") return undefined;
+      const page_str = String(page);
+      if (page_str.includes("-")) {
+        const [start, end] = page_str.split("-");
+        return Number(end) - Number(start) + 1;
+      }
+      return 1;
+    },
     async exportPublication(export_type) {
       const additional_meta = {};
       additional_meta.$origin = "publish";
@@ -250,35 +260,35 @@ export default {
       };
 
       if (export_type === "webpage") instructions.layout_mode = "screen";
+
+      const url_query = {};
+      if (this.publication.template === "edition") {
+        url_query.view_mode = "book";
+        if (this.pane_infos?.style) url_query.style = this.pane_infos.style;
+      }
+      if (this.publication.template === "cartography") {
+        url_query.display = "all";
+        if (this.pane_infos?.view) url_query.view = this.pane_infos.view;
+      }
       if (
         ["page_by_page", "edition"].includes(this.publication.template) &&
         this.export_mode === "png"
-      )
-        instructions.page = this.page_to_export_as_image;
-
-      if (this.publication.template === "edition") {
-        instructions.view_mode = "book";
-
-        // check if there is a style filename selected, add it
-        if (this.pane_infos?.style) {
-          instructions.style = this.pane_infos.style;
+      ) {
+        url_query.page = String(this.page_to_export_as_image);
+      }
+      if (this.export_mode === "pdf") {
+        if (this.pdf_pages_to_export_mode === "current") {
+          url_query.page = String(
+            !this.is_spread
+              ? this.current_page_number
+              : this.current_spread_number
+          );
+        } else if (this.pdf_pages_to_export_mode === "custom") {
+          url_query.page = this.specific_pdf_page_or_spread_to_export;
         }
       }
-
-      if (this.publication.template === "cartography") {
-        instructions.display = "all";
-        if (this.pane_infos?.view) instructions.view = this.pane_infos.view;
-      }
-
-      if (this.export_mode === "pdf") {
-        if (this.pdf_pages_to_export_mode === "current")
-          instructions.page = !this.is_spread
-            ? this.current_page_number
-            : this.current_spread_number;
-        else if (this.pdf_pages_to_export_mode === "custom")
-          instructions.page = this.specific_pdf_page_or_spread_to_export;
-        // else instructions.page = "1-" + this.page_count;
-      }
+      instructions.url_query = url_query;
+      instructions.page_count = this.pageCountForPrintExport(url_query);
 
       if (this.is_spread) instructions.page_width *= 2;
       this.task_instructions = instructions;
