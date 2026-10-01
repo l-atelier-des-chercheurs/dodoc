@@ -1,4 +1,7 @@
 const puppeteer = require("puppeteer");
+const fs = require("fs");
+const { Readable } = require("stream");
+const { pipeline } = require("stream/promises");
 
 const utils = require("./utils");
 
@@ -11,6 +14,14 @@ const READY_SETTLE_MS = 400;
 // Drop the shared Chrome once captures stop, so each app does not keep
 // a few hundred MB resident on a multi-app server.
 const BROWSER_IDLE_MS = 60_000;
+// Whole export (load + layout + print): raised for long documents once their
+// page count is known.
+const EXPORT_TIMEOUT_MS = 120_000;
+const PRINT_TIMEOUT_MS_PER_PAGE = 2_000;
+// Chrome reports nothing while printing: progress is estimated from the page
+// count. Rough average, heavy images make pages slower.
+const PRINT_ESTIMATED_MS_PER_PAGE = 300;
+const PRINT_PROGRESS_TICK_MS = 500;
 
 const BROWSER_ARGS = [
   "--no-sandbox",
@@ -143,6 +154,36 @@ async function installReadyForExportListener(page) {
   }, READY_FOR_EXPORT_EVENT);
 }
 
+async function countPagesToPrint(page, number_of_pages_to_export) {
+  if (number_of_pages_to_export) return number_of_pages_to_export;
+  const pagedjs_pages = await page
+    .evaluate(() => document.querySelectorAll(".pagedjs_page").length)
+    .catch(() => 0);
+  return pagedjs_pages || 1;
+}
+
+// Moves progress from `from` towards `to` without reaching it: fast at first,
+// slowing down once past the estimated duration.
+function startEstimatedProgress({ reportProgress, from, to, estimated_ms }) {
+  if (!reportProgress) return () => {};
+  const start = Date.now();
+  const interval = setInterval(() => {
+    const elapsed = Date.now() - start;
+    const ratio = 1 - Math.exp(-elapsed / estimated_ms);
+    reportProgress(Math.round(from + (to - from) * ratio));
+  }, PRINT_PROGRESS_TICK_MS);
+  return () => clearInterval(interval);
+}
+
+// page.pdf() also keeps the whole PDF in memory: write the stream to disk
+async function printPDFToFile(page, options, path_to_file) {
+  const pdf_stream = await page.createPDFStream(options);
+  await pipeline(
+    Readable.fromWeb(pdf_stream),
+    fs.createWriteStream(path_to_file)
+  );
+}
+
 async function configurePageForCapture(page) {
   await installReadyForExportListener(page);
 }
@@ -272,13 +313,21 @@ module.exports = (function () {
 
       // Must not throw: an async timer rejection is unhandled and exits the app.
       // Closing the page makes the pending export reject into the catch below.
-      let page_timeout = setTimeout(() => {
-        dev.error(`page timeout for ${url}`);
-        page_timeout = null;
-        closePage(page);
-      }, 120_000);
+      let page_timeout = null;
+      const armPageTimeout = (ms) => {
+        if (page_timeout) clearTimeout(page_timeout);
+        page_timeout = setTimeout(() => {
+          dev.error(`page timeout for ${url}`);
+          page_timeout = null;
+          closePage(page);
+        }, ms);
+      };
+      armPageTimeout(EXPORT_TIMEOUT_MS);
+
+      let stopEstimatedProgress = () => {};
 
       let stopTimeoutAndClosePage = async () => {
+        stopEstimatedProgress();
         if (page_timeout) {
           clearTimeout(page_timeout);
           page_timeout = null;
@@ -332,9 +381,25 @@ module.exports = (function () {
         if (recipe === "pdf") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("pdf");
 
+          const page_count = await countPagesToPrint(
+            page,
+            number_of_pages_to_export
+          );
+          dev.logverbose(`Printing ${page_count} page(s) to PDF`);
+          armPageTimeout(
+            Math.max(EXPORT_TIMEOUT_MS, page_count * PRINT_TIMEOUT_MS_PER_PAGE)
+          );
+          stopEstimatedProgress = startEstimatedProgress({
+            reportProgress,
+            from: 70,
+            to: 98,
+            estimated_ms: page_count * PRINT_ESTIMATED_MS_PER_PAGE,
+          });
+
           const options = {
-            path: path_to_temp_file,
             printBackground: true,
+            // the page timeout above bounds the whole export instead
+            timeout: 0,
             width: `${printToPDF_pagesize.width}mm`,
             height: `${printToPDF_pagesize.height}mm`,
             margin: {
@@ -347,7 +412,8 @@ module.exports = (function () {
           if (number_of_pages_to_export) {
             options.pageRanges = `1-${number_of_pages_to_export}`;
           }
-          await page.pdf(options);
+          await printPDFToFile(page, options, path_to_temp_file);
+          stopEstimatedProgress();
         } else if (recipe === "png") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("png");
           await page.screenshot({
