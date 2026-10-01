@@ -403,21 +403,7 @@ class Exporter {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
-
-      let url = this._createURLFromPath(this.path_to_folder);
-
-      let query = {};
-
-      // use superadmin token
-      const superadmintoken = auth.getSuperadminToken();
-      query.superadmintoken = superadmintoken;
-
-      if (Object.keys(query).length > 0) {
-        const searchParams = new URLSearchParams(query);
-        url += "?" + searchParams.toString();
-      }
 
       const res = this.instructions.express_res;
 
@@ -1108,7 +1094,9 @@ class Exporter {
     const path_without_space = path_to_folder
       .replace("spaces" + path.sep, "+")
       .replace("projects" + path.sep, "");
-    const base_url = utils.getPublicUrl({ fallback_to_home_url: true });
+    // PDF/PNG only: URL for Puppeteer on this machine. Share/QR in the page
+    // use window.app_infos.public_url from the normal render path, not this.
+    const base_url = (global.appInfos?.homeURL || "").replace(/\/+$/, "");
     return base_url + "/" + path_without_space;
   }
 }
