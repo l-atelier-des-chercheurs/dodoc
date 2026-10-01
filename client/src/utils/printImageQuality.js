@@ -5,6 +5,7 @@
 export const IMAGE_QUALITY_DPI = {
   high: 300,
   medium: 150,
+  draft: 48,
 };
 
 const CSS_PX_PER_INCH = 96;

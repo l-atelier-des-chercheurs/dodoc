@@ -125,10 +125,15 @@
       <select v-model="image_quality">
         <option value="high">{{ $t("image_quality_high") }}</option>
         <option value="medium">{{ $t("image_quality_medium") }}</option>
+        <option value="draft">{{ $t("image_quality_draft") }}</option>
         <option value="source">{{ $t("image_quality_source") }}</option>
       </select>
       <div class="u-instructions">
-        {{ $t("image_quality_source_instructions") }}
+        {{
+          image_quality === "source"
+            ? $t("image_quality_source_instructions")
+            : $t("image_quality_dpi_instructions")
+        }}
       </div>
     </template>
 

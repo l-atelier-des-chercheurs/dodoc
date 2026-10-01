@@ -1367,7 +1367,10 @@ export default {
   embedded_images_quality: "Quality of images embedded in the document",
   image_quality_high: "High (300 dpi)",
   image_quality_medium: "Medium (150 dpi)",
+  image_quality_draft: "Draft (48 dpi, light and quick)",
   image_quality_source: "Use source files directly",
+  image_quality_dpi_instructions:
+    "The chosen resolution is a minimum: each image is embedded at the smallest available size that reaches it at its printed size, or as its source file if no size is large enough.",
   image_quality_source_instructions:
     "Using source files can create much heavier PDFs.",
   booklet_sheet_format: "Sheet: {width} × {height} mm{format}, printed double-sided",
