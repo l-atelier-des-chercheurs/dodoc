@@ -15,7 +15,7 @@ const utils = require("./utils"),
   optimizer = require("./exporter_tasks/optimizer"),
   imposition = require("./exporter_tasks/imposition"),
   ffmpegTracker = require("./ffmpeg-tracker"),
-  { pathToPublicPath } = require("../shared/path_to_public_path.mjs");
+  { joinPublicUrl } = require("../shared/path_to_public_path.mjs");
 
 class Exporter {
   constructor({ path_to_folder, folder_to_export_to, instructions }) {
@@ -1098,10 +1098,13 @@ class Exporter {
   }
 
   _createURLFromPath(path_to_folder) {
-    // PDF/PNG only: URL for Puppeteer on this machine. Share/QR in the page
-    // use window.app_infos.public_url from the normal render path, not this.
-    const base_url = (global.appInfos?.homeURL || "").replace(/\/+$/, "");
-    return base_url + pathToPublicPath(path_to_folder);
+    // PDF/PNG: Puppeteer loads this URL on the server. Prefer public_url (VPS /
+    // reverse proxy); fall back to homeURL (local dev, same-machine Puppeteer).
+    const base_url = utils.getPublicUrl({ fallback_to_home_url: true });
+    if (!base_url) {
+      throw new Error("missing_public_url_for_print_export");
+    }
+    return joinPublicUrl(base_url, path_to_folder);
   }
 }
 
