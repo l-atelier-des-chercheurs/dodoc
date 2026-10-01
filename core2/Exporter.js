@@ -35,6 +35,7 @@ class Exporter {
     this.status = "started";
 
     let full_path_to_file;
+    let imposed_page_count;
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
@@ -42,8 +43,11 @@ class Exporter {
       full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
-      if (this.instructions.imposition?.mode === "booklet")
-        full_path_to_file = await this._imposeBooklet(full_path_to_file);
+      if (this.instructions.imposition?.mode === "booklet") {
+        const imposed = await this._imposeBooklet(full_path_to_file);
+        full_path_to_file = imposed.path;
+        imposed_page_count = imposed.page_count;
+      }
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "webpage") {
@@ -99,6 +103,9 @@ class Exporter {
     this._notifyEnded({
       event: "completed",
       file: exported_file,
+      imposition: imposed_page_count
+        ? { page_count: imposed_page_count }
+        : undefined,
     });
 
     return exported_path_to_meta;
@@ -390,12 +397,12 @@ class Exporter {
     try {
       dev.logfunction();
       this._notifyProgress(92);
-      const path_to_booklet = await imposition.imposeBooklet({
+      const booklet = await imposition.imposeBooklet({
         source: path_to_pdf,
         signature_size: this.instructions.imposition.signature_size,
       });
       await fs.remove(path_to_pdf);
-      return path_to_booklet;
+      return booklet;
     } catch (err) {
       dev.error(`err for imposition ${err}`);
       this._notifyEnded({

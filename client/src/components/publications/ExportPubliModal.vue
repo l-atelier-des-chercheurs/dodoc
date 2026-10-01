@@ -9,6 +9,25 @@
       />
     </div>
 
+    <div v-if="has_free_page_format" class="u-spacingBottom">
+      <DLabel :str="$t('format')" />
+      <div class="u-inputGroup">
+        <select v-model="page_format">
+          <option
+            v-for="name in Object.keys(iso_formats)"
+            :key="name"
+            :value="name"
+          >
+            {{ name }}
+          </option>
+        </select>
+        <select v-model="page_orientation">
+          <option value="portrait">{{ $t("portrait") }}</option>
+          <option value="landscape">{{ $t("landscape") }}</option>
+        </select>
+      </div>
+    </div>
+
     <template v-if="can_impose_booklet">
       <div class="u-spacingBottom">
         <ToggleInput
@@ -183,6 +202,15 @@ export default {
       signature_sizes: [4, 8, 12, 16, 20, 24, 28, 32],
       image_quality: "high",
 
+      iso_formats: {
+        A3: [297, 420],
+        A4: [210, 297],
+        A5: [148, 210],
+        A6: [105, 148],
+      },
+      page_format: "A4",
+      page_orientation: "portrait",
+
       page_width: this.publication.page_width || 210,
       page_height: this.publication.page_height || 297,
 
@@ -204,12 +232,20 @@ export default {
     };
   },
   created() {
+    if (this.has_free_page_format) this.applyPageFormat();
     this.publication_ratio = this.page_height / this.page_width;
     this.page_to_export_as_image = this.current_page_number || 1;
   },
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    page_format() {
+      this.applyPageFormat();
+    },
+    page_orientation() {
+      this.applyPageFormat();
+    },
+  },
   computed: {
     available_export_options() {
       return this.export_options;
@@ -222,10 +258,25 @@ export default {
     is_spread() {
       return this.publication.page_spreads === true;
     },
+    // templates without a fixed page size: the format is chosen at export
+    has_free_page_format() {
+      return (
+        this.export_mode === "pdf" &&
+        ["story", "story_with_sections", "cartography"].includes(
+          this.publication.template
+        )
+      );
+    },
     can_impose_booklet() {
       return (
         this.export_mode === "pdf" &&
-        ["page_by_page", "edition"].includes(this.publication.template) &&
+        [
+          "page_by_page",
+          "edition",
+          "story",
+          "story_with_sections",
+          "cartography",
+        ].includes(this.publication.template) &&
         (this.publication.layout_mode || "print") === "print"
       );
     },
@@ -288,6 +339,12 @@ export default {
     },
   },
   methods: {
+    applyPageFormat() {
+      const [short, long] = this.iso_formats[this.page_format];
+      const landscape = this.page_orientation === "landscape";
+      this.page_width = landscape ? long : short;
+      this.page_height = landscape ? short : long;
+    },
     makePageNumber(i) {
       if (this.current_page_number === i) return `• ${i}`;
       return i;

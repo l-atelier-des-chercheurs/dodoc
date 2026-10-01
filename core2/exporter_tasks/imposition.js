@@ -8,6 +8,7 @@ module.exports = (function () {
   const API = {
     // Saddle-stitch imposition: each output sheet side holds two source pages
     // side by side. signature_size = 0 puts all pages in a single signature.
+    // Returns the path to the imposed PDF and the page count of the source.
     async imposeBooklet({ source, signature_size = 0 }) {
       const source_pdf = await PDFDocument.load(await fs.readFile(source));
       const page_count = source_pdf.getPageCount();
@@ -30,7 +31,7 @@ module.exports = (function () {
 
       const destination = await utils.createUniqueFilenameInCache("pdf");
       await fs.writeFile(destination, await output_pdf.save());
-      return destination;
+      return { path: destination, page_count };
     },
   };
 
