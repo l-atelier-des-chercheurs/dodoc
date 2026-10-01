@@ -13,6 +13,7 @@ const utils = require("./utils"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer"),
+  imposition = require("./exporter_tasks/imposition"),
   ffmpegTracker = require("./ffmpeg-tracker"),
   { pathToPublicPath } = require("../shared/path_to_public_path.mjs");
 
@@ -41,6 +42,8 @@ class Exporter {
       full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
+      if (this.instructions.imposition?.mode === "booklet")
+        full_path_to_file = await this._imposeBooklet(full_path_to_file);
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "webpage") {
@@ -375,6 +378,26 @@ class Exporter {
       return path_to_export;
     } catch (err) {
       dev.error(`err for webpreview ${err}`);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw new Error(`failed`);
+    }
+  }
+
+  async _imposeBooklet(path_to_pdf) {
+    try {
+      dev.logfunction();
+      this._notifyProgress(92);
+      const path_to_booklet = await imposition.imposeBooklet({
+        source: path_to_pdf,
+        signature_size: this.instructions.imposition.signature_size,
+      });
+      await fs.remove(path_to_pdf);
+      return path_to_booklet;
+    } catch (err) {
+      dev.error(`err for imposition ${err}`);
       this._notifyEnded({
         event: "failed",
         info: err.message,

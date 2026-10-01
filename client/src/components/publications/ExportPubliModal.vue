@@ -9,11 +9,33 @@
       />
     </div>
 
+    <template v-if="can_impose_booklet">
+      <div class="u-spacingBottom">
+        <ToggleInput
+          :content.sync="impose_booklet"
+          :label="$t('booklet_imposition')"
+          :options="{
+            true: $t('booklet_imposition_explanations'),
+          }"
+        />
+      </div>
+      <div v-if="impose_booklet" class="u-spacingBottom">
+        <DLabel :str="$t('pages_per_signature')" />
+        <select v-model.number="signature_size">
+          <option :value="0">{{ $t("single_signature") }}</option>
+          <option v-for="size in signature_sizes" :key="size" :value="size">
+            {{ size }}
+          </option>
+        </select>
+      </div>
+    </template>
+
     <template
       v-if="
         export_mode === 'pdf' &&
         ['page_by_page', 'edition'].includes(publication.template) &&
-        page_count > 1
+        page_count > 1 &&
+        !impose_booklet
       "
     >
       <DLabel
@@ -131,6 +153,9 @@ export default {
       page_to_export_as_image: 1,
       pdf_pages_to_export_mode: "all",
       specific_pdf_page_or_spread_to_export: "",
+      impose_booklet: false,
+      signature_size: 0,
+      signature_sizes: [4, 8, 12, 16, 20, 24, 28, 32],
 
       page_width: this.publication.page_width || 210,
       page_height: this.publication.page_height || 297,
@@ -170,6 +195,13 @@ export default {
     },
     is_spread() {
       return this.publication.page_spreads === true;
+    },
+    can_impose_booklet() {
+      return (
+        this.export_mode === "pdf" &&
+        ["page_by_page", "edition"].includes(this.publication.template) &&
+        (this.publication.layout_mode || "print") === "print"
+      );
     },
     export_mode_icon() {
       if (this.export_mode === "pdf") return "file-pdf";
@@ -275,6 +307,17 @@ export default {
         this.export_mode === "png"
       ) {
         url_query.page = String(this.page_to_export_as_image);
+      }
+      if (this.can_impose_booklet && this.impose_booklet) {
+        url_query.single_pages = "true";
+        instructions.url_query = url_query;
+        instructions.imposition = {
+          mode: "booklet",
+          signature_size: this.signature_size,
+        };
+        instructions.suggested_file_name += "-" + this.$t("booklet_suffix");
+        this.task_instructions = instructions;
+        return;
       }
       if (this.export_mode === "pdf") {
         if (this.pdf_pages_to_export_mode === "current") {

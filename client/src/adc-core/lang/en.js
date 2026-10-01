@@ -1358,6 +1358,12 @@ export default {
     "Total number of spreads in publication: {total}",
   total_number_of_pages_in_publication:
     "Total number of pages in publication: {total}",
+  booklet_imposition: "Booklet imposition (for binding)",
+  booklet_imposition_explanations:
+    "Pages are reordered two by two on sheets twice as wide as a page. Print double-sided, flipping on the short edge, then fold each signature in half and staple or sew it.",
+  pages_per_signature: "Pages per signature",
+  single_signature: "Single signature (saddle stitch)",
+  booklet_suffix: "booklet",
   "type:": "Type: {type}",
   failed_to_export: "Failed to export",
   default_styles: "Default styles",

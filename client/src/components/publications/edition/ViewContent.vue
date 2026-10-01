@@ -841,7 +841,10 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    // scroll container clips print output to its first page
+    @media screen {
+      overflow: auto;
+    }
   }
 }
 

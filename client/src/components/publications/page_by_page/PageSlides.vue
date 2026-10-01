@@ -342,6 +342,8 @@ export default {
       return this.publication.pages;
     },
     is_spread() {
+      // booklet imposition is done server side from single pages
+      if (this.$route.query?.single_pages === "true") return false;
       return this.publication.page_spreads === true;
     },
     spreads() {

@@ -1443,6 +1443,12 @@ export default {
     "Nombre total de planches dans la publication : {total}",
   total_number_of_pages_in_publication:
     "Nombre total de pages dans la publication : {total}",
+  booklet_imposition: "Imposer en livret (pour reliure)",
+  booklet_imposition_explanations:
+    "Les pages sont réorganisées deux par deux sur des feuilles deux fois plus larges qu’une page. Imprimez en recto-verso en retournant sur le bord court, puis pliez chaque cahier en deux et agrafez-le ou cousez-le.",
+  pages_per_signature: "Pages par cahier",
+  single_signature: "Un seul cahier (piqûre à cheval)",
+  booklet_suffix: "livret",
   "type:": "Type : {type}",
 
   failed_to_export: "Échec de l’exportation",
