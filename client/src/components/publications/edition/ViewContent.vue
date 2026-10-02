@@ -237,6 +237,7 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
+        _chapter.show_pagination = chapter.section_show_pagination === true;
         _chapter.column_count = chapter.column_count || 1;
         _chapter.section_type = chapter.section_type || "text";
         if (!chapter.section_type || chapter.section_type === "text") {
@@ -330,6 +331,7 @@ export default {
           data-chapter-meta-filename="${chapter.meta_filename}"
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
+          data-show-pagination="${chapter.show_pagination}"
         >`;
         if (
           chapter.title &&

@@ -1573,6 +1573,7 @@ export default {
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",
   starts_on_page: "Démarre sur",
+  show_page_number: "Afficher le numéro de page",
   starts_on_page_instructions:
     "Où ce chapitre commence dans le livre imprimé. « À la suite » continue juste après le chapitre précédent, sur la même page. « Page suivante » démarre sur une nouvelle page. « Prochaine page de gauche » et « Prochaine page de droite » démarrent sur une nouvelle page de ce côté de la double page ; une page blanche est ajoutée si nécessaire.",
   starts_on_page_instructions_new_page:

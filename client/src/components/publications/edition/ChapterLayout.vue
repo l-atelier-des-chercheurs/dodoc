@@ -33,6 +33,14 @@
             @save="updateChapterMeta({ row_count: $event })"
           />
         </template>
+        <ToggleInput
+          v-if="show_pagination_option"
+          :content="chapter.section_show_pagination === true"
+          :label="$t('show_page_number')"
+          @update:content="
+            updateChapterMeta({ section_show_pagination: $event })
+          "
+        />
         <!-- <button type="button" class="u-button u-button_small u-button_white">
           {{ $t("preset_grid") }} (todo)
         </button> -->
@@ -46,6 +54,7 @@
 </template>
 
 <script>
+import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
 import GridAreas from "@/components/publications/edition/GridAreas.vue";
 import StartsOnPagePicker from "@/components/publications/edition/StartsOnPagePicker.vue";
 
@@ -57,6 +66,7 @@ export default {
     view_mode: String,
   },
   components: {
+    ToggleInput,
     GridAreas,
     StartsOnPagePicker,
   },
@@ -82,6 +92,10 @@ export default {
       return (
         this.view_mode === "book" && !(this.is_first_chapter && !this.has_cover)
       );
+    },
+    // grids are full-bleed and have no page number unless asked for
+    show_pagination_option() {
+      return this.view_mode === "book" && this.chapter.section_type === "grid";
     },
     starts_on_page_value() {
       const value = this.chapter.section_starts_on_page || "";
