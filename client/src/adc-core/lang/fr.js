@@ -470,6 +470,49 @@ export default {
   close: "Fermer",
   settings: "Réglages",
   admin_settings: "Réglages d’administration",
+  admin_welcome: "Prise en main",
+  admin_welcome_title: "Bienvenue sur votre do•doc",
+  admin_welcome_intro:
+    "C’est ici que se règle cette instance. Tout ce que vous pouvez configurer est réuni ici : choisissez une section dans la liste à gauche, ou commencez par les étapes ci-dessous.",
+  admin_welcome_default_admin:
+    "Le compte « Admin » par défaut utilise encore son mot de passe par défaut, « {password} », qui est public (il est écrit dans la documentation). Toute personne qui le connaît peut administrer cette instance. Changez-le maintenant.",
+  admin_welcome_change_password: "Changer le mot de passe d’administration",
+  admin_password_modal_text:
+    "Choisissez un nouveau mot de passe pour le compte « Admin », l’administrateur par défaut de cette instance.",
+  admin_password_must_differ:
+    "Choisissez un mot de passe différent de celui par défaut.",
+  admin_password_changed: "Le mot de passe d’administration a été changé",
+  admin_welcome_anyone_can_admin:
+    "Pour l’instant, tout le monde peut modifier ces réglages, même sans compte. Définissez qui sont les administrateur·ices.",
+  admin_welcome_steps: "Pour commencer",
+  admin_welcome_sections: "Ce que vous pouvez régler",
+  admin_welcome_step_password: "Changer le mot de passe d’administration",
+  admin_welcome_step_informations:
+    "Donner un nom et une présentation à votre instance",
+  admin_welcome_step_access:
+    "Choisir qui peut administrer, contribuer et s’inscrire",
+  admin_welcome_step_images: "Ajouter un logo et une image d’accueil",
+  admin_page_restricted:
+    "Cette page est réservée aux administrateur·ices de cette instance. Identifiez-vous avec un compte administrateur pour y accéder.",
+  admin_tab_desc_informations:
+    "Nom de l’instance, texte de présentation et courriel de contact affichés sur la page d’accueil.",
+  admin_tab_desc_logo_and_images:
+    "Logo, favicon et image affichée sur la page d’accueil.",
+  admin_tab_desc_administration_and_access_control:
+    "Qui administre et contribue, conditions d’inscription, mot de passe général, indexation par les moteurs de recherche, taille des fichiers et suppression.",
+  admin_tab_desc_fonts:
+    "Téléverser des typographies utilisables dans les publications.",
+  admin_tab_desc_chats: "Activer ou désactiver les discussions.",
+  admin_tab_desc_events:
+    "Activer ou désactiver la section événements de la page d’accueil.",
+  admin_tab_desc_terms:
+    "Pages des conditions d’utilisation et de confidentialité, et acceptation obligatoire à l’inscription.",
+  admin_tab_desc_suggested_cat_kw:
+    "Mots-clés et catégories suggérés lors de la description d’un contenu.",
+  admin_tab_desc_storage:
+    "Emplacement du contenu sur cet ordinateur (application de bureau uniquement).",
+  admin_tab_desc_debug_logs:
+    "Journaux récents, pour aider à diagnostiquer un problème.",
   list_of_pages: "Liste des pages",
   list_of_spreads: "Liste des planches",
   grid: "Grille",

@@ -72,10 +72,10 @@
             type="button"
             class="u-button u-button_icon _settingsBtn"
             :class="{
-              'is--active': show_settings_modal,
+              'is--active': is_on_admin_page,
             }"
             :title="$t('admin_settings')"
-            @click="show_settings_modal = !show_settings_modal"
+            @click="toggleAdminPage"
           >
             <svg
               class="_settingsIcon"
@@ -92,11 +92,6 @@
               </g>
             </svg>
           </button>
-
-          <AdminSettings
-            v-if="show_settings_modal"
-            @close="show_settings_modal = false"
-          />
         </template>
 
         <button
@@ -196,7 +191,6 @@ import authorMessageMixin from "@/adc-core/chats/mixins/authorMessageMixin";
 export default {
   props: {},
   components: {
-    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     AuthorList,
     CreditsModal,
     BreadCrumbs,
@@ -208,7 +202,6 @@ export default {
       show_authors_modal: false,
       show_credits_modal: false,
       show_qr_code_modal: false,
-      show_settings_modal: false,
       show_chats_modal: false,
       isScrolledDown: false,
       lastScrollTop: 0,
@@ -247,6 +240,9 @@ export default {
     },
   },
   computed: {
+    is_on_admin_page() {
+      return this.$route.path.startsWith("/admin");
+    },
     url_to_page() {
       // for reactivity
       this.$route.path;
@@ -271,6 +267,10 @@ export default {
     },
   },
   methods: {
+    toggleAdminPage() {
+      if (this.is_on_admin_page) this.$router.push("/");
+      else this.$router.push("/admin");
+    },
     handleScroll() {
       const currentScrollTop =
         window.pageYOffset || document.documentElement.scrollTop;

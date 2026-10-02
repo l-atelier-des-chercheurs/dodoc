@@ -44,6 +44,11 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+    app.get(
+      "/_api2/_defaultAdminPasswordStatus",
+      _onlyAdmins,
+      _getDefaultAdminPasswordStatus
+    );
 
     app.get("/_api2/_logs", _getLogs);
     app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
@@ -2605,6 +2610,33 @@ module.exports = (function () {
       filename: req.params.filename,
       res,
     });
+  }
+  // a new instance ships with an "admin" account whose password is public
+  // (see the README): tell admins if it still has this default password.
+  // folder.login only checks the password, it does not open a session.
+  async function _getDefaultAdminPasswordStatus(req, res, next) {
+    dev.logapi();
+    const DEFAULT_ADMIN_PASSWORD = "dodoc";
+    const status = { account_exists: false, is_default_password: false };
+    try {
+      await folder.login({
+        path_to_folder: path.join("authors", "admin"),
+        submitted_password: DEFAULT_ADMIN_PASSWORD,
+      });
+      status.account_exists = true;
+      status.is_default_password = true;
+    } catch (err) {
+      if (
+        err.code === "submitted_password_is_wrong" ||
+        err.code === "no_password_for_folder"
+      )
+        status.account_exists = true;
+      else if (err.code !== "ENOENT") {
+        dev.error(err.message);
+        return res.status(500).send({ code: "default_admin_check_failed" });
+      }
+    }
+    res.json(status);
   }
   async function _getStoragePath(req, res, next) {
     const pathToUserContent = await settings.getStoragePath();

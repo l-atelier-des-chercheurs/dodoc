@@ -21,7 +21,7 @@
 
           <div class="_mainContent">
             <transition name="pagetransition" mode="out-in">
-              <div class="_routerView" :key="$route.path">
+              <div class="_routerView" :key="route_view_key">
                 <router-view class="" v-slot="{ Component }">
                   <component :is="Component" />
                 </router-view>
@@ -100,7 +100,12 @@ export default {
     this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
   },
   watch: {},
-  computed: {},
+  computed: {
+    // the admin pages are child views of one layout: switching between them
+    // must not re-create (and re-transition) the whole view
+    route_view_key() {
+      return this.$route.path.startsWith("/admin") ? "/admin" : this.$route.path;
+    },},
   methods: {
     socketConnected() {
       // if (this.$root.debug_mode)

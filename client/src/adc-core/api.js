@@ -573,6 +573,14 @@ export default function () {
         );
       },
 
+      async getDefaultAdminPasswordStatus() {
+        const response = await this.$axios
+          .get(`_defaultAdminPasswordStatus`)
+          .catch((err) => {
+            throw this.processError(err);
+          });
+        return response.data;
+      },
       async getStoragePath() {
         const response = await this.$axios.get(`_storagePath`);
         const storage_path = response.data.pathToUserContent;

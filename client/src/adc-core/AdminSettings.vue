@@ -1,28 +1,12 @@
 <template>
-  <BaseModal2
-    :title="$t('admin_settings')"
-    size="x-large"
-    @close="$emit('close')"
-  >
-    <div class="_adminSettings">
-      <div class="_spinner" v-if="is_loading" key="loader">
-        <LoaderSpinner />
-      </div>
-      <div v-else>
-        <div>
-          <div class="_selectMenu">
-            <SelectField2
-              :value="current_tab"
-              :options="tabs"
-              :can_edit="true"
-              :hide_validation="true"
-              @change="current_tab = $event"
-            />
-          </div>
-          <hr />
-          <div class="u-spacingBottom" />
-          <transition name="fade" mode="out-in">
-            <div v-if="current_tab === 'informations'">
+  <div class="_adminSettings">
+    <div class="_spinner" v-if="is_loading" key="loader">
+      <LoaderSpinner />
+    </div>
+    <div v-else>
+      <div>
+        <transition name="admintab" mode="out-in">
+          <div v-if="current_tab === 'informations'" key="informations">
               <div class="u-spacingBottom">
                 <TitleField
                   :field_name="'name_of_instance'"
@@ -218,12 +202,10 @@
             <TermsPanel
               v-else-if="current_tab === 'terms'"
               :settings="settings"
-              @close="$emit('close')"
             />
             <PagesPanel
               v-else-if="current_tab === 'pages'"
               :settings="settings"
-              @close="$emit('close')"
             />
             <SuggestedCategories
               v-else-if="current_tab === 'suggested_cat_kw'"
@@ -241,7 +223,7 @@
       </button> -->
       </div>
     </div>
-  </BaseModal2>
+  </div>
 </template>
 <script>
 import FontsPanel from "@/adc-core/ui/FontsPanel.vue";
@@ -253,7 +235,7 @@ import LogsPanel from "@/adc-core/ui/LogsPanel.vue";
 
 export default {
   props: {
-    starting_tab: String,
+    tab: String,
   },
   components: {
     FontsPanel,
@@ -269,51 +251,6 @@ export default {
       new_path_to_content: undefined,
       settings: undefined,
       is_loading: true,
-
-      current_tab: this.starting_tab || "informations",
-
-      tabs: [
-        {
-          key: "informations",
-          text: this.$t("informations"),
-        },
-        {
-          text: this.$t("logo_and_images"),
-          key: "logo_and_images",
-        },
-        {
-          text: this.$t("administration_and_access_control"),
-          key: "administration_and_access_control",
-        },
-        {
-          text: this.$t("fonts"),
-          key: "fonts",
-        },
-        {
-          text: this.$t("chats"),
-          key: "chats",
-        },
-        {
-          text: this.$t("events"),
-          key: "events",
-        },
-        {
-          text: this.$t("terms"),
-          key: "terms",
-        },
-        {
-          text: this.$t("suggested_cat_kw"),
-          key: "suggested_cat_kw",
-        },
-        {
-          text: this.$t("storage"),
-          key: "storage",
-        },
-        {
-          text: this.$t("debug_logs"),
-          key: "debug_logs",
-        },
-      ],
     };
   },
   created() {},
@@ -333,7 +270,11 @@ export default {
     this.$api.leave({ room: this.settings.$path });
   },
   watch: {},
-  computed: {},
+  computed: {
+    current_tab() {
+      return this.tab || "informations";
+    },
+  },
   methods: {
     restartDodoc() {
       this.$api.restartDodoc();
@@ -342,9 +283,6 @@ export default {
       window.location.reload();
     },
     saveNewPathToContent() {},
-    newTabShown($event) {
-      this.current_tab = $event.detail.name;
-    },
     updateUploadMaxFileSizeInMo(value) {
       this.$api.updateMeta({
         path: this.settings.$path,
@@ -355,10 +293,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._selectMenu {
-  max-width: 320px;
-  margin: 0 auto;
-}
 ._adminSettings {
   // margin-top: calc(var(--spacing) / -1);
   // margin-bottom: calc(var(--spacing) / -1);

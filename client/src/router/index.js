@@ -3,6 +3,21 @@ import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
+// "pages" is not listed in the admin menu but can still be reached by its link
+const ADMIN_TABS = [
+  "informations",
+  "logo_and_images",
+  "administration_and_access_control",
+  "fonts",
+  "chats",
+  "events",
+  "terms",
+  "suggested_cat_kw",
+  "storage",
+  "debug_logs",
+  "pages",
+];
+
 const routes = [
   {
     path: "/",
@@ -38,6 +53,28 @@ const routes = [
     path: "/@:author_slug",
     name: "Auteur",
     component: () => import("@/views/AuthorView.vue"),
+  },
+  {
+    path: "/admin",
+    component: () => import("@/views/AdminView.vue"),
+    children: [
+      { path: "", redirect: "/admin/welcome" },
+      {
+        path: "welcome",
+        name: "Admin welcome",
+        component: () => import("@/adc-core/ui/AdminWelcome.vue"),
+      },
+      {
+        path: ":tab",
+        name: "Admin settings",
+        props: true,
+        component: () => import("@/adc-core/AdminSettings.vue"),
+        beforeEnter: (to, from, next) =>
+          ADMIN_TABS.includes(to.params.tab)
+            ? next()
+            : next("/admin/welcome"),
+      },
+    ],
   },
   {
     path: "/p/:page_slug",
