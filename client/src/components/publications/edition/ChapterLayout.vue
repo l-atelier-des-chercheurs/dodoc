@@ -18,7 +18,7 @@
             v-if="['text', 'grid'].includes(chapter.section_type)"
             :label="$t('column_count')"
             :value="column_count"
-            :size="'small'"
+            :size="'medium'"
             :min="1"
             :max="12"
             @save="updateChapterMeta({ column_count: $event })"
@@ -27,7 +27,7 @@
             v-if="['grid'].includes(chapter.section_type)"
             :label="$t('row_count')"
             :value="row_count"
-            :size="'small'"
+            :size="'medium'"
             :min="1"
             :max="12"
             @save="updateChapterMeta({ row_count: $event })"
@@ -39,10 +39,7 @@
       </div>
 
       <div class="_gridConfiguration" v-if="chapter.section_type === 'grid'">
-        <GridAreas
-          :chapter="chapter"
-          :publication="publication"
-        />
+        <GridAreas :chapter="chapter" :publication="publication" />
       </div>
     </div>
   </div>
@@ -83,8 +80,7 @@ export default {
     },
     show_starts_on_page() {
       return (
-        this.view_mode === "book" &&
-        !(this.is_first_chapter && !this.has_cover)
+        this.view_mode === "book" && !(this.is_first_chapter && !this.has_cover)
       );
     },
     starts_on_page_value() {

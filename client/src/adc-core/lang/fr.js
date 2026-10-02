@@ -1573,6 +1573,10 @@ export default {
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",
   starts_on_page: "Démarre sur",
+  starts_on_page_instructions:
+    "Où ce chapitre commence dans le livre imprimé. « À la suite » continue juste après le chapitre précédent, sur la même page. « Page suivante » démarre sur une nouvelle page. « Prochaine page de gauche » et « Prochaine page de droite » démarrent sur une nouvelle page de ce côté de la double page ; une page blanche est ajoutée si nécessaire.",
+  starts_on_page_instructions_new_page:
+    "Où ce chapitre commence dans le livre imprimé. Il démarre toujours sur une nouvelle page : « Page suivante » juste après le chapitre précédent, « Prochaine page de gauche » ou « Prochaine page de droite » de ce côté de la double page. Une page blanche est ajoutée si nécessaire.",
 
   files_being_sent:
     "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",

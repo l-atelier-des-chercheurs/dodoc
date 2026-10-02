@@ -1,78 +1,76 @@
 <template>
-  <div class="_startsOnPagePicker" role="radiogroup">
+  <div class="_startsOnPagePicker">
     <button
-      v-for="option in options"
-      :key="option.key"
       type="button"
-      class="_option"
-      role="radio"
-      :class="{ 'is--active': option.key === current_key }"
-      :aria-checked="option.key === current_key"
-      :aria-label="option.text"
-      :title="option.text"
-      @click="$emit('select', option.key)"
+      class="_card _card--current"
+      :title="current_option.text"
+      @click="show_modal = true"
     >
-      <span class="_schema" :class="`is--${option.key || 'in_flow'}`">
-        <span
-          v-for="side in sidesFor(option.key)"
-          :key="side.name"
-          class="_page"
-          :class="side.name"
-        >
-          <span
-            v-for="(line, i) in side.lines"
-            :key="i"
-            class="_line"
-            :class="{ 'is--new': line.is_new }"
-            :style="{ width: line.width + '%' }"
-          />
-        </span>
-      </span>
+      <StartsOnPageSchema :option_key="current_option.key" />
+      <span class="_card--text">{{ current_option.text }}</span>
+      <b-icon class="_card--icon" icon="chevron-down" aria-hidden="true" />
     </button>
+
+    <BaseModal2
+      v-if="show_modal"
+      :title="$t('starts_on_page')"
+      @close="show_modal = false"
+    >
+      <div class="u-instructions u-spacingBottom">
+        <small>{{ $t(instructions_key) }}</small>
+      </div>
+      <div class="_options" role="radiogroup">
+        <button
+          v-for="option in options"
+          :key="option.key"
+          type="button"
+          class="_card"
+          role="radio"
+          :class="{ 'is--active': option.key === current_option.key }"
+          :aria-checked="option.key === current_option.key"
+          @click="selectOption(option.key)"
+        >
+          <StartsOnPageSchema :option_key="option.key" />
+          <span class="_card--text">{{ option.text }}</span>
+        </button>
+      </div>
+    </BaseModal2>
   </div>
 </template>
 <script>
-// Each schema shows the end of the previous chapter in grey and the start of
-// the chapter in color, on a page (or a spread, to show left/right).
-const grey = (width = 100) => ({ width, is_new: false });
-const color = (width = 100) => ({ width, is_new: true });
+import StartsOnPageSchema from "@/components/publications/edition/StartsOnPageSchema.vue";
 
 export default {
   props: {
     options: Array,
     value: String,
   },
+  components: {
+    StartsOnPageSchema,
+  },
+  data() {
+    return {
+      show_modal: false,
+    };
+  },
   computed: {
-    current_key() {
-      return this.value || "";
+    // chapters that can not flow (grids, galleries) have no "in the flow" option
+    instructions_key() {
+      return this.options.some((o) => o.key === "")
+        ? "starts_on_page_instructions"
+        : "starts_on_page_instructions_new_page";
+    },
+    current_option() {
+      return (
+        this.options.find((o) => o.key === (this.value || "")) ||
+        this.options[0]
+      );
     },
   },
   methods: {
-    sidesFor(key) {
-      if (key === "left")
-        return [
-          { name: "is--left", lines: [color(80), color(100), color(60)] },
-          { name: "is--right", lines: [color(100), color(90), color(70)] },
-        ];
-      if (key === "right")
-        return [
-          { name: "is--left", lines: [grey(100), grey(80), grey(40)] },
-          { name: "is--right", lines: [color(80), color(100), color(60)] },
-        ];
-      if (key === "page")
-        return [
-          {
-            name: "is--single",
-            lines: [color(80), color(100), color(60), color(90)],
-          },
-        ];
-      // in the flow: the chapter starts in the middle of the page
-      return [
-        {
-          name: "is--single",
-          lines: [grey(100), grey(70), color(90), color(100), color(50)],
-        },
-      ];
+    selectOption(key) {
+      if (key !== this.current_option.key) this.$emit("select", key);
+      this.show_modal = false;
     },
   },
 };
@@ -80,61 +78,63 @@ export default {
 <style lang="scss" scoped>
 ._startsOnPagePicker {
   display: flex;
-  flex-flow: row nowrap;
-  align-items: flex-end;
+}
+
+._options {
+  display: flex;
+  flex-flow: column nowrap;
   gap: calc(var(--spacing) / 2);
 }
 
-._option {
+._card {
   display: flex;
-  padding: 3px;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: calc(var(--spacing) / 1);
+  width: 100%;
+  padding: calc(var(--spacing) / 2);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  // transparent border like the inputs, so heights match
   border: 2px solid transparent;
-  border-radius: var(--border-radius);
-  background: transparent;
+  border-radius: var(--input-border-radius);
+  background: var(--c-gris_clair);
   cursor: pointer;
 
   &:hover,
   &:focus-visible {
-    background: var(--c-gris_clair);
+    border-color: var(--c-gris);
   }
 
   &.is--active {
-    border-color: var(--c-bleumarine, var(--c-noir));
-    background: var(--c-gris_clair);
+    background: var(--c-gris);
   }
 }
 
-._schema {
-  display: flex;
-  flex-flow: row nowrap;
-  height: 32px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+// same height as the inputs and selects next to it:
+// one line of text + vertical padding + 2px borders
+._card--current {
+  --card-height: calc(
+    var(--input-font-size) * 1.5 + var(--spacing) + 4px
+  );
+  --schema-height: calc(var(--card-height) - 4px - 8px);
+  box-sizing: border-box;
+  width: auto;
+  max-width: 100%;
+  height: var(--card-height);
+  padding: 0 calc(var(--spacing) / 2) 0 4px;
+  gap: calc(var(--spacing) / 2);
 }
 
-._page {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 3px;
-  width: 23px;
-  height: 100%;
-  padding: 4px 3px;
-  background: white;
-
-  // fold between the two pages of a spread
-  & + & {
-    border-left: 1px dashed var(--c-gris_fonce);
-  }
+._card--text {
+  flex: 1 1 auto;
+  font-size: var(--sl-font-size-small);
+  line-height: 1.2;
 }
 
-._line {
+._card--icon {
   flex: 0 0 auto;
-  height: 2px;
-  background: var(--c-gris);
-
-  &.is--new {
-    background: var(--c-bleumarine, var(--c-noir));
-  }
 }
 </style>

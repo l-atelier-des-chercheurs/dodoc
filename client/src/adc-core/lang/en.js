@@ -1543,6 +1543,10 @@ export default {
   restore_medias: "Restore medias",
   show_cursor: "Show cursor",
   starts_on_page: "Starts on page",
+  starts_on_page_instructions:
+    "Where this chapter begins in the printed book. “In the flow” continues right after the previous chapter, on the same page. “Next page” starts on a new page. “Next left page” and “Next right page” start on a new page on that side of the spread; a blank page is inserted if needed.",
+  starts_on_page_instructions_new_page:
+    "Where this chapter begins in the printed book. It always starts on a new page: “Next page” right after the previous chapter, “Next left page” or “Next right page” on that side of the spread. A blank page is inserted if needed.",
   today: "Today",
   type: "Type",
   side_by_side: "Side by side",
