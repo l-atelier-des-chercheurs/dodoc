@@ -317,10 +317,24 @@ export default function () {
           const search_params = new URLSearchParams(location.search);
 
           let general_password;
-          if (search_params && search_params.has("general_password"))
+          if (search_params && search_params.has("general_password")) {
             general_password = search_params.get("general_password");
-          else if (localStorage.getItem("general_password"))
-            general_password = localStorage.getItem("general_password");
+            // keep it out of the address bar (history, logs, referrer) but
+            // let a reload of this tab still work
+            try {
+              sessionStorage.setItem("general_password", general_password);
+            } catch (e) {}
+            search_params.delete("general_password");
+            const query = search_params.toString();
+            history.replaceState(
+              history.state,
+              "",
+              location.pathname + (query ? "?" + query : "") + location.hash
+            );
+          } else
+            general_password =
+              localStorage.getItem("general_password") ||
+              sessionStorage.getItem("general_password");
 
           if (general_password)
             await this.submitGeneralPassword({
@@ -329,7 +343,7 @@ export default function () {
               // only forget the password if the server explicitly rejected it,
               // not on network errors / server restarting
               if (REJECTED_PASSWORD_CODES.includes(err?.code)) {
-                localStorage.removeItem("general_password");
+                this.forgetGeneralPassword();
                 this.$eventHub.$emit("app.prompt_general_password");
               }
             });
@@ -845,8 +859,15 @@ export default function () {
         this.setAuthorizationHeader();
         return true;
       },
-      disconnectFromGeneralPassword() {
-        localStorage.setItem("general_password", "");
+      hasStoredGeneralPassword() {
+        return !!(
+          localStorage.getItem("general_password") ||
+          sessionStorage.getItem("general_password")
+        );
+      },
+      forgetGeneralPassword() {
+        localStorage.removeItem("general_password");
+        sessionStorage.removeItem("general_password");
         this.general_password = "";
         this.setAuthorizationHeader();
       },

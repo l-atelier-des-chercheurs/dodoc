@@ -1,4 +1,5 @@
 const cors = require("cors"),
+  crypto = require("crypto"),
   url = require("url"),
   path = require("path");
 
@@ -442,6 +443,13 @@ module.exports = (function () {
     callback(null, { origin: true });
   }
 
+  // hashing first gives both values the same length, so that timingSafeEqual
+  // neither throws nor leaks the length of the expected password
+  function _isSameSecret(submitted, expected) {
+    const hash = (v) => crypto.createHash("sha256").update(String(v)).digest();
+    return crypto.timingSafeEqual(hash(submitted), hash(expected));
+  }
+
   async function _generalPasswordCheck(req, res, next) {
     dev.logapi();
 
@@ -464,7 +472,7 @@ module.exports = (function () {
         throw err;
       }
 
-      if (submitted_general_password !== general_password) {
+      if (!_isSameSecret(submitted_general_password, general_password)) {
         const err = new Error("Submitted general password is wrong");
         err.code = "submitted_general_password_is_wrong";
         throw err;

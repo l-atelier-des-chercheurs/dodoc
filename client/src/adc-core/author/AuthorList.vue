@@ -51,6 +51,18 @@
         </button>
       </fieldset>
 
+      <template v-if="has_stored_general_password">
+        <br />
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="forgetGeneralPassword"
+        >
+          <b-icon icon="key" />
+          {{ $t("forget_general_password") }}
+        </button>
+      </template>
+
       <template v-if="current_mode === 'login'">
         <br />
 
@@ -124,6 +136,12 @@ export default {
     },
   },
   computed: {
+    has_stored_general_password() {
+      return (
+        this.$root.app_infos.instance_meta.has_general_password === true &&
+        this.$api.hasStoredGeneralPassword()
+      );
+    },
     sorted_authors() {
       return this.authors.slice().sort((a, b) => {
         return a.name.localeCompare(b.name);
@@ -131,6 +149,11 @@ export default {
     },
   },
   methods: {
+    forgetGeneralPassword() {
+      this.$api.forgetGeneralPassword();
+      // reload so the password prompt comes back
+      window.location.reload();
+    },
     suggestLogin(path) {
       this.$eventHub.$emit("login.suggest", path);
     },

@@ -1043,6 +1043,8 @@ export default {
   current: "Actuel",
   current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
+  forget_general_password:
+    "Oublier le mot de passe général sur cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
   "module.label.text": "Bloc de texte",

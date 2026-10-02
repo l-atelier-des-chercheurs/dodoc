@@ -367,6 +367,7 @@ export default {
 
   current: "Current",
   save_on_this_device: "Save on this device",
+  forget_general_password: "Forget the general password on this device",
   will_use_cookies: "This feature requires cookies",
 
   "module.label.text": "Text bloc",

@@ -18,23 +18,33 @@
     </p>
 
     <form @submit.prevent="submitGeneralPassword">
+      <!-- gives the password manager a recognizable name for this entry, so
+        it is not mixed up with an account login -->
+      <input
+        type="text"
+        name="username"
+        class="_hiddenUsername"
+        autocomplete="username"
+        :value="$t('general_password')"
+        readonly
+        tabindex="-1"
+        aria-hidden="true"
+      />
       <TextInput
         :label_str="'general_password'"
         :content.sync="password_to_submit"
         :required="true"
         :input_type="'password'"
+        :autocomplete="'current-password'"
         @toggleValidity="($event) => (allow_send = $event)"
         @onEnter="submitGeneralPassword"
       />
 
-      <!-- <ToggleInput
+      <ToggleInput
+        class="u-spacingBottom"
         :content.sync="remember_on_this_device"
         :label="$t('save_on_this_device')"
-        :options="{
-          true: $t('will_use_cookies'),
-          false: $t('will_use_cookies'),
-        }"
-      /> -->
+      />
 
       <button
         type="submit"
@@ -51,9 +61,11 @@
   </BaseModal2>
 </template>
 <script>
+import ToggleInput from "@/adc-core/inputs/ToggleInput.vue";
+
 export default {
   props: {},
-  components: {},
+  components: { ToggleInput },
   data() {
     return {
       password_to_submit: "",
@@ -92,4 +104,15 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// visually hidden but not display:none, which password managers ignore
+._hiddenUsername {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
