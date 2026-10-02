@@ -425,6 +425,15 @@ export default {
       display: none;
     }
 
+    @media print {
+      // paged.js sets break-after on every page, including the last one,
+      // which makes the PDF end with an empty page
+      .pagedjs_page:last-of-type {
+        break-after: auto !important;
+        page-break-after: auto !important;
+      }
+    }
+
     ._textOverflowWarning {
       display: none;
     }
