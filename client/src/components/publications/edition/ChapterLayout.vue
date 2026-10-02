@@ -1,21 +1,16 @@
 <template>
   <div class="_chapterLayout">
-    <fieldset
+    <div
       v-if="['text', 'gallery', 'grid'].includes(chapter.section_type)"
       class="u-spacingBottom _layout"
     >
-      <legend>{{ $t("layout") }}</legend>
       <div class="_optionsRow">
         <div class="_selects--starts_on_page" v-if="show_starts_on_page">
           <DLabel :str="$t('starts_on_page')" />
-          <SelectField2
-            :field_name="'section_starts_on_page'"
-            :value="chapter.section_starts_on_page || ''"
-            :path="chapter.$path"
-            size="small"
-            :hide_validation="true"
-            :can_edit="true"
+          <StartsOnPagePicker
             :options="starts_on_page_options"
+            :value="starts_on_page_value"
+            @select="updateChapterMeta({ section_starts_on_page: $event })"
           />
         </div>
         <template>
@@ -49,12 +44,13 @@
           :publication="publication"
         />
       </div>
-    </fieldset>
+    </div>
   </div>
 </template>
 
 <script>
 import GridAreas from "@/components/publications/edition/GridAreas.vue";
+import StartsOnPagePicker from "@/components/publications/edition/StartsOnPagePicker.vue";
 
 export default {
   props: {
@@ -65,6 +61,7 @@ export default {
   },
   components: {
     GridAreas,
+    StartsOnPagePicker,
   },
   data() {
     return {};
@@ -89,6 +86,13 @@ export default {
         this.view_mode === "book" &&
         !(this.is_first_chapter && !this.has_cover)
       );
+    },
+    starts_on_page_value() {
+      const value = this.chapter.section_starts_on_page || "";
+      // galleries and grids always start on a new page
+      if (!value && ["gallery", "grid"].includes(this.chapter.section_type))
+        return "page";
+      return value;
     },
     starts_on_page_options() {
       if (

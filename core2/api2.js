@@ -495,7 +495,7 @@ module.exports = (function () {
       }
       auth.checkTokenValidity({ token, token_path, purpose: "auth" });
     } catch (err) {
-      return res.status(401).send({ code: err.code });
+      return res.status(401).send({ code: err.code || err.message });
     }
     return res.status(200).json({ code: "success" });
   }
