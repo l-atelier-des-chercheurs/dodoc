@@ -10,7 +10,7 @@
           <StartsOnPagePicker
             :options="starts_on_page_options"
             :value="starts_on_page_value"
-            @select="updateChapterMeta({ section_starts_on_page: $event })"
+            @select="updateStartsOnPage"
           />
         </div>
         <template>
@@ -141,8 +141,16 @@ export default {
     },
   },
   methods: {
+    async updateStartsOnPage(section_starts_on_page) {
+      await this.updateChapterMeta({ section_starts_on_page });
+      // show in the preview where the chapter now starts
+      this.$eventHub.$emit(
+        "edition.zoomToSectionAfterRefresh",
+        this.getFilename(this.chapter.$path)
+      );
+    },
     updateChapterMeta(new_meta) {
-      this.$api.updateMeta({
+      return this.$api.updateMeta({
         path: this.chapter.$path,
         new_meta,
       });

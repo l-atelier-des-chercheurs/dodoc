@@ -74,6 +74,8 @@ export default {
       is_loading: true,
       is_generating_book: false,
       current_zoom: 0.6,
+      zoom_after_refresh: "",
+      zoom_after_refresh_timeout: undefined,
     };
   },
   created() {},
@@ -93,11 +95,20 @@ export default {
       });
     }
     this.$eventHub.$on("edition.zoomToSection", this.zoomToSection);
+    this.$eventHub.$on(
+      "edition.zoomToSectionAfterRefresh",
+      this.zoomToSectionAfterRefresh
+    );
     window.addEventListener("beforeprint", this.beforePrint);
   },
   beforeDestroy() {
     this.removeExistingStyles();
     this.$eventHub.$off("edition.zoomToSection", this.zoomToSection);
+    this.$eventHub.$off(
+      "edition.zoomToSectionAfterRefresh",
+      this.zoomToSectionAfterRefresh
+    );
+    clearTimeout(this.zoom_after_refresh_timeout);
     window.removeEventListener("beforeprint", this.beforePrint);
   },
   watch: {
@@ -200,6 +211,7 @@ export default {
                 this.is_loading = false;
                 this.is_generating_book = false;
                 this.setPublicationReadyState(true);
+                this.zoomToPendingSection();
                 resolve();
               }, 100);
             });
@@ -328,6 +340,24 @@ export default {
     },
     onScrollEnd({ zoom }) {
       this.current_zoom = zoom;
+    },
+    // a layout change re-generates the book: wait for it, then show the
+    // section so the author sees where it now falls
+    zoomToSectionAfterRefresh(meta_filename) {
+      this.zoom_after_refresh = meta_filename;
+      clearTimeout(this.zoom_after_refresh_timeout);
+      // fallback if the change did not trigger a new generation
+      this.zoom_after_refresh_timeout = setTimeout(
+        () => this.zoomToPendingSection(),
+        2500
+      );
+    },
+    zoomToPendingSection() {
+      if (!this.zoom_after_refresh) return;
+      const meta_filename = this.zoom_after_refresh;
+      this.zoom_after_refresh = "";
+      clearTimeout(this.zoom_after_refresh_timeout);
+      this.zoomToSection(meta_filename);
     },
     async zoomToSection(meta_filename) {
       if (!meta_filename) return;
