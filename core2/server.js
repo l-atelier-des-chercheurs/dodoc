@@ -29,8 +29,16 @@ module.exports = function () {
       crossOriginResourcePolicy: false,
       // OSM tile servers require Referer for anonymous usage.
       referrerPolicy: { policy: "origin-when-cross-origin" },
+      // X-Frame-Options can't allow specific domains, frame-ancestors below replaces it
+      frameguard: false,
     })
   );
+
+  const frame_ancestors = _getFrameAncestors();
+  app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", `frame-ancestors ${frame_ancestors}`);
+    next();
+  });
 
   // Rate limiting middleware, slow down API requests after the limit is reached
   const apiSpeedLimiter = slowDown({
@@ -150,3 +158,24 @@ module.exports = function () {
     });
   });
 };
+
+// builds the frame-ancestors value from settings.allowed_iframe_origins,
+// for example ["https://example.com", "https://*.example.org"] or ["*"]
+function _getFrameAncestors() {
+  const allowed_origins = global.settings.allowed_iframe_origins;
+  if (!Array.isArray(allowed_origins) || allowed_origins.length === 0)
+    return "'self'";
+
+  if (allowed_origins.includes("*")) return "*";
+
+  const valid_origins = allowed_origins.filter((origin) => {
+    // prevent injecting other CSP directives or keywords
+    const is_valid =
+      typeof origin === "string" && /^[^\s;,'"]+$/.test(origin);
+    if (!is_valid)
+      dev.error(`allowed_iframe_origins: ignoring invalid value ${origin}`);
+    return is_valid;
+  });
+
+  return ["'self'", ...valid_origins].join(" ");
+}
