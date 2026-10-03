@@ -159,6 +159,7 @@ export default {
   mounted() {
     // Set the home page title
     this.updateDocumentTitle();
+    this.showAdminWelcomeOnFirstLaunch();
 
     setTimeout(() => {
       this.load_whole_page = true;
@@ -167,6 +168,10 @@ export default {
   beforeDestroy() {},
 
   watch: {
+    // the connected account can be restored after the page is displayed
+    connected_as() {
+      this.showAdminWelcomeOnFirstLaunch();
+    },
     current_mode() {
       if (this.current_mode === "spaces") {
         if (this.$route.query?.pfilters) {
@@ -241,6 +246,17 @@ export default {
     },
   },
   methods: {
+    // a new instance comes with a default "Admin" account: the first time
+    // someone connects with it, send them to the explanations, once per browser
+    showAdminWelcomeOnFirstLaunch() {
+      if (this.connected_as?.$path !== "authors/admin") return;
+      try {
+        if (localStorage.getItem("admin_welcome_seen")) return;
+      } catch (e) {
+        return;
+      }
+      this.$router.replace("/admin/welcome");
+    },
     showCredits() {
       this.$eventHub.$emit(`toolbar.openCredits`);
     },

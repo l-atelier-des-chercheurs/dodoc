@@ -1,4 +1,7 @@
 const puppeteer = require("puppeteer");
+const fs = require("fs");
+const { Readable } = require("stream");
+const { pipeline } = require("stream/promises");
 
 const utils = require("./utils");
 
@@ -8,6 +11,17 @@ const CAPTURE_READY_WAIT_MS = 8_000;
 // PDF/PNG export: edition (paged.js) and heavy pubs need longer than 8s.
 const EXPORT_READY_WAIT_MS = 30_000;
 const READY_SETTLE_MS = 400;
+// Drop the shared Chrome once captures stop, so each app does not keep
+// a few hundred MB resident on a multi-app server.
+const BROWSER_IDLE_MS = 60_000;
+// Whole export (load + layout + print): raised for long documents once their
+// page count is known.
+const EXPORT_TIMEOUT_MS = 120_000;
+const PRINT_TIMEOUT_MS_PER_PAGE = 2_000;
+// Chrome reports nothing while printing: progress is estimated from the page
+// count. Rough average, heavy images make pages slower.
+const PRINT_ESTIMATED_MS_PER_PAGE = 300;
+const PRINT_PROGRESS_TICK_MS = 500;
 
 const BROWSER_ARGS = [
   "--no-sandbox",
@@ -20,6 +34,40 @@ const BROWSER_ARGS = [
 
 let shared_browser = null;
 let browser_launch_promise = null;
+let browser_close_promise = null;
+let idle_close_timer = null;
+let active_browser_jobs = 0;
+
+function cancelIdleClose() {
+  if (!idle_close_timer) return;
+  clearTimeout(idle_close_timer);
+  idle_close_timer = null;
+}
+
+function scheduleIdleClose() {
+  cancelIdleClose();
+  if (active_browser_jobs > 0) return;
+  idle_close_timer = setTimeout(() => {
+    idle_close_timer = null;
+    if (active_browser_jobs > 0) return;
+    closeSharedBrowser().catch((err) => {
+      dev.error("Failed to close idle Puppeteer browser:", err);
+    });
+  }, BROWSER_IDLE_MS);
+  if (typeof idle_close_timer.unref === "function") {
+    idle_close_timer.unref();
+  }
+}
+
+function beginBrowserJob() {
+  cancelIdleClose();
+  active_browser_jobs += 1;
+}
+
+function endBrowserJob() {
+  active_browser_jobs = Math.max(0, active_browser_jobs - 1);
+  if (active_browser_jobs === 0) scheduleIdleClose();
+}
 
 function getLaunchOptions() {
   const options = {
@@ -34,31 +82,51 @@ function getLaunchOptions() {
 }
 
 async function acquireBrowser() {
+  cancelIdleClose();
+  if (browser_close_promise) {
+    await browser_close_promise.catch(() => {});
+  }
   if (shared_browser && shared_browser.isConnected()) {
     return shared_browser;
   }
   if (browser_launch_promise) {
     return browser_launch_promise;
   }
-  browser_launch_promise = puppeteer.launch(getLaunchOptions()).then((browser) => {
-    shared_browser = browser;
-    browser_launch_promise = null;
-    browser.on("disconnected", () => {
-      shared_browser = null;
+  browser_launch_promise = puppeteer
+    .launch(getLaunchOptions())
+    .then((browser) => {
+      shared_browser = browser;
+      browser_launch_promise = null;
+      browser.on("disconnected", () => {
+        if (shared_browser === browser) shared_browser = null;
+      });
+      return browser;
+    })
+    .catch((err) => {
+      browser_launch_promise = null;
+      throw err;
     });
-    return browser;
-  });
   return browser_launch_promise;
 }
 
 async function closeSharedBrowser() {
-  if (browser_launch_promise) {
-    await browser_launch_promise.catch(() => {});
-  }
-  if (shared_browser) {
-    await shared_browser.close().catch(() => {});
+  cancelIdleClose();
+  if (browser_close_promise) return browser_close_promise;
+
+  browser_close_promise = (async () => {
+    if (browser_launch_promise) {
+      await browser_launch_promise.catch(() => {});
+    }
+    const browser = shared_browser;
     shared_browser = null;
-  }
+    if (browser) {
+      await browser.close().catch(() => {});
+    }
+  })().finally(() => {
+    browser_close_promise = null;
+  });
+
+  return browser_close_promise;
 }
 
 async function closePage(page) {
@@ -84,6 +152,36 @@ async function installReadyForExportListener(page) {
       );
     });
   }, READY_FOR_EXPORT_EVENT);
+}
+
+async function countPagesToPrint(page, number_of_pages_to_export) {
+  if (number_of_pages_to_export) return number_of_pages_to_export;
+  const pagedjs_pages = await page
+    .evaluate(() => document.querySelectorAll(".pagedjs_page").length)
+    .catch(() => 0);
+  return pagedjs_pages || 1;
+}
+
+// Moves progress from `from` towards `to` without reaching it: fast at first,
+// slowing down once past the estimated duration.
+function startEstimatedProgress({ reportProgress, from, to, estimated_ms }) {
+  if (!reportProgress) return () => {};
+  const start = Date.now();
+  const interval = setInterval(() => {
+    const elapsed = Date.now() - start;
+    const ratio = 1 - Math.exp(-elapsed / estimated_ms);
+    reportProgress(Math.round(from + (to - from) * ratio));
+  }, PRINT_PROGRESS_TICK_MS);
+  return () => clearInterval(interval);
+}
+
+// page.pdf() also keeps the whole PDF in memory: write the stream to disk
+async function printPDFToFile(page, options, path_to_file) {
+  const pdf_stream = await page.createPDFStream(options);
+  await pipeline(
+    Readable.fromWeb(pdf_stream),
+    fs.createWriteStream(path_to_file)
+  );
 }
 
 async function configurePageForCapture(page) {
@@ -135,12 +233,13 @@ module.exports = (function () {
     closeSharedBrowser,
 
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
+      beginBrowserJob();
       let page;
-      let page_timeout = setTimeout(async () => {
-        await closePage(page);
-        const err = new Error("Failed to capture screenshot");
-        err.code = "timeout";
-        throw err;
+      // Must not throw: an async timer rejection is unhandled and exits the app.
+      // Closing the page makes the pending capture reject into the catch below.
+      let page_timeout = setTimeout(() => {
+        dev.error(`screenshot timeout for ${url}`);
+        closePage(page);
       }, 20_000);
 
       try {
@@ -194,6 +293,8 @@ module.exports = (function () {
         clearTimeout(page_timeout);
         await closePage(page);
         throw err;
+      } finally {
+        endBrowserJob();
       }
     },
 
@@ -205,20 +306,28 @@ module.exports = (function () {
       printToPDF_pagesize,
       reportProgress,
     }) => {
+      beginBrowserJob();
       if (reportProgress) reportProgress(0);
 
       let page;
 
-      let page_timeout = setTimeout(async () => {
-        dev.error(`page timeout for ${url}`);
-        clearTimeout(page_timeout);
-        await closePage(page);
-        const err = new Error("Failed to capture media screenshot");
-        err.code = "failed_to_capture_media_screenshot_page-timeout";
-        throw err;
-      }, 120_000);
+      // Must not throw: an async timer rejection is unhandled and exits the app.
+      // Closing the page makes the pending export reject into the catch below.
+      let page_timeout = null;
+      const armPageTimeout = (ms) => {
+        if (page_timeout) clearTimeout(page_timeout);
+        page_timeout = setTimeout(() => {
+          dev.error(`page timeout for ${url}`);
+          page_timeout = null;
+          closePage(page);
+        }, ms);
+      };
+      armPageTimeout(EXPORT_TIMEOUT_MS);
+
+      let stopEstimatedProgress = () => {};
 
       let stopTimeoutAndClosePage = async () => {
+        stopEstimatedProgress();
         if (page_timeout) {
           clearTimeout(page_timeout);
           page_timeout = null;
@@ -272,9 +381,25 @@ module.exports = (function () {
         if (recipe === "pdf") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("pdf");
 
+          const page_count = await countPagesToPrint(
+            page,
+            number_of_pages_to_export
+          );
+          dev.logverbose(`Printing ${page_count} page(s) to PDF`);
+          armPageTimeout(
+            Math.max(EXPORT_TIMEOUT_MS, page_count * PRINT_TIMEOUT_MS_PER_PAGE)
+          );
+          stopEstimatedProgress = startEstimatedProgress({
+            reportProgress,
+            from: 70,
+            to: 98,
+            estimated_ms: page_count * PRINT_ESTIMATED_MS_PER_PAGE,
+          });
+
           const options = {
-            path: path_to_temp_file,
             printBackground: true,
+            // the page timeout above bounds the whole export instead
+            timeout: 0,
             width: `${printToPDF_pagesize.width}mm`,
             height: `${printToPDF_pagesize.height}mm`,
             margin: {
@@ -287,7 +412,8 @@ module.exports = (function () {
           if (number_of_pages_to_export) {
             options.pageRanges = `1-${number_of_pages_to_export}`;
           }
-          await page.pdf(options);
+          await printPDFToFile(page, options, path_to_temp_file);
+          stopEstimatedProgress();
         } else if (recipe === "png") {
           path_to_temp_file = await utils.createUniqueFilenameInCache("png");
           await page.screenshot({
@@ -308,6 +434,8 @@ module.exports = (function () {
       } catch (err) {
         await stopTimeoutAndClosePage();
         throw err;
+      } finally {
+        endBrowserJob();
       }
     },
   };

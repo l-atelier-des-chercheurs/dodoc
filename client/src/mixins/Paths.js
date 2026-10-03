@@ -1,17 +1,10 @@
+import { pathToPublicPath } from "../../../shared/path_to_public_path.mjs";
+
 export default {
   computed: {},
   methods: {
     createURLFromPath(path) {
-      // from spaces/tiers-lieux-edu/projects/mon-premier-projet
-      // to /+tiers-lieux-edu/projects/mon-premier-projet
-      const path_without_space = path
-        .replace("authors/", "/@")
-        .replace("spaces/", "/+")
-        .replace("events/", "/#")
-        .replace("pages/", "/p/")
-        .replace("projects/", "");
-      return path_without_space;
-      // return "/" + path;
+      return pathToPublicPath(path);
     },
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));

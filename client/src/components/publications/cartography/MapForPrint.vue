@@ -115,11 +115,12 @@ export default {
       if (this.ready_maps_count < this.pending_maps_count) return;
 
       if (this.ready_settle_timeout) clearTimeout(this.ready_settle_timeout);
-      this.ready_settle_timeout = setTimeout(() => {
+      this.ready_settle_timeout = setTimeout(async () => {
         if (this.ready_fallback_timeout) {
           clearTimeout(this.ready_fallback_timeout);
           this.ready_fallback_timeout = null;
         }
+        await this.switchImagesToPrintSizes(this.$el);
         this.setPublicationReadyState(true);
       }, 500);
     },

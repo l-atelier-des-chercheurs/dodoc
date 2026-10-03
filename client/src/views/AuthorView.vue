@@ -144,15 +144,10 @@
               <button
                 type="button"
                 class="u-buttonLink"
-                @click="show_settings_modal = true"
+                @click="$router.push('/admin/administration_and_access_control')"
               >
                 {{ $t("add_to_instance_admin") }}
               </button>
-              <AdminSettings
-                v-if="show_settings_modal"
-                :starting_tab="'administration_and_access_control'"
-                @close="show_settings_modal = false"
-              />
             </div>
 
             <div class="u-spacingBottom">
@@ -189,7 +184,6 @@ export default {
   props: {},
   mixins: [DynamicTitle],
   components: {
-    AdminSettings: () => import("@/adc-core/AdminSettings.vue"),
     PositionPicker: () => import("@/adc-core/inputs/PositionPicker.vue"),
   },
   data() {
@@ -197,7 +191,6 @@ export default {
       author: undefined,
       is_loading: true,
       fetch_author_error: false,
-      show_settings_modal: false,
       group_suggestions: [],
     };
   },

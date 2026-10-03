@@ -167,6 +167,7 @@ export default {
 
   login: "Se Connecter",
   logout: "se déconnecter",
+  logging_in: "Connexion en cours…",
   logging_out: "Déconnexion en cours…",
   name_or_pseudonym: "Nom ou pseudonyme",
   email: "Courriel",
@@ -469,6 +470,49 @@ export default {
   close: "Fermer",
   settings: "Réglages",
   admin_settings: "Réglages d’administration",
+  admin_welcome: "Prise en main",
+  admin_welcome_title: "Bienvenue sur votre do•doc",
+  admin_welcome_intro:
+    "C’est ici que se règle cette instance. Tout ce que vous pouvez configurer est réuni ici : choisissez une section dans la liste à gauche, ou commencez par les étapes ci-dessous.",
+  admin_welcome_default_admin:
+    "Le compte « Admin » par défaut utilise encore son mot de passe par défaut, « {password} », qui est public (il est écrit dans la documentation). Toute personne qui le connaît peut administrer cette instance. Changez-le maintenant.",
+  admin_welcome_change_password: "Changer le mot de passe d’administration",
+  admin_password_modal_text:
+    "Choisissez un nouveau mot de passe pour le compte « Admin », l’administrateur par défaut de cette instance.",
+  admin_password_must_differ:
+    "Choisissez un mot de passe différent de celui par défaut.",
+  admin_password_changed: "Le mot de passe d’administration a été changé",
+  admin_welcome_anyone_can_admin:
+    "Pour l’instant, tout le monde peut modifier ces réglages, même sans compte. Définissez qui sont les administrateur·ices.",
+  admin_welcome_steps: "Pour commencer",
+  admin_welcome_sections: "Ce que vous pouvez régler",
+  admin_welcome_step_password: "Changer le mot de passe d’administration",
+  admin_welcome_step_informations:
+    "Donner un nom et une présentation à votre instance",
+  admin_welcome_step_access:
+    "Choisir qui peut administrer, contribuer et s’inscrire",
+  admin_welcome_step_images: "Ajouter un logo et une image d’accueil",
+  admin_page_restricted:
+    "Cette page est réservée aux administrateur·ices de cette instance. Identifiez-vous avec un compte administrateur pour y accéder.",
+  admin_tab_desc_informations:
+    "Nom de l’instance, texte de présentation et courriel de contact affichés sur la page d’accueil.",
+  admin_tab_desc_logo_and_images:
+    "Logo, favicon et image affichée sur la page d’accueil.",
+  admin_tab_desc_administration_and_access_control:
+    "Qui administre et contribue, conditions d’inscription, mot de passe général, indexation par les moteurs de recherche, taille des fichiers et suppression.",
+  admin_tab_desc_fonts:
+    "Téléverser des typographies utilisables dans les publications.",
+  admin_tab_desc_chats: "Activer ou désactiver les discussions.",
+  admin_tab_desc_events:
+    "Activer ou désactiver la section événements de la page d’accueil.",
+  admin_tab_desc_terms:
+    "Pages des conditions d’utilisation et de confidentialité, et acceptation obligatoire à l’inscription.",
+  admin_tab_desc_suggested_cat_kw:
+    "Mots-clés et catégories suggérés lors de la description d’un contenu.",
+  admin_tab_desc_storage:
+    "Emplacement du contenu sur cet ordinateur (application de bureau uniquement).",
+  admin_tab_desc_debug_logs:
+    "Journaux récents, pour aider à diagnostiquer un problème.",
   list_of_pages: "Liste des pages",
   list_of_spreads: "Liste des planches",
   grid: "Grille",
@@ -1042,6 +1086,8 @@ export default {
   current: "Actuel",
   current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
+  forget_general_password:
+    "Oublier le mot de passe général sur cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
   "module.label.text": "Bloc de texte",
@@ -1423,6 +1469,8 @@ export default {
   items_in_bin: "Éléments dans la corbeille",
   bin_removal_notice:
     "Les éléments dans la corbeille sont automatiquement supprimés après 30 jours.",
+  versions_removal_notice:
+    "Les versions précédentes sont automatiquement supprimées après 30 jours.",
   restore: "Restaurer",
   remove_for_good: "Supprimer définitivement",
   bin_is_empty: "La corbeille est vide",
@@ -1440,6 +1488,37 @@ export default {
     "Nombre total de planches dans la publication : {total}",
   total_number_of_pages_in_publication:
     "Nombre total de pages dans la publication : {total}",
+  booklet_imposition: "Imposer en livret (pour reliure)",
+  booklet_imposition_explanations:
+    "Les pages sont réorganisées deux par deux sur des feuilles deux fois plus larges qu’une page. Imprimez en recto-verso en retournant sur le bord court, puis pliez chaque cahier en deux et agrafez-le ou cousez-le.",
+  pages_per_signature: "Pages par cahier",
+  single_signature: "Un seul cahier (piqûre à cheval)",
+  pdf_with_imposition: "PDF avec imposition",
+  embedded_images_quality: "Qualité des images intégrées dans le document",
+  image_quality_high: "Haute (300 dpi)",
+  image_quality_medium: "Moyenne (150 dpi)",
+  image_quality_draft: "Brouillon (48 dpi, léger et rapide)",
+  image_quality_source: "Utiliser directement les fichiers sources",
+  image_quality_dpi_instructions:
+    "La résolution choisie est un minimum : chaque image est intégrée dans la plus petite taille disponible qui l’atteint à sa taille d’impression, ou avec son fichier source si aucune taille n’est assez grande.",
+  image_quality_source_instructions:
+    "Utiliser les fichiers sources peut créer des PDF beaucoup plus lourds.",
+  booklet_sheet_format:
+    "Feuille : {width} × {height} mm{format}, imprimée en recto-verso",
+  booklet_summary: "{signatures} cahier(s) · {sheets} feuille(s) au total",
+  booklet_blank_pages: "{count} page(s) blanche(s) ajoutée(s) à la fin",
+  signature_n: "Cahier {n}",
+  sheet_n: "Feuille {n}",
+  pages_from_to: "pages {start} à {end}",
+  recto: "recto",
+  verso: "verso",
+  landscape: "Paysage",
+  portrait: "Portrait",
+  more_sheets: "+ {count} autre(s) feuille(s)",
+  more_signatures: "+ {count} autre(s) cahier(s)",
+  pdf_of_page: "PDF de la page {page}",
+  pdf_of_pages: "PDF des pages {start} à {end}",
+  image_of_page: "Image de la page {page}",
   "type:": "Type : {type}",
 
   failed_to_export: "Échec de l’exportation",
@@ -1539,6 +1618,11 @@ export default {
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",
   starts_on_page: "Démarre sur",
+  show_page_number: "Afficher le numéro de page",
+  starts_on_page_instructions:
+    "Où ce chapitre commence dans le livre imprimé. « À la suite » continue juste après le chapitre précédent, sur la même page. « Page suivante » démarre sur une nouvelle page. « Prochaine page de gauche » et « Prochaine page de droite » démarrent sur une nouvelle page de ce côté de la double page ; une page blanche est ajoutée si nécessaire.",
+  starts_on_page_instructions_new_page:
+    "Où ce chapitre commence dans le livre imprimé. Il démarre toujours sur une nouvelle page : « Page suivante » juste après le chapitre précédent, « Prochaine page de gauche » ou « Prochaine page de droite » de ce côté de la double page. Une page blanche est ajoutée si nécessaire.",
 
   files_being_sent:
     "Tous les médias ont été importés | {count} média en cours d’importation | {count} médias en cours d’importation ",

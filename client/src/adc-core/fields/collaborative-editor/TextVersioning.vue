@@ -2,9 +2,14 @@
   <BaseModal2
     :title="$t('list_of_versions')"
     class="_modal"
+    :size="'large'"
     @close="$emit('close')"
   >
     <div class="_archives" v-if="archives">
+      <div class="u-notice">
+        <b-icon icon="info-circle" />
+        {{ $t("versions_removal_notice") }}
+      </div>
       <div class="_topbar">
         <button
           class="u-button u-button_small"
@@ -18,15 +23,13 @@
         <div>
           <select v-model="selected_archive_filename">
             <option
-              v-for="(archive, index) in archives"
+              v-for="archive in archives"
               :value="archive.filename"
               :key="archive.filename"
               v-text="
                 archive.filename === 'current'
                   ? $t('current')
-                  : formatDateTimeToPrecise(archive.date) +
-                    ' - version ' +
-                    (archives.length - index)
+                  : formatDateTimeToPrecise(archive.date)
               "
             />
           </select>

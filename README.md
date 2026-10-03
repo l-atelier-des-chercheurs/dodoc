@@ -400,7 +400,7 @@ So, for example for a space /bonjour, its $admins can edit all meta properties w
 Data stored in the LocalStorage (similar to cookies) :
 
 - sessionID: random identifier to persist connection
-- general_password: access password for dodoc if set for that instance, and if "remember" is checked
+- general_password: access password for dodoc if set for that instance, and if "remember" is checked (a password given through a `?general_password=` link is kept in the SessionStorage of that tab only, and removed from the address bar)
 - tokenpath: login identifier, to reconnect to a logged in account when the page is refreshed
 - selected_devices: selected video/audio devices in Capture page
 - location_to_add_to_medias: coordinates picked to add to captured media

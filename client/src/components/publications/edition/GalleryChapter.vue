@@ -93,8 +93,11 @@ export default {
       });
     },
     removeMedia(media) {
+      const media_meta = this.getFilename(media.$path);
       const source_medias = this.chapter.source_medias.filter(
-        (sm) => sm.meta_filename_in_project !== this.getFilename(media.$path)
+        (sm) =>
+          sm.meta_filename_in_project !== media_meta &&
+          sm.meta_filename !== media_meta
       );
       this.$api.updateMeta({
         path: this.chapter.$path,

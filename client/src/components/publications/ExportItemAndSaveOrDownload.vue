@@ -1,6 +1,6 @@
 <template>
   <BaseModal2
-    :title="$t('webpage')"
+    :title="modal_title"
     :size="modal_size"
     @close="removeAndCloseModal"
   >
@@ -37,6 +37,15 @@
         />
         <div class="u-spacingBottom" />
         <ShowExportedFileInfos :file="created_doc" />
+        <template v-if="imposed_page_count && instructions.imposition">
+          <div class="u-spacingBottom" />
+          <BookletImpositionSchema
+            :page_count="imposed_page_count"
+            :signature_size="instructions.imposition.signature_size"
+            :page_width="instructions.page_width"
+            :page_height="instructions.page_height"
+          />
+        </template>
       </template>
       <template slot="footer">
         <button type="button" class="u-button" @click="removeAndCloseModal">
@@ -70,18 +79,21 @@
 </template>
 <script>
 import ShowExportedFileInfos from "@/components/fields/ShowExportedFileInfos.vue";
+import BookletImpositionSchema from "@/components/publications/BookletImpositionSchema.vue";
 
 export default {
   props: {
     publication_path: String,
     instructions: Object,
+    title: String,
     can_save_to_project: Boolean,
   },
-  components: { ShowExportedFileInfos },
+  components: { ShowExportedFileInfos, BookletImpositionSchema },
   data() {
     return {
       is_exporting: false,
       created_doc: undefined,
+      imposed_page_count: undefined,
       task_progress: 0,
       fail_message: undefined,
     };
@@ -93,6 +105,13 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    modal_title() {
+      if (this.title) return this.title;
+      if (this.instructions.recipe === "pdf") return this.$t("pdf");
+      if (this.instructions.recipe === "png") return this.$t("image");
+      if (this.instructions.recipe === "webpage") return this.$t("webpage");
+      return this.$t("export");
+    },
     modal_size() {
       return this.is_exporting ? "small" : "large";
     },
@@ -129,6 +148,7 @@ export default {
         this.$api.leave({ room: "task_" + current_task_id });
         if (event === "completed") {
           this.created_doc = message.file;
+          this.imposed_page_count = message.imposition?.page_count;
         } else if (event === "aborted") {
           this.fail_message = this.$t("failed_to_export");
           //

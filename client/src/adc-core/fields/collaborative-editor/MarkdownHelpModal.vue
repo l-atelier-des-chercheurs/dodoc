@@ -26,16 +26,21 @@ Un deuxième paragraphe."
 
     <p>
       Pour espacer davantage des éléments (paragraphes, titres, images, etc.),
-      ajouter un caractère \ en début de ligne :
+      laisser plusieurs lignes blanches. Chaque ligne blanche supplémentaire
+      ajoute une ligne vide entre les deux paragraphes :
     </p>
     <div class="u-spacingBottom" />
     <CodeBlock
       code="Un premier paragraphe.
-\
-\
-\
+
+
+
 Un deuxième paragraphe."
     />
+    <p>
+      Ici, trois lignes blanches donnent deux lignes vides supplémentaires entre
+      les paragraphes.
+    </p>
 
     <h3>Saut de page</h3>
     <p>

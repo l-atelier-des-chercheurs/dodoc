@@ -1,17 +1,16 @@
 {
-  "public_url": "https://domain-to-your-dodoc.com",
+  "public_url": "",
   "desired_port": 8080,
   "contentPath": "dodoc",
-  "stadia_maps_api_key": "",
 
   "mailer": {
-    "host": "smtp.example.com",
+    "host": "",
     "port": 587,
     "secure": false,
     "auth": {
-      "user": "your@email.com",
-      "pass": "yourpassword"
+      "user": "",
+      "pass": ""
     },
-    "from": "do•doc <your@email.com>"
+    "from": ""
   }
 }

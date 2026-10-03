@@ -13,7 +13,9 @@ const utils = require("./utils"),
   tasks = require("./exporter_tasks/tasks"),
   effects = require("./exporter_tasks/effects"),
   optimizer = require("./exporter_tasks/optimizer"),
-  ffmpegTracker = require("./ffmpeg-tracker");
+  imposition = require("./exporter_tasks/imposition"),
+  ffmpegTracker = require("./ffmpeg-tracker"),
+  { joinPublicUrl } = require("../shared/path_to_public_path.mjs");
 
 class Exporter {
   constructor({ path_to_folder, folder_to_export_to, instructions }) {
@@ -33,6 +35,7 @@ class Exporter {
     this.status = "started";
 
     let full_path_to_file;
+    let imposed_page_count;
 
     if (this.instructions.recipe === "stopmotion") {
       full_path_to_file = await this._createStopmotionFromImages();
@@ -40,6 +43,11 @@ class Exporter {
       full_path_to_file = await this._createStopmotionFromImages();
     } else if (this.instructions.recipe === "pdf") {
       full_path_to_file = await this._loadPageAndPrint();
+      if (this.instructions.imposition?.mode === "booklet") {
+        const imposed = await this._imposeBooklet(full_path_to_file);
+        full_path_to_file = imposed.path;
+        imposed_page_count = imposed.page_count;
+      }
     } else if (this.instructions.recipe === "png") {
       full_path_to_file = await this._loadPageAndPrint();
     } else if (this.instructions.recipe === "webpage") {
@@ -95,6 +103,9 @@ class Exporter {
     this._notifyEnded({
       event: "completed",
       file: exported_file,
+      imposition: imposed_page_count
+        ? { page_count: imposed_page_count }
+        : undefined,
     });
 
     return exported_path_to_meta;
@@ -339,37 +350,20 @@ class Exporter {
 
       let url = this._createURLFromPath(this.path_to_folder);
 
-      let query = {};
-      if (this.instructions.page) query.page = this.instructions.page;
-      if (this.instructions.view_mode)
-        query.view_mode = this.instructions.view_mode;
-      if (this.instructions.style) query.style = this.instructions.style;
-      if (this.instructions.display) query.display = this.instructions.display;
-      if (this.instructions.view) query.view = this.instructions.view;
-      if (this.instructions.make_preview === true) query.make_preview = true;
+      const url_query = {
+        ...(this.instructions.url_query || {}),
+      };
+      delete url_query.superadmintoken;
+      url_query.superadmintoken = auth.getSuperadminToken();
 
-      const superadmintoken = auth.getSuperadminToken();
-      query.superadmintoken = superadmintoken;
-
-      const searchParams = new URLSearchParams(query);
+      const searchParams = new URLSearchParams(url_query);
       url += "?" + searchParams.toString();
 
       const layout_mode = this.instructions.layout_mode || "print";
       const document_width = this.instructions.page_width || 210;
       const document_height = this.instructions.page_height || 297;
 
-      let number_of_pages_to_export = undefined;
-      if (this.instructions.page) {
-        if (
-          typeof this.instructions.page === "string" &&
-          this.instructions.page.includes("-")
-        ) {
-          const [start, end] = this.instructions.page.split("-");
-          number_of_pages_to_export = end - start + 1;
-        } else {
-          number_of_pages_to_export = 1;
-        }
-      }
+      const number_of_pages_to_export = this.instructions.page_count;
 
       const recipe = this.instructions.recipe;
 
@@ -399,25 +393,31 @@ class Exporter {
     }
   }
 
+  async _imposeBooklet(path_to_pdf) {
+    try {
+      dev.logfunction();
+      this._notifyProgress(92);
+      const booklet = await imposition.imposeBooklet({
+        source: path_to_pdf,
+        signature_size: this.instructions.imposition.signature_size,
+      });
+      await fs.remove(path_to_pdf);
+      return booklet;
+    } catch (err) {
+      dev.error(`err for imposition ${err}`);
+      this._notifyEnded({
+        event: "failed",
+        info: err.message,
+      });
+      throw new Error(`failed`);
+    }
+  }
+
   _loadPageAndExport() {
     return new Promise(async (resolve, reject) => {
       this._notifyProgress(5);
 
-      // convert path_to_folder to URL (see createURLFromPath)
       dev.logfunction();
-
-      let url = this._createURLFromPath(this.path_to_folder);
-
-      let query = {};
-
-      // use superadmin token
-      const superadmintoken = auth.getSuperadminToken();
-      query.superadmintoken = superadmintoken;
-
-      if (Object.keys(query).length > 0) {
-        const searchParams = new URLSearchParams(query);
-        url += "?" + searchParams.toString();
-      }
 
       const res = this.instructions.express_res;
 
@@ -1105,11 +1105,13 @@ class Exporter {
   }
 
   _createURLFromPath(path_to_folder) {
-    const path_without_space = path_to_folder
-      .replace("spaces" + path.sep, "+")
-      .replace("projects" + path.sep, "");
+    // PDF/PNG: Puppeteer loads this URL on the server. Prefer public_url (VPS /
+    // reverse proxy); fall back to homeURL (local dev, same-machine Puppeteer).
     const base_url = utils.getPublicUrl({ fallback_to_home_url: true });
-    return base_url + "/" + path_without_space;
+    if (!base_url) {
+      throw new Error("missing_public_url_for_print_export");
+    }
+    return joinPublicUrl(base_url, path_to_folder);
   }
 }
 

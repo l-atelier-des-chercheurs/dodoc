@@ -14,6 +14,7 @@
     "test:unit": "vitest"
   },
   "dependencies": {
+    "@cantoo/pdf-lib": "^2.11.1",
     "@chenfengyuan/vue-qrcode": "^1.0.2",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.13.2",
@@ -29,7 +30,6 @@
     "highlight.js": "^11.11.1",
     "imagetracerjs": "^1.2.6",
     "infinite-viewer": "^0.29.1",
-    "jspdf": "^3.0.4",
     "lean-qr": "^2.6.1",
     "markdown-it": "^14.1.0",
     "markdown-it-attrs": "^4.3.1",

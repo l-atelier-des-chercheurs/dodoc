@@ -104,6 +104,8 @@ import DOMPurify from "dompurify";
 import { generate } from "lean-qr";
 import { resolveAppPublicOrigin } from "@/utils/app_public_url.js";
 import { renderMedia as renderMediaFunction } from "@/components/publications/edition/renderMedia.js";
+import { imageSourceAttributes } from "@/utils/printImageQuality.js";
+import { keepExtraBlankLines } from "@/utils/markdownBlankLines.js";
 
 import PagedViewer from "@/components/publications/edition/PagedViewer.vue";
 import DocViewer from "@/components/publications/edition/DocViewer.vue";
@@ -173,6 +175,10 @@ export default {
     // },
   },
   computed: {
+    // set by PDF exports (ExportPubliModal): high / medium / source
+    image_quality() {
+      return this.$route?.query?.image_quality;
+    },
     format_mode() {
       if (this.publication.page_width && this.publication.page_height) {
         return `${this.publication.page_width}mm ${this.publication.page_height}mm`;
@@ -231,6 +237,7 @@ export default {
         _chapter.title = chapter.section_title;
         _chapter.meta_filename = this.getFilename(chapter.$path);
         _chapter.starts_on_page = chapter.section_starts_on_page || "in_flow";
+        _chapter.show_pagination = chapter.section_show_pagination === true;
         _chapter.column_count = chapter.column_count || 1;
         _chapter.section_type = chapter.section_type || "text";
         if (!chapter.section_type || chapter.section_type === "text") {
@@ -301,7 +308,9 @@ export default {
         if (nodes.cover.title)
           html += `<hgroup class="coverTitle">${nodes.cover.title}</hgroup>`;
         if (nodes.cover.image_url)
-          html += `<div class="coverImage"><img src="${nodes.cover.image_url}" /></div>`;
+          html += `<div class="coverImage"><img ${imageSourceAttributes(
+            this.makeImageSources(nodes.cover.image_meta)
+          )} /></div>`;
         html += `</section>\n\n`;
       }
 
@@ -322,6 +331,7 @@ export default {
           data-chapter-meta-filename="${chapter.meta_filename}"
           data-chapter-title="${chapter.title}"
           data-chapter-type="${chapter.section_type}"
+          data-show-pagination="${chapter.show_pagination}"
         >`;
         if (
           chapter.title &&
@@ -493,7 +503,7 @@ export default {
         allowedAttributes: [], // empty array = all attributes are allowed
       });
 
-      const result = md.render(content);
+      const result = md.render(keepExtraBlankLines(content));
       // Allow iframes for PDFs and other embedded content
       const sanitized_result = DOMPurify.sanitize(result, {
         ADD_TAGS: ["iframe"],
@@ -536,10 +546,7 @@ export default {
           return;
         }
         html += `<figure class="media gallery--item">
-          <img src="${this.makeMediaFileURL({
-            $path: media.$path,
-            $media_filename: media.$media_filename,
-          })}" />
+          <img ${imageSourceAttributes(this.makeImageSources(media))} />
         </figure>`;
       });
 
@@ -630,10 +637,8 @@ export default {
 
         if (!media && source_media) {
           // try to find in chapter source_medias
-          const local_media = chapter?.source_medias?.find(
-            (sm) =>
-              sm?.meta_filename_in_project ===
-              source_media?.meta_filename_in_project
+          const local_media = chapter?.source_medias?.find((sm) =>
+            this.sourceMediaRefsMatch(sm, source_media)
           );
           if (local_media) media = local_media._media;
         }
@@ -683,10 +688,9 @@ export default {
           )}</div>`;
         } else if (media?.$type === "image") {
           const img = document.createElement("img");
-          img.src = this.makeMediaFileURL({
-            $path: media.$path,
-            $media_filename: media.$media_filename,
-          });
+          const { src, sources } = this.makeImageSources(media);
+          img.src = src;
+          if (sources) img.dataset.printSources = JSON.stringify(sources);
           img.style.width = "100%";
           img.style.height = "100%";
           img.style.objectFit = objectFit;
@@ -704,45 +708,15 @@ export default {
       return html.innerHTML;
     },
 
+    makeImageSources(media) {
+      return this.makeImageSourcesForPrint(media, this.image_quality);
+    },
     getMediaSrc(meta_src, source_medias) {
-      if (!meta_src) return;
-
-      let source_media;
-
-      if (meta_src.startsWith("./")) {
-        meta_src = meta_src.substring(2);
-        source_media = {
-          meta_filename: meta_src,
-        };
-      } else if (meta_src.startsWith("../")) {
-        meta_src = meta_src.substring(3);
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      } else {
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      }
-
-      let media = this.getSourceMedia({
-        source_media,
+      return this.resolveMediaFromMetaSrc({
+        meta_src,
+        source_medias,
         folder_path: this.publication.$path,
       });
-
-      if (!media) {
-        // attempt to find in chapter source_medias
-        if (source_medias?.length > 0) {
-          const local_media = source_medias.find(
-            (sm) => sm.meta_filename_in_project === meta_src
-          );
-          if (local_media) media = local_media._media;
-        }
-      }
-
-      if (!media) return;
-
-      return media;
     },
     renderMedia({
       media,
@@ -771,6 +745,7 @@ export default {
           makeMediaFileURL: this.makeMediaFileURL.bind(this),
           makeQREmbedForQR: this.makeQREmbedForQR.bind(this),
           makeQREmbedForExternalURL: this.makeQREmbedForExternalURL.bind(this),
+          makeImageSources: this.makeImageSources.bind(this),
           getMissingMediaNoticeText: () => this.$t("source_media_missing"),
         },
       });
@@ -876,7 +851,10 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    // scroll container clips print output to its first page
+    @media screen {
+      overflow: auto;
+    }
   }
 }
 

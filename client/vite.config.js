@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from "node:url";
 
-import { defineConfig } from "vite";
+import { defineConfig, searchForWorkspaceRoot } from "vite";
 import vue2 from "@vitejs/plugin-vue2";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import mkcert from "vite-plugin-mkcert";
@@ -36,6 +36,13 @@ export default defineConfig({
     origin: undefined,
     cors: {
       origin: "*",
+    },
+    fs: {
+      // allow importing helpers shared with core2 (../shared)
+      allow: [
+        searchForWorkspaceRoot(process.cwd()),
+        fileURLToPath(new URL("../shared", import.meta.url)),
+      ],
     },
   },
   build: {

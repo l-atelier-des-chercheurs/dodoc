@@ -49,7 +49,7 @@
   width: 2cm;
   height: 2cm;
   margin: 0;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 0.25em;
 }
 .media._isqrcode .mediaInfos {
@@ -349,4 +349,40 @@ hr {
   left: calc(var(--pagedjs-margin-left) * -1);
   width: var(--pagedjs-width);
   height: calc(var(--pagedjs-height) / 2);
+}
+
+/* GRID PAGE NUMBER (optional, off by default: grids are full-bleed) */
+/* the page keeps its 0 margin so the grid is untouched: the number is drawn
+   over the grid, in the bottom corner */
+.chapter[data-chapter-type="grid"][data-show-pagination="true"],
+.chapter[data-chapter-type="grid"][data-show-pagination="true"] .grid-content {
+  page: gridpaginated;
+}
+@page gridpaginated {
+  margin: 0;
+}
+@page gridpaginated:left {
+  @bottom-left {
+    content: counter(page);
+    font-size: 10pt;
+    font-family: var(--title-font, inherit);
+    color: var(--main-color, inherit);
+    text-align: left;
+    padding-left: 13mm;
+    transform: translateY(-12mm);
+  }
+}
+@page gridpaginated:right {
+  @bottom-right {
+    content: counter(page);
+    font-size: 10pt;
+    font-family: var(--title-font, inherit);
+    color: var(--main-color, inherit);
+    text-align: right;
+    padding-right: 13mm;
+    transform: translateY(-12mm);
+  }
+}
+.pagedjs_gridpaginated_page .pagedjs_margin {
+  z-index: 10;
 }

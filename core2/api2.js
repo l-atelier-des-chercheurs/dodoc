@@ -1,4 +1,5 @@
 const cors = require("cors"),
+  crypto = require("crypto"),
   url = require("url"),
   path = require("path");
 
@@ -43,6 +44,11 @@ module.exports = (function () {
     app.get("/_api2/_storagePath", _onlyAdmins, _getStoragePath);
     app.patch("/_api2/_storagePath", _onlyAdmins, _setStoragePath);
     app.post("/_api2/_restartApp", _onlyAdmins, _restartApp);
+    app.get(
+      "/_api2/_defaultAdminPasswordStatus",
+      _onlyAdmins,
+      _getDefaultAdminPasswordStatus
+    );
 
     app.get("/_api2/_logs", _getLogs);
     app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
@@ -442,6 +448,13 @@ module.exports = (function () {
     callback(null, { origin: true });
   }
 
+  // hashing first gives both values the same length, so that timingSafeEqual
+  // neither throws nor leaks the length of the expected password
+  function _isSameSecret(submitted, expected) {
+    const hash = (v) => crypto.createHash("sha256").update(String(v)).digest();
+    return crypto.timingSafeEqual(hash(submitted), hash(expected));
+  }
+
   async function _generalPasswordCheck(req, res, next) {
     dev.logapi();
 
@@ -464,7 +477,7 @@ module.exports = (function () {
         throw err;
       }
 
-      if (submitted_general_password !== general_password) {
+      if (!_isSameSecret(submitted_general_password, general_password)) {
         const err = new Error("Submitted general password is wrong");
         err.code = "submitted_general_password_is_wrong";
         throw err;
@@ -495,7 +508,7 @@ module.exports = (function () {
       }
       auth.checkTokenValidity({ token, token_path, purpose: "auth" });
     } catch (err) {
-      return res.status(401).send({ code: err.code });
+      return res.status(401).send({ code: err.code || err.message });
     }
     return res.status(200).json({ code: "success" });
   }
@@ -2597,6 +2610,33 @@ module.exports = (function () {
       filename: req.params.filename,
       res,
     });
+  }
+  // a new instance ships with an "admin" account whose password is public
+  // (see the README): tell admins if it still has this default password.
+  // folder.login only checks the password, it does not open a session.
+  async function _getDefaultAdminPasswordStatus(req, res, next) {
+    dev.logapi();
+    const DEFAULT_ADMIN_PASSWORD = "dodoc";
+    const status = { account_exists: false, is_default_password: false };
+    try {
+      await folder.login({
+        path_to_folder: path.join("authors", "admin"),
+        submitted_password: DEFAULT_ADMIN_PASSWORD,
+      });
+      status.account_exists = true;
+      status.is_default_password = true;
+    } catch (err) {
+      if (
+        err.code === "submitted_password_is_wrong" ||
+        err.code === "no_password_for_folder"
+      )
+        status.account_exists = true;
+      else if (err.code !== "ENOENT") {
+        dev.error(err.message);
+        return res.status(500).send({ code: "default_admin_check_failed" });
+      }
+    }
+    res.json(status);
   }
   async function _getStoragePath(req, res, next) {
     const pathToUserContent = await settings.getStoragePath();

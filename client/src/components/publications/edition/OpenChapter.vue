@@ -68,6 +68,14 @@
         />
 
         <DropDown :right="true" :show_label="false">
+          <button
+            type="button"
+            class="u-buttonLink"
+            @click="$emit('duplicate')"
+          >
+            <b-icon icon="file-plus" />
+            {{ $t("duplicate") }}
+          </button>
           <RemoveMenu @remove="$emit('remove')" />
         </DropDown>
       </div>
@@ -216,10 +224,10 @@ export default {
   //   0 3.5px 6px hsla(230, 13%, 9%, 0.09);
   filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1));
 
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  // border-top-left-radius: 4px;
+  // border-top-right-radius: 4px;
 
-  margin: 0 calc(var(--spacing) / 1);
+  margin: 0;
   margin-bottom: 0;
   padding: calc(var(--spacing) * 2);
 }

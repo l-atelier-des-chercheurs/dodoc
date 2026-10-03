@@ -7,6 +7,9 @@
         :area="area"
         :chapter="chapter"
         :publication="publication"
+        :has_text_overflow="
+          chainHasTextOverflow({ area_id: area.id, chapter })
+        "
       />
     </div>
   </div>
@@ -14,8 +17,10 @@
 
 <script>
 import GridItem from "./GridItem.vue";
+import EditionTextOverflow from "@/mixins/EditionTextOverflow.js";
 
 export default {
+  mixins: [EditionTextOverflow],
   props: {
     chapter: Object,
     publication: Object,
@@ -25,6 +30,18 @@ export default {
   },
   data() {
     return {};
+  },
+  mounted() {
+    this.$eventHub.$on(
+      "edition.scrollToGridContent",
+      this.onScrollToGridContent
+    );
+  },
+  beforeDestroy() {
+    this.$eventHub.$off(
+      "edition.scrollToGridContent",
+      this.onScrollToGridContent
+    );
   },
   computed: {
     sorted_grid_areas() {
@@ -47,7 +64,20 @@ export default {
         }, []);
     },
   },
-  methods: {},
+  methods: {
+    onScrollToGridContent({ chapter_path, area_id }) {
+      if (chapter_path !== this.chapter.$path || !area_id) return;
+      const target = this.$el.querySelector(
+        `[data-grid-content-area-id="${area_id}"]`
+      );
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.classList.add("_gridItem--scrollHighlight");
+      setTimeout(() => {
+        target.classList.remove("_gridItem--scrollHighlight");
+      }, 1200);
+    },
+  },
 };
 </script>
 
@@ -60,5 +90,10 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   gap: calc(var(--spacing) * 1);
+}
+
+::v-deep ._gridItem--scrollHighlight {
+  outline: 2px solid var(--c-bleuvert);
+  outline-offset: 2px;
 }
 </style>

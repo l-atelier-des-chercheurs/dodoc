@@ -55,6 +55,7 @@
             :publication="publication"
             :chapter_position="getChapterPosition(opened_chapter.$path)"
             :view_mode="view_mode"
+            @duplicate="duplicateChapter(opened_chapter)"
             @remove="removeChapter(opened_chapter)"
             @close="closeChapter"
             @prev="openChapter(-1)"
@@ -310,6 +311,189 @@ export default {
           value: new_chapter_filename,
         });
       }
+    },
+    async duplicateChapter(chapter) {
+      try {
+        const copied_filenames = {};
+        const new_meta = {
+          section_title:
+            this.$t("copy_of") +
+            " " +
+            (chapter.section_title || this.$t("untitled")),
+        };
+
+        if (chapter.section_type === "text") {
+          new_meta.source_medias = await this.duplicateSourceMedias({
+            source_medias: chapter.source_medias,
+            copied_filenames,
+          });
+          if (chapter._main_text) {
+            new_meta.main_text_meta = await this.duplicateTextFile({
+              text_file: chapter._main_text,
+              copied_filenames,
+            });
+          }
+        } else if (chapter.section_type === "grid") {
+          new_meta.grid_areas = await this.duplicateGridAreas({
+            grid_areas: chapter.grid_areas,
+            copied_filenames,
+          });
+          new_meta.source_medias = this.getGridEmbeddedSourceMedias({
+            grid_areas: new_meta.grid_areas,
+          });
+        } else {
+          new_meta.source_medias = await this.duplicateSourceMedias({
+            source_medias: chapter.source_medias,
+            copied_filenames,
+          });
+        }
+
+        const new_chapter_meta = await this.$api.copyFile({
+          path: chapter.$path,
+          new_meta,
+        });
+
+        const sections_list = this.getSectionsList({
+          publication: this.publication,
+          group: "sections_list",
+        }).slice();
+        const section_index = sections_list.findIndex(
+          (s) => s.meta_filename === this.getFilename(chapter.$path)
+        );
+        sections_list.splice(section_index + 1, 0, {
+          meta_filename: new_chapter_meta,
+        });
+
+        await this.$api.updateMeta({
+          path: this.publication.$path,
+          new_meta: {
+            sections_list,
+          },
+        });
+
+        this.$emit("updatePane", {
+          key: "chapter",
+          value: new_chapter_meta,
+        });
+      } catch (err) {
+        this.$alertify.delay(4000).error(err);
+      }
+    },
+    async duplicateLocalMedia({ meta_filename, copied_filenames }) {
+      if (copied_filenames[meta_filename])
+        return copied_filenames[meta_filename];
+
+      const new_meta_filename = await this.$api.copyFile({
+        path: this.publication.$path + "/" + meta_filename,
+      });
+      copied_filenames[meta_filename] = new_meta_filename;
+      return new_meta_filename;
+    },
+    async duplicateSourceMedias({ source_medias, copied_filenames }) {
+      if (!Array.isArray(source_medias)) return [];
+
+      const new_source_medias = [];
+      for (const source_media of source_medias) {
+        const { _media, ...clean_source_media } = source_media;
+        if (clean_source_media.meta_filename) {
+          const new_meta_filename = await this.duplicateLocalMedia({
+            meta_filename: clean_source_media.meta_filename,
+            copied_filenames,
+          });
+          new_source_medias.push({
+            ...clean_source_media,
+            meta_filename: new_meta_filename,
+          });
+        } else {
+          new_source_medias.push({ ...clean_source_media });
+        }
+      }
+      return new_source_medias;
+    },
+    rewriteMarkdownMediaRefs({ content, copied_filenames }) {
+      if (!content) return content;
+
+      let rewritten = content;
+      Object.entries(copied_filenames).forEach(([old_meta, new_meta]) => {
+        const escaped = old_meta.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        rewritten = rewritten.replace(
+          new RegExp(`(?<!\\.)\\./${escaped}`, "g"),
+          `./${new_meta}`
+        );
+      });
+      return rewritten;
+    },
+    async duplicateTextFile({ text_file, copied_filenames }) {
+      const og_meta_filename = this.getFilename(text_file.$path);
+      if (copied_filenames[og_meta_filename])
+        return copied_filenames[og_meta_filename];
+
+      const new_source_medias = await this.duplicateSourceMedias({
+        source_medias: text_file.source_medias,
+        copied_filenames,
+      });
+      const new_content = this.rewriteMarkdownMediaRefs({
+        content: text_file.$content,
+        copied_filenames,
+      });
+
+      const new_meta_filename = await this.$api.copyFile({
+        path: text_file.$path,
+      });
+      copied_filenames[og_meta_filename] = new_meta_filename;
+
+      await this.$api.updateMeta({
+        path: this.publication.$path + "/" + new_meta_filename,
+        new_meta: {
+          $content: new_content,
+          source_medias: new_source_medias,
+        },
+      });
+
+      return new_meta_filename;
+    },
+    async duplicateGridAreas({ grid_areas, copied_filenames }) {
+      if (!Array.isArray(grid_areas)) return [];
+
+      const new_grid_areas = [];
+      for (const area of grid_areas) {
+        const new_area = { ...area };
+        if (Array.isArray(area.source_medias) && area.source_medias.length > 0) {
+          const new_source_medias = [];
+          for (const source_media of area.source_medias) {
+            const { _media, ...clean_source_media } = source_media;
+            if (clean_source_media.meta_filename) {
+              const file = this.findModuleFromMetaFilename({
+                files: this.publication.$files,
+                meta_filename: clean_source_media.meta_filename,
+              });
+              const is_text =
+                file &&
+                (file.$type === "text" || file.content_type === "markdown");
+
+              const new_meta_filename = is_text
+                ? await this.duplicateTextFile({
+                    text_file: file,
+                    copied_filenames,
+                  })
+                : await this.duplicateLocalMedia({
+                    meta_filename: clean_source_media.meta_filename,
+                    copied_filenames,
+                  });
+
+              new_source_medias.push({
+                ...clean_source_media,
+                meta_filename: new_meta_filename,
+              });
+            } else {
+              new_source_medias.push({ ...clean_source_media });
+            }
+          }
+          new_area.source_medias = new_source_medias;
+        }
+        new_grid_areas.push(new_area);
+      }
+      return new_grid_areas;
     },
     async removeChapter(chapter) {
       if (chapter._main_text) {

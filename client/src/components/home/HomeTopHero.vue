@@ -50,12 +50,6 @@
       />
     </div>
 
-    <AdminSettings
-      v-if="show_settings_modal"
-      :starting_tab="settings_modal_starting_tab"
-      @close="closeAdminSettings"
-    />
-
     <svg class="_hidden">
       <clipPath id="clipPathSquircle" clipPathUnits="objectBoundingBox">
         <path
@@ -68,17 +62,10 @@
 </template>
 
 <script>
-import AdminSettings from "@/adc-core/AdminSettings.vue";
-
 export default {
   name: "HomeTopHero",
-  components: {
-    AdminSettings,
-  },
   data() {
     return {
-      settings_modal_starting_tab: undefined,
-      show_settings_modal: false,
     };
   },
   computed: {
@@ -105,16 +92,10 @@ export default {
   },
   methods: {
     editHeroImage() {
-      this.settings_modal_starting_tab = "logo_and_images";
-      this.show_settings_modal = true;
+      this.$router.push("/admin/logo_and_images");
     },
     editPresentationText() {
-      this.settings_modal_starting_tab = "informations";
-      this.show_settings_modal = true;
-    },
-    closeAdminSettings() {
-      this.show_settings_modal = false;
-      this.settings_modal_starting_tab = undefined;
+      this.$router.push("/admin/informations");
     },
   },
 };

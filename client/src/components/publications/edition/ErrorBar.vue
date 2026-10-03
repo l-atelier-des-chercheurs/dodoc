@@ -47,6 +47,8 @@ export default {
   },
   beforeDestroy() {
     this.teardownErrorObserver();
+    this.$eventHub.$emit("edition.textOverflow", {});
+    this.$root.edition_text_overflow_cells = {};
   },
   watch: {
     content_html() {
@@ -118,6 +120,23 @@ export default {
         return a.label.localeCompare(b.label);
       });
       this.issue_list = issues;
+      this.emitTextOverflowCells(issues);
+    },
+    emitTextOverflowCells(issues) {
+      const overflow_cells_by_chapter = {};
+      issues.forEach((issue) => {
+        const overflow_marker = "::overflow::";
+        if (!issue?.id?.includes(overflow_marker)) return;
+        const cell_id = issue.id.split(overflow_marker)[1];
+        const chapter_meta_filename = issue.chapter_meta_filename;
+        if (!cell_id || !chapter_meta_filename) return;
+        if (!overflow_cells_by_chapter[chapter_meta_filename]) {
+          overflow_cells_by_chapter[chapter_meta_filename] = [];
+        }
+        overflow_cells_by_chapter[chapter_meta_filename].push(cell_id);
+      });
+      this.$root.edition_text_overflow_cells = overflow_cells_by_chapter;
+      this.$eventHub.$emit("edition.textOverflow", overflow_cells_by_chapter);
     },
     collectMissingMediaIssues(issues, added_issue_ids) {
       this.all_chapters.forEach((chapter, chapter_index) => {
@@ -152,10 +171,8 @@ export default {
               source_media,
               folder_path: this.publication.$path,
             });
-            const local_media = chapter?.source_medias?.find(
-              (sm) =>
-                sm?.meta_filename_in_project ===
-                source_media?.meta_filename_in_project
+            const local_media = chapter?.source_medias?.find((sm) =>
+              this.sourceMediaRefsMatch(sm, source_media)
             )?._media;
             const resolved_media = media || local_media;
 
@@ -275,7 +292,12 @@ export default {
       let media_match = null;
       while ((media_match = media_tag_regex.exec(text_content)) !== null) {
         const media_type = media_match[1].toLowerCase();
-        const meta_src = media_match[2].trim();
+        // strip attributes (caption: …, width: …) like markdownItCsc does
+        const tag_content = media_match[2].trim();
+        const first_attr_match = /\s+[\w-]+:\s+/.exec(tag_content);
+        const meta_src = first_attr_match
+          ? tag_content.substring(0, first_attr_match.index).trim()
+          : tag_content;
         addReference({
           key: `tag::${media_type}::${meta_src}`,
           meta_src,
@@ -299,41 +321,11 @@ export default {
       return refs;
     },
     getMediaSrc(meta_src, source_medias) {
-      if (!meta_src) return;
-
-      let source_media;
-
-      if (meta_src.startsWith("./")) {
-        meta_src = meta_src.substring(2);
-        source_media = {
-          meta_filename: meta_src,
-        };
-      } else if (meta_src.startsWith("../")) {
-        meta_src = meta_src.substring(3);
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      } else {
-        source_media = {
-          meta_filename_in_project: meta_src,
-        };
-      }
-
-      let media = this.getSourceMedia({
-        source_media,
+      return this.resolveMediaFromMetaSrc({
+        meta_src,
+        source_medias,
         folder_path: this.publication.$path,
       });
-
-      if (!media && source_medias?.length > 0) {
-        const local_media = source_medias.find(
-          (sm) => sm.meta_filename_in_project === meta_src
-        );
-        if (local_media) media = local_media._media;
-      }
-
-      if (!media) return;
-
-      return media;
     },
     pushIssue({
       issues,

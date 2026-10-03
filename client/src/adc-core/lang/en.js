@@ -46,6 +46,43 @@ export default {
   month: "Month",
   year: "Year",
   admin_settings: "Admin settings",
+  admin_welcome: "Get started",
+  admin_welcome_title: "Welcome to your do•doc",
+  admin_welcome_intro:
+    "This is where you configure this instance. Everything you can set up is gathered here: pick a section in the list on the left, or start with the steps below.",
+  admin_welcome_default_admin:
+    "The default “Admin” account still uses its default password, “{password}”, which is public (it is written in the documentation). Anyone who knows it can administer this instance. Change it now.",
+  admin_welcome_change_password: "Change the administration password",
+  admin_password_modal_text:
+    "Choose a new password for the “Admin” account, the default administrator of this instance.",
+  admin_password_must_differ: "Choose a password different from the default one.",
+  admin_password_changed: "The administration password was changed",
+  admin_welcome_anyone_can_admin:
+    "For now, anyone can edit these settings, even without an account. Define who the administrators are.",
+  admin_welcome_steps: "To get started",
+  admin_welcome_sections: "What you can configure",
+  admin_welcome_step_password: "Change the administration password",
+  admin_welcome_step_informations: "Give a name and a presentation to your instance",
+  admin_welcome_step_access: "Choose who can administer, contribute and sign up",
+  admin_welcome_step_images: "Add a logo and a home page image",
+  admin_page_restricted:
+    "This page is reserved for the administrators of this instance. Log in with an administrator account to access it.",
+  admin_tab_desc_informations:
+    "Name of the instance, presentation text and contact email shown on the home page.",
+  admin_tab_desc_logo_and_images:
+    "Logo, favicon and the image displayed on the home page.",
+  admin_tab_desc_administration_and_access_control:
+    "Who administers and contributes, sign-up conditions, general password, search engine indexing, upload size and deletion.",
+  admin_tab_desc_fonts: "Upload typefaces that can be used in publications.",
+  admin_tab_desc_chats: "Turn discussions on or off.",
+  admin_tab_desc_events: "Turn the events section of the home page on or off.",
+  admin_tab_desc_terms:
+    "Terms of use and confidentiality pages, and whether people must accept them to sign up.",
+  admin_tab_desc_suggested_cat_kw:
+    "Keywords and categories suggested when describing content.",
+  admin_tab_desc_storage:
+    "Where content is stored on this computer (desktop app only).",
+  admin_tab_desc_debug_logs: "Recent logs, to help diagnose a problem.",
 
   template: "Template",
 
@@ -144,6 +181,7 @@ export default {
 
   login: "Login",
   logout: "Logout",
+  logging_in: "Logging in…",
   logging_out: "Logging out…",
   name_or_pseudonym: "Name or nickname",
   email: "Email",
@@ -366,6 +404,7 @@ export default {
 
   current: "Current",
   save_on_this_device: "Save on this device",
+  forget_general_password: "Forget the general password on this device",
   will_use_cookies: "This feature requires cookies",
 
   "module.label.text": "Text bloc",
@@ -1345,6 +1384,8 @@ export default {
   items_in_bin: "Items in the trash",
   bin_removal_notice:
     "Items in the trash are automatically removed after 30 days.",
+  versions_removal_notice:
+    "Previous versions are automatically removed after 30 days.",
   all_pages: "All pages",
   all_spreads: "All spreads",
   spreads_to_export: "Spreads to export",
@@ -1355,6 +1396,36 @@ export default {
     "Total number of spreads in publication: {total}",
   total_number_of_pages_in_publication:
     "Total number of pages in publication: {total}",
+  booklet_imposition: "Booklet imposition (for binding)",
+  booklet_imposition_explanations:
+    "Pages are reordered two by two on sheets twice as wide as a page. Print double-sided, flipping on the short edge, then fold each signature in half and staple or sew it.",
+  pages_per_signature: "Pages per signature",
+  single_signature: "Single signature (saddle stitch)",
+  pdf_with_imposition: "PDF with imposition",
+  embedded_images_quality: "Quality of images embedded in the document",
+  image_quality_high: "High (300 dpi)",
+  image_quality_medium: "Medium (150 dpi)",
+  image_quality_draft: "Draft (48 dpi, light and quick)",
+  image_quality_source: "Use source files directly",
+  image_quality_dpi_instructions:
+    "The chosen resolution is a minimum: each image is embedded at the smallest available size that reaches it at its printed size, or as its source file if no size is large enough.",
+  image_quality_source_instructions:
+    "Using source files can create much heavier PDFs.",
+  booklet_sheet_format: "Sheet: {width} × {height} mm{format}, printed double-sided",
+  booklet_summary: "{signatures} signature(s) · {sheets} sheet(s) in total",
+  booklet_blank_pages: "{count} blank page(s) added at the end",
+  signature_n: "Signature {n}",
+  sheet_n: "Sheet {n}",
+  pages_from_to: "pages {start} to {end}",
+  recto: "front",
+  verso: "back",
+  landscape: "Landscape",
+  portrait: "Portrait",
+  more_sheets: "+ {count} more sheet(s)",
+  more_signatures: "+ {count} more signature(s)",
+  pdf_of_page: "PDF of page {page}",
+  pdf_of_pages: "PDF of pages {start} to {end}",
+  image_of_page: "Image of page {page}",
   "type:": "Type: {type}",
   failed_to_export: "Failed to export",
   default_styles: "Default styles",
@@ -1510,6 +1581,11 @@ export default {
   restore_medias: "Restore medias",
   show_cursor: "Show cursor",
   starts_on_page: "Starts on page",
+  show_page_number: "Show page number",
+  starts_on_page_instructions:
+    "Where this chapter begins in the printed book. “In the flow” continues right after the previous chapter, on the same page. “Next page” starts on a new page. “Next left page” and “Next right page” start on a new page on that side of the spread; a blank page is inserted if needed.",
+  starts_on_page_instructions_new_page:
+    "Where this chapter begins in the printed book. It always starts on a new page: “Next page” right after the previous chapter, “Next left page” or “Next right page” on that side of the spread. A blank page is inserted if needed.",
   today: "Today",
   type: "Type",
   side_by_side: "Side by side",

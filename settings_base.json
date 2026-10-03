@@ -508,6 +508,9 @@
                     "section_starts_on_page": {
                       "type": "string"
                     },
+                    "section_show_pagination": {
+                      "type": "boolean"
+                    },
                     "column_count": {
                       "type": "number"
                     },

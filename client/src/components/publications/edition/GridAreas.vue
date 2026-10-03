@@ -51,6 +51,10 @@
           :area_type="getAreaFileType(area)"
           :is_last_of_text_chain="isLastOfTextChain(area)"
           :is_being_chained="toggle_chain_area_id === area.id"
+          :has_text_overflow="
+            areaHasTextOverflow({ area_id: area.id, chapter })
+          "
+          :can_link_to_content="true"
           :selected-area-id="selected_area_id"
           :dragging-area-id="dragging_area_id"
           :updating-area-id="updating_area_id"
@@ -62,6 +66,7 @@
           @resize-start="startResize"
           @toggle-chain="toggleChain"
           @delete="deleteArea"
+          @scrollToContent="scrollToGridItemContent"
         />
       </div>
 
@@ -100,8 +105,10 @@
 
 <script>
 import GridArea from "./GridArea.vue";
+import EditionTextOverflow from "@/mixins/EditionTextOverflow.js";
 
 export default {
+  mixins: [EditionTextOverflow],
   props: {
     chapter: {
       type: Object,
@@ -236,6 +243,13 @@ export default {
     },
     selectArea(areaId) {
       this.selected_area_id = areaId;
+    },
+    scrollToGridItemContent(area_id) {
+      const base_area_id = area_id.match(/^([A-Z]+)/)?.[1] || area_id;
+      this.$eventHub.$emit("edition.scrollToGridContent", {
+        chapter_path: this.chapter.$path,
+        area_id: base_area_id,
+      });
     },
     findAreaById(areaId) {
       return this.grid_areas.find((area) => area.id === areaId);

@@ -1,5 +1,9 @@
 <template>
-  <div class="_gridItem">
+  <div
+    class="_gridItem"
+    :class="{ '_gridItem--textOverflow': has_text_overflow }"
+    :data-grid-content-area-id="area.id"
+  >
     <div class="_gridItem--header">
       <h3 class="_gridItem--label">
         {{ area.id }}
@@ -132,6 +136,10 @@ export default {
       required: true,
     },
     publication: Object,
+    has_text_overflow: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     MainText,
@@ -317,6 +325,12 @@ export default {
   border-radius: var(--input-border-radius);
 
   --icon-size: 1.2rem;
+
+  &._gridItem--textOverflow {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--c-rouge);
+  }
 }
 
 ._gridItem--header {

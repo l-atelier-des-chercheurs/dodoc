@@ -3,6 +3,12 @@ import { BIcon } from "bootstrap-vue";
 Vue.component("b-icon", BIcon);
 
 import {
+  BIconKey,
+  BIconCalendarEvent,
+  BIconHdd,
+  BIconBug,
+  BIconPersonPlus,
+  BIconStars,
   BIconShieldCheck,
   BIconPersonCircle,
   BIconExclamationTriangleFill,
@@ -358,3 +364,9 @@ Vue.component("BIconLayoutSidebarReverse", BIconLayoutSidebarReverse);
 Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
 Vue.component("BIconDashCircleDotted", BIconDashCircleDotted);
 Vue.component("BIconEraser", BIconEraser);
+Vue.component("BIconKey", BIconKey);
+Vue.component("BIconCalendarEvent", BIconCalendarEvent);
+Vue.component("BIconHdd", BIconHdd);
+Vue.component("BIconBug", BIconBug);
+Vue.component("BIconPersonPlus", BIconPersonPlus);
+Vue.component("BIconStars", BIconStars);
