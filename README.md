@@ -170,6 +170,8 @@ More advanced settings are available to all by duplicating the settings.example.
 
 - if you'd like for dodoc to be able to send email to help users recover their password, fill in the information to a mail server and account with the "mailer" property.
 
+- allow other websites to embed do•doc in an iframe with `allowed_iframe_origins`. By default (empty list), only do•doc itself can embed its pages. Example: `["https://example.com", "https://*.example.org"]`. Use `["*"]` to allow embedding from any website (this also removes clickjacking protection, including on admin pages).
+
 # How the core works
 
 Everything is structured in folders/files, so as to mirror the content in the filesystem. No database is used, almost all the content are saved in the content folder (by default /Documents/dodoc_next).
