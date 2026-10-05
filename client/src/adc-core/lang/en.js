@@ -55,15 +55,18 @@ export default {
   admin_welcome_change_password: "Change the administration password",
   admin_password_modal_text:
     "Choose a new password for the “Admin” account, the default administrator of this instance.",
-  admin_password_must_differ: "Choose a password different from the default one.",
+  admin_password_must_differ:
+    "Choose a password different from the default one.",
   admin_password_changed: "The administration password was changed",
   admin_welcome_anyone_can_admin:
     "For now, anyone can edit these settings, even without an account. Define who the administrators are.",
   admin_welcome_steps: "To get started",
   admin_welcome_sections: "What you can configure",
   admin_welcome_step_password: "Change the administration password",
-  admin_welcome_step_informations: "Give a name and a presentation to your instance",
-  admin_welcome_step_access: "Choose who can administer, contribute and sign up",
+  admin_welcome_step_informations:
+    "Give a name and a presentation to your instance",
+  admin_welcome_step_access:
+    "Choose who can administer, contribute and sign up",
   admin_welcome_step_images: "Add a logo and a home page image",
   admin_page_restricted:
     "This page is reserved for the administrators of this instance. Log in with an administrator account to access it.",
@@ -551,6 +554,25 @@ export default {
   url_to_open: "URL of the page to open",
   content: "Content",
   connection_lost: "Connection lost",
+  changes_may_not_be_saved: "Your recent changes may not be saved.",
+  connection_lost_help_intro:
+    "This device can no longer reach the dodoc server where projects are stored.",
+  connection_lost_help_live:
+    "Changes made by other participants won’t show up either.",
+  connection_lost_help_causes: "Common causes",
+  connection_lost_help_cause_network:
+    "This device is no longer connected to the network (wifi off or too weak, cable unplugged).",
+  connection_lost_help_cause_server:
+    "The computer or server hosting dodoc is off, asleep or restarting.",
+  connection_lost_help_cause_sleep:
+    "This device went to sleep or the tab stayed in the background for a long time.",
+  connection_lost_help_what_to_do: "What to do?",
+  connection_lost_help_todo_wait:
+    "Check this device’s connection, then click “Retry”. dodoc also tries again automatically every few seconds.",
+  connection_lost_help_todo_unsaved:
+    "Avoid making new changes until the connection is back.",
+  connection_lost_help_todo_reload:
+    "If the server is reachable again but this message is still showing, reload the page.",
   connection_lost_in: "The connection to the server was lost.",
   attempting_to_reconnect_in: "Attempting to connect again in:",
   reload_page: "Reload this page",
@@ -1411,7 +1433,8 @@ export default {
     "The chosen resolution is a minimum: each image is embedded at the smallest available size that reaches it at its printed size, or as its source file if no size is large enough.",
   image_quality_source_instructions:
     "Using source files can create much heavier PDFs.",
-  booklet_sheet_format: "Sheet: {width} × {height} mm{format}, printed double-sided",
+  booklet_sheet_format:
+    "Sheet: {width} × {height} mm{format}, printed double-sided",
   booklet_summary: "{signatures} signature(s) · {sheets} sheet(s) in total",
   booklet_blank_pages: "{count} blank page(s) added at the end",
   signature_n: "Signature {n}",

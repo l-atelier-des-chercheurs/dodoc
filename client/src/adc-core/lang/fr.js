@@ -118,6 +118,26 @@ export default {
   ancient: "Ancien",
 
   connection_lost: `Connexion perdue`,
+  changes_may_not_be_saved:
+    "Vos modifications récentes pourraient ne pas être enregistrées.",
+  connection_lost_help_intro:
+    "Cet appareil n’arrive plus à joindre le serveur dodoc sur lequel sont enregistrés les projets.",
+  connection_lost_help_live:
+    "Les changements faits par les autres participants ne s’affichent plus non plus.",
+  connection_lost_help_causes: "Causes fréquentes",
+  connection_lost_help_cause_network:
+    "Cet appareil n’est plus connecté au réseau (wifi coupé ou trop faible, câble débranché).",
+  connection_lost_help_cause_server:
+    "L’ordinateur ou le serveur qui héberge dodoc est éteint, en veille ou en train de redémarrer.",
+  connection_lost_help_cause_sleep:
+    "Cet appareil s’est mis en veille ou l’onglet est resté longtemps en arrière-plan.",
+  connection_lost_help_what_to_do: "Que faire ?",
+  connection_lost_help_todo_wait:
+    "Vérifiez la connexion de cet appareil, puis cliquez sur « Réessayer ». dodoc retente aussi automatiquement à intervalles réguliers.",
+  connection_lost_help_todo_unsaved:
+    "Évitez de faire de nouvelles modifications tant que la connexion n’est pas revenue.",
+  connection_lost_help_todo_reload:
+    "Si le serveur est de nouveau accessible mais que ce message reste affiché, rechargez la page.",
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
   attempting_to_reconnect_in: `Nouvelle tentative de connexion dans :`,
   reload_page: "Recharger cette page",
@@ -1086,8 +1106,7 @@ export default {
   current: "Actuel",
   current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
-  forget_general_password:
-    "Oublier le mot de passe général sur cet appareil",
+  forget_general_password: "Oublier le mot de passe général sur cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
   "module.label.text": "Bloc de texte",
