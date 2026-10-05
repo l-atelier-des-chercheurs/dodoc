@@ -134,11 +134,18 @@ export default {
       // we get all references medias projects
       return this.publication.$files.reduce((acc, f) => {
         if (Object.prototype.hasOwnProperty.call(f, "source_medias")) {
-          f.source_medias.map((source_media) => {
+          f.source_medias.forEach((source_media) => {
             const _linked_media = this.getSourceMedia({
               source_media,
               folder_path: this.publication.$path,
             });
+            // skip missing medias and those stored in the publication itself,
+            // which are already copied with the publication folder
+            if (
+              !_linked_media ||
+              this.getParent(_linked_media.$path) === this.publication.$path
+            )
+              return;
             if (!acc.includes(_linked_media.$path))
               acc.push(_linked_media.$path);
           });
