@@ -455,6 +455,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   restricted_instr: "Solo questi account saranno autorizzati.",
 
   close: "Chiudi",
+  menu: "Menu",
   settings: "Impostazioni",
   admin_settings: "Impostazioni di amministrazione",
   list_of_pages: "Elenco delle pagine",

@@ -488,6 +488,7 @@ export default {
   restricted_instr: "Seuls ces comptes seront autorisés.",
 
   close: "Fermer",
+  menu: "Menu",
   settings: "Réglages",
   admin_settings: "Réglages d’administration",
   admin_welcome: "Prise en main",
