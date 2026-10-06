@@ -116,17 +116,14 @@ export default {
         return acc;
       }, []);
     },
+    listed_meta_filenames() {
+      return this.listed_files.map((f) => this.getFilename(f.$path));
+    },
     meta_filenames_already_present() {
-      const current = [];
-
-      this.listed_files.map((lf) => {
-        current.push(this.getFilename(lf.$path));
-      });
-
       return [
         {
           label: this.$t("on_this_list"),
-          medias: current,
+          medias: this.listed_meta_filenames,
           color: "var(--c-orange)",
         },
       ];
@@ -159,15 +156,16 @@ export default {
         this.processing_file_index++;
       }
 
-      // const new_files = medias.map((m) => this.getFilename(m.$path));
-      const files = this.content.slice() || [];
-      const new_files_list = files.concat(new_files);
+      // start from listed_meta_filenames to drop references to deleted medias
+      const new_files_list = this.listed_meta_filenames.concat(new_files);
       this.updateFiles(new_files_list);
       this.is_loading = false;
     },
     async removeFile(path) {
-      let _files = this.content.slice();
-      _files = _files.filter((f) => !path.endsWith("/" + f));
+      const meta_filename = this.getFilename(path);
+      const _files = this.listed_meta_filenames.filter(
+        (f) => f !== meta_filename
+      );
       this.updateFiles(_files);
     },
     async updateFiles(files) {
@@ -184,9 +182,7 @@ export default {
       try {
         await this.$api.downloadSources({
           path: this.project_path,
-          meta_filenames: this.listed_files.map((f) =>
-            this.getFilename(f.$path)
-          ),
+          meta_filenames: this.listed_meta_filenames,
         });
       } catch (err) {
         this.$alertify?.error(this.$t("failed_to_download"));
