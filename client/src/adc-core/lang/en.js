@@ -579,7 +579,7 @@ export default {
   try_reconnect_now: "Try to reconnect now",
   reconnecting: "Attempting to reconnect…",
   if_issues_contact: "If you regularly encounter this error, please contact ",
-  connection_back: "The connection is back.",
+  connection_back: "Connection restored",
   create_page: "Add a page",
   add_on_page: "Add to page",
   page_color: "Color of this page",

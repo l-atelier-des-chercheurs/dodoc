@@ -145,7 +145,7 @@ export default {
   reconnecting: "Tentative de reconnection…",
   if_issues_contact:
     "Si vous rencontrez régulièrement cette erreur, veuillez contacter ",
-  connection_back: "La connection est revenue.",
+  connection_back: "Connexion rétablie",
   create_page: "Ajouter une page",
   add_on_page: "Ajouter sur la page",
   page_color: "Couleur de cette page",

@@ -125,7 +125,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   reconnecting: "Tentativo di riconnessione…",
   if_issues_contact:
     "Se si verifica regolarmente questo errore, si prega di contattare ",
-  connection_back: "La connessione è ritornata.",
+  connection_back: "Connessione ristabilita",
   create_page: "Aggiungi una pagina",
   add_on_page: "Aggiungi sulla pagina",
   page_color: "Colore di questa pagina",

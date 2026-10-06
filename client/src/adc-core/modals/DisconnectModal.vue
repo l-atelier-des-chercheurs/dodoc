@@ -3,7 +3,21 @@
     <!-- portal: escape any stacking context so it shows above everything -->
     <portal to="destination">
       <div
-        v-if="!$api.connected && is_visible && !show_help_modal"
+        v-if="is_reconnected"
+        key="reconnected"
+        class="_disconnectModal is--reconnected"
+        role="status"
+      >
+        <div class="_disconnectModal--row">
+          <b-icon icon="check-circle-fill" aria-hidden="true" />
+          <span class="_disconnectModal--label">
+            {{ $t("connection_back") }}
+          </span>
+        </div>
+      </div>
+      <div
+        v-else-if="!$api.connected && is_visible && !show_help_modal"
+        key="disconnected"
         class="_disconnectModal"
         role="status"
       >
@@ -91,15 +105,32 @@
         </p>
       </div>
 
+      <!-- the floating notice is hidden while the modal is open (it would
+        cover it on phones): same status + retry, docked in the footer -->
       <template slot="footer">
-        <button
-          type="button"
-          class="u-button u-button_bleumarine"
-          @click="reloadPage"
-        >
-          <b-icon icon="arrow-clockwise" />
-          {{ $t("reload_page") }}
-        </button>
+        <div class="_disconnectModal--pill" role="status">
+          <span class="_disconnectModal--dot" aria-hidden="true" />
+          <span class="_disconnectModal--label">
+            {{ $t("connection_lost") }}
+          </span>
+          <button
+            type="button"
+            class="_disconnectModal--retry"
+            :disabled="is_reconnecting"
+            @click="reconnectSocket"
+          >
+            <span
+              class="_disconnectModal--retryLabel"
+              :class="{ 'is--hidden': is_reconnecting }"
+            >
+              {{ $t("retry") }}
+              <span class="_disconnectModal--countdown">{{
+                reconnecting_in
+              }}</span>
+            </span>
+            <LoaderSpinner v-if="is_reconnecting" class="_spinner" />
+          </button>
+        </div>
       </template>
     </BaseModal2>
   </div>
@@ -110,6 +141,8 @@
 const SHOW_AFTER_MS = 3000;
 // after this many failed retries, it's not a blip: explain the consequences
 const PERSISTENT_AFTER_ATTEMPTS = 2;
+// how long the green "connection back" confirmation stays
+const RECONNECTED_DISPLAY_MS = 5000;
 
 export default {
   props: {},
@@ -123,6 +156,7 @@ export default {
       is_visible: false,
       failed_attempts: 0,
       show_help_modal: false,
+      is_reconnected: false,
     };
   },
   async created() {
@@ -148,10 +182,21 @@ export default {
     this.is_destroyed = true;
     clearTimeout(this.show_timer);
     clearTimeout(this.countdown_timer);
+    clearTimeout(this.close_timer);
   },
   watch: {
     "$api.connected": function () {
-      if (this.$api.connected) this.$emit("close");
+      if (!this.$api.connected) return;
+      // the badge was never shown (short drop): nothing to confirm
+      if (!this.is_visible) return this.$emit("close");
+
+      clearTimeout(this.countdown_timer);
+      this.show_help_modal = false;
+      this.is_reconnected = true;
+      this.close_timer = setTimeout(
+        () => this.$emit("close"),
+        RECONNECTED_DISPLAY_MS
+      );
     },
   },
   computed: {
@@ -163,9 +208,6 @@ export default {
     },
   },
   methods: {
-    reloadPage() {
-      window.location.reload();
-    },
     async reconnectSocket() {
       this.is_reconnecting = true;
       this.$api.reconnectSocket();
@@ -205,12 +247,33 @@ export default {
   box-shadow: 0 4px 20px color-mix(in srgb, black 30%, transparent);
   animation: disconnectIn 0.3s ease-out,
     disconnectRing 2s ease-out 0.3s infinite;
+
+  &.is--reconnected {
+    padding: calc(var(--spacing) / 1.5) var(--spacing);
+    background: var(--c-vert_fonce, hsl(143, 69%, 40%));
+    animation: none;
+  }
 }
 
 ._disconnectModal--row {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 1.5);
+}
+
+._disconnectModal--pill {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 1.5);
+  margin-left: auto;
+  padding: calc(var(--spacing) / 3) calc(var(--spacing) / 3)
+    calc(var(--spacing) / 3) var(--spacing);
+  border-radius: 2rem;
+  background: var(--c-rouge, #fc4b60);
+  color: white;
+  font-size: var(--sl-font-size-normal);
+  font-weight: 600;
+  line-height: 1.2;
 }
 
 ._disconnectModal--dot {
