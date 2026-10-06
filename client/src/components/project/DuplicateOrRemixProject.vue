@@ -41,10 +41,12 @@
             :content.sync="remove_original"
             :label="$t('remove_original')"
             :options="{
-              true: $t('remove_original_after_copy'),
               false: $t('keep_original_after_copy'),
             }"
           />
+          <p v-if="remove_original" class="u-warning u-spacingTop">
+            {{ $t("remove_original_after_copy") }}
+          </p>
         </div>
       </div>
 
