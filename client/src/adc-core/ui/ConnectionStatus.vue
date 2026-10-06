@@ -5,12 +5,12 @@
       <div
         v-if="is_reconnected"
         key="reconnected"
-        class="_disconnectModal is--reconnected"
+        class="_connectionStatus is--reconnected"
         role="status"
       >
-        <div class="_disconnectModal--row">
+        <div class="_connectionStatus--row">
           <b-icon icon="check-circle-fill" aria-hidden="true" />
-          <span class="_disconnectModal--label">
+          <span class="_connectionStatus--label">
             {{ $t("connection_back") }}
           </span>
         </div>
@@ -18,28 +18,28 @@
       <div
         v-else-if="!$api.connected && is_visible && !show_help_modal"
         key="disconnected"
-        class="_disconnectModal"
+        class="_connectionStatus"
         role="status"
       >
-        <div class="_disconnectModal--row">
-          <span class="_disconnectModal--dot" aria-hidden="true" />
-          <span class="_disconnectModal--label">
+        <div class="_connectionStatus--row">
+          <span class="_connectionStatus--dot" aria-hidden="true" />
+          <span class="_connectionStatus--label">
             {{ $t("connection_lost") }}
           </span>
 
           <button
             type="button"
-            class="_disconnectModal--retry"
+            class="_connectionStatus--retry"
             :disabled="is_reconnecting"
             @click="reconnectSocket"
           >
             <!-- label stays in the flow (hidden) so the button never changes width -->
             <span
-              class="_disconnectModal--retryLabel"
+              class="_connectionStatus--retryLabel"
               :class="{ 'is--hidden': is_reconnecting }"
             >
               {{ $t("retry") }}
-              <span class="_disconnectModal--countdown">{{
+              <span class="_connectionStatus--countdown">{{
                 reconnecting_in
               }}</span>
             </span>
@@ -47,7 +47,7 @@
           </button>
         </div>
 
-        <p class="_disconnectModal--details">
+        <p class="_connectionStatus--details">
           <template v-if="is_persistent">
             {{ $t("changes_may_not_be_saved") }}
             <template v-if="contactmail">
@@ -61,7 +61,7 @@
           </template>
           <button
             type="button"
-            class="_disconnectModal--more"
+            class="_connectionStatus--more"
             @click="show_help_modal = true"
           >
             {{ $t("more_informations") }}
@@ -75,56 +75,74 @@
       :title="$t('connection_lost')"
       @close="show_help_modal = false"
     >
-      <div class="_disconnectHelp">
-        <p>{{ $t("connection_lost_help_intro") }}</p>
-        <p>
-          <strong>{{ $t("changes_may_not_be_saved") }}</strong>
-          {{ $t("connection_lost_help_live") }}
-        </p>
+      <div class="_connectionHelp">
+        <p
+          class="_connectionHelp--lead"
+          v-html="$t('connection_lost_help_intro', { app_name })"
+        />
 
-        <h3>{{ $t("connection_lost_help_causes") }}</h3>
-        <ul>
-          <li>{{ $t("connection_lost_help_cause_network") }}</li>
-          <li>{{ $t("connection_lost_help_cause_server") }}</li>
-          <li>{{ $t("connection_lost_help_cause_sleep") }}</li>
-        </ul>
+        <div class="_connectionHelp--warning">
+          <b-icon icon="exclamation-triangle-fill" aria-hidden="true" />
+          <p>
+            <strong>{{ $t("changes_may_not_be_saved") }}</strong>
+            {{ $t("connection_lost_help_live") }}
+          </p>
+        </div>
 
-        <h3>{{ $t("connection_lost_help_what_to_do") }}</h3>
-        <ul>
-          <li>{{ $t("connection_lost_help_todo_wait") }}</li>
-          <li>{{ $t("connection_lost_help_todo_unsaved") }}</li>
-          <li>{{ $t("connection_lost_help_todo_reload") }}</li>
-        </ul>
+        <section>
+          <h3>{{ $t("connection_lost_help_causes") }}</h3>
+          <ul class="_connectionHelp--list">
+            <li v-for="cause of causes" :key="cause.text">
+              <span class="_connectionHelp--marker">
+                <b-icon :icon="cause.icon" aria-hidden="true" />
+              </span>
+              <span v-html="$t(cause.text, { app_name })" />
+            </li>
+          </ul>
+        </section>
 
-        <p v-if="contactmail">
-          {{ $t("if_issues_contact") }}
-          <a :href="'mailto:' + contactmail" target="_blank">{{
-            contactmail
-          }}</a
-          >.
+        <section>
+          <h3>{{ $t("connection_lost_help_what_to_do") }}</h3>
+          <ol class="_connectionHelp--list is--steps">
+            <li v-for="step of steps" :key="step">
+              <span class="_connectionHelp--marker" aria-hidden="true" />
+              <span v-html="$t(step, { app_name })" />
+            </li>
+          </ol>
+        </section>
+
+        <p v-if="contactmail" class="_connectionHelp--contact">
+          <b-icon icon="envelope" aria-hidden="true" />
+          <span>
+            {{ $t("if_issues_contact") }}
+            <a :href="'mailto:' + contactmail" target="_blank">{{
+              contactmail
+            }}</a
+            >.
+          </span>
         </p>
       </div>
 
       <!-- the floating notice is hidden while the modal is open (it would
         cover it on phones): same status + retry, docked in the footer -->
       <template slot="footer">
-        <div class="_disconnectModal--pill" role="status">
-          <span class="_disconnectModal--dot" aria-hidden="true" />
-          <span class="_disconnectModal--label">
+        <div class="_connectionStatus--pill" role="status">
+          <span class="_connectionStatus--dot" aria-hidden="true" />
+          <span class="_connectionStatus--label">
             {{ $t("connection_lost") }}
           </span>
           <button
             type="button"
-            class="_disconnectModal--retry"
+            class="_connectionStatus--retry"
             :disabled="is_reconnecting"
             @click="reconnectSocket"
           >
             <span
-              class="_disconnectModal--retryLabel"
+              class="_connectionStatus--retryLabel"
               :class="{ 'is--hidden': is_reconnecting }"
             >
               {{ $t("retry") }}
-              <span class="_disconnectModal--countdown">{{
+              <span class="_connectionStatus--countdown">{{
                 reconnecting_in
               }}</span>
             </span>
@@ -200,8 +218,28 @@ export default {
     },
   },
   computed: {
+    causes() {
+      return [
+        { icon: "globe", text: "connection_lost_help_cause_network" },
+        { icon: "hdd", text: "connection_lost_help_cause_server" },
+        { icon: "clock", text: "connection_lost_help_cause_sleep" },
+      ];
+    },
+    steps() {
+      return [
+        "connection_lost_help_todo_wait",
+        "connection_lost_help_todo_unsaved",
+        "connection_lost_help_todo_reload",
+      ];
+    },
     is_persistent() {
       return this.failed_attempts >= PERSISTENT_AFTER_ATTEMPTS;
+    },
+    // shared by dodoc-based apps (slashdoc, living archive…): name the
+    // software from its package.json productName, in bold
+    app_name() {
+      const name = this.$root.app_infos.product_name || "do•doc";
+      return `${name}`;
     },
     contactmail() {
       return this.$root.app_infos.instance_meta.contactmail;
@@ -221,7 +259,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._disconnectModal {
+._connectionStatus {
   position: fixed;
   // bottom-left holds the canvas minimap
   right: var(--fixed-ui-margins, 0.75rem);
@@ -245,8 +283,8 @@ export default {
   font-weight: 600;
   line-height: 1.2;
   box-shadow: 0 4px 20px color-mix(in srgb, black 30%, transparent);
-  animation: disconnectIn 0.3s ease-out,
-    disconnectRing 2s ease-out 0.3s infinite;
+  animation: connectionStatusIn 0.3s ease-out,
+    connectionStatusRing 2s ease-out 0.3s infinite;
 
   &.is--reconnected {
     padding: calc(var(--spacing) / 1.5) var(--spacing);
@@ -255,13 +293,13 @@ export default {
   }
 }
 
-._disconnectModal--row {
+._connectionStatus--row {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 1.5);
 }
 
-._disconnectModal--pill {
+._connectionStatus--pill {
   display: inline-flex;
   align-items: center;
   gap: calc(var(--spacing) / 1.5);
@@ -276,21 +314,21 @@ export default {
   line-height: 1.2;
 }
 
-._disconnectModal--dot {
+._connectionStatus--dot {
   flex-shrink: 0;
   width: 0.65rem;
   height: 0.65rem;
   border-radius: 50%;
   background: white;
-  animation: disconnectPulse 1.2s ease-in-out infinite;
+  animation: connectionStatusPulse 1.2s ease-in-out infinite;
 }
 
-._disconnectModal--label {
+._connectionStatus--label {
   flex: 1 1 auto;
   white-space: nowrap;
 }
 
-._disconnectModal--countdown {
+._connectionStatus--countdown {
   // single digit (max 9s): fixed width so the badge doesn't jitter
   display: inline-block;
   width: 1ch;
@@ -300,7 +338,7 @@ export default {
   opacity: 0.7;
 }
 
-._disconnectModal--retryLabel {
+._connectionStatus--retryLabel {
   white-space: nowrap;
 
   &.is--hidden {
@@ -308,7 +346,7 @@ export default {
   }
 }
 
-._disconnectModal--retry {
+._connectionStatus--retry {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -332,7 +370,7 @@ export default {
   }
 }
 
-._disconnectModal--details {
+._connectionStatus--details {
   margin: 0;
   padding-right: calc(var(--spacing) / 1.5);
   font-size: var(--sl-font-size-small);
@@ -340,14 +378,14 @@ export default {
   line-height: 1.4;
 
   a,
-  ._disconnectModal--more {
+  ._connectionStatus--more {
     color: inherit;
-    font-weight: 600;
+    // font-weight: 600;
     text-decoration: underline;
   }
 }
 
-._disconnectModal--more {
+._connectionStatus--more {
   padding: 0;
   border: none;
   background: transparent;
@@ -359,12 +397,105 @@ export default {
   }
 }
 
-._disconnectHelp {
-  h3 {
-    margin-top: var(--spacing);
+._connectionHelp {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) * 1.25);
+  padding-bottom: calc(var(--spacing) / 2);
+  line-height: 1.45;
+
+  p {
+    margin: 0;
   }
-  ul {
-    padding-left: var(--spacing);
+
+  h3 {
+    margin: 0 0 calc(var(--spacing) / 1.5);
+    font-size: var(--sl-font-size-x-small);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--label-color);
+  }
+}
+
+._connectionHelp--lead {
+  font-size: var(--sl-font-size-medium, 1.1em);
+}
+
+._connectionHelp--warning {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--spacing) / 1.5);
+  padding: calc(var(--spacing) / 1.5) var(--spacing);
+  border-radius: var(--border-radius);
+  background: color-mix(in srgb, var(--c-rouge) 10%, white);
+  color: var(--c-rouge_fonce);
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 0.2em;
+  }
+}
+
+._connectionHelp--list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 1.5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) / 1.5);
+  }
+
+  &.is--steps {
+    counter-reset: step;
+
+    li {
+      counter-increment: step;
+    }
+    ._connectionHelp--marker {
+      background: var(--c-noir);
+      color: white;
+      font-size: var(--sl-font-size-x-small);
+      font-weight: 600;
+
+      &::before {
+        content: counter(step);
+      }
+    }
+  }
+}
+
+// round icon / step number in front of each line
+._connectionHelp--marker {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--c-gris_clair);
+}
+
+._connectionHelp--contact {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 1.5);
+  padding: calc(var(--spacing) / 1.5) var(--spacing);
+  border-radius: var(--border-radius);
+  background: var(--c-gris_clair);
+  font-size: var(--sl-font-size-small);
+
+  svg {
+    flex-shrink: 0;
+  }
+  a {
+    font-weight: 600;
   }
 }
 
@@ -385,21 +516,21 @@ export default {
   }
 }
 
-@keyframes disconnectIn {
+@keyframes connectionStatusIn {
   from {
     opacity: 0;
     transform: translateY(8px);
   }
 }
 
-@keyframes disconnectPulse {
+@keyframes connectionStatusPulse {
   50% {
     opacity: 0.35;
   }
 }
 
 // expanding halo so the badge catches the eye without moving content
-@keyframes disconnectRing {
+@keyframes connectionStatusRing {
   0% {
     box-shadow: 0 4px 20px color-mix(in srgb, black 30%, transparent),
       0 0 0 0 color-mix(in srgb, var(--c-rouge, #fc4b60) 60%, transparent);

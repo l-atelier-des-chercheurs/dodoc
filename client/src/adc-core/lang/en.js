@@ -556,19 +556,19 @@ export default {
   connection_lost: "Connection lost",
   changes_may_not_be_saved: "Your recent changes may not be saved.",
   connection_lost_help_intro:
-    "This device can no longer reach the dodoc server where projects are stored.",
+    "This device can no longer reach the {app_name} server where projects are stored.",
   connection_lost_help_live:
     "Changes made by other participants won’t show up either.",
   connection_lost_help_causes: "Common causes",
   connection_lost_help_cause_network:
     "This device is no longer connected to the network (wifi off or too weak, cable unplugged).",
   connection_lost_help_cause_server:
-    "The computer or server hosting dodoc is off, asleep or restarting.",
+    "The computer or server hosting {app_name} is off, asleep or restarting.",
   connection_lost_help_cause_sleep:
     "This device went to sleep or the tab stayed in the background for a long time.",
   connection_lost_help_what_to_do: "What to do?",
   connection_lost_help_todo_wait:
-    "Check this device’s connection, then click “Retry”. dodoc also tries again automatically every few seconds.",
+    "Check this device’s connection, then click “Retry”. {app_name} also tries again automatically every few seconds.",
   connection_lost_help_todo_unsaved:
     "Avoid making new changes until the connection is back.",
   connection_lost_help_todo_reload:

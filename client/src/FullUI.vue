@@ -1,8 +1,8 @@
 <template>
   <div class="_fullUI">
-    <DisconnectModal
-      v-if="show_disconnect_modal"
-      @close="show_disconnect_modal = false"
+    <ConnectionStatus
+      v-if="show_connection_status"
+      @close="show_connection_status = false"
     />
     <TrackAuthorChanges />
     <!-- <DynamicCursor v-if="!$root.is_touch_device" /> -->
@@ -46,7 +46,7 @@ import DynamicCursor from "@/components/DynamicCursor.vue";
 import GeneralPasswordModal from "@/adc-core/modals/GeneralPasswordModal.vue";
 import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
-import DisconnectModal from "@/adc-core/modals/DisconnectModal.vue";
+import ConnectionStatus from "@/adc-core/ui/ConnectionStatus.vue";
 import ChatsList from "@/adc-core/chats/ChatsList.vue";
 
 export default {
@@ -57,13 +57,13 @@ export default {
     GeneralPasswordModal,
     TrackAuthorChanges,
     TaskTracker,
-    DisconnectModal,
+    ConnectionStatus,
     ChatsList,
   },
   data() {
     return {
       show_general_password_modal: false,
-      show_disconnect_modal: false,
+      show_connection_status: false,
     };
   },
   async created() {
@@ -81,7 +81,7 @@ export default {
     this.$eventHub.$on("socketio.reconnect", this.socketConnected);
     this.$eventHub.$on("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$on("socketio.connect_error", this.socketConnectError);
-    this.$eventHub.$on("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$on("socketio.disconnect", this.showConnectionStatus);
 
     this.$root.is_loading = false;
   },
@@ -97,15 +97,18 @@ export default {
     this.$eventHub.$off("socketio.reconnect", this.socketConnected);
     this.$eventHub.$off("socketio.disconnect", this.socketDisconnected);
     this.$eventHub.$off("socketio.connect_error", this.socketConnectError);
-    this.$eventHub.$off("socketio.disconnect", this.showDisconnectModal);
+    this.$eventHub.$off("socketio.disconnect", this.showConnectionStatus);
   },
   watch: {},
   computed: {
     // the admin pages are child views of one layout: switching between them
     // must not re-create (and re-transition) the whole view
     route_view_key() {
-      return this.$route.path.startsWith("/admin") ? "/admin" : this.$route.path;
-    },},
+      return this.$route.path.startsWith("/admin")
+        ? "/admin"
+        : this.$route.path;
+    },
+  },
   methods: {
     socketConnected() {
       // if (this.$root.debug_mode)
@@ -120,7 +123,9 @@ export default {
       // these reasons and reconnects by itself — not worth error toasts.
       const benign_when_idle = ["ping timeout", "transport close"];
       if (benign_when_idle.includes(reason)) {
-        console.info(`[socket] disconnected (${reason}), reconnecting when possible`);
+        console.info(
+          `[socket] disconnected (${reason}), reconnecting when possible`
+        );
         return;
       }
       this.$alertify
@@ -135,8 +140,8 @@ export default {
       //     .delay(4000)
       //     .error(`Connect error ${reason}`);
     },
-    showDisconnectModal() {
-      this.show_disconnect_modal = true;
+    showConnectionStatus() {
+      this.show_connection_status = true;
     },
     promptGeneralPassword() {
       this.show_general_password_modal = true;

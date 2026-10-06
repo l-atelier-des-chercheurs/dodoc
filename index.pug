@@ -27,6 +27,7 @@ html
       window.app_infos = {
         schema: !{JSON.stringify(schema) || "{}"},
         version: "!{global.appInfos.version}",
+        product_name: !{JSON.stringify(global.appInfos.productName || "")},
         debug_mode: !{debug_mode || false},
         is_electron: navigator.userAgent.toLowerCase().indexOf(" electron/") > -1,
         page_is_standalone_html: !{page_is_standalone_html || false},

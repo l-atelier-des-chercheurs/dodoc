@@ -101,19 +101,19 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   changes_may_not_be_saved:
     "Le modifiche recenti potrebbero non essere salvate.",
   connection_lost_help_intro:
-    "Questo dispositivo non riesce più a raggiungere il server dodoc su cui sono salvati i progetti.",
+    "Questo dispositivo non riesce più a raggiungere il server {app_name} su cui sono salvati i progetti.",
   connection_lost_help_live:
     "Anche le modifiche fatte dagli altri partecipanti non vengono più mostrate.",
   connection_lost_help_causes: "Cause frequenti",
   connection_lost_help_cause_network:
     "Questo dispositivo non è più connesso alla rete (wifi spento o troppo debole, cavo scollegato).",
   connection_lost_help_cause_server:
-    "Il computer o il server che ospita dodoc è spento, in standby o si sta riavviando.",
+    "Il computer o il server che ospita {app_name} è spento, in standby o si sta riavviando.",
   connection_lost_help_cause_sleep:
     "Questo dispositivo è andato in standby o la scheda è rimasta a lungo in background.",
   connection_lost_help_what_to_do: "Cosa fare?",
   connection_lost_help_todo_wait:
-    "Controlla la connessione di questo dispositivo, poi clicca su «Riprova». dodoc riprova anche automaticamente a intervalli regolari.",
+    "Controlla la connessione di questo dispositivo, poi clicca su «Riprova». {app_name} riprova anche automaticamente a intervalli regolari.",
   connection_lost_help_todo_unsaved:
     "Evita di fare nuove modifiche finché la connessione non è tornata.",
   connection_lost_help_todo_reload:
