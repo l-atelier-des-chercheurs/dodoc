@@ -49,6 +49,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    scrollToOriginOnMount: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -70,6 +74,7 @@ export default {
   created() {},
   mounted() {
     this.initInfiniteViewer();
+    if (this.scrollToOriginOnMount) this.scrollToCorner({ x: 0, y: 0 });
 
     this.$eventHub.$on(`panzoom.panTo`, this.panTo);
   },

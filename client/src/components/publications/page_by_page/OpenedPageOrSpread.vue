@@ -62,6 +62,7 @@
               :content-height="page_height"
               :magnification="current_page_magnification"
               :layout_mode="layout_mode"
+              :scroll-to-origin-on-mount="true"
             >
               <transition name="pagechange" mode="out-in">
                 <div
