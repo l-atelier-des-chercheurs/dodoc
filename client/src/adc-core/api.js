@@ -170,6 +170,15 @@ export default function () {
         const meta = this.store_meta[store_key];
         return !meta || meta.stale === true;
       },
+      canUseStore(store_key) {
+        // a stored folder is only kept up to date through its room:
+        // without it, changes made elsewhere would be missed
+        return (
+          Boolean(this.store[store_key]) &&
+          !this.isStoreStale(store_key) &&
+          this.isRoomSubscribed(store_key)
+        );
+      },
       markAllStoreStale() {
         Object.keys(this.store).forEach((store_key) => {
           if (this.store_meta[store_key]) {
@@ -619,10 +628,7 @@ export default function () {
       },
       async getFolders({ path }) {
         const normalized_path = this.normalizeRoomPath(path);
-        if (
-          this.store[normalized_path] &&
-          !this.isStoreStale(normalized_path)
-        ) {
+        if (this.canUseStore(normalized_path)) {
           return this.store[normalized_path];
         }
 
@@ -642,11 +648,7 @@ export default function () {
       async getFolder({ path, no_files = false, detailed_infos = false }) {
         const use_store = detailed_infos === false && no_files === false;
         const store_path = this.normalizeRoomPath(path.split("?")[0]);
-        if (
-          use_store &&
-          this.store[store_path] &&
-          !this.isStoreStale(store_path)
-        ) {
+        if (use_store && this.canUseStore(store_path)) {
           return this.store[store_path];
         }
 

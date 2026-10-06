@@ -156,7 +156,6 @@ export default {
       destination_publication: undefined,
       destination_section_path: undefined,
       destination_page_id: undefined,
-      joined_publication_path: undefined,
 
       is_copying: false,
       navigation_to_copy: false,
@@ -164,9 +163,7 @@ export default {
   },
   created() {},
   mounted() {},
-  beforeDestroy() {
-    this.leaveDestinationPublication();
-  },
+  beforeDestroy() {},
   watch: {
     async show_modal() {
       this.navigation_to_copy = false;
@@ -197,13 +194,8 @@ export default {
       this.destination_publication = undefined;
       this.destination_section_path = undefined;
       this.destination_page_id = undefined;
-      this.leaveDestinationPublication();
       if (!path) return;
 
-      // without joining its room, the store would keep a copy of the
-      // destination that misses the changes made by this modal
-      this.$api.join({ room: path });
-      this.joined_publication_path = path;
       const publication = await this.$api.getFolder({ path });
       // user may have picked another publication in the meantime
       if (path !== this.destination_publication_path) return;
@@ -340,11 +332,6 @@ export default {
 
       this.destination_publication_path =
         this.destination_publications[0]?.$path;
-    },
-    leaveDestinationPublication() {
-      if (!this.joined_publication_path) return;
-      this.$api.leave({ room: this.joined_publication_path });
-      this.joined_publication_path = undefined;
     },
     pickOtherProject(project_path) {
       // the picker starts on the current project before switching to another
