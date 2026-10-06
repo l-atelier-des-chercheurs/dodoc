@@ -179,12 +179,14 @@ export default {
       });
     },
     async downloadAllSources() {
-      if (!this.project_path || !this.content?.length) return;
+      if (!this.project_path || !this.listed_files.length) return;
       this.is_downloading_sources = true;
       try {
         await this.$api.downloadSources({
           path: this.project_path,
-          meta_filenames: this.content,
+          meta_filenames: this.listed_files.map((f) =>
+            this.getFilename(f.$path)
+          ),
         });
       } catch (err) {
         this.$alertify?.error(this.$t("failed_to_download"));

@@ -32,10 +32,17 @@ export default {
     downloadable_files() {
       return this.project.downloadable_files || [];
     },
+    existing_files_count() {
+      // ignore references to medias that were removed from the project
+      return this.downloadable_files.filter((meta_filename) =>
+        this.getMediaInFolder({
+          folder_path: this.project.$path,
+          meta_filename,
+        })
+      ).length;
+    },
     has_items() {
-      return this.downloadable_files.length > 0
-        ? this.downloadable_files.length
-        : false;
+      return this.existing_files_count > 0 ? this.existing_files_count : false;
     },
   },
   methods: {},
