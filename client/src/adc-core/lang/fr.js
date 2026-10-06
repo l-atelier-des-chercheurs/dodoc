@@ -266,7 +266,6 @@ export default {
   in_this_section: "Dans ce chapitre",
   on_the_cover: "Sur la couverture",
   in_another_section: "Dans un autre chapitre",
-  change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",
   remove_area: "Supprimer cette zone",
   remove_area_confirm: "Êtes-vous sûr de vouloir supprimer cette zone ?",
@@ -1057,6 +1056,32 @@ export default {
     "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
   dmp_instr:
     "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
+  where: "Où ?",
+  publication: "Publication",
+  in_this_publication: "Dans cette publication",
+  in_another_publication_of_project: "Dans une autre publication de ce projet",
+  in_another_project: "Dans un autre projet",
+  dmmod_instr:
+    "Les médias utilisés par ce module seront importés dans le panneau Collecter du projet choisi.",
+  no_compatible_publications:
+    "Aucune publication de ce projet ne peut recevoir ce module (les modules de mise en page ne peuvent aller que dans des publications page à page, et inversement)",
+  no_sections:
+    "Cette publication ne contient aucun chapitre pouvant recevoir ce module",
+  module_added_at_end_of_section:
+    "Le module sera ajouté à la fin de ce chapitre.",
+  module_added_at_end_of_publication:
+    "Le module sera ajouté à la fin de cette publication.",
+  module_added_to_page: "Le module sera placé sur cette page.",
+  module_already_there: "Le module se trouve déjà à cet endroit.",
+  module_moved: "Module déplacé",
+  module_duplicated: "Module dupliqué",
+  module_moved_to: "Module déplacé vers {destination}",
+  module_duplicated_to: "Module dupliqué vers {destination}",
+  to_page_n: "la page {number}",
+  to_section_x: "le chapitre « {title} »",
+  to_publication_x: "la publication « {title} »",
+  x_of_publication_y: "{place} de la publication « {title} »",
+  click_to_show: "cliquer pour afficher",
   import_a_project: "Importer un projet",
   import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
     créé dans un autre {app_name} (version 10 ou plus récente). Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre {app_name} pour le récupérer en ZIP

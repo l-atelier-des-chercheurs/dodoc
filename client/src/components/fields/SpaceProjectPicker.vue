@@ -22,7 +22,7 @@
         <div v-if="!projects" class="_projectLoader">
           <LoaderSpinner />
         </div>
-        <div v-else-if="projects.length > 0">
+        <div v-else-if="sorted_projects.length > 0">
           <div class="u-buttonLink" disabled>
             {{ $t("project") }}
           </div>
@@ -49,6 +49,7 @@
 export default {
   props: {
     path: String,
+    excluded_project_path: String,
   },
   components: {},
   data() {
@@ -135,10 +136,12 @@ export default {
       if (!this.projects) return [];
       return this.projects
         .slice()
-        .filter((p) =>
-          this.canLoggedinSeeFolder({
-            folder: p,
-          })
+        .filter(
+          (p) =>
+            p.$path !== this.excluded_project_path &&
+            this.canLoggedinSeeFolder({
+              folder: p,
+            })
         )
         .sort((a, b) => {
           return a.title.localeCompare(b.title);

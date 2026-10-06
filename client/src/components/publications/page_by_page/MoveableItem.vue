@@ -54,7 +54,6 @@
         @update:module_being_edited="
           $emit('update:module_being_edited', $event)
         "
-        @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
         :style="module_styles"
@@ -502,16 +501,6 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
-    },
-    onDuplicateModule(meta_filename) {
-      const path =
-        this.publimodule.$path.substring(
-          0,
-          this.publimodule.$path.lastIndexOf("/") + 1
-        ) + meta_filename;
-      setTimeout(() => {
-        this.$eventHub.$emit(`module.setActive`, path);
-      }, 100);
     },
   },
 };

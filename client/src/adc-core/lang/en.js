@@ -221,7 +221,6 @@ export default {
   in_this_section: "In this chapter",
   on_the_cover: "On the cover",
   in_another_section: "In another chapter",
-  change_section: "Move to another chapter",
   remove_section: "Remove this chapter",
   remove_area: "Remove this area",
   remove_area_confirm: "Are you sure you want to remove this area?",
@@ -1092,6 +1091,31 @@ export default {
   dmm_instr: "In this space or another where you can import media.",
   dmp_instr:
     "In this project or another where you can create posts. All settings and texts will be duplicated, and the media (photos, videos, etc.) will be imported into the Collect panel.",
+  where: "Where?",
+  publication: "Publication",
+  in_this_publication: "In this publication",
+  in_another_publication_of_project: "In another publication of this project",
+  in_another_project: "In another project",
+  dmmod_instr:
+    "The media used by this module will be imported into the Collect panel of the chosen project.",
+  no_compatible_publications:
+    "No publication in this project can receive this module (page layout modules can only go to page by page publications, and vice versa)",
+  no_sections: "This publication has no chapter that can receive this module",
+  module_added_at_end_of_section:
+    "The module will be added at the end of this chapter.",
+  module_added_at_end_of_publication:
+    "The module will be added at the end of this publication.",
+  module_added_to_page: "The module will be placed on this page.",
+  module_already_there: "The module is already here.",
+  module_moved: "Module moved",
+  module_duplicated: "Module duplicated",
+  module_moved_to: "Module moved to {destination}",
+  module_duplicated_to: "Module duplicated to {destination}",
+  to_page_n: "page {number}",
+  to_section_x: "chapter “{title}”",
+  to_publication_x: "publication “{title}”",
+  x_of_publication_y: "{place} of publication “{title}”",
+  click_to_show: "click to show",
   import_zip: "Import a project in ZIP",
   import_in_progress: "Import in progress…",
   import_finished:

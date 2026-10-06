@@ -270,30 +270,7 @@
             </button>
           </div> -->
 
-          <div>
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_move_to_page_modal = true"
-            >
-              <b-icon icon="arrow-left-right" />
-              {{ $t("move_to_page") }}
-            </button>
-          </div>
-          <SelectPage
-            v-if="show_move_to_page_modal"
-            :pages="pages"
-            :current_page_id="active_page.id"
-            @submit="moveToAnotherPage"
-            @close="show_move_to_page_modal = false"
-          />
-
-          <div class="">
-            <button type="button" class="u-buttonLink" @click="duplicateModule">
-              <b-icon icon="file-plus" />
-              {{ $t("duplicate") }}
-            </button>
-          </div>
+          <DuplicateOrMoveModule :publimodule="active_module" />
           <div class="">
             <button
               type="button"
@@ -675,7 +652,7 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
-import SelectPage from "@/components/publications/page_by_page/SelectPage.vue";
+import DuplicateOrMoveModule from "@/components/publications/modules/DuplicateOrMoveModule.vue";
 import LinkToPageOrURL from "@/components/publications/page_by_page/LinkToPageOrURL.vue";
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
@@ -721,14 +698,13 @@ export default {
   components: {
     DepthInput,
     ModuleCreator,
-    SelectPage,
+    DuplicateOrMoveModule,
     LinkToPageOrURL,
     ImportFileZone,
   },
   data() {
     return {
       show_page_options: false,
-      show_move_to_page_modal: false,
       show_edit_link_modal: false,
       show_all_medias: false,
       has_editor_toolbar: false,
@@ -874,11 +850,6 @@ export default {
         this.$emit("nextPage");
       }, 500);
     },
-    moveToAnotherPage($event) {
-      this.show_move_to_page_modal = false;
-      this.updateMediaPubliMeta({ page_id: $event });
-      this.setActive(false);
-    },
     displayToolbarAndToolTip({ $toolbar, $tooltip }) {
       this.has_editor_toolbar = true;
       this.$nextTick(() => {
@@ -958,9 +929,6 @@ export default {
     },
     changeModulePage() {
       this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
-    },
-    duplicateModule() {
-      this.$eventHub.$emit(`module.duplicate.${this.module_meta_filename}`);
     },
     removeModule() {
       this.$eventHub.$emit(`module.remove.${this.module_meta_filename}`);

@@ -240,7 +240,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   in_this_section: "In questo capitolo",
   on_the_cover: "Sulla copertina",
   in_another_section: "In un altro capitolo",
-  change_section: "Sposta verso un altro capitolo",
   remove_section: "Elimina il capitolo",
   remove_area: "Elimina questa zona",
   remove_area_confirm: "Sei sicuro di voler eliminare questa zona?",
@@ -960,6 +959,33 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "In questo spazio o in un altro dove è possibile importare dei media.",
   dmp_instr:
     "All'interno di questo progetto o in un altro dove è possibile creare pubblicazioni. Tutte le impostazioni e i testi saranno duplicati e i media (foto, video, ecc.) saranno importati nel pannello Raccolta",
+  where: "Dove?",
+  publication: "Pubblicazione",
+  in_this_publication: "In questa pubblicazione",
+  in_another_publication_of_project:
+    "In un'altra pubblicazione di questo progetto",
+  in_another_project: "In un altro progetto",
+  dmmod_instr:
+    "I media utilizzati da questo modulo saranno importati nel pannello Raccolta del progetto scelto.",
+  no_compatible_publications:
+    "Nessuna pubblicazione di questo progetto può ricevere questo modulo (i moduli impaginati possono andare solo in pubblicazioni pagina per pagina, e viceversa)",
+  no_sections:
+    "Questa pubblicazione non contiene capitoli che possano ricevere questo modulo",
+  module_added_at_end_of_section:
+    "Il modulo sarà aggiunto alla fine di questo capitolo.",
+  module_added_at_end_of_publication:
+    "Il modulo sarà aggiunto alla fine di questa pubblicazione.",
+  module_added_to_page: "Il modulo sarà posizionato su questa pagina.",
+  module_already_there: "Il modulo si trova già qui.",
+  module_moved: "Modulo spostato",
+  module_duplicated: "Modulo duplicato",
+  module_moved_to: "Modulo spostato in {destination}",
+  module_duplicated_to: "Modulo duplicato in {destination}",
+  to_page_n: "pagina {number}",
+  to_section_x: "capitolo «{title}»",
+  to_publication_x: "pubblicazione «{title}»",
+  x_of_publication_y: "{place} della pubblicazione «{title}»",
+  click_to_show: "clicca per visualizzare",
   import_a_project: "Importa un progetto",
   import_a_project_instr: `È possibile aggiungere in questo spazio un progetto completo (con tutti i suoi media, produzioni e pubblicazioni) 
     creato in un altro {app_name} (versione 10 o successiva). Per questo clicca su <i>scarica</i> sul progetto nell'altro {app_name} per recuperarlo in formato ZIP

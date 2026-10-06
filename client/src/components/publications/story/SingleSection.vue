@@ -100,15 +100,6 @@
               @moveDown="
                 moveModuleTo({ path: _module.$path, new_position: index + 1 })
               "
-              @duplicate="
-                duplicatePublicationMedia({
-                  source_module_path: _module.$path,
-                  copy_meta_filename: $event,
-                })
-              "
-              @changeSectionForModule="
-                $emit('changeSectionForModule', _module.$path)
-              "
               @remove="removeModule(_module.$path)"
             />
           </template>
@@ -231,18 +222,6 @@ export default {
         section: this.section,
         meta_filename: this.getFilename(path),
         new_position,
-      });
-    },
-    async duplicatePublicationMedia({
-      source_module_path,
-      copy_meta_filename,
-    }) {
-      const source_meta_filename = this.getFilename(source_module_path);
-      await this.duplicatePublicationMedia2({
-        publication: this.publication,
-        section: this.section,
-        source_meta_filename,
-        copy_meta_filename,
       });
     },
     unselectModuleEdited() {

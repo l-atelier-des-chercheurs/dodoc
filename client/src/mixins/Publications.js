@@ -93,9 +93,24 @@ export default {
         return false;
       }
     },
-    async duplicateModuleWithSourceMedias({ og_module, addtl_meta_to_module }) {
+    async duplicateModuleWithSourceMedias({
+      og_module,
+      addtl_meta_to_module,
+      path_to_destination_folder = "",
+    }) {
       let new_meta = {};
       const new_source_medias = [];
+
+      // when the destination publication is in another project, medias linked
+      // from the source project have to be copied to the destination project
+      const og_publication_path = this.getParent(og_module.$path);
+      const og_project_path = this.getParent(
+        this.getParent(og_publication_path)
+      );
+      const destination_project_path = path_to_destination_folder
+        ? this.getParent(this.getParent(path_to_destination_folder))
+        : og_project_path;
+      const changes_project = destination_project_path !== og_project_path;
 
       for (let {
         path,
@@ -115,17 +130,35 @@ export default {
         }
 
         if (meta_filename) {
-          const og_file_path = this.getSourceMedia({
+          const og_file = this.getSourceMedia({
             source_media: { meta_filename },
-            folder_path: this.getParent(og_module.$path),
-          }).$path;
-          const copy_file_path = await this.$api.copyFile({
-            path: og_file_path,
+            folder_path: og_publication_path,
           });
-          new_media_obj.meta_filename = copy_file_path;
+          // skip missing medias
+          if (!og_file) continue;
+          new_media_obj.meta_filename = await this.$api.copyFile({
+            path: og_file.$path,
+            path_to_destination_folder,
+          });
         } else if (meta_filename_in_project) {
           // linked media in project
           new_media_obj.meta_filename_in_project = meta_filename_in_project;
+
+          const og_media =
+            changes_project &&
+            this.getSourceMedia({
+              source_media: { meta_filename_in_project },
+              folder_path: og_publication_path,
+            });
+          if (og_media) {
+            new_media_obj.meta_filename_in_project = await this.$api.copyFile({
+              path: og_media.$path,
+              path_to_destination_folder: destination_project_path,
+              new_meta: {
+                group: "imported_from_" + path_to_destination_folder,
+              },
+            });
+          }
         }
         new_source_medias.push(new_media_obj);
       }
@@ -136,6 +169,7 @@ export default {
       const meta_filename = await this.$api
         .copyFile({
           path: og_module.$path,
+          path_to_destination_folder,
           new_meta,
         })
         .catch((err) => {
@@ -143,6 +177,42 @@ export default {
           throw err;
         });
       return meta_filename;
+    },
+    async deleteModuleWithLocalMedias({ publimodule, with_content = true }) {
+      // todo also empty sharedb path, since $path can be retaken
+      if (with_content)
+        try {
+          for (let source_media of publimodule.source_medias) {
+            // do not remove linked medias, only those in this specific folder
+            if (
+              Object.prototype.hasOwnProperty.call(
+                source_media,
+                "meta_filename"
+              )
+            ) {
+              const full_source_media = this.getSourceMedia({
+                source_media,
+                folder_path: this.getParent(publimodule.$path),
+              });
+
+              if (full_source_media)
+                await this.$api.deleteItem({
+                  path: full_source_media.$path,
+                });
+            }
+          }
+        } catch (err) {
+          this.$alertify.delay(4000).error(err);
+        }
+
+      await this.$api
+        .deleteItem({
+          path: publimodule.$path,
+        })
+        .catch((err) => {
+          this.$alertify.delay(4000).error(err);
+          throw err;
+        });
     },
 
     /////////////////////////////////////////////////////

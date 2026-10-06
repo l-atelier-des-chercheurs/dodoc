@@ -202,23 +202,7 @@
             </div>
 
             <DropDown :show_label="false" :right="true">
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="duplicateModule"
-              >
-                <b-icon icon="file-plus" />
-                {{ $t("duplicate") }}
-              </button>
-
-              <button
-                type="button"
-                class="u-buttonLink"
-                @click="$emit('changeSectionForModule')"
-              >
-                <b-icon icon="arrow-left-right" />
-                {{ $t("change_section") }}
-              </button>
+              <DuplicateOrMoveModule :publimodule="publimodule" />
 
               <RemoveMenu
                 v-if="can_edit"
@@ -456,6 +440,7 @@
 <script>
 import BaseModal2 from "@/adc-core/modals/BaseModal2.vue";
 import MediasModule from "@/components/publications/modules/MediasModule.vue";
+import DuplicateOrMoveModule from "@/components/publications/modules/DuplicateOrMoveModule.vue";
 
 export default {
   props: {
@@ -480,6 +465,7 @@ export default {
   },
   components: {
     MediasModule,
+    DuplicateOrMoveModule,
   },
   inject: {
     $getMapOptions: {
@@ -500,10 +486,6 @@ export default {
       this.enableEdit
     );
     this.$eventHub.$on(
-      `module.duplicate.${this.module_meta_filename}`,
-      this.duplicateModule
-    );
-    this.$eventHub.$on(
       `module.remove.${this.module_meta_filename}`,
       this.removeModule
     );
@@ -519,10 +501,6 @@ export default {
     this.$eventHub.$off(
       `module.enable_edit.${this.module_meta_filename}`,
       this.enableEdit
-    );
-    this.$eventHub.$off(
-      `module.duplicate.${this.module_meta_filename}`,
-      this.duplicateModule
     );
     this.$eventHub.$off(
       `module.remove.${this.module_meta_filename}`,
@@ -780,59 +758,11 @@ export default {
 
       this.updateMeta({ module_type: new_type });
     },
-    async duplicateModule() {
-      let addtl_meta_to_module = {};
-      if (this.page_template === "page_by_page") {
-        addtl_meta_to_module.x = (this.publimodule.x || 0) + 10;
-        addtl_meta_to_module.y = (this.publimodule.y || 0) + 10;
-      }
-
-      const meta_filename = await this.duplicateModuleWithSourceMedias({
-        og_module: this.publimodule,
-        addtl_meta_to_module,
-      });
-      this.$emit("duplicate", meta_filename);
-      this.disableEdit();
-    },
     async removeModule({ with_content = true } = {}) {
-      // todo also empty sharedb path, since $path can be retaken
-      if (with_content) {
-        try {
-          for (let source_media of this.publimodule.source_medias) {
-            // do not remove linked medias, only those in this specific folder
-            if (
-              Object.prototype.hasOwnProperty.call(
-                source_media,
-                "meta_filename"
-              )
-            ) {
-              const publication_path = this.getParent(this.publimodule.$path);
-              const full_source_media = this.getSourceMedia({
-                source_media,
-                folder_path: publication_path,
-              });
-
-              if (full_source_media)
-                await this.$api.deleteItem({
-                  path: full_source_media.$path,
-                });
-            }
-          }
-        } catch (err) {
-          this.$alertify.delay(4000).error(err);
-          // throw err;
-        }
-      }
-
-      await this.$api
-        .deleteItem({
-          path: this.publimodule.$path,
-        })
-        .catch((err) => {
-          this.$alertify.delay(4000).error(err);
-          throw err;
-        });
-
+      await this.deleteModuleWithLocalMedias({
+        publimodule: this.publimodule,
+        with_content,
+      });
       this.$emit("remove");
     },
   },

@@ -7,14 +7,6 @@
       :can_edit="can_edit"
       @prevSection="prevSection"
       @nextSection="nextSection"
-      @changeSectionForModule="change_section_for_module = $event"
-    />
-
-    <ChangeSectionForModule
-      v-if="change_section_for_module"
-      :module_path="change_section_for_module"
-      :sections="sections"
-      @close="change_section_for_module = false"
     />
 
     <div class="_navBtns">
@@ -48,7 +40,6 @@
 </template>
 <script>
 import SingleSection from "@/components/publications/story/SingleSection.vue";
-import ChangeSectionForModule from "@/components/publications/modules/ChangeSectionForModule.vue";
 
 export default {
   props: {
@@ -59,12 +50,9 @@ export default {
   },
   components: {
     SingleSection,
-    ChangeSectionForModule,
   },
   data() {
-    return {
-      change_section_for_module: false,
-    };
+    return {};
   },
   created() {},
   mounted() {},
