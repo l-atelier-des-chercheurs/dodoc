@@ -24,28 +24,30 @@
             v-text="p"
           />
         </select>
+        <EditBtn :btn_type="'close'" @click="edit_mode = false" />
       </template>
-      <EditBtn v-if="can_edit" @click="edit_mode = !edit_mode" />
-    </div>
-    <div class="u-sameRow _pageLabel--actions" v-if="edit_mode">
-      <div class="">
-        <EditBtn
-          :btn_type="'duplicate'"
-          @click="
-            $emit('duplicatePage');
-            edit_mode = false;
-          "
+      <DropDown v-if="can_edit && !edit_mode" :show_label="false">
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="edit_mode = true"
+        >
+          <b-icon icon="arrow-left-right" />
+          {{ $t("change_order") }}
+        </button>
+        <button
+          type="button"
+          class="u-buttonLink"
+          @click="$emit('duplicatePage')"
+        >
+          <b-icon icon="files" />
+          {{ $t("duplicate") }}
+        </button>
+        <RemoveMenu
+          :modal_title="$t('remove_page_and_content')"
+          @remove="$emit('removePage')"
         />
-      </div>
-      <RemoveMenu
-        v-if="can_edit"
-        :modal_title="$t('remove_page_and_content')"
-        @remove="$emit('removePage')"
-      >
-        <template slot="trigger">
-          <EditBtn :btn_type="'remove'" />
-        </template>
-      </RemoveMenu>
+      </DropDown>
     </div>
   </div>
 </template>
@@ -81,10 +83,5 @@ export default {
   // background: white;
   // border-radius: 4px;
   // background: rgba(0, 0, 0, 0.06);
-}
-
-._pageLabel--actions {
-  background-color: white;
-  border-radius: var(--border-radius);
 }
 </style>

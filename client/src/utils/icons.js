@@ -52,6 +52,7 @@ import {
   BIconArrowLeftCircle,
   BIconArrowRightCircle,
   BIconFilePlus,
+  BIconFiles,
   BIconSave2Fill,
   BIconCheckCircleFill,
   BIconFileLock2Fill,
@@ -231,6 +232,7 @@ Vue.component("BIconTools", BIconTools);
 Vue.component("BIconArrowLeftCircle", BIconArrowLeftCircle);
 Vue.component("BIconArrowRightCircle", BIconArrowRightCircle);
 Vue.component("BIconFilePlus", BIconFilePlus);
+Vue.component("BIconFiles", BIconFiles);
 Vue.component("BIconSave2Fill", BIconSave2Fill);
 Vue.component("BIconCheckCircleFill", BIconCheckCircleFill);
 Vue.component("BIconFileLock2Fill", BIconFileLock2Fill);
