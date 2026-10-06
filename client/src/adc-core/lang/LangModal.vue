@@ -1,16 +1,6 @@
 <template>
   <BaseModal2 :title="$t('ui_lang_select')" @close="$emit('close')">
-    <div class="_langSelect" :key="$i18n.locale">
-      <select v-model="current_lang">
-        <option
-          v-for="lang_option in lang_options"
-          :key="lang_option.key"
-          :value="lang_option.key"
-          v-text="lang_option.text"
-          :disabled="lang_option.disabled"
-        />
-      </select>
-    </div>
+    <LangSelector />
 
     <div class="">
       <div class="u-spacingBottom" />
@@ -214,46 +204,15 @@
   </BaseModal2>
 </template>
 <script>
+import LangSelector from "@/adc-core/lang/LangSelector.vue";
+
 export default {
   props: {},
-  components: {},
+  components: {
+    LangSelector,
+  },
   data() {
     return {
-      current_lang: this.$i18n.locale,
-      lang_options: [
-        {
-          key: "fr",
-          text: "Français",
-        },
-        {
-          key: "en",
-          text: "English",
-        },
-        {
-          key: "it",
-          text: "Italian",
-        },
-        // {
-        //   key: "fon",
-        //   text: "Fon (in progress)",
-        // },
-        // {
-        //   key: "de",
-        //   text: "Deutsch",
-        //   disabled: true,
-        // },
-        // {
-        //   key: "nl",
-        //   text: "Nederlands",
-        //   disabled: true,
-        // },
-        // {
-        //   key: "oc",
-        //   text: "Occitan",
-        //   disabled: true,
-        // },
-      ],
-
       translations: {},
       show_missing_translations: false,
 
@@ -295,13 +254,10 @@ export default {
       },
       deep: true,
     },
-    current_lang() {
-      this.updateLang(this.current_lang);
-    },
   },
   computed: {
     lang_to_find_missing_str() {
-      return this.current_lang;
+      return this.$i18n.locale;
     },
     missing_translations() {
       if (!this.translations) return false;
@@ -341,14 +297,6 @@ export default {
     },
   },
   methods: {
-    async updateLang(new_lang) {
-      await this.$root.changeLocale(new_lang);
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(this.$t("lang_updated"));
-      // this.$emit("close");
-    },
     async loadMissingTranslations() {
       const translations = await this.$root.findMissingTranslations();
       this.translations = Object.assign({}, translations);
@@ -390,10 +338,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-._langSelect {
-  max-width: 35ch;
-}
-
 ._allMissingTranslations {
   border: 2px solid var(--c-gris);
   background: var(--c-gris_clair);

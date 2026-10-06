@@ -42,6 +42,18 @@
 
         <button
           type="button"
+          class="u-button u-button_icon _langBtn"
+          :class="{
+            'is--active': show_lang_modal,
+          }"
+          :title="$t('ui_lang_select') + ' — ' + $t('current_lang_name')"
+          @click="show_lang_modal = !show_lang_modal"
+          v-text="$i18n.locale.toUpperCase()"
+        />
+        <LangModal v-if="show_lang_modal" @close="show_lang_modal = false" />
+
+        <button
+          type="button"
           class="u-button u-button_icon _helpBtn"
           :class="{
             'is--active': show_credits_modal,
@@ -184,6 +196,7 @@
 <script>
 import AuthorList from "@/adc-core/author/AuthorList.vue";
 import CreditsModal from "@/adc-core/modals/CreditsModal.vue";
+import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
 
 import authorMessageMixin from "@/adc-core/chats/mixins/authorMessageMixin";
@@ -193,6 +206,7 @@ export default {
   components: {
     AuthorList,
     CreditsModal,
+    LangModal,
     BreadCrumbs,
   },
   mixins: [authorMessageMixin],
@@ -201,6 +215,7 @@ export default {
       show_users_modal: false,
       show_authors_modal: false,
       show_credits_modal: false,
+      show_lang_modal: false,
       show_qr_code_modal: false,
       show_chats_modal: false,
       isScrolledDown: false,
@@ -496,6 +511,18 @@ export default {
   // &:hover svg {
   //   fill: #fc4b60;
   // }
+}
+
+._langBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  padding: 0;
+  font-weight: 600;
+  // font-size: var(--sl-font-size-small);
+  letter-spacing: 0.04em;
 }
 
 ._chatsBtn {
