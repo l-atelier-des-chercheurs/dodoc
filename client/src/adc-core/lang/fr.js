@@ -1,8 +1,8 @@
 export default {
-  welcome_to_dodoc: "Bienvenue sur do•doc !",
+  welcome_to_dodoc: "Bienvenue sur {app_name} !",
   current_lang_name: "Français",
   a_foss_made_by:
-    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
+    "Cette plateforme utilise {app_name}, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
@@ -91,7 +91,7 @@ export default {
   space_members: "Participants à cet espace",
 
   name_of_instance: "Nom de l’instance",
-  name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
+  name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>{app_name} de la classe de CM</b>, etc.
       Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
   presentation_of_instance: "Présentation de l’instance",
   presentation_of_instance_instructions: `Apparaîtra sur la page d’accueil uniquement.`,
@@ -121,19 +121,19 @@ export default {
   changes_may_not_be_saved:
     "Vos modifications récentes pourraient ne pas être enregistrées.",
   connection_lost_help_intro:
-    "Cet appareil n’arrive plus à joindre le serveur {app_name} sur lequel sont enregistrés les projets.",
+    "Cet appareil n’arrive plus à joindre le serveur <b>{app_name}</b> sur lequel sont enregistrés les projets.",
   connection_lost_help_live:
     "Les changements faits par les autres participants ne s’affichent plus non plus.",
   connection_lost_help_causes: "Causes fréquentes",
   connection_lost_help_cause_network:
     "Cet appareil n’est plus connecté au réseau (wifi coupé ou trop faible, câble débranché).",
   connection_lost_help_cause_server:
-    "L’ordinateur ou le serveur qui héberge {app_name} est éteint, en veille ou en train de redémarrer.",
+    "L’ordinateur ou le serveur qui héberge <b>{app_name}</b> est éteint, en veille ou en train de redémarrer.",
   connection_lost_help_cause_sleep:
     "Cet appareil s’est mis en veille ou l’onglet est resté longtemps en arrière-plan.",
   connection_lost_help_what_to_do: "Que faire ?",
   connection_lost_help_todo_wait:
-    "Vérifiez la connexion de cet appareil, puis cliquez sur « Réessayer ». {app_name} retente aussi automatiquement à intervalles réguliers.",
+    "Vérifiez la connexion de cet appareil, puis cliquez sur « Réessayer ». <b>{app_name}</b> retente aussi automatiquement à intervalles réguliers.",
   connection_lost_help_todo_unsaved:
     "Évitez de faire de nouvelles modifications tant que la connexion n’est pas revenue.",
   connection_lost_help_todo_reload:
@@ -428,7 +428,7 @@ export default {
   show_projects: "Afficher les projets",
   all_projects: "Tous les projets",
   all_projects_instr:
-    "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+    "Cette liste affiche l’ensemble des projets documentés sur ce {app_name}, indépendamment de leurs espaces respectifs.",
   event_projects_instr:
     "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
@@ -436,7 +436,7 @@ export default {
   add_accounts: "Rajouter des comptes",
   add_by_group: "Ajouter par groupe",
   restart_to_apply:
-    "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
+    "Fermez et redémarrez {app_name} manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
@@ -491,7 +491,7 @@ export default {
   settings: "Réglages",
   admin_settings: "Réglages d’administration",
   admin_welcome: "Prise en main",
-  admin_welcome_title: "Bienvenue sur votre do•doc",
+  admin_welcome_title: "Bienvenue sur votre {app_name}",
   admin_welcome_intro:
     "C’est ici que se règle cette instance. Tout ce que vous pouvez configurer est réuni ici : choisissez une section dans la liste à gauche, ou commencez par les étapes ci-dessous.",
   admin_welcome_default_admin:
@@ -545,7 +545,7 @@ export default {
 
   path_to_content: "Chemin du stockage des contenus",
   path_to_content_instructions: `Attention, fonctionnalité avancée !
-      Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
+      Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de {app_name}. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par {app_name} (version 10 ou plus récente). Redémarrez {app_name} pour que ce règlage prenne effet.`,
 
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
@@ -920,14 +920,14 @@ export default {
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
   stream_local_mode: "sur cet appareil",
-  stream_remote_mode: "do•doc distant",
+  stream_remote_mode: "{app_name} distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
   connect: "Se connecter",
   connect_to_other_users:
-    "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+    "Accéder à des sources provenant d’autres appareils connectés actuellement à ce {app_name}",
 
   seconds: "secondes",
   no_video_input_available: "Aucune source vidéo disponible",
@@ -1058,13 +1058,13 @@ export default {
     "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
   import_a_project: "Importer un projet",
   import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
-    créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
+    créé dans un autre {app_name} (version 10 ou plus récente). Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre {app_name} pour le récupérer en ZIP
     puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les miniatures de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet {app_name} valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
 
@@ -1245,7 +1245,7 @@ export default {
     remplies pour informer les utilisateurs de ces règles là.
     `,
   cookies_info: `
-    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    Sur cette version de {app_name}, sachez qu’aucun suivi des visites n’est réalisé 
     et que les seuls cookies servent à enregistrer des informations techniques anonymes
     (comme la langue, l’utilisation des caméras, etc.).
     `,
@@ -1417,7 +1417,7 @@ export default {
   enable_image: "Activer l’image",
   enable_sound: "Activer le son",
   created_by_publication: "Créé par la publication {publication_title}",
-  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
+  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de {app_name}. 
   <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s’y trouve, vous pouvez consulter la publication depuis n’importe quel ordinateur dans un navigateur web.
   <br /><br />Vous pouvez également la mettre en ligne pour qu’elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
 

@@ -44,7 +44,21 @@ const i18n = () => {
     else if (lang === "it") content = await import("@/adc-core/lang/it.js");
     // else if (lang === "fon") content = await import("@/adc-core/lang/fon.js");
     else content = await import("@/adc-core/lang/en.js");
-    return content.default;
+    return withAppName(content.default);
+  };
+
+  // {app_name} in translations = this software's productName (do•doc,
+  // slashdoc, living archive…), so adc-core texts work for all of them
+  const withAppName = (messages) => {
+    const app_name = window.app_infos?.product_name || "do•doc";
+    return Object.fromEntries(
+      Object.entries(messages).map(([key, value]) => [
+        key,
+        typeof value === "string"
+          ? value.replaceAll("{app_name}", app_name)
+          : value,
+      ])
+    );
   };
 
   const i18n = new VueI18n({

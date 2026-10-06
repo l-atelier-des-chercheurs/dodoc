@@ -78,7 +78,7 @@
       <div class="_connectionHelp">
         <p
           class="_connectionHelp--lead"
-          v-html="$t('connection_lost_help_intro', { app_name })"
+          v-html="$t('connection_lost_help_intro')"
         />
 
         <div class="_connectionHelp--warning">
@@ -96,7 +96,7 @@
               <span class="_connectionHelp--marker">
                 <b-icon :icon="cause.icon" aria-hidden="true" />
               </span>
-              <span v-html="$t(cause.text, { app_name })" />
+              <span v-html="$t(cause.text)" />
             </li>
           </ul>
         </section>
@@ -106,7 +106,7 @@
           <ol class="_connectionHelp--list is--steps">
             <li v-for="step of steps" :key="step">
               <span class="_connectionHelp--marker" aria-hidden="true" />
-              <span v-html="$t(step, { app_name })" />
+              <span v-html="$t(step)" />
             </li>
           </ol>
         </section>
@@ -234,12 +234,6 @@ export default {
     },
     is_persistent() {
       return this.failed_attempts >= PERSISTENT_AFTER_ATTEMPTS;
-    },
-    // shared by dodoc-based apps (slashdoc, living archive…): name the
-    // software from its package.json productName, in bold
-    app_name() {
-      const name = this.$root.app_infos.product_name || "do•doc";
-      return `${name}`;
     },
     contactmail() {
       return this.$root.app_infos.instance_meta.contactmail;

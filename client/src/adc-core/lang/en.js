@@ -1,9 +1,9 @@
 export default {
-  welcome_to_dodoc: "Welcome to do•doc !",
+  welcome_to_dodoc: "Welcome to {app_name} !",
   current_lang_name: "English",
 
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
+    "This platform uses {app_name}, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
@@ -47,7 +47,7 @@ export default {
   year: "Year",
   admin_settings: "Admin settings",
   admin_welcome: "Get started",
-  admin_welcome_title: "Welcome to your do•doc",
+  admin_welcome_title: "Welcome to your {app_name}",
   admin_welcome_intro:
     "This is where you configure this instance. Everything you can set up is gathered here: pick a section in the list on the left, or start with the steps below.",
   admin_welcome_default_admin:
@@ -114,7 +114,7 @@ export default {
   space_members: "Participants in this space",
 
   name_of_instance: "Instance name",
-  name_of_instance_instructions: `For example, <b>Malakoff fablab documentation</b>, <b>do•doc of the CM class</b>, etc.
+  name_of_instance_instructions: `For example, <b>Malakoff fablab documentation</b>, <b>{app_name} of the CM class</b>, etc.
       Will appear on the home page and in the browser tab.`,
   presentation_of_instance: "Instance presentation",
   presentation_of_instance_instructions: `Will appear on the home page only.`,
@@ -210,8 +210,8 @@ export default {
   create_a_publication: "Create a publication",
   import_a_project: "Import a project",
   import_a_project_instr: `
-  You can import a project with all its medias, makes and publications to this space, even if it has been created on another do•doc instance as long
-  as it is running version 10. To do so, click on <i>download</i> on that project on the other do•doc instance to get a ZIP file and choose this file
+  You can import a project with all its medias, makes and publications to this space, even if it has been created on another {app_name} instance as long
+  as it is running version 10 or later. To do so, click on <i>download</i> on that project on the other {app_name} instance to get a ZIP file and choose this file
   after clicking the button below. It will automatically be added to this space with your account as the admin.`,
 
   story_width: "Story width",
@@ -280,7 +280,7 @@ export default {
   audiooutput: "Audio output",
 
   restart_to_apply:
-    "Close and restart do•doc manually or using the button below for the setting to take effect.",
+    "Close and restart {app_name} manually or using the button below for the setting to take effect.",
   restart: "Close and restart",
 
   refresh_window_to_see_changes: "Refresh the window to see the changes",
@@ -439,7 +439,7 @@ export default {
 
   path_to_content: "Path to content",
   path_to_content_instructions: `Attention, advanced functionality!
-  The path below indicates the location of the folder that contains the contents of do•doc. If you change this path, it is strongly recommended to use either an empty folder or a folder that only contains content created by do•doc 10. Restart do•doc for this setting to take effect.`,
+  The path below indicates the location of the folder that contains the contents of {app_name}. If you change this path, it is strongly recommended to use either an empty folder or a folder that only contains content created by {app_name} (version 10 or later). Restart {app_name} for this setting to take effect.`,
 
   administration_and_access_control: "Administration and access control",
   logo_and_images: "Logo and images",
@@ -556,19 +556,19 @@ export default {
   connection_lost: "Connection lost",
   changes_may_not_be_saved: "Your recent changes may not be saved.",
   connection_lost_help_intro:
-    "This device can no longer reach the {app_name} server where projects are stored.",
+    "This device can no longer reach the <b>{app_name}</b> server where projects are stored.",
   connection_lost_help_live:
     "Changes made by other participants won’t show up either.",
   connection_lost_help_causes: "Common causes",
   connection_lost_help_cause_network:
     "This device is no longer connected to the network (wifi off or too weak, cable unplugged).",
   connection_lost_help_cause_server:
-    "The computer or server hosting {app_name} is off, asleep or restarting.",
+    "The computer or server hosting <b>{app_name}</b> is off, asleep or restarting.",
   connection_lost_help_cause_sleep:
     "This device went to sleep or the tab stayed in the background for a long time.",
   connection_lost_help_what_to_do: "What to do?",
   connection_lost_help_todo_wait:
-    "Check this device’s connection, then click “Retry”. {app_name} also tries again automatically every few seconds.",
+    "Check this device’s connection, then click “Retry”. <b>{app_name}</b> also tries again automatically every few seconds.",
   connection_lost_help_todo_unsaved:
     "Avoid making new changes until the connection is back.",
   connection_lost_help_todo_reload:
@@ -995,13 +995,13 @@ export default {
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
   stream_local_mode: "on this device",
-  stream_remote_mode: "remote do•doc",
+  stream_remote_mode: "remote {app_name}",
   "stream_shown:": "Stream used:",
   remote_access: "Remote Sources",
   hangup: "hang up",
   connect: "Connect",
   connect_to_other_users:
-    "Access sources from other devices currently connected to this do•doc",
+    "Access sources from other devices currently connected to this {app_name}",
   seconds: "seconds",
   no_video_input_available: "No video source available",
   no_audio_input_available: "No audio source available",
@@ -1166,7 +1166,7 @@ export default {
   completed to inform users of these rules.
     `,
   cookies_info: `
-  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  In this version of {app_name}, know that no tracking is done and that the cookies only contain anonymous technical information
   (like the language, the cameras used, etc.).
     `,
 
@@ -1335,7 +1335,7 @@ export default {
   enable_image: "Enable image",
   enable_sound: "Enable sound",
   created_by_publication: "From the publication {publication_title}",
-  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of {app_name}. 
   <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
   <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
 

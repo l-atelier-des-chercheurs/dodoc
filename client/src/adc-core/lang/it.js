@@ -1,8 +1,8 @@
 export default {
-  welcome_to_dodoc: "Benvenuto su do•doc !",
+  welcome_to_dodoc: "Benvenuto su {app_name} !",
   current_lang_name: "Italiano",
   a_foss_made_by:
-    "Questa piattaforma usa do•doc, un software libero e gratuito creato da una comunità di designer, docenti, artisti, svilluppatori, makers &nbsp;…!",
+    "Questa piattaforma usa {app_name}, un software libero e gratuito creato da una comunità di designer, docenti, artisti, svilluppatori, makers &nbsp;…!",
   home: "Home",
   go_home: "Torna alla home",
   page_not_found: "Questa pagina non esiste",
@@ -72,7 +72,7 @@ export default {
   space_members: "Partecipanti a questo spazio",
 
   name_of_instance: "Nome dell'istanza",
-  name_of_instance_instructions: `Per esempio, <b>Documentazione del fablab di Malakoff</b>, <b>do•doc della classe  terza</b>, etc.
+  name_of_instance_instructions: `Per esempio, <b>Documentazione del fablab di Malakoff</b>, <b>{app_name} della classe  terza</b>, etc.
        Comparirà nella home page e nella scheda del browser.`,
   presentation_of_instance: "Presentazione dell'istanza",
   presentation_of_instance_instructions: `Comparirà solo nella home page.`,
@@ -101,19 +101,19 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   changes_may_not_be_saved:
     "Le modifiche recenti potrebbero non essere salvate.",
   connection_lost_help_intro:
-    "Questo dispositivo non riesce più a raggiungere il server {app_name} su cui sono salvati i progetti.",
+    "Questo dispositivo non riesce più a raggiungere il server <b>{app_name}</b> su cui sono salvati i progetti.",
   connection_lost_help_live:
     "Anche le modifiche fatte dagli altri partecipanti non vengono più mostrate.",
   connection_lost_help_causes: "Cause frequenti",
   connection_lost_help_cause_network:
     "Questo dispositivo non è più connesso alla rete (wifi spento o troppo debole, cavo scollegato).",
   connection_lost_help_cause_server:
-    "Il computer o il server che ospita {app_name} è spento, in standby o si sta riavviando.",
+    "Il computer o il server che ospita <b>{app_name}</b> è spento, in standby o si sta riavviando.",
   connection_lost_help_cause_sleep:
     "Questo dispositivo è andato in standby o la scheda è rimasta a lungo in background.",
   connection_lost_help_what_to_do: "Cosa fare?",
   connection_lost_help_todo_wait:
-    "Controlla la connessione di questo dispositivo, poi clicca su «Riprova». {app_name} riprova anche automaticamente a intervalli regolari.",
+    "Controlla la connessione di questo dispositivo, poi clicca su «Riprova». <b>{app_name}</b> riprova anche automaticamente a intervalli regolari.",
   connection_lost_help_todo_unsaved:
     "Evita di fare nuove modifiche finché la connessione non è tornata.",
   connection_lost_help_todo_reload:
@@ -398,14 +398,14 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_projects: "Mostra i progetti",
   all_projects: "Tutti i progetti",
   all_projects_instr:
-    "Questo elenco mostra tutti i progetti documentati in questo do•doc, indipendentemente dai rispettivi spazi.",
+    "Questo elenco mostra tutti i progetti documentati in questo {app_name}, indipendentemente dai rispettivi spazi.",
   event_projects_instr:
     "Questo elenco mostra tutti i progetti documentati durante l'evento.",
 
   no_accounts_yet: "Nessun account ancora creato",
   add_accounts: "Aggiungi degli account",
   restart_to_apply:
-    "Chiudi e riavvia do•doc manualmente o utilizzando il pulsante sottostante perché l'impostazione abbia effetto.",
+    "Chiudi e riavvia {app_name} manualmente o utilizzando il pulsante sottostante perché l'impostazione abbia effetto.",
   restart: "Chiudi e riavvia",
 
   refresh_window_to_see_changes: "Aggiorna la finestra per vedere le modifiche",
@@ -469,7 +469,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   path_to_content: "Percorso per il salvataggio dei contenuti ",
   path_to_content_instructions: `Attenzione, questa è una funzione avanzata!
-      Il percorso sottostante indica la posizione della cartella contenente i contenuti di do•doc. Se si modifica questo percorso, si consiglia vivamente di utilizzare una cartella vuota o una cartella contenente solo contenuti creati da do•doc 10. Riavvia do•doc perché questa impostazione abbia effetto.`,
+      Il percorso sottostante indica la posizione della cartella contenente i contenuti di {app_name}. Se si modifica questo percorso, si consiglia vivamente di utilizzare una cartella vuota o una cartella contenente solo contenuti creati da {app_name} (versione 10 o successiva). Riavvia {app_name} perché questa impostazione abbia effetto.`,
 
   administration_and_access_control:
     "Amministrazione e controllo degli accessi",
@@ -834,14 +834,14 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
   stream_local_mode: "su questo dispositivo",
-  stream_remote_mode: "do•doc remoto",
+  stream_remote_mode: "{app_name} remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",
   connect: "Login",
   connect_to_other_users:
-    "Accesso ai sorgenti provenienti da altri dispositivi attualmente collegati a questo do•doc",
+    "Accesso ai sorgenti provenienti da altri dispositivi attualmente collegati a questo {app_name}",
 
   seconds: "secondi",
   no_video_input_available: "Nessun sorgente video disponibile",
@@ -961,13 +961,13 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "All'interno di questo progetto o in un altro dove è possibile creare pubblicazioni. Tutte le impostazioni e i testi saranno duplicati e i media (foto, video, ecc.) saranno importati nel pannello Raccolta",
   import_a_project: "Importa un progetto",
   import_a_project_instr: `È possibile aggiungere in questo spazio un progetto completo (con tutti i suoi media, produzioni e pubblicazioni) 
-    creato in un altro do•doc versione 10. Per questo clicca su <i>scarica</i> sul progetto nell'altro do•doc per recuperarlo in formato ZIP
+    creato in un altro {app_name} (versione 10 o successiva). Per questo clicca su <i>scarica</i> sul progetto nell'altro {app_name} per recuperarlo in formato ZIP
     quindi importarlo utilizzando il pulsante sottostante. Verrà aggiunto automaticamente e il tuo account attuale ne sarà il referente.`,
   import_zip: "Importa un progetto in formato ZIP",
   import_in_progress: "Importazione in corso…",
   import_finished:
     "Importazione terminata, clicca sul pulsante sottostante per aprire il progetto. Le anteprime di tutti i media verranno ricreate, il che può richiedere da pochi secondi a qualche minuto.",
-  zip_not_valid_project: "Questo file ZIP non è un progetto do•doc valido",
+  zip_not_valid_project: "Questo file ZIP non è un progetto {app_name} valido",
   zip_is_space_not_project:
     "Questo file ZIP sembra essere uno spazio e non un progetto",
 
@@ -1126,7 +1126,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     compilate per informare gli utenti di queste regole.
     `,
   cookies_info: `
-    Su questa versione di do•doc, non viene effettuato nessun tracciamento delle visite,  
+    Su questa versione di {app_name}, non viene effettuato nessun tracciamento delle visite,  
     gli unici cookie sono utilizzati per registrare informazioni tecniche anonime
     (come la lingua, l'uso della fotocamera, ecc.).
     `,
@@ -1298,7 +1298,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   enable_image: "Attiva l'immagine",
   enable_sound: "Attiva l'audio",
   created_by_publication: "Creato dalla pubblicazione {publication_title}",
-  webpage_export_instructions: `Il file ZIP sottostante contiene tutti i contenuti necessari per visualizzare questa pubblicazione al di fuori di do•doc. 
+  webpage_export_instructions: `Il file ZIP sottostante contiene tutti i contenuti necessari per visualizzare questa pubblicazione al di fuori di {app_name}. 
   <br />Scompattando il file ZIP e aprendo il file index.html al suo interno, è possibile visualizzare la pubblicazione da qualsiasi computer utilizzando un browser web.
   <br /><br />È possibile anche metterlo online, in modo che sia accessibile via Internet. Per questo ti consigliamo di seguire il tutorial sul nostro forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Metti online media e pubblicazioni</a>.`,
 
