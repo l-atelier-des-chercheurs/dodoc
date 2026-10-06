@@ -157,6 +157,7 @@
         <span
           v-if="can_edit"
           :key="'createPage'"
+          :class="{ _createPageBtn: !is_spread }"
           :style="
             is_creating_page
               ? 'opacity: 0 !important;'
