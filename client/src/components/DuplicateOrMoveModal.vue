@@ -18,26 +18,28 @@
           <b-icon icon="x-circle" />
           {{ $t("cancel") }}
         </button>
-        <button
-          class="u-button u-button_bleuvert"
-          type="button"
-          :disabled="!can_confirm"
-          @click="$emit('confirm', { remove_original: false })"
-        >
-          <b-icon :icon="duplicate_icon" />
-          {{ duplicate_label || $t("duplicate") }}
-        </button>
-        <button
-          v-if="show_move"
-          class="u-button u-button_bleuvert"
-          type="button"
-          :disabled="!can_confirm || !!move_disabled_reason"
-          :title="move_disabled_reason || ''"
-          @click="$emit('confirm', { remove_original: true })"
-        >
-          <b-icon icon="arrow-left-right" />
-          {{ $t("move") }}
-        </button>
+        <div class="u-sameRow _actions">
+          <button
+            v-if="show_move"
+            class="u-button"
+            type="button"
+            :disabled="!can_confirm || !!move_disabled_reason"
+            :title="move_disabled_reason || ''"
+            @click="$emit('confirm', { remove_original: true })"
+          >
+            <b-icon icon="arrow-left-right" />
+            {{ $t("move") }}
+          </button>
+          <button
+            class="u-button u-button_bleuvert"
+            type="button"
+            :disabled="!can_confirm"
+            @click="$emit('confirm', { remove_original: false })"
+          >
+            <b-icon :icon="duplicate_icon" />
+            {{ duplicate_label || $t("duplicate") }}
+          </button>
+        </div>
       </template>
       <LoaderSpinner v-else />
     </template>
@@ -65,4 +67,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) / 2);
+}
+</style>
