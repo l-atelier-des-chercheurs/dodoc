@@ -3,6 +3,7 @@
     <div v-if="!page_opened_id" class="_pagesList">
       <div class="_topRow">
         <h2 class="_title">
+          <b-icon icon="grid" />
           <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
           <template v-else>{{ $t("list_of_spreads") }}</template>
         </h2>
@@ -513,6 +514,9 @@ export default {
   padding: calc(var(--spacing) / 1);
 }
 ._title {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
   margin: 0;
 }
 ._topRow--actions {

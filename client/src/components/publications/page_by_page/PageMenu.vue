@@ -2,8 +2,7 @@
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <b-icon icon="x" />
-        <!-- {{ $t("close") }} -->
+        <b-icon icon="grid" />
         <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
         <template v-else>{{ $t("list_of_spreads") }}</template>
       </button>
