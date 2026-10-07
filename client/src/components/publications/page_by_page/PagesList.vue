@@ -1,28 +1,48 @@
 <template>
   <transition name="slideup">
     <div v-if="!page_opened_id" class="_pagesList">
-      <div class="_setPreviewSize">
-        <h2>
-          <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
-          <template v-else>{{ $t("list_of_spreads") }}</template>
-        </h2>
+      <div class="_topRow">
+        <div class="_setPreviewSize">
+          <h2>
+            <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
+            <template v-else>{{ $t("list_of_spreads") }}</template>
+          </h2>
 
-        <div class="u-spacingBottom" />
+          <div class="u-spacingBottom" />
 
-        <div class="_previewsSizeInput">
-          <RangeValueInput
-            :label="$t('previews_size')"
-            :value="previews_size"
-            :can_toggle="false"
-            :min="20"
-            :max="600"
-            :step="1"
-            :ticks="[20, 50, 100, 200, 400, 600]"
-            :default_value="200"
-            :suffix="'%'"
-            @save="previews_size = $event"
-          />
+          <div class="_previewsSizeInput">
+            <RangeValueInput
+              :label="$t('previews_size')"
+              :value="previews_size"
+              :can_toggle="false"
+              :min="20"
+              :max="600"
+              :step="1"
+              :ticks="[20, 50, 100, 200, 400, 600]"
+              :default_value="200"
+              :suffix="'%'"
+              @save="previews_size = $event"
+            />
+          </div>
         </div>
+
+        <component
+          :is="can_edit ? 'button' : 'div'"
+          :type="can_edit ? 'button' : undefined"
+          class="u-button u-button_small _paperFormat"
+          :class="{ 'is--static': !can_edit }"
+          :title="can_edit ? $t('settings') : undefined"
+          @click="can_edit && $eventHub.$emit('publication.settings.toggle')"
+        >
+          <span v-if="format_name" class="_paperFormat--name">
+            {{ format_name }}
+          </span>
+          <span class="_paperFormat--size">
+            {{ publication.page_width }} × {{ publication.page_height }}
+            {{ format_unit }}
+          </span>
+          <b-icon v-if="can_edit" icon="gear" :aria-label="$t('settings')" />
+        </component>
       </div>
 
       <transition-group
@@ -242,6 +262,23 @@ export default {
     is_spread() {
       return this.publication.page_spreads === true;
     },
+    format_unit() {
+      return this.publication.layout_mode === "screen" ? "px" : "mm";
+    },
+    format_name() {
+      if (this.publication.layout_mode === "screen") return false;
+      const { page_width: w, page_height: h } = this.publication;
+      const formats = {
+        A4_portrait: [210, 297],
+        A4_landscape: [297, 210],
+        A5_portrait: [148, 210],
+        A5_landscape: [210, 148],
+      };
+      const key = Object.keys(formats).find(
+        (k) => formats[k][0] === w && formats[k][1] === h
+      );
+      return key ? this.$t(key) : false;
+    },
 
     page_preview_zoom() {
       return this.calculateZoomToFit({
@@ -425,6 +462,28 @@ export default {
 ._pagesList {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: 0 auto;
+}
+
+._topRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0 calc(var(--spacing) * 1);
+}
+
+._paperFormat {
+  flex: 0 0 auto;
+  margin: calc(var(--spacing) / 1);
+  gap: calc(var(--spacing) / 2);
+
+  &.is--static {
+    cursor: default;
+  }
+}
+._paperFormat--size {
+  color: var(--c-gris_fonce);
+  font-variant-numeric: tabular-nums;
 }
 
 ._allPages {
