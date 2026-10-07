@@ -1,75 +1,58 @@
 <template>
   <div>
-    <fieldset>
+    <fieldset :disabled="is_saving">
       <legend>{{ $t("margins") }}</legend>
       <div class="u-instructions">
         <small>{{ $t("margins_instructions") }}</small>
       </div>
 
-      <br />
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        :is_unfolded="true"
-        @click="enableEditMode"
-      />
-      <br />
-      <br />
+      <div class="_choices">
+        <button
+          v-for="preset in presets"
+          :key="preset"
+          type="button"
+          class="u-button u-button_small"
+          :class="{ 'is--active': current_preset === preset }"
+          @click="setAllMargins(preset)"
+        >
+          {{ preset }} {{ unit }}
+        </button>
+      </div>
 
-      <div class="u-sameRow">
-        <div class="">
-          <DLabel :str="$t('top')" />
-          <div class="u-inputGroup">
-            <input type="number" v-model.number="top" :disabled="!edit_mode" />
-            <span class="u-suffix" v-text="unit" />
-          </div>
-        </div>
-        <div class="">
-          <DLabel :str="$t('bottom')" />
+      <div class="u-sameRow _inputs">
+        <div v-for="side in ['top', 'bottom']" :key="side">
+          <DLabel :str="$t(side)" />
           <div class="u-inputGroup">
             <input
               type="number"
-              v-model.number="bottom"
-              :disabled="!edit_mode"
+              min="0"
+              v-model.number="margins[side]"
+              @change="saveMargin(side)"
             />
             <span class="u-suffix" v-text="unit" />
           </div>
         </div>
       </div>
-      <br />
-      <div class="u-sameRow">
-        <div class="">
-          <DLabel :str="is_spread ? $t('margins_inside') : $t('left')" />
-          <div class="u-inputGroup">
-            <input type="number" v-model.number="left" :disabled="!edit_mode" />
-            <span class="u-suffix" v-text="unit" />
-          </div>
-        </div>
-        <br />
-        <div class="">
-          <DLabel :str="is_spread ? $t('margins_outside') : $t('right')" />
+      <div class="u-sameRow _inputs">
+        <div v-for="side in ['left', 'right']" :key="side">
+          <DLabel :str="side_labels[side]" />
           <div class="u-inputGroup">
             <input
               type="number"
-              v-model.number="right"
-              :disabled="!edit_mode"
+              min="0"
+              v-model.number="margins[side]"
+              @change="saveMargin(side)"
             />
             <span class="u-suffix" v-text="unit" />
           </div>
         </div>
-      </div>
-
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateMargins"
-          @cancel="cancel"
-        />
       </div>
     </fieldset>
   </div>
 </template>
 <script>
+const SIDES = ["top", "bottom", "left", "right"];
+
 export default {
   props: {
     publication: Object,
@@ -78,64 +61,95 @@ export default {
   components: {},
   data() {
     return {
-      edit_mode: false,
       is_saving: false,
-      can_edit: true,
-
-      top: this.publication.page_margin_top || 0,
-      bottom: this.publication.page_margin_bottom || 0,
-      left: this.publication.page_margin_left || 0,
-      right: this.publication.page_margin_right || 0,
+      margins: {},
     };
   },
-  created() {},
+  created() {
+    this.initValues();
+  },
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    saved_margins: {
+      handler() {
+        this.initValues();
+      },
+      deep: true,
+    },
+  },
   computed: {
     unit() {
       if (this.publication.layout_mode === "screen") return "px";
       else return "mm";
     },
+    presets() {
+      if (this.publication.layout_mode === "screen") return [0, 20, 40, 60];
+      return [0, 10, 15, 20];
+    },
+    saved_margins() {
+      return SIDES.reduce((acc, side) => {
+        acc[side] = this.publication["page_margin_" + side] || 0;
+        return acc;
+      }, {});
+    },
+    current_preset() {
+      const values = Object.values(this.saved_margins);
+      return values.every((v) => v === values[0]) ? values[0] : false;
+    },
+    side_labels() {
+      return {
+        left: this.is_spread ? this.$t("margins_inside") : this.$t("left"),
+        right: this.is_spread ? this.$t("margins_outside") : this.$t("right"),
+      };
+    },
   },
   methods: {
-    enableEditMode() {
-      this.edit_mode = true;
+    initValues() {
+      this.margins = { ...this.saved_margins };
     },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-      // todo interrupt updateMeta
+    setAllMargins(value) {
+      this.updateMeta(
+        SIDES.reduce((acc, side) => {
+          acc["page_margin_" + side] = value;
+          return acc;
+        }, {})
+      );
     },
-    async updateMargins() {
+    saveMargin(side) {
+      const value = this.margins[side];
+      if (typeof value !== "number" || value < 0) return this.initValues();
+      this.updateMeta({ ["page_margin_" + side]: value });
+    },
+    async updateMeta(new_meta) {
       this.is_saving = true;
-
       try {
-        const new_meta = {
-          page_margin_top: this.top,
-          page_margin_bottom: this.bottom,
-          page_margin_left: this.left,
-          page_margin_right: this.right,
-        };
         await this.$api.updateMeta({
           path: this.publication.$path,
           new_meta,
         });
-
-        this.edit_mode = false;
-        this.is_saving = false;
       } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
+        this.initValues();
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        this.$alertify.closeLogOnClick(true).error(e.response?.data);
       }
+      this.is_saving = false;
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._choices {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+  margin: calc(var(--spacing) / 2) 0;
+}
+._inputs {
+  justify-content: flex-start;
+  margin-top: calc(var(--spacing) / 2);
+}
+</style>
