@@ -131,6 +131,12 @@
                 @update:content="$emit('update:snap_to_grid', $event)"
               />
             </ToggledSection>
+            <ToggleInput
+              class="u-spacingBottom"
+              :content="smart_guides"
+              :label="$t('smart_guides')"
+              @update:content="$emit('update:smart_guides', $event)"
+            />
           </div>
           <div class="">
             <ColorInput
@@ -680,6 +686,7 @@ export default {
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
+    smart_guides: Boolean,
     grid_z_index: String,
     gridstep_in_mm: Number,
     layout_mode: {

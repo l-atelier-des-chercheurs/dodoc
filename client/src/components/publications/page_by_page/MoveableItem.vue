@@ -28,6 +28,7 @@
     :grid="grid"
     :id="publimodule.$path"
     :zoom="scale"
+    :snap="snap_targets ? snapToGuides : null"
     :style="module_z_index"
     @dragstart="dragStart"
     @drag="onDrag"
@@ -155,6 +156,8 @@ export default {
     scale: Number,
     module_being_edited: String,
     is_active: Boolean,
+    // { x: [], y: [] } positions in px that edges and centers snap to
+    snap_targets: [Boolean, Object],
   },
   components: {
     DDR,
@@ -354,6 +357,105 @@ export default {
       this.content_is_edited = false;
     },
 
+    snapToGuides(transform, { type, handle, keep_ratio }) {
+      // only axis-aligned items: rotated bounding boxes would snap misleadingly
+      if (transform.rotation) {
+        this.$emit("guides", []);
+        return transform;
+      }
+
+      const threshold = 6 / (this.scale || 1);
+      const findSnap = (positions, targets) => {
+        let best = false;
+        positions.forEach((position) =>
+          targets.forEach((target) => {
+            const delta = target - position;
+            if (
+              Math.abs(delta) <= threshold &&
+              (!best || Math.abs(delta) < Math.abs(best.delta))
+            )
+              best = { delta, target };
+          })
+        );
+        return best;
+      };
+
+      const t = { ...transform };
+      const guides = [];
+
+      if (type === "drag") {
+        const snap_x = findSnap(
+          [t.x, t.x + t.width / 2, t.x + t.width],
+          this.snap_targets.x
+        );
+        const snap_y = findSnap(
+          [t.y, t.y + t.height / 2, t.y + t.height],
+          this.snap_targets.y
+        );
+        if (snap_x) {
+          t.x += snap_x.delta;
+          guides.push({ axis: "x", pos: snap_x.target });
+        }
+        if (snap_y) {
+          t.y += snap_y.delta;
+          guides.push({ axis: "y", pos: snap_y.target });
+        }
+        this.$emit("guides", guides);
+        return t;
+      }
+
+      // resize: only the edges being moved snap
+      const moves_left = handle.includes("l");
+      const moves_right = handle.includes("r");
+      const moves_top = handle.startsWith("t");
+      const moves_bottom = handle.startsWith("b");
+
+      let snap_x = false;
+      let snap_y = false;
+      if (moves_left || moves_right)
+        snap_x = findSnap(
+          [moves_left ? t.x : t.x + t.width],
+          this.snap_targets.x
+        );
+      if (moves_top || moves_bottom)
+        snap_y = findSnap(
+          [moves_top ? t.y : t.y + t.height],
+          this.snap_targets.y
+        );
+
+      if (keep_ratio && snap_x && snap_y) {
+        // only one axis can snap without breaking the ratio
+        if (Math.abs(snap_x.delta) <= Math.abs(snap_y.delta)) snap_y = false;
+        else snap_x = false;
+      }
+
+      let width = t.width;
+      let height = t.height;
+      if (snap_x) width += moves_left ? -snap_x.delta : snap_x.delta;
+      if (snap_y) height += moves_top ? -snap_y.delta : snap_y.delta;
+      if (keep_ratio) {
+        const ratio = t.width / t.height;
+        if (snap_x) height = width / ratio;
+        else if (snap_y) width = height * ratio;
+      }
+      if (width < 1 || height < 1) {
+        this.$emit("guides", []);
+        return transform;
+      }
+
+      // keep the opposite edge (or the center for side handles) in place
+      if (moves_left) t.x = t.x + t.width - width;
+      else if (!moves_right) t.x = t.x + (t.width - width) / 2;
+      if (moves_top) t.y = t.y + t.height - height;
+      else if (!moves_bottom) t.y = t.y + (t.height - height) / 2;
+      t.width = width;
+      t.height = height;
+
+      if (snap_x) guides.push({ axis: "x", pos: snap_x.target });
+      if (snap_y) guides.push({ axis: "y", pos: snap_y.target });
+      this.$emit("guides", guides);
+      return t;
+    },
     dragStart() {
       // console.log("dragStart");
       // this.$eventHub.$emit(`module.dragStart`);
@@ -365,6 +467,7 @@ export default {
       // this.$eventHub.$emit(`module.onDrag`);
     },
     dragEnd(event, transform) {
+      this.$emit("guides", []);
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
       if (
@@ -389,6 +492,7 @@ export default {
       return (this.aspect_ratio = false);
     },
     resizeEnd(event, transform) {
+      this.$emit("guides", []);
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 

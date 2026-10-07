@@ -99,6 +99,12 @@ export default {
       type: String,
       default: "xy", // x | y 不填写则都可以移动，仅移动时生效
     },
+    // optional (transform, { type, handle, keep_ratio }) => transform,
+    // applied after grid snapping while dragging and resizing
+    snap: {
+      type: Function,
+      default: null,
+    },
   },
   data() {
     return {
@@ -282,6 +288,7 @@ export default {
         }
       }
 
+      if (this.snap) transform = this.snap(transform, { type: "drag" });
       this.resetTranslate(transform);
     },
     resetTranslate(transform) {
@@ -477,6 +484,12 @@ export default {
       transform.x = Math.round(transform.x + deltaX);
       transform.y = Math.round(transform.y + deltaY);
 
+      if (this.snap)
+        transform = this.snap(transform, {
+          type: "resize",
+          handle: type,
+          keep_ratio: this.isInitialRatio,
+        });
       this.resetTransform(transform);
     },
 

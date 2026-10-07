@@ -24,6 +24,7 @@
               :scale="scale"
               :show_grid.sync="page_settings.show_grid"
               :snap_to_grid.sync="page_settings.snap_to_grid"
+              :smart_guides.sync="page_settings.smart_guides"
               :grid_z_index.sync="page_settings.grid_z_index"
               :gridstep_in_mm.sync="page_settings.gridstep_in_mm"
               :layout_mode="layout_mode"
@@ -89,6 +90,7 @@
                     :scale="scale"
                     :show_grid="page_settings.show_grid"
                     :snap_to_grid="page_settings.snap_to_grid"
+                    :smart_guides="page_settings.smart_guides"
                     :grid_z_index="page_settings.grid_z_index"
                     :gridstep_in_mm="page_settings.gridstep_in_mm"
                     :margins="margins"
@@ -122,6 +124,7 @@
                           :scale="scale"
                           :show_grid="page_settings.show_grid"
                           :snap_to_grid="page_settings.snap_to_grid"
+                          :smart_guides="page_settings.smart_guides"
                           :grid_z_index="page_settings.grid_z_index"
                           :gridstep_in_mm="page_settings.gridstep_in_mm"
                           :margins="margins"
@@ -192,6 +195,7 @@ export default {
       page_settings: {
         show_grid: false,
         snap_to_grid: false,
+        smart_guides: true,
         grid_z_index: "under",
         gridstep_in_mm: 10,
       },
@@ -294,7 +298,8 @@ export default {
       const ls = localStorage.getItem(
         `publication.page_settings.${this.publication_path}`
       );
-      if (ls) this.page_settings = JSON.parse(ls);
+      // merge so settings added later keep their default
+      if (ls) this.page_settings = { ...this.page_settings, ...JSON.parse(ls) };
     },
     saveSettings() {
       localStorage.setItem(

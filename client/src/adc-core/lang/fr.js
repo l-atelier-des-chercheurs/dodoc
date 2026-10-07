@@ -542,6 +542,7 @@ export default {
   grid: "Grille",
   show_grid: "Afficher la grille",
   snap_to_grid: "Magnétisme de la grille",
+  smart_guides: "Repères magnétiques",
   gridstep: "Pas de la grille",
   scale: "Échelle",
   over: "au-dessus",

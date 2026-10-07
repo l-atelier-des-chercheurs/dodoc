@@ -64,7 +64,27 @@
           :scale="scale"
           :can_edit="can_edit"
           :is_active="active_module.$path === publimodule.$path"
+          :snap_targets="can_edit && smart_guides && snap_targets"
+          @guides="guides = $event"
         />
+
+        <svg
+          v-if="guides.length > 0"
+          class="_smartGuides"
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            v-for="guide in guides"
+            :key="guide.axis + guide.pos"
+            :x1="guide.axis === 'x' ? guide.pos : 0"
+            :x2="guide.axis === 'x' ? guide.pos : magnify(page_width)"
+            :y1="guide.axis === 'y' ? guide.pos : 0"
+            :y2="guide.axis === 'y' ? guide.pos : magnify(page_height)"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
 
         <svg
           v-if="can_edit && l_margins"
@@ -159,6 +179,7 @@ export default {
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },
     snap_to_grid: { type: Boolean, default: false },
+    smart_guides: { type: Boolean, default: false },
     grid_z_index: { type: String, default: "under" },
     gridstep_in_mm: Number,
     margins: Object,
@@ -174,6 +195,7 @@ export default {
   data() {
     return {
       module_being_edited: undefined,
+      guides: [],
     };
   },
   created() {},
@@ -181,6 +203,12 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    snap_targets() {
+      // page edges and middles, in px
+      const w = this.magnify(this.page_width);
+      const h = this.magnify(this.page_height);
+      return { x: [0, w / 2, w], y: [0, h / 2, h] };
+    },
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
       if (
@@ -332,6 +360,19 @@ export default {
   z-index: 10000;
   pointer-events: none;
   stroke-width: 2px;
+}
+._smartGuides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10001;
+  overflow: visible;
+  pointer-events: none;
+
+  line {
+    stroke: var(--c-bleuvert);
+    stroke-width: 2px;
+  }
 }
 ._margins {
   position: absolute;

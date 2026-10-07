@@ -768,6 +768,7 @@ export default {
   grid: "Grid",
   show_grid: "Show Grid",
   snap_to_grid: "Grid Snapping",
+  smart_guides: "Smart guides",
   gridstep: "Grid step",
   scale: "Scale",
   over: "Over",
