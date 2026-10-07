@@ -50,8 +50,8 @@ export default {
         return { width, maxWidth: "none" };
       else return { maxWidth: width };
     },
-    publicationFontKey(publication_path) {
-      return "dodoc.publication_font." + publication_path;
+    publicationFormatsKey(publication_path) {
+      return "dodoc.publication_formats." + publication_path;
     },
     setPaginationFromPublication(publication) {
       if (publication.enable_pagination !== true) return false;

@@ -241,9 +241,9 @@ export default {
       type: Boolean,
       default: false,
     },
-    // localStorage key: the font picked in the toolbar is stored there
-    // and applied to empty texts, so it doesn't have to be picked again
-    remember_font_key: String,
+    // localStorage key: the font, size and color picked in the toolbar are
+    // stored there and applied to empty texts, so they don't have to be picked again
+    remember_formats_key: String,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -269,7 +269,7 @@ export default {
       show_emoji_picker: false,
 
       debounce_textUpdate: undefined,
-      pending_font: false,
+      pending_formats: false,
 
       collaborative_is_loaded: false,
 
@@ -560,7 +560,16 @@ export default {
       // todo divider
       if (reference_formats.length > 0) container.push(["clean"]);
 
+      const default_clean =
+        Quill.import("modules/toolbar").DEFAULTS.handlers.clean;
+      const forgetRememberedFormats = () => this.forgetRememberedFormats();
+
       let handlers = {
+        // clean resets to defaults, so new texts shouldn't get the old formats back
+        clean: function () {
+          default_clean.call(this);
+          forgetRememberedFormats();
+        },
         emoji: () => {
           this.toggleEmojiPicker();
         },
@@ -577,7 +586,11 @@ export default {
         },
         font: (new_font) => {
           this.editor.format("font", new_font || false, Quill.sources.USER);
-          this.rememberFont(new_font);
+          this.rememberFormat("font", new_font);
+        },
+        color: (new_color) => {
+          this.editor.format("color", new_color || false, Quill.sources.USER);
+          this.rememberFormat("color", new_color);
         },
         size: (new_size) => {
           if (new_size === "__custom__") {
@@ -586,9 +599,11 @@ export default {
           }
           if (!new_size) {
             this.editor.format("size", false, Quill.sources.USER);
+            this.rememberFormat("size", false);
             return;
           }
           this.editor.format("size", new_size, Quill.sources.USER);
+          this.rememberFormat("size", new_size);
         },
         lineheight: function (new_line_height) {
           if (!new_line_height) {
@@ -620,6 +635,7 @@ export default {
       if (!custom_size) return;
 
       this.editor.format("size", custom_size, Quill.sources.USER);
+      this.rememberFormat("size", custom_size);
     },
     setCustomSizeOptionLabel() {
       const custom_label = this.$t("custom");
@@ -715,7 +731,7 @@ export default {
       this.editor.enable();
       this.editor.focus();
 
-      if (this.editor.getLength() <= 1) this.applyRememberedFont();
+      if (this.editor.getLength() <= 1) this.applyRememberedFormats();
 
       this.$emit(`contentIsEdited`, {
         $toolbar: this.toolbar_el,
@@ -750,51 +766,88 @@ export default {
         this.is_disabling_editor = false;
         this.editor.off("text-change", this.updateInput);
       });
-      this.stopPendingFont();
+      this.stopPendingFormats();
     },
-    rememberFont(font) {
-      if (!this.remember_font_key) return;
-      this.stopPendingFont();
+    getRememberedFormats() {
       try {
-        if (font) localStorage.setItem(this.remember_font_key, font);
-        else localStorage.removeItem(this.remember_font_key);
+        const stored = localStorage.getItem(this.remember_formats_key);
+        return stored ? JSON.parse(stored) || {} : {};
       } catch (e) {
         // storage can be unavailable (private window, blocked site data)
+        return {};
       }
     },
-    applyRememberedFont() {
-      if (!this.remember_font_key) return;
-      if (!(this.custom_formats || default_formats).includes("font")) return;
-      let font;
+    rememberFormat(format, value) {
+      if (!this.remember_formats_key) return;
+      const formats = this.getRememberedFormats();
+      if (value) formats[format] = value;
+      else delete formats[format];
+      // an explicit pick on the new text wins over the remembered value
+      if (this.pending_formats) delete this.pending_formats[format];
       try {
-        font = localStorage.getItem(this.remember_font_key);
+        localStorage.setItem(
+          this.remember_formats_key,
+          JSON.stringify(formats)
+        );
       } catch (e) {
         return;
       }
-      // the font may have been removed from the custom fonts since
-      if (!font || !all_fonts.includes(font)) return;
+    },
+    forgetRememberedFormats() {
+      if (!this.remember_formats_key) return;
+      this.stopPendingFormats();
+      try {
+        localStorage.removeItem(this.remember_formats_key);
+      } catch (e) {
+        return;
+      }
+    },
+    applyRememberedFormats() {
+      if (!this.remember_formats_key) return;
+      const available_formats = this.custom_formats || default_formats;
+      const remembered = this.getRememberedFormats();
 
-      this.editor.format("font", font, Quill.sources.USER);
+      const formats = {};
+      // the font may have been removed from the custom fonts since
+      if (all_fonts.includes(remembered.font)) formats.font = remembered.font;
+      const size = this.parseCustomTextSize(remembered.size);
+      if (size) formats.size = size;
+      if (typeof remembered.color === "string")
+        formats.color = remembered.color;
+
+      Object.keys(formats).forEach((format) => {
+        if (!available_formats.includes(format)) delete formats[format];
+      });
+      if (Object.keys(formats).length === 0) return;
+
+      Object.entries(formats).forEach(([format, value]) =>
+        this.editor.format(format, value, Quill.sources.USER)
+      );
       // a format on an empty text only applies to the next typed characters
       // and is dropped if the cursor moves first: apply it on first input too
-      this.pending_font = font;
-      this.editor.on("text-change", this.applyPendingFont);
+      this.pending_formats = formats;
+      this.editor.on("text-change", this.applyPendingFormats);
     },
-    applyPendingFont(delta, old_delta, source) {
+    applyPendingFormats(delta, old_delta, source) {
       if (source !== Quill.sources.USER) return;
-      const font = this.pending_font;
-      this.stopPendingFont();
+      const pending_formats = this.pending_formats;
+      this.stopPendingFormats();
 
       const length = this.editor.getLength() - 1;
       if (length <= 0) return;
-      if (this.editor.getFormat(0, length).font !== undefined) return;
+      const current_formats = this.editor.getFormat(0, length);
+      const formats = {};
+      Object.entries(pending_formats).forEach(([format, value]) => {
+        if (current_formats[format] === undefined) formats[format] = value;
+      });
+      if (Object.keys(formats).length === 0) return;
       setTimeout(() => {
-        this.editor.formatText(0, length, "font", font, Quill.sources.USER);
+        this.editor.formatText(0, length, formats, Quill.sources.USER);
       }, 0);
     },
-    stopPendingFont() {
-      this.pending_font = false;
-      if (this.editor) this.editor.off("text-change", this.applyPendingFont);
+    stopPendingFormats() {
+      this.pending_formats = false;
+      if (this.editor) this.editor.off("text-change", this.applyPendingFormats);
     },
     getToolbarBack() {
       if (
