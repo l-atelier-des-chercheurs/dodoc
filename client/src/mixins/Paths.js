@@ -6,6 +6,37 @@ export default {
     createURLFromPath(path) {
       return pathToPublicPath(path);
     },
+    makeNavigationToProjectPane({ project_path, pane }) {
+      const path = this.createURLFromPath(project_path);
+
+      // already in this project: only update this pane, to keep other panes open
+      const is_current_project = this.$route.path === path;
+      let panes = [];
+      if (is_current_project && this.$route.query?.projectpanes)
+        try {
+          panes = JSON.parse(this.$route.query.projectpanes);
+        } catch (err) {
+          panes = [];
+        }
+
+      const index = panes.findIndex((p) => p.type === pane.type);
+      if (index === -1) panes.push({ size: 100, ...pane });
+      else panes.splice(index, 1, { size: panes[index].size, ...pane });
+
+      return {
+        path,
+        query: {
+          ...(is_current_project ? this.$route.query : {}),
+          projectpanes: JSON.stringify(panes),
+        },
+      };
+    },
+    toastWithLink({ message, navigation }) {
+      this.$toast.success(message + " — " + this.$t("click_to_show"), {
+        timeout: 8000,
+        onClick: () => this.$router.push(navigation).catch(() => {}),
+      });
+    },
     getParent(path) {
       return path.substring(0, path.lastIndexOf("/"));
     },

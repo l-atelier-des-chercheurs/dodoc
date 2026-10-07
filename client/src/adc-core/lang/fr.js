@@ -1082,6 +1082,20 @@ export default {
   to_publication_x: "la publication « {title} »",
   x_of_publication_y: "{place} de la publication « {title} »",
   click_to_show: "cliquer pour afficher",
+  in_this_project: "Dans ce projet",
+  in_this_space: "Dans cet espace",
+  in_another_space: "Dans un autre espace",
+  no_other_space_available: "Aucun autre espace où vous pouvez contribuer.",
+  already_here_pick_another_destination:
+    "Déjà à cet endroit : choisissez une autre destination pour le déplacer.",
+  media_moved: "Média déplacé",
+  medias_duplicated: "{count} médias dupliqués",
+  medias_moved: "{count} médias déplacés",
+  publication_duplicated: "Publication dupliquée",
+  publication_moved: "Publication déplacée",
+  project_duplicated: "Projet dupliqué",
+  project_moved: "Projet déplacé",
+  project_remixed: "Projet remixé",
   import_a_project: "Importer un projet",
   import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
     créé dans un autre {app_name} (version 10 ou plus récente). Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre {app_name} pour le récupérer en ZIP

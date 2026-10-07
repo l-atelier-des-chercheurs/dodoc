@@ -6,7 +6,8 @@
           {{ $t("space") }}
         </div>
         <select v-model="destination_space_path">
-          <option value=""></option>
+          <!-- placeholder when nothing is picked yet, can't be picked back -->
+          <option v-if="!destination_space_path" value="" disabled />
           <option
             v-for="space in sorted_spaces"
             :key="space.$path"
@@ -27,7 +28,7 @@
             {{ $t("project") }}
           </div>
           <select v-model="destination_project_path">
-            <option value=""></option>
+            <option v-if="!destination_project_path" value="" disabled />
             <option
               v-for="project in sorted_projects"
               :key="project.$path"

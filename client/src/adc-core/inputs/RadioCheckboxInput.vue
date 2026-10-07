@@ -13,7 +13,8 @@
         :for="id + '-radiocheckboxi-option-' + option.key"
         :key="option.key"
         v-if="can_edit || optionIsSelected(option.key)"
-        :data-selectable="can_edit"
+        :data-selectable="can_edit && !option.disabled"
+        :class="{ 'is--disabled': option.disabled }"
       >
         <input
           v-if="can_edit"
@@ -21,6 +22,7 @@
           :name="radio_name"
           :id="id + '-radiocheckboxi-option-' + option.key"
           :value="option.key"
+          :disabled="option.disabled"
           :checked="optionIsSelected(option.key)"
           @input="checkOption(option.key)"
         />
@@ -75,10 +77,7 @@
           <span>{{ custom_option_label }}</span>
         </span>
       </label>
-      <div
-        v-if="is_custom_value"
-        class="_customOptionEditorBlock"
-      >
+      <div v-if="is_custom_value" class="_customOptionEditorBlock">
         <template v-if="custom_option_is_html">
           <TextInput
             v-if="can_edit"
@@ -89,11 +88,7 @@
             class="_customEditorWrap"
             @update:content="onCustomHtmlInput"
           />
-          <div
-            v-else
-            class="_customHtmlDisplay"
-            v-html="custom_text_value"
-          />
+          <div v-else class="_customHtmlDisplay" v-html="custom_text_value" />
         </template>
         <template v-else>
           <input
@@ -267,6 +262,14 @@ export default {
       cursor: pointer;
       &:hover {
         background: var(--c-gris);
+      }
+
+      &.is--disabled {
+        cursor: not-allowed;
+        color: var(--c-gris_fonce);
+        &:hover {
+          background: var(--c-gris_clair);
+        }
       }
     }
   }

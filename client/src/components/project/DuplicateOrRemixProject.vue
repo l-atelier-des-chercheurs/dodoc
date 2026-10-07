@@ -1,92 +1,53 @@
 <template>
-  <BaseModal2 :title="modal_title" @close="$emit('close')">
-    <template v-if="!url_to_copy">
-      <div class="">
-        <div class="u-spacingBottom u-instructions">
-          <small>
-            {{ $t("dm_instr") }}
-          </small>
-        </div>
+  <DuplicateOrMoveModal
+    :title="modal_title"
+    :scope.sync="scope"
+    :scope_options="scope_options"
+    :can_confirm="!!destination_space_path"
+    :show_move="mode === 'duplicate'"
+    :move_disabled_reason="
+      scope === 'same_space' && $t('already_here_pick_another_destination')
+    "
+    :duplicate_label="mode === 'remix' ? $t('remix') : undefined"
+    :duplicate_icon="mode === 'remix' ? 'intersect' : undefined"
+    :is_copying="is_copying"
+    @close="$emit('close')"
+    @confirm="confirm"
+  >
+    <div class="u-spacingBottom u-instructions">
+      <small>
+        {{ $t("dm_instr") }}
+      </small>
+    </div>
 
-        <div class="u-spacingBottom">
-          <DLabel :str="destination_space_label" />
+    <div class="u-spacingBottom" v-if="scope === 'other_space'">
+      <DLabel :str="destination_space_label" />
+      <LoaderSpinner v-if="!spaces" />
+      <select v-else v-model="destination_space_path">
+        <option
+          v-for="space in other_spaces"
+          :key="space.$path"
+          :value="space.$path"
+          :disabled="!canLoggedinContributeToFolder({ folder: space })"
+          v-text="makeSpaceTitle(space)"
+        />
+      </select>
+    </div>
 
-          <select v-model="destination_space_path">
-            <option
-              v-for="space in sorted_spaces"
-              :key="space.$path"
-              :value="space.$path"
-              :disabled="
-                !canLoggedinContributeToFolder({
-                  folder: space,
-                })
-              "
-              v-text="makeSpaceTitle(space)"
-            />
-          </select>
-        </div>
-
-        <div class="u-spacingBottom">
-          <DLabel :str="new_title_label" />
-          <TextInput
-            :content.sync="new_title"
-            :maxlength="60"
-            :required="true"
-            ref="titleInput"
-          />
-        </div>
-
-        <div class="u-spacingBottom" v-if="mode === 'duplicate'">
-          <ToggleInput
-            :content.sync="remove_original"
-            :label="$t('remove_original')"
-            :options="{
-              false: $t('keep_original_after_copy'),
-            }"
-          />
-          <p v-if="remove_original" class="u-warning u-spacingTop">
-            {{ $t("remove_original_after_copy") }}
-          </p>
-        </div>
-      </div>
-
-      <template slot="footer">
-        <template v-if="!is_copying">
-          <button type="button" class="u-button" @click="$emit('close')">
-            <b-icon icon="x-circle" />
-            {{ $t("cancel") }}
-          </button>
-
-          <button
-            class="u-button u-button_bleuvert"
-            type="button"
-            autofocus
-            @click="confirm"
-          >
-            <template v-if="remove_original">
-              {{ $t("move") }}
-            </template>
-            <template v-else>
-              <template v-if="mode === 'remix'">
-                {{ $t("remix") }}
-              </template>
-              <template v-else>
-                {{ $t("duplicate") }}
-              </template>
-            </template>
-          </button>
-        </template>
-        <LoaderSpinner v-else />
-      </template>
-    </template>
-    <template v-else>
-      <router-link :to="url_to_copy" class="u-button u-button_bleumarine">
-        {{ $t("open_copy") }}
-      </router-link>
-    </template>
-  </BaseModal2>
+    <div class="u-spacingBottom">
+      <DLabel :str="new_title_label" />
+      <TextInput
+        :content.sync="new_title"
+        :maxlength="60"
+        :required="true"
+        ref="titleInput"
+      />
+    </div>
+  </DuplicateOrMoveModal>
 </template>
 <script>
+import DuplicateOrMoveModal from "@/components/DuplicateOrMoveModal.vue";
+
 export default {
   props: {
     path: String,
@@ -96,14 +57,13 @@ export default {
       default: "duplicate",
     },
   },
-  components: {},
+  components: { DuplicateOrMoveModal },
   data() {
     return {
       spaces: undefined,
+      scope: "same_space",
       destination_space_path: undefined,
 
-      url_to_copy: false,
-      remove_original: false,
       new_title: this.proposed_title,
 
       is_copying: false,
@@ -111,19 +71,51 @@ export default {
   },
   created() {},
   async mounted() {
-    const { space_slug } = this.decomposePath(this.path);
-    this.destination_space_path = this.createPath({ space_slug });
+    this.destination_space_path = this.source_space_path;
 
     this.spaces = await this.$api.getFolders({
       path: "spaces",
     });
   },
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    scope() {
+      if (this.scope === "same_space")
+        this.destination_space_path = this.source_space_path;
+      else
+        this.destination_space_path = this.other_spaces.find((s) =>
+          this.canLoggedinContributeToFolder({ folder: s })
+        )?.$path;
+    },
+  },
   computed: {
+    has_other_space() {
+      // while loading, keep the option available
+      if (!this.spaces) return true;
+      return this.other_spaces.some((s) =>
+        this.canLoggedinContributeToFolder({ folder: s })
+      );
+    },
+    source_space_path() {
+      const { space_slug } = this.decomposePath(this.path);
+      return this.createPath({ space_slug });
+    },
     modal_title() {
       if (this.mode === "remix") return this.$t("remix_this_project");
       return this.$t("duplicate_or_move");
+    },
+    scope_options() {
+      return [
+        { key: "same_space", label: this.$t("in_this_space") },
+        {
+          key: "other_space",
+          label: this.$t("in_another_space"),
+          disabled: !this.has_other_space,
+          instructions: !this.has_other_space
+            ? this.$t("no_other_space_available")
+            : undefined,
+        },
+      ];
     },
     destination_space_label() {
       if (this.mode === "remix") return this.$t("destination_space_remix");
@@ -133,11 +125,10 @@ export default {
       if (this.mode === "remix") return this.$t("title_of_remix");
       return this.$t("title_of_copy");
     },
-    sorted_spaces() {
+    other_spaces() {
       if (!this.spaces) return [];
       return this.spaces
-        .slice()
-        .filter((s) => true)
+        .filter((s) => s.$path !== this.source_space_path)
         .sort((a, b) => {
           return a.title.localeCompare(b.title);
         });
@@ -153,9 +144,7 @@ export default {
         );
       }
     },
-    async confirm() {
-      // const parent_type = this.getParent(this.path);
-
+    async confirm({ remove_original }) {
       this.is_copying = true;
 
       const path_to_destination_type =
@@ -168,7 +157,7 @@ export default {
           new_folder_path = await this.$api.copyFolder({
             path: this.path,
             path_to_destination_type,
-            is_copy_or_move: this.remove_original ? "move" : "copy",
+            is_copy_or_move: remove_original ? "move" : "copy",
             new_meta: {
               title: this.new_title,
             },
@@ -207,26 +196,31 @@ export default {
         }
 
         this.is_copying = false;
-        throw "fail";
+        return;
       }
-
-      this.$alertify
-        .closeLogOnClick(true)
-        .delay(4000)
-        .success(this.$t("folder_copied"));
 
       const url_to_copy = this.createURLFromPath(new_folder_path);
 
-      if (!this.remove_original) {
-        this.url_to_copy = url_to_copy;
-        this.is_copying = false;
-      } else {
-        this.is_copying = false;
+      if (remove_original) {
         await this.$api.deleteItem({
           path: this.path,
         });
+        this.$alertify
+          .closeLogOnClick(true)
+          .delay(4000)
+          .success(this.$t("project_moved"));
         this.$router.push(url_to_copy);
+        return;
       }
+
+      this.toastWithLink({
+        message:
+          this.mode === "remix"
+            ? this.$t("project_remixed")
+            : this.$t("project_duplicated"),
+        navigation: url_to_copy,
+      });
+      this.$emit("close");
     },
   },
 };

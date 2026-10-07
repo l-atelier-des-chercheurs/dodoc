@@ -10,82 +10,41 @@
       </button>
     </template>
 
-    <BaseModal2
+    <DuplicateOrMoveModal
       v-if="show_modal"
-      :title="$t('duplicate_or_move')"
+      :scope.sync="scope"
+      :scope_options="scope_options"
+      :can_confirm="!!destination_project_path"
+      :move_disabled_reason="
+        scope === 'same_project' && $t('already_here_pick_another_destination')
+      "
+      :is_copying="is_copying"
       @close="show_modal = false"
+      @confirm="confirm"
     >
-      <template v-if="!navigation_to_copy">
-        <div class="">
-          <div class="u-spacingBottom u-instructions">
-            <small>
-              {{ $t("dmm_instr") }}
-            </small>
+      <p class="u-spacingBottom" v-if="is_multiple_medias">
+        {{ paths.length }} {{ $t("medias_selected").toLowerCase() }}
+      </p>
 
-            <p class="u-spacingBottom" v-if="is_multiple_medias">
-              {{ paths.length }} {{ $t("medias_selected").toLowerCase() }}
-            </p>
-          </div>
-
-          <DLabel :str="$t('destination_project')" />
-
-          <SpaceProjectPicker
-            class="u-spacingBottom"
-            :path="paths ? paths[0] : path"
-            @newProjectSelected="destination_project_path = $event"
-          />
-
-          <div class="u-spacingBottom">
-            <ToggleInput
-              :content.sync="remove_original"
-              :label="$t('remove_original')"
-              :options="{
-                false: $t('keep_original_after_copy'),
-              }"
-            />
-            <p v-if="remove_original" class="u-warning u-spacingTop">
-              {{ $t("remove_original_after_copy") }}
-            </p>
-          </div>
+      <template v-if="scope === 'other_project'">
+        <div class="u-spacingBottom u-instructions">
+          <small>
+            {{ $t("dmm_instr") }}
+          </small>
         </div>
-
-        <template slot="footer">
-          <template v-if="!is_copying">
-            <button type="button" class="u-button" @click="show_modal = false">
-              <b-icon icon="x-circle" />
-              {{ $t("cancel") }}
-            </button>
-            <button
-              class="u-button u-button_bleuvert"
-              type="button"
-              autofocus
-              :disabled="!destination_project_path"
-              @click="confirm"
-            >
-              <template v-if="remove_original">
-                {{ $t("move") }}
-              </template>
-              <template v-else>
-                {{ $t("duplicate") }}
-              </template>
-            </button>
-          </template>
-          <LoaderSpinner v-else />
-        </template>
+        <SpaceProjectPicker
+          class="u-spacingBottom"
+          :path="source_project_path"
+          :excluded_project_path="source_project_path"
+          @newProjectSelected="pickOtherProject"
+        />
       </template>
-      <template v-else>
-        <router-link
-          :to="navigation_to_copy"
-          class="u-button u-button_bleumarine"
-        >
-          {{ $t("open_copy") }}
-        </router-link>
-      </template>
-    </BaseModal2>
+    </DuplicateOrMoveModal>
   </div>
 </template>
 <script>
 import SpaceProjectPicker from "@/components/fields/SpaceProjectPicker.vue";
+import DuplicateOrMoveModal from "@/components/DuplicateOrMoveModal.vue";
 
 export default {
   props: {
@@ -95,14 +54,14 @@ export default {
   },
   components: {
     SpaceProjectPicker,
+    DuplicateOrMoveModal,
   },
   data() {
     return {
       show_modal: false,
 
-      navigation_to_copy: false,
+      scope: "same_project",
       destination_project_path: undefined,
-      remove_original: false,
       is_copying: false,
     };
   },
@@ -111,71 +70,86 @@ export default {
   beforeDestroy() {},
   watch: {
     show_modal() {
-      this.navigation_to_copy = false;
-      this.destination_project_path = undefined;
       this.is_copying = false;
+      this.scope = "same_project";
+      this.destination_project_path = this.source_project_path;
+    },
+    scope() {
+      this.destination_project_path =
+        this.scope === "same_project" ? this.source_project_path : undefined;
+      // other_project: waits for SpaceProjectPicker
     },
   },
   computed: {
     is_multiple_medias() {
       return Array.isArray(this.paths);
     },
+    paths_of_medias() {
+      return this.is_multiple_medias ? this.paths : [this.path];
+    },
+    source_project_path() {
+      return this.getParent(this.paths_of_medias[0]);
+    },
+    scope_options() {
+      return [
+        { key: "same_project", label: this.$t("in_this_project") },
+        { key: "other_project", label: this.$t("in_another_project") },
+      ];
+    },
   },
   methods: {
-    async confirm() {
-      // const parent_type = this.getParent(this.path);
-
+    pickOtherProject(project_path) {
+      // the picker starts on the current project before switching to another
+      if (project_path === this.source_project_path) return;
+      this.destination_project_path = project_path;
+    },
+    async confirm({ remove_original }) {
       this.is_copying = true;
 
-      const paths_of_medias_to_copy = this.paths ? this.paths : [this.path];
+      const path_to_destination_folder = this.destination_project_path;
+      let copy_file_meta;
 
-      for (const path_of_media_to_copy of paths_of_medias_to_copy) {
-        const path_to_destination_folder = this.destination_project_path;
-        const copy_file_meta = await this.$api
-          .copyFile({
+      try {
+        for (const path_of_media_to_copy of this.paths_of_medias) {
+          copy_file_meta = await this.$api.copyFile({
             path: path_of_media_to_copy,
             path_to_destination_folder,
             new_meta: {},
-          })
-          .catch((err_code) => {
-            if (err_code === "not_allowed_to_copy_to_folder") {
-              this.$alertify
-                .delay(4000)
-                .error(this.$t("not_allowed_to_copy_to_project"));
-            }
-
-            this.is_copying = false;
-            throw "fail";
           });
-
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .success(this.$t("completed"));
-
-        let query = {};
-        query.projectpanes = JSON.stringify([
-          {
-            type: "collect",
-            size: 100,
-            focus: copy_file_meta,
-          },
-        ]);
-        const navigation = {
-          path: this.createURLFromPath(path_to_destination_folder),
-          query,
-        };
-
-        if (!this.remove_original) {
-          this.navigation_to_copy = navigation;
-          this.is_copying = false;
-        } else {
-          this.is_copying = false;
-          await this.$api.deleteItem({
-            path: path_of_media_to_copy,
-          });
+          if (remove_original)
+            await this.$api.deleteItem({
+              path: path_of_media_to_copy,
+            });
         }
+      } catch (err) {
+        const err_code = err?.code || err;
+        if (err_code === "not_allowed_to_copy_to_folder")
+          this.$alertify
+            .delay(4000)
+            .error(this.$t("not_allowed_to_copy_to_project"));
+        else this.$alertify.delay(4000).error(err_code);
+        this.is_copying = false;
+        return;
       }
+
+      const count = this.paths_of_medias.length;
+      let message;
+      if (count > 1)
+        message = remove_original
+          ? this.$t("medias_moved", { count })
+          : this.$t("medias_duplicated", { count });
+      else
+        message = remove_original
+          ? this.$t("media_moved")
+          : this.$t("media_duplicated");
+
+      this.toastWithLink({
+        message,
+        navigation: this.makeNavigationToProjectPane({
+          project_path: path_to_destination_folder,
+          pane: { type: "collect", focus: copy_file_meta },
+        }),
+      });
 
       // close media modal
       this.show_modal = false;

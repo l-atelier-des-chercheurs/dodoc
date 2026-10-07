@@ -5,136 +5,93 @@
       {{ $t("duplicate_or_move") }}…
     </button>
 
-    <BaseModal2
+    <DuplicateOrMoveModal
       v-if="show_modal"
-      :title="$t('duplicate_or_move')"
+      :scope.sync="scope"
+      :scope_options="scope_options"
+      :can_confirm="destination_is_valid"
+      :move_disabled_reason="is_already_there && $t('module_already_there')"
+      :is_copying="is_copying"
       @close="show_modal = false"
+      @confirm="confirm"
     >
-      <template v-if="!navigation_to_copy">
-        <div class="u-spacingBottom">
-          <DLabel :str="$t('where')" />
-          <RadioCheckboxInput
-            :value.sync="scope"
-            :options="scope_options"
-            :can_edit="true"
-          />
+      <template v-if="scope === 'other_project'">
+        <div class="u-spacingBottom u-instructions">
+          <small>{{ $t("dmmod_instr") }}</small>
         </div>
-
-        <template v-if="scope === 'other_project'">
-          <div class="u-spacingBottom u-instructions">
-            <small>{{ $t("dmmod_instr") }}</small>
-          </div>
-          <SpaceProjectPicker
-            class="u-spacingBottom"
-            :path="publimodule.$path"
-            :excluded_project_path="source_project_path"
-            @newProjectSelected="pickOtherProject"
-          />
-        </template>
-
-        <div
+        <SpaceProjectPicker
           class="u-spacingBottom"
-          v-if="scope !== 'same_publication' && destination_project_path"
+          :path="publimodule.$path"
+          :excluded_project_path="source_project_path"
+          @newProjectSelected="pickOtherProject"
+        />
+      </template>
+
+      <div
+        class="u-spacingBottom"
+        v-if="scope !== 'same_publication' && destination_project_path"
+      >
+        <DLabel :str="$t('publication')" />
+        <LoaderSpinner v-if="!destination_publications" />
+        <small
+          v-else-if="destination_publications.length === 0"
+          class="u-instructions"
         >
-          <DLabel :str="$t('publication')" />
-          <LoaderSpinner v-if="!destination_publications" />
-          <small
-            v-else-if="destination_publications.length === 0"
-            class="u-instructions"
-          >
-            {{ $t("no_compatible_publications") }}
-          </small>
-          <select v-else v-model="destination_publication_path">
-            <option
-              v-for="publication in destination_publications"
-              :key="publication.$path"
-              :value="publication.$path"
-              v-text="makePublicationTitle(publication)"
-            />
-          </select>
-        </div>
+          {{ $t("no_compatible_publications") }}
+        </small>
+        <select v-else v-model="destination_publication_path">
+          <option
+            v-for="publication in destination_publications"
+            :key="publication.$path"
+            :value="publication.$path"
+            v-text="makePublicationTitle(publication)"
+          />
+        </select>
+      </div>
 
-        <div v-if="destination_publication_path">
-          <LoaderSpinner v-if="!destination_publication" />
-          <template v-else>
-            <template v-if="destination_kind === 'section'">
-              <DLabel :str="$t('section')" />
-              <small
-                v-if="destination_sections.length === 0"
-                class="u-instructions"
-              >
-                {{ $t("no_sections") }}
-              </small>
-              <select v-else v-model="destination_section_path">
-                <option
-                  v-for="section in destination_sections"
-                  :key="section.$path"
-                  :value="section.$path"
-                  v-text="makeSectionTitle(section)"
-                />
-              </select>
-            </template>
-            <template v-else-if="destination_kind === 'page'">
-              <DLabel :str="$t('page')" />
-              <select v-model="destination_page_id">
-                <option
-                  v-for="(page, index) in destination_publication.pages"
-                  :key="page.id"
-                  :value="page.id"
-                  v-text="makePageTitle(page, index)"
-                />
-              </select>
-            </template>
-
-            <p class="u-instructions u-spacingTop" v-if="placement_instr">
-              <small>{{ placement_instr }}</small>
-            </p>
-          </template>
-        </div>
-
-        <template slot="footer">
-          <template v-if="!is_copying">
-            <button type="button" class="u-button" @click="show_modal = false">
-              <b-icon icon="x-circle" />
-              {{ $t("cancel") }}
-            </button>
-            <button
-              class="u-button u-button_bleuvert"
-              type="button"
-              :disabled="!destination_is_valid"
-              @click="confirm({ remove_original: false })"
+      <div v-if="destination_publication_path">
+        <LoaderSpinner v-if="!destination_publication" />
+        <template v-else>
+          <template v-if="destination_kind === 'section'">
+            <DLabel :str="$t('section')" />
+            <small
+              v-if="destination_sections.length === 0"
+              class="u-instructions"
             >
-              <b-icon icon="file-plus" />
-              {{ $t("duplicate") }}
-            </button>
-            <button
-              class="u-button u-button_bleuvert"
-              type="button"
-              :disabled="!destination_is_valid || is_already_there"
-              :title="is_already_there ? $t('module_already_there') : ''"
-              @click="confirm({ remove_original: true })"
-            >
-              <b-icon icon="arrow-left-right" />
-              {{ $t("move") }}
-            </button>
+              {{ $t("no_sections") }}
+            </small>
+            <select v-else v-model="destination_section_path">
+              <option
+                v-for="section in destination_sections"
+                :key="section.$path"
+                :value="section.$path"
+                v-text="makeSectionTitle(section)"
+              />
+            </select>
           </template>
-          <LoaderSpinner v-else />
+          <template v-else-if="destination_kind === 'page'">
+            <DLabel :str="$t('page')" />
+            <select v-model="destination_page_id">
+              <option
+                v-for="(page, index) in destination_publication.pages"
+                :key="page.id"
+                :value="page.id"
+                v-text="makePageTitle(page, index)"
+              />
+            </select>
+          </template>
+
+          <p class="u-instructions u-spacingTop" v-if="placement_instr">
+            <small>{{ placement_instr }}</small>
+          </p>
         </template>
-      </template>
-      <template v-else>
-        <router-link
-          :to="navigation_to_copy"
-          class="u-button u-button_bleumarine"
-          @click.native="show_modal = false"
-        >
-          {{ $t("open_copy") }}
-        </router-link>
-      </template>
-    </BaseModal2>
+      </div>
+    </DuplicateOrMoveModal>
   </div>
 </template>
 <script>
 import SpaceProjectPicker from "@/components/fields/SpaceProjectPicker.vue";
+import DuplicateOrMoveModal from "@/components/DuplicateOrMoveModal.vue";
 
 export default {
   props: {
@@ -142,6 +99,7 @@ export default {
   },
   components: {
     SpaceProjectPicker,
+    DuplicateOrMoveModal,
   },
   data() {
     return {
@@ -158,7 +116,6 @@ export default {
       destination_page_id: undefined,
 
       is_copying: false,
-      navigation_to_copy: false,
     };
   },
   created() {},
@@ -166,7 +123,6 @@ export default {
   beforeDestroy() {},
   watch: {
     async show_modal() {
-      this.navigation_to_copy = false;
       this.is_copying = false;
       this.scope = undefined;
       if (!this.show_modal) return;
@@ -395,20 +351,14 @@ export default {
           return;
         }
 
-        if (this.is_same_publication) {
-          if (this.destination_kind === "page")
-            setTimeout(() => {
-              this.$eventHub.$emit(
-                "module.setActive",
-                this.destination_publication_path + "/" + copy_meta_filename
-              );
-            }, 100);
-          this.show_modal = false;
-          return;
-        }
-
-        this.navigation_to_copy = this.makeNavigationToCopy();
-        this.is_copying = false;
+        if (this.is_same_publication && this.destination_kind === "page")
+          setTimeout(() => {
+            this.$eventHub.$emit(
+              "module.setActive",
+              this.destination_publication_path + "/" + copy_meta_filename
+            );
+          }, 100);
+        this.show_modal = false;
       } catch (err) {
         this.$alertify.delay(4000).error(err?.code || err);
         this.is_copying = false;
@@ -447,11 +397,7 @@ export default {
           : this.$t("module_duplicated");
 
       // computed now: when moved, this component is destroyed with the module
-      const navigation = this.makeNavigationToCopy();
-      this.$toast.success(message + " — " + this.$t("click_to_show"), {
-        timeout: 8000,
-        onClick: () => this.$router.push(navigation).catch(() => {}),
-      });
+      this.toastWithLink({ message, navigation: this.makeNavigationToCopy() });
     },
     makePlacementMeta() {
       if (this.destination_kind !== "page") return {};
@@ -526,39 +472,19 @@ export default {
       }
     },
     makeNavigationToCopy() {
-      const path = this.createURLFromPath(this.destination_project_path);
-
-      // already in the destination project: only update the publish pane,
-      // to keep other panes open
-      const is_current_project = this.$route.path === path;
-      let panes = [];
-      if (is_current_project && this.$route.query?.projectpanes)
-        try {
-          panes = JSON.parse(this.$route.query.projectpanes);
-        } catch (err) {
-          panes = [];
-        }
-
-      let pane = panes.find((p) => p.type === "publish");
-      if (!pane) {
-        pane = { type: "publish", size: 100 };
-        panes.push(pane);
-      }
-      pane.folder = this.getFilename(this.destination_publication_path);
-      delete pane.section;
-      delete pane.page_id;
+      const pane = {
+        type: "publish",
+        folder: this.getFilename(this.destination_publication_path),
+      };
       if (this.destination_kind === "section")
         pane.section = this.getFilename(this.destination_section_path);
       else if (this.destination_kind === "page")
         pane.page_id = this.destination_page_id;
 
-      return {
-        path,
-        query: {
-          ...(is_current_project ? this.$route.query : {}),
-          projectpanes: JSON.stringify(panes),
-        },
-      };
+      return this.makeNavigationToProjectPane({
+        project_path: this.destination_project_path,
+        pane,
+      });
     },
   },
 };
