@@ -296,6 +296,10 @@ export default {
   ._singlePage.is--editable & {
     overflow: visible;
   }
+  // the preview wrapper draws its own shadow, an inner one would scale with zoom
+  ._singlePage.is--preview & {
+    box-shadow: none;
+  }
 }
 
 ._item {

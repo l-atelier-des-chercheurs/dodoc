@@ -55,12 +55,16 @@
         name="listComplete"
         class="_allPages"
         key="allpages"
+        :style="{
+          '--preview-width': preview_width + 'px',
+          '--preview-height': preview_height + 'px',
+        }"
       >
         <template v-if="!is_spread">
           <div
             v-for="(page, index) in pages"
             :key="'page-' + page.id"
-            class="u-sameRow _singlePage"
+            class="_singlePage"
           >
             <div class="_createPageBtn">
               <EditBtn
@@ -117,22 +121,28 @@
           </div>
         </template>
         <template v-else>
-          <template v-for="(spread, index) in spreads">
-            <template v-for="(page, iindex) in spread">
+          <div
+            v-for="(spread, index) in spreads"
+            :key="'spread-' + spread.map((p) => (p ? p.id : '')).join('-')"
+            class="_singlePage"
+          >
+            <div class="_createPageBtn">
               <EditBtn
-                v-if="can_edit && iindex === 0"
-                class="_createPage"
+                v-if="can_edit"
                 :style="
                   is_creating_page
                     ? 'opacity: 0 !important;'
                     : 'opacity: 1 !important;'
                 "
                 :btn_type="'create_page'"
-                :key="'createPage-' + Math.max(0, index * 2 + iindex - 1)"
-                @click="createPage(Math.max(0, index * 2 + iindex - 1))"
+                @click="createPage(Math.max(0, index * 2 - 1))"
               />
+            </div>
+            <div class="_spread">
               <div
-                :key="page ? page.id : iindex"
+                v-for="(page, iindex) in spread"
+                :key="iindex"
+                class="_spreadPage"
                 :data-pageposition="iindex === 0 ? 'left' : 'right'"
               >
                 <template v-if="page && page.id">
@@ -159,7 +169,6 @@
                       @click="$emit('togglePage', page.id)"
                       v-html="$t('open')"
                     />
-                    <!-- <div v-else>No preview</div> -->
                   </div>
                   <PageLabel
                     :index="index * 2 + iindex - 1"
@@ -175,14 +184,15 @@
                     @removePage="removePage(page.id)"
                   />
                 </template>
+                <div v-else class="_emptyPage" />
               </div>
-            </template>
-          </template>
+            </div>
+          </div>
         </template>
         <span
           v-if="can_edit"
           :key="'createPage'"
-          :class="{ _createPageBtn: !is_spread }"
+          class="_createPageBtn"
           :style="
             is_creating_page
               ? 'opacity: 0 !important;'
@@ -267,6 +277,18 @@ export default {
     },
     is_spread() {
       return this.publication.page_spreads === true;
+    },
+    preview_width() {
+      const { page_width, page_height } = this.publication;
+      return (
+        (this.previews_size * page_width) / Math.max(page_width, page_height)
+      );
+    },
+    preview_height() {
+      const { page_width, page_height } = this.publication;
+      return (
+        (this.previews_size * page_height) / Math.max(page_width, page_height)
+      );
     },
     format_unit() {
       return this.publication.layout_mode === "screen" ? "px" : "mm";
@@ -529,17 +551,13 @@ export default {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1) 0;
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2)
     calc(var(--spacing) * 4);
 
   > * {
     margin-right: calc(var(--spacing) * 1);
-
-    &[data-pageposition="left"] {
-      margin-right: 0;
-    }
   }
 }
 
@@ -554,10 +572,15 @@ export default {
   // height: 297px;
 }
 ._singlePage {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1);
 }
 ._createPageBtn {
-  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  height: var(--preview-height);
 }
 
 ._preview {
@@ -589,7 +612,24 @@ export default {
     opacity: 1;
   }
 }
-._createPage {
-  margin-right: calc(var(--spacing) * 1);
+
+._spread {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+}
+// pages meet at the spine, labels stay under their page without overlapping
+._spreadPage {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
+
+  &[data-pageposition="right"] {
+    align-items: flex-start;
+  }
+}
+._emptyPage {
+  width: var(--preview-width);
+  height: var(--preview-height);
 }
 </style>
