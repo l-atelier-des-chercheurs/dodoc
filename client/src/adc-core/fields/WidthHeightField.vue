@@ -1,117 +1,139 @@
 <template>
   <div class="_widthHeightField">
-    <fieldset>
+    <fieldset :disabled="is_saving">
       <legend>{{ $t("format") }}</legend>
 
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        :is_unfolded="true"
-        @click="enableEditMode"
-      />
-
-      <br />
-      <br />
-
       <template v-if="!force_layout_mode">
-        <DLabel class="_label" :str="$t('document_type')" :tag="'H3'" />
-
-        <div
-          v-for="lmode in [
-            {
-              key: 'print',
-              label: $t('print'),
-              instructions: $t('print_instr'),
-            },
-            {
-              key: 'screen',
-              label: $t('screen'),
-              instructions: $t('screen_instr'),
-            },
-          ]"
-          :key="lmode.key"
-        >
-          <div>
-            <input
-              type="radio"
-              v-model="new_layout_mode"
-              :name="lmode.key"
-              :id="'radioi-lmode-' + lmode.key"
-              :value="lmode.key"
-              :disabled="!edit_mode"
-            />
-            <label :for="'radioi-lmode-' + lmode.key">
-              {{ lmode.label }}<br />
-              <small v-html="lmode.instructions" />
-            </label>
+        <DLabel class="_label" :str="$t('document_type')" />
+        <div class="_choices">
+          <button
+            v-for="lmode in ['print', 'screen']"
+            :key="lmode"
+            type="button"
+            class="u-button u-button_small"
+            :class="{ 'is--active': layout_mode === lmode }"
+            :title="$t(lmode + '_instr')"
+            @click="setLayoutMode(lmode)"
+          >
+            {{ $t(lmode) }}
+          </button>
+        </div>
+        <div v-if="pending_layout_mode" class="_confirmLayoutMode">
+          <p class="u-warning">
+            {{ $t("change_document_type_warning") }}
+          </p>
+          <div class="_choices">
+            <button
+              type="button"
+              class="u-button u-button_small"
+              @click="pending_layout_mode = false"
+            >
+              {{ $t("cancel") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_small u-button_red"
+              @click="applyLayoutMode(pending_layout_mode)"
+            >
+              {{ $t("switch_to", { type: $t(pending_layout_mode) }) }}
+            </button>
           </div>
+        </div>
+        <div v-else class="u-instructions">
+          <small v-html="$t(layout_mode + '_instr')" />
         </div>
       </template>
 
-      <br />
+      <DLabel
+        class="_label"
+        :str="$t('format')"
+        :instructions="$t('format_instructions')"
+      />
+      <div class="_choices">
+        <button
+          v-for="format in formats"
+          :key="format.key"
+          type="button"
+          class="u-button u-button_small"
+          :class="{ 'is--active': current_format === format.key }"
+          :title="format.width + ' × ' + format.height + ' ' + unit"
+          @click="setFormat(format)"
+        >
+          {{ format.label }}
+        </button>
+        <button
+          type="button"
+          class="u-button u-button_small"
+          :class="{ 'is--active': current_format === 'custom' }"
+          @click="$refs.widthInput.focus()"
+        >
+          {{ $t("custom") }}
+        </button>
+      </div>
 
-      <transition name="fade" mode="out-in">
-        <div :key="new_layout_mode">
-          <DLabel
-            class="_label"
-            :str="$t('format')"
-            :tag="'h3'"
-            :instructions="$t('format_instructions')"
+      <DLabel class="_label" :str="$t('orientation')" />
+      <div class="_choices">
+        <button
+          v-for="orientation in ['portrait', 'landscape']"
+          :key="orientation"
+          type="button"
+          class="u-button u-button_small"
+          :class="{ 'is--active': current_orientation === orientation }"
+          @click="setOrientation(orientation)"
+        >
+          <b-icon
+            icon="file-earmark"
+            :rotate="orientation === 'landscape' ? '90' : ''"
           />
+          {{ $t(orientation) }}
+        </button>
+      </div>
 
-          <template>
-            <select
-              :value="predefined_format_from_width"
-              :disabled="!edit_mode"
-              @change="setSizeFromFormat"
-            >
-              <option
-                v-for="option in format_options"
-                :key="option.key"
-                :value="option.key"
-                v-text="option.text"
-              />
-            </select>
-          </template>
-
-          <div class="u-sameRow">
-            <div class="">
-              <DLabel :str="$t('width')" />
-              <div class="u-inputGroup">
-                <input
-                  type="number"
-                  :disabled="!edit_mode"
-                  v-model.number="new_page_width"
-                />
-                <span class="u-suffix" v-text="unit" />
-              </div>
-            </div>
-            <div class="">
-              <DLabel :str="$t('height')" />
-              <div class="u-inputGroup">
-                <input
-                  type="number"
-                  :disabled="!edit_mode"
-                  v-model.number="new_page_height"
-                />
-                <span class="u-suffix" v-text="unit" />
-              </div>
-            </div>
+      <div class="u-sameRow _dimensions">
+        <div>
+          <DLabel :str="$t('width')" />
+          <div class="u-inputGroup">
+            <input
+              ref="widthInput"
+              type="number"
+              min="1"
+              v-model.number="new_page_width"
+              @change="saveSize({ width: new_page_width })"
+            />
+            <span class="u-suffix" v-text="unit" />
           </div>
         </div>
-      </transition>
-
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updateSize"
-          @cancel="cancel"
-        />
+        <div>
+          <DLabel :str="$t('height')" />
+          <div class="u-inputGroup">
+            <input
+              type="number"
+              min="1"
+              v-model.number="new_page_height"
+              @change="saveSize({ height: new_page_height })"
+            />
+            <span class="u-suffix" v-text="unit" />
+          </div>
+        </div>
       </div>
     </fieldset>
   </div>
 </template>
 <script>
+const FORMATS = {
+  print: [
+    { key: "A3", label: "A3", width: 297, height: 420 },
+    { key: "A4", label: "A4", width: 210, height: 297 },
+    { key: "A5", label: "A5", width: 148, height: 210 },
+    { key: "A6", label: "A6", width: 105, height: 148 },
+  ],
+  screen: [
+    { key: "recommended", width: 960, height: 700 },
+    { key: "desktop_1080", width: 1920, height: 1080 },
+    { key: "desktop_720", width: 1280, height: 720 },
+  ],
+};
+
 export default {
   props: {
     publication: Object,
@@ -120,158 +142,149 @@ export default {
   components: {},
   data() {
     return {
-      edit_mode: false,
       is_saving: false,
-      can_edit: true,
-
-      new_layout_mode: undefined,
+      pending_layout_mode: false,
       new_page_width: undefined,
       new_page_height: undefined,
     };
   },
-  created() {},
-  mounted() {
+  created() {
     this.initValues();
   },
+  mounted() {},
   beforeDestroy() {},
   watch: {
-    new_layout_mode() {
-      const { width, height } = this.format_options[0];
-      if (!this.new_page_width) this.new_page_width = width;
-      if (!this.new_page_height) this.new_page_height = height;
+    "publication.page_width"() {
+      this.initValues();
+    },
+    "publication.page_height"() {
+      this.initValues();
     },
   },
   computed: {
-    format_options() {
-      if (this.new_layout_mode === "print")
-        return [
-          {
-            key: "A4_portrait",
-            text: this.$t("A4_portrait"),
-            width: 210,
-            height: 297,
-            // instruction: this.$t("A4_portrait_explanations"),
-          },
-          {
-            key: "A4_landscape",
-            text: this.$t("A4_landscape"),
-            width: 297,
-            height: 210,
-            // instruction: this.$t("A4_landscape_explanations"),
-          },
-          {
-            key: "A5_portrait",
-            text: this.$t("A5_portrait"),
-            width: 148,
-            height: 210,
-            // instruction: this.$t("A5_portrait_explanations"),
-          },
-          {
-            key: "A5_landscape",
-            text: this.$t("A5_landscape"),
-            width: 210,
-            height: 148,
-            // instruction: this.$t("A5_landscape_explanations"),
-          },
-          {
-            key: "custom",
-            text: this.$t("custom"),
-            // instruction: this.$t("custom_format_explanations"),
-          },
-        ];
-      // else if (this.new_layout_mode === "screen")
-      return [
-        {
-          key: "recommended",
-          text: this.$t("recommended"),
-          width: 960,
-          height: 700,
-        },
-        {
-          key: "desktop1080",
-          text: this.$t("desktop_1080"),
-          width: 1920,
-          height: 1080,
-        },
-        {
-          key: "desktop720",
-          text: this.$t("desktop_720"),
-          width: 1280,
-          height: 720,
-        },
-        {
-          key: "custom",
-          text: this.$t("custom"),
-        },
-      ];
+    layout_mode() {
+      return this.force_layout_mode || this.publication.layout_mode || "print";
     },
-    predefined_format_from_width() {
-      const format = this.format_options.find(
+    page_width() {
+      return this.publication.page_width || 210;
+    },
+    page_height() {
+      return this.publication.page_height || 297;
+    },
+    formats() {
+      return FORMATS[this.layout_mode].map((f) => ({
+        ...f,
+        label: f.label || this.$t(f.key),
+      }));
+    },
+    current_format() {
+      // presets match whatever the orientation
+      const short = Math.min(this.page_width, this.page_height);
+      const long = Math.max(this.page_width, this.page_height);
+      const format = this.formats.find(
         (f) =>
-          f.width === this.new_page_width && f.height === this.new_page_height
+          Math.min(f.width, f.height) === short &&
+          Math.max(f.width, f.height) === long
       );
-      if (format) return format.key;
-      return "custom";
+      return format ? format.key : "custom";
+    },
+    current_orientation() {
+      if (this.page_width === this.page_height) return false;
+      return this.page_width > this.page_height ? "landscape" : "portrait";
     },
     unit() {
-      if (this.new_layout_mode === "screen") return "px";
-      else return "mm";
+      return this.layout_mode === "screen" ? "px" : "mm";
     },
   },
   methods: {
     initValues() {
-      if (this.force_layout_mode) this.new_layout_mode = this.force_layout_mode;
-      else this.new_layout_mode = this.publication.layout_mode || "print";
+      this.new_page_width = this.page_width;
+      this.new_page_height = this.page_height;
+    },
+    setLayoutMode(layout_mode) {
+      if (layout_mode === this.layout_mode)
+        return (this.pending_layout_mode = false);
+      // modules keep their values but mm and px don't share a scale,
+      // so a filled layout ends up shrunk or off the page
+      const has_content = (this.publication.$files || []).length > 0;
+      if (has_content) this.pending_layout_mode = layout_mode;
+      else this.applyLayoutMode(layout_mode);
+    },
+    applyLayoutMode(layout_mode) {
+      this.pending_layout_mode = false;
+      // units differ between modes, so start from that mode's first preset
+      const { width, height } = FORMATS[layout_mode][0];
+      this.updateMeta({ layout_mode, page_width: width, page_height: height });
+    },
+    setFormat({ width, height }) {
+      // keep the current orientation when switching presets
+      const landscape_preset = width > height;
+      const want_landscape =
+        this.current_orientation === false
+          ? landscape_preset
+          : this.current_orientation === "landscape";
+      if (landscape_preset !== want_landscape)
+        [width, height] = [height, width];
+      this.updateMeta({ page_width: width, page_height: height });
+    },
+    setOrientation(orientation) {
+      if (orientation === this.current_orientation) return;
+      const short = Math.min(this.page_width, this.page_height);
+      const long = Math.max(this.page_width, this.page_height);
+      if (orientation === "portrait")
+        this.updateMeta({ page_width: short, page_height: long });
+      else this.updateMeta({ page_width: long, page_height: short });
+    },
+    saveSize({ width, height }) {
+      const value = width ?? height;
+      if (!(value > 0)) return this.initValues();
+      if (width !== undefined) this.updateMeta({ page_width: width });
+      else this.updateMeta({ page_height: height });
+    },
+    async updateMeta(new_meta) {
+      if (!this.force_layout_mode && !this.publication.layout_mode)
+        new_meta = { layout_mode: this.layout_mode, ...new_meta };
 
-      this.new_page_width = this.publication.page_width || 210;
-      this.new_page_height = this.publication.page_height || 297;
-    },
-    enableEditMode() {
-      this.edit_mode = true;
-    },
-    setSizeFromFormat($event) {
-      const key = $event.target.value;
-      if (key === "custom") return;
-
-      const format = this.format_options.find((f) => f.key === key);
-
-      this.new_page_width = format.width;
-      this.new_page_height = format.height;
-    },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-      this.initValues();
-      // todo interrupt updateMeta
-    },
-    async updateSize() {
       this.is_saving = true;
-
       try {
-        const new_meta = {
-          layout_mode: this.new_layout_mode,
-          page_width: this.new_page_width,
-          page_height: this.new_page_height,
-        };
         await this.$api.updateMeta({
           path: this.publication.$path,
           new_meta,
         });
-
-        this.edit_mode = false;
-        this.is_saving = false;
       } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
+        this.initValues();
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        this.$alertify.closeLogOnClick(true).error(e.response?.data);
       }
+      this.is_saving = false;
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._label {
+  margin-top: calc(var(--spacing) / 1);
+}
+._choices {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 4);
+}
+._confirmLayoutMode {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: calc(var(--spacing) / 2);
+  margin-top: calc(var(--spacing) / 2);
+
+  .u-warning {
+    margin: 0;
+  }
+}
+._dimensions {
+  justify-content: flex-start;
+  margin-top: calc(var(--spacing) / 1);
+}
+</style>

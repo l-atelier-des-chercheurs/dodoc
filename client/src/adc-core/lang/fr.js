@@ -300,6 +300,10 @@ export default {
 
   custom: "Personnalisé",
   custom_f: "Personnalisée",
+  change_document_type_warning:
+    "Cette publication contient déjà des éléments. Leurs positions et tailles sont conservées en valeur, mais mm et px n’ont pas la même échelle : la mise en page va rétrécir ou sortir de la page. Revenir au type précédent la rétablit.",
+  switch_to: "Passer en {type}",
+  orientation: "Orientation",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",

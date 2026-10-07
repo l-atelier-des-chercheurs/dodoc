@@ -667,6 +667,10 @@ export default {
   desktop_720: "Desktop 720p",
   custom: "Custom",
   custom_f: "Custom",
+  change_document_type_warning:
+    "This publication already has content. Positions and sizes are kept as numbers but mm and px don’t match: the layout will shrink or move off the page. Switching back restores it.",
+  switch_to: "Switch to {type}",
+  orientation: "Orientation",
   width: "Width",
   height: "Height",
   text_size: "Text size",

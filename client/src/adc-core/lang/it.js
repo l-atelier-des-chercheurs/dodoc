@@ -274,6 +274,12 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   custom: "Personalizzato",
   custom_f: "Personalizzata",
+  change_document_type_warning:
+    "Questa pubblicazione contiene già degli elementi. Posizioni e dimensioni vengono mantenute come valori, ma mm e px non hanno la stessa scala: l’impaginazione si rimpicciolirà o uscirà dalla pagina. Tornare al tipo precedente la ripristina.",
+  switch_to: "Passa a {type}",
+  orientation: "Orientamento",
+  portrait: "Verticale",
+  landscape: "Orizzontale",
   width: "Larghezza",
   height: "Altezza",
   text_size: "Dimensione del testo",
