@@ -5,6 +5,7 @@
     <CollaborativeEditor3
       :content="main_text_content"
       :path="text_file.$path"
+      :remember_font_key="publicationFontKey(publication_path)"
       :custom_formats="custom_formats"
       :save_format="save_format"
       :content_type="'markdown'"

@@ -293,6 +293,7 @@
         ref="textBloc"
         :path="first_media.$path"
         :content="first_media.$content"
+        :remember_font_key="publicationFontKey(getParent(publimodule.$path))"
         :scrollingContainer="$el"
         :line_selected="false"
         :can_edit="can_edit"

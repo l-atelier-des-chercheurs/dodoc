@@ -241,6 +241,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    // localStorage key: the font picked in the toolbar is stored there
+    // and applied to empty texts, so it doesn't have to be picked again
+    remember_font_key: String,
     // enabled for page_by_page, this means that the edit button is located in the top right corner in absolute,
     // and that the toolbar moves to the closest parent dedicated container after creation
   },
@@ -266,6 +269,7 @@ export default {
       show_emoji_picker: false,
 
       debounce_textUpdate: undefined,
+      pending_font: false,
 
       collaborative_is_loaded: false,
 
@@ -571,6 +575,10 @@ export default {
             );
           }
         },
+        font: (new_font) => {
+          this.editor.format("font", new_font || false, Quill.sources.USER);
+          this.rememberFont(new_font);
+        },
         size: (new_size) => {
           if (new_size === "__custom__") {
             this.applyCustomTextSize();
@@ -707,10 +715,7 @@ export default {
       this.editor.enable();
       this.editor.focus();
 
-      // if (this.editor.getLength() <= 1) {
-      //   const fontLastUsed = localStorage.getItem("fontLastUsed");
-      //   this.editor.format("font", fontLastUsed);
-      // }
+      if (this.editor.getLength() <= 1) this.applyRememberedFont();
 
       this.$emit(`contentIsEdited`, {
         $toolbar: this.toolbar_el,
@@ -745,6 +750,51 @@ export default {
         this.is_disabling_editor = false;
         this.editor.off("text-change", this.updateInput);
       });
+      this.stopPendingFont();
+    },
+    rememberFont(font) {
+      if (!this.remember_font_key) return;
+      this.stopPendingFont();
+      try {
+        if (font) localStorage.setItem(this.remember_font_key, font);
+        else localStorage.removeItem(this.remember_font_key);
+      } catch (e) {
+        // storage can be unavailable (private window, blocked site data)
+      }
+    },
+    applyRememberedFont() {
+      if (!this.remember_font_key) return;
+      if (!(this.custom_formats || default_formats).includes("font")) return;
+      let font;
+      try {
+        font = localStorage.getItem(this.remember_font_key);
+      } catch (e) {
+        return;
+      }
+      // the font may have been removed from the custom fonts since
+      if (!font || !all_fonts.includes(font)) return;
+
+      this.editor.format("font", font, Quill.sources.USER);
+      // a format on an empty text only applies to the next typed characters
+      // and is dropped if the cursor moves first: apply it on first input too
+      this.pending_font = font;
+      this.editor.on("text-change", this.applyPendingFont);
+    },
+    applyPendingFont(delta, old_delta, source) {
+      if (source !== Quill.sources.USER) return;
+      const font = this.pending_font;
+      this.stopPendingFont();
+
+      const length = this.editor.getLength() - 1;
+      if (length <= 0) return;
+      if (this.editor.getFormat(0, length).font !== undefined) return;
+      setTimeout(() => {
+        this.editor.formatText(0, length, "font", font, Quill.sources.USER);
+      }, 0);
+    },
+    stopPendingFont() {
+      this.pending_font = false;
+      if (this.editor) this.editor.off("text-change", this.applyPendingFont);
     },
     getToolbarBack() {
       if (

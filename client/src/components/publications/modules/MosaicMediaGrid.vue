@@ -26,6 +26,7 @@
           :key="edit_mode"
           :content="media_with_linked._linked_media.$content"
           :path="media_with_linked._linked_media.$path"
+          :remember_font_key="publicationFontKey(publication_path)"
           :mode="'edit_on_mounted'"
           :can_edit="edit_mode"
         />
