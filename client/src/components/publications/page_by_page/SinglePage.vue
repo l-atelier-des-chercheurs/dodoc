@@ -84,6 +84,15 @@
             :y2="guide.axis === 'y' ? guide.pos : magnify(page_height)"
             vector-effect="non-scaling-stroke"
           />
+          <rect
+            v-for="rect in snap_source_rects"
+            :key="rect.path"
+            :x="rect.x"
+            :y="rect.y"
+            :width="rect.width"
+            :height="rect.height"
+            vector-effect="non-scaling-stroke"
+          />
         </svg>
 
         <svg
@@ -204,19 +213,28 @@ export default {
   watch: {},
   computed: {
     snap_targets() {
-      // page edges and middles, margins and other modules, in px
+      // in px: page edges and middle, margins and their middle, other modules' edges
+      // centers only snap to centers, see MoveableItem
       const w = this.magnify(this.page_width);
       const h = this.magnify(this.page_height);
-      const x = [0, w / 2, w];
-      const y = [0, h / 2, h];
+      const x = [{ pos: 0 }, { pos: w / 2, center: true }, { pos: w }];
+      const y = [{ pos: 0 }, { pos: h / 2, center: true }, { pos: h }];
 
       if (this.l_margins) {
         const left = this.magnify(this.l_margins.left);
         const right = w - this.magnify(this.l_margins.right);
         const top = this.magnify(this.l_margins.top);
         const bottom = h - this.magnify(this.l_margins.bottom);
-        x.push(left, right, (left + right) / 2);
-        y.push(top, bottom, (top + bottom) / 2);
+        x.push(
+          { pos: left },
+          { pos: right },
+          { pos: (left + right) / 2, center: true }
+        );
+        y.push(
+          { pos: top },
+          { pos: bottom },
+          { pos: (top + bottom) / 2, center: true }
+        );
       }
 
       // rotated modules are left out, their box doesn't match what is seen
@@ -229,16 +247,34 @@ export default {
         .map((m) => {
           const mx = this.magnify(m.x);
           const my = this.magnify(m.y);
-          const mw = this.magnify(m.width);
-          const mh = this.magnify(m.height);
+          const source = m.$path;
           return {
             path: m.$path,
-            x: [mx, mx + mw / 2, mx + mw],
-            y: [my, my + mh / 2, my + mh],
+            x: [
+              { pos: mx, source },
+              { pos: mx + this.magnify(m.width), source },
+            ],
+            y: [
+              { pos: my, source },
+              { pos: my + this.magnify(m.height), source },
+            ],
           };
         });
 
       return { x, y, modules };
+    },
+    snap_source_rects() {
+      // modules another module snaps to, outlined like the guides
+      const sources = this.guides.flatMap((g) => g.sources || []);
+      return this.page_modules
+        .filter((m) => sources.includes(m.$path))
+        .map((m) => ({
+          path: m.$path,
+          x: this.magnify(m.x),
+          y: this.magnify(m.y),
+          width: this.magnify(m.width),
+          height: this.magnify(m.height),
+        }));
     },
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
@@ -400,9 +436,11 @@ export default {
   overflow: visible;
   pointer-events: none;
 
-  line {
-    stroke: var(--c-rouge);
-    stroke-width: 1px;
+  line,
+  rect {
+    stroke: var(--c-rouge_clair);
+    stroke-width: 2px;
+    fill: none;
   }
 }
 ._margins {

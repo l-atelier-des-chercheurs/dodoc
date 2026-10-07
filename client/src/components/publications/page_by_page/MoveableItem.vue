@@ -156,7 +156,7 @@ export default {
     scale: Number,
     module_being_edited: String,
     is_active: Boolean,
-    // { x: [], y: [] } positions in px that edges and centers snap to
+    // { x: [], y: [], modules: [] } of { pos, center, source } in px
     snap_targets: [Boolean, Object],
   },
   components: {
@@ -417,18 +417,26 @@ export default {
     },
     applySmartGuides(transform, { type, handle, keep_ratio }) {
       const threshold = 6 / (this.scale || 1);
+      // positions are { pos, center }: a center only snaps to centers
+      // (page, margins), edges snap to everything
       const findSnap = (positions, targets) => {
         let best = false;
         positions.forEach((position) =>
           targets.forEach((target) => {
-            const delta = target - position;
+            if (position.center && !target.center) return;
+            const delta = target.pos - position.pos;
             if (
               Math.abs(delta) <= threshold &&
               (!best || Math.abs(delta) < Math.abs(best.delta))
             )
-              best = { delta, target };
+              best = { delta, target: target.pos };
           })
         );
+        if (best)
+          // every module with an edge on that line triggered the snap
+          best.sources = targets
+            .filter((t) => t.source && Math.abs(t.pos - best.target) < 0.5)
+            .map((t) => t.source);
         return best;
       };
 
@@ -437,20 +445,36 @@ export default {
 
       if (type === "drag") {
         const snap_x = findSnap(
-          [t.x, t.x + t.width / 2, t.x + t.width],
+          [
+            { pos: t.x },
+            { pos: t.x + t.width / 2, center: true },
+            { pos: t.x + t.width },
+          ],
           this.own_snap_targets.x
         );
         const snap_y = findSnap(
-          [t.y, t.y + t.height / 2, t.y + t.height],
+          [
+            { pos: t.y },
+            { pos: t.y + t.height / 2, center: true },
+            { pos: t.y + t.height },
+          ],
           this.own_snap_targets.y
         );
         if (snap_x) {
           t.x += snap_x.delta;
-          guides.push({ axis: "x", pos: snap_x.target });
+          guides.push({
+            axis: "x",
+            pos: snap_x.target,
+            sources: snap_x.sources,
+          });
         }
         if (snap_y) {
           t.y += snap_y.delta;
-          guides.push({ axis: "y", pos: snap_y.target });
+          guides.push({
+            axis: "y",
+            pos: snap_y.target,
+            sources: snap_y.sources,
+          });
         }
         return { transform: t, guides };
       }
@@ -465,12 +489,12 @@ export default {
       let snap_y = false;
       if (moves_left || moves_right)
         snap_x = findSnap(
-          [moves_left ? t.x : t.x + t.width],
+          [{ pos: moves_left ? t.x : t.x + t.width }],
           this.own_snap_targets.x
         );
       if (moves_top || moves_bottom)
         snap_y = findSnap(
-          [moves_top ? t.y : t.y + t.height],
+          [{ pos: moves_top ? t.y : t.y + t.height }],
           this.own_snap_targets.y
         );
 
@@ -499,8 +523,18 @@ export default {
       t.width = width;
       t.height = height;
 
-      if (snap_x) guides.push({ axis: "x", pos: snap_x.target });
-      if (snap_y) guides.push({ axis: "y", pos: snap_y.target });
+      if (snap_x)
+        guides.push({
+          axis: "x",
+          pos: snap_x.target,
+          sources: snap_x.sources,
+        });
+      if (snap_y)
+        guides.push({
+          axis: "y",
+          pos: snap_y.target,
+          sources: snap_y.sources,
+        });
       return { transform: t, guides };
     },
     dragStart() {
