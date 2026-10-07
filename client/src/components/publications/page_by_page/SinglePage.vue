@@ -438,7 +438,7 @@ export default {
 
   line,
   rect {
-    stroke: var(--c-rouge_clair);
+    stroke: var(--c-bleumarine_clair);
     stroke-width: 2px;
     fill: none;
   }
