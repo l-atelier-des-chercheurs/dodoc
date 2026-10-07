@@ -77,7 +77,7 @@
           <DLabel :str="$t('add_on_page')" />
           <ModuleCreator
             :publication_path="publication_path"
-            :pre_addtl_meta="new_module_meta"
+            :pre_addtl_meta="getNewModuleMeta"
             :context="'page_by_page'"
             :start_collapsed="false"
             :enable_clipboard_paste="true"
@@ -775,17 +775,8 @@ export default {
       const z_index =
         Math.max(...this.page_modules.map((pm) => pm.z_index || 0)) + 1;
 
-      let x = this.$root.default_new_module_left;
-      let y = this.$root.default_new_module_top;
-
-      if (this.$root.set_new_module_offset_left)
-        x =
-          (this.$root.set_new_module_offset_left + this.$root.zoom_offset) /
-          this.magnification;
-      if (this.$root.set_new_module_offset_top)
-        y =
-          (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
-          this.magnification;
+      const x = this.$root.default_new_module_left;
+      const y = this.$root.default_new_module_top;
 
       const width =
         Math.max(
@@ -838,6 +829,45 @@ export default {
     },
   },
   methods: {
+    getNewModuleMeta() {
+      const meta = { ...this.new_module_meta };
+      const center = this.getViewportCenterOnPage();
+      if (!center) return meta;
+
+      // center the new module on what is visible, while keeping it on the page
+      const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+      meta.x = clamp(
+        center.x - meta.width / 2,
+        0,
+        Math.max(0, this.page_width - meta.width)
+      );
+      meta.y = clamp(
+        center.y - meta.height / 2,
+        0,
+        Math.max(0, this.page_height - meta.height)
+      );
+      return meta;
+    },
+    getViewportCenterOnPage() {
+      // page and viewer are measured on screen, so pan and zoom are accounted for
+      const opened_page = this.$el.closest("._openedPage");
+      const page_el = opened_page?.querySelector(
+        "._spreadNavigator--page.is--active ._pagecontent"
+      );
+      const viewer_el = opened_page?.querySelector(".viewer");
+      if (!page_el || !viewer_el) return false;
+
+      const page_rect = page_el.getBoundingClientRect();
+      const viewer_rect = viewer_el.getBoundingClientRect();
+      if (!page_rect.width || !page_rect.height) return false;
+
+      const center_x = viewer_rect.left + viewer_rect.width / 2;
+      const center_y = viewer_rect.top + viewer_rect.height / 2;
+      return {
+        x: ((center_x - page_rect.left) / page_rect.width) * this.page_width,
+        y: ((center_y - page_rect.top) / page_rect.height) * this.page_height,
+      };
+    },
     changePage(index) {
       if (this.pages[index]) {
         this.$emit("goToPage", this.pages[index].id);

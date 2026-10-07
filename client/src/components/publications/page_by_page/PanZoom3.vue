@@ -251,8 +251,25 @@ export default {
     pinch() {
       this.handleInteractionEnd();
     },
-    panTo({ x, y }) {
+    panTo({ x, y, el }) {
+      if (el) return this.centerOnElement(el);
       this.scrollToCorner({ x, y, animate: true });
+    },
+    centerOnElement(el) {
+      if (!this.infiniteviewer || !el?.getBoundingClientRect) return;
+      // measured on screen, so zoom and the page position in a spread are accounted for
+      const el_rect = el.getBoundingClientRect();
+      const viewer_rect = this.$refs.infiniteviewer.getBoundingClientRect();
+      const delta_x =
+        el_rect.left +
+        el_rect.width / 2 -
+        (viewer_rect.left + viewer_rect.width / 2);
+      const delta_y =
+        el_rect.top +
+        el_rect.height / 2 -
+        (viewer_rect.top + viewer_rect.height / 2);
+      // without `absolute`, deltas are in screen pixels
+      this.infiniteviewer.scrollBy(delta_x, delta_y, { duration: 200 });
     },
     scrollToOrigin() {
       // Scroll to content origin (0, 0)

@@ -439,6 +439,7 @@ export default {
       this.$eventHub.$emit(`panzoom.panTo`, {
         x: this.transform.x,
         y: this.transform.y,
+        el: this.$el,
       });
     },
     setActive($event) {
