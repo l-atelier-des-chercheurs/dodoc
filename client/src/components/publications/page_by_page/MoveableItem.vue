@@ -28,7 +28,7 @@
     :grid="grid"
     :id="publimodule.$path"
     :zoom="scale"
-    :snap="snap_targets ? snapToGuides : null"
+    :snap="snap_targets || gridstep > 1 ? snapToGuides : null"
     :style="module_z_index"
     @dragstart="dragStart"
     @drag="onDrag"
@@ -357,13 +357,55 @@ export default {
       this.content_is_edited = false;
     },
 
-    snapToGuides(transform, { type, handle, keep_ratio }) {
+    snapToGuides(transform, options) {
       // only axis-aligned items: rotated bounding boxes would snap misleadingly
       if (transform.rotation) {
         this.$emit("guides", []);
         return transform;
       }
 
+      const snapped = this.snap_targets
+        ? this.applySmartGuides(transform, options)
+        : { transform, guides: [] };
+      const guides = [
+        ...snapped.guides,
+        ...this.getGridGuides(snapped.transform, options, snapped.guides),
+      ];
+      this.$emit("guides", guides);
+      return snapped.transform;
+    },
+    getGridGuides(t, { type, handle }, existing_guides) {
+      // grid snapping is done by DDR, this only shows which edges sit on the grid
+      if (!(this.gridstep > 1)) return [];
+
+      let edges_x = [t.x, t.x + t.width];
+      let edges_y = [t.y, t.y + t.height];
+      if (type === "resize") {
+        edges_x = [];
+        edges_y = [];
+        if (handle.includes("l")) edges_x.push(t.x);
+        if (handle.includes("r")) edges_x.push(t.x + t.width);
+        if (handle.startsWith("t")) edges_y.push(t.y);
+        if (handle.startsWith("b")) edges_y.push(t.y + t.height);
+      }
+
+      const is_on_grid = (v) =>
+        Math.abs(v / this.gridstep - Math.round(v / this.gridstep)) < 0.01;
+      const is_shown = (axis, pos) =>
+        existing_guides.some(
+          (g) => g.axis === axis && Math.abs(g.pos - pos) < 0.5
+        );
+
+      return [
+        ...edges_x
+          .filter((pos) => is_on_grid(pos) && !is_shown("x", pos))
+          .map((pos) => ({ axis: "x", pos })),
+        ...edges_y
+          .filter((pos) => is_on_grid(pos) && !is_shown("y", pos))
+          .map((pos) => ({ axis: "y", pos })),
+      ];
+    },
+    applySmartGuides(transform, { type, handle, keep_ratio }) {
       const threshold = 6 / (this.scale || 1);
       const findSnap = (positions, targets) => {
         let best = false;
@@ -400,8 +442,7 @@ export default {
           t.y += snap_y.delta;
           guides.push({ axis: "y", pos: snap_y.target });
         }
-        this.$emit("guides", guides);
-        return t;
+        return { transform: t, guides };
       }
 
       // resize: only the edges being moved snap
@@ -438,10 +479,7 @@ export default {
         if (snap_x) height = width / ratio;
         else if (snap_y) width = height * ratio;
       }
-      if (width < 1 || height < 1) {
-        this.$emit("guides", []);
-        return transform;
-      }
+      if (width < 1 || height < 1) return { transform, guides: [] };
 
       // keep the opposite edge (or the center for side handles) in place
       if (moves_left) t.x = t.x + t.width - width;
@@ -453,8 +491,7 @@ export default {
 
       if (snap_x) guides.push({ axis: "x", pos: snap_x.target });
       if (snap_y) guides.push({ axis: "y", pos: snap_y.target });
-      this.$emit("guides", guides);
-      return t;
+      return { transform: t, guides };
     },
     dragStart() {
       // console.log("dragStart");

@@ -370,8 +370,8 @@ export default {
   pointer-events: none;
 
   line {
-    stroke: var(--c-bleuvert);
-    stroke-width: 2px;
+    stroke: var(--c-rouge);
+    stroke-width: 1px;
   }
 }
 ._margins {
