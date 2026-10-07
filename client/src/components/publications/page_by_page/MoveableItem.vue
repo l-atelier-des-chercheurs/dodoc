@@ -254,6 +254,16 @@ export default {
     grid() {
       return [this.gridstep, this.gridstep];
     },
+    own_snap_targets() {
+      if (!this.snap_targets) return false;
+      const others = (this.snap_targets.modules || []).filter(
+        (m) => m.path !== this.publimodule.$path
+      );
+      return {
+        x: [...this.snap_targets.x, ...others.flatMap((m) => m.x)],
+        y: [...this.snap_targets.y, ...others.flatMap((m) => m.y)],
+      };
+    },
     module_z_index() {
       return `
         z-index: ${this.publimodule.z_index ? this.publimodule.z_index : 0}
@@ -428,11 +438,11 @@ export default {
       if (type === "drag") {
         const snap_x = findSnap(
           [t.x, t.x + t.width / 2, t.x + t.width],
-          this.snap_targets.x
+          this.own_snap_targets.x
         );
         const snap_y = findSnap(
           [t.y, t.y + t.height / 2, t.y + t.height],
-          this.snap_targets.y
+          this.own_snap_targets.y
         );
         if (snap_x) {
           t.x += snap_x.delta;
@@ -456,12 +466,12 @@ export default {
       if (moves_left || moves_right)
         snap_x = findSnap(
           [moves_left ? t.x : t.x + t.width],
-          this.snap_targets.x
+          this.own_snap_targets.x
         );
       if (moves_top || moves_bottom)
         snap_y = findSnap(
           [moves_top ? t.y : t.y + t.height],
-          this.snap_targets.y
+          this.own_snap_targets.y
         );
 
       if (keep_ratio && snap_x && snap_y) {

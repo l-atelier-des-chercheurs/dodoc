@@ -204,10 +204,41 @@ export default {
   watch: {},
   computed: {
     snap_targets() {
-      // page edges and middles, in px
+      // page edges and middles, margins and other modules, in px
       const w = this.magnify(this.page_width);
       const h = this.magnify(this.page_height);
-      return { x: [0, w / 2, w], y: [0, h / 2, h] };
+      const x = [0, w / 2, w];
+      const y = [0, h / 2, h];
+
+      if (this.l_margins) {
+        const left = this.magnify(this.l_margins.left);
+        const right = w - this.magnify(this.l_margins.right);
+        const top = this.magnify(this.l_margins.top);
+        const bottom = h - this.magnify(this.l_margins.bottom);
+        x.push(left, right, (left + right) / 2);
+        y.push(top, bottom, (top + bottom) / 2);
+      }
+
+      // rotated modules are left out, their box doesn't match what is seen
+      const modules = this.page_modules
+        .filter(
+          (m) =>
+            !m.rotation &&
+            ["x", "y", "width", "height"].every((k) => typeof m[k] === "number")
+        )
+        .map((m) => {
+          const mx = this.magnify(m.x);
+          const my = this.magnify(m.y);
+          const mw = this.magnify(m.width);
+          const mh = this.magnify(m.height);
+          return {
+            path: m.$path,
+            x: [mx, mx + mw / 2, mx + mw],
+            y: [my, my + mh / 2, my + mh],
+          };
+        });
+
+      return { x, y, modules };
     },
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
