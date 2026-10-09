@@ -1068,12 +1068,21 @@ export default {
         max-width: 30ch;
       }
 
-      blockquote,
       .ql-code-block-container {
         padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
         margin: calc(var(--spacing) * 1) 0;
         border: none;
         border-left: 2px solid var(--c-gris);
+      }
+
+      blockquote {
+        padding: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+        margin: calc(var(--spacing) * 1) 0;
+
+        background-color: color-mix(in srgb, currentColor 3%, transparent);
+        border: none;
+        border-left: 3px solid color-mix(in srgb, currentColor 30%, transparent);
+        border-radius: var(--input-border-radius);
       }
 
       .u-warning {
