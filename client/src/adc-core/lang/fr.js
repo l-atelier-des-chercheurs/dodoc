@@ -1076,6 +1076,10 @@ export default {
     "Le module sera ajouté à la fin de ce chapitre.",
   module_added_at_end_of_publication:
     "Le module sera ajouté à la fin de cette publication.",
+  module_copy_added_after_original:
+    "La copie sera placée juste après le module d’origine.",
+  only_publications_with_same_template:
+    "Seules les publications de même gabarit sont disponibles (les récits à chapitres et les cartographies sont compatibles entre eux).",
   module_added_to_page: "Le module sera placé sur cette page.",
   module_already_there: "Le module se trouve déjà à cet endroit.",
   module_moved: "Module déplacé",

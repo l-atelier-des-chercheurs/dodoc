@@ -1110,6 +1110,10 @@ export default {
     "The module will be added at the end of this chapter.",
   module_added_at_end_of_publication:
     "The module will be added at the end of this publication.",
+  module_copy_added_after_original:
+    "The copy will be placed right after the original module.",
+  only_publications_with_same_template:
+    "Only publications with the same template are available (stories with sections and maps are compatible with each other).",
   module_added_to_page: "The module will be placed on this page.",
   module_already_there: "The module is already here.",
   module_moved: "Module moved",

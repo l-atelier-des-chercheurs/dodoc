@@ -39,14 +39,23 @@
         >
           {{ $t("no_compatible_publications") }}
         </small>
-        <select v-else v-model="destination_publication_path">
-          <option
-            v-for="publication in destination_publications"
-            :key="publication.$path"
-            :value="publication.$path"
-            v-text="makePublicationTitle(publication)"
-          />
-        </select>
+        <template v-else>
+          <select v-model="destination_publication_path">
+            <option
+              v-for="publication in destination_publications"
+              :key="publication.$path"
+              :value="publication.$path"
+              :disabled="!isCompatiblePublication(publication)"
+              v-text="makePublicationTitle(publication)"
+            />
+          </select>
+          <p
+            class="u-instructions u-spacingTop"
+            v-if="has_incompatible_publications"
+          >
+            <small>{{ $t("only_publications_with_same_template") }}</small>
+          </p>
+        </template>
       </div>
 
       <div v-if="destination_publication_path">
@@ -206,13 +215,18 @@ export default {
       if (publication.template === "story") return "story";
       return "section";
     },
+    has_incompatible_publications() {
+      return (this.destination_publications || []).some(
+        (p) => !this.isCompatiblePublication(p)
+      );
+    },
     compatible_templates() {
-      // modules laid out on pages (position, size, shapes) only make sense
-      // in other page by page publications, and flowing modules (stories,
-      // chapters, maps) only in publications that flow
-      if (this.source_publication?.template === "page_by_page")
-        return ["page_by_page"];
-      return ["story", "story_with_sections", "cartography", "edition"];
+      // modules only go to publications with the same template, except
+      // stories with sections and maps which both list modules in sections
+      const template = this.source_publication?.template;
+      const sectioned = ["story_with_sections", "cartography"];
+      if (sectioned.includes(template)) return sectioned;
+      return [template];
     },
     destination_sections() {
       if (!this.destination_publication) return [];
@@ -251,8 +265,13 @@ export default {
         .map((f) => f.$path);
     },
     placement_instr() {
+      if (this.is_already_there && this.destination_kind !== "page")
+        return this.$t("module_copy_added_after_original");
       if (this.destination_kind === "section")
-        return this.$t("module_added_at_end_of_section");
+        return (
+          !!this.destination_section_path &&
+          this.$t("module_added_at_end_of_section")
+        );
       if (this.destination_kind === "story")
         return this.$t("module_added_at_end_of_publication");
       if (this.destination_kind === "page")
@@ -280,14 +299,14 @@ export default {
       this.destination_publications = publications
         .filter(
           (p) =>
-            this.compatible_templates.includes(p.template) &&
             p.$path !== this.source_publication_path &&
             this.canContributeToPublication(p)
         )
         .sort((a, b) => a.title.localeCompare(b.title));
 
-      this.destination_publication_path =
-        this.destination_publications[0]?.$path;
+      this.destination_publication_path = this.destination_publications.find(
+        (p) => this.isCompatiblePublication(p)
+      )?.$path;
     },
     pickOtherProject(project_path) {
       // the picker starts on the current project before switching to another
@@ -301,6 +320,9 @@ export default {
         // parent project may not be loaded yet, server will check rights anyway
         return true;
       }
+    },
+    isCompatiblePublication(publication) {
+      return this.compatible_templates.includes(publication.template);
     },
     makePublicationTitle(publication) {
       return publication.title + " (" + this.$t(publication.template) + ")";
@@ -438,7 +460,11 @@ export default {
       }
 
       const modules_list = Array.isArray(list) ? list.slice() : [];
-      modules_list.push(meta_filename);
+      // a copy in the same story or section goes right after the original
+      const og_index = modules_list.indexOf(this.module_meta_filename);
+      if (meta_filename !== this.module_meta_filename && og_index !== -1)
+        modules_list.splice(og_index + 1, 0, meta_filename);
+      else modules_list.push(meta_filename);
       await this.$api.updateMeta({
         path: path_to_update,
         new_meta: { modules_list },

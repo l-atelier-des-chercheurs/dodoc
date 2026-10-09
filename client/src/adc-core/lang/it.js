@@ -982,6 +982,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "Il modulo sarà aggiunto alla fine di questo capitolo.",
   module_added_at_end_of_publication:
     "Il modulo sarà aggiunto alla fine di questa pubblicazione.",
+  module_copy_added_after_original:
+    "La copia sarà posizionata subito dopo il modulo originale.",
+  only_publications_with_same_template:
+    "Sono disponibili solo le pubblicazioni con lo stesso modello (i racconti a capitoli e le cartografie sono compatibili tra loro).",
   module_added_to_page: "Il modulo sarà posizionato su questa pagina.",
   module_already_there: "Il modulo si trova già qui.",
   module_moved: "Modulo spostato",
