@@ -23,7 +23,9 @@
           :src="full_thumb"
           :data-print-sources="print_sources_attr"
           class="_mediaContent--image"
+          :class="{ 'is--clickable': show_fs_button }"
           :loading="img_loading"
+          @click="show_fs_button && (show_fullscreen = true)"
         />
         <ImageZoom
           v-else
@@ -195,7 +197,8 @@
         ['image', 'stl', 'obj', 'pdf'].includes(file.$type) && show_fs_button
       "
     >
-      <div class="_fsButton">
+      <!-- images open on click (unless click already zooms), other types need pointer interactions -->
+      <div class="_fsButton" v-if="file.$type !== 'image' || zoom_on_click">
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
@@ -521,6 +524,10 @@ export default {
     width: 100%;
     height: 100%;
   }
+}
+
+._mediaContent--image.is--clickable {
+  cursor: zoom-in;
 }
 
 ._fsButton {

@@ -611,8 +611,11 @@ export default {
       return this.getModuleType(this.publimodule.module_type);
     },
     show_fs_button() {
+      // clicking an image opens it fullscreen: not while editing it
+      if (this.edit_mode) return false;
       if (this.page_template === "page_by_page")
-        return this.publimodule.show_fs_button === true;
+        // in page by page editor, click selects/moves modules
+        return !this.can_edit && this.publimodule.show_fs_button === true;
       return true;
     },
     first_media() {
