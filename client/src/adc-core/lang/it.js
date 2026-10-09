@@ -1271,6 +1271,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   regenerate_thumbs: "Rigenera l'anteprima",
   failed_to_regenerate_thumbs: "Impossibile rigenerare l'anteprima",
   thumbs_regenerated: "Anteprima rigenerata",
+  use_view_as_preview: "Usa questa vista come anteprima",
+  preview_updated: "Anteprima aggiornata",
   embed_link: "Link per l'embedding",
   direct_link_to_file:
     "Questo link punta direttamente al file multimediale e può essere utilizzato in altre applicazioni o siti web. La pagina di questo link non conterrà la didascalia o altre informazioni sul media.",

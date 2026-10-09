@@ -159,6 +159,8 @@ module.exports = function createMetaUtils(API) {
         $can_be_remixed: { type: "boolean" },
         $is_remix_of: { type: "string" },
         $list_of_remixes: { type: "array" },
+        // STL/OBJ thumb point of view, chosen in the 3D viewer
+        $thumb_view: { type: "array" },
       };
       fields = Object.assign({}, fields, predefined_fields);
 

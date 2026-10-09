@@ -149,13 +149,29 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
-            <ThreeDPreview
-              v-else-if="load_iframe_type === '3D file'"
-              class="_threeDPreview"
-              :key="file_full_path"
-              :file_type="file.$type"
-              :src="file_full_path"
-            />
+            <template v-else-if="load_iframe_type === '3D file'">
+              <ThreeDPreview
+                ref="threeDPreview"
+                class="_threeDPreview"
+                :key="file_full_path"
+                :file_type="file.$type"
+                :src="file_full_path"
+                :view_matrix="file.$thumb_view"
+                @loaded="threed_is_loaded = true"
+              />
+              <div class="_saveThumbView" v-if="can_edit && threed_is_loaded">
+                <button
+                  type="button"
+                  class="u-button u-button_small u-button_white"
+                  :disabled="is_saving_thumb_view"
+                  @click="saveViewAsPreview"
+                >
+                  <b-icon icon="camera" />
+                  {{ $t("use_view_as_preview") }}
+                </button>
+                <LoaderSpinner v-if="is_saving_thumb_view" />
+              </div>
+            </template>
             <iframe
               v-else-if="load_iframe_type === 'any'"
               frameborder="0"
@@ -266,6 +282,8 @@ export default {
       player: null,
 
       is_regenerating: false,
+      threed_is_loaded: false,
+      is_saving_thumb_view: false,
     };
   },
   created() {},
@@ -389,6 +407,26 @@ export default {
         this.$alertify.delay(4000).error(this.$t(error_code));
       } finally {
         this.is_regenerating = false;
+      }
+    },
+    async saveViewAsPreview() {
+      const view_matrix = this.$refs.threeDPreview?.getViewMatrix();
+      if (!view_matrix) return;
+
+      this.is_saving_thumb_view = true;
+      try {
+        await this.$api.updateMeta({
+          path: this.file.$path,
+          new_meta: { $thumb_view: view_matrix },
+        });
+        // removes the previous thumbs, makes new ones from this view
+        await this.$api.regenerateThumbs({ path: this.file.$path });
+        this.$alertify.delay(4000).success(this.$t("preview_updated"));
+      } catch (err) {
+        const error_code = err?.code || "failed_to_regenerate_thumbs";
+        this.$alertify.delay(4000).error(this.$t(error_code));
+      } finally {
+        this.is_saving_thumb_view = false;
       }
     },
     loadIframe() {
@@ -545,6 +583,20 @@ export default {
 ._pdfPreview {
   width: 100%;
   height: 100%;
+}
+
+._saveThumbView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: calc(var(--spacing) / 1);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  @media print {
+    display: none;
+  }
 }
 
 ._zoomed {

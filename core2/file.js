@@ -162,6 +162,7 @@ module.exports = (function () {
             media_type,
             media_filename,
             path_to_folder,
+            thumb_view: meta.$thumb_view,
           })
           .catch((err) => {
             if (err.message) dev.error(err.message);
@@ -331,7 +332,9 @@ module.exports = (function () {
     }) => {
       dev.logfunction({ path_to_folder, path_to_meta, meta_filename });
 
-      let { $media_filename, $type } = await utils.readMetaFile(path_to_meta);
+      let { $media_filename, $type, $thumb_view } = await utils.readMetaFile(
+        path_to_meta
+      );
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
       cache.delete({
         key: path_to_meta,
@@ -342,6 +345,7 @@ module.exports = (function () {
           media_type: $type,
           media_filename: $media_filename,
           path_to_folder,
+          thumb_view: $thumb_view,
         });
 
         const no_thumbs_were_generated =

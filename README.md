@@ -63,6 +63,8 @@ npm start
 
 **Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
 
+**STL/OBJ thumbnails** are rendered in Node (`core2/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
+
 Available scripts for Node mode:
 
 - `npm start` - run the app with minimal logging
@@ -225,6 +227,7 @@ Default values are:
 - $origin           (String, editable)                    used to indicate the origin of the media (capture page, upload, etc.)
 - $processing        (Array, editable)                    used to list processing applied to media (blurred, cropped, resized, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
+- $thumb_view       (Array, editable)                     for stl/obj: point of view of the thumb, chosen in the 3D viewer (3x3 rotation matrix, row-major)
 - $content          (String, editable)                    text content of a file
 - $credits          (String, editable)                    Credits for media
 - $location         (Object, editable)                    GPS location for file

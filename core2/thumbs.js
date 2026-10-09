@@ -4,10 +4,12 @@ const path = require("path"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
   fetch = require("node-fetch"),
-  https = require("https");
+  https = require("https"),
+  crypto = require("crypto");
 
 const utils = require("./utils"),
-  webpreview = require("./webpreview");
+  webpreview = require("./webpreview"),
+  meshThumb = require("./mesh-thumb");
 
 const ffmpegPath = require("ffmpeg-static").replace(
   "app.asar",
@@ -31,6 +33,7 @@ module.exports = (function () {
       media_type,
       media_filename,
       path_to_folder,
+      thumb_view,
     }) => {
       // make/get thumbs for medias with specific types
       dev.space();
@@ -38,6 +41,7 @@ module.exports = (function () {
         media_type,
         media_filename,
         path_to_folder,
+        thumb_view,
       });
 
       const item_in_schema = utils.parseAndCheckSchema({
@@ -79,10 +83,23 @@ module.exports = (function () {
           },
         ];
       } else if (["stl", "obj"].includes(media_type)) {
+        const view_matrix = meshThumb.isValidViewMatrix(thumb_view)
+          ? thumb_view
+          : undefined;
         settings = [
           {
-            camera_angle: [10, 50, 100],
+            view_matrix,
             suffix: "0",
+            // view chosen by a user: new filename so browsers don't show
+            // the previous thumb from cache
+            file_suffix: view_matrix
+              ? "view-" +
+                crypto
+                  .createHash("md5")
+                  .update(JSON.stringify(view_matrix))
+                  .digest("hex")
+                  .slice(0, 8)
+              : undefined,
             ext: "png",
           },
         ];
@@ -281,7 +298,9 @@ module.exports = (function () {
       });
     } else {
       for (const setting of settings) {
-        const thumb_name = `${media_filename}.${setting.suffix}.${setting.ext}`;
+        const thumb_name = `${media_filename}.${
+          setting.file_suffix || setting.suffix
+        }.${setting.ext}`;
         const path_to_thumb = path.join(path_to_thumb_folder, thumb_name);
         const full_path_to_thumb = utils.getPathToUserContent(path_to_thumb);
 
@@ -312,8 +331,9 @@ module.exports = (function () {
             else if (["stl", "obj"].includes(media_type))
               await _makeSTLThumbs({
                 full_media_path,
+                media_type,
                 full_path_to_thumb,
-                camera_angle: setting.camera_angle,
+                view_matrix: setting.view_matrix,
               });
             else if (media_type === "pdf")
               await _makePDFThumbs({
@@ -657,10 +677,27 @@ module.exports = (function () {
 
   async function _makeSTLThumbs({
     full_media_path,
+    media_type,
     full_path_to_thumb,
-    camera_angle,
+    view_matrix,
   }) {
-    dev.logfunction({ full_media_path, full_path_to_thumb, camera_angle });
+    dev.logfunction({ full_media_path, full_path_to_thumb, view_matrix });
+
+    try {
+      await meshThumb.makeThumb({
+        full_media_path,
+        full_path_to_thumb,
+        media_type,
+        view_matrix,
+      });
+      dev.logverbose(`Made 3D thumb without browser`, full_path_to_thumb);
+      return;
+    } catch (err) {
+      dev.logverbose(`mesh-thumb failed, falling back to webpreview`, {
+        message: err?.message || String(err),
+      });
+    }
+
     try {
       await _captureMediaScreenshot({ full_media_path, full_path_to_thumb });
       return;

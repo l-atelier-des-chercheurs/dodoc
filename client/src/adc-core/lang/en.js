@@ -1308,6 +1308,8 @@ export default {
   regenerate_thumbs: "Regenerate preview",
   failed_to_regenerate_thumbs: "Failed to regenerate preview",
   thumbs_regenerated: "Preview regenerated",
+  use_view_as_preview: "Use this view as preview",
+  preview_updated: "Preview updated",
   embed_link: "Embed link",
   direct_link_to_file:
     "This link points directly to the media file, it can be used in other applications or websites.",

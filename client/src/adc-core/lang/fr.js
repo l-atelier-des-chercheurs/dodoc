@@ -1389,6 +1389,8 @@ export default {
   regenerate_thumbs: "Regénérer l’aperçu",
   failed_to_regenerate_thumbs: "Échec de la régénération de l’aperçu",
   thumbs_regenerated: "Aperçu régénéré",
+  use_view_as_preview: "Utiliser cette vue comme aperçu",
+  preview_updated: "Aperçu mis à jour",
   embed_link: "Lien d’intégration",
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
