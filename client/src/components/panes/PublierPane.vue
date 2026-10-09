@@ -13,6 +13,7 @@
     />
     <PublicationOpen
       v-else
+      :key="publication_opened"
       :project_path="project.$path"
       :publication_slug="publication_opened"
       :pane_infos="pane_infos"
