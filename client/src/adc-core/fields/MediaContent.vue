@@ -162,12 +162,12 @@
               <div class="_saveThumbView" v-if="can_edit && threed_is_loaded">
                 <button
                   type="button"
-                  class="u-button u-button_small u-button_white"
+                  class="u-button u-button_icon u-button_white"
+                  :title="$t('use_view_as_preview')"
                   :disabled="is_saving_thumb_view"
                   @click="saveViewAsPreview"
                 >
-                  <b-icon icon="camera" />
-                  {{ $t("use_view_as_preview") }}
+                  <b-icon icon="camera" :label="$t('use_view_as_preview')" />
                 </button>
                 <LoaderSpinner v-if="is_saving_thumb_view" />
               </div>
@@ -587,9 +587,10 @@ export default {
 
 ._saveThumbView {
   position: absolute;
-  top: 0;
-  left: 0;
-  margin: calc(var(--spacing) / 1);
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: calc(var(--spacing) / 1);
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) / 2);

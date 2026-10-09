@@ -4,6 +4,7 @@ Vue.component("b-icon", BIcon);
 
 import {
   BIconKey,
+  BIconCamera,
   BIconCalendarEvent,
   BIconHdd,
   BIconBug,
@@ -369,6 +370,7 @@ Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
 Vue.component("BIconDashCircleDotted", BIconDashCircleDotted);
 Vue.component("BIconEraser", BIconEraser);
 Vue.component("BIconKey", BIconKey);
+Vue.component("BIconCamera", BIconCamera);
 Vue.component("BIconCalendarEvent", BIconCalendarEvent);
 Vue.component("BIconHdd", BIconHdd);
 Vue.component("BIconBug", BIconBug);
