@@ -27,7 +27,9 @@ const BROWSER_ARGS = [
   "--no-sandbox",
   "--disable-setuid-sandbox",
   "--disable-dev-shm-usage",
-  "--disable-gpu",
+  // no --disable-gpu: STL/OBJ thumbs need WebGL. Software fallback for
+  // servers without a GPU (Chrome 137+ no longer enables it by default)
+  "--enable-unsafe-swiftshader",
   "--font-render-hinting=none",
   "--ignore-certificate-errors",
 ];
