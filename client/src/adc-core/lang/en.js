@@ -1303,6 +1303,7 @@ export default {
   do_nothing: "Do nothing",
   open_webpage: "Open a web page in a new tab",
   navigate_to_page: "Navigate to page",
+  open_image_fullscreen: "Enlarge image to full screen",
 
   regenerate_thumbs: "Regenerate preview",
   failed_to_regenerate_thumbs: "Failed to regenerate preview",

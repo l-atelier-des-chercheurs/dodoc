@@ -378,6 +378,9 @@
               <br />
               <b>{{ getPageNumberFromId(active_module.on_click.page_id) }}</b>
             </template>
+            <template v-else-if="opens_image_fullscreen">
+              {{ $t("open_image_fullscreen") }}
+            </template>
             <template v-else>
               {{ $t("do_nothing") }}
             </template>
@@ -390,6 +393,8 @@
             v-if="show_edit_link_modal"
             :path="active_module.$path"
             :on_click="active_module.on_click"
+            :allow_fullscreen="active_module_is_image"
+            :show_fs_button="active_module.show_fs_button === true"
             :pages="pages"
             :current_page_id="active_page.id"
             @save="updateMediaPubliMeta"
@@ -613,16 +618,6 @@
           :default_value="'#000000'"
           @save="updateMediaPubliMeta({ outline_color: $event })"
         />
-        <ToggleInput
-          v-if="
-            active_module_first_media &&
-            active_module_first_media.$type === 'image'
-          "
-          class="u-spacingBottom"
-          :content="active_module.show_fs_button"
-          :label="$t('show_fs_button')"
-          @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
-        />
         <DepthInput
           :label="$t('z_index')"
           :value="active_module.z_index"
@@ -746,6 +741,16 @@ export default {
     },
     active_module_first_media() {
       return this.firstMedia(this.active_module);
+    },
+    active_module_is_image() {
+      return this.active_module_first_media?.$type === "image";
+    },
+    opens_image_fullscreen() {
+      if (!this.active_module_is_image) return false;
+      if (this.active_module.on_click?.type)
+        return this.active_module.on_click.type === "fullscreen";
+      // legacy option
+      return this.active_module.show_fs_button === true;
     },
     first_media_ratio() {
       return this.active_module_first_media?.$infos?.ratio;

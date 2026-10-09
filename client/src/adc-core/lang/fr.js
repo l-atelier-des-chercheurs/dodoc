@@ -1384,6 +1384,7 @@ export default {
   do_nothing: "Ne rien faire",
   open_webpage: "Ouvrir une page web dans un nouvel onglet",
   navigate_to_page: "Naviguer vers une page",
+  open_image_fullscreen: "Agrandir l’image en plein écran",
 
   regenerate_thumbs: "Regénérer l’aperçu",
   failed_to_regenerate_thumbs: "Échec de la régénération de l’aperçu",

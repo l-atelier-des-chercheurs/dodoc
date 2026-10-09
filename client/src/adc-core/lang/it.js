@@ -1266,6 +1266,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   do_nothing: "Non fare nulla",
   open_webpage: "Apri una pagina web in una nuova scheda",
   navigate_to_page: "Naviga verso una pagina",
+  open_image_fullscreen: "Ingrandisci l’immagine a schermo intero",
 
   regenerate_thumbs: "Rigenera l'anteprima",
   failed_to_regenerate_thumbs: "Impossibile rigenerare l'anteprima",

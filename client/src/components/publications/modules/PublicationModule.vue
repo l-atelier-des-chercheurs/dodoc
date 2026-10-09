@@ -613,9 +613,14 @@ export default {
     show_fs_button() {
       // clicking an image opens it fullscreen: not while editing it
       if (this.edit_mode) return false;
-      if (this.page_template === "page_by_page")
+      if (this.page_template === "page_by_page") {
         // in page by page editor, click selects/moves modules
-        return !this.can_edit && this.publimodule.show_fs_button === true;
+        if (this.can_edit) return false;
+        if (this.publimodule.on_click?.type)
+          return this.publimodule.on_click.type === "fullscreen";
+        // legacy option, replaced by on_click.type === "fullscreen"
+        return this.publimodule.show_fs_button === true;
+      }
       return true;
     },
     first_media() {
