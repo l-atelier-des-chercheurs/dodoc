@@ -1077,8 +1077,8 @@ export default {
       }
 
       .u-warning {
-        padding: calc(var(--spacing) / 4) calc(var(--spacing) / 1);
-        padding-left: calc(var(--spacing) * 4);
+        padding: calc(var(--spacing) / 2) calc(var(--spacing) / 1);
+        padding-left: calc(var(--spacing) * 3);
         margin: calc(var(--spacing) * 1) 0;
       }
 

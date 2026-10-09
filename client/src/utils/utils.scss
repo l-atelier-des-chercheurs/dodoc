@@ -96,22 +96,18 @@ a:focus-visible {
   box-shadow: 0 1px 3px color-mix(in srgb, var(--c-rouge) 15%, transparent);
 
   &::before {
-    content: "!";
+    content: "⚠";
     position: absolute;
-    left: calc(var(--spacing) * 0.75);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1.4em;
-    height: 1.4em;
+    left: 0;
+    top: 0;
+    width: calc(var(--spacing) * 3);
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    border-radius: 50%;
-    background-color: var(--c-rouge);
-    color: white;
-    font-weight: 700;
-    font-size: 0.9em;
+    color: var(--c-rouge);
+    font-size: 150%;
     line-height: 1;
   }
 }
