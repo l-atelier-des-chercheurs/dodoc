@@ -162,12 +162,12 @@
               <div class="_saveThumbView" v-if="can_edit && threed_is_loaded">
                 <button
                   type="button"
-                  class="u-button u-button_icon u-button_white"
-                  :title="$t('use_view_as_preview')"
+                  class="u-button u-button_small u-button_white"
                   :disabled="is_saving_thumb_view"
                   @click="saveViewAsPreview"
                 >
-                  <b-icon icon="camera" :label="$t('use_view_as_preview')" />
+                  <b-icon icon="camera" />
+                  {{ $t("use_view_as_preview") }}
                 </button>
                 <LoaderSpinner v-if="is_saving_thumb_view" />
               </div>
@@ -422,6 +422,9 @@ export default {
         // removes the previous thumbs, makes new ones from this view
         await this.$api.regenerateThumbs({ path: this.file.$path });
         this.$alertify.delay(4000).success(this.$t("preview_updated"));
+        // close the 3D viewer to show the new preview
+        this.start_iframe = false;
+        this.threed_is_loaded = false;
       } catch (err) {
         const error_code = err?.code || "failed_to_regenerate_thumbs";
         this.$alertify.delay(4000).error(this.$t(error_code));
