@@ -64,7 +64,9 @@ export default defineConfig({
         {
           format: "es",
           entryFileNames: "build.js",
-          plugins: [visualizer({ filename: "stats.html", open: true })],
+          plugins: process.env.ANALYZE
+            ? [visualizer({ filename: "stats.html", open: true })]
+            : [],
         },
       ],
     },
