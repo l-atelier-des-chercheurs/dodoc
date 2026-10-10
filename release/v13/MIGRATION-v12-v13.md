@@ -175,7 +175,7 @@ Puis redémarrer et ouvrir `https://localhost:8080`.
 ## Retour arrière
 
 - **Desktop** : sur [dodoc.fr/installer](https://dodoc.fr/installer), cliquer sur **Récupérer une version plus ancienne** pour télécharger do•doc 12, ou depuis [GitHub Releases v12.0.27](https://github.com/l-atelier-des-chercheurs/dodoc/releases/tag/v12.0.27) (dernière release v12).
-- **Serveur** : `git checkout main-node` (ou le tag `v12.0.27`) + Node 22 + `npm install`.
+- **Serveur** : `git checkout v12.0.27` + Node 22 + `npm install`.
 - Les contenus créés en v13 restent lisibles en v12 (format fichiers identique).
 
 ---
