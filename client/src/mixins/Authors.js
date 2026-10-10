@@ -79,22 +79,34 @@ export default {
       // todo do this API side
       // invisible is the old name for private
       if (!["invisible", "private"].includes(folder.$status)) return true;
-      // private should be visible only to editors
-      return this.canLoggedinContributeToFolder({ folder });
+      // private should be listed only to explicitly named admins/contributors:
+      // a private folder open to "everyone" stays unlisted, but can still
+      // be opened and contributed to from its URL
+      return this.isLoggedinNamedInFolder({ folder });
+    },
+    isLoggedinNamedInFolder({ folder }) {
+      if (this.is_instance_admin) return true;
+      if (!folder || !this.connected_as) return false;
+      const author_path = this.connected_as.$path;
+      if (
+        Array.isArray(folder.$admins) &&
+        folder.$admins.includes(author_path)
+      )
+        return true;
+      if (
+        Array.isArray(folder.$contributors) &&
+        folder.$contributors.includes(author_path)
+      )
+        return true;
 
-      // if (!this.connected_as) return false;
-      // if (this.is_instance_admin) return true;
-      // if (
-      //   Array.isArray(folder.$admins) &&
-      //   folder.$admins.includes(this.connected_as.$path)
-      // )
-      //   return true;
-      // if (
-      //   Array.isArray(folder.$contributors) &&
-      //   folder.$contributors.includes(this.connected_as.$path)
-      // )
-      //   return true;
-      // return false;
+      if (folder.$admins === "parent_contributors") {
+        const parent_path = this.getParent(this.getParent(folder.$path));
+        return this.isLoggedinNamedInFolder({
+          folder: this.$api.store[parent_path],
+        });
+      }
+
+      return false;
     },
     canPublicSeeFolder({ folder }) {
       // if instance is protected by general password, we need to make sur that the folder has $public: true
