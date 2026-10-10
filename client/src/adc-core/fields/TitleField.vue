@@ -4,25 +4,19 @@
 
     <div class="_container">
       <div class="_content">
-        <component :is="tag">
+        <EditablePreview
+          :tag="tag"
+          :layout="input_type === 'editor' ? 'block' : 'inline'"
+          :can_edit="can_edit"
+          :label="clean_content.length > 0 ? $t('edit') : $t('add')"
+          @edit="enableEditMode"
+        >
           <span
             v-if="content && clean_content.length > 0"
             v-html="clean_content"
-            @click="enableEditMode"
           />
-          <span
-            v-else
-            v-text="'-'"
-            class="u-instructions"
-            @click="enableEditMode"
-          />
-          <EditBtn
-            v-if="can_edit"
-            class="_edit"
-            :label="clean_content.length > 0 ? $t('edit') : $t('add')"
-            @click="enableEditMode"
-          />
-        </component>
+          <span v-else v-text="'-'" class="u-instructions" />
+        </EditablePreview>
       </div>
     </div>
 
@@ -163,10 +157,6 @@ export default {
   methods: {
     enableEditMode() {
       if (!this.can_edit) return;
-      // Don't start edit mode if user currently has a text selection
-      if (window.getSelection && window.getSelection().toString().length > 0) {
-        return;
-      }
       this.edit_mode = true;
     },
     cancel() {
@@ -298,32 +288,6 @@ export default {
     content: attr(data-value) " ";
     visibility: hidden;
     white-space: break-spaces;
-  }
-}
-
-._edit {
-  margin-top: calc(var(--spacing) / -1);
-  margin-bottom: calc(var(--spacing) / -2);
-
-  // ._titleField:not([data-input_type="text"]) & {
-  // }
-
-  /* Hide edit button by default on devices that support hover */
-  @media (hover: hover) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  /* Always show on touch devices */
-  @media (hover: none) {
-    opacity: 1;
-  }
-}
-
-/* Show edit button on hover for devices that support hover */
-._titleField:hover ._edit {
-  @media (hover: hover) {
-    opacity: 1;
   }
 }
 </style>

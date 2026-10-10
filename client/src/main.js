@@ -74,6 +74,8 @@ Vue.prototype.$sanitize = DOMPurify.sanitize;
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import EditablePreview from "@/adc-core/fields/EditablePreview.vue";
+Vue.component("EditablePreview", EditablePreview);
 import FieldHistoryPanel from "@/adc-core/fields/FieldHistoryPanel.vue";
 Vue.component("FieldHistoryPanel", FieldHistoryPanel);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";

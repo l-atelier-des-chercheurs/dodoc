@@ -6,32 +6,34 @@
       :tag="tag"
       :instructions="instructions"
     />
-    <transition-group tag="div" class="_authors" name="listComplete" appear>
-      <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
-        {{ $t("everyone") }}
-      </div>
-      <template
-        v-else-if="Array.isArray(authors_paths) && authors_paths.length > 0"
-      >
-        <AuthorTag
-          v-for="author_path in authors_paths"
-          :path="author_path"
-          :key="author_path"
-          :mode="disable_links ? undefined : 'link'"
-          :show_image_only="show_image_only"
-        />
-      </template>
-      <div v-else class="" key="noone">
-        <small>
-          {{ $t("noone") }}
-        </small>
-      </div>
-      <EditBtn
-        key="editbtn"
-        v-if="can_edit && !edit_mode"
-        @click="enableEditMode"
-      />
-    </transition-group>
+    <EditablePreview
+      class="_authorsPreview"
+      :layout="'row'"
+      :can_edit="can_edit && !edit_mode"
+      @edit="enableEditMode"
+    >
+      <transition-group tag="div" class="_authors" name="listComplete" appear>
+        <div v-if="authors_paths === 'everyone'" class="t-500" key="everyone">
+          {{ $t("everyone") }}
+        </div>
+        <template
+          v-else-if="Array.isArray(authors_paths) && authors_paths.length > 0"
+        >
+          <AuthorTag
+            v-for="author_path in authors_paths"
+            :path="author_path"
+            :key="author_path"
+            :mode="disable_links ? undefined : 'link'"
+            :show_image_only="show_image_only"
+          />
+        </template>
+        <div v-else class="" key="noone">
+          <small>
+            {{ $t("noone") }}
+          </small>
+        </div>
+      </transition-group>
+    </EditablePreview>
 
     <div class="_footer" v-if="edit_mode">
       <BaseModal2 @close="cancel" :title="label">
@@ -307,12 +309,14 @@ export default {
   border-left: 2px solid var(--c-gris);
 }
 
+._authorsPreview {
+  padding-bottom: calc(var(--spacing) / 4);
+}
 ._authors {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   gap: calc(var(--spacing) / 4);
-  padding-bottom: calc(var(--spacing) / 4);
 }
 
 ._footer {

@@ -10,7 +10,12 @@
         @toggleInstructions="show_modal = true"
       />
       <!-- :instructions="$t('admins_and_contributors_instr')" -->
-      <div class="u-listOfAvatars">
+      <EditablePreview
+        class="u-listOfAvatars"
+        :layout="'row'"
+        :can_edit="can_edit"
+        @edit="show_modal = true"
+      >
         <AuthorTag
           v-for="atpath in subset_participants_path"
           :path="atpath"
@@ -45,18 +50,7 @@
             {{ $t("noone") }}
           </template>
         </div>
-        <div class="" key="more_informations">
-          <!-- <button
-            type="button"
-            class="u-button u-button_icon"
-            v-if="!can_edit"
-            @click="show_modal = true"
-          >
-            {{ $t("more_informations") }}
-          </button> -->
-          <EditBtn v-if="can_edit" class="_edit" @click="show_modal = true" />
-        </div>
-      </div>
+      </EditablePreview>
     </div>
 
     <EditAdminsAndContributorsField
@@ -180,25 +174,5 @@ export default {
 
 ._indicators {
   // padding: calc(var(--spacing) / 4) calc(var(--spacing) / 2);
-}
-
-._edit {
-  /* Hide edit button by default on devices that support hover */
-  @media (hover: hover) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  /* Always show on touch devices */
-  @media (hover: none) {
-    opacity: 1;
-  }
-}
-
-/* Show edit button on hover for devices that support hover */
-._adminsAndContributorsField:hover ._edit {
-  @media (hover: hover) {
-    opacity: 1;
-  }
 }
 </style>
