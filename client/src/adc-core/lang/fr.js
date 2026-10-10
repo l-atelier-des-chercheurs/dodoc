@@ -1720,6 +1720,18 @@ export default {
     "Session interrompue",
   session_interrupted_instr:
     "Arrêt sans erreur enregistrée : processus arrêté de force, ordinateur éteint ou mis en veille prolongée, coupure de courant…",
+  view_log: "Afficher",
+  search_in_log: "Rechercher dans le journal…",
+  all_events: "Tous les événements",
+  follow_live: "Suivre en direct",
+  no_matching_entries: "Aucune entrée ne correspond aux filtres.",
+  failed_to_copy: "Impossible de copier",
+  show_more: "Afficher plus",
+  log_unavailable: "Impossible de charger ce journal. Si la session vient de s’arrêter, fermez cette fenêtre et actualisez la liste.",
+  log_level_error: "Erreurs",
+  log_level_warning: "Avertissements",
+  log_level_notice: "Démarrage / arrêt",
+  log_level_info: "Infos",
 
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",

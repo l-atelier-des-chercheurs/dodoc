@@ -611,6 +611,18 @@ export default function () {
 
         saveAs(response.data, filename);
       },
+      async readLog({ filename }) {
+        const response = await this.$axios({
+          url: `_logs/${encodeURIComponent(filename)}`,
+          method: "GET",
+          responseType: "text",
+          // keep the raw jsonl, axios would otherwise try to parse it
+          transformResponse: (data) => data,
+        }).catch((err) => {
+          throw this.processError(err);
+        });
+        return response.data;
+      },
       async restartApp() {
         await this.$axios.post(`_restartApp`);
       },

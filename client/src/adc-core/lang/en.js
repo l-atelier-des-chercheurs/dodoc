@@ -1624,6 +1624,19 @@ export default {
     "Session interrupted",
   session_interrupted_instr:
     "Stopped without a recorded error: process killed, computer shut down or hibernated, power cut…",
+  view_log: "View",
+  search_in_log: "Search in log…",
+  all_events: "All events",
+  follow_live: "Follow live",
+  no_matching_entries: "No entry matches the filters.",
+  failed_to_copy: "Couldn’t copy",
+  show_more: "Show more",
+  log_unavailable: "Couldn’t load this log. If the session just stopped, close this window and refresh the list.",
+  log_level_error: "Errors",
+  log_level_warning: "Warnings",
+  log_level_notice: "Start / stop",
+  log_level_info: "Info",
+  copied: "Copied!",
 
   last_page_reached: "Last page reached",
   fonts_instr:

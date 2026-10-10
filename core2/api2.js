@@ -50,7 +50,7 @@ module.exports = (function () {
       _getDefaultAdminPasswordStatus
     );
 
-    app.get("/_api2/_logs", _getLogs);
+    app.get("/_api2/_logs", _onlyAdmins, _getLogs);
     app.get("/_api2/_logs/:filename", _onlyAdmins, _downloadLog);
 
     app.get(

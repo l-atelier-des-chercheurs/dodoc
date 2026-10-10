@@ -69,7 +69,14 @@
                 </span>
                 <span v-else>—</span>
               </td>
-              <td>
+              <td class="_actions">
+                <button
+                  type="button"
+                  class="u-buttonLink"
+                  @click="opened_log = logInfo"
+                >
+                  {{ $t("view_log") }}
+                </button>
                 <button
                   type="button"
                   class="u-buttonLink"
@@ -85,17 +92,28 @@
         </table>
       </div>
     </div>
+
+    <LogViewer
+      v-if="opened_log"
+      :filename="opened_log.filename"
+      :end_status="opened_log.end_status"
+      @close="opened_log = null"
+    />
   </div>
 </template>
 
 <script>
+import LogViewer from "@/adc-core/ui/LogViewer.vue";
+
 export default {
   name: "LogsPanel",
+  components: { LogViewer },
   props: {},
   data() {
     return {
       logs: [],
       is_loading: true,
+      opened_log: null,
     };
   },
   async mounted() {
@@ -148,6 +166,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+._actions {
+  display: flex;
+  flex-flow: row wrap;
+  gap: calc(var(--spacing) / 2);
+}
+
 ._crashError {
   display: block;
   font-family: var(--sl-font-mono);
