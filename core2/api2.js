@@ -793,11 +793,18 @@ module.exports = (function () {
       return false;
     };
 
+    // 50px is plenty for a browser tab, 180px is the apple-touch-icon size
     const favicon_thumb = findMatchingFileThumb({
       meta_name: favicon_image_name,
-      resolution: 640,
+      resolution: 50,
     });
     if (favicon_thumb) d.favicon_url = `./thumbs/${favicon_thumb}`;
+    const apple_touch_icon_thumb = findMatchingFileThumb({
+      meta_name: favicon_image_name,
+      resolution: 180,
+    });
+    if (apple_touch_icon_thumb)
+      d.apple_touch_icon_url = `./thumbs/${apple_touch_icon_thumb}`;
 
     const topbar_thumb = findMatchingFileThumb({
       meta_name: topbar_image_name,

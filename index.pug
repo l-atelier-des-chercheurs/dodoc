@@ -14,8 +14,10 @@ html
     title !{name_of_instance || "do•doc"}
     if favicon_url
       link(rel="shortcut icon" href=favicon_url)
-    else 
+    else
       link(rel="shortcut icon" href="_client/favicon.ico")
+    if apple_touch_icon_url
+      link(rel="apple-touch-icon" href=apple_touch_icon_url)
     link(rel="manifest" href="site.webmanifest")
 
     link(rel="stylesheet" href="_client/fonts/fira.css")
