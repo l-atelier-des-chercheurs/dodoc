@@ -74,6 +74,8 @@ Vue.prototype.$sanitize = DOMPurify.sanitize;
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import FieldHistoryPanel from "@/adc-core/fields/FieldHistoryPanel.vue";
+Vue.component("FieldHistoryPanel", FieldHistoryPanel);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";

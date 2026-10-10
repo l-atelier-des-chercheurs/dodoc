@@ -47,9 +47,18 @@
         :minlength="minlength"
         :custom_formats="custom_formats"
         :maxlength="maxlength"
-        :key="edit_mode + content"
+        :key="edit_mode + content + restore_count"
         @toggleValidity="($event) => (allow_save = $event)"
         @onEnter="input_type !== 'editor' ? updateText() : undefined"
+      />
+
+      <FieldHistoryPanel
+        v-if="can_see_history"
+        :path="path"
+        :field_name="field_name"
+        :input_type="input_type"
+        :current_value="content"
+        @restore="restoreValue"
       />
 
       <SaveCancelButtons
@@ -115,6 +124,7 @@ export default {
       edit_mode: false,
       is_saving: false,
       new_content: this.content,
+      restore_count: 0,
 
       current_character_count: undefined,
       allow_save: false,
@@ -139,6 +149,16 @@ export default {
     clean_content() {
       return this.$sanitize(this.content);
     },
+    can_see_history() {
+      // history is only recorded for folders (not media files), and the API
+      // restricts it to folder admins
+      if (!this.path || !this.field_name) return false;
+      if (this.input_type === "password") return false;
+      if (this.path.endsWith(".meta.txt")) return false;
+      const folder = this.$api.store[this.path];
+      if (!folder || Array.isArray(folder)) return false;
+      return this.canLoggedinEditFolder({ folder });
+    },
   },
   methods: {
     enableEditMode() {
@@ -162,6 +182,11 @@ export default {
       });
 
       // todo interrupt updateMeta
+    },
+    restoreValue(value) {
+      this.new_content = value ?? "";
+      // TextInput (and its editor) don't follow content changes once mounted
+      this.restore_count++;
     },
     async updateText() {
       if (this.input_type === "number")

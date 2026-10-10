@@ -707,6 +707,10 @@ export default {
   saved: "OK !",
   connected: "Connecté",
   history: "Historique",
+  no_history_yet: "Aucune modification enregistrée pour l’instant.",
+  history_unavailable: "Impossible de charger l’historique.",
+  current_value: "valeur actuelle",
+  creation: "création",
 
   creativecommons_by_sa: "Creative Commons BY SA",
   creativecommons_by_sa_explanations:

@@ -632,6 +632,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   saved: "OK !",
   connected: "Connesso",
   history: "Cronologia",
+  no_history_yet: "Nessuna modifica registrata finora.",
+  history_unavailable: "Impossibile caricare la cronologia.",
+  current_value: "valore attuale",
+  creation: "creazione",
 
   creativecommons_by_sa: "Creative Commons BY SA",
   creativecommons_by_sa_explanations:
