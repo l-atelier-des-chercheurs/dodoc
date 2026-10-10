@@ -1716,6 +1716,10 @@ export default {
   actions: "Actions",
   session_crashed: "Session plantée",
   session_running: "Session en cours",
+  session_interrupted:
+    "Session interrompue",
+  session_interrupted_instr:
+    "Arrêt sans erreur enregistrée : processus arrêté de force, ordinateur éteint ou mis en veille prolongée, coupure de courant…",
 
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",

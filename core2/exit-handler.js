@@ -49,7 +49,7 @@ async function runExitCleanup() {
 }
 
 /**
- * Register process exit handlers (SIGINT, SIGTERM).
+ * Register process exit handlers (SIGINT, SIGTERM, SIGHUP).
  * Call after bin-cleanup, cache-manager, and ffmpeg-tracker are initialized.
  * Not registered when running in Electron (Electron uses before-quit instead).
  */
@@ -67,6 +67,8 @@ function init() {
 
   process.on("SIGINT", handleExit);
   process.on("SIGTERM", handleExit);
+  // terminal window closed
+  process.on("SIGHUP", handleExit);
 }
 
 module.exports = {

@@ -36,7 +36,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(logInfo, index) in parsed_logs" :key="logInfo.filename">
+            <tr v-for="logInfo in parsed_logs" :key="logInfo.filename">
               <td>
                 {{ formatDateToPrecise(new Date(logInfo.startDate)) }}
               </td>
@@ -44,18 +44,27 @@
                 <span v-if="logInfo.endDate">
                   {{ formatDateToPrecise(new Date(logInfo.endDate)) }}
                 </span>
-                <strong v-else-if="index === 0">
+                <strong v-else-if="logInfo.end_status === 'running'">
                   {{ $t("session_running") }}
                 </strong>
-                <span v-else class="u-warning">
+                <span
+                  v-else-if="logInfo.end_status === 'crashed'"
+                  class="u-warning"
+                >
                   {{ $t("session_crashed") }}
+                  <small v-if="logInfo.crash_error" class="_crashError">
+                    {{ logInfo.crash_error }}
+                  </small>
+                </span>
+                <span v-else :title="$t('session_interrupted_instr')">
+                  {{ $t("session_interrupted") }}
                 </span>
               </td>
               <td>
                 <span v-if="logInfo.duration">{{
                   formatDurationToHuman(logInfo.duration)
                 }}</span>
-                <span v-else-if="index === 0">
+                <span v-else-if="logInfo.end_status === 'running'">
                   {{ time_since_start_formatted }}
                 </span>
                 <span v-else>—</span>
@@ -139,6 +148,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+._crashError {
+  display: block;
+  font-family: var(--sl-font-mono);
+  overflow-wrap: anywhere;
+}
+
 ._logsList {
   --color-border: var(--c-gris);
 

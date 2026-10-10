@@ -853,6 +853,14 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   image_quality: "Qualità dell’immagine",
   audio_quality: "Qualità dell’audio",
   duration: "Durata",
+  session_crashed:
+    "Sessione andata in crash",
+  session_running:
+    "Sessione in corso",
+  session_interrupted:
+    "Sessione interrotta",
+  session_interrupted_instr:
+    "Arresto senza errori registrati: processo terminato forzatamente, computer spento o in ibernazione, interruzione di corrente…",
   close_to_source: "Il più vicino possibile al media originale",
 
   very_high: "Molto alto",

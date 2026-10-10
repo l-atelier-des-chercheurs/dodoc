@@ -1620,6 +1620,10 @@ export default {
   actions: "Actions",
   session_crashed: "Session crashed",
   session_running: "Session running",
+  session_interrupted:
+    "Session interrupted",
+  session_interrupted_instr:
+    "Stopped without a recorded error: process killed, computer shut down or hibernated, power cut…",
 
   last_page_reached: "Last page reached",
   fonts_instr:
