@@ -1084,6 +1084,8 @@ export default {
   wrong_signup_password: "Wrong password",
 
   enable_events: "Enable the events functionality",
+  enable_events_instructions:
+    "Events let you group the projects made during a workshop, a course, a residency or a festival.<br><br>Once the feature is enabled:<br>• an “Events” section appears on the home page. Instance admins and contributors can create events there, with a title, a presentation, dates and an image;<br>• in each project, the “Created during an event” field lets its referents link it to an event;<br>• opening an event from the home page shows its presentation and the list of projects linked to it.<br><br>Disabling the feature hides these elements, without removing existing events or links.",
   you_must_login_to_contribute: "You must register or log in to contribute",
   not_allowed_to_contribute_contact_referent:
     "You do not have the possibility to contribute, contact a referent to be able to do so",

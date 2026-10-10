@@ -1042,6 +1042,8 @@ export default {
   wrong_signup_password: "Mauvais mot de passe",
 
   enable_events: "Activer la fonctionnalité « événements »",
+  enable_events_instructions:
+    "Les événements permettent de regrouper les projets réalisés lors d’un atelier, d’un stage, d’une résidence ou d’un festival.<br><br>Une fois la fonctionnalité activée :<br>• une section « Événements » apparaît sur la page d’accueil. Les administrateurs et contributeurs de l’instance peuvent y créer des événements, avec un titre, une présentation, des dates et une image ;<br>• dans chaque projet, le champ « Créé pendant un événement » permet à ses référents de le rattacher à un événement ;<br>• ouvrir un événement depuis la page d’accueil affiche sa présentation et la liste des projets qui y sont rattachés.<br><br>Désactiver la fonctionnalité masque ces éléments, sans supprimer les événements ni les rattachements existants.",
 
   you_must_login_to_contribute:
     "Vous devez vous inscrire ou vous connecter pour contribuer",

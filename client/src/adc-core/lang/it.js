@@ -947,6 +947,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   wrong_signup_password: "Password errata",
 
   enable_events: "Attivare la funzionalità  «avvenimenti»",
+  enable_events_instructions:
+    "Gli eventi permettono di raggruppare i progetti realizzati durante un laboratorio, un corso, una residenza o un festival.<br><br>Una volta attivata la funzionalità:<br>• nella home page compare una sezione «Eventi». Gli amministratori e i contributori dell’istanza possono crearvi eventi, con un titolo, una presentazione, delle date e un’immagine;<br>• in ogni progetto, il campo «Creato durante un evento» permette ai suoi referenti di collegarlo a un evento;<br>• aprendo un evento dalla home page se ne vedono la presentazione e l’elenco dei progetti collegati.<br><br>Disattivare la funzionalità nasconde questi elementi, senza eliminare gli eventi né i collegamenti esistenti.",
 
   you_must_login_to_contribute:
     "È necessario iscriversi o connettersi per contribuire",

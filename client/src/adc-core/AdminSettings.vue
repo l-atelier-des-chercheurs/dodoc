@@ -174,7 +174,9 @@
             </div>
             <FontsPanel v-else-if="current_tab === 'fonts'" />
             <div v-else-if="current_tab === 'events'">
-              <DLabel :str="$t('events')" />
+              <div class="u-instructions u-spacingBottom">
+                <p v-html="$t('enable_events_instructions')" />
+              </div>
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
@@ -182,6 +184,10 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
+              <div class="u-spacingBottom" />
+              <button type="button" class="u-buttonLink" @click="reloadPage">
+                {{ $t("refresh_window_to_see_changes") }}
+              </button>
             </div>
             <div v-else-if="current_tab === 'chats'">
               <div class="u-instructions u-spacingBottom">
