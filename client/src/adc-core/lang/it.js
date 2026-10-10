@@ -51,6 +51,16 @@ export default {
     `,
   suggestions: "Suggerimenti",
   suggested_cat_kw: "Categorie e parole chiave suggerite",
+  suggested_cat_kw_instructions:
+    "Questi elenchi aiutano a descrivere i contenuti in modo coerente. Quando qualcuno aggiunge parole chiave, macchine, materiali o un gruppo, gli vengono proposti i termini dell’elenco corrispondente: può aggiungerli con un clic, oppure scriverne liberamente altri.<br><br>Apri un elenco per completarlo, oppure aggiungine uno con il pulsante qui sotto.",
+  suggestions_keywords_instr:
+    "Proposte quando si aggiungono parole chiave a un progetto o a un media.",
+  suggestions_machines_instr:
+    "Proposte nella scheda «Macchine e materiali» dei progetti.",
+  suggestions_materials_instr:
+    "Proposti nella scheda «Macchine e materiali» dei progetti.",
+  suggestions_accountgroup_instr:
+    "Proposti quando si indica il gruppo di un account (classe, squadra, organizzazione…), dalla pagina di quell’account.",
   list_of_suggestions: "Elenco di suggerimenti",
   create_suggestion_list_for: "Crea un elenco di suggerimenti",
 

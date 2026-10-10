@@ -545,6 +545,16 @@ export default {
     "Pages des conditions d’utilisation et de confidentialité, et acceptation obligatoire à l’inscription.",
   admin_tab_desc_suggested_cat_kw:
     "Mots-clés et catégories suggérés lors de la description d’un contenu.",
+  suggested_cat_kw_instructions:
+    "Ces listes aident à décrire les contenus de façon cohérente. Quand quelqu’un ajoute des mots-clés, des machines, des matériaux ou un groupe, les termes de la liste correspondante lui sont proposés : il peut les ajouter d’un clic, ou en saisir d’autres librement.<br><br>Ouvrez une liste pour la compléter, ou ajoutez-en une avec le bouton ci-dessous.",
+  suggestions_keywords_instr:
+    "Proposés lors de l’ajout de mots-clés à un projet ou à un média.",
+  suggestions_machines_instr:
+    "Proposées dans la carte « Machines et matériaux » des projets.",
+  suggestions_materials_instr:
+    "Proposés dans la carte « Machines et matériaux » des projets.",
+  suggestions_accountgroup_instr:
+    "Proposés lorsqu’on indique le groupe d’un compte (classe, équipe, structure…), depuis la page de ce compte.",
   admin_tab_desc_storage:
     "Emplacement du contenu sur cet ordinateur (application de bureau uniquement).",
   admin_tab_desc_debug_logs:

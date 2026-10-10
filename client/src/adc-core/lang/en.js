@@ -83,6 +83,16 @@ export default {
     "Terms of use and confidentiality pages, and whether people must accept them to sign up.",
   admin_tab_desc_suggested_cat_kw:
     "Keywords and categories suggested when describing content.",
+  suggested_cat_kw_instructions:
+    "These lists help describe content consistently. When someone adds keywords, machines, materials or a group, the terms from the matching list are suggested: they can add them with one click, or freely type others.<br><br>Open a list to fill it in, or add one with the button below.",
+  suggestions_keywords_instr:
+    "Suggested when adding keywords to a project or a media.",
+  suggestions_machines_instr:
+    "Suggested in the “Machines and materials” card of projects.",
+  suggestions_materials_instr:
+    "Suggested in the “Machines and materials” card of projects.",
+  suggestions_accountgroup_instr:
+    "Suggested when setting an account’s group (class, team, organisation…), from that account’s page.",
   admin_tab_desc_storage:
     "Where content is stored on this computer (desktop app only).",
   admin_tab_desc_debug_logs: "Recent logs, to help diagnose a problem.",
