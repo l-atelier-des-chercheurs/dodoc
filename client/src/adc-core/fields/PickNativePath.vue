@@ -1,11 +1,6 @@
 <template>
   <div class="_pickNativePath">
-    <!-- the instructions describe changing the path, which only the desktop
-      app allows: without it the path is shown as information only -->
-    <DLabel
-      :str="$t('path_to_content')"
-      :instructions="can_edit ? $t('path_to_content_instructions') : undefined"
-    />
+    <DLabel :str="$t('path_to_content')" />
 
     <div class="_sameLine">
       <div class="u-filename">

@@ -216,10 +216,19 @@
             <SuggestedCategories
               v-else-if="current_tab === 'suggested_cat_kw'"
             />
-            <PickNativePath
-              v-else-if="current_tab === 'storage'"
-              :can_edit="is_instance_admin && $root.app_infos.is_electron"
-            />
+            <div v-else-if="current_tab === 'storage'">
+              <div class="u-instructions u-spacingBottom">
+                <p v-html="$t('storage_instructions')" />
+                <p
+                  v-if="$root.app_infos.is_electron"
+                  v-html="$t('storage_change_instructions')"
+                />
+                <p v-else v-html="$t('storage_server_instructions')" />
+              </div>
+              <PickNativePath
+                :can_edit="is_instance_admin && $root.app_infos.is_electron"
+              />
+            </div>
             <LogsPanel v-else-if="current_tab === 'debug_logs'" />
           </transition>
         </div>

@@ -447,9 +447,12 @@ export default {
   projects_you_edited_last: "Projects you edited last",
 
   path_to_content: "Path to content",
-  path_to_content_instructions: `Attention, advanced functionality!
-  The path below indicates the location of the folder that contains the contents of {app_name}. If you change this path, it is strongly recommended to use either an empty folder or a folder that only contains content created by {app_name} (version 10 or later). Restart {app_name} for this setting to take effect.`,
-
+  storage_instructions:
+    "All {app_name} content is stored in a single folder: spaces, projects, media, publications, accounts, instance settings… To make a backup, simply copy this folder, ideally while {app_name} is closed.",
+  storage_change_instructions:
+    "<b>Changing the location does not move the content.</b> After restarting, {app_name} will use the selected folder:<br>• if it already contains {app_name} content (version 10 or later), that content will be shown;<br>• otherwise, a new empty instance will be created there.<br>To keep your content, close {app_name}, copy the current folder to the new location, then select that copy. If the selected folder can’t be written to, {app_name} will fall back to the default folder (Documents/dodoc).",
+  storage_server_instructions:
+    "On this installation, the location can’t be changed from this page: it is set by whoever administers the server, with the <code>contentPath</code> option in the <code>settings.json</code> file.",
   administration_and_access_control: "Administration and access control",
   logo_and_images: "Logo and images",
   fonts: "Typeface",

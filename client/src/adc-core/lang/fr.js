@@ -571,9 +571,12 @@ export default {
   under: "en-dessous",
 
   path_to_content: "Chemin du stockage des contenus",
-  path_to_content_instructions: `Attention, fonctionnalité avancée !
-      Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de {app_name}. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par {app_name} (version 10 ou plus récente). Redémarrez {app_name} pour que ce règlage prenne effet.`,
-
+  storage_instructions:
+    "Tous les contenus de {app_name} sont enregistrés dans un seul dossier : espaces, projets, médias, publications, comptes, paramètres de l’instance… Pour faire une sauvegarde, il suffit de copier ce dossier, de préférence pendant que {app_name} est fermé.",
+  storage_change_instructions:
+    "<b>Changer d’emplacement ne déplace pas les contenus.</b> Après redémarrage, {app_name} utilisera le dossier choisi :<br>• s’il contient déjà des contenus {app_name} (version 10 ou plus récente), ce sont eux qui s’afficheront ;<br>• sinon, une nouvelle instance vide y sera créée.<br>Pour conserver vos contenus, fermez {app_name}, copiez le dossier actuel au nouvel emplacement, puis choisissez cette copie. Si le dossier choisi n’est pas accessible en écriture, {app_name} reviendra au dossier par défaut (Documents/dodoc).",
+  storage_server_instructions:
+    "Sur cette installation, l’emplacement ne peut pas être modifié depuis cette page : il est défini par la personne qui administre le serveur, avec l’option <code>contentPath</code> du fichier <code>settings.json</code>.",
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
   fonts: "Police de caractères",

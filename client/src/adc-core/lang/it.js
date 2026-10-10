@@ -497,9 +497,12 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   under: "sotto",
 
   path_to_content: "Percorso per il salvataggio dei contenuti ",
-  path_to_content_instructions: `Attenzione, questa è una funzione avanzata!
-      Il percorso sottostante indica la posizione della cartella contenente i contenuti di {app_name}. Se si modifica questo percorso, si consiglia vivamente di utilizzare una cartella vuota o una cartella contenente solo contenuti creati da {app_name} (versione 10 o successiva). Riavvia {app_name} perché questa impostazione abbia effetto.`,
-
+  storage_instructions:
+    "Tutti i contenuti di {app_name} sono salvati in un’unica cartella: spazi, progetti, media, pubblicazioni, account, impostazioni dell’istanza… Per fare un backup basta copiare questa cartella, preferibilmente mentre {app_name} è chiuso.",
+  storage_change_instructions:
+    "<b>Cambiare posizione non sposta i contenuti.</b> Dopo il riavvio, {app_name} userà la cartella scelta:<br>• se contiene già contenuti {app_name} (versione 10 o successiva), verranno mostrati quelli;<br>• altrimenti vi verrà creata una nuova istanza vuota.<br>Per conservare i contenuti, chiudi {app_name}, copia la cartella attuale nella nuova posizione, poi scegli quella copia. Se la cartella scelta non è scrivibile, {app_name} tornerà alla cartella predefinita (Documents/dodoc).",
+  storage_server_instructions:
+    "Su questa installazione la posizione non può essere modificata da questa pagina: è definita da chi amministra il server, con l’opzione <code>contentPath</code> del file <code>settings.json</code>.",
   administration_and_access_control:
     "Amministrazione e controllo degli accessi",
   logo_and_images: "Logo e immagini",
