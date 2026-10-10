@@ -187,7 +187,7 @@ import {
   BIconLayoutSidebarInsetReverse,
   BIconDashCircleDotted,
   BIconEraser,
-  BIconLayoutThreeColumns,
+  BIconToggles,
   BIconGrid,
 } from "bootstrap-vue";
 
@@ -376,5 +376,5 @@ Vue.component("BIconHdd", BIconHdd);
 Vue.component("BIconBug", BIconBug);
 Vue.component("BIconPersonPlus", BIconPersonPlus);
 Vue.component("BIconStars", BIconStars);
-Vue.component("BIconLayoutThreeColumns", BIconLayoutThreeColumns);
+Vue.component("BIconToggles", BIconToggles);
 Vue.component("BIconGrid", BIconGrid);

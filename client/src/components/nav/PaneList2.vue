@@ -62,13 +62,13 @@
         <button
           type="button"
           class="u-button u-button_icon"
-          :title="$t('options')"
+          :title="$t('panes')"
           @click="show_pane_list_modal = true"
         >
           <b-icon
-            icon="layout-three-columns"
+            icon="toggles"
             style="flex: 0 0 auto"
-            :aria-label="$t('options')"
+            :aria-label="$t('panes')"
           />
         </button>
         <PaneListModal
