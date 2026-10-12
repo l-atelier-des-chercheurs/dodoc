@@ -1,7 +1,6 @@
 const WebSocket = require("ws"),
   WebSocketJSONStream = require("websocket-json-stream"),
   Backend = require("sharedb"),
-  ShareDB_logger = require("sharedb-logger"),
   { v4: uuidv4 } = require("uuid"),
   url = require("url"),
   { URLSearchParams } = require("url");
@@ -15,7 +14,6 @@ module.exports = function (server) {
   dev.log(`init`);
   const backend = new Backend();
   const connection = backend.connect();
-  // const sharedb_logger = new ShareDB_logger(backend);
   dev.log(`ws init`);
 
   backend.use("op", (context, next) => {

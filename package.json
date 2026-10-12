@@ -61,7 +61,6 @@
     "puppeteer": "^24.40.0",
     "rich-text": "^4.1.0",
     "sharedb": "^5.2.2",
-    "sharedb-logger": "^0.1.4",
     "sharp": "^0.34.5",
     "slugg": "^1.2.1",
     "socket.io": "^4.8.3",
