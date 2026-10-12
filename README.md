@@ -36,24 +36,25 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 ## Releasing (maintainers)
 
-Every `npm version …` builds the client, commits, tags `vX.Y.Z` and pushes. The pushed tag triggers the [Build/release](.github/workflows/build.yml) action (Electron installers + Docker image). Versions under development on **next** are semver pre-releases (`14.1.0-beta.N`). Only **main** carries stable versions.
+Every `npm version …` builds the client, commits, tags `vX.Y.Z` and pushes. The pushed tag triggers the [Build/release](.github/workflows/build.yml) action (Electron installers + Docker image). Versions under development on **next** are semver pre-releases (`14.1.0-alpha.N`, then `14.1.0-beta.N`). Only **main** carries stable versions.
 
 **On next, while preparing a new version:**
 
 ```bash
-npm version preminor --preid=beta   # open the cycle: 14.0.6 → 14.1.0-beta.0 (premajor for 15.0.0-beta.0)
-npm version prerelease              # each new beta: 14.1.0-beta.0 → 14.1.0-beta.1
+npm version preminor --preid=alpha    # open the cycle: 14.0.6 → 14.1.0-alpha.0 (premajor for 15.0.0-alpha.0)
+npm version prerelease                # each new alpha: 14.1.0-alpha.0 → 14.1.0-alpha.1
+npm version prerelease --preid=beta   # switch to beta: 14.1.0-alpha.3 → 14.1.0-beta.0
 ```
 
-Run `preminor`/`premajor` only once, to open the cycle. Running it again skips a version (14.1.0-beta.1 → 14.2.0-beta.0).
+Run `preminor`/`premajor` only once, to open the cycle. Running it again skips a version (14.1.0-alpha.1 → 14.2.0-alpha.0).
 
-On GitHub, the release is created as a draft. Tick **"Set as a pre-release"** before publishing it.
+For pre-releases, the action publishes the GitHub release directly as a **pre-release**, and the Docker image is tagged with its version only. `:latest` stays on the stable version.
 
 **Finalizing to main:**
 
 ```bash
 git checkout main && git merge next
-npm version 14.1.0                  # drops the -beta.N suffix → stable 14.1.0
+npm version 14.1.0                  # drops the -alpha.N / -beta.N suffix → stable 14.1.0
 git checkout next && git merge main # next is back in sync with the stable version
 ```
 
