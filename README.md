@@ -34,6 +34,31 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 - **next** --> code for the next major version. Unified branch supporting both Electron and Node modes. Use at your own risks.
 
+## Releasing (maintainers)
+
+Every `npm version …` builds the client, commits, tags `vX.Y.Z` and pushes. The pushed tag triggers the [Build/release](.github/workflows/build.yml) action (Electron installers + Docker image). Versions under development on **next** are semver pre-releases (`14.1.0-beta.N`). Only **main** carries stable versions.
+
+**On next, while preparing a new version:**
+
+```bash
+npm version preminor --preid=beta   # open the cycle: 14.0.6 → 14.1.0-beta.0 (premajor for 15.0.0-beta.0)
+npm version prerelease              # each new beta: 14.1.0-beta.0 → 14.1.0-beta.1
+```
+
+Run `preminor`/`premajor` only once, to open the cycle. Running it again skips a version (14.1.0-beta.1 → 14.2.0-beta.0).
+
+On GitHub, the release is created as a draft. Tick **"Set as a pre-release"** before publishing it.
+
+**Finalizing to main:**
+
+```bash
+git checkout main && git merge next
+npm version 14.1.0                  # drops the -beta.N suffix → stable 14.1.0
+git checkout next && git merge main # next is back in sync with the stable version
+```
+
+Hotfixes on **main**: `npm version patch` (14.1.0 → 14.1.1). Then merge **main** back into **next**.
+
 `npm install sharp@0.31.3`
 
 Note 2: bufferutil seems to be necessary specifically for intel macOS.

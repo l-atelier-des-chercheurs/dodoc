@@ -1,125 +1,103 @@
-# do•doc v14 — Plan de migration Vue 3
+# do•doc — Plan de migration Vue 3 (+ TypeScript)
+
+> Mis à jour le 2026-10-11.
 
 ## Objectif
 
-Préparer une migration contrôlée de l’application `client` de Vue 2.7 vers Vue 3 pour la version majeure 14, avec un risque produit minimal et une stratégie de déploiement progressive.
+Migrer le client de Vue 2.7 vers Vue 3 sans réécriture, en faisant de `adc-core` un **socle partagé Vue 3 + TypeScript**, utilisé par do•doc et par la nouvelle version des [Cahiers du Studio](https://github.com/l-atelier-des-chercheurs/Les-Cahiers-du-Studio) (voir [Cahiers-du-Studio-pense-bete.md](Cahiers-du-Studio-pense-bete.md)).
 
-## Contexte confirmé
+## Stratégie
 
-- Le client est actuellement en Vue 2.7 (`[client/package.json](/Users/louis/Documents/REPO/dodoc/client/package.json)`).
-- Le bootstrap applicatif est Vue 2 (`[client/src/main.js](/Users/louis/Documents/REPO/dodoc/client/src/main.js)`).
-- Le routeur est en v3 (`[client/src/router/index.js](/Users/louis/Documents/REPO/dodoc/client/src/router/index.js)`).
-- `bootstrap-vue` est présent, mais l’usage principal identifié est `b-icon` (pas de dépendance forte à des composants complexes BootstrapVue dans le flux discuté).
+- **Les Cahiers sont le pilote** : un client neuf en Vue 3 + TS, branché sur `core2` (déjà agnostique, comme le montrent Slashdoc et livingarchive).
+- **`adc-core` est extrait en package** (workspace npm) et porté **à la demande**, au fil des besoins des Cahiers.
+- **do•doc migre ensuite sur place**, en réutilisant le socle déjà porté et le codemod.
+- **Pas de réécriture** : on adapte les composants (Options API conservée) et on passe par `@vue/compat` le temps de la transition.
+- **TypeScript** : `<script setup lang="ts">` pour le code neuf, `defineComponent` pour le code porté. Types du contrat API (schémas dossiers/fichiers, réponses `api2.js`, événements socket) dans [shared/](../shared/), et `// @ts-check` + JSDoc côté `core2`, sans le réécrire. `vue-tsc` en CI dès le départ.
 
-## Principes de migration
+## Inventaire (2026-10-11, `adc-core` + `components/publications`)
 
-- Avancer par phases courtes, validées, sans “big bang”.
-- Garder le comportement fonctionnel identique tant que possible.
-- Prioriser la migration de l’infrastructure (boot + routeur + plugins) avant les composants métiers.
-- Réduire la dette Vue 2 au fur et à mesure (`$listeners`, `.native`, hooks lifecycle legacy, event bus global).
+### Socle : à traiter avant tout composant
 
-## Plan par phases
+| Point | Volume | Correctif |
+|---|---|---|
+| `$api` = `new Vue({...})` servant de store ([adc-core/api.js](src/adc-core/api.js)) | 1 fichier, ~25 `$set`/`$delete` | `reactive()` (ou Pinia) ; `$set(o, k, v)` devient `o[k] = v`. Au passage, supprimer le code mort de [api.js:521-523](src/adc-core/api.js#L521-L523) (la clé vient d'être supprimée ligne 518, la condition est toujours fausse). |
+| `$eventHub = new Vue()` | 210 occurrences, 42 fichiers, ~75 événements | `mitt` (API `on`/`off`/`emit` quasi identique). Tous les `$on`/`$off` passent par le bus, aucun événement d'instance. |
+| `$root.*` | 117 occurrences, 49 fichiers | Store « app » injecté et typé (`app_infos`, `debug_mode`, `is_mobile_view`, `publicPath`, `settings`, `opened_modals`…). C'est le **contrat que l'app hôte fournit à `adc-core`**. |
+| 15 mixins globaux (`Vue.mixin` dans [main.js](src/main.js)) | `FormatDates`, `FormatBytes`, `Props`, `Cache`, `Medias`, `Authors`, `Capture`, `Publications`, `Paths`, `Strings`, `Queries`, `Tags`, `Electron`, `DodocIcon`, `Folders` | `app.mixin()` fonctionne toujours en Vue 3 pour la transition. Cible : des composables/utilitaires importés explicitement. Certains (`Publications`, `Capture`) sont propres à do•doc et ne doivent pas suivre dans le socle. |
+| ~20 composants globaux (`Vue.component` dans [main.js](src/main.js)) | `TitleField`, `DropDown`, `DetailsPane`… | Le package `adc-core` exporte un plugin `install(app)`. |
+| `Vue.prototype.$sanitize`, `$alertify`, `$axios`… | — | `app.config.globalProperties`, ou mieux, des imports directs. |
 
-## Phase 0 — Cadrage et préparation (1 à 2 jours)
+### Mécanique : codemod
 
-- Geler le périmètre v14 côté frontend (features non critiques reportées si besoin).
-- Créer une branche dédiée migration.
-- Établir une baseline QA:
-  - parcours critiques (édition, publication, capture, auth, médias),
-  - smoke tests manuels minimum,
-  - scripts de build/dev stables.
-- Dresser une matrice dépendances “Vue 3 readiness” à partir de `[client/package.json](/Users/louis/Documents/REPO/dodoc/client/package.json)`.
+| Pattern | Volume | Remplacement |
+|---|---|---|
+| `<b-icon>` | 340 occurrences, 122 fichiers | `<AppIcon>` avec la même prop `icon` |
+| `beforeDestroy` / `destroyed` | ~200 | `beforeUnmount` / `unmounted` |
+| `:prop.sync` | 80 occurrences, 43 fichiers | `v-model:prop` |
+| `slot="x"` | 41 | `#x` / `v-slot:x` |
+| `v-model` maison (`value`/`input`) | ~5 fichiers | `modelValue`/`update:modelValue` |
+| `$listeners`, `.native` | ~10 fichiers | `$attrs` / suppression |
+| `portal-vue` | 4 fichiers | `<Teleport>` |
+| JSX | [ddr/index.vue](src/ddr/index.vue) | `@vitejs/plugin-vue-jsx` |
 
-Livrable:
-- checklist de compat validée,
-- stratégie de remplacement `b-icon` choisie.
+Le codemod (un script, pas des remplacements à la main) sert deux fois : pour les Cahiers, puis pour do•doc.
 
-## Phase 1 — Infrastructure Vue 3 (2 à 4 jours)
+### Dépendances
 
-- Migrer l’entrée app:
-  - `new Vue(...)` -> `createApp(...)` dans `[client/src/main.js](/Users/louis/Documents/REPO/dodoc/client/src/main.js)`.
-  - `Vue.prototype` -> `app.config.globalProperties`.
-  - enregistrement global composants/directives/mixins via API Vue 3.
-- Migrer routeur:
-  - `vue-router@3` -> `vue-router@4`,
-  - adaptation de `[client/src/router/index.js](/Users/louis/Documents/REPO/dodoc/client/src/router/index.js)`.
-- Mettre à jour la config build:
-  - plugin Vite Vue 3 (`@vitejs/plugin-vue`) en remplacement du plugin Vue 2 dans `[client/vite.config.js](/Users/louis/Documents/REPO/dodoc/client/vite.config.js)`.
+| Paquet | Action |
+|---|---|
+| `vue` 2.7, `@vitejs/plugin-vue2(-jsx)` | `vue` 3, `@vitejs/plugin-vue`, `@vitejs/plugin-vue-jsx` |
+| `vue-router` 3 | 4 |
+| `vue-i18n` 8 | 9 en mode legacy : les 358 `$t` restent inchangés |
+| `bootstrap-vue` (icônes uniquement) | Supprimer, remplacer par `AppIcon` |
+| `portal-vue` | `<Teleport>` natif |
+| `@vue/test-utils` 1 | 2 |
+| `splitpanes`, `vue-slicksort`, `vue-advanced-cropper`, `@chenfengyuan/vue-qrcode` | Montée vers leur version Vue 3 |
+| `vue-plyr`, `vue-3d-model`, `emoji-mart-vue-fast`, `vue-toastification` | À vérifier, sinon wrapper maison autour de la lib non-Vue (plyr, three.js…) |
 
-Livrable:
-- app démarre en local sous Vue 3,
-- routing principal opérationnel,
-- build prod généré sans erreur bloquante.
+### Taille des imports transitifs
 
-## Phase 2 — UI system et icônes (2 à 4 jours)
+Importer un composant entraîne tout son graphe de dépendances :
 
-- Retirer la dépendance `bootstrap-vue` utilisée pour `b-icon`.
-- Remplacer `b-icon` par une solution Vue 3-compatible:
-  - soit composant interne d’icônes (mapping nom -> SVG),
-  - soit librairie d’icônes standard avec couche de compat (`<AppIcon :name="...">`).
-- Adapter les attributs/props spécifiques des usages existants.
+- `TitleField` : 18 fichiers, ~4 500 lignes.
+- `PublicationOpen` : **205 fichiers, ~56 500 lignes**, soit plus de la moitié du client.
 
-Livrable:
-- aucune référence runtime à BootstrapVue,
-- rendu icônes cohérent sur les écrans critiques.
+Il faut donc porter de bas en haut (`ui` et `inputs`, puis `fields`, puis `modals`, puis `capture`, puis les publications) plutôt que de tirer un gros composant d'un coup.
 
-## Phase 3 — Compatibilité composants Vue 3 (5 à 10 jours)
+## Phases
 
-Traiter les patterns Vue 2 détectés à grande échelle:
+### Phase 0 — Préparation
+- Workspace npm avec `adc-core` en package.
+- Matrice de compatibilité des dépendances (tableau ci-dessus) à compléter.
+- Parcours critiques de référence pour la QA : édition, publication, capture, auth, médias.
 
-- `beforeDestroy` -> `beforeUnmount`,
-- suppression/remplacement de `.native`,
-- migration des usages `$listeners`,
-- revue des patterns d’event bus global (`$eventHub`) pour compat Vue 3.
+### Phase 1 — Socle (dans le client des Cahiers)
+- `createApp`, `vue-router` 4, `vue-i18n` 9, `@vitejs/plugin-vue`, `@vue/compat`.
+- `api.js` en `reactive()`, `$eventHub` sur `mitt`, contrat `$root` typé, `AppIcon`, plugin `install(app)`.
+- Types partagés du contrat API dans `shared/`.
 
-Cibles prioritaires:
-- `[client/src/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue](/Users/louis/Documents/REPO/dodoc/client/src/adc-core/fields/collaborative-editor/CollaborativeEditor3.vue)`,
-- `[client/src/components/publications/page_by_page/PageMenu.vue](/Users/louis/Documents/REPO/dodoc/client/src/components/publications/page_by_page/PageMenu.vue)`,
-- `[client/src/components/publications/page_by_page/MoveableItem.vue](/Users/louis/Documents/REPO/dodoc/client/src/components/publications/page_by_page/MoveableItem.vue)`,
-- `[client/src/adc-core/capture/CaptureView.vue](/Users/louis/Documents/REPO/dodoc/client/src/adc-core/capture/CaptureView.vue)`.
+### Phase 2 — Codemod et portage progressif
+- Écrire le codemod (patterns ci-dessus).
+- Porter `adc-core` de bas en haut, selon les besoins des Cahiers ; corriger les warnings de `@vue/compat` à chaque import.
 
-Livrable:
-- parcours critiques validés en dev et build,
-- plus d’erreurs de compat Vue 3 sur les zones prioritaires.
+### Phase 3 — Migration de do•doc
+- Brancher do•doc sur le package `adc-core`.
+- Passer le codemod sur `components/` et `views/`.
+- Mixins propres à do•doc : à garder en `app.mixin()` dans un premier temps.
 
-## Phase 4 — Stabilisation, QA et release prep (3 à 6 jours)
+### Phase 4 — Stabilisation
+- Retirer `@vue/compat`.
+- Non-régression sur les parcours critiques ; vérifier la perf sur les écrans lourds (éditeur, capture, page par page).
 
-- Campagne de non-régression fonctionnelle.
-- Correction des régressions UI/UX.
-- Vérification perf perçue sur écrans lourds (éditeur, capture, publication).
-- Rédaction notes de migration v14.
+## Définition de terminé
 
-Livrable:
-- candidate release v14 “merge-ready”.
+- Vue 3 en production sur do•doc et les Cahiers, avec le même package `adc-core`.
+- Plus de `bootstrap-vue`, `portal-vue` ni `@vue/compat`.
+- `vue-tsc` passe en CI.
+- Parcours critiques validés : navigation, édition, capture, publication/export.
 
-## Estimation globale
+## Backlog post-migration
 
-- Effort total: environ 3 à 5 semaines-homme selon le niveau de QA exigé.
-- Risque principal: régressions transverses liées aux patterns Vue 2 historiques.
-
-## Risques et mitigations
-
-- Risque: dépendance cachée à BootstrapVue hors `b-icon`.
-  - Mitigation: scanner complet et suppression progressive avec fallback.
-- Risque: comportement implicite via `$eventHub`.
-  - Mitigation: cartographier les événements critiques et ajouter une couche de compat temporaire.
-- Risque: régressions silencieuses dans composants volumineux.
-  - Mitigation: prioriser tests manuels ciblés sur flux métier à fort impact.
-
-## Définition de terminé (DoD) v14 migration
-
-- Vue 3 en production sur l’app `client`.
-- Aucun import/runtime `bootstrap-vue` restant.
-- Routeur v4 en place.
-- Flux critiques validés:
-  - navigation globale,
-  - édition de contenu,
-  - capture média,
-  - publication/export.
-- Build dev/prod stable et reproductible.
-
-## Backlog post-v14 (optionnel mais recommandé)
-
-- Réduire les mixins globaux et passer progressivement à des composables.
-- Renforcer la couverture de tests sur les parcours critiques.
-- Nettoyer les API legacy conservées pour la transition.
+- Remplacer les mixins globaux par des composables.
+- Passer progressivement les composants portés en `<script setup lang="ts">`.
+- Renforcer les tests sur les parcours critiques.
