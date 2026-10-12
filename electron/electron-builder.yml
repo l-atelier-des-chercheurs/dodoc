@@ -18,6 +18,9 @@ directories:
 # Override package.json main entry to use electron wrapper
 extraMetadata:
   main: electron/index.js
+  # Linux: Electron uses this as window app_id / WM_CLASS, so KDE/GNOME can match
+  # running windows to dodoc.desktop (name + icon). Must be ASCII.
+  desktopName: dodoc.desktop
 
 # Exclude problematic directories to prevent pattern length issues
 files:
@@ -90,7 +93,10 @@ mac:
     NSScreenCaptureDescription: Merci d'accorder l'accès à l'affichage pour réaliser des enregistrements.
 
 linux:
-  artifactName: dodoc-${version}-linux-{arch}.${ext}
+  artifactName: dodoc-${version}-linux-${arch}.${ext}
+  # AppImage rejects "•" in productFilename, which defaults to productName
+  executableName: dodoc
+  syncDesktopName: true
   target:
     - target: deb
       arch:
