@@ -55,7 +55,6 @@
     "lru-cache": "^11.3.5",
     "md5-file": "^5.0.0",
     "nodemailer": "^7.0.13",
-    "path": "^0.12.7",
     "platform-folders": "^0.6.1",
     "portscanner": "^2.2.0",
     "pug": "^3.0.4",
