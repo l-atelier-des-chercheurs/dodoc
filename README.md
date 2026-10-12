@@ -60,9 +60,31 @@ git checkout next && git merge main # next is back in sync with the stable versi
 
 Hotfixes on **main**: `npm version patch` (14.1.0 → 14.1.1). Then merge **main** back into **next**.
 
-`npm install sharp@0.31.3`
+### What a release publishes
 
-Note 2: bufferutil seems to be necessary specifically for intel macOS.
+Each tag runs the same builds, whether it is stable or a pre-release. Only the GitHub release type and the Docker `:latest` tag differ.
+
+**GitHub release** ([releases page](https://github.com/l-atelier-des-chercheurs/dodoc/releases)), built by [electron-builder](electron/electron-builder.yml) on 3 runners:
+
+| OS | File | Notes |
+| --- | --- | --- |
+| macOS | `dodoc-X.Y.Z-macos.dmg` | Apple Silicon only (built on the `macos-latest` arm64 runner). Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement |
+| Windows | `dodoc-X.Y.Z-windows.exe` | NSIS one-click installer, x64 |
+| Linux | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb` | |
+| Linux | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` | |
+
+electron-builder also uploads `latest*.yml` files. They are only used by `electron-updater`, which do•doc does not use. The Windows Store package (appx) is not built by the action: run `npm run dist:win-store` in `electron/` by hand.
+
+The release is a **pre-release** when the version has a suffix (`-alpha.N`, `-beta.N`), and a regular release otherwise. It is published as soon as the first OS finishes, and the other installers are added as their jobs complete. electron-builder refuses to add files to a release published more than 2 hours earlier: to re-run a failed job after that, release a new version.
+
+**Docker image** on GHCR (`ghcr.io/l-atelier-des-chercheurs/dodoc`), linux/amd64 only:
+
+| Version | Tags |
+| --- | --- |
+| Stable (`14.1.0`) | `:14.1.0` and `:latest` |
+| Pre-release (`14.1.0-beta.2`) | `:14.1.0-beta.2` only |
+
+GitHub also attaches the source code archives (zip and tar.gz) to every release automatically.
 
 # Install do•doc
 
