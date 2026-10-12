@@ -2,7 +2,8 @@ const path = require("path"),
   fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic"),
   { IncomingForm } = require("formidable"),
-  md5File = require("md5-file"),
+  crypto = require("crypto"),
+  { pipeline } = require("stream/promises"),
   fastFolderSize = require("fast-folder-size"),
   { Agent } = require("undici");
 
@@ -195,7 +196,9 @@ module.exports = function createFsUtils(API) {
     },
 
     async md5FromFile({ full_media_path }) {
-      return await md5File(full_media_path);
+      const hash = crypto.createHash("md5");
+      await pipeline(fs.createReadStream(full_media_path), hash);
+      return hash.digest("hex");
     },
 
     async testWriteFileInFolder(folder_path) {
