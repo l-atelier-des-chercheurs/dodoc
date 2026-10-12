@@ -95,6 +95,7 @@ Available scripts for Node mode:
 
 - `npm start` - run the app with minimal logging
 - `npm run debug` - run the app with debug logging
+- `npm run debug-verbose` - same, with verbose logs (very noisy)
 
 ### Electron version (for desktop app)
 
@@ -113,6 +114,7 @@ Available scripts for Electron mode (run from `/electron` folder):
 
 - `npm start` - run the Electron app with minimal logging
 - `npm run debug` - run the app to debug locally
+- `npm run debug-verbose` - same, with verbose logs (very noisy)
 - `npm run debug-lr` - run the app in debug mode with live reload
 - `npm run pack` - package the app (without creating installer)
 - `npm run dist` - build distributable installers

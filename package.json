@@ -17,8 +17,9 @@
   },
   "scripts": {
     "start": "node .",
-    "debug": "node . --inspect=5858 -- --debug --verbose",
-    "debug-lr": "node . --inspect=5858 -- --debug --verbose --livereload",
+    "debug": "node . --inspect=5858 -- --debug",
+    "debug-verbose": "node . --inspect=5858 -- --debug --verbose",
+    "debug-lr": "node . --inspect=5858 -- --debug --livereload",
     "postinstall": "npm install --include=optional sharp && node scripts/cleanup-ffprobe.js",
     "preversion": "npm run build --prefix client && git add client/dist",
     "sync:electron-version": "ROOT_VERSION=$(node -p \"require('./package.json').version\") && npm version --no-git-tag-version \"$ROOT_VERSION\" --prefix electron",
