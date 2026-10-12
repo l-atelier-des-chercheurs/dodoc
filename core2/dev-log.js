@@ -1,5 +1,5 @@
 const path = require("path"),
-  chalk = require("chalk").default,
+  { styleText } = require("util"),
   journal = require("./journal");
 
 module.exports = dev = (function () {
@@ -72,7 +72,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (isDebugMode) _sendToConsole(message, chalk.gray);
+    if (isDebugMode) _sendToConsole(message, "gray");
   }
   function logpackets() {
     if (!isVerboseMode) return;
@@ -84,7 +84,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (isDebugMode) _sendToConsole(message, chalk.green);
+    if (isDebugMode) _sendToConsole(message, "green");
   }
   function logsockets() {
     if (!isVerboseMode) return;
@@ -96,7 +96,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (isDebugMode) _sendToConsole(message, chalk.cyan);
+    if (isDebugMode) _sendToConsole(message, "cyan");
   }
   function logrooms() {
     if (!isVerboseMode) return;
@@ -108,7 +108,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (isDebugMode) _sendToConsole(message, chalk.yellow);
+    if (isDebugMode) _sendToConsole(message, "yellow");
   }
   function logfunction() {
     if (!isDebugMode) return;
@@ -120,7 +120,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    if (isDebugMode) _sendToConsole(message, chalk.magenta);
+    if (isDebugMode) _sendToConsole(message, "magenta");
   }
   function logapi() {
     const message =
@@ -130,7 +130,7 @@ module.exports = dev = (function () {
         args: arguments,
       });
 
-    _sendToConsole(message, chalk.blue);
+    _sendToConsole(message, "blue");
   }
   function error() {
     const message =
@@ -141,7 +141,7 @@ module.exports = dev = (function () {
       });
 
     journal.log({ message, from: "dev-log", event: "error" });
-    console.error(chalk.red(message));
+    console.error(styleText("red", message, { stream: process.stderr }));
   }
 
   function performance() {
@@ -150,11 +150,11 @@ module.exports = dev = (function () {
     const fct_name = performance.caller.name;
     var message = `~ ${fct_name} - `.concat(args);
 
-    _sendToConsole(message, chalk.yellow);
+    _sendToConsole(message, "yellow");
   }
 
-  function _sendToConsole(message, color = chalk.white) {
-    console.log(color(message));
+  function _sendToConsole(message, color = "white") {
+    console.log(styleText(color, message));
   }
 
   function _customStringify(obj) {
