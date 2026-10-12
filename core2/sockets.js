@@ -8,7 +8,7 @@
 
 // TODO : make changelog, and access modules
 const { Server } = require("socket.io"),
-  { v4: uuidv4 } = require("uuid");
+  { randomUUID } = require("crypto");
 
 const dev = require("./dev-log"),
   notifier = require("./notifier"),
@@ -53,7 +53,7 @@ module.exports = (function () {
 
         const sessionID = sessionStore.getOrCreate(_sID);
         socket.sessionID = sessionID;
-        socket.userID = uuidv4();
+        socket.userID = randomUUID();
         if (token_path) socket.token_path = token_path;
       } catch (err) {
         dev.error(err);

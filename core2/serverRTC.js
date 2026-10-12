@@ -1,7 +1,7 @@
 const WebSocket = require("ws"),
   WebSocketJSONStream = require("websocket-json-stream"),
   Backend = require("sharedb"),
-  { v4: uuidv4 } = require("uuid"),
+  { randomUUID } = require("crypto"),
   url = require("url"),
   { URLSearchParams } = require("url");
 
@@ -40,7 +40,7 @@ module.exports = function (server) {
 
   const sharewss = new WebSocket.Server({ noServer: true });
   sharewss.on("connection", async (client, req) => {
-    client.id = uuidv4();
+    client.id = randomUUID();
     client.isAlive = true;
     dev.logverbose(`sharewss: a new client ${client.id} connected.`);
 

@@ -1,7 +1,7 @@
 const path = require("path"),
   fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic"),
-  { v4: uuidv4 } = require("uuid");
+  { randomUUID } = require("crypto");
 
 const utils = require("./utils"),
   folder = require("./folder"),
@@ -19,7 +19,7 @@ const utils = require("./utils"),
 
 class Exporter {
   constructor({ path_to_folder, folder_to_export_to, instructions }) {
-    this.id = uuidv4();
+    this.id = randomUUID();
     this.path_to_folder = path_to_folder;
     this.folder_to_export_to = folder_to_export_to;
     this.ffmpeg_cmd = null;
