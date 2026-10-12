@@ -4,7 +4,7 @@ const path = require("path"),
   { IncomingForm } = require("formidable"),
   md5File = require("md5-file"),
   fastFolderSize = require("fast-folder-size"),
-  fetch = require("node-fetch");
+  { Agent } = require("undici");
 
 module.exports = function createFsUtils(API) {
   return {
@@ -126,6 +126,7 @@ module.exports = function createFsUtils(API) {
       max_file_size_in_mo = 100,
       timeout_ms = 30000,
       base_url = null,
+      allow_self_signed = false,
     }) {
       dev.logfunction({ fileUrl, destination_path });
 
@@ -139,7 +140,10 @@ module.exports = function createFsUtils(API) {
       return new Promise(async (resolve, reject) => {
         try {
           const response = await fetch(fileUrl, {
-            timeout: timeout_ms,
+            signal: AbortSignal.timeout(timeout_ms),
+            ...(allow_self_signed && {
+              dispatcher: new Agent({ connect: { rejectUnauthorized: false } }),
+            }),
             headers: {
               "User-Agent": "Mozilla/5.0 (compatible; DodocBot/1.0)",
             },
@@ -166,7 +170,7 @@ module.exports = function createFsUtils(API) {
           }
 
           // Download the file
-          const buffer = await response.buffer();
+          const buffer = Buffer.from(await response.arrayBuffer());
 
           // Check actual downloaded size
           if (buffer.length > max_file_size_in_mo * 1024 * 1024) {

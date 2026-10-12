@@ -7,24 +7,16 @@
  *   DEBUG=1 node core2/tests/test-api2.js    # Enable debug output
  *   VERBOSE=1 node core2/tests/test-api2.js  # Enable verbose error output
  *
- * Requirements:
- *   npm install node-fetch@2
- *
  * Note: Make sure the dodoc server is running before executing tests
  *       Start server with: npm start
  */
 
-const fetch = require("node-fetch");
-const https = require("https");
+// Allow self-signed certificates for local testing
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 // Configuration
 const BASE_URL = "https://localhost:8080";
 const API_BASE = `${BASE_URL}/_api2`;
-
-// Allow self-signed certificates for local testing
-const httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-});
 
 // Test credentials (adjust these for your setup)
 const TEST_CONFIG = {
@@ -81,7 +73,6 @@ async function apiRequest(endpoint, options = {}) {
   const fetchOptions = {
     ...options,
     headers,
-    agent: url.startsWith("https") ? httpsAgent : undefined,
   };
 
   try {

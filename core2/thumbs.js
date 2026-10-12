@@ -3,8 +3,7 @@ const path = require("path"),
   { spawn } = require("child_process"),
   ffmpeg = require("fluent-ffmpeg"),
   cheerio = require("cheerio"),
-  fetch = require("node-fetch"),
-  https = require("https"),
+  { Agent } = require("undici"),
   crypto = require("crypto");
 
 const utils = require("./utils"),
@@ -878,7 +877,13 @@ module.exports = (function () {
     const url = await fs.readFile(full_media_path, "UTF-8");
     if (!url) throw "no url";
 
-    const { image } = await _getPageMetadata({ url });
+    let image;
+    try {
+      ({ image } = await _getPageMetadata({ url }));
+    } catch (err) {
+      dev.error(err);
+    }
+
     if (image) {
       try {
         await utils.downloadFileFromUrl({
@@ -886,6 +891,7 @@ module.exports = (function () {
           destination_path: full_path_to_thumb,
           base_url: url,
           max_file_size_in_mo: 50, // Smaller limit for thumbnails
+          allow_self_signed: true,
         });
         return;
       } catch (err) {
@@ -934,13 +940,10 @@ module.exports = (function () {
 
     url = utils.addhttp(url);
 
-    let headers = {};
-    if (url.includes("https://"))
-      headers.agent = new https.Agent({
-        rejectUnauthorized: false,
-      });
-
-    const response = await fetch(url, headers);
+    // links can point to local dodoc instances served with self-signed certificates
+    const response = await fetch(url, {
+      dispatcher: new Agent({ connect: { rejectUnauthorized: false } }),
+    });
     const html = await response.text();
 
     const obj = _parseHTMLMetaTags({ html });
