@@ -64,11 +64,12 @@ Hotfixes on **main**: `npm version patch` (14.1.0 → 14.1.1). Then merge **main
 
 Each tag runs the same builds, whether it is stable or a pre-release. Only the GitHub release type and the Docker `:latest` tag differ.
 
-**GitHub release** ([releases page](https://github.com/l-atelier-des-chercheurs/dodoc/releases)), built by [electron-builder](electron/electron-builder.yml) on 3 runners:
+**GitHub release** ([releases page](https://github.com/l-atelier-des-chercheurs/dodoc/releases)), built by [electron-builder](electron/electron-builder.yml) on 4 runners:
 
 | OS | File | Notes |
 | --- | --- | --- |
-| macOS | `dodoc-X.Y.Z-macos.dmg` | Apple Silicon only (built on the `macos-latest` arm64 runner). Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement |
+| macOS | `dodoc-X.Y.Z-macos-arm.dmg` | Apple Silicon, built on `macos-latest`. Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement |
+| macOS | `dodoc-X.Y.Z-macos-intel.dmg` | Intel, built on `macos-26-intel` (GitHub's Intel runners are planned to be available until Aug 2027). Signed and notarized like the Apple Silicon version |
 | Windows | `dodoc-X.Y.Z-windows.exe` | NSIS one-click installer, x64 |
 | Linux | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb` | |
 | Linux | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` | |
