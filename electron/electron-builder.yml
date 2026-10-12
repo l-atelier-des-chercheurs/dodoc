@@ -1,7 +1,7 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "40.8.5" # was 39.8.5 — match electron/package.json
+electronVersion: "44.7.0" # was 40.8.5 — match electron/package.json
 asar: true
 asarUnpack:
   - "content/**"
@@ -106,7 +106,6 @@ linux:
       arch:
         - x64
         - arm64
-        - armv7l
   category: Education
   icon: build/icons
   executableArgs:

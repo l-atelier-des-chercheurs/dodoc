@@ -2,7 +2,7 @@
 
 # == Base for build ==
 
-FROM node:24.14.0-slim AS build-base
+FROM node:24.21.0-slim AS build-base
 
 RUN apt update && apt install -y --no-install-recommends \
     build-essential \
@@ -26,7 +26,7 @@ RUN npm ci --only=production
 
 # == Serving ==
 
-FROM node:24.14.0-slim
+FROM node:24.21.0-slim
 
 # Install chromium (Puppeteer fallback) and poppler-utils (pdftoppm for PDF thumbnails)
 RUN apt update && apt install -y --no-install-recommends chromium poppler-utils && rm -rf /var/lib/apt/lists/*

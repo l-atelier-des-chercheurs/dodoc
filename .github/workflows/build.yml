@@ -64,7 +64,7 @@ jobs:
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v6
         with:
-          node-version: 24.14.0
+          node-version: 24.21.0
       - name: Install Electron dependencies
         run: |
           npm install
