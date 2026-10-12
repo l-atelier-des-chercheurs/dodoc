@@ -1,7 +1,7 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "40.8.5" # was 39.8.5 — match electron/package.json
+electronVersion: "40.10.6" # was 40.8.5 — match electron/package.json
 asar: true
 asarUnpack:
   - "content/**"
