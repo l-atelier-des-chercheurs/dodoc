@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs-extra");
-const portscanner = require("portscanner");
+const net = require("net");
 
 const server = require("./server"),
   dev = require("./dev-log"),
@@ -188,15 +188,13 @@ async function setupApp() {
   // Centralized exit handler (bin cleanup, cache manager, ffmpeg tracker)
   exitHandler.init();
 
-  const port = await portscanner
-    .findAPortNotInUse(
-      global.settings.desired_port,
-      global.settings.desired_port + 20
-    )
-    .catch((err) => {
-      dev.error(err);
-      throw err;
-    });
+  const port = await findAvailablePort(
+    global.settings.desired_port,
+    global.settings.desired_port + 20
+  ).catch((err) => {
+    dev.error(err);
+    throw err;
+  });
 
   if (port === global.settings.desired_port) {
     dev.log(`Desired port ${port} available`);
@@ -299,4 +297,21 @@ async function contentFolderIsValid(full_path) {
   if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
 
   return true;
+}
+
+// test ports by listening on them the same way the server will (all interfaces)
+async function findAvailablePort(start_port, end_port) {
+  for (let port = start_port; port <= end_port; port++) {
+    const is_available = await new Promise((resolve, reject) => {
+      const tester = net.createServer();
+      tester.once("error", (err) => {
+        if (err.code === "EADDRINUSE") resolve(false);
+        else reject(err);
+      });
+      tester.once("listening", () => tester.close(() => resolve(true)));
+      tester.listen(port);
+    });
+    if (is_available) return port;
+  }
+  throw new Error(`No available port between ${start_port} and ${end_port}`);
 }
