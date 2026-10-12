@@ -2,6 +2,19 @@ import { io } from "socket.io-client";
 import Vue from "vue";
 import saveAs from "file-saver";
 
+const REJECTED_PASSWORD_CODES = [
+  "submitted_general_password_is_wrong",
+  "no_general_password_submitted",
+  "no_headers_with_general_password_submitted",
+];
+const REJECTED_TOKEN_CODES = [
+  "token_does_not_exist",
+  "token_expired",
+  "token_path_mismatch",
+  "token_purpose_mismatch",
+  "no_token_submitted",
+];
+
 export default function () {
   return new Vue({
     data: {
@@ -301,7 +314,7 @@ export default function () {
       async _setAuthFromStorage() {
         // check if password
         if (window.app_infos.instance_meta.has_general_password === true) {
-          const search_params = new URLSearchParams(location.href);
+          const search_params = new URLSearchParams(location.search);
 
           let general_password;
           if (search_params && search_params.has("general_password"))
@@ -312,10 +325,13 @@ export default function () {
           if (general_password)
             await this.submitGeneralPassword({
               password: general_password,
-            }).catch(() => {
-              if (localStorage.getItem("general_password"))
+            }).catch((err) => {
+              // only forget the password if the server explicitly rejected it,
+              // not on network errors / server restarting
+              if (REJECTED_PASSWORD_CODES.includes(err?.code)) {
                 localStorage.removeItem("general_password");
-              this.$eventHub.$emit("app.prompt_general_password");
+                this.$eventHub.$emit("app.prompt_general_password");
+              }
             });
           else this.$eventHub.$emit("app.prompt_general_password");
         }
@@ -329,7 +345,9 @@ export default function () {
               token_path,
             });
           } catch (err) {
-            localStorage.removeItem("tokenpath");
+            // keep the token on network errors / server restarting
+            if (REJECTED_TOKEN_CODES.includes(err?.code))
+              localStorage.removeItem("tokenpath");
           }
         }
 
@@ -1136,7 +1154,7 @@ export default function () {
       resetToken() {
         this.tokenpath.token = "";
         this.tokenpath.token_path = "";
-        localStorage.setItem("tokenpath", undefined);
+        localStorage.removeItem("tokenpath");
       },
 
       processError(err) {
