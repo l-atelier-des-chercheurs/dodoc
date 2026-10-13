@@ -1253,7 +1253,7 @@ export default function () {
           if (!acc[browser_id])
             acc[browser_id] = {
               browser_id,
-              user_agent: u.meta?.user_agent,
+              device: u.meta?.device,
               token_path: null,
               is_self: false,
               tabs: [],

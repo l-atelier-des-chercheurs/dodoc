@@ -23,8 +23,8 @@ module.exports = (function () {
     init: (app) => {
       return _initAPI(app);
     },
-    getPresenceFor: ({ token, token_path }) =>
-      _getPresenceFor({ token, token_path }),
+    getPresenceFor: ({ token, token_path }, shared_cache) =>
+      _getPresenceFor({ token, token_path }, shared_cache),
   };
 
   function _initAPI(app) {
@@ -2697,7 +2697,8 @@ module.exports = (function () {
 
   // presence is only shared between logged-in accounts: anonymous visitors
   // are counted (per browser) but neither listed nor located
-  async function _getPresenceFor({ token, token_path }) {
+  // shared_cache: reused across all viewers of a same broadcast
+  async function _getPresenceFor({ token, token_path }, shared_cache = {}) {
     // logout or expiry may have happened in another tab: recheck each token
     const hasValidToken = ({ meta }) => {
       if (!meta?.token || !meta?.token_path) return false;
@@ -2723,6 +2724,15 @@ module.exports = (function () {
     const fake_req = {
       headers: { authorization: JSON.stringify({ token, token_path }) },
     };
+    // folder status doesn't depend on the viewer, rights do
+    if (!shared_cache.is_private) shared_cache.is_private = {};
+    const isPrivate = (path_to_folder) => {
+      if (!(path_to_folder in shared_cache.is_private))
+        shared_cache.is_private[path_to_folder] = auth.isFolderPrivate({
+          path_to_folder,
+        });
+      return shared_cache.is_private[path_to_folder];
+    };
     const can_read_cache = {};
     const canRead = async (path) => {
       // only folder paths can be private, not "/" or "404"
@@ -2731,7 +2741,7 @@ module.exports = (function () {
         can_read_cache[path] = (async () => {
           try {
             const path_to_folder = utils.convertToLocalPath(path);
-            if (!(await auth.isFolderPrivate({ path_to_folder }))) return true;
+            if (!(await isPrivate(path_to_folder))) return true;
             return !!(await _canContributeToFolder({
               path_to_folder,
               req: fake_req,

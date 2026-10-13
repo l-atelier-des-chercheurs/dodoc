@@ -83,7 +83,8 @@ module.exports = (function () {
       sessionStore.addSocketConnection(sessionID, userID);
 
       let meta = {
-        user_agent,
+        // the device type is enough for presence, no need to share user_agent
+        device: deviceFromUserAgent(user_agent),
         browser_id: sessionStore.getBrowserID(sessionID),
       };
       // token stays server-side, see getPresenceFor
@@ -113,18 +114,14 @@ module.exports = (function () {
         try {
           auth.checkTokenValidity({ token, token_path, purpose: "auth" });
         } catch (err) {
-          socket.leave("users");
-          delete socket.data.presence_auth;
-          return;
+          return stopTracking(socket);
         }
         socket.data.presence_auth = { token, token_path };
         socket.join("users");
-        await sendPresence(socket);
+        // client starts from an empty list: always send
+        await sendPresence(socket, { skip_if_unchanged: false });
       });
-      socket.on("leaveUsers", () => {
-        socket.leave("users");
-        delete socket.data.presence_auth;
-      });
+      socket.on("leaveUsers", () => stopTracking(socket));
 
       socket.on("joinRoom", ({ room, token, token_path }) => {
         dev.logrooms(`ROOMS — socket ${socket.id} is joining ${room}`);
@@ -179,35 +176,69 @@ module.exports = (function () {
       io.to("content/" + room).emit("taskEnded", content);
     });
 
-    // batch bursts of changes (page loads, cleanups) into one broadcast
+    // batch bursts of changes (page loads, cleanups) into one broadcast,
+    // sent at most PRESENCE_MAX_WAIT after the first pending change
+    const PRESENCE_DEBOUNCE = 300;
+    const PRESENCE_MAX_WAIT = 1000;
     let presence_timeout;
+    let first_pending_change;
     notifier.on("usersChanged", () => {
       clearTimeout(presence_timeout);
-      presence_timeout = setTimeout(broadcastPresence, 300);
+      if (!first_pending_change) first_pending_change = Date.now();
+      const waited = Date.now() - first_pending_change;
+      const delay = Math.min(
+        PRESENCE_DEBOUNCE,
+        Math.max(0, PRESENCE_MAX_WAIT - waited)
+      );
+      presence_timeout = setTimeout(() => {
+        first_pending_change = null;
+        broadcastPresence();
+      }, delay);
     });
   }
 
   async function broadcastPresence() {
     const sockets = await io.in("users").fetchSockets();
-    await Promise.all(sockets.map((socket) => sendPresence(socket)));
+    const shared_cache = {};
+    await Promise.all(
+      sockets.map((socket) => sendPresence(socket, { shared_cache }))
+    );
   }
 
   // each viewer gets its own snapshot: private locations depend on its rights
-  async function sendPresence(socket) {
+  // skip_if_unchanged: changes by anonymous visitors often don't alter it
+  async function sendPresence(
+    socket,
+    { shared_cache, skip_if_unchanged = true } = {}
+  ) {
     const presence_auth = socket.data.presence_auth;
     try {
       // token may have been revoked (logout) or expired since trackUsers
       auth.checkTokenValidity({ ...presence_auth, purpose: "auth" });
     } catch (err) {
-      socket.leave("users");
-      delete socket.data.presence_auth;
-      return;
+      return stopTracking(socket);
     }
     try {
-      socket.emit("presence", await api2.getPresenceFor(presence_auth));
+      const presence = await api2.getPresenceFor(presence_auth, shared_cache);
+      const serialized = JSON.stringify(presence);
+      if (skip_if_unchanged && socket.data.last_presence === serialized) return;
+      socket.data.last_presence = serialized;
+      socket.emit("presence", presence);
     } catch (err) {
       dev.error(err);
     }
+  }
+
+  function stopTracking(socket) {
+    socket.leave("users");
+    delete socket.data.presence_auth;
+    delete socket.data.last_presence;
+  }
+
+  function deviceFromUserAgent(user_agent = "") {
+    if (/iPad|Tablet/i.test(user_agent)) return "tablet";
+    if (/Mobi|Android|iPhone/i.test(user_agent)) return "phone";
+    return "laptop";
   }
 
   function roomStatus(socket) {

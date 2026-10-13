@@ -21,10 +21,7 @@
           >
             <div class="_who">
               <AuthorTag :path="browser.token_path" :size="'small'" />
-              <b-icon
-                :icon="deviceIcon(browser.user_agent)"
-                class="_deviceType"
-              />
+              <b-icon :icon="browser.device || 'laptop'" class="_deviceType" />
               <small
                 v-if="browser.tabs.length > 1"
                 class="_tabsCount"
@@ -76,13 +73,7 @@ export default {
       return this.$api.presence;
     },
   },
-  methods: {
-    deviceIcon(user_agent = "") {
-      if (/iPad|Tablet/i.test(user_agent)) return "tablet";
-      if (/Mobi|Android|iPhone/i.test(user_agent)) return "phone";
-      return "laptop";
-    },
-  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
