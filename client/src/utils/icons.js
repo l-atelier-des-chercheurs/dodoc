@@ -190,6 +190,10 @@ import {
   BIconEraser,
   BIconToggles,
   BIconGrid,
+  BIconPhone,
+  BIconLaptop,
+  BIconTablet,
+  BIconPerson,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -380,3 +384,7 @@ Vue.component("BIconPersonPlus", BIconPersonPlus);
 Vue.component("BIconStars", BIconStars);
 Vue.component("BIconToggles", BIconToggles);
 Vue.component("BIconGrid", BIconGrid);
+Vue.component("BIconPhone", BIconPhone);
+Vue.component("BIconLaptop", BIconLaptop);
+Vue.component("BIconTablet", BIconTablet);
+Vue.component("BIconPerson", BIconPerson);

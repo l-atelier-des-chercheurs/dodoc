@@ -15,6 +15,8 @@ module.exports = (function () {
       const $path = "_users/" + randomId();
       sessions.push({
         $path,
+        // shared with other clients to group tabs, $path must stay private
+        browser_id: randomId(),
         connected: false,
         userIDs: [],
         active_socket_count: 0,
@@ -23,6 +25,9 @@ module.exports = (function () {
     },
     findSession($path) {
       return sessions.find((session) => session.$path === $path);
+    },
+    getBrowserID($path) {
+      return this.findSession($path)?.browser_id;
     },
     addSocketConnection($path, userID) {
       sessions = sessions.map((session) => {

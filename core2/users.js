@@ -1,5 +1,7 @@
 const notifier = require("./notifier");
 
+// one user per socket connection (a browser tab), see sockets.js
+// every change emits "usersChanged": presence is then recomputed per viewer
 module.exports = (function () {
   let users = [];
   let io;
@@ -27,6 +29,7 @@ module.exports = (function () {
       if (!users.find((u) => u.id === id)) {
         const user = { id, meta };
         users.push(user);
+        notifier.emit("usersChanged");
         return user;
       }
     },
@@ -34,12 +37,14 @@ module.exports = (function () {
       const user = users.find((u) => u.id === id);
       if (!user) return;
       user.meta = { ...user.meta, ...meta };
+      notifier.emit("usersChanged");
       return user;
     },
     userLeft: (id) => {
       const has_user = users.some((u) => u.id === id);
       if (!has_user) return false;
       users = users.filter((u) => u.id !== id);
+      notifier.emit("usersChanged");
       return true;
     },
     cleanupUsers: async () => {
@@ -58,10 +63,8 @@ module.exports = (function () {
           (user) => !activeSocketIds.has(user.id)
         );
 
-        // Remove stale users and emit notifications
-        staleUsers.forEach((user) => {
-          if (API.userLeft(user.id)) notifier.emit("userLeft", user.id);
-        });
+        // Remove stale users
+        staleUsers.forEach((user) => API.userLeft(user.id));
 
         return staleUsers.length; // Return number of cleaned up users
       } catch (error) {

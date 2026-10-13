@@ -189,16 +189,30 @@
           @close="show_credits_modal = false"
         />
 
+        <div
+          class="_currentUsers"
+          v-if="$api.presence.identified > 0 || $api.presence.anonymous > 0"
+        >
+          <button
+            type="button"
+            class="u-button u-button_icon"
+            :title="$t('presence')"
+            @click="show_users_modal = true"
+          >
+            <b-icon icon="people-fill" />
+            <sup
+              v-if="$api.presence.identified > 0"
+              class="_badge"
+              v-text="$api.presence.identified"
+            />
+          </button>
+        </div>
+
         <div v-if="connected_as" class="_currentUser">
           <AuthorTag
             :path="connected_as.$path"
             :show_image_only="true"
             @click="showAuthorModal"
-          />
-          <sup
-            class="_badge"
-            v-if="$api.other_devices_connected.length > 0"
-            v-text="$api.other_devices_connected.length"
           />
         </div>
         <button
@@ -208,25 +222,13 @@
           @click="showAuthorModal"
         >
           {{ $t("login") }}
-          <sup
-            class="_badge"
-            v-if="$api.other_devices_connected.length > 0"
-            v-text="$api.other_devices_connected.length"
-          />
         </button>
-
-        <!-- <div
-          class="_currentUsers"
-          v-if="$api.other_devices_connected.length > 0"
-        >
-          <router-link :to="'/@'" class="u-button u-button_icon">
-            <b-icon icon="person-circle" />
-            <sup class="_badge">
-              {{ $api.other_devices_connected.length }}
-            </sup>
-          </router-link>
-        </div> -->
       </div>
+
+      <PresenceModal
+        v-if="show_users_modal"
+        @close="show_users_modal = false"
+      />
 
       <AuthorList
         v-if="show_authors_modal"
@@ -240,6 +242,7 @@ import AuthorList from "@/adc-core/author/AuthorList.vue";
 import CreditsModal from "@/adc-core/modals/CreditsModal.vue";
 import LangModal from "@/adc-core/lang/LangModal.vue";
 import BreadCrumbs from "@/components/nav/BreadCrumbs.vue";
+import PresenceModal from "@/adc-core/ui/PresenceModal.vue";
 
 import authorMessageMixin from "@/adc-core/chats/mixins/authorMessageMixin";
 
@@ -250,6 +253,7 @@ export default {
     CreditsModal,
     LangModal,
     BreadCrumbs,
+    PresenceModal,
   },
   mixins: [authorMessageMixin],
   data() {

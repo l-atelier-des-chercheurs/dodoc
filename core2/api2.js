@@ -23,6 +23,8 @@ module.exports = (function () {
     init: (app) => {
       return _initAPI(app);
     },
+    getPresenceFor: ({ token, token_path }) =>
+      _getPresenceFor({ token, token_path }),
   };
 
   function _initAPI(app) {
@@ -2683,8 +2685,77 @@ module.exports = (function () {
   }
 
   async function _getAllUsers(req, res, next) {
+    let token, token_path;
+    try {
+      ({ token, token_path } = JSON.parse(req.headers.authorization || "{}"));
+      auth.checkTokenValidity({ token, token_path, purpose: "auth" });
+    } catch (err) {
+      return res.status(401).json({ code: "presence_reserved_to_accounts" });
+    }
+    res.json(await _getPresenceFor({ token, token_path }));
+  }
+
+  // presence is only shared between logged-in accounts: anonymous visitors
+  // are counted (per browser) but neither listed nor located
+  async function _getPresenceFor({ token, token_path }) {
+    // logout or expiry may have happened in another tab: recheck each token
+    const hasValidToken = ({ meta }) => {
+      if (!meta?.token || !meta?.token_path) return false;
+      try {
+        auth.checkTokenValidity({
+          token: meta.token,
+          token_path: meta.token_path,
+          purpose: "auth",
+        });
+        return true;
+      } catch (err) {
+        return false;
+      }
+    };
     const all_users = users.getAllUsers();
-    res.json(all_users);
+    const listed = all_users.filter(hasValidToken);
+    const anonymous_browsers = new Set(
+      all_users
+        .filter((u) => !hasValidToken(u))
+        .map((u) => u.meta?.browser_id || u.id)
+    );
+
+    const fake_req = {
+      headers: { authorization: JSON.stringify({ token, token_path }) },
+    };
+    const can_read_cache = {};
+    const canRead = async (path) => {
+      // only folder paths can be private, not "/" or "404"
+      if (!path || !path.includes("/")) return true;
+      if (!(path in can_read_cache))
+        can_read_cache[path] = (async () => {
+          try {
+            const path_to_folder = utils.convertToLocalPath(path);
+            if (!(await auth.isFolderPrivate({ path_to_folder }))) return true;
+            return !!(await _canContributeToFolder({
+              path_to_folder,
+              req: fake_req,
+            }));
+          } catch (err) {
+            // missing folder: do not reveal it either
+            return false;
+          }
+        })();
+      return can_read_cache[path];
+    };
+
+    const shown_users = await Promise.all(
+      listed.map(async ({ id, meta }) => {
+        const { path, token, ...rest } = meta;
+        if (await canRead(path)) return { id, meta: { ...rest, path } };
+        return { id, meta: { ...rest, path: null, path_hidden: true } };
+      })
+    );
+
+    return {
+      users: shown_users,
+      anonymous_count: anonymous_browsers.size,
+    };
   }
   async function _updateUser(req, res, next) {
     const id = req.params.id;
@@ -2704,10 +2775,12 @@ module.exports = (function () {
       return res.status(403).json({ code: "not_allowed" });
 
     const { path } = req.body;
-    const user = users.updateUser(id, { path });
+    // identity follows logins/logouts that happen without a new socket connection
+    const token_path = auth.extractAndCheckToken({ req }) || null;
+    const token = token_path ? JSON.parse(req.headers.authorization).token : null;
+    const user = users.updateUser(id, { path, token, token_path });
     if (!user) return res.status(404).json({ status: "user not found" });
-    res.json(user);
-    notifier.emit("userUpdated", { id, changed_data: { path } });
+    res.json({ id: user.id });
   }
 
   async function _loadCustomFonts() {

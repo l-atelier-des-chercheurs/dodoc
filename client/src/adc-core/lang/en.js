@@ -1755,4 +1755,14 @@ export default {
   back_to_content: "Back to content",
   click_on_another_cell_to_continue:
     "Click on an empty cell to create a chained area.",
+  presence: "Presence",
+  presence_identified: "account online | account online | accounts online",
+  presence_anonymous_count:
+    "No one without an account | + {n} person without an account | + {n} people without an account",
+  in_a_private_folder: "In a private folder",
+  nobody_else_connected: "No other account is connected right now.",
+  unknown_location: "Unknown location",
+  you_are_here: "You are here",
+  open_tabs: "{n} open tab | {n} open tab | {n} open tabs",
+  your_other_tabs: "Your other tabs",
 };

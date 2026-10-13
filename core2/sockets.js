@@ -11,6 +11,8 @@ const { Server } = require("socket.io"),
   { randomUUID } = require("crypto");
 
 const dev = require("./dev-log"),
+  api2 = require("./api2"),
+  auth = require("./auth"),
   notifier = require("./notifier"),
   sessionStore = require("./sessionStore"),
   users = require("./users");
@@ -49,12 +51,19 @@ module.exports = (function () {
       try {
         dev.log(`initSessionID`);
 
-        const { sessionID: _sID, token_path } = socket.handshake.auth;
+        const { sessionID: _sID, token, token_path } = socket.handshake.auth;
 
         const sessionID = sessionStore.getOrCreate(_sID);
         socket.sessionID = sessionID;
         socket.userID = randomUUID();
-        if (token_path) socket.token_path = token_path;
+        // only trust token_path if it comes with a valid token
+        if (token && token_path) {
+          try {
+            auth.checkTokenValidity({ token, token_path, purpose: "auth" });
+            socket.token = token;
+            socket.token_path = token_path;
+          } catch (err) {}
+        }
       } catch (err) {
         dev.error(err);
         return next(err);
@@ -64,7 +73,7 @@ module.exports = (function () {
     });
 
     io.on("connection", async (socket) => {
-      const { sessionID, userID, token_path } = socket;
+      const { sessionID, userID, token, token_path } = socket;
       dev.logsockets(`RECEIVED CONNECTION with sessionID: ${sessionID}`);
 
       // let ip = socket.handshake?.headers?.["x-real-ip"] || socket.handshake?.address;
@@ -75,10 +84,11 @@ module.exports = (function () {
 
       let meta = {
         user_agent,
+        browser_id: sessionStore.getBrowserID(sessionID),
       };
-      if (token_path) meta.token_path = token_path;
-      const user = users.addUser(userID, meta);
-      if (user) notifier.emit("userJoined", user);
+      // token stays server-side, see getPresenceFor
+      if (token_path) Object.assign(meta, { token, token_path });
+      users.addUser(userID, meta);
 
       socket.emit("session", {
         sessionID,
@@ -98,11 +108,22 @@ module.exports = (function () {
       //   )
       // );
 
-      socket.on("trackUsers", () => {
+      // presence is reserved to logged-in accounts
+      socket.on("trackUsers", async ({ token, token_path } = {}) => {
+        try {
+          auth.checkTokenValidity({ token, token_path, purpose: "auth" });
+        } catch (err) {
+          socket.leave("users");
+          delete socket.data.presence_auth;
+          return;
+        }
+        socket.data.presence_auth = { token, token_path };
         socket.join("users");
+        await sendPresence(socket);
       });
       socket.on("leaveUsers", () => {
         socket.leave("users");
+        delete socket.data.presence_auth;
       });
 
       socket.on("joinRoom", ({ room, token, token_path }) => {
@@ -120,7 +141,7 @@ module.exports = (function () {
       });
       socket.on("disconnect", async () => {
         sessionStore.removeSocketConnection(sessionID, userID);
-        if (users.userLeft(userID)) notifier.emit("userLeft", userID);
+        users.userLeft(userID);
       });
     });
 
@@ -158,15 +179,35 @@ module.exports = (function () {
       io.to("content/" + room).emit("taskEnded", content);
     });
 
-    notifier.on("userJoined", (user) => {
-      io.to("users").emit("userJoined", user);
+    // batch bursts of changes (page loads, cleanups) into one broadcast
+    let presence_timeout;
+    notifier.on("usersChanged", () => {
+      clearTimeout(presence_timeout);
+      presence_timeout = setTimeout(broadcastPresence, 300);
     });
-    notifier.on("userUpdated", (content) => {
-      io.to("users").emit("userUpdated", content);
-    });
-    notifier.on("userLeft", (id) => {
-      io.to("users").emit("userLeft", id);
-    });
+  }
+
+  async function broadcastPresence() {
+    const sockets = await io.in("users").fetchSockets();
+    await Promise.all(sockets.map((socket) => sendPresence(socket)));
+  }
+
+  // each viewer gets its own snapshot: private locations depend on its rights
+  async function sendPresence(socket) {
+    const presence_auth = socket.data.presence_auth;
+    try {
+      // token may have been revoked (logout) or expired since trackUsers
+      auth.checkTokenValidity({ ...presence_auth, purpose: "auth" });
+    } catch (err) {
+      socket.leave("users");
+      delete socket.data.presence_auth;
+      return;
+    }
+    try {
+      socket.emit("presence", await api2.getPresenceFor(presence_auth));
+    } catch (err) {
+      dev.error(err);
+    }
   }
 
   function roomStatus(socket) {
