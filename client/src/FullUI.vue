@@ -18,6 +18,7 @@
         />
         <template v-else>
           <TopBar />
+          <LangHint />
 
           <div class="_mainContent">
             <transition name="pagetransition" mode="out-in">
@@ -48,6 +49,7 @@ import TrackAuthorChanges from "@/adc-core/author/TrackAuthorChanges.vue";
 import TaskTracker from "@/adc-core/tasks/TaskTracker.vue";
 import ConnectionStatus from "@/adc-core/ui/ConnectionStatus.vue";
 import ChatsList from "@/adc-core/chats/ChatsList.vue";
+import LangHint from "@/adc-core/lang/LangHint.vue";
 
 export default {
   props: {},
@@ -59,6 +61,7 @@ export default {
     TaskTracker,
     ConnectionStatus,
     ChatsList,
+    LangHint,
   },
   data() {
     return {

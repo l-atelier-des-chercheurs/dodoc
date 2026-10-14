@@ -19,7 +19,9 @@
           class="u-button u-button_icon _menuBtn"
           :class="{
             'is--active': show_mobile_menu,
+            'is--bumping': bump_lang_setting,
           }"
+          @animationend="bump_lang_setting = false"
           :title="show_mobile_menu ? $t('close') : $t('menu')"
           :aria-expanded="show_mobile_menu ? 'true' : 'false'"
           @click="show_mobile_menu = !show_mobile_menu"
@@ -70,7 +72,10 @@
             <span class="_label" v-text="$t('share_link_to_page')" />
           </button>
 
+          <!-- desktop: no room to spare, LangHint tells first-time visitors
+          instead, then the lang is in the About and login modals -->
           <button
+            v-if="$root.is_mobile_view"
             type="button"
             class="u-button u-button_icon _langBtn"
             :class="{
@@ -88,7 +93,9 @@
             class="u-button u-button_icon _helpBtn"
             :class="{
               'is--active': show_credits_modal,
+              'is--bumping': bump_lang_setting && !$root.is_mobile_view,
             }"
+            @animationend="bump_lang_setting = false"
             :title="$t('about_dodoc')"
             @click="show_credits_modal = !show_credits_modal"
           >
@@ -266,6 +273,7 @@ export default {
       show_qr_code_modal: false,
       show_chats_modal: false,
       show_mobile_menu: false,
+      bump_lang_setting: false,
       isScrolledDown: false,
       lastScrollTop: 0,
       scroll_top: 0,
@@ -278,6 +286,7 @@ export default {
   async mounted() {
     this.$eventHub.$on(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$on(`toolbar.openCredits`, this.showCredits);
+    this.$eventHub.$on(`toolbar.bumpLangSetting`, this.bumpLangSetting);
     // Add scroll event listener
     window.addEventListener("scroll", this.handleScroll);
     // Add custom event listener for menu-triggered About modal
@@ -291,6 +300,7 @@ export default {
   beforeDestroy() {
     this.$eventHub.$off(`toolbar.openAuthor`, this.showAuthorModal);
     this.$eventHub.$off(`toolbar.openCredits`, this.showCredits);
+    this.$eventHub.$off(`toolbar.bumpLangSetting`, this.bumpLangSetting);
 
     // Remove scroll event listener
     window.removeEventListener("scroll", this.handleScroll);
@@ -376,6 +386,11 @@ export default {
     },
     showCredits() {
       this.show_credits_modal = true;
+    },
+    bumpLangSetting() {
+      // the lang is set from the About modal (desktop) or the menu (mobile)
+      this.isScrolledDown = false;
+      this.bump_lang_setting = true;
     },
     closeMenuOnClickOutside(event) {
       if (!this.show_mobile_menu) return;
@@ -592,6 +607,21 @@ export default {
   font-weight: 600;
   // font-size: var(--sl-font-size-small);
   letter-spacing: 0.04em;
+}
+
+._menuBtn.is--bumping,
+._helpBtn.is--bumping {
+  animation: bump 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0.3s 2;
+}
+@keyframes bump {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.35);
+    background-color: var(--c-bleumarine_clair);
+  }
 }
 
 ._menuBtn {
