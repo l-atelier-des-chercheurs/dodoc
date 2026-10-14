@@ -33,11 +33,11 @@ export default {
             additional_meta,
           });
         } else {
+          // the index can also go down when messages are removed: otherwise
+          // the next messages would stay hidden until the count catches up
           const index = this.getIndexFromChatPath(chat_path);
-
-          if (!index || index < chat_read_index) {
+          if (index !== chat_read_index)
             await this.updateIndex(chat_path, chat_read_index);
-          }
         }
       } catch (err) {
         console.error("Failed to update chat read index:", err);

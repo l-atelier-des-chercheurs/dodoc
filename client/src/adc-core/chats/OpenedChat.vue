@@ -323,6 +323,12 @@ export default {
     }
 
     this.updateAuthorReadCount();
+    // $files_count is updated by folderUpdated, which arrives after fileCreated:
+    // only then can the read index include new messages (including our own)
+    this.$watch(
+      () => this.chat?.$files_count,
+      () => this.updateAuthorReadCount()
+    );
 
     this.$eventHub.$on("file.created", this.newMessagePosted);
   },
@@ -424,9 +430,9 @@ export default {
         event.target.clientHeight;
     },
     newMessagePosted({ meta }) {
+      if (!meta?.$path?.startsWith(this.chat.$path + "/")) return;
       this.$nextTick(() => {
         this.scrollToLatest("smooth");
-        this.updateAuthorReadCount();
       });
     },
     async updateAuthorReadCount() {
@@ -493,15 +499,6 @@ export default {
       const path = this.chat.$path + "/" + meta_filename;
       this.is_posting_message = false;
       this.new_message = "";
-
-      const last_message_date = new Date().toISOString();
-      const last_message_count = this.messages.length;
-      // Note: updateAuthorReadCount() will be called again by newMessagePosted
-      // when the socket event fires, which ensures we use the updated chat.$files_count
-      // But we also call it here to handle the case where the socket event is delayed
-      this.$nextTick(() => {
-        this.updateAuthorReadCount();
-      });
 
       this.$nextTick(() => {
         try {
