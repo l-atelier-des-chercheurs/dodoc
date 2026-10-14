@@ -141,10 +141,16 @@
             class="u-button u-button_icon _chatsBtn"
             :class="{
               'is--active': $root.show_chats_list,
+              'has--unread': chats_total_unread > 0,
             }"
             :title="$t('chats')"
             @click="$root.show_chats_list = !$root.show_chats_list"
           >
+            <span
+              class="_chatsCount"
+              v-if="chats_total_unread > 0"
+              v-text="chats_total_unread"
+            />
             <svg
               enable-background="new 0 0 168 168"
               height="168"
@@ -169,11 +175,6 @@
                 fill="#12224c"
               />
             </svg>
-            <sup
-              class="_badge _badge_unread"
-              v-if="chats_total_unread > 0"
-              v-text="chats_total_unread"
-            />
             <span class="_label" v-text="$t('chats')" />
           </button>
         </div>
@@ -691,7 +692,8 @@ export default {
     letter-spacing: normal;
   }
 
-  ._badge {
+  ._badge,
+  ._chatsCount {
     position: static;
     order: 2;
     margin-left: auto;
@@ -704,6 +706,28 @@ export default {
     svg {
     }
   }
+
+  // unread count and icon side by side, in a pill
+  // same height as the presence pill
+  &.has--unread {
+    width: auto;
+    height: 1.8rem;
+    align-items: center;
+    gap: calc(var(--spacing) / 4);
+    padding: 0 calc(var(--spacing) / 3) 0 calc(var(--spacing) / 1.5);
+    border-radius: 0.9rem;
+    background-color: var(--c-rouge_clair);
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+}
+._chatsCount {
+  color: var(--c-rouge_fonce);
+  font-weight: bold;
+  line-height: 1;
 }
 
 ._badge_unread {
