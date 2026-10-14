@@ -1575,6 +1575,7 @@ export default {
   last_message_date: "Last message on",
   message_has_been_removed: "This message has been removed.",
   unread: "Unread",
+  mark_all_as_read: "Mark all as read",
   remove_chat: "Delete topic {name}",
   chat_was_removed: "The topic has been removed.",
   edit_this_message: "Edit this message",

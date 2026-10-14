@@ -1660,6 +1660,7 @@ export default {
   last_message_date: "Dernier message le",
   message_has_been_removed: "Ce message a été supprimé.",
   unread: "Non lu",
+  mark_all_as_read: "Tout marquer comme lu",
   remove_chat: "Supprimer la discussion {name}",
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",

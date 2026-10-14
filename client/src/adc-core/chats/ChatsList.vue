@@ -25,15 +25,25 @@
           </div>
 
           <template v-else>
-          <button
-            type="button"
-            class="u-button u-button_red u-spacingBottom _createChat"
-            v-if="connected_as"
-            @click="show_create_chat_modal = true"
-          >
-            <b-icon icon="plus-lg" />
-            {{ $t("create") }}
-          </button>
+          <div class="_topButtons u-spacingBottom" v-if="connected_as">
+            <button
+              type="button"
+              class="u-button u-button_red _createChat"
+              @click="show_create_chat_modal = true"
+            >
+              <b-icon icon="plus-lg" />
+              {{ $t("create") }}
+            </button>
+            <button
+              type="button"
+              class="u-button u-button_red u-button_small _markAllRead"
+              v-if="has_unread_chats"
+              @click="markChatsAsRead(filtered_chats)"
+            >
+              <b-icon icon="check2-all" />
+              <span>{{ $t("mark_all_as_read") }}</span>
+            </button>
+          </div>
 
           <PinnedNonpinnedFolder
             :field_name="'topics_pinned'"
@@ -146,6 +156,12 @@ export default {
         })
       );
     },
+    has_unread_chats() {
+      return this.filtered_chats.some(
+        (chat) =>
+          (chat.$files_count || 0) > this.getIndexFromChatPath(chat.$path)
+      );
+    },
     sorted_chats() {
       return this.filtered_chats.sort((a, b) => {
         return +new Date(b.$date_modified) - +new Date(a.$date_modified);
@@ -228,6 +244,32 @@ export default {
   padding: calc(var(--spacing) / 2) 0;
 
   border-bottom: 2px solid white;
+}
+
+._topButtons {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+
+._createChat {
+  flex: 0 0 auto;
+}
+
+._markAllRead {
+  flex: 0 1 auto;
+  min-width: 0;
+
+  svg {
+    flex: 0 0 auto;
+  }
+  span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 ._chatsList--content {

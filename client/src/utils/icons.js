@@ -73,6 +73,7 @@ import {
   BIconPlusLg,
   BIconArrowLeftRight,
   BIconCheckLg,
+  BIconCheck2All,
   BIconPencilFill,
   BIconUpload,
   BIconArrowUpLeftCircleFill,
@@ -259,6 +260,7 @@ Vue.component("BIconFullscreenExit", BIconFullscreenExit);
 Vue.component("BIconPlusLg", BIconPlusLg);
 Vue.component("BIconArrowLeftRight", BIconArrowLeftRight);
 Vue.component("BIconCheckLg", BIconCheckLg);
+Vue.component("BIconCheck2All", BIconCheck2All);
 Vue.component("BIconPencilFill", BIconPencilFill);
 Vue.component("BIconUpload", BIconUpload);
 Vue.component("BIconArrowUpLeftCircleFill", BIconArrowUpLeftCircleFill);
