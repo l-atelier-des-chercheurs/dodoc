@@ -7,8 +7,6 @@ module.exports = (function () {
   let _is_enabled = false;
 
   const sizeCalculation = (value) => {
-    // if (typeof value === "string") return value.length;
-    // TODO handle TypeError: Do not know how to serialize a BigInt
     if (typeof value === "object") return JSON.stringify(value).length;
     return value.length;
   };

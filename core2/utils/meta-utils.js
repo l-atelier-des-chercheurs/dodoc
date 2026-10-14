@@ -3,10 +3,22 @@ const path = require("path"),
   fs = require("fs-extra"),
   writeFileAtomic = require("write-file-atomic");
 
+function _bigIntsToNumbers(value) {
+  if (typeof value === "bigint") return Number(value);
+  if (Array.isArray(value)) return value.map(_bigIntsToNumbers);
+  if (value && typeof value === "object" && !(value instanceof Date)) {
+    for (const key of Object.keys(value))
+      value[key] = _bigIntsToNumbers(value[key]);
+  }
+  return value;
+}
+
 module.exports = function createMetaUtils(API) {
   return {
     parseMeta(d) {
-      return TOML.parse(d);
+      // @iarna/toml returns BigInt for integers outside Number's safe range,
+      // which JSON.stringify (cache, sockets, http responses) can't serialize
+      return _bigIntsToNumbers(TOML.parse(d));
     },
 
     async storeContent({ full_path, meta }) {
