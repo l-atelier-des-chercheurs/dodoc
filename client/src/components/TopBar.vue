@@ -340,12 +340,9 @@ export default {
     },
     chats_total_unread() {
       return this.visible_chats.reduce((acc, chat) => {
+        // same as ChatPreview: never opened chats count all their messages
         const index = this.getIndexFromChatPath(chat.$path);
-        if (index) {
-          const unread = chat.$files_count - index;
-          if (unread > 0) return acc + unread;
-        }
-        return acc;
+        return acc + Math.max((chat.$files_count || 0) - index, 0);
       }, 0);
     },
   },

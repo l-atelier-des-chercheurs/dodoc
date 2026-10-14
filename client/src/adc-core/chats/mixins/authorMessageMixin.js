@@ -1,3 +1,8 @@
+// shared by all components using this mixin: while the chat-read-index file
+// is being created (and until it shows up in connected_as.$files), other calls
+// must update that file instead of creating a second one
+let pending_creation = null;
+
 export default {
   data() {
     return {};
@@ -22,15 +27,37 @@ export default {
 
       try {
         if (!this.author_chat_read_index_media) {
-          const additional_meta = {
-            chat_read_indexes: {
-              [chat_path]: chat_read_index,
-            },
-            requested_slug: "chat-read-index",
+          const author_path = this.connected_as.$path;
+
+          if (pending_creation?.author_path === author_path) {
+            pending_creation.chat_read_indexes[chat_path] = chat_read_index;
+            const path_to_meta = await pending_creation.promise;
+            await this.$api.updateMeta({
+              path: path_to_meta,
+              new_meta: {
+                chat_read_indexes: pending_creation.chat_read_indexes,
+              },
+            });
+            return;
+          }
+
+          const chat_read_indexes = { [chat_path]: chat_read_index };
+          pending_creation = {
+            author_path,
+            chat_read_indexes,
+            promise: this.$api
+              .uploadFile({
+                path: author_path,
+                additional_meta: {
+                  chat_read_indexes: { ...chat_read_indexes },
+                  requested_slug: "chat-read-index",
+                },
+              })
+              .then(({ meta_filename }) => author_path + "/" + meta_filename),
           };
-          const { meta_filename } = await this.$api.uploadFile({
-            path: this.connected_as.$path,
-            additional_meta,
+          await pending_creation.promise.catch((err) => {
+            pending_creation = null;
+            throw err;
           });
         } else {
           // the index can also go down when messages are removed: otherwise
@@ -55,6 +82,14 @@ export default {
         JSON.stringify(this.author_chat_read_index)
       );
       chat_read_indexes[chat_path] = chat_read_index;
+
+      // update locally right away, so badges don't briefly count
+      // a message that was just read while the request is pending
+      this.$set(
+        this.author_chat_read_index_media,
+        "chat_read_indexes",
+        chat_read_indexes
+      );
 
       await this.$api.updateMeta({
         path: this.author_chat_read_index_media.$path,
