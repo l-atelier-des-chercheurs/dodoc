@@ -95,6 +95,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_folder, detailed });
 
       let d = cache.get({
+        namespace: "folders",
         key: _getCacheKey({ path_to_folder }),
       });
       if (d) {
@@ -144,6 +145,7 @@ module.exports = (function () {
         folder_meta.$password = "_active";
 
       cache.set({
+        namespace: "folders",
         key: _getCacheKey({ path_to_folder }),
         value: JSON.parse(JSON.stringify(folder_meta)),
       });
@@ -421,6 +423,7 @@ module.exports = (function () {
       }
 
       cache.delete({
+        namespace: "folders",
         key: _getCacheKey({ path_to_folder }),
       });
 
@@ -496,6 +499,7 @@ module.exports = (function () {
         await archives.removeFolderArchives({ path_to_folder });
 
         cache.delete({
+          namespace: "folders",
           key: _getCacheKey({ path_to_folder }),
         });
 

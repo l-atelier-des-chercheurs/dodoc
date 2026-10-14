@@ -133,6 +133,7 @@ module.exports = (function () {
       dev.logfunction({ path_to_meta });
 
       const d = cache.get({
+        namespace: "files",
         key: path_to_meta,
       });
       if (d) return JSON.parse(JSON.stringify(d));
@@ -186,6 +187,7 @@ module.exports = (function () {
       }
 
       cache.set({
+        namespace: "files",
         key: path_to_meta,
         value: meta,
       });
@@ -256,6 +258,7 @@ module.exports = (function () {
       });
 
       cache.delete({
+        namespace: "files",
         key: path_to_meta,
       });
 
@@ -337,6 +340,7 @@ module.exports = (function () {
       );
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
       cache.delete({
+        namespace: "files",
         key: path_to_meta,
       });
 
@@ -416,6 +420,7 @@ module.exports = (function () {
         }
 
         cache.delete({
+          namespace: "files",
           key: `${path_to_meta}`,
         });
 
@@ -880,6 +885,7 @@ module.exports = (function () {
       }
 
       cache.delete({
+        namespace: "files",
         key: `${path_to_meta}`,
       });
 
