@@ -1507,11 +1507,9 @@ export default {
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
-  other_devices_connected: "Autres appareils connectés",
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1833,8 +1831,7 @@ export default {
   back_to_content: "Revenir au contenu",
   click_on_another_cell_to_continue:
     "Cliquez sur une cellule vide pour créer un bloc chaîné.",
-  presence: "Présence",
-  presence_identified: "compte connecté | compte connecté | comptes connectés",
+  accounts_online: "Comptes en ligne",
   presence_anonymous_count:
     "Aucune personne non connectée | + {n} personne non connectée à un compte | + {n} personnes non connectées à un compte",
   in_a_private_folder: "Dans un dossier privé",

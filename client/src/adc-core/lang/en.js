@@ -1428,7 +1428,6 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1546,7 +1545,6 @@ export default {
   folder_not_public:
     "This content is not public, to access it its author must make it public.",
 
-  other_devices_connected: "Other devices connected",
   width_alignment_grid_only_non_mobile:
     "The width and alignment of this module (when centered or right-aligned) will only be used if the window width is larger than 767 pixels.",
   add_column: "Add column",
@@ -1755,8 +1753,7 @@ export default {
   back_to_content: "Back to content",
   click_on_another_cell_to_continue:
     "Click on an empty cell to create a chained area.",
-  presence: "Presence",
-  presence_identified: "account online | account online | accounts online",
+  accounts_online: "Accounts online",
   presence_anonymous_count:
     "No one without an account | + {n} person without an account | + {n} people without an account",
   in_a_private_folder: "In a private folder",

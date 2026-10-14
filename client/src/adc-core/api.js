@@ -1247,38 +1247,41 @@ export default function () {
         return this.all_devices_connected.filter((u) => !u.is_self);
       },
       presence() {
-        // tabs of a same browser share a session, hence a browser_id
-        const by_browser = this.all_devices_connected.reduce((acc, u) => {
-          const browser_id = u.meta?.browser_id || u.id;
-          if (!acc[browser_id])
-            acc[browser_id] = {
-              browser_id,
-              device: u.meta?.device,
-              token_path: null,
-              is_self: false,
+        // one entry per account (only accounts are listed by the server),
+        // with its devices (one per browser) and its open tabs
+        const by_account = this.all_devices_connected.reduce((acc, u) => {
+          const token_path = u.meta?.token_path;
+          if (!token_path) return acc;
+          if (!acc[token_path])
+            acc[token_path] = {
+              token_path,
+              is_self: token_path === this.tokenpath.token_path,
+              browsers: {},
               tabs: [],
             };
-          const browser = acc[browser_id];
-          browser.tabs.push(u);
-          // login is stored in localStorage, so all tabs should match
-          if (u.meta?.token_path) browser.token_path = u.meta.token_path;
-          if (u.is_self) browser.is_self = true;
+          const account = acc[token_path];
+          // tabs of a same browser share a session, hence a browser_id
+          const browser_id = u.meta?.browser_id || u.id;
+          account.browsers[browser_id] = u.meta?.device || "laptop";
+          // the tab we're looking from is not worth listing
+          if (!u.is_self) account.tabs.push(u);
           return acc;
         }, {});
 
-        const browsers = Object.values(by_browser);
-        const self_browser = browsers.find((b) => b.is_self);
-        // only accounts are listed by the server
-        const others = browsers.filter((b) => !b.is_self);
+        const accounts = Object.values(by_account)
+          .map(({ browsers, ...account }) => ({
+            ...account,
+            devices: Object.values(browsers),
+          }))
+          // self account only matters for its other tabs, shown last
+          .filter((a) => !a.is_self || a.tabs.length > 0)
+          .sort((a, b) => a.is_self - b.is_self);
 
         return {
-          identified: others.length,
+          identified: accounts.filter((a) => !a.is_self).length,
           // other browsers without an account, never listed nor located
           anonymous: this.anonymous_count,
-          others,
-          self_other_tabs: self_browser
-            ? self_browser.tabs.filter((t) => !t.is_self)
-            : [],
+          accounts,
         };
       },
     },

@@ -13,6 +13,7 @@ const { Server } = require("socket.io"),
 const dev = require("./dev-log"),
   api2 = require("./api2"),
   auth = require("./auth"),
+  fakePresence = require("./fake-presence"),
   notifier = require("./notifier"),
   sessionStore = require("./sessionStore"),
   users = require("./users");
@@ -31,6 +32,7 @@ module.exports = (function () {
       serveClient: false,
     });
     users.init(io);
+    fakePresence.init().catch((err) => dev.error(err));
 
     io.use(function (socket, next) {
       // if (

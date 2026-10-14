@@ -17,6 +17,8 @@ export default {
     path: String,
     // set by the server when the viewer can't open this private folder
     path_hidden: Boolean,
+    // set by the server: folder titles from the root, ie [space, project]
+    path_titles: Array,
   },
   computed: {
     label() {
@@ -24,12 +26,15 @@ export default {
       if (!this.path) return this.$t("unknown_location");
       if (this.path === "/") return this.$t("home");
       if (this.path === "404") return this.$t("page_not_found");
+      if (this.path === "authors") return this.$t("authors");
+      if (this.path_titles?.length > 0) return this.path_titles.join(" › ");
       const folder = this.$api.store[this.path];
       return folder?.title || folder?.name || this.path;
     },
     url() {
       if (!this.path || this.path === "404") return false;
       if (this.path === "/") return "/";
+      if (this.path === "authors") return "/@";
       return this.createURLFromPath(this.path);
     },
   },

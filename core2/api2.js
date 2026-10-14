@@ -2701,6 +2701,8 @@ module.exports = (function () {
   async function _getPresenceFor({ token, token_path }, shared_cache = {}) {
     // logout or expiry may have happened in another tab: recheck each token
     const hasValidToken = ({ meta }) => {
+      // dev only, see fake-presence.js
+      if (meta?.is_fake) return !!meta.token_path;
       if (!meta?.token || !meta?.token_path) return false;
       try {
         auth.checkTokenValidity({
@@ -2724,24 +2726,27 @@ module.exports = (function () {
     const fake_req = {
       headers: { authorization: JSON.stringify({ token, token_path }) },
     };
-    // folder status doesn't depend on the viewer, rights do
-    if (!shared_cache.is_private) shared_cache.is_private = {};
-    const isPrivate = (path_to_folder) => {
-      if (!(path_to_folder in shared_cache.is_private))
-        shared_cache.is_private[path_to_folder] = auth.isFolderPrivate({
-          path_to_folder,
-        });
-      return shared_cache.is_private[path_to_folder];
+    // status and title don't depend on the viewer, rights do
+    // (a single read, cached by folder.getFolder)
+    if (!shared_cache.folders) shared_cache.folders = {};
+    const getFolderInfos = (path_to_folder) => {
+      if (!(path_to_folder in shared_cache.folders))
+        shared_cache.folders[path_to_folder] = folder
+          .getFolder({ path_to_folder })
+          .then((meta) => ({
+            is_private: meta.$status === "private",
+            // title for most schemas, name for authors
+            title: meta.title || meta.name || path.basename(path_to_folder),
+          }));
+      return shared_cache.folders[path_to_folder];
     };
     const can_read_cache = {};
-    const canRead = async (path) => {
-      // only folder paths can be private, not "/" or "404"
-      if (!path || !path.includes("/")) return true;
-      if (!(path in can_read_cache))
-        can_read_cache[path] = (async () => {
+    const canRead = (path_to_folder) => {
+      if (!(path_to_folder in can_read_cache))
+        can_read_cache[path_to_folder] = (async () => {
           try {
-            const path_to_folder = utils.convertToLocalPath(path);
-            if (!(await isPrivate(path_to_folder))) return true;
+            const { is_private } = await getFolderInfos(path_to_folder);
+            if (!is_private) return true;
             return !!(await _canContributeToFolder({
               path_to_folder,
               req: fake_req,
@@ -2751,14 +2756,38 @@ module.exports = (function () {
             return false;
           }
         })();
-      return can_read_cache[path];
+      return can_read_cache[path_to_folder];
+    };
+    // titles from the root to this folder, whatever the schema depth
+    const getPathTitles = async (path_to_folder) => {
+      const titles = [];
+      let current = path_to_folder;
+      while (current) {
+        if (await canRead(current))
+          titles.unshift((await getFolderInfos(current)).title);
+        current = utils.getFolderParent(current);
+      }
+      return titles;
     };
 
     const shown_users = await Promise.all(
       listed.map(async ({ id, meta }) => {
-        const { path, token, ...rest } = meta;
-        if (await canRead(path)) return { id, meta: { ...rest, path } };
-        return { id, meta: { ...rest, path: null, path_hidden: true } };
+        const { path: tab_path, token, is_fake, ...rest } = meta;
+        // only folder paths can be private or titled, not "/" or "404"
+        if (!tab_path || !tab_path.includes("/"))
+          return { id, meta: { ...rest, path: tab_path } };
+
+        const path_to_folder = utils.convertToLocalPath(tab_path);
+        if (!(await canRead(path_to_folder)))
+          return { id, meta: { ...rest, path: null, path_hidden: true } };
+        return {
+          id,
+          meta: {
+            ...rest,
+            path: tab_path,
+            path_titles: await getPathTitles(path_to_folder),
+          },
+        };
       })
     );
 

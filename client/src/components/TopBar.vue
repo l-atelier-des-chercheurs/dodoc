@@ -203,16 +203,16 @@
         >
           <button
             type="button"
-            class="u-button u-button_icon"
-            :title="$t('presence')"
+            class="_presencePill"
+            :title="$t('accounts_online')"
             @click="show_users_modal = true"
           >
-            <b-icon icon="people-fill" />
-            <sup
+            <span
               v-if="$api.presence.identified > 0"
-              class="_badge"
+              class="_presenceCount"
               v-text="$api.presence.identified"
             />
+            <b-icon icon="people-fill" />
           </button>
         </div>
 
@@ -554,6 +554,27 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+._presencePill {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 3);
+  height: 1.8rem;
+  padding: 0 calc(var(--spacing) / 1.5);
+  border-radius: 0.9rem;
+  border: none;
+  background: var(--c-bleumarine_clair);
+  color: var(--c-bleumarine);
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: var(--c-bleumarine);
+    color: white;
+  }
 }
 ._badge {
   position: absolute;

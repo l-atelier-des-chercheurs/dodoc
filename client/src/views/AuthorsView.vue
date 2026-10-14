@@ -21,40 +21,6 @@
             })
           }}
         </div>
-
-        <div
-          class="_currentlyConnected"
-          v-if="$api.other_devices_connected.length >= 1"
-        >
-          <DetailsPane
-            :header="$t('other_devices_connected')"
-            :icon="'people'"
-            :has_items="$api.other_devices_connected.length"
-          >
-            <div
-              v-for="(device, index) in $api.other_devices_connected"
-              :key="device.id"
-              class="u-spacingBottom"
-            >
-              <hr v-if="index !== 0" />
-              <div>
-                <AuthorTag
-                  v-if="device.meta.token_path"
-                  :path="device.meta.token_path"
-                />
-                <span v-else>{{ $t("not_logged_in") }}</span>
-              </div>
-              <DLabel :str="$t('opened_page')" />
-              <router-link
-                v-if="device.meta.path"
-                :to="{ path: createURLFromPath(device.meta.path) }"
-                class="u-buttonLink"
-              >
-                {{ $t("open") }}
-              </router-link>
-            </div>
-          </DetailsPane>
-        </div>
       </template>
 
       <template #item="{ item }">
@@ -118,11 +84,6 @@ export default {
 ._authorsView {
   max-width: min(var(--max-column-width), var(--max-column-width-px));
   margin: calc(var(--spacing) * 2) auto calc(var(--spacing) * 4);
-}
-
-._currentlyConnected {
-  max-width: 400px;
-  margin-bottom: calc(var(--spacing) * 1);
 }
 
 ._title {

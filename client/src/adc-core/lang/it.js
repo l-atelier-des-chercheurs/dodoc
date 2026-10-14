@@ -1416,7 +1416,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   remove_publication: "Elimina la pubblicazione {name}",
 
-  not_logged_in: "Utente senza account",
 
   chapters: "Capitoli",
   create_chapter: "Crea un capitolo",

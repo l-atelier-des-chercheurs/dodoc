@@ -60,7 +60,7 @@ module.exports = (function () {
 
         // Find users that no longer have active sockets
         const staleUsers = users.filter(
-          (user) => !activeSocketIds.has(user.id)
+          (user) => !user.meta?.is_fake && !activeSocketIds.has(user.id)
         );
 
         // Remove stale users

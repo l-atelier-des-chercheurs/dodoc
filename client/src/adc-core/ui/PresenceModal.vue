@@ -1,59 +1,52 @@
 <template>
-  <BaseModal2 :title="$t('presence')" @close="$emit('close')">
+  <BaseModal2 :title="$t('accounts_online')" @close="$emit('close')">
     <div class="_presence">
       <p v-if="presence.identified === 0" class="u-instructions">
         {{ $t("nobody_else_connected") }}
       </p>
-      <template v-else>
-        <div class="_summary">
-          <span class="_count">
-            <b-icon icon="people-fill" />
-            {{ presence.identified }}
-            {{ $tc("presence_identified", presence.identified) }}
-          </span>
-        </div>
 
-        <ul class="_browsers">
-          <li
-            v-for="browser in presence.others"
-            :key="browser.browser_id"
-            class="_browser"
-          >
-            <div class="_who">
-              <AuthorTag :path="browser.token_path" :size="'small'" />
-              <b-icon :icon="browser.device || 'laptop'" class="_deviceType" />
-              <small
-                v-if="browser.tabs.length > 1"
-                class="_tabsCount"
-                v-text="$tc('open_tabs', browser.tabs.length)"
+      <ul v-if="presence.accounts.length > 0" class="_accounts">
+        <li
+          v-for="account in presence.accounts"
+          :key="account.token_path"
+          class="_account"
+          :data-isself="account.is_self"
+        >
+          <div class="_who">
+            <AuthorTag :path="account.token_path" :size="'small'" />
+            <span class="_devices">
+              <b-icon
+                v-for="(device, index) in account.devices"
+                :key="index"
+                :icon="device"
+                class="_deviceType"
               />
-            </div>
-            <ul class="_tabs">
-              <li v-for="tab in browser.tabs" :key="tab.id">
-                <PresenceTabLink
-                  :path="tab.meta.path"
-                  :path_hidden="tab.meta.path_hidden"
-                  @close="$emit('close')"
-                />
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </template>
+            </span>
+          </div>
+          <div class="_tabsCount">
+            {{
+              account.is_self
+                ? $t("your_other_tabs")
+                : $tc("open_tabs", account.tabs.length)
+            }}
+          </div>
+          <ul class="_tabs">
+            <li v-for="tab in account.tabs" :key="tab.id">
+              <PresenceTabLink
+                :path="tab.meta.path"
+                :path_hidden="tab.meta.path_hidden"
+                :path_titles="tab.meta.path_titles"
+                @close="$emit('close')"
+              />
+            </li>
+          </ul>
+        </li>
+      </ul>
 
       <p v-if="presence.anonymous > 0" class="_anonymous">
         <b-icon icon="person" />
         {{ $tc("presence_anonymous_count", presence.anonymous) }}
       </p>
-
-      <div v-if="presence.self_other_tabs.length > 0" class="_selfTabs">
-        <h3 v-text="$t('your_other_tabs')" />
-        <ul class="_tabs">
-          <li v-for="tab in presence.self_other_tabs" :key="tab.id">
-            <PresenceTabLink :path="tab.meta.path" @close="$emit('close')" />
-          </li>
-        </ul>
-      </div>
     </div>
   </BaseModal2>
 </template>
@@ -83,22 +76,7 @@ export default {
   gap: calc(var(--spacing) / 1);
 }
 
-._summary {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  gap: calc(var(--spacing) / 1);
-
-  ._count {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(var(--spacing) / 4);
-    font-weight: bold;
-    font-size: var(--sl-font-size-large);
-  }
-}
-
-._browsers {
+._accounts {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -107,31 +85,38 @@ export default {
   gap: calc(var(--spacing) / 2);
 }
 
-._browser {
+._account {
   padding: calc(var(--spacing) / 2);
   border-radius: 4px;
   background: var(--c-gris_clair);
+
+  &[data-isself] {
+    background: var(--c-bleumarine_clair);
+  }
 }
 
 ._who {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  justify-content: space-between;
   gap: calc(var(--spacing) / 2);
   margin-bottom: calc(var(--spacing) / 4);
 }
 
+._devices {
+  display: inline-flex;
+  gap: calc(var(--spacing) / 4);
+}
+
 ._tabsCount {
+  font-size: var(--sl-font-size-small);
   color: var(--c-gris_fonce);
 }
 
 ._tabs {
   margin: 0;
   padding-left: calc(var(--spacing) * 1.5);
-}
-
-._selfTabs h3 {
-  margin: 0 0 calc(var(--spacing) / 4);
 }
 
 ._anonymous {
