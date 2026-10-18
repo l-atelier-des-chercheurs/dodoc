@@ -374,6 +374,28 @@ module.exports = function createMediaUtils(API) {
         });
       });
     },
+    // peak volume of the first audio track, in dB (-Infinity for digital silence)
+    getAudioMaxVolume({ path: media_path, max_duration = 120 }) {
+      return new Promise((resolve, reject) => {
+        let max_volume;
+        ffmpegTracker
+          .createTrackedFfmpeg()
+          .input(media_path)
+          .inputOptions([`-t ${max_duration}`])
+          .noVideo()
+          .outputOptions(["-map 0:a:0"])
+          .audioFilters("volumedetect")
+          .format("null")
+          .on("stderr", (line) => {
+            const match = line.match(/max_volume: (-?[\d.]+|-inf) dB/);
+            if (match)
+              max_volume = match[1] === "-inf" ? -Infinity : Number(match[1]);
+          })
+          .on("error", reject)
+          .on("end", () => resolve(max_volume))
+          .save("-");
+      });
+    },
     async hasAudioTrack({ video_path }) {
       try {
         const { streams } = await API.getVideoMetaData({ path: video_path });

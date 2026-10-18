@@ -243,7 +243,7 @@
   </div>
 </template>
 <script>
-import { plyr_options, plyr_options_without_sound } from "@/utils/plyr.js";
+import { plyr_options, plyr_options_muted } from "@/utils/plyr.js";
 
 export default {
   props: {
@@ -375,7 +375,7 @@ export default {
     },
     plyr_options() {
       if (this.file.$type === "video" && this.file.$infos?.has_audio === false)
-        return plyr_options_without_sound;
+        return plyr_options_muted;
       return plyr_options;
     },
   },

@@ -290,7 +290,7 @@ Default values are:
   - size            (Number)                              size in bytes
   - gps             (Object)
   - hash            (String)                              file hash (to find duplicates)
-  - has_audio       (Boolean)                             for videos and audios: false if the file has no audio track
+  - has_audio       (Boolean)                             for videos and audios: false if the file has no audio track, or (videos only) if its first 2 minutes are digital silence
   - video_codec     (String)                              for videos
   - fps             (Number)                              for videos: average frame rate
   - bitrate         (Number)                              for videos and audios: overall bitrate in bits/s

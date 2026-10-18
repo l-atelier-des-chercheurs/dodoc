@@ -1396,7 +1396,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   toolbox: "Cassetta degli attrezzi",
   video_resolution_even:
     "Larghezza × Altezza. Ogni valore deve essere un multiplo di 2.",
-  no_audio_track: "Nessuna traccia audio (muto)",
+  no_sound: "Nessun suono",
   keep_audio_track: "Mantieni la traccia audio",
   stop_recording_with_video: "Interrompi la registrazione alla fine del video.",
 

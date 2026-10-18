@@ -172,7 +172,7 @@ module.exports = (function () {
           try {
             Object.assign(
               infos,
-              await _readVideoInfos({ full_media_path })
+              await _readVideoInfos({ full_media_path, media_type })
             );
           } catch (err) {
             dev.error(err);
@@ -192,7 +192,7 @@ module.exports = (function () {
         if (media_type === "image")
           infos = await _readImageExif({ full_media_path });
         else if (is_video_or_audio)
-          infos = await _readVideoInfos({ full_media_path });
+          infos = await _readVideoInfos({ full_media_path, media_type });
       } catch (err) {
         dev.error(err);
       }
@@ -930,11 +930,26 @@ module.exports = (function () {
     throw err;
   }
 
-  async function _readVideoInfos({ full_media_path }) {
+  async function _readVideoInfos({ full_media_path, media_type }) {
     // streams is heavy: only its summary (has_audio, codecs…) is kept
     const { streams, ...video_infos } = await utils.getVideoMetaData({
       path: full_media_path,
     });
+
+    // videos made by dodoc (stopmotions, montages) or exported by QuickTime,
+    // iMovie… often carry an audio track filled with digital silence
+    if (media_type === "video" && video_infos.has_audio) {
+      try {
+        const max_volume = await utils.getAudioMaxVolume({
+          path: full_media_path,
+        });
+        if (max_volume !== undefined && max_volume < -70)
+          video_infos.has_audio = false;
+      } catch (err) {
+        dev.error(err);
+      }
+    }
+
     return video_infos;
   }
 

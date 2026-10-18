@@ -44,7 +44,7 @@ export default {
     },
     audio_summary() {
       if (this.file.$type === "video" && this.infos.has_audio === false)
-        return this.$t("no_audio_track");
+        return this.$t("no_sound");
       if (!this.infos.audio_codec) return false;
       const parts = [this.infos.audio_codec.toUpperCase()];
       const channels = this.infos.audio_channels;
