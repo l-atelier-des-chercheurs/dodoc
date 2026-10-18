@@ -33,19 +33,9 @@ import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
 import VuePlyr from "vue-plyr";
+import { plyr_options } from "@/utils/plyr.js";
 Vue.use(VuePlyr, {
-  plyr: {
-    controls: [
-      "play-large",
-      "play",
-      "progress",
-      "current-time",
-      "mute",
-      "volume",
-      "fullscreen",
-    ],
-    iconUrl: "",
-  },
+  plyr: plyr_options,
 });
 
 if (window.app_infos.is_electron)

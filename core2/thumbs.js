@@ -153,11 +153,32 @@ module.exports = (function () {
       const infos_filename = media_filename + ".infos.txt";
 
       const path_to_thumb_folder = await API.getThumbFolderPath(path_to_folder);
+      const path_to_infos_file = utils.getPathToUserContent(
+        path_to_thumb_folder,
+        infos_filename
+      );
+      const is_video_or_audio =
+        media_type === "video" || media_type === "audio";
+
       try {
         const infos = await utils.readMetaFile(
           path_to_thumb_folder,
           infos_filename
         );
+        // infos files created before has_audio existed lack the summary
+        // fields (and may hold full streams): probe again, keep size/hash
+        if (is_video_or_audio && infos.has_audio === undefined) {
+          delete infos.streams;
+          try {
+            Object.assign(
+              infos,
+              await _readVideoInfos({ full_media_path })
+            );
+          } catch (err) {
+            dev.error(err);
+          }
+          utils.storeContent({ full_path: path_to_infos_file, meta: infos });
+        }
         return infos;
       } catch (err) {
         // no existing infos file, let's create it
@@ -170,8 +191,8 @@ module.exports = (function () {
       try {
         if (media_type === "image")
           infos = await _readImageExif({ full_media_path });
-        else if (media_type === "video" || media_type === "audio")
-          infos = await utils.getVideoMetaData({ path: full_media_path });
+        else if (is_video_or_audio)
+          infos = await _readVideoInfos({ full_media_path });
       } catch (err) {
         dev.error(err);
       }
@@ -183,10 +204,6 @@ module.exports = (function () {
       if (hash !== undefined) infos.hash = hash;
 
       if (infos) {
-        const path_to_infos_file = utils.getPathToUserContent(
-          path_to_thumb_folder,
-          infos_filename
-        );
         utils.storeContent({ full_path: path_to_infos_file, meta: infos });
         return infos;
       }
@@ -911,6 +928,14 @@ module.exports = (function () {
     const err = new Error("No image to download");
     err.code = "no_image_to_download";
     throw err;
+  }
+
+  async function _readVideoInfos({ full_media_path }) {
+    // streams is heavy: only its summary (has_audio, codecs…) is kept
+    const { streams, ...video_infos } = await utils.getVideoMetaData({
+      path: full_media_path,
+    });
+    return video_infos;
   }
 
   async function _readFileInfos({ full_media_path }) {

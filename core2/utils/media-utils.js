@@ -34,6 +34,19 @@ const MEDIA_EXTS_FOR_CREATION_DATE = new Set([
   ".flac",
 ]);
 
+function toPositiveNumber(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n > 0 ? n : undefined;
+}
+
+// ffprobe frame rates are fractions like "30000/1001"
+function parseFrameRate(rate) {
+  if (typeof rate !== "string") return undefined;
+  const [num, den] = rate.split("/").map(Number);
+  if (!num || !den) return undefined;
+  return Math.round((num / den) * 100) / 100;
+}
+
 function coerceToValidDate(value) {
   if (value === null || value === undefined || value === "") return null;
   const date = value instanceof Date ? value : new Date(value);
@@ -324,6 +337,15 @@ module.exports = function createMediaUtils(API) {
               : undefined;
 
           let streams = metadata.streams;
+          const has_audio = streams.some((s) => s.codec_type === "audio");
+
+          // cover art in audio files is a video stream flagged attached_pic
+          const video_stream = streams.find(
+            (s) => s.codec_type === "video" && !s.disposition?.attached_pic
+          );
+          const audio_stream = streams.find((s) => s.codec_type === "audio");
+          const fps = parseFrameRate(video_stream?.avg_frame_rate);
+          const bitrate = toPositiveNumber(metadata.format?.bit_rate);
 
           const creation_time =
             coerceToValidDate(metadata.format?.tags?.creation_time) ||
@@ -340,6 +362,13 @@ module.exports = function createMediaUtils(API) {
             height,
             ratio,
             streams,
+            has_audio,
+            video_codec: video_stream?.codec_name,
+            fps,
+            bitrate,
+            audio_codec: audio_stream?.codec_name,
+            audio_channels: toPositiveNumber(audio_stream?.channels),
+            audio_sample_rate: toPositiveNumber(audio_stream?.sample_rate),
             creation_time,
           });
         });
@@ -353,23 +382,6 @@ module.exports = function createMediaUtils(API) {
         dev.error("Error getting video metadata in hasAudioTrack:", err);
         return false;
       }
-    },
-
-    makeFilterToPadMatchDurationAudioVideo({ streams = [] }) {
-      const audio_stream = streams.find((s) => s.codec_type === "audio");
-      const video_stream = streams.find((s) => s.codec_type === "video");
-      if (audio_stream && video_stream) {
-        const diff = audio_stream.duration - video_stream.duration;
-        if (diff > 0.2) {
-          // audio is longer than video, we need to pad video
-          const diff = audio_stream.duration - video_stream.duration;
-          return `-vf tpad=stop_mode=clone:stop_duration=${diff}`;
-        } else if (video_stream.duration > audio_stream.duration) {
-          // video is longer than audio, we need to pad audio
-          return "-af apad";
-        }
-      }
-      return false;
     },
 
     async getGPSFromFile(full_media_path) {

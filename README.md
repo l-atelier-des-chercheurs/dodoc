@@ -66,13 +66,13 @@ Each tag runs the same builds, whether it is stable or a pre-release. Only the G
 
 **GitHub release** ([releases page](https://github.com/l-atelier-des-chercheurs/dodoc/releases)), built by [electron-builder](electron/electron-builder.yml) on 4 runners:
 
-| OS | File | Notes |
-| --- | --- | --- |
-| macOS | `dodoc-X.Y.Z-macos-arm.dmg` | Apple Silicon, built on `macos-latest`. Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement |
-| macOS | `dodoc-X.Y.Z-macos-intel.dmg` | Intel, built on `macos-26-intel` (GitHub's Intel runners are planned to be available until Aug 2027). Signed and notarized like the Apple Silicon version |
-| Windows | `dodoc-X.Y.Z-windows.exe` | NSIS one-click installer, x64 |
-| Linux | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb` | |
-| Linux | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` | |
+| OS      | File                                                                 | Notes                                                                                                                                                     |
+| ------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| macOS   | `dodoc-X.Y.Z-macos-arm.dmg`                                          | Apple Silicon, built on `macos-latest`. Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement        |
+| macOS   | `dodoc-X.Y.Z-macos-intel.dmg`                                        | Intel, built on `macos-26-intel` (GitHub's Intel runners are planned to be available until Aug 2027). Signed and notarized like the Apple Silicon version |
+| Windows | `dodoc-X.Y.Z-windows.exe`                                            | NSIS one-click installer, x64                                                                                                                             |
+| Linux   | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb`           |                                                                                                                                                           |
+| Linux   | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` |                                                                                                                                                           |
 
 electron-builder also uploads `latest*.yml` files. They are only used by `electron-updater`, which do•doc does not use. The Windows Store package (appx) is not built by the action: run `npm run dist:win-store` in `electron/` by hand.
 
@@ -80,10 +80,10 @@ The release is a **pre-release** when the version has a suffix (`-alpha.N`, `-be
 
 **Docker image** on GHCR (`ghcr.io/l-atelier-des-chercheurs/dodoc`), linux/amd64 only:
 
-| Version | Tags |
-| --- | --- |
-| Stable (`14.1.0`) | `:14.1.0` and `:latest` |
-| Pre-release (`14.1.0-beta.2`) | `:14.1.0-beta.2` only |
+| Version                       | Tags                    |
+| ----------------------------- | ----------------------- |
+| Stable (`14.1.0`)             | `:14.1.0` and `:latest` |
+| Pre-release (`14.1.0-beta.2`) | `:14.1.0-beta.2` only   |
 
 GitHub also attaches the source code archives (zip and tar.gz) to every release automatically.
 
@@ -216,7 +216,6 @@ More advanced settings are available to all by duplicating the settings.example.
 - indicate a bonjour domain for local discovery, like dodoc.local
 
 - change the folder used for storing all the user-generated contents by editing the contentPath field.
-
   - if the value is just a string without any slashes (like "dodoc"), then this will be the name of the folder used in the /Documents subfolder.
   - if the value contains any forward slashes (/) or system path separators, it will be treated as a full path (like /mnt/storage/dodoc-custom)
   - if the specified path is not writable, do•doc will automatically fall back to using a "dodoc" folder in the Documents directory
@@ -291,6 +290,13 @@ Default values are:
   - size            (Number)                              size in bytes
   - gps             (Object)
   - hash            (String)                              file hash (to find duplicates)
+  - has_audio       (Boolean)                             for videos and audios: false if the file has no audio track
+  - video_codec     (String)                              for videos
+  - fps             (Number)                              for videos: average frame rate
+  - bitrate         (Number)                              for videos and audios: overall bitrate in bits/s
+  - audio_codec     (String)                              for videos and audios
+  - audio_channels  (Number)                              for videos and audios
+  - audio_sample_rate (Number)                            for videos and audios, in Hz
 ```
 
 Custom values can be defined in the schema property in settings_base.json.

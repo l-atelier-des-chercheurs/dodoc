@@ -212,6 +212,7 @@
               :duration="file.$infos.duration"
             />
           </div>
+          <MediaTechInfos :file="file" />
         </DetailsPane>
 
         <DetailsPane
@@ -370,6 +371,7 @@ export default {
     BlurMedia: () => import("@/adc-core/fields/BlurMedia.vue"),
     OptimizeMedia: () => import("@/adc-core/fields/OptimizeMedia.vue"),
     PositionPicker: () => import("@/adc-core/inputs/PositionPicker.vue"),
+    MediaTechInfos: () => import("@/adc-core/fields/MediaTechInfos.vue"),
   },
   data() {
     return {

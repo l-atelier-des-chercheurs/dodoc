@@ -53,7 +53,7 @@
         </template>
       </template>
       <template v-else>
-        <vue-plyr :key="file_full_path" ref="plyr">
+        <vue-plyr :key="file_full_path" ref="plyr" :options="plyr_options">
           <video
             v-if="file.$type === 'video'"
             :poster="thumb"
@@ -243,6 +243,8 @@
   </div>
 </template>
 <script>
+import { plyr_options, plyr_options_without_sound } from "@/utils/plyr.js";
+
 export default {
   props: {
     file: Object,
@@ -370,6 +372,11 @@ export default {
     },
     img_ratio() {
       return this.file.$infos?.ratio;
+    },
+    plyr_options() {
+      if (this.file.$type === "video" && this.file.$infos?.has_audio === false)
+        return plyr_options_without_sound;
+      return plyr_options;
     },
   },
   methods: {

@@ -1471,4 +1471,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   create_list_instructions:
     "Crea un nuovo elenco per organizzare le tue note e attività.",
   no_notes_to_show: "Nessuna nota da mostrare",
+  frames_per_second: "fps",
+  mono: "Mono",
+  stereo: "Stereo",
+  n_channels: "{n} canali",
 };

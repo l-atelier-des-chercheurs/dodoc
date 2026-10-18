@@ -1841,4 +1841,8 @@ export default {
   you_are_here: "Vous êtes ici",
   open_tabs: "{n} onglet ouvert | {n} onglet ouvert | {n} onglets ouverts",
   your_other_tabs: "Vos autres onglets",
+  frames_per_second: "i/s",
+  mono: "Mono",
+  stereo: "Stéréo",
+  n_channels: "{n} canaux",
 };

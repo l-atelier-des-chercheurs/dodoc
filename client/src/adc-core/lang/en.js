@@ -1763,4 +1763,8 @@ export default {
   you_are_here: "You are here",
   open_tabs: "{n} open tab | {n} open tab | {n} open tabs",
   your_other_tabs: "Your other tabs",
+  frames_per_second: "fps",
+  mono: "Mono",
+  stereo: "Stereo",
+  n_channels: "{n} channels",
 };
