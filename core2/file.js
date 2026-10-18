@@ -7,6 +7,9 @@ const utils = require("./utils"),
   cache = require("./cache");
 
 module.exports = (function () {
+  // path_to_meta -> promise of meta, for reads in progress
+  const pending_reads = new Map();
+
   const API = {
     importFile: async ({ path_to_folder, req }) => {
       dev.logfunction({ path_to_folder });
@@ -138,61 +141,30 @@ module.exports = (function () {
       });
       if (d) return JSON.parse(JSON.stringify(d));
 
-      const path_to_folder = utils.getContainingFolder(path_to_meta);
+      // concurrent requests for the same file (e.g. two clients listing the
+      // same folder) would generate the same thumbs and infos in parallel,
+      // with ffmpeg overwriting a screenshot while sharp reads it
+      if (pending_reads.has(path_to_meta)) {
+        const meta = await pending_reads.get(path_to_meta);
+        return JSON.parse(JSON.stringify(meta));
+      }
 
-      let meta = await utils.readMetaFile(path_to_meta);
-      meta.$path = utils.convertToSlashPath(path_to_meta);
-
-      const media_filename = meta.$media_filename;
-      const media_type = meta.$type;
-
-      if (
-        media_filename &&
-        [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
-          path.extname(media_filename)
-        )
-      )
-        meta.$content = await utils.readFileContent(
-          path_to_folder,
-          media_filename
-        );
-
-      if (media_type && media_filename) {
-        const _thumbs = await thumbs
-          .makeThumbForMedia({
-            media_type,
-            media_filename,
-            path_to_folder,
-            thumb_view: meta.$thumb_view,
-          })
-          .catch((err) => {
-            if (err.message) dev.error(err.message);
-            else dev.error(err);
+      const read = _readFile({ path_to_meta });
+      pending_reads.set(path_to_meta, read);
+      try {
+        const meta = await read;
+        // skip caching if the file changed during the read (see _forgetFile)
+        if (pending_reads.get(path_to_meta) === read)
+          cache.set({
+            namespace: "files",
+            key: path_to_meta,
+            value: meta,
           });
-        if (_thumbs) meta.$thumbs = _thumbs;
+        return meta;
+      } finally {
+        if (pending_reads.get(path_to_meta) === read)
+          pending_reads.delete(path_to_meta);
       }
-
-      if (media_filename) {
-        const file_infos = await thumbs.getInfosForFile({
-          media_type,
-          media_filename,
-          path_to_folder,
-        });
-        if (file_infos) {
-          if (!meta.$location && file_infos.gps)
-            meta.$location = file_infos.gps;
-          if (file_infos.gps) delete file_infos.gps;
-          meta.$infos = file_infos;
-        }
-      }
-
-      cache.set({
-        namespace: "files",
-        key: path_to_meta,
-        value: meta,
-      });
-
-      return meta;
     },
     getArchives: async ({ path_to_folder, meta_filename }) => {
       dev.logfunction({ path_to_folder, meta_filename });
@@ -257,10 +229,7 @@ module.exports = (function () {
         meta,
       });
 
-      cache.delete({
-        namespace: "files",
-        key: path_to_meta,
-      });
+      _forgetFile({ path_to_meta });
 
       let changed_data = Object.keys(meta).reduce((acc, key) => {
         if (JSON.stringify(meta[key]) !== JSON.stringify(previous_meta[key]))
@@ -339,10 +308,7 @@ module.exports = (function () {
         path_to_meta
       );
       await thumbs.removeFileThumbs({ path_to_folder, meta_filename });
-      cache.delete({
-        namespace: "files",
-        key: path_to_meta,
-      });
+      _forgetFile({ path_to_meta });
 
       if ($type) {
         const $thumbs = await thumbs.makeThumbForMedia({
@@ -419,10 +385,7 @@ module.exports = (function () {
           // don't catch error if missing target at path (can be an "…_archives" folder)
         }
 
-        cache.delete({
-          namespace: "files",
-          key: `${path_to_meta}`,
-        });
+        _forgetFile({ path_to_meta });
 
         return;
       } catch (err) {
@@ -718,6 +681,67 @@ module.exports = (function () {
     return new_meta;
   }
 
+  function _forgetFile({ path_to_meta }) {
+    cache.delete({
+      namespace: "files",
+      key: path_to_meta,
+    });
+    // a read started before this change would return outdated meta
+    pending_reads.delete(path_to_meta);
+  }
+
+  async function _readFile({ path_to_meta }) {
+    const path_to_folder = utils.getContainingFolder(path_to_meta);
+
+    let meta = await utils.readMetaFile(path_to_meta);
+    meta.$path = utils.convertToSlashPath(path_to_meta);
+
+    const media_filename = meta.$media_filename;
+    const media_type = meta.$type;
+
+    if (
+      media_filename &&
+      [".txt", ".md", ".json", ".csv", ".js", ".ino", ".css"].includes(
+        path.extname(media_filename)
+      )
+    )
+      meta.$content = await utils.readFileContent(
+        path_to_folder,
+        media_filename
+      );
+
+    if (media_type && media_filename) {
+      const _thumbs = await thumbs
+        .makeThumbForMedia({
+          media_type,
+          media_filename,
+          path_to_folder,
+          thumb_view: meta.$thumb_view,
+        })
+        .catch((err) => {
+          if (err.message) dev.error(err.message);
+          else dev.error(err);
+        });
+      if (_thumbs) meta.$thumbs = _thumbs;
+    }
+
+    if (media_filename) {
+      const file_infos = await thumbs.getInfosForFile({
+        media_type,
+        media_filename,
+        path_to_folder,
+      });
+      if (file_infos) {
+        if (!meta.$location && file_infos.gps)
+          meta.$location = file_infos.gps;
+        if (file_infos.gps) delete file_infos.gps;
+        meta.$infos = file_infos;
+      }
+    }
+
+    return meta;
+  }
+
   async function _getMetasInFolder({ path_to_folder }) {
     dev.logfunction({ path_to_folder });
 
@@ -884,10 +908,7 @@ module.exports = (function () {
         await fs.remove(full_path_to_file_or_folder);
       }
 
-      cache.delete({
-        namespace: "files",
-        key: `${path_to_meta}`,
-      });
+      _forgetFile({ path_to_meta });
 
       return;
     } catch (err) {
