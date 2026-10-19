@@ -13,7 +13,9 @@ const server = require("./server"),
   auth = require("./auth"),
   mail = require("./mail"),
   journal = require("./journal"),
-  ffmpegTracker = require("./ffmpeg-tracker");
+  ffmpegTracker = require("./ffmpeg-tracker"),
+  contentFolder = require("./content-folder"),
+  t = require("./startup-messages");
 
 module.exports = async function () {
   global.is_electron = process.versions.hasOwnProperty("electron");
@@ -80,11 +82,21 @@ module.exports = async function () {
   }
 
   await setupApp().catch((err) => {
+    // configuration errors (node / VPS): print a readable message and exit,
+    // without a stack trace or an unhandled rejection
+    if (!global.is_electron && err.cli_message) {
+      console.error(err.cli_message);
+      process.exit(1);
+    }
+
     dev.error(err);
 
     if (global.is_electron) {
       const { dialog } = require("electron");
-      dialog.showErrorBox(`Failed to start the application`, `Error: ${err}`);
+      dialog.showErrorBox(
+        t("failed_to_start"),
+        t("error", { error: err })
+      );
     }
 
     throw err;
@@ -97,11 +109,11 @@ module.exports = async function () {
       if (global.is_electron) {
         const { dialog } = require("electron");
         dialog.showErrorBox(
-          `Impossible de démarrer l'application`,
-          `Le domaine Bonjour doit être une chaîne de caractères.`
+          t("failed_to_start"),
+          t("bonjour_domain_must_be_string")
         );
       }
-      throw new Error("Le domaine Bonjour doit être une chaîne de caractères.");
+      throw new Error(t("bonjour_domain_must_be_string", {}, "en"));
     } else {
       await require("./bonjour").init({
         name: "do•doc",
@@ -222,22 +234,7 @@ async function copyAndRenameUserFolder(full_default_path) {
   dev.logfunction({ full_default_path });
 
   const user_dir_path = paths.getDocumentsFolder();
-  let full_path_to_content;
-
-  if (
-    global.settings.contentPath.includes("/") ||
-    global.settings.contentPath.includes(path.sep)
-  ) {
-    full_path_to_content = global.settings.contentPath.replaceAll(
-      "/",
-      path.sep
-    );
-  } else {
-    full_path_to_content = path.join(
-      user_dir_path,
-      global.settings.contentPath
-    );
-  }
+  let full_path_to_content = resolveContentPath(global.settings.contentPath);
 
   try {
     // Check write permissions for both custom and default paths
@@ -248,9 +245,10 @@ async function copyAndRenameUserFolder(full_default_path) {
     if (global.is_electron) {
       const { dialog } = require("electron");
       dialog.showErrorBox(
-        `Failed to write to content path: ${full_path_to_content}`,
-        `Error: ${err}\n\n` +
-          `Please check if the path is correct and if you have the necessary permissions to write to it. do•doc will start with the default Documents/dodoc folder`
+        t("failed_to_write_content_path", { path: full_path_to_content }),
+        t("error", { error: err }) +
+          "\n\n" +
+          t("failed_to_write_content_path_details")
       );
     }
 
@@ -269,34 +267,70 @@ async function copyAndRenameUserFolder(full_default_path) {
     }
   }
 
-  if (await contentFolderIsValid(full_path_to_content)) {
+  let { status, reason } = await contentFolder.getStatus(full_path_to_content);
+
+  // in electron, let the user pick another folder or go back to the default
+  // one, otherwise they would be stuck with a path they can't change from the app
+  while (global.is_electron && status === "incompatible") {
+    const content_path = await require("../electron/electron").pickContentFolder(
+      { refused_path: full_path_to_content }
+    );
+    full_path_to_content = resolveContentPath(content_path);
+    await utils.testWriteFileInFolder(full_path_to_content);
+    ({ status, reason } = await contentFolder.getStatus(full_path_to_content));
+  }
+
+  if (status === "valid") {
     dev.log(`-> content folder is valid: ${full_path_to_content}`);
-  } else {
+  } else if (status === "empty") {
     dev.log(
-      `-> content folder does not already exists at ${full_path_to_content}. Duplicating content folder to create a new one.`
+      `-> content folder is empty at ${full_path_to_content}. Duplicating default content folder.`
     );
     await fs.copy(full_default_path, full_path_to_content);
+  } else {
+    // never write into a folder we don't recognize: it may hold content from
+    // another app or an incompatible version
+    const err = new Error(
+      t(
+        "content_folder_incompatible",
+        {
+          path: full_path_to_content,
+          subfolder: path.join(full_path_to_content, "dodoc"),
+        },
+        "en"
+      )
+    );
+    err.code = "content_folder_incompatible";
+    err.cli_message = [
+      "",
+      "❌ Incompatible content folder, do•doc will not start.",
+      "",
+      `   contentPath setting: "${global.settings.contentPath}"`,
+      `   Resolved to:         ${full_path_to_content}`,
+      `   Problem:             ${reason}`,
+      "",
+      "   This folder is not empty and was not created by do•doc 10, so do•doc",
+      "   refuses to use it. Nothing was changed in it.",
+      "",
+      "   To fix it, set contentPath in settings.json (next to settings_base.json) to either:",
+      "   - a path to an empty or non-existent folder, for example a new subfolder of this one",
+      `     ("${path.join(full_path_to_content, "dodoc")}"): do•doc will create its content there,`,
+      '   - an existing do•doc 10 content folder (with a meta.txt containing dodoc_version="10").',
+      "   A name without slashes is a folder inside the user's Documents folder.",
+      "   With Docker, also check the volume mounted on this path.",
+      "",
+    ].join("\n");
+    throw err;
   }
 
   return full_path_to_content;
 }
 
-async function contentFolderIsValid(full_path) {
-  if (!(await fs.pathExists(full_path))) return false;
-
-  const path_to_content_meta = path.join(full_path, "meta.txt");
-  if (!(await fs.pathExists(path_to_content_meta))) return false;
-
-  const meta_file_content = await fs
-    .readFile(path_to_content_meta, "UTF-8")
-    .catch((err) => {
-      return false;
-    });
-  const meta = utils.parseMeta(meta_file_content);
-
-  if (!meta.dodoc_version || meta.dodoc_version !== "10") return false;
-
-  return true;
+function resolveContentPath(content_path) {
+  // a name without slashes is a folder inside the user's Documents folder
+  if (content_path.includes("/") || content_path.includes(path.sep))
+    return content_path.replaceAll("/", path.sep);
+  return path.join(paths.getDocumentsFolder(), content_path);
 }
 
 // test ports by listening on them the same way the server will (all interfaces)

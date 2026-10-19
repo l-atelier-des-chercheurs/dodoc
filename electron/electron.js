@@ -12,7 +12,9 @@ const writeFileAtomic = require("write-file-atomic");
 const utils = require("../core2/utils"),
   notifier = require("../core2/notifier"),
   journal = require("../core2/journal"),
-  exitHandler = require("../core2/exit-handler");
+  exitHandler = require("../core2/exit-handler"),
+  contentFolder = require("../core2/content-folder"),
+  t = require("../core2/startup-messages");
 
 // Set command line switches before app is ready
 try {
@@ -30,12 +32,14 @@ module.exports = (function () {
   const store = new Store({ name: "dodoc" });
   let win;
   let aboutModalOpening = false; // Flag to prevent multiple rapid clicks
+  let settings_content_path; // contentPath from settings.json, before any custom path
 
   return {
     init: () => {
       return new Promise(function (resolve, reject) {
         // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
+        settings_content_path = global.settings.contentPath;
         const custom_storage_path = store.get("custom_content_path");
         if (custom_storage_path) {
           global.settings.contentPath = custom_storage_path;
@@ -116,6 +120,63 @@ module.exports = (function () {
     saveNewPathToUserContent: ({ path }) => {
       dev.logfunction({ path });
       store.set("custom_content_path", path);
+    },
+    // called at startup when the content folder is refused. Returns the
+    // contentPath to use instead (saved for next launches), or quits the app.
+    pickContentFolder: async ({ refused_path }) => {
+      dev.logfunction({ refused_path });
+
+      // only offered when the folder comes from the storage settings: the
+      // default one is the contentPath of settings.json (Documents/dodoc)
+      const can_reset = !!store.get("custom_content_path");
+
+      while (true) {
+        const buttons = [t("choose_another_folder")];
+        if (can_reset) buttons.push(t("use_default_folder"));
+        buttons.push(t("quit"));
+
+        const choice = dialog.showMessageBoxSync(win, {
+          type: "warning",
+          title: t("failed_to_start"),
+          message: t("content_folder_incompatible_title"),
+          detail: t("content_folder_incompatible", {
+            path: refused_path,
+            subfolder: path.join(refused_path, "dodoc"),
+          }),
+          buttons,
+          defaultId: 0,
+          cancelId: buttons.length - 1,
+          noLink: true,
+        });
+        const action = buttons[choice];
+
+        if (action === t("quit")) {
+          app.exit(1);
+          // never resolve: the app is quitting
+          return new Promise(() => {});
+        }
+
+        if (action === t("use_default_folder")) {
+          store.delete("custom_content_path");
+          return settings_content_path;
+        }
+
+        const picked = dialog.showOpenDialogSync(win, {
+          title: t("choose_another_folder"),
+          defaultPath: refused_path,
+          properties: ["openDirectory", "createDirectory"],
+        });
+        if (!picked || picked.length === 0) continue;
+
+        const { status } = await contentFolder.getStatus(picked[0]);
+        if (status === "incompatible") {
+          refused_path = picked[0];
+          continue;
+        }
+
+        store.set("custom_content_path", picked[0]);
+        return picked[0];
+      }
     },
     captureScreenshot: async ({ url, full_path_to_thumb }) => {
       dev.logfunction({ url, full_path_to_thumb });

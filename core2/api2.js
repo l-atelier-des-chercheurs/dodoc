@@ -2680,7 +2680,9 @@ module.exports = (function () {
           author_path: token_path,
         },
       });
-      res.status(500).send({ code: err.code });
+      res
+        .status(500)
+        .send({ code: err.code, err_infos: { message: err.message } });
     }
   }
 

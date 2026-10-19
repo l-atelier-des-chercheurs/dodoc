@@ -574,7 +574,9 @@ export default {
   storage_instructions:
     "Tous les contenus de {app_name} sont enregistrés dans un seul dossier : espaces, projets, médias, publications, comptes, paramètres de l’instance… Pour faire une sauvegarde, il suffit de copier ce dossier, de préférence pendant que {app_name} est fermé.",
   storage_change_instructions:
-    "<b>Changer d’emplacement ne déplace pas les contenus.</b> Après redémarrage, {app_name} utilisera le dossier choisi :<br>• s’il contient déjà des contenus {app_name} (version 10 ou plus récente), ce sont eux qui s’afficheront ;<br>• sinon, une nouvelle instance vide y sera créée.<br>Pour conserver vos contenus, fermez {app_name}, copiez le dossier actuel au nouvel emplacement, puis choisissez cette copie. Si le dossier choisi n’est pas accessible en écriture, {app_name} reviendra au dossier par défaut (Documents/dodoc).",
+    "<b>Changer d’emplacement ne déplace pas les contenus.</b> Après redémarrage, {app_name} utilisera le dossier choisi :<br>• s’il contient déjà des contenus {app_name} (version 10 ou plus récente), ce sont eux qui s’afficheront ;<br>• s’il est vide, une nouvelle instance vide y sera créée ;<br>• s’il contient d’autres fichiers, il sera refusé : créez plutôt un nouveau sous-dossier vide et choisissez-le.<br>Pour conserver vos contenus, fermez {app_name}, copiez le dossier actuel au nouvel emplacement, puis choisissez cette copie. Si le dossier choisi n’est pas accessible en écriture, {app_name} reviendra au dossier par défaut (Documents/dodoc).",
+  storage_folder_incompatible:
+    "Ce dossier ne peut pas être utilisé : il n’est pas vide et ne contient pas de contenus {app_name} 10. Rien n’y a été modifié. Choisissez un dossier vide, par exemple en créant un nouveau sous-dossier avec le bouton « Nouveau dossier » de la fenêtre de sélection.",
   storage_server_instructions:
     "Sur cette installation, l’emplacement ne peut pas être modifié depuis cette page : il est défini par la personne qui administre le serveur, avec l’option <code>contentPath</code> du fichier <code>settings.json</code>.",
   administration_and_access_control: "Administration et contrôle des accès",

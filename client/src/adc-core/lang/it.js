@@ -501,7 +501,9 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   storage_instructions:
     "Tutti i contenuti di {app_name} sono salvati in un’unica cartella: spazi, progetti, media, pubblicazioni, account, impostazioni dell’istanza… Per fare un backup basta copiare questa cartella, preferibilmente mentre {app_name} è chiuso.",
   storage_change_instructions:
-    "<b>Cambiare posizione non sposta i contenuti.</b> Dopo il riavvio, {app_name} userà la cartella scelta:<br>• se contiene già contenuti {app_name} (versione 10 o successiva), verranno mostrati quelli;<br>• altrimenti vi verrà creata una nuova istanza vuota.<br>Per conservare i contenuti, chiudi {app_name}, copia la cartella attuale nella nuova posizione, poi scegli quella copia. Se la cartella scelta non è scrivibile, {app_name} tornerà alla cartella predefinita (Documents/dodoc).",
+    "<b>Cambiare posizione non sposta i contenuti.</b> Dopo il riavvio, {app_name} userà la cartella scelta:<br>• se contiene già contenuti {app_name} (versione 10 o successiva), verranno mostrati quelli;<br>• se è vuota, vi verrà creata una nuova istanza vuota;<br>• se contiene altri file, verrà rifiutata: crea invece una nuova sottocartella vuota e selezionala.<br>Per conservare i contenuti, chiudi {app_name}, copia la cartella attuale nella nuova posizione, poi scegli quella copia. Se la cartella scelta non è scrivibile, {app_name} tornerà alla cartella predefinita (Documents/dodoc).",
+  storage_folder_incompatible:
+    "Questa cartella non può essere usata: non è vuota e non contiene contenuti {app_name} 10. Non è stato modificato nulla. Scegli una cartella vuota, per esempio creando una nuova sottocartella con il pulsante «Nuova cartella» della finestra di selezione.",
   storage_server_instructions:
     "Su questa installazione la posizione non può essere modificata da questa pagina: è definita da chi amministra il server, con l’opzione <code>contentPath</code> del file <code>settings.json</code>.",
   administration_and_access_control:
