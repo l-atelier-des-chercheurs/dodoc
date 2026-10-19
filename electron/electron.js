@@ -14,6 +14,7 @@ const utils = require("adc-core/server/utils"),
   journal = require("adc-core/server/journal"),
   exitHandler = require("adc-core/server/exit-handler"),
   contentFolder = require("adc-core/server/content-folder"),
+  contentLock = require("adc-core/server/content-lock"),
   t = require("adc-core/server/startup-messages");
 
 // Set command line switches before app is ready
@@ -36,6 +37,19 @@ module.exports = (function () {
 
   return {
     init: () => {
+      // one instance per app: launching it again shows the open window
+      if (!app.requestSingleInstanceLock()) {
+        app.exit(0);
+        // never resolve: the app is quitting
+        return new Promise(() => {});
+      }
+      app.on("second-instance", () => {
+        const target_win = win || BrowserWindow.getAllWindows()[0];
+        if (!target_win) return;
+        if (target_win.isMinimized()) target_win.restore();
+        target_win.focus();
+      });
+
       return new Promise(function (resolve, reject) {
         // check if a custom storage path was set
         // todo cleanup and move this to contentPath in main2.js
@@ -54,6 +68,9 @@ module.exports = (function () {
 
         notifier.on("restartApp", () => {
           dev.logfunction(`ELECTRON — init : restart`);
+          // app.exit() skips before-quit: free the content folder for the
+          // relaunched app now
+          contentLock.releaseSync();
           app.relaunch();
           app.exit(0);
         });
@@ -121,10 +138,11 @@ module.exports = (function () {
       dev.logfunction({ path });
       store.set("custom_content_path", path);
     },
-    // called at startup when the content folder is refused. Returns the
-    // contentPath to use instead (saved for next launches), or quits the app.
-    pickContentFolder: async ({ refused_path }) => {
-      dev.logfunction({ refused_path });
+    // called at startup when the content folder is refused, because it is
+    // incompatible or in use by another app (owner). Returns the contentPath
+    // to use instead (saved for next launches), or quits the app.
+    pickContentFolder: async ({ refused_path, reason, owner }) => {
+      dev.logfunction({ refused_path, reason });
 
       // only offered when the folder comes from the storage settings: the
       // default one is the contentPath of settings.json (Documents/dodoc)
@@ -138,11 +156,20 @@ module.exports = (function () {
         const choice = dialog.showMessageBoxSync(win, {
           type: "warning",
           title: t("failed_to_start"),
-          message: t("content_folder_incompatible_title"),
-          detail: t("content_folder_incompatible", {
-            path: refused_path,
-            subfolder: path.join(refused_path, global.appInfos.name),
-          }),
+          message:
+            reason === "in_use"
+              ? t("content_folder_in_use_title")
+              : t("content_folder_incompatible_title"),
+          detail:
+            reason === "in_use"
+              ? t(
+                  "content_folder_in_use",
+                  contentLock.describeOwner(refused_path, owner)
+                )
+              : t("content_folder_incompatible", {
+                  path: refused_path,
+                  subfolder: path.join(refused_path, global.appInfos.name),
+                }),
           buttons,
           defaultId: 0,
           cancelId: buttons.length - 1,
@@ -171,6 +198,14 @@ module.exports = (function () {
         const { status } = await contentFolder.getStatus(picked[0]);
         if (status === "incompatible") {
           refused_path = picked[0];
+          reason = "incompatible";
+          continue;
+        }
+        const picked_owner = await contentLock.check(picked[0]);
+        if (picked_owner) {
+          refused_path = picked[0];
+          reason = "in_use";
+          owner = picked_owner;
           continue;
         }
 

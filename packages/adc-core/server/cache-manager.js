@@ -81,7 +81,11 @@ module.exports = (function () {
   };
 
   async function createCacheFolder() {
-    const cache_folder_path = path.join(paths.getCacheFolder(), "dodoc_cache");
+    // one per app: each app removes its cache folder when it quits
+    const cache_folder_path = path.join(
+      paths.getCacheFolder(),
+      `${global.appInfos.name}_cache`
+    );
     try {
       await utils.testWriteFileInFolder(cache_folder_path);
       dev.logverbose(`Cache folder set to`, cache_folder_path);

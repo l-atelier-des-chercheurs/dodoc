@@ -14,6 +14,10 @@ const messages = {
       "The folder {path} is not empty and was not created by {app} (content format {version}). Nothing was changed in it.\n\n" +
       "Choose an empty folder, for example a new subfolder ({subfolder}): use the “New Folder” button in the selection window, then select it. " +
       "You can also choose an existing {app} content folder.",
+    content_folder_in_use_title: "This content folder is already in use",
+    content_folder_in_use:
+      "The folder {path} is already used by {other_app} (process {pid} on {hostname}, since {since}). Two apps using the same content folder would damage it.\n\n" +
+      "Quit the other app and start {app} again, or choose another folder.",
     choose_another_folder: "Choose another folder…",
     use_default_folder: "Use the default folder",
     quit: "Quit",
@@ -32,6 +36,10 @@ const messages = {
       "Le dossier {path} n’est pas vide et n’a pas été créé par {app} (format de contenu {version}). Rien n’y a été modifié.\n\n" +
       "Choisissez un dossier vide, par exemple un nouveau sous-dossier ({subfolder}) : utilisez le bouton « Nouveau dossier » de la fenêtre de sélection, puis sélectionnez-le. " +
       "Vous pouvez aussi choisir un dossier de contenu {app} existant.",
+    content_folder_in_use_title: "Ce dossier de contenu est déjà utilisé",
+    content_folder_in_use:
+      "Le dossier {path} est déjà utilisé par {other_app} (processus {pid} sur {hostname}, depuis le {since}). Deux applications utilisant le même dossier de contenu l’abîmeraient.\n\n" +
+      "Quittez l’autre application et relancez {app}, ou choisissez un autre dossier.",
     choose_another_folder: "Choisir un autre dossier…",
     use_default_folder: "Utiliser le dossier par défaut",
     quit: "Quitter",
@@ -51,6 +59,10 @@ const messages = {
       "La cartella {path} non è vuota e non è stata creata da {app} (formato dei contenuti {version}). Non è stato modificato nulla.\n\n" +
       "Scegli una cartella vuota, per esempio una nuova sottocartella ({subfolder}): usa il pulsante «Nuova cartella» della finestra di selezione, poi selezionala. " +
       "Puoi anche scegliere una cartella dei contenuti {app} esistente.",
+    content_folder_in_use_title: "Questa cartella dei contenuti è già in uso",
+    content_folder_in_use:
+      "La cartella {path} è già usata da {other_app} (processo {pid} su {hostname}, dal {since}). Due applicazioni che usano la stessa cartella dei contenuti la danneggerebbero.\n\n" +
+      "Chiudi l’altra applicazione e riavvia {app}, oppure scegli un’altra cartella.",
     choose_another_folder: "Scegli un’altra cartella…",
     use_default_folder: "Usa la cartella predefinita",
     quit: "Esci",

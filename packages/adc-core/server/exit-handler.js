@@ -3,11 +3,13 @@ const binCleanup = require("./bin-cleanup");
 const cacheManager = require("./cache-manager");
 const ffmpegTracker = require("./ffmpeg-tracker");
 const puppeteer = require("./puppeteer");
+const contentLock = require("./content-lock");
 
 let exitHandled = false;
 
 /**
- * Run all exit cleanups (bin cleanup, cache manager, ffmpeg tracker).
+ * Run all exit cleanups (bin cleanup, cache manager, ffmpeg tracker,
+ * content folder lock).
  * Used by the centralized process exit handler and by Electron before-quit.
  * Safe to call multiple times; runs only once.
  */
@@ -40,6 +42,12 @@ async function runExitCleanup() {
       await puppeteer.closeSharedBrowser();
     } catch (err) {
       dev.error("Error during puppeteer cleanup:", err);
+    }
+
+    try {
+      await contentLock.release();
+    } catch (err) {
+      dev.error("Error while releasing content folder lock:", err);
     }
 
     dev.log("Exit cleanup completed");

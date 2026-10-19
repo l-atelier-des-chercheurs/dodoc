@@ -15,6 +15,7 @@ const server = require("./server"),
   journal = require("./journal"),
   ffmpegTracker = require("./ffmpeg-tracker"),
   contentFolder = require("./content-folder"),
+  contentLock = require("./content-lock"),
   t = require("./startup-messages");
 
 module.exports = async function start({
@@ -292,18 +293,63 @@ async function copyAndRenameUserFolder(full_default_path) {
     full_path_to_content
   );
 
-  // in electron, let the user pick another folder or go back to the default
-  // one, otherwise they would be stuck with a path they can't change from the app
-  while (global.is_electron && status === "incompatible") {
-    const content_path = await global.appElectron().pickContentFolder(
-      { refused_path: full_path_to_content }
-    );
+  // a usable folder must also not be used by another running app (or another
+  // instance of this one)
+  let lock;
+  while (true) {
+    lock = undefined;
+    if (status !== "incompatible") {
+      lock = await contentLock.acquire(full_path_to_content);
+      if (lock.ok) break;
+    }
+    // in electron, let the user pick another folder or go back to the default
+    // one, otherwise they would be stuck with a path they can't change from the app
+    if (!global.is_electron) break;
+
+    const content_path = await global.appElectron().pickContentFolder({
+      refused_path: full_path_to_content,
+      reason: status === "incompatible" ? "incompatible" : "in_use",
+      owner: lock?.owner,
+    });
     full_path_to_content = resolveContentPath(content_path);
     await utils.testWriteFileInFolder(full_path_to_content);
     ({ status, reason, needs_stamp } = await contentFolder.getStatus(
       full_path_to_content
     ));
   }
+
+  if (lock && !lock.ok) {
+    const owner = lock.owner || {};
+    const err = new Error(
+      t(
+        "content_folder_in_use",
+        contentLock.describeOwner(full_path_to_content, owner),
+        "en"
+      )
+    );
+    err.code = "content_folder_in_use";
+    const app = global.appInfos.productName;
+    err.cli_message = [
+      "",
+      `❌ Content folder already in use, ${app} will not start.`,
+      "",
+      `   contentPath setting: "${global.settings.contentPath}"`,
+      `   Resolved to:         ${full_path_to_content}`,
+      `   Used by:             ${owner.productName || owner.app || "?"} (pid ${
+        owner.pid
+      } on ${owner.hostname}, since ${owner.started_at})`,
+      "",
+      "   Two apps writing the same content folder would corrupt it.",
+      "   Stop the other app, or set contentPath in settings.json to another folder.",
+      `   If no other app is running, delete ${path.join(
+        full_path_to_content,
+        contentLock.LOCK_FILENAME
+      )}.`,
+      "",
+    ].join("\n");
+    throw err;
+  }
+  if (lock) process.on("exit", contentLock.releaseSync);
 
   if (status === "valid") {
     dev.log(`-> content folder is valid: ${full_path_to_content}`);
