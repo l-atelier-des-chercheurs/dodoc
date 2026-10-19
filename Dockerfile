@@ -17,12 +17,16 @@ FROM build-base AS build-server
 
 # Configure for production
 ENV NODE_ENV=production
+# Chromium comes from apt in the serving image: don't let Puppeteer download Chrome at install
+ENV PUPPETEER_SKIP_DOWNLOAD=true
 
 # Install server dependencies
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 COPY package*.json ./
+COPY packages/adc-core/package.json ./packages/adc-core/
 COPY scripts/ ./scripts/
-RUN npm ci --only=production
+RUN npm ci --omit=dev \
+    && test ! -d node_modules/electron
 
 # == Serving ==
 
@@ -31,8 +35,7 @@ FROM node:24.21.0-slim
 # Install chromium (Puppeteer fallback) and poppler-utils (pdftoppm for PDF thumbnails)
 RUN apt update && apt install -y --no-install-recommends chromium poppler-utils && rm -rf /var/lib/apt/lists/*
 
-# Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# Tell Puppeteer to use the installed Chromium
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 EXPOSE 8080

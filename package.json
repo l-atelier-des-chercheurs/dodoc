@@ -20,6 +20,8 @@
     "debug": "node . --inspect=5858 -- --debug",
     "debug-verbose": "node . --inspect=5858 -- --debug --verbose",
     "debug-lr": "node . --inspect=5858 -- --debug --livereload",
+    "install:electron": "npm ci --prefix electron",
+    "electron": "npm start --prefix electron",
     "postinstall": "node scripts/cleanup-ffprobe.js",
     "preversion": "npm run build --prefix client && git add client/dist",
     "sync:electron-version": "ROOT_VERSION=$(node -p \"require('./package.json').version\") && npm version --no-git-tag-version \"$ROOT_VERSION\" --prefix electron",
@@ -31,48 +33,12 @@
     "node": "^24.21.0",
     "npm": "*"
   },
+  "workspaces": [
+    "packages/adc-core"
+  ],
   "dependencies": {
-    "@cantoo/pdf-lib": "^2.11.1",
-    "@iarna/toml": "^2.2.5",
-    "archiver": "^7.0.1",
-    "bonjour-service": "^1.3.0",
-    "cheerio": "^1.2.0",
-    "compression": "^1.8.1",
-    "cors": "^2.8.6",
+    "adc-core": "^0.1.0",
     "electron-store": "^11.0.2",
-    "eventemitter2": "^6.4.9",
-    "exifr": "^7.1.3",
-    "express": "^5.2.1",
-    "express-slow-down": "^3.1.0",
-    "fast-folder-size": "^2.4.0",
-    "ffmpeg-static": "^5.3.0",
-    "ffprobe-static": "^3.1.0",
-    "fluent-ffmpeg": "^2.1.3",
-    "formidable": "^3.5.4",
-    "fs-extra": "^11.3.4",
-    "heic-decode": "^2.1.0",
-    "helmet": "^8.1.0",
-    "lru-cache": "^11.3.5",
-    "nodemailer": "^7.0.13",
-    "platform-folders": "^0.6.1",
-    "pug": "^3.0.4",
-    "puppeteer": "^24.40.0",
-    "rich-text": "^4.1.0",
-    "sharedb": "^5.2.2",
-    "sharp": "^0.34.5",
-    "slugg": "^1.2.1",
-    "socket.io": "^4.8.3",
-    "undici": "^7.30.0",
-    "unzipper": "^0.12.3",
-    "websocket-json-stream": "0.0.3",
-    "write-file-atomic": "^7.0.1",
-    "ws": "^8.20.0"
-  },
-  "devDependencies": {
-    "node-gyp": "^12.2.0"
-  },
-  "optionalDependencies": {
-    "bufferutil": "4.1.0",
-    "extractd": "^2.1.2"
+    "write-file-atomic": "^7.0.1"
   }
 }

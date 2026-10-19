@@ -17,7 +17,23 @@ const server = require("./server"),
   contentFolder = require("./content-folder"),
   t = require("./startup-messages");
 
-module.exports = async function () {
+module.exports = async function start({
+  appRoot,
+  appInfos,
+  settings,
+  clientDist,
+  views,
+  defaultContent,
+  electron,
+  content = {},
+}) {
+  global.appRoot = appRoot;
+  global.appInfos = appInfos;
+  global.settings = settings;
+  global.appPaths = { clientDist, views, defaultContent };
+  global.appContentOptions = content;
+  // returns the app's electron module, see server/index.js
+  global.appElectron = electron;
   global.is_electron = process.versions.hasOwnProperty("electron");
 
   const infos = `Starting ${global.appInfos.name} v${
@@ -74,7 +90,7 @@ module.exports = async function () {
   let win;
   if (global.is_electron) {
     try {
-      win = await require("../electron/electron").init();
+      win = await global.appElectron().init();
     } catch (err) {
       dev.error(err);
       throw err;
@@ -116,7 +132,7 @@ module.exports = async function () {
       throw new Error(t("bonjour_domain_must_be_string", {}, "en"));
     } else {
       await require("./bonjour").init({
-        name: "do•doc",
+        name: global.appInfos.productName,
         protocol: global.settings.protocol,
         port: global.appInfos.port,
         host: global.settings.bonjour_domain,
@@ -150,15 +166,20 @@ async function setupApp() {
 
   if (global.settings.cache_content === true) cache.init();
 
-  let full_default_path = path.join(`${global.appRoot}`, `content`);
+  let full_default_path = global.appPaths.defaultContent;
   if (global.is_electron)
-    full_default_path = path.join(
-      `${global.appRoot.replace(
-        `${path.sep}app.asar`,
-        `${path.sep}app.asar.unpacked`
-      )}`,
-      `content`
+    full_default_path = full_default_path.replace(
+      `${path.sep}app.asar`,
+      `${path.sep}app.asar.unpacked`
     );
+
+  const content_format = await contentFolder.init(
+    full_default_path,
+    global.appContentOptions
+  );
+  dev.log(
+    `Content format: ${content_format.app} ${content_format.version}`
+  );
 
   global.pathToUserContent = await copyAndRenameUserFolder(
     full_default_path
@@ -253,7 +274,7 @@ async function copyAndRenameUserFolder(full_default_path) {
     }
 
     // Fallback to default path
-    full_path_to_content = path.join(user_dir_path, "dodoc");
+    full_path_to_content = path.join(user_dir_path, global.appInfos.name);
     dev.log("fallback to default path for content", full_path_to_content);
 
     // Check write permissions for fallback path
@@ -267,26 +288,37 @@ async function copyAndRenameUserFolder(full_default_path) {
     }
   }
 
-  let { status, reason } = await contentFolder.getStatus(full_path_to_content);
+  let { status, reason, needs_stamp } = await contentFolder.getStatus(
+    full_path_to_content
+  );
 
   // in electron, let the user pick another folder or go back to the default
   // one, otherwise they would be stuck with a path they can't change from the app
   while (global.is_electron && status === "incompatible") {
-    const content_path = await require("../electron/electron").pickContentFolder(
+    const content_path = await global.appElectron().pickContentFolder(
       { refused_path: full_path_to_content }
     );
     full_path_to_content = resolveContentPath(content_path);
     await utils.testWriteFileInFolder(full_path_to_content);
-    ({ status, reason } = await contentFolder.getStatus(full_path_to_content));
+    ({ status, reason, needs_stamp } = await contentFolder.getStatus(
+      full_path_to_content
+    ));
   }
 
   if (status === "valid") {
     dev.log(`-> content folder is valid: ${full_path_to_content}`);
+    // folder created before $content_app: claim it, so other apps refuse it
+    if (needs_stamp) {
+      await contentFolder.stamp(full_path_to_content);
+      dev.log(`-> stamped content folder with $content_app`);
+    }
   } else if (status === "empty") {
     dev.log(
       `-> content folder is empty at ${full_path_to_content}. Duplicating default content folder.`
     );
     await fs.copy(full_default_path, full_path_to_content);
+    // in case the default content doesn't declare $content_app itself
+    await contentFolder.stamp(full_path_to_content);
   } else {
     // never write into a folder we don't recognize: it may hold content from
     // another app or an incompatible version
@@ -295,27 +327,31 @@ async function copyAndRenameUserFolder(full_default_path) {
         "content_folder_incompatible",
         {
           path: full_path_to_content,
-          subfolder: path.join(full_path_to_content, "dodoc"),
+          subfolder: path.join(full_path_to_content, global.appInfos.name),
+          version: contentFolder.getExpected().version,
         },
         "en"
       )
     );
     err.code = "content_folder_incompatible";
+    const app = global.appInfos.productName;
+    const expected = contentFolder.getExpected();
     err.cli_message = [
       "",
-      "❌ Incompatible content folder, do•doc will not start.",
+      `❌ Incompatible content folder, ${app} will not start.`,
       "",
       `   contentPath setting: "${global.settings.contentPath}"`,
       `   Resolved to:         ${full_path_to_content}`,
       `   Problem:             ${reason}`,
       "",
-      "   This folder is not empty and was not created by do•doc 10, so do•doc",
-      "   refuses to use it. Nothing was changed in it.",
+      `   This folder is not empty and was not created by ${app} (content format ${expected.version}),`,
+      `   so ${app} refuses to use it. Nothing was changed in it.`,
       "",
       "   To fix it, set contentPath in settings.json (next to settings_base.json) to either:",
       "   - a path to an empty or non-existent folder, for example a new subfolder of this one",
-      `     ("${path.join(full_path_to_content, "dodoc")}"): do•doc will create its content there,`,
-      '   - an existing do•doc 10 content folder (with a meta.txt containing dodoc_version="10").',
+      `     ("${path.join(full_path_to_content, global.appInfos.name)}"): ${app} will create its content there,`,
+      `   - an existing ${app} content folder (with a meta.txt containing "$content_app" = "${expected.app}"`,
+      `     and "$content_version" = "${expected.version}").`,
       "   A name without slashes is a folder inside the user's Documents folder.",
       "   With Docker, also check the volume mounted on this path.",
       "",

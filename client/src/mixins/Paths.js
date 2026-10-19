@@ -1,4 +1,4 @@
-import { pathToPublicPath } from "../../../shared/path_to_public_path.mjs";
+import { pathToPublicPath } from "../../../packages/adc-core/shared/path_to_public_path.mjs";
 
 export default {
   computed: {},

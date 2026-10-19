@@ -36,8 +36,8 @@ Temporary Items
 .apdisk
 
 # mkcert-generated dev certificates (run: node scripts/setup-https-certs.js)
-core2/ssl/localhost.crt
-core2/ssl/localhost.key
+packages/adc-core/server/ssl/localhost.crt
+packages/adc-core/server/ssl/localhost.key
 
 changelog.csv
 access.csv

@@ -82,7 +82,7 @@ export default {
       return { x: Math.atan2(r[7], r[4]), y, z: 0 };
     },
     // rotation from model to camera space, row-major 3x3, as used by
-    // core2/mesh-thumb.js to render thumbs
+    // adc-core/server/mesh-thumb.js to render thumbs
     getViewMatrix() {
       const { camera, object } = this.$refs.viewer || {};
       if (!camera || !object) return false;

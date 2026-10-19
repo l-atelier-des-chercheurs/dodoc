@@ -85,7 +85,7 @@ module.exports = function () {
   dev.logverbose("Starting express-settings");
 
   app.set("port", global.appInfos.port); //Server's port number
-  app.set("views", global.appRoot); //Specify the views folder
+  app.set("views", global.appPaths.views); //Specify the views folder
   app.set("view engine", "pug"); //View engine is Pug
 
   // prevent access to internal/sensitive files that live in content root
@@ -113,7 +113,7 @@ module.exports = function () {
   app.use(express.static(global.pathToUserContent));
   app.use(
     "/_client",
-    express.static(path.join(global.appRoot, "client", "dist"), {
+    express.static(global.appPaths.clientDist, {
       setHeaders: (res, filePath) => {
         // `build.js` is the ES module entry. It must not be cached "forever"
         // (we don't add `?v=` to it, because that breaks ESM singleton identity).

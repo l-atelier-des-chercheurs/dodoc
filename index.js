@@ -1,43 +1,10 @@
-// Check Node.js version before anything else
 const packagejson = require("./package.json");
-const requiredNodeVersion = packagejson.engines?.node;
-const currentNodeVersion = process.version;
-
-if (requiredNodeVersion) {
-  // Normalize versions for comparison (remove 'v' prefix and any non-version characters)
-  const requiredVersion = requiredNodeVersion.replace(/[^0-9.]/g, "");
-  const currentVersion = currentNodeVersion.replace(/^v/, "");
-
-  // Compare exact version match
-  if (requiredVersion !== currentVersion) {
-    console.error("\n❌ Node.js version mismatch!");
-    console.error(`   Required: ${requiredNodeVersion}`);
-    console.error(`   Current:  ${currentNodeVersion}`);
-    console.error(
-      `\nPlease install Node.js version ${requiredNodeVersion} exactly to run this application.`
-    );
-    console.error(
-      "You can use nvm (Node Version Manager) to switch versions:\n"
-    );
-    console.error(`   nvm install ${requiredNodeVersion}`);
-    console.error(`   nvm use ${requiredNodeVersion}\n`);
-    process.exit(1);
-  }
-}
-
 const path = require("path");
 
 // Configure Node.js to accept self-signed certificates
 process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
 
 const base_settings = require("./settings_base.json");
-
-global.appRoot = path.resolve(__dirname);
-global.appInfos = {
-  name: packagejson.name,
-  productName: packagejson.productName,
-  version: packagejson.version,
-};
 
 let settings = base_settings;
 const fs = require("fs");
@@ -64,7 +31,19 @@ if (fs.existsSync(settings_path)) {
 } else {
   console.log("INDEX / didn't find override settings, using base settings");
 }
-global.settings = settings;
-
-const main = require("./core2/main2");
-main();
+// adc-core checks the Node.js / Electron version before loading anything else
+require("adc-core").start({
+  appRoot: path.resolve(__dirname),
+  appInfos: {
+    name: packagejson.name,
+    productName: packagejson.productName,
+    version: packagejson.version,
+  },
+  settings,
+  clientDist: path.join(__dirname, "client", "dist"),
+  views: __dirname,
+  defaultContent: path.join(__dirname, "content"),
+  electron: () => require("./electron/electron"),
+  // content folders created before $content_app only have dodoc_version="10"
+  content: { acceptLegacyDodocVersion: "10" },
+});

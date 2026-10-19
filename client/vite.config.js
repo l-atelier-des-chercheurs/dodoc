@@ -38,10 +38,10 @@ export default defineConfig({
       origin: "*",
     },
     fs: {
-      // allow importing helpers shared with core2 (../shared)
+      // allow importing helpers shared with adc-core (../packages/adc-core/shared)
       allow: [
         searchForWorkspaceRoot(process.cwd()),
-        fileURLToPath(new URL("../shared", import.meta.url)),
+        fileURLToPath(new URL("../packages/adc-core/shared", import.meta.url)),
       ],
     },
   },

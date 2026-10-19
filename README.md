@@ -99,7 +99,15 @@ See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developp
 
 ## Method 3 — the dev way
 
-To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and follow the instructions below based on your use case.
+To install do•doc in dev mode, you need to have Node.js and npm installed. The required Node.js version is in `.nvmrc` (`nvm install && nvm use` picks it up). Clone this repository and follow the instructions below based on your use case.
+
+Electron is only declared in `electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
+
+| Use case                     | Install                                     | Run                    |
+| ---------------------------- | ------------------------------------------- | ---------------------- |
+| Server (VPS, Raspberry Pi…)  | `npm install`                               | `npm start`            |
+| Web development              | `npm install`                               | `npm run debug`        |
+| Desktop app (Electron)       | `npm install` then `npm run install:electron` | `npm run electron`   |
 
 ### Node version (for servers/VPS)
 
@@ -110,9 +118,13 @@ npm install
 npm start
 ```
 
+The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in `electron/package.json`. Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
+
+On a server where Chromium is already installed (Raspberry Pi, Docker), set `PUPPETEER_SKIP_DOWNLOAD=true` before installing and `PUPPETEER_EXECUTABLE_PATH` to the Chromium binary before starting.
+
 **Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
 
-**STL/OBJ thumbnails** are rendered in Node (`core2/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
+**STL/OBJ thumbnails** are rendered in Node (`packages/adc-core/server/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
 
 Available scripts for Node mode:
 
@@ -126,10 +138,11 @@ For running do•doc as a desktop application with Electron:
 
 ```bash
 npm install
-cd electron
-npm install
-npm start
+npm run install:electron
+npm run electron
 ```
+
+`npm run install:electron` and `npm run electron` are shortcuts for `npm ci --prefix electron` and `npm start --prefix electron`. Do not add `electron` to the root `package.json`, nor `electron/` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
 
 **Note:** When building Electron app, electron-builder automatically excludes puppeteer, typescript, and platform-folders from the final package to reduce app size. Both modes work from the same dependencies.
 

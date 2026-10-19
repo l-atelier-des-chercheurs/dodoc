@@ -3,7 +3,7 @@ import {
   upgradeImagesForPrint,
 } from "@/utils/printImageQuality.js";
 
-/** Same event type as Puppeteer / Electron offscreen capture (core2/puppeteer.js). */
+/** Same event type as Puppeteer / Electron offscreen capture (adc-core/server/puppeteer.js). */
 export const ready_for_export_event = "READY_FOR_EXPORT";
 
 export default {

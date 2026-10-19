@@ -1,6 +1,6 @@
 /**
  * Builds a list (newest first) of history rows for one meta field from the
- * flat log returned by `$api.getFieldHistory` (see core2/history.js).
+ * flat log returned by `$api.getFieldHistory` (see adc-core/server/history.js).
  *
  * Supports the three entry shapes:
  * - `{ event: "created", fields }` — initial snapshot

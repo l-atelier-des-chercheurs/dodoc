@@ -5,7 +5,7 @@ module.exports = (function () {
 
       try {
         if (global.is_electron) {
-          const electron = require("../electron/electron");
+          const electron = global.appElectron();
           await electron.captureScreenshot({ url, full_path_to_thumb });
         } else {
           const puppeteer = require("./puppeteer");
@@ -50,7 +50,7 @@ module.exports = (function () {
       };
 
       if (global.is_electron) {
-        const electron = require("../electron/electron");
+        const electron = global.appElectron();
         return await electron.exportToPDFOrImage({
           url,
           recipe,

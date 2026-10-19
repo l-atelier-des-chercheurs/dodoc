@@ -9,12 +9,12 @@ const {
 const path = require("path");
 const writeFileAtomic = require("write-file-atomic");
 
-const utils = require("../core2/utils"),
-  notifier = require("../core2/notifier"),
-  journal = require("../core2/journal"),
-  exitHandler = require("../core2/exit-handler"),
-  contentFolder = require("../core2/content-folder"),
-  t = require("../core2/startup-messages");
+const utils = require("adc-core/server/utils"),
+  notifier = require("adc-core/server/notifier"),
+  journal = require("adc-core/server/journal"),
+  exitHandler = require("adc-core/server/exit-handler"),
+  contentFolder = require("adc-core/server/content-folder"),
+  t = require("adc-core/server/startup-messages");
 
 // Set command line switches before app is ready
 try {
@@ -141,7 +141,7 @@ module.exports = (function () {
           message: t("content_folder_incompatible_title"),
           detail: t("content_folder_incompatible", {
             path: refused_path,
-            subfolder: path.join(refused_path, "dodoc"),
+            subfolder: path.join(refused_path, global.appInfos.name),
           }),
           buttons,
           defaultId: 0,

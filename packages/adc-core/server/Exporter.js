@@ -522,13 +522,9 @@ class Exporter {
           await writeFileAtomic(full_path_to_html_file, html);
 
           ////////////////////////////////////////////////////////////// CLIENT DIST
-          const full_path_to_client_dist = path.join(
-            `${global.appRoot.replace(
-              `${path.sep}app.asar`,
-              `${path.sep}app.asar.unpacked`
-            )}`,
-            "client",
-            "dist"
+          const full_path_to_client_dist = global.appPaths.clientDist.replace(
+            `${path.sep}app.asar`,
+            `${path.sep}app.asar.unpacked`
           );
           const destination_path = path.join(
             full_path_to_folder_in_cache,

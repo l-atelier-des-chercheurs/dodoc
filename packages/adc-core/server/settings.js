@@ -31,7 +31,7 @@ module.exports = (function () {
         throw err;
       }
 
-      const electron = require("../electron/electron");
+      const electron = global.appElectron();
       electron.saveNewPathToUserContent({ path: new_path });
     },
     getStoragePath: async () => {

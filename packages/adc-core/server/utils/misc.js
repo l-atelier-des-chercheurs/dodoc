@@ -72,7 +72,8 @@ module.exports = function createMiscUtils(API) {
 
     getDependenciesWithVersions() {
       try {
-        const packageJsonPath = path.join(global.appRoot, "package.json");
+        // adc-core's own package.json, which declares the server dependencies
+        const packageJsonPath = path.join(__dirname, "..", "..", "package.json");
         const packageJson = JSON.parse(
           fs.readFileSync(packageJsonPath, "utf8")
         );

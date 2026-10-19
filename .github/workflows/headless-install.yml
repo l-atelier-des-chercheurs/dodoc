@@ -1,0 +1,42 @@
+name: Headless install
+
+# Servers (VPS, Raspberry Pi, Docker) install the root package only:
+# Electron must never be pulled in, and the server must load without it.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  headless:
+    runs-on: ubuntu-latest
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+      - name: Check root devDependencies are empty
+        # users install with a plain `npm install`: anything listed here would be installed on their servers
+        run: |
+          node -e "const d = require('./package.json').devDependencies || {}; if (Object.keys(d).length) { console.error('❌ root devDependencies must stay empty, move them to client/, electron/ or tools/:', Object.keys(d).join(', ')); process.exit(1); }"
+      - name: Install production dependencies
+        run: npm ci --omit=dev
+      - name: Check Electron is not installed
+        run: |
+          if [ -d node_modules/electron ]; then
+            echo "❌ electron was installed at the root: it must only be listed in electron/package.json"
+            npm ls electron
+            exit 1
+          fi
+      - name: Check runtime version
+        run: node -e "require('adc-core/server/runtime-check')()"
+      - name: Check sharp loads on Linux
+        run: node -e "require('sharp')({create:{width:2,height:2,channels:3,background:'red'}}).png().toBuffer().then(b=>console.log('sharp OK',b.length))"
+      - name: Load server modules without Electron
+        run: node -e "require('adc-core/server/main2'); require('adc-core/server/api2'); require('adc-core/server/server')"

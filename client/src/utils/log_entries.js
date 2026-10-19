@@ -1,5 +1,5 @@
 /**
- * Parses a journal (.jsonl, see core2/journal.js) into entries, newest first.
+ * Parses a journal (.jsonl, see adc-core/server/journal.js) into entries, newest first.
  * Lines that aren't valid JSON are kept (as `parse_error`) so nothing is
  * silently hidden while debugging.
  *

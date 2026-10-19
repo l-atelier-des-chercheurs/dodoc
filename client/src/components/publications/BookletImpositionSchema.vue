@@ -95,7 +95,7 @@
   </div>
 </template>
 <script>
-import { getBookletSignatures } from "../../../../shared/booklet_imposition.mjs";
+import { getBookletSignatures } from "../../../../packages/adc-core/shared/booklet_imposition.mjs";
 
 const iso_a_formats = {
   A3: [297, 420],
