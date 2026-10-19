@@ -82,6 +82,8 @@ jobs:
           npm install
           cd electron
           npm install
+      - name: Check Node and Electron versions agree
+        run: node scripts/check-versions.js
       - name: Package Electron app (macOS)
         if: matrix.build == 'mac'
         env:

@@ -116,8 +116,9 @@ Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passe
   - `engines.node` (`>=24.22.0 <25`) ;
   - `adc.electron` (`^44.9.0`), dans son `package.json`.
 - **L'app** fixe des **versions exactes** :
-  - `.nvmrc`, `engines` dans son `package.json`, l'image Docker ;
-  - la version d'`electron` dans `electron/package.json`.
+  - Node : `.nvmrc` et l'image Docker. Les `engines` de l'app restent une plage (`^24.22.0`), pour qu'un serveur puisse installer un correctif de sécurité de Node sans attendre une release ;
+  - Electron : `electron/package.json` (`"electron": "44.9.0"`, sans `^`) et `electronVersion` dans `electron-builder.yml`. La version d'Electron fait partie du produit desktop, au même titre que le code.
+- **`scripts/check-versions.js`** vérifie que tout concorde : `.nvmrc`, Dockerfile, plages d'adc-core et de l'app, version d'Electron dans `electron/package.json` et `electron-builder.yml`. Si Electron est installé, il vérifie aussi que le Node qu'il embarque est celui du `.nvmrc`. Il tourne dans les workflows Headless install et Build/release.
 - **Règle d'alignement** : la version majeure de Node de l'app est celle du Node embarqué dans l'Electron choisi. On les monte ensemble : d'abord les plages d'adc-core, ensuite chaque app.
 - **Vérification au démarrage** (`server/runtime-check.js`, sans dépendance) : en mode Node, elle compare `process.versions.node` à `engines.node`. Sous Electron, elle compare `process.versions.electron` à `adc.electron` et affiche une fenêtre d'erreur en cas d'écart. On vérifie une plage et non une version exacte, parce que le Node embarqué par Electron n'a aucune raison de correspondre exactement à celui du `.nvmrc`.
 - Les modules natifs (sharp, bufferutil) utilisent N-API. Le même binaire fonctionne sous Node et sous Electron, et `electron-builder install-app-deps` reste dans le `postinstall` de `electron/`.

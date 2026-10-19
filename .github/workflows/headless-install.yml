@@ -21,6 +21,8 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
+      - name: Check Node and Electron versions agree
+        run: node scripts/check-versions.js
       - name: Check root devDependencies are empty
         # users install with a plain `npm install`: anything listed here would be installed on their servers
         run: |
