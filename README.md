@@ -144,7 +144,7 @@ npm run electron
 
 `npm run install:electron` and `npm run electron` are shortcuts for `npm ci --prefix electron` and `npm start --prefix electron`. Do not add `electron` to the root `package.json`, nor `electron/` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
 
-**Note:** When building Electron app, electron-builder automatically excludes puppeteer, typescript, and platform-folders from the final package to reduce app size. Both modes work from the same dependencies.
+**Note:** When building Electron app, electron-builder automatically excludes puppeteer and typescript from the final package to reduce app size. Both modes work from the same dependencies.
 
 Available scripts for Electron mode (run from `/electron` folder):
 

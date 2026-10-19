@@ -33,7 +33,6 @@
     "helmet": "^8.1.0",
     "lru-cache": "^11.3.5",
     "nodemailer": "^7.0.13",
-    "platform-folders": "^0.6.1",
     "pug": "^3.0.4",
     "puppeteer": "^24.40.0",
     "rich-text": "^4.1.0",

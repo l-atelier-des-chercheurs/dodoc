@@ -34,7 +34,6 @@ files:
   - "!node_modules/puppeteer-core/**"
   - "!node_modules/chromium-bidi/**"
   - "!node_modules/devtools-protocol/**"
-  - "!node_modules/platform-folders/**"
   - "!node_modules/typescript/**"
   - "!node_modules/@types/**"
   - "!tokens.json"
