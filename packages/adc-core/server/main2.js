@@ -160,8 +160,6 @@ async function setupApp() {
   // dev.logfunction(`une chaine et un`, { objet: "à la suite" });
   // dev.logfunction(["un", "array", "de", "valeurs"]);
 
-  await cacheManager.init();
-
   // Initialize ffmpeg tracker for process management
   ffmpegTracker.init();
 
@@ -192,6 +190,9 @@ async function setupApp() {
     message: "Will store contents in: " + global.pathToUserContent,
     from: "main2",
   });
+
+  // after the content folder: the cache folder is specific to it
+  await cacheManager.init({ content_path: global.pathToUserContent });
 
   // Now that content path is available, start file logging if requested
   journal.init();
