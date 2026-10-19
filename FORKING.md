@@ -12,7 +12,7 @@ Pour l'instant, adc-core est un workspace npm dans le repo dodoc (`packages/adc-
 
 ```
 dodoc/
-├── .nvmrc                    version exacte de Node pour l'app (24.21.0)
+├── .nvmrc                    version exacte de Node pour l'app (24.22.0)
 ├── .npmrc                    engine-strict=true
 ├── package.json              dépend de adc-core ; workspaces: ["packages/adc-core"]
 ├── index.js                  lit les settings et appelle require("adc-core").start({...})
@@ -113,8 +113,8 @@ Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passe
 ## Versions de Node et d'Electron
 
 - **adc-core** déclare des **plages** :
-  - `engines.node` (`>=24.21.0 <25`) ;
-  - `adc.electron` (`^44.7.0`), dans son `package.json`.
+  - `engines.node` (`>=24.22.0 <25`) ;
+  - `adc.electron` (`^44.9.0`), dans son `package.json`.
 - **L'app** fixe des **versions exactes** :
   - `.nvmrc`, `engines` dans son `package.json`, l'image Docker ;
   - la version d'`electron` dans `electron/package.json`.

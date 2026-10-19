@@ -30,7 +30,7 @@
     "setup-https": "node scripts/setup-https-certs.js"
   },
   "engines": {
-    "node": "^24.21.0",
+    "node": "^24.22.0",
     "npm": "*"
   },
   "workspaces": [

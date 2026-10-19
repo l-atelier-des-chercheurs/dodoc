@@ -1,7 +1,7 @@
 appId: "dodoc"
 productName: "do•doc"
 
-electronVersion: "44.7.0" # was 40.8.5 — match electron/package.json
+electronVersion: "44.9.0" # embeds Node 24.22.0 (.nvmrc) — match electron/package.json
 asar: true
 asarUnpack:
   - "content/**"
@@ -28,6 +28,8 @@ files:
   - "!client/node_modules/**"
   - "!electron/node_modules/**"
   - "!electron/dist/**"
+  # adc-core is a workspace: it is already copied into node_modules/adc-core
+  - "!packages/**"
   - "!node_modules/puppeteer/**"
   - "!node_modules/puppeteer-core/**"
   - "!node_modules/chromium-bidi/**"
