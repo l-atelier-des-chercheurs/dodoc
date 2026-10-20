@@ -20,14 +20,15 @@ dodoc/
 ├── content/                  contenu par défaut, copié à la création d'un dossier de contenu
 │   └── meta.txt              déclare le format de contenu de l'app (voir plus bas)
 ├── client/                   package séparé : client Vue, Vite ; build → client/dist (livré dans les releases)
-├── electron/                 package séparé : electron, electron-builder
-│   ├── package.json
-│   ├── index.js              require("../index.js")
-│   ├── electron.js           fenêtre, menus, dialogues (propres à l'app)
-│   └── electron-builder.yml  app: ../
+├── electron/                 emballage desktop propre à l'app (pas un package npm)
+│   ├── electron-builder.yml  identité : appId, productName, icônes, cibles ; extends la base d'adc-core
+│   └── build/                icônes, entitlements macOS
 └── packages/adc-core/
-    ├── package.json          dépendances du serveur, engines, plage Electron
+    ├── package.json          dépendances du serveur, engines ; bin adc-electron
     ├── server/               ancien core2 ; server/index.js = point d'entrée start()
+    ├── electron/             processus principal Electron (main.js, preload.js…), CLI adc-electron,
+    │   │                     config electron-builder de base
+    │   └── package.json      electron (version exacte), electron-builder, @electron/rebuild, electronmon
     └── shared/               code partagé entre le serveur et le client
 ```
 
@@ -40,7 +41,7 @@ require("adc-core").start({
   settings,                                  // settings_base.json + settings.json
   clientDist: path.join(__dirname, "client", "dist"),
   defaultContent: path.join(__dirname, "content"),
-  electron: () => require("./electron/electron"), // appelé uniquement sous Electron
+  electron: { about: "…" },                  // optionnel : texte « À propos », backgroundColor
   content: { acceptLegacyDodocVersion: "10" },    // optionnel, voir « Format du contenu »
   // views: path.join(__dirname, "views"),        // optionnel, surcharge index.pug / perf.pug
 });
@@ -50,11 +51,11 @@ require("adc-core").start({
 
 - `appInfos.name` sert d'identifiant technique : dossier de contenu par défaut, identifiant de format. `appInfos.productName` est le nom montré aux utilisateurs : messages, e-mails, Bonjour.
 - `start()` vérifie d'abord la version de Node ou d'Electron, puis la présence des options obligatoires. Il pose ensuite les globals (`global.settings`, `global.appInfos`…), qui restent internes au core pour l'instant.
-- Il n'y a **qu'un seul point d'entrée** pour les deux modes. C'est le binaire qui lance l'app qui choisit le mode : `node .` ou `electron .`. adc-core le détecte grâce à `process.versions.electron`.
+- Il n'y a **qu'un seul point d'entrée** pour les deux modes, le `main` du `package.json` (`index.js`). C'est le binaire qui lance l'app qui choisit le mode : `node .` ou `electron .` (via `adc-electron start`). adc-core le détecte grâce à `process.versions.electron`, et charge alors son propre processus principal (`electron/main.js`).
 
 ## Installer : la racine ne contient que l'exécution
 
-Le `package.json` racine d'une app ne déclare **que ce qui sert à faire tourner le serveur** : adc-core et quelques dépendances d'exécution comme `electron-store`. Les outils de build (Vite, Vitest, plugins…) sont dans `client/package.json`, et Electron dans `electron/package.json`.
+Le `package.json` racine d'une app ne déclare **que ce qui sert à faire tourner le serveur** : adc-core, et rien d'autre pour do•doc. Les outils de build (Vite, Vitest, plugins…) sont dans `client/package.json`, et Electron dans `packages/adc-core/electron/package.json`.
 
 Comme les releases livrent le client déjà buildé (`client/dist`), un utilisateur qui veut seulement utiliser l'app fait, comme il en a l'habitude :
 
@@ -63,7 +64,7 @@ npm install
 npm start
 ```
 
-- **Règle : les `devDependencies` racine restent vides.** Les outils de développement vont là où ils servent : `client/package.json` (Vite, tests), `electron/package.json` (Electron), ou un futur `tools/`. Un `npm install` à la racine équivaut alors à `npm install --omit=dev`, et la doc diffusée aux utilisateurs n'a jamais à changer. Le workflow Headless install le vérifie.
+- **Règle : les `devDependencies` racine restent vides.** Les outils de développement vont là où ils servent : `client/package.json` (Vite, tests), `adc-core/electron/package.json` (Electron), ou un futur `tools/`. Un `npm install` à la racine équivaut alors à `npm install --omit=dev`, et la doc diffusée aux utilisateurs n'a jamais à changer. Le workflow Headless install le vérifie.
 - **Si une devDependency doit un jour aller à la racine** : ajouter `omit=dev` dans le `.npmrc` du repo. Un `npm install` tout court la saute alors, et les développeurs font `npm install --include=dev`.
 - **Docker et la CI** font `npm ci --omit=dev`. `npm ci` installe exactement le lockfile, sans jamais le modifier, et échoue s'il ne correspond pas au `package.json`. Les builds sont ainsi reproductibles. Ce n'est pas utile aux utilisateurs : `npm ci` réinstalle tout `node_modules` à chaque fois, ce qui est lent sur un Pi, alors que `npm install` suit déjà le lockfile.
 
@@ -85,13 +86,29 @@ adc-vue       composants Vue 3 — optionnel    champs, médias, capture, édite
 - npm ne sait pas installer un sous-dossier d'un repo git. Tant qu'on n'est pas sur npm, il faut donc un repo par package, ou un repo commun pour `adc-client` et `adc-vue`. Une fois sur npm, un seul monorepo pourra publier chaque package séparément.
 - Le code partagé entre le serveur et le client (`adc-core/shared`, par exemple l'imposition de livret) devra être accessible aux deux, soit par copie, soit dans `adc-client`. C'est à trancher au moment du découpage.
 
-## Electron : installé seulement quand on en a besoin
+## Electron : géré par adc-core, installé seulement quand on en a besoin
+
+Toute la logique Electron est dans adc-core : processus principal (fenêtres, menus, dialogues du dossier de contenu, captures et PDF), version d'Electron, installation, lancement et packaging. L'app ne garde que son identité desktop : `electron/electron-builder.yml` et `electron/build/`.
 
 Un serveur (VPS, Raspberry Pi, Docker) ne doit **jamais** télécharger Electron.
 
-- `electron`, `electron-builder` et `@electron/rebuild` sont déclarés **uniquement** dans `electron/package.json`.
-- adc-core ne dépend pas du package `electron`. Dans le processus principal d'Electron, `require("electron")` est un module intégré, qui fonctionne depuis n'importe quel fichier sans package npm. Tout appel à `require("electron")` dans le core se fait derrière `if (global.is_electron)`, jamais au chargement d'un module.
-- `electron-store` reste dans les dépendances racine. C'est du JS pur, et l'app packagée n'embarque pas `electron/node_modules`.
+- `electron`, `electron-builder`, `@electron/rebuild` et `electronmon` sont déclarés **uniquement** dans `packages/adc-core/electron/package.json`. Ce n'est ni une dépendance ni un workspace : npm ne l'installe jamais tout seul.
+- `adc-electron install` l'installe à sa place, dans `node_modules/adc-core/electron/node_modules`, puis recompile les modules natifs de l'app pour cet Electron. Le packaging exclut ce dossier.
+- adc-core ne dépend pas du package `electron` à l'exécution. Dans le processus principal d'Electron, `require("electron")` est un module intégré, qui fonctionne depuis n'importe quel fichier sans package npm. Tout appel à `require("electron")` dans le core se fait derrière `if (global.is_electron)`, jamais au chargement d'un module.
+- `electron-store` est dans les dépendances d'adc-core. C'est du JS pur. Son nom de stockage est `appInfos.name`, pour que les installations existantes gardent leur dossier de contenu personnalisé.
+
+### La commande `adc-electron`
+
+Un `bin` d'adc-core, lancé depuis la racine de l'app par ses scripts npm :
+
+| Script de l'app | Commande | Rôle |
+|---|---|---|
+| `install:electron` | `adc-electron install` | installe Electron et ses outils, recompile les modules natifs |
+| `electron`, `electron:debug`… | `adc-electron start [flags] [-- args]` | lance l'app, par ex. `start --inspect=5858 -- --debug` |
+| `electron:debug-lr` | `adc-electron watch [flags] [-- args]` | idem, relancé à chaque modification (electronmon, sauf `client/`) |
+| `electron:pack`, `electron:dist`… | `adc-electron dist [args electron-builder]` | package avec `electron/electron-builder.yml`, sortie dans `electron/dist` |
+
+`dist` passe à electron-builder `--projectDir` (la racine de l'app), `--config electron/electron-builder.yml` et la version d'Electron d'adc-core. Le fichier de l'app commence par `extends: node_modules/adc-core/electron/builder.base.yml`, qui apporte `asar`, `asarUnpack`, `files` et les dossiers. Les listes `files` sont fusionnées, les autres clés de l'app remplacent celles de la base. Les chemins sont relatifs à la racine de l'app. La version de l'app vient de son `package.json` : il n'y a plus de version à synchroniser.
 
 | Contexte | Installation | Lancement |
 |---|---|---|
@@ -101,29 +118,27 @@ Un serveur (VPS, Raspberry Pi, Docker) ne doit **jamais** télécharger Electron
 | App desktop | `npm install` puis `npm run install:electron` | `npm run electron` |
 
 À ne jamais faire :
-- ajouter `electron` aux `dependencies`, `devDependencies` ou `optionalDependencies` racine (npm installe les optionnelles par défaut) ;
+- ajouter `electron` aux `dependencies`, `devDependencies` ou `optionalDependencies` de l'app ou d'adc-core (npm installe les optionnelles par défaut) ;
 - l'ajouter aux `peerDependencies` d'adc-core (npm ≥ 7 installe les peers automatiquement) ;
-- ajouter `electron/` aux workspaces ;
-- lancer `npm install --prefix electron` depuis un `postinstall` racine.
+- ajouter `packages/adc-core/electron` aux workspaces ;
+- lancer `adc-electron install` depuis un `postinstall`.
 
 Ce qui le vérifie :
-- le workflow [Headless install](../.github/workflows/headless-install.yml) installe avec `--omit=dev`, échoue si `node_modules/electron` existe, et charge tout le serveur sans Electron ;
+- le workflow [Headless install](../.github/workflows/headless-install.yml) installe avec `--omit=dev`, échoue si `node_modules/electron` ou `node_modules/adc-core/electron/node_modules` existe, et charge tout le serveur sans Electron ;
 - le `Dockerfile` vérifie la même chose pendant le build.
 
-Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passent par des fenêtres Electron. Sur un serveur qui a déjà Chromium, on pose `PUPPETEER_SKIP_DOWNLOAD=true` **avant** l'installation et `PUPPETEER_EXECUTABLE_PATH` au lancement, comme dans le `Dockerfile`.
+Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passent par des fenêtres Electron, et le packaging exclut puppeteer. `require("./puppeteer")` se fait donc toujours derrière `!global.is_electron`. Sur un serveur qui a déjà Chromium, on pose `PUPPETEER_SKIP_DOWNLOAD=true` **avant** l'installation et `PUPPETEER_EXECUTABLE_PATH` au lancement, comme dans le `Dockerfile`.
 
 ## Versions de Node et d'Electron
 
-- **adc-core** déclare des **plages** :
-  - `engines.node` (`>=24.22.0 <25`) ;
-  - `adc.electron` (`^44.9.0`), dans son `package.json`.
-- **L'app** fixe des **versions exactes** :
-  - Node : `.nvmrc` et l'image Docker. Les `engines` de l'app restent une plage (`^24.22.0`), pour qu'un serveur puisse installer un correctif de sécurité de Node sans attendre une release ;
-  - Electron : `electron/package.json` (`"electron": "44.9.0"`, sans `^`) et `electronVersion` dans `electron-builder.yml`. La version d'Electron fait partie du produit desktop, au même titre que le code.
-- **`scripts/check-versions.js`** vérifie que tout concorde : `.nvmrc`, Dockerfile, plages d'adc-core et de l'app, version d'Electron dans `electron/package.json` et `electron-builder.yml`. Si Electron est installé, il vérifie aussi que le Node qu'il embarque est celui du `.nvmrc`. Il tourne dans les workflows Headless install et Build/release.
-- **Règle d'alignement** : la version majeure de Node de l'app est celle du Node embarqué dans l'Electron choisi. On les monte ensemble : d'abord les plages d'adc-core, ensuite chaque app.
-- **Vérification au démarrage** (`server/runtime-check.js`, sans dépendance) : en mode Node, elle compare `process.versions.node` à `engines.node`. Sous Electron, elle compare `process.versions.electron` à `adc.electron` et affiche une fenêtre d'erreur en cas d'écart. On vérifie une plage et non une version exacte, parce que le Node embarqué par Electron n'a aucune raison de correspondre exactement à celui du `.nvmrc`.
-- Les modules natifs (sharp, bufferutil) utilisent N-API. Le même binaire fonctionne sous Node et sous Electron, et `electron-builder install-app-deps` reste dans le `postinstall` de `electron/`.
+- **adc-core** fixe :
+  - une **plage** pour Node, `engines.node` (`>=24.22.0 <25`) ;
+  - la **version exacte** d'Electron, dans `electron/package.json` (`"electron": "44.9.0"`, sans `^`). C'est la seule source : `adc-electron install` l'installe, `adc-electron dist` la passe à electron-builder. Une app ne choisit pas sa version d'Electron.
+- **L'app** fixe Node exactement : `.nvmrc` et l'image Docker. Les `engines` de l'app restent une plage (`^24.22.0`), pour qu'un serveur puisse installer un correctif de sécurité de Node sans attendre une release.
+- **`scripts/check-versions.js`** vérifie que tout concorde : `.nvmrc`, Dockerfile, plages d'adc-core et de l'app, version exacte d'Electron dans adc-core, absence d'`electronVersion` dans le `electron-builder.yml` de l'app. Si Electron est installé, il vérifie aussi que le Node qu'il embarque est celui du `.nvmrc`. Il tourne dans les workflows Headless install et Build/release.
+- **Règle d'alignement** : la version majeure de Node de l'app est celle du Node embarqué dans l'Electron d'adc-core. On les monte ensemble : d'abord adc-core, ensuite chaque app.
+- **Vérification au démarrage** (`server/runtime-check.js`, sans dépendance) : en mode Node, elle compare `process.versions.node` à `engines.node`. Sous Electron, elle compare `process.versions.electron` à la version d'adc-core et affiche une fenêtre d'erreur en cas d'écart.
+- Les modules natifs (sharp, bufferutil) utilisent N-API. Le même binaire fonctionne sous Node et sous Electron. `adc-electron install` les recompile quand même avec `@electron/rebuild`, comme le faisait `electron-builder install-app-deps`.
 
 ## Format du contenu : `$content_app` et `$content_version`
 
@@ -179,11 +194,11 @@ Une fois adc-core dans son propre repo :
 
 ## Créer une nouvelle app, ou migrer un fork existant
 
-1. Partir de la structure ci-dessus. Garder `electron/` comme package séparé.
+1. Partir de la structure ci-dessus. `electron/` ne contient que `electron-builder.yml` (copié de do•doc, en changeant l'identité) et `build/`.
 2. Renseigner `name` et `productName` dans `package.json`, et `contentPath` dans `settings_base.json`. Ce dernier doit être différent des autres apps.
 3. Dans `content/meta.txt` : `$content_app` et `$content_version`. Un fork de do•doc garde aussi `dodoc_version="10"` ; une app nouvelle, comme les Cahiers, ne le met pas.
 4. Dans `index.js` : appeler `start()`. Ajouter `content.acceptLegacyDodocVersion` seulement s'il existe des dossiers d'avant `$content_app` à reprendre.
-5. Fixer Node dans `.nvmrc` et Electron dans `electron/package.json`, dans les plages d'adc-core.
+5. Fixer Node dans `.nvmrc`, dans la plage d'adc-core et sur le Node embarqué par son Electron. Reprendre les scripts `install:electron` et `electron*` de do•doc, et passer le texte « À propos » dans `start({ electron: { about } })`.
 6. Supprimer tout le code serveur copié de dodoc : il vient maintenant d'adc-core.
 7. Vérifier `npm install && npm start` sur un clone propre, puis le desktop avec `npm run install:electron && npm run electron`.
 
@@ -192,8 +207,7 @@ Une fois adc-core dans son propre repo :
 - **Repo séparé** pour adc-core, avec le premier tag `v0.1.0`. dodoc l'installera alors depuis GitHub au lieu du workspace.
 - **Client** : `client/src/adc-core` est encore dans dodoc, et en Vue 2. On le découpera **après** la migration Vue 3 (voir `docs/V14-vue3-migration-plan.md`), en suivant la direction `adc-client` / `adc-vue` décrite plus haut, et en appliquant la règle de la deuxième app. `client/package.json` reste un package séparé de la racine.
 - **Prototype jetable des Cahiers v3** branché sur adc-core, pour trouver les points d'extension qui manquent avant de figer la 1.0 : dates de médias modifiables, routes en plus, composants à remplacer.
-- **Électron par app** : options de fenêtre, d'icône et de menu « À propos ». `electron.js` contient encore des textes et un nom de stockage (`electron-store` `name: "dodoc"`) propres à dodoc. C'est acceptable tant que le fichier reste dans l'app.
+- **Électron par app** : le menu est encore en français uniquement, et l'icône de fenêtre est cherchée dans `electron/build/icon.png`. Ajouter des options quand une deuxième app en aura besoin.
 - **Migration de format** : option `accept` (liste de versions) ou fonction `migrate` dans `content`, le jour où on en aura besoin.
-- `electronVersion` est encore écrit en dur dans `electron/electron-builder.yml`. Il faudra vérifier si electron-builder le trouve seul avec `app: ../`.
 - **npm et les scripts d'installation** : npm 11.19 avertit que les scripts d'installation de cinq dépendances ne sont pas encore approuvés (`allowScripts`) : bufferutil, fast-folder-size, ffmpeg-static, puppeteer, sharp. Pour l'instant, les scripts s'exécutent quand même (vérifié avec ffmpeg-static). Si une future version de npm les bloque par défaut, ffmpeg et Chrome ne seront plus téléchargés. Il faudra alors les approuver dans le repo, sans demander d'étape en plus aux utilisateurs.
 - Le mot de passe admin par défaut est encore `"dodoc"` pour toutes les apps (`DEFAULT_ADMIN_PASSWORD` dans `server/api2.js`). Il faudrait qu'il vienne des settings ou de `appInfos.name`.

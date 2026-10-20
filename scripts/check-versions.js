@@ -1,7 +1,7 @@
 // Checks that Node and Electron versions agree everywhere they are written.
-// The app pins exact versions (.nvmrc, Dockerfile, electron/package.json,
-// electron-builder.yml), adc-core declares the ranges it supports.
-// When electron is installed (electron/node_modules), also checks that the
+// The app pins Node exactly (.nvmrc, Dockerfile) in the range adc-core supports.
+// adc-core pins Electron exactly (packages/adc-core/electron/package.json).
+// When electron is installed (`npm run install:electron`), also checks that the
 // Node embedded in Electron is the one of .nvmrc.
 //
 // usage: node scripts/check-versions.js
@@ -23,7 +23,8 @@ const check = (ok, message) => {
 
 const core = json("packages/adc-core/package.json");
 const app = json("package.json");
-const electronPackage = json("electron/package.json");
+const coreElectronDir = "packages/adc-core/electron";
+const electronPackage = json(`${coreElectronDir}/package.json`);
 
 // Node
 const nvmrc = read(".nvmrc").trim().replace(/^v/, "");
@@ -48,27 +49,20 @@ check(
 );
 
 // Electron
-const electron = electronPackage.devDependencies.electron;
+const electron = electronPackage.dependencies.electron;
 check(
   /^\d+\.\d+\.\d+$/.test(electron),
-  `electron/package.json pins an exact electron version (${electron})`
-);
-const builder_version = (read("electron/electron-builder.yml").match(
-  /^electronVersion:\s*"?([\d.]+)"?/m
-) || [])[1];
-check(
-  builder_version === electron,
-  `electron-builder.yml electronVersion (${builder_version}) matches electron/package.json (${electron})`
+  `adc-core pins an exact electron version (${electron})`
 );
 check(
-  satisfies(electron, core.adc.electron),
-  `electron ${electron} is in adc-core adc.electron "${core.adc.electron}"`
+  !/^electronVersion:/m.test(read("electron/electron-builder.yml")),
+  `electron/electron-builder.yml does not set electronVersion (adc-electron dist passes adc-core's)`
 );
 
 // what is actually installed, when electron is
 let electron_binary;
 try {
-  electron_binary = require(path.join(root, "electron/node_modules/electron"));
+  electron_binary = require(path.join(root, coreElectronDir, "node_modules/electron"));
 } catch (err) {}
 if (electron_binary) {
   const res = spawnSync(
@@ -81,7 +75,7 @@ if (electron_binary) {
     .split(" ");
   check(
     installed_electron === electron,
-    `installed electron (${installed_electron}) matches electron/package.json (${electron})`
+    `installed electron (${installed_electron}) matches adc-core (${electron})`
   );
   check(
     embedded_node === nvmrc,

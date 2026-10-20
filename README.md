@@ -74,7 +74,7 @@ Each tag runs the same builds, whether it is stable or a pre-release. Only the G
 | Linux   | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb`           |                                                                                                                                                           |
 | Linux   | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` |                                                                                                                                                           |
 
-electron-builder also uploads `latest*.yml` files. They are only used by `electron-updater`, which do•doc does not use. The Windows Store package (appx) is not built by the action: run `npm run dist:win-store` in `electron/` by hand.
+electron-builder also uploads `latest*.yml` files. They are only used by `electron-updater`, which do•doc does not use. The Windows Store package (appx) is not built by the action: run `npm run electron:dist-win-store` by hand.
 
 The release is a **pre-release** when the version has a suffix (`-alpha.N`, `-beta.N`), and a regular release otherwise. It is published as soon as the first OS finishes, and the other installers are added as their jobs complete. electron-builder refuses to add files to a release published more than 2 hours earlier: to re-run a failed job after that, release a new version.
 
@@ -101,7 +101,7 @@ See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developp
 
 To install do•doc in dev mode, you need to have Node.js and npm installed. The required Node.js version is in `.nvmrc` (`nvm install && nvm use` picks it up). Clone this repository and follow the instructions below based on your use case.
 
-Electron is only declared in `electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
+Electron is managed by adc-core and only declared in `packages/adc-core/electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
 
 | Use case                     | Install                                     | Run                    |
 | ---------------------------- | ------------------------------------------- | ---------------------- |
@@ -118,7 +118,7 @@ npm install
 npm start
 ```
 
-The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in `electron/package.json`. Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
+The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in `packages/adc-core/electron/package.json`. Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
 
 On a server where Chromium is already installed (Raspberry Pi, Docker), set `PUPPETEER_SKIP_DOWNLOAD=true` before installing and `PUPPETEER_EXECUTABLE_PATH` to the Chromium binary before starting.
 
@@ -142,18 +142,18 @@ npm run install:electron
 npm run electron
 ```
 
-`npm run install:electron` and `npm run electron` are shortcuts for `npm ci --prefix electron` and `npm start --prefix electron`. Do not add `electron` to the root `package.json`, nor `electron/` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
+These scripts call `adc-electron`, a command from adc-core: `install:electron` installs the exact Electron version set by adc-core (in `node_modules/adc-core/electron/node_modules`), `electron` runs the app with it. Do not add `electron` to the root `package.json`, nor `packages/adc-core/electron` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
 
 **Note:** When building Electron app, electron-builder automatically excludes puppeteer and typescript from the final package to reduce app size. Both modes work from the same dependencies.
 
-Available scripts for Electron mode (run from `/electron` folder):
+Available scripts for Electron mode:
 
-- `npm start` - run the Electron app with minimal logging
-- `npm run debug` - run the app to debug locally
-- `npm run debug-verbose` - same, with verbose logs (very noisy)
-- `npm run debug-lr` - run the app in debug mode with live reload
-- `npm run pack` - package the app (without creating installer)
-- `npm run dist` - build distributable installers
+- `npm run electron` - run the Electron app with minimal logging
+- `npm run electron:debug` - run the app to debug locally
+- `npm run electron:debug-verbose` - same, with verbose logs (very noisy)
+- `npm run electron:debug-lr` - run the app in debug mode, restarted when server files change
+- `npm run electron:pack` - package the app in `electron/dist` (without creating installer)
+- `npm run electron:dist` - build distributable installers, configured by `electron/electron-builder.yml`
 
 For development with live reload (client-side code):
 
@@ -168,12 +168,12 @@ npm run dev
 ### On Ubuntu (Electron only)
 
 Because of recent security changes on Ubuntu, you may encounter the following error on npm start or debug:
-`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/electron/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
+`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/node_modules/adc-core/electron/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
 
 To fix, use the following commands:
 
 ```bash
-cd electron/node_modules/electron/dist/
+cd node_modules/adc-core/electron/node_modules/electron/dist/
 sudo chown root chrome-sandbox
 chmod 4755 chrome-sandbox
 ```

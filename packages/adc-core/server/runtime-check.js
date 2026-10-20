@@ -1,8 +1,10 @@
-// Checks that the running Node (or Electron) matches the ranges supported by the core.
-// Ranges come from the core's package.json: engines.node, and adc.electron.
+// Checks that the running Node (or Electron) is the one supported by the core:
+// the engines.node range of the core's package.json, or the exact Electron
+// version of electron/package.json (the one `adc-electron install` installs).
 // Must run before requiring anything else, so this file has no dependencies.
 
 const corePackage = require("../package.json");
+const coreElectronPackage = require("../electron/package.json");
 
 module.exports = function checkRuntime() {
   const is_electron = process.versions.hasOwnProperty("electron");
@@ -12,7 +14,7 @@ module.exports = function checkRuntime() {
     ? process.versions.electron
     : process.versions.node;
   const required = is_electron
-    ? corePackage.adc?.electron
+    ? coreElectronPackage.dependencies?.electron
     : corePackage.engines?.node;
 
   if (!required || satisfies(current, required)) return;

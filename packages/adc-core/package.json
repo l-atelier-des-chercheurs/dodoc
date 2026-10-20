@@ -5,11 +5,11 @@
   "author": "L’Atelier des Chercheurs <https://latelier-des-chercheurs.fr/>",
   "license": "AGPL-3.0-only",
   "main": "server/index.js",
+  "bin": {
+    "adc-electron": "electron/cli.js"
+  },
   "engines": {
     "node": ">=24.22.0 <25"
-  },
-  "adc": {
-    "electron": "^44.9.0"
   },
   "dependencies": {
     "@cantoo/pdf-lib": "^2.11.1",

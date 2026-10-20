@@ -45,3 +45,6 @@ client/dist/report.html
 tokens.json
 /dist/
 docker-compose.override.yml
+
+# adc-electron dist output
+electron/dist/

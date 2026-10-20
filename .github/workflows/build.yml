@@ -80,8 +80,7 @@ jobs:
       - name: Install Electron dependencies
         run: |
           npm install
-          cd electron
-          npm install
+          npm run install:electron
       - name: Check Node and Electron versions agree
         run: node scripts/check-versions.js
       - name: Package Electron app (macOS)
@@ -95,13 +94,12 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           EP_PRE_RELEASE: ${{ needs.meta.outputs.is_prerelease }}
         run: |
-          cd electron
           if [ "${{ matrix.mac_arch }}" = "x64" ]; then
             mac_artifact_name='dodoc-${version}-macos-intel.${ext}'
           else
             mac_artifact_name='dodoc-${version}-macos-arm.${ext}'
           fi
-          npm run dist -- --mac dmg --${{ matrix.mac_arch }} --config.mac.artifactName="${mac_artifact_name}"
+          npm run electron:dist -- --mac dmg --${{ matrix.mac_arch }} --config.mac.artifactName="${mac_artifact_name}"
       - name: Package Electron app (non-macOS)
         if: matrix.build != 'mac'
         env:
@@ -109,9 +107,7 @@ jobs:
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
           EP_PRE_RELEASE: ${{ needs.meta.outputs.is_prerelease }}
-        run: |
-          cd electron
-          npm run dist
+        run: npm run electron:dist
       - name: check macOS image
         if: matrix.build == 'mac'
         run: |
