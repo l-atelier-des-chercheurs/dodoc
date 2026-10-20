@@ -41,7 +41,6 @@ require("adc-core").start({
   },
   settings,
   clientDist: path.join(__dirname, "client", "dist"),
-  views: __dirname,
   defaultContent: path.join(__dirname, "content"),
   electron: () => require("./electron/electron"),
   // content folders created before $content_app only have dodoc_version="10"

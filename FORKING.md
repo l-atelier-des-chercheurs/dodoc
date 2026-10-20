@@ -39,12 +39,14 @@ require("adc-core").start({
   appInfos: { name, productName, version }, // depuis le package.json de l'app
   settings,                                  // settings_base.json + settings.json
   clientDist: path.join(__dirname, "client", "dist"),
-  views: __dirname,                          // index.pug, perf.pug
   defaultContent: path.join(__dirname, "content"),
   electron: () => require("./electron/electron"), // appelé uniquement sous Electron
   content: { acceptLegacyDodocVersion: "10" },    // optionnel, voir « Format du contenu »
+  // views: path.join(__dirname, "views"),        // optionnel, surcharge index.pug / perf.pug
 });
 ```
+
+- Les templates `index.pug` et `perf.pug` sont dans adc-core (`server/views`). Une app peut en fournir sa propre version dans un dossier passé en `views`, qui est consulté en premier. `index.pug` suppose que le build du client produit `build.js` (module ES) et `bundle.js` (script unique, inclus dans l'export HTML autonome), qui se montent sur `#app` et lisent `window.app_infos`. Le reste (polices, icônes…) est chargé par le client lui-même.
 
 - `appInfos.name` sert d'identifiant technique : dossier de contenu par défaut, identifiant de format. `appInfos.productName` est le nom montré aux utilisateurs : messages, e-mails, Bonjour.
 - `start()` vérifie d'abord la version de Node ou d'Electron, puis la présence des options obligatoires. Il pose ensuite les globals (`global.settings`, `global.appInfos`…), qui restent internes au core pour l'instant.

@@ -85,7 +85,11 @@ module.exports = function () {
   dev.logverbose("Starting express-settings");
 
   app.set("port", global.appInfos.port); //Server's port number
-  app.set("views", global.appPaths.views); //Specify the views folder
+  // the app's views folder (optional) overrides the core's index.pug / perf.pug
+  app.set(
+    "views",
+    [global.appPaths.views, path.join(__dirname, "views")].filter(Boolean)
+  );
   app.set("view engine", "pug"); //View engine is Pug
 
   // prevent access to internal/sensitive files that live in content root

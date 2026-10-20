@@ -36,7 +36,6 @@ files:
   - "!node_modules/devtools-protocol/**"
   - "!node_modules/typescript/**"
   - "!node_modules/@types/**"
-  - "!tokens.json"
   - "!settings.json"
   - "!**/*.log"
   - "!**/.DS_Store"

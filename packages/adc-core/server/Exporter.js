@@ -505,10 +505,17 @@ class Exporter {
 
       this._notifyProgress(76);
 
+      // the client built as a single script, inlined in index.html
+      const standalone_bundle = await fs.readFile(
+        path.join(global.appPaths.clientDist, "bundle.js"),
+        "utf8"
+      );
+
       res.render(
         "index",
         {
           page_is_standalone_html: true,
+          standalone_bundle,
           folder_data,
           stadia_maps_api_key: global.settings.stadia_maps_api_key || "",
           public_url: utils.getPublicUrl(),

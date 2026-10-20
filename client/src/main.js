@@ -18,6 +18,14 @@ const publicPath =
     ? "./_client/"
     : "/_client/";
 
+// fonts stay in public/fonts (not bundled): exports copy them but drop assets/
+["fonts/fira.css", "fonts/default_fonts.css"].forEach((href) => {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = publicPath + href;
+  document.head.append(link);
+});
+
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -34,6 +42,12 @@ Vue.use(PortalVue);
 
 import VuePlyr from "vue-plyr";
 import { plyr_options } from "@/utils/plyr.js";
+// plyr icons, referenced as <use xlink:href="#plyr-…"> (plyr_options.iconUrl is empty)
+import plyr_sprite from "./plyr.svg?raw";
+const plyr_sprite_container = document.createElement("div");
+plyr_sprite_container.style.display = "none";
+plyr_sprite_container.innerHTML = plyr_sprite;
+document.body.prepend(plyr_sprite_container);
 Vue.use(VuePlyr, {
   plyr: plyr_options,
 });

@@ -1,12 +1,12 @@
 // Public entry of adc-core's server, used by apps (do•doc, slashdoc, Les Cahiers):
 //
-//   require("adc-core").start({ appRoot, appInfos, settings, clientDist, views, defaultContent, electron, content })
+//   require("adc-core").start({ appRoot, appInfos, settings, clientDist, defaultContent, electron, content })
 //
 // - appRoot: absolute path of the app (its package.json, build/ icons…)
 // - appInfos: { name, productName, version } — productName is shown to users (emails, Bonjour, manifest)
 // - settings: settings_base.json merged with the app's settings.json
 // - clientDist: folder of the built client, served at /_client and copied into exports
-// - views: folder holding index.pug and perf.pug
+// - views (optional): folder whose index.pug / perf.pug override the core's (server/views)
 // - defaultContent: folder copied to the user's Documents on first start
 // - electron: () => the app's electron module, only called when running in Electron
 // - content (optional): { acceptLegacyDodocVersion } — accept content folders created
@@ -18,7 +18,6 @@ const REQUIRED_OPTIONS = [
   "appInfos",
   "settings",
   "clientDist",
-  "views",
   "defaultContent",
 ];
 

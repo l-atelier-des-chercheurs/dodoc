@@ -21,8 +21,7 @@
   },
   "electronmon": {
     "patterns": [
-      "!../client/**",
-      "!../tokens.json"
+      "!../client/**"
     ]
   },
   "devDependencies": {
