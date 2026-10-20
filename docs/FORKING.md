@@ -15,7 +15,7 @@ dodoc/
 ├── .nvmrc                    version exacte de Node pour l'app (24.22.0)
 ├── .npmrc                    engine-strict=true
 ├── package.json              dépend de adc-core ; workspaces: ["packages/adc-core"]
-├── index.js                  lit les settings et appelle require("adc-core").start({...})
+├── index.js                  appelle require("adc-core").start({...})
 ├── settings_base.json        réglages et schéma de l'app
 ├── content/                  contenu par défaut, copié à la création d'un dossier de contenu
 │   └── meta.txt              déclare le format de contenu de l'app (voir plus bas)
@@ -37,8 +37,6 @@ dodoc/
 ```js
 require("adc-core").start({
   appRoot: path.resolve(__dirname),
-  appInfos: { name, productName, version }, // depuis le package.json de l'app
-  settings,                                  // settings_base.json + settings.json
   clientDist: path.join(__dirname, "client", "dist"),
   defaultContent: path.join(__dirname, "content"),
   electron: { about: "…" },                  // optionnel : texte « À propos », backgroundColor
@@ -49,6 +47,7 @@ require("adc-core").start({
 
 - Les templates `index.pug` et `perf.pug` sont dans adc-core (`server/views`). Une app peut en fournir sa propre version dans un dossier passé en `views`, qui est consulté en premier. `index.pug` suppose que le build du client produit `build.js` (module ES) et `bundle.js` (script unique, inclus dans l'export HTML autonome), qui se montent sur `#app` et lisent `window.app_infos`. Le reste (polices, icônes…) est chargé par le client lui-même.
 
+- Le core lit lui-même dans `appRoot` : `appInfos` (`name`, `productName`, `version`) depuis `package.json`, et les settings depuis `settings_base.json`, surchargé par `settings.json` s'il existe. Un `settings.json` au JSON invalide arrête l'app avec un message d'erreur. On peut passer `appInfos` ou `settings` à `start()` pour remplacer ces valeurs.
 - `appInfos.name` sert d'identifiant technique : dossier de contenu par défaut, identifiant de format. `appInfos.productName` est le nom montré aux utilisateurs : messages, e-mails, Bonjour.
 - `start()` vérifie d'abord la version de Node ou d'Electron, puis la présence des options obligatoires. Il pose ensuite les globals (`global.settings`, `global.appInfos`…), qui restent internes au core pour l'instant.
 - Il n'y a **qu'un seul point d'entrée** pour les deux modes, le `main` du `package.json` (`index.js`). C'est le binaire qui lance l'app qui choisit le mode : `node .` ou `electron .` (via `adc-electron start`). adc-core le détecte grâce à `process.versions.electron`, et charge alors son propre processus principal (`electron/main.js`).
