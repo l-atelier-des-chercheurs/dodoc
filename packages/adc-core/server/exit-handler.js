@@ -2,7 +2,6 @@ const dev = require("./dev-log");
 const binCleanup = require("./bin-cleanup");
 const cacheManager = require("./cache-manager");
 const ffmpegTracker = require("./ffmpeg-tracker");
-const puppeteer = require("./puppeteer");
 const contentLock = require("./content-lock");
 
 let exitHandled = false;
@@ -38,10 +37,13 @@ async function runExitCleanup() {
       dev.error("Error during ffmpeg cleanup:", err);
     }
 
-    try {
-      await puppeteer.closeSharedBrowser();
-    } catch (err) {
-      dev.error("Error during puppeteer cleanup:", err);
+    // puppeteer is not packaged in Electron, where exports use Electron windows
+    if (!global.is_electron) {
+      try {
+        await require("./puppeteer").closeSharedBrowser();
+      } catch (err) {
+        dev.error("Error during puppeteer cleanup:", err);
+      }
     }
 
     try {
