@@ -8,7 +8,8 @@
 // - clientDist: folder of the built client, served at /_client and copied into exports
 // - views (optional): folder whose index.pug / perf.pug override the core's (server/views)
 // - defaultContent: folder copied to the user's Documents on first start
-// - electron: () => the app's electron module, only called when running in Electron
+// - electron (optional): { about, backgroundColor } — About panel text and window
+//   background, used by the core's electron main process (electron/main.js)
 // - content (optional): { acceptLegacyDodocVersion } — accept content folders created
 //   before $content_app, that only have dodoc_version="<this value>" (do•doc and its
 //   forks), see content-folder.js

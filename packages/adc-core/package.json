@@ -19,6 +19,7 @@
     "cheerio": "^1.2.0",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
+    "electron-store": "^11.0.2",
     "eventemitter2": "^6.4.9",
     "exifr": "^7.1.3",
     "express": "^5.2.1",

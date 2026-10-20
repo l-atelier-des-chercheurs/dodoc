@@ -25,7 +25,7 @@ module.exports = async function start({
   clientDist,
   views,
   defaultContent,
-  electron,
+  electron = {},
   content = {},
 }) {
   global.appRoot = appRoot;
@@ -33,8 +33,9 @@ module.exports = async function start({
   global.settings = settings;
   global.appPaths = { clientDist, views, defaultContent };
   global.appContentOptions = content;
-  // returns the app's electron module, see server/index.js
-  global.appElectron = electron;
+  // returns the electron main process module, only required in Electron
+  global.appElectronOptions = electron;
+  global.appElectron = () => require("../electron/main");
   global.is_electron = process.versions.hasOwnProperty("electron");
 
   const infos = `Starting ${global.appInfos.name} v${

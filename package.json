@@ -37,8 +37,6 @@
     "packages/adc-core"
   ],
   "dependencies": {
-    "adc-core": "^0.1.0",
-    "electron-store": "^11.0.2",
-    "write-file-atomic": "^7.0.1"
+    "adc-core": "^0.1.0"
   }
 }

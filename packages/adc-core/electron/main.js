@@ -1,3 +1,6 @@
+// Electron main process, loaded by start() only when running in Electron.
+// App-specific values come from start({ electron: { about, backgroundColor } }).
+
 const {
   app,
   BrowserWindow,
@@ -9,13 +12,13 @@ const {
 const path = require("path");
 const writeFileAtomic = require("write-file-atomic");
 
-const utils = require("adc-core/server/utils"),
-  notifier = require("adc-core/server/notifier"),
-  journal = require("adc-core/server/journal"),
-  exitHandler = require("adc-core/server/exit-handler"),
-  contentFolder = require("adc-core/server/content-folder"),
-  contentLock = require("adc-core/server/content-lock"),
-  t = require("adc-core/server/startup-messages");
+const utils = require("../server/utils"),
+  notifier = require("../server/notifier"),
+  journal = require("../server/journal"),
+  exitHandler = require("../server/exit-handler"),
+  contentFolder = require("../server/content-folder"),
+  contentLock = require("../server/content-lock"),
+  t = require("../server/startup-messages");
 
 // Set command line switches before app is ready
 try {
@@ -30,7 +33,13 @@ const windowStateKeeper = require("./window-state");
 const Store = require("electron-store").default;
 
 module.exports = (function () {
-  const store = new Store({ name: "dodoc" });
+  const options = global.appElectronOptions || {};
+  // about: text shown in the About panel, after the version
+  const about = options.about || "";
+  const backgroundColor = options.backgroundColor || "#EBEBEB";
+
+  // named after the app: existing installs keep their custom_content_path
+  const store = new Store({ name: global.appInfos.name });
   let win;
   let aboutModalOpening = false; // Flag to prevent multiple rapid clicks
   let settings_content_path; // contentPath from settings.json, before any custom path
@@ -326,10 +335,10 @@ module.exports = (function () {
     const new_win = new BrowserWindow({
       width: 1000,
       height: 800,
-      backgroundColor: "#EBEBEB",
+      backgroundColor,
       show: true,
       title: global.appInfos.productName,
-      icon: path.join(global.appRoot, "build", "icon.png"),
+      icon: path.join(global.appRoot, "electron", "build", "icon.png"),
       webPreferences: {
         allowRunningInsecureContent: true,
         nodeIntegration: false,
@@ -365,11 +374,11 @@ module.exports = (function () {
         y: mainWindowState.y,
         width: mainWindowState.width,
         height: mainWindowState.height,
-        backgroundColor: "#EBEBEB",
+        backgroundColor,
         // titleBarStyle: "hidden",
         show: true,
         title: global.appInfos.productName,
-        icon: path.join(global.appRoot, "build", "icon.png"),
+        icon: path.join(global.appRoot, "electron", "build", "icon.png"),
 
         webPreferences: {
           allowRunningInsecureContent: true,
@@ -387,8 +396,7 @@ module.exports = (function () {
         app.setAboutPanelOptions({
           applicationName: global.appInfos.productName,
           applicationVersion: app.getVersion(),
-          copyright:
-            "do•doc est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL. \n\n do•doc is a documentation tool for creativity. Released under the free software GNU AGPL license.",
+          copyright: about,
         });
       }
 
@@ -567,11 +575,7 @@ module.exports = (function () {
                     type: "info",
                     title: `À propos ${global.appInfos.productName}`,
                     message: global.appInfos.productName,
-                    detail: `Version ${app.getVersion()}\n\n${
-                      global.appInfos.productName
-                    } est un outil de documentation pour la créativité. Publié sous licence libre GNU AGPL.\n\n${
-                      global.appInfos.productName
-                    } is a documentation tool for creativity. Released under the free software GNU AGPL license.`,
+                    detail: `Version ${app.getVersion()}\n\n${about}`,
                     buttons: ["OK"],
                   });
                 })
