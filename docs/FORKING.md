@@ -107,7 +107,7 @@ Un serveur (VPS, Raspberry Pi, Docker) ne doit **jamais** télécharger Electron
 - lancer `npm install --prefix electron` depuis un `postinstall` racine.
 
 Ce qui le vérifie :
-- le workflow [Headless install](.github/workflows/headless-install.yml) installe avec `--omit=dev`, échoue si `node_modules/electron` existe, et charge tout le serveur sans Electron ;
+- le workflow [Headless install](../.github/workflows/headless-install.yml) installe avec `--omit=dev`, échoue si `node_modules/electron` existe, et charge tout le serveur sans Electron ;
 - le `Dockerfile` vérifie la même chose pendant le build.
 
 Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passent par des fenêtres Electron. Sur un serveur qui a déjà Chromium, on pose `PUPPETEER_SKIP_DOWNLOAD=true` **avant** l'installation et `PUPPETEER_EXECUTABLE_PATH` au lancement, comme dans le `Dockerfile`.
@@ -190,7 +190,7 @@ Une fois adc-core dans son propre repo :
 ## À faire
 
 - **Repo séparé** pour adc-core, avec le premier tag `v0.1.0`. dodoc l'installera alors depuis GitHub au lieu du workspace.
-- **Client** : `client/src/adc-core` est encore dans dodoc, et en Vue 2. On le découpera **après** la migration Vue 3 (voir `client/V14-vue3-migration-plan.md`), en suivant la direction `adc-client` / `adc-vue` décrite plus haut, et en appliquant la règle de la deuxième app. `client/package.json` reste un package séparé de la racine.
+- **Client** : `client/src/adc-core` est encore dans dodoc, et en Vue 2. On le découpera **après** la migration Vue 3 (voir `docs/V14-vue3-migration-plan.md`), en suivant la direction `adc-client` / `adc-vue` décrite plus haut, et en appliquant la règle de la deuxième app. `client/package.json` reste un package séparé de la racine.
 - **Prototype jetable des Cahiers v3** branché sur adc-core, pour trouver les points d'extension qui manquent avant de figer la 1.0 : dates de médias modifiables, routes en plus, composants à remplacer.
 - **Électron par app** : options de fenêtre, d'icône et de menu « À propos ». `electron.js` contient encore des textes et un nom de stockage (`electron-store` `name: "dodoc"`) propres à dodoc. C'est acceptable tant que le fichier reste dans l'app.
 - **Migration de format** : option `accept` (liste de versions) ou fonction `migrate` dans `content`, le jour où on en aura besoin.

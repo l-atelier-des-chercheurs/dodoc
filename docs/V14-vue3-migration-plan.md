@@ -20,11 +20,11 @@ Migrer le client de Vue 2.7 vers Vue 3 sans réécriture, en faisant de `adc-cor
 
 | Point | Volume | Correctif |
 |---|---|---|
-| `$api` = `new Vue({...})` servant de store ([adc-core/api.js](src/adc-core/api.js)) | 1 fichier, ~25 `$set`/`$delete` | `reactive()` (ou Pinia) ; `$set(o, k, v)` devient `o[k] = v`. Au passage, supprimer le code mort de [api.js:521-523](src/adc-core/api.js#L521-L523) (la clé vient d'être supprimée ligne 518, la condition est toujours fausse). |
+| `$api` = `new Vue({...})` servant de store ([adc-core/api.js](../client/src/adc-core/api.js)) | 1 fichier, ~25 `$set`/`$delete` | `reactive()` (ou Pinia) ; `$set(o, k, v)` devient `o[k] = v`. Au passage, supprimer le code mort de [api.js:521-523](../client/src/adc-core/api.js#L521-L523) (la clé vient d'être supprimée ligne 518, la condition est toujours fausse). |
 | `$eventHub = new Vue()` | 210 occurrences, 42 fichiers, ~75 événements | `mitt` (API `on`/`off`/`emit` quasi identique). Tous les `$on`/`$off` passent par le bus, aucun événement d'instance. |
 | `$root.*` | 117 occurrences, 49 fichiers | Store « app » injecté et typé (`app_infos`, `debug_mode`, `is_mobile_view`, `publicPath`, `settings`, `opened_modals`…). C'est le **contrat que l'app hôte fournit à `adc-core`**. |
-| 15 mixins globaux (`Vue.mixin` dans [main.js](src/main.js)) | `FormatDates`, `FormatBytes`, `Props`, `Cache`, `Medias`, `Authors`, `Capture`, `Publications`, `Paths`, `Strings`, `Queries`, `Tags`, `Electron`, `DodocIcon`, `Folders` | `app.mixin()` fonctionne toujours en Vue 3 pour la transition. Cible : des composables/utilitaires importés explicitement. Certains (`Publications`, `Capture`) sont propres à do•doc et ne doivent pas suivre dans le socle. |
-| ~20 composants globaux (`Vue.component` dans [main.js](src/main.js)) | `TitleField`, `DropDown`, `DetailsPane`… | Le package `adc-core` exporte un plugin `install(app)`. |
+| 15 mixins globaux (`Vue.mixin` dans [main.js](../client/src/main.js)) | `FormatDates`, `FormatBytes`, `Props`, `Cache`, `Medias`, `Authors`, `Capture`, `Publications`, `Paths`, `Strings`, `Queries`, `Tags`, `Electron`, `DodocIcon`, `Folders` | `app.mixin()` fonctionne toujours en Vue 3 pour la transition. Cible : des composables/utilitaires importés explicitement. Certains (`Publications`, `Capture`) sont propres à do•doc et ne doivent pas suivre dans le socle. |
+| ~20 composants globaux (`Vue.component` dans [main.js](../client/src/main.js)) | `TitleField`, `DropDown`, `DetailsPane`… | Le package `adc-core` exporte un plugin `install(app)`. |
 | `Vue.prototype.$sanitize`, `$alertify`, `$axios`… | — | `app.config.globalProperties`, ou mieux, des imports directs. |
 
 ### Mécanique : codemod
@@ -38,7 +38,7 @@ Migrer le client de Vue 2.7 vers Vue 3 sans réécriture, en faisant de `adc-cor
 | `v-model` maison (`value`/`input`) | ~5 fichiers | `modelValue`/`update:modelValue` |
 | `$listeners`, `.native` | ~10 fichiers | `$attrs` / suppression |
 | `portal-vue` | 4 fichiers | `<Teleport>` |
-| JSX | [ddr/index.vue](src/ddr/index.vue) | `@vitejs/plugin-vue-jsx` |
+| JSX | [ddr/index.vue](../client/src/ddr/index.vue) | `@vitejs/plugin-vue-jsx` |
 
 Le codemod (un script, pas des remplacements à la main) sert deux fois : pour les Cahiers, puis pour do•doc.
 
