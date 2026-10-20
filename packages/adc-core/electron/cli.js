@@ -33,6 +33,10 @@ if (!fs.existsSync(path.join(appRoot, "package.json"))) {
 if (!commands[command]) {
   fail(`usage: adc-electron <${Object.keys(commands).join("|")}> [args]`);
 }
+// electron/electron-builder.yml is what makes an app a desktop app
+if (!fs.existsSync(path.join(appRoot, "electron", "electron-builder.yml"))) {
+  fail(`this app has no desktop version (no electron/electron-builder.yml in ${appRoot})`);
+}
 Promise.resolve(commands[command](args)).catch((err) => fail(err.stack || err));
 
 async function install() {

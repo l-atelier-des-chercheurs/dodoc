@@ -92,6 +92,8 @@ Toute la logique Electron est dans adc-core : processus principal (fenêtres, me
 
 Un serveur (VPS, Raspberry Pi, Docker) ne doit **jamais** télécharger Electron.
 
+**Une app sans `electron/electron-builder.yml` n'a pas de version desktop.** Le job `electron` du workflow Build/release ne tourne pas, `adc-electron` refuse de s'exécuter et `check-versions.js` saute la vérification de ce fichier. Attention : c'est electron-builder qui crée la release GitHub. Sans version desktop, un tag ne publie que l'image Docker, sans release GitHub.
+
 - `electron`, `electron-builder`, `@electron/rebuild` et `electronmon` sont déclarés **uniquement** dans `packages/adc-core/electron/package.json`. Ce n'est ni une dépendance ni un workspace : npm ne l'installe jamais tout seul.
 - `adc-electron install` l'installe à sa place, dans `node_modules/adc-core/electron/node_modules`, puis recompile les modules natifs de l'app pour cet Electron. Le packaging exclut ce dossier.
 - adc-core ne dépend pas du package `electron` à l'exécution. Dans le processus principal d'Electron, `require("electron")` est un module intégré, qui fonctionne depuis n'importe quel fichier sans package npm. Tout appel à `require("electron")` dans le core se fait derrière `if (global.is_electron)`, jamais au chargement d'un module.

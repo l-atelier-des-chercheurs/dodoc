@@ -54,10 +54,15 @@ check(
   /^\d+\.\d+\.\d+$/.test(electron),
   `adc-core pins an exact electron version (${electron})`
 );
-check(
-  !/^electronVersion:/m.test(read("electron/electron-builder.yml")),
-  `electron/electron-builder.yml does not set electronVersion (adc-electron dist passes adc-core's)`
-);
+// an app without electron/electron-builder.yml has no desktop version
+if (fs.existsSync(path.join(root, "electron/electron-builder.yml"))) {
+  check(
+    !/^electronVersion:/m.test(read("electron/electron-builder.yml")),
+    `electron/electron-builder.yml does not set electronVersion (adc-electron dist passes adc-core's)`
+  );
+} else {
+  console.log("—  no electron/electron-builder.yml: the app has no desktop version");
+}
 
 // what is actually installed, when electron is
 let electron_binary;
