@@ -101,7 +101,7 @@ See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developp
 
 To install do•doc in dev mode, you need to have Node.js and npm installed. The required Node.js version is in `.nvmrc` (`nvm install && nvm use` picks it up). Clone this repository and follow the instructions below based on your use case.
 
-Electron is managed by adc-core and only declared in `packages/adc-core/electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
+Electron is managed by [adc-core](https://github.com/l-atelier-des-chercheurs/adc-core) and only declared in its `electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
 
 | Use case                     | Install                                     | Run                    |
 | ---------------------------- | ------------------------------------------- | ---------------------- |
@@ -118,13 +118,13 @@ npm install
 npm start
 ```
 
-The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in `packages/adc-core/electron/package.json`. Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
+The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in adc-core's `electron/package.json`. adc-core is installed from a git tag of [its repo](https://github.com/l-atelier-des-chercheurs/adc-core). Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
 
 On a server where Chromium is already installed (Raspberry Pi, Docker), set `PUPPETEER_SKIP_DOWNLOAD=true` before installing and `PUPPETEER_EXECUTABLE_PATH` to the Chromium binary before starting.
 
 **Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
 
-**STL/OBJ thumbnails** are rendered in Node (`packages/adc-core/server/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
+**STL/OBJ thumbnails** are rendered in Node (adc-core's `server/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
 
 Available scripts for Node mode:
 
@@ -142,7 +142,7 @@ npm run install:electron
 npm run electron
 ```
 
-These scripts call `adc-electron`, a command from adc-core: `install:electron` installs the exact Electron version set by adc-core (in `node_modules/adc-core/electron/node_modules`), `electron` runs the app with it. Do not add `electron` to the root `package.json`, nor `packages/adc-core/electron` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
+These scripts call `adc-electron`, a command from adc-core: `install:electron` installs the exact Electron version set by adc-core (in `node_modules/adc-core/electron/node_modules`), `electron` runs the app with it. Run `install:electron` again after `npm ci` or an adc-core update, which empty that folder. Do not add `electron` to the root `package.json`, nor `node_modules/adc-core/electron` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
 
 **Note:** When building Electron app, electron-builder automatically excludes puppeteer and typescript from the final package to reduce app size. Both modes work from the same dependencies.
 

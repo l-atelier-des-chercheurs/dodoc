@@ -8,13 +8,13 @@ Jusqu'ici, slashdoc, SoftGems, Living Archive et les autres outils dérivés son
 
 ## Organisation
 
-Pour l'instant, adc-core est un workspace npm dans le repo dodoc (`packages/adc-core`). Il passera ensuite dans son propre repo.
+adc-core a son propre repo, [l-atelier-des-chercheurs/adc-core](https://github.com/l-atelier-des-chercheurs/adc-core). Les apps l'installent depuis ses tags git (voir « Distribution d'adc-core »).
 
 ```
 dodoc/
 ├── .nvmrc                    version exacte de Node pour l'app (24.22.0)
 ├── .npmrc                    engine-strict=true
-├── package.json              dépend de adc-core ; workspaces: ["packages/adc-core"]
+├── package.json              dépend de adc-core (tag git)
 ├── index.js                  appelle require("adc-core").start({...})
 ├── settings_base.json        réglages et schéma de l'app
 ├── content/                  contenu par défaut, copié à la création d'un dossier de contenu
@@ -23,7 +23,7 @@ dodoc/
 ├── electron/                 emballage desktop propre à l'app (pas un package npm)
 │   ├── electron-builder.yml  identité : appId, productName, icônes, cibles ; extends la base d'adc-core
 │   └── build/                icônes, entitlements macOS
-└── packages/adc-core/
+└── node_modules/adc-core/    installé depuis le repo adc-core
     ├── package.json          dépendances du serveur, engines ; bin adc-electron
     ├── server/               ancien core2 ; server/index.js = point d'entrée start()
     ├── electron/             processus principal Electron (main.js, preload.js…), CLI adc-electron,
@@ -54,7 +54,7 @@ require("adc-core").start({
 
 ## Installer : la racine ne contient que l'exécution
 
-Le `package.json` racine d'une app ne déclare **que ce qui sert à faire tourner le serveur** : adc-core, et rien d'autre pour do•doc. Les outils de build (Vite, Vitest, plugins…) sont dans `client/package.json`, et Electron dans `packages/adc-core/electron/package.json`.
+Le `package.json` racine d'une app ne déclare **que ce qui sert à faire tourner le serveur** : adc-core, et rien d'autre pour do•doc. Les outils de build (Vite, Vitest, plugins…) sont dans `client/package.json`, et Electron dans le `electron/package.json` d'adc-core.
 
 Comme les releases livrent le client déjà buildé (`client/dist`), un utilisateur qui veut seulement utiliser l'app fait, comme il en a l'habitude :
 
@@ -93,8 +93,8 @@ Un serveur (VPS, Raspberry Pi, Docker) ne doit **jamais** télécharger Electron
 
 **Une app sans `electron/electron-builder.yml` n'a pas de version desktop.** Le job `electron` du workflow Build/release ne tourne pas, `adc-electron` refuse de s'exécuter et `check-versions.js` saute la vérification de ce fichier. Attention : c'est electron-builder qui crée la release GitHub. Sans version desktop, un tag ne publie que l'image Docker, sans release GitHub.
 
-- `electron`, `electron-builder`, `@electron/rebuild` et `electronmon` sont déclarés **uniquement** dans `packages/adc-core/electron/package.json`. Ce n'est ni une dépendance ni un workspace : npm ne l'installe jamais tout seul.
-- `adc-electron install` l'installe à sa place, dans `node_modules/adc-core/electron/node_modules`, puis recompile les modules natifs de l'app pour cet Electron. Le packaging exclut ce dossier.
+- `electron`, `electron-builder`, `@electron/rebuild` et `electronmon` sont déclarés **uniquement** dans le `electron/package.json` d'adc-core. Ce n'est ni une dépendance ni un workspace : npm ne l'installe jamais tout seul.
+- `adc-electron install` l'installe à sa place, dans `node_modules/adc-core/electron/node_modules`, puis recompile les modules natifs de l'app pour cet Electron. Le packaging exclut ce dossier. Comme il est dans `node_modules/adc-core`, un `npm ci` ou une mise à jour d'adc-core l'efface : il faut relancer `npm run install:electron`.
 - adc-core ne dépend pas du package `electron` à l'exécution. Dans le processus principal d'Electron, `require("electron")` est un module intégré, qui fonctionne depuis n'importe quel fichier sans package npm. Tout appel à `require("electron")` dans le core se fait derrière `if (global.is_electron)`, jamais au chargement d'un module.
 - `electron-store` est dans les dépendances d'adc-core. C'est du JS pur. Son nom de stockage est `appInfos.name`, pour que les installations existantes gardent leur dossier de contenu personnalisé.
 
@@ -121,7 +121,7 @@ Un `bin` d'adc-core, lancé depuis la racine de l'app par ses scripts npm :
 À ne jamais faire :
 - ajouter `electron` aux `dependencies`, `devDependencies` ou `optionalDependencies` de l'app ou d'adc-core (npm installe les optionnelles par défaut) ;
 - l'ajouter aux `peerDependencies` d'adc-core (npm ≥ 7 installe les peers automatiquement) ;
-- ajouter `packages/adc-core/electron` aux workspaces ;
+- déclarer `node_modules/adc-core/electron` comme workspace ;
 - lancer `adc-electron install` depuis un `postinstall`.
 
 Ce qui le vérifie :
@@ -182,11 +182,13 @@ do•doc et tous ses forks actuels écrivaient seulement `dodoc_version="10"`, e
 
 ## Distribution d'adc-core
 
-Une fois adc-core dans son propre repo :
-- il **n'est pas publié sur npm** pendant la phase 0.x. Les apps l'installent depuis GitHub, avec des plages semver sur les tags git :
+- adc-core **n'est pas publié sur npm** pendant la phase 0.x. Les apps l'installent depuis GitHub, avec des plages semver sur les tags git :
   ```json
-  "adc-core": "github:l-atelier-des-chercheurs/adc-core#semver:^0.1.0"
+  "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.1.0"
   ```
+- npm écrit quand même une URL `git+ssh://` dans le lockfile. Ce n'est pas gênant tant que le repo est public : `npm ci` télécharge le tarball du commit en HTTPS, sans clé SSH ni `git` (vérifié). `git` sert seulement à résoudre la plage (`npm install` sans lockfile, `npm update`). Le `Dockerfile` l'installe quand même dans l'étape de build, par précaution ;
+- le lockfile de l'app fixe le commit exact : `npm install` ne passe à un tag plus récent de la plage que si on le demande (`npm update adc-core`) ;
+- pour publier une version : changer `version` dans le `package.json` d'adc-core, compléter le CHANGELOG, taguer (`v0.2.0`) et pousser avec `--follow-tags`. Dans chaque app : `npm update adc-core` (ou changer la plage), puis commiter le lockfile ;
 - **pas d'étape de build, ni de `postinstall` ou `prepare`** dans le package : le serveur est en JS Node, et les futurs packages client seront livrés en sources `.vue` et `.js`, compilées par le Vite de chaque app. Le nettoyage de ffprobe reste dans le `postinstall` de l'app ;
 - **on ne déplace jamais un tag publié** ;
 - un CHANGELOG est obligatoire ;
@@ -205,7 +207,6 @@ Une fois adc-core dans son propre repo :
 
 ## À faire
 
-- **Repo séparé** pour adc-core, avec le premier tag `v0.1.0`. dodoc l'installera alors depuis GitHub au lieu du workspace.
 - **Client** : `client/src/adc-core` est encore dans dodoc, et en Vue 2. On le découpera **après** la migration Vue 3 (voir `docs/V14-vue3-migration-plan.md`), en suivant la direction `adc-client` / `adc-vue` décrite plus haut, et en appliquant la règle de la deuxième app. `client/package.json` reste un package séparé de la racine.
 - **Prototype jetable des Cahiers v3** branché sur adc-core, pour trouver les points d'extension qui manquent avant de figer la 1.0 : dates de médias modifiables, routes en plus, composants à remplacer.
 - **Électron par app** : le menu est encore en français uniquement, et l'icône de fenêtre est cherchée dans `electron/build/icon.png`. Ajouter des options quand une deuxième app en aura besoin.

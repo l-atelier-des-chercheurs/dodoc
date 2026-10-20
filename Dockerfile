@@ -7,6 +7,7 @@ FROM node:24.22.0-slim AS build-base
 RUN apt update && apt install -y --no-install-recommends \
     build-essential \
     python3 \
+    git \
     ca-certificates \
     && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -23,7 +24,6 @@ ENV PUPPETEER_SKIP_DOWNLOAD=true
 # Install server dependencies
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 COPY package*.json ./
-COPY packages/adc-core/package.json ./packages/adc-core/
 COPY scripts/ ./scripts/
 RUN npm ci --omit=dev \
     && test ! -d node_modules/electron

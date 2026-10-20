@@ -37,10 +37,7 @@
     "node": "^24.22.0",
     "npm": "*"
   },
-  "workspaces": [
-    "packages/adc-core"
-  ],
   "dependencies": {
-    "adc-core": "^0.1.0"
+    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.1.0"
   }
 }

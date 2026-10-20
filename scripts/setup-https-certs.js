@@ -15,7 +15,7 @@ const { execSync, spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 
-const ssl_dir = path.join(__dirname, "..", "packages", "adc-core", "server", "ssl");
+const ssl_dir = path.join(__dirname, "..", "ssl");
 const cert_path = path.join(ssl_dir, "localhost.crt");
 const key_path = path.join(ssl_dir, "localhost.key");
 const settings_path = path.join(__dirname, "..", "settings.json");
