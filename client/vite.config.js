@@ -26,6 +26,10 @@ export default defineConfig({
       "@node_modules": fileURLToPath(
         new URL("./node_modules", import.meta.url)
       ),
+      // adc-core is installed by the root package.json, for its shared/ helpers
+      "@adc-core": fileURLToPath(
+        new URL("../node_modules/adc-core", import.meta.url)
+      ),
     },
   },
   assetsInclude: ["**/*.svg"],
@@ -38,10 +42,12 @@ export default defineConfig({
       origin: "*",
     },
     fs: {
-      // allow importing helpers shared with adc-core (../packages/adc-core/shared)
+      // allow importing helpers shared with adc-core (@adc-core/shared)
       allow: [
         searchForWorkspaceRoot(process.cwd()),
-        fileURLToPath(new URL("../packages/adc-core/shared", import.meta.url)),
+        fileURLToPath(
+          new URL("../node_modules/adc-core/shared", import.meta.url)
+        ),
       ],
     },
   },
