@@ -24,7 +24,6 @@ ENV PUPPETEER_SKIP_DOWNLOAD=true
 # Install server dependencies
 WORKDIR /src/l-atelier-des-chercheurs/dodoc
 COPY package*.json ./
-COPY scripts/ ./scripts/
 RUN npm ci --omit=dev \
     && test ! -d node_modules/electron
 

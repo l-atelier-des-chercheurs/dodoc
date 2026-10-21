@@ -184,12 +184,15 @@ do•doc et tous ses forks actuels écrivaient seulement `dodoc_version="10"`, e
 
 - adc-core **n'est pas publié sur npm** pendant la phase 0.x. Les apps l'installent depuis GitHub, avec des plages semver sur les tags git :
   ```json
-  "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.1.0"
+  "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.0"
   ```
 - npm écrit quand même une URL `git+ssh://` dans le lockfile. Ce n'est pas gênant tant que le repo est public : `npm ci` télécharge le tarball du commit en HTTPS, sans clé SSH ni `git` (vérifié). `git` sert seulement à résoudre la plage (`npm install` sans lockfile, `npm update`). Le `Dockerfile` l'installe quand même dans l'étape de build, par précaution ;
 - le lockfile de l'app fixe le commit exact : `npm install` ne passe à un tag plus récent de la plage que si on le demande (`npm update adc-core`) ;
-- pour publier une version : changer `version` dans le `package.json` d'adc-core, compléter le CHANGELOG, taguer (`v0.2.0`) et pousser avec `--follow-tags`. Dans chaque app : `npm update adc-core` (ou changer la plage), puis commiter le lockfile ;
-- **pas d'étape de build, ni de `postinstall` ou `prepare`** dans le package : le serveur est en JS Node, et les futurs packages client seront livrés en sources `.vue` et `.js`, compilées par le Vite de chaque app. Le nettoyage de ffprobe reste dans le `postinstall` de l'app ;
+- pour publier une version : changer `version` dans le `package.json` d'adc-core, compléter le CHANGELOG, taguer (`v0.2.0`) et pousser avec `--follow-tags`. Dans chaque app, ensuite :
+  - pour un correctif (`0.2.0` → `0.2.1`) : `npm update adc-core`, la plage `^0.2.0` le couvre ;
+  - pour une nouvelle version mineure (`0.2.x` → `0.3.0`) : en 0.x, `^0.2.0` veut dire `>=0.2.0 <0.3.0`, et `npm update` ne la prend donc pas. Il faut changer la plage : `npm install "adc-core@git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.3.0"`. npm réécrit alors la dépendance en `github:…` dans le `package.json` : remettre la forme `git+https://` ci-dessus, puis relancer `npm install` ;
+  - commiter le `package.json` et le lockfile ;
+- **pas d'étape de build, ni de `postinstall` ou `prepare`** dans le package : le serveur est en JS Node, et les futurs packages client seront livrés en sources `.vue` et `.js`, compilées par le Vite de chaque app. Les apps n'ont pas non plus de `postinstall` : depuis adc-core 0.2.0, ffprobe ne télécharge que le binaire de la plateforme courante ;
 - **on ne déplace jamais un tag publié** ;
 - un CHANGELOG est obligatoire ;
 - en développement, on utilise `npm link` ou `file:../adc-core`, et la CI refuse les dépendances `file:` ;
@@ -211,5 +214,5 @@ do•doc et tous ses forks actuels écrivaient seulement `dodoc_version="10"`, e
 - **Prototype jetable des Cahiers v3** branché sur adc-core, pour trouver les points d'extension qui manquent avant de figer la 1.0 : dates de médias modifiables, routes en plus, composants à remplacer.
 - **Électron par app** : le menu est encore en français uniquement, et l'icône de fenêtre est cherchée dans `electron/build/icon.png`. Ajouter des options quand une deuxième app en aura besoin.
 - **Migration de format** : option `accept` (liste de versions) ou fonction `migrate` dans `content`, le jour où on en aura besoin.
-- **npm et les scripts d'installation** : npm 11.19 avertit que les scripts d'installation de cinq dépendances ne sont pas encore approuvés (`allowScripts`) : bufferutil, fast-folder-size, ffmpeg-static, puppeteer, sharp. Pour l'instant, les scripts s'exécutent quand même (vérifié avec ffmpeg-static). Si une future version de npm les bloque par défaut, ffmpeg et Chrome ne seront plus téléchargés. Il faudra alors les approuver dans le repo, sans demander d'étape en plus aux utilisateurs.
+- **npm et les scripts d'installation** : npm 11.19 avertit que les scripts d'installation de six dépendances ne sont pas encore approuvés (`allowScripts`) : @derhuerst/ffprobe-static, bufferutil, fast-folder-size, ffmpeg-static, puppeteer, sharp. Pour l'instant, les scripts s'exécutent quand même (vérifié avec ffmpeg-static et @derhuerst/ffprobe-static). Si une future version de npm les bloque par défaut, ffmpeg, ffprobe et Chrome ne seront plus téléchargés. Il faudra alors les approuver dans le repo, sans demander d'étape en plus aux utilisateurs.
 - Le mot de passe admin par défaut est encore `"dodoc"` pour toutes les apps (`DEFAULT_ADMIN_PASSWORD` dans `server/api2.js`). Il faudrait qu'il vienne des settings ou de `appInfos.name`.

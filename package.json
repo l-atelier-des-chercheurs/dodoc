@@ -28,7 +28,6 @@
     "electron:pack": "adc-electron dist --dir",
     "electron:dist": "adc-electron dist -p always",
     "electron:dist-win-store": "adc-electron dist --win appx",
-    "postinstall": "node scripts/cleanup-ffprobe.js",
     "preversion": "npm run build --prefix client && git add client/dist",
     "postversion": "git push --follow-tags",
     "setup-https": "node scripts/setup-https-certs.js"
@@ -38,6 +37,6 @@
     "npm": "*"
   },
   "dependencies": {
-    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.1.0"
+    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.0"
   }
 }
