@@ -20,6 +20,7 @@
     "debug": "node . --inspect=5858 -- --debug",
     "debug-verbose": "node . --inspect=5858 -- --debug --verbose",
     "debug-lr": "node . --inspect=5858 -- --debug --livereload",
+    "debug-presence": "node . --inspect=5858 -- --debug --fake-presence",
     "install:electron": "adc-electron install",
     "electron": "adc-electron start",
     "electron:debug": "adc-electron start --inspect=5858 -- --debug",
