@@ -2,7 +2,8 @@
 // The app pins Node exactly (.nvmrc, Dockerfile) in the range adc-core supports.
 // adc-core pins Electron exactly (node_modules/adc-core/electron/package.json).
 // When electron is installed (`npm run install:electron`), also checks that the
-// Node embedded in Electron is the one of .nvmrc.
+// Node embedded in Electron has the major of .nvmrc and is not newer (it may
+// lag behind a Node security release).
 //
 // usage: node scripts/check-versions.js
 
@@ -86,10 +87,17 @@ if (electron_binary) {
     installed_electron === electron,
     `installed electron (${installed_electron}) matches adc-core (${electron})`
   );
+  // Electron can lag behind a Node security release (.nvmrc moves first, see
+  // CVE-2026-111497): same major, and not newer than .nvmrc
   check(
-    embedded_node === nvmrc,
-    `Node embedded in Electron (${embedded_node}) matches .nvmrc ${nvmrc}`
+    satisfies(embedded_node, `^${nvmrc.split(".")[0]}.0.0 <=${nvmrc}`),
+    `Node embedded in Electron (${embedded_node}) has the major of .nvmrc ${nvmrc}, and is not newer`
   );
+  if (embedded_node !== nvmrc) {
+    console.log(
+      `⚠️  Node embedded in Electron (${embedded_node}) is behind .nvmrc ${nvmrc}: update adc-core's Electron when a release ships it`
+    );
+  }
 } else {
   console.log("—  electron not installed: skipping the embedded Node check");
 }

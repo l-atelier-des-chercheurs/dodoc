@@ -12,7 +12,7 @@ adc-core a son propre repo, [l-atelier-des-chercheurs/adc-core](https://github.c
 
 ```
 dodoc/
-├── .nvmrc                    version exacte de Node pour l'app (24.22.0)
+├── .nvmrc                    version exacte de Node pour l'app (24.22.1)
 ├── .npmrc                    engine-strict=true
 ├── package.json              dépend de adc-core (tag git)
 ├── index.js                  appelle require("adc-core").start({...})
@@ -133,10 +133,10 @@ Puppeteer ne sert qu'en mode Node : sous Electron, les captures et les PDF passe
 ## Versions de Node et d'Electron
 
 - **adc-core** fixe :
-  - une **plage** pour Node, `engines.node` (`>=24.22.0 <25`) ;
+  - une **plage** pour Node, `engines.node` (`>=24.22.1 <25`) ;
   - la **version exacte** d'Electron, dans `electron/package.json` (`"electron": "44.9.0"`, sans `^`). C'est la seule source : `adc-electron install` l'installe, `adc-electron dist` la passe à electron-builder. Une app ne choisit pas sa version d'Electron.
-- **L'app** fixe Node exactement : `.nvmrc` et l'image Docker. Les `engines` de l'app restent une plage (`^24.22.0`), pour qu'un serveur puisse installer un correctif de sécurité de Node sans attendre une release.
-- **`scripts/check-versions.js`** vérifie que tout concorde : `.nvmrc`, Dockerfile, plages d'adc-core et de l'app, version exacte d'Electron dans adc-core, absence d'`electronVersion` dans le `electron-builder.yml` de l'app. Si Electron est installé, il vérifie aussi que le Node qu'il embarque est celui du `.nvmrc`. Il tourne dans les workflows Headless install et Build/release.
+- **L'app** fixe Node exactement : `.nvmrc` et l'image Docker. Les `engines` de l'app restent une plage (`^24.22.1`), pour qu'un serveur puisse installer un correctif de sécurité de Node sans attendre une release.
+- **`scripts/check-versions.js`** vérifie que tout concorde : `.nvmrc`, Dockerfile, plages d'adc-core et de l'app, version exacte d'Electron dans adc-core, absence d'`electronVersion` dans le `electron-builder.yml` de l'app. Si Electron est installé, il vérifie aussi que le Node qu'il embarque a la même version majeure que le `.nvmrc`, sans être plus récent. Il peut être en retard après une release de sécurité de Node : le `.nvmrc` et l'image Docker montent tout de suite (serveurs corrigés), et Electron suit dès qu'une version l'embarque (un avertissement le rappelle). Il tourne dans les workflows Headless install et Build/release.
 - **Règle d'alignement** : la version majeure de Node de l'app est celle du Node embarqué dans l'Electron d'adc-core. On les monte ensemble : d'abord adc-core, ensuite chaque app.
 - **Vérification au démarrage** (`server/runtime-check.js`, sans dépendance) : en mode Node, elle compare `process.versions.node` à `engines.node`. Sous Electron, elle compare `process.versions.electron` à la version d'adc-core et affiche une fenêtre d'erreur en cas d'écart.
 - Les modules natifs (sharp, bufferutil) utilisent N-API. Le même binaire fonctionne sous Node et sous Electron. `adc-electron install` les recompile quand même avec `@electron/rebuild`, comme le faisait `electron-builder install-app-deps`.
@@ -184,7 +184,7 @@ do•doc et tous ses forks actuels écrivaient seulement `dodoc_version="10"`, e
 
 - adc-core **n'est pas publié sur npm** pendant la phase 0.x. Les apps l'installent depuis GitHub, avec des plages semver sur les tags git :
   ```json
-  "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.0"
+  "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.2"
   ```
 - npm écrit quand même une URL `git+ssh://` dans le lockfile. Ce n'est pas gênant tant que le repo est public : `npm ci` télécharge le tarball du commit en HTTPS, sans clé SSH ni `git` (vérifié). `git` sert seulement à résoudre la plage (`npm install` sans lockfile, `npm update`). Le `Dockerfile` l'installe quand même dans l'étape de build, par précaution ;
 - le lockfile de l'app fixe le commit exact : `npm install` ne passe à un tag plus récent de la plage que si on le demande (`npm update adc-core`) ;

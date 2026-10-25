@@ -34,10 +34,10 @@
     "setup-https": "node scripts/setup-https-certs.js"
   },
   "engines": {
-    "node": "^24.22.0",
+    "node": "^24.22.1",
     "npm": "*"
   },
   "dependencies": {
-    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.0"
+    "adc-core": "git+https://github.com/l-atelier-des-chercheurs/adc-core.git#semver:^0.2.2"
   }
 }
