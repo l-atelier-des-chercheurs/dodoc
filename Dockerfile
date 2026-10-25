@@ -2,7 +2,7 @@
 
 # == Base for build ==
 
-FROM node:24.21.0-slim AS build-base
+FROM node:24.22.1-slim AS build-base
 
 RUN apt update && apt install -y --no-install-recommends \
     build-essential \
@@ -26,7 +26,7 @@ RUN npm ci --only=production
 
 # == Serving ==
 
-FROM node:24.21.0-slim
+FROM node:24.22.1-slim
 
 # Install chromium
 RUN apt update && apt install -y --no-install-recommends chromium && rm -rf /var/lib/apt/lists/*
