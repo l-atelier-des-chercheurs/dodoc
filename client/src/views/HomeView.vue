@@ -92,6 +92,8 @@
             </router-link>
           </div>
 
+          <LangSelector class="u-spacingBottom _langSelector" />
+
           <div class="_logoText">
             <DodocLogo class="_logo" />
             <div class="_version">
@@ -125,6 +127,7 @@
 import SpacesList from "@/components/space/SpacesList.vue";
 import AllProjects from "@/components/project/AllProjects.vue";
 import DodocLogo from "@/components/nav/DodocLogo.vue";
+import LangSelector from "@/adc-core/lang/LangSelector.vue";
 import HomeTopHero from "@/components/home/HomeTopHero.vue";
 import AllPublications from "@/components/home/AllPublications.vue";
 import SlashHomeInfos from "@/components/home/SlashHomeInfos.vue";
@@ -140,6 +143,7 @@ export default {
     SpacesList,
     AllProjects,
     DodocLogo,
+    LangSelector,
     RecentlyEdited: () => import("@/components/project/RecentlyEdited.vue"),
     AllPublications,
     SlashHomeInfos,
@@ -290,6 +294,10 @@ export default {
   max-width: 68ch;
   margin: 0 auto;
   padding: 0 calc(var(--spacing) * 1);
+
+  ._langSelector {
+    justify-content: center;
+  }
 
   ._links {
     display: flex;

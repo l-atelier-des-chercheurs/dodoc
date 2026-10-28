@@ -1,3 +1,8 @@
+// shared by all components using this mixin: while the chat-read-index file
+// is being created (and until it shows up in connected_as.$files), other calls
+// must update that file instead of creating a second one
+let pending_creation = null;
+
 export default {
   data() {
     return {};
@@ -18,43 +23,83 @@ export default {
   },
   methods: {
     async updateAuthorLastReadMessage({ chat_path, chat_read_index }) {
-      if (!this.connected_as?.$path) return;
-
-      try {
-        if (!this.author_chat_read_index_media) {
-          const additional_meta = {
-            chat_read_indexes: {
-              [chat_path]: chat_read_index,
-            },
-            requested_slug: "chat-read-index",
-          };
-          const { meta_filename } = await this.$api.uploadFile({
-            path: this.connected_as.$path,
-            additional_meta,
-          });
-        } else {
-          const index = this.getIndexFromChatPath(chat_path);
-
-          if (!index || index < chat_read_index) {
-            await this.updateIndex(chat_path, chat_read_index);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to update chat read index:", err);
-      }
+      // the index can also go down when messages are removed: otherwise
+      // the next messages would stay hidden until the count catches up
+      if (this.getIndexFromChatPath(chat_path) === chat_read_index) return;
+      await this.updateAuthorReadIndexes({ [chat_path]: chat_read_index });
+    },
+    async markChatsAsRead(chats) {
+      const new_indexes = chats.reduce((acc, chat) => {
+        const count = chat.$files_count || 0;
+        if (this.getIndexFromChatPath(chat.$path) !== count)
+          acc[chat.$path] = count;
+        return acc;
+      }, {});
+      if (Object.keys(new_indexes).length === 0) return;
+      await this.updateAuthorReadIndexes(new_indexes);
     },
 
     getIndexFromChatPath(chat_path) {
       return this.author_chat_read_index?.[chat_path] || 0;
     },
 
-    async updateIndex(chat_path, chat_read_index) {
-      if (!this.author_chat_read_index_media) return;
+    async updateAuthorReadIndexes(new_indexes) {
+      if (!this.connected_as?.$path) return;
 
-      const chat_read_indexes = JSON.parse(
-        JSON.stringify(this.author_chat_read_index)
+      try {
+        if (this.author_chat_read_index_media)
+          return await this._writeReadIndexes(new_indexes);
+
+        const author_path = this.connected_as.$path;
+
+        if (pending_creation?.author_path === author_path) {
+          Object.assign(pending_creation.chat_read_indexes, new_indexes);
+          const path_to_meta = await pending_creation.promise;
+          await this.$api.updateMeta({
+            path: path_to_meta,
+            new_meta: {
+              chat_read_indexes: pending_creation.chat_read_indexes,
+            },
+          });
+          return;
+        }
+
+        const chat_read_indexes = { ...new_indexes };
+        pending_creation = {
+          author_path,
+          chat_read_indexes,
+          promise: this.$api
+            .uploadFile({
+              path: author_path,
+              additional_meta: {
+                chat_read_indexes: { ...chat_read_indexes },
+                requested_slug: "chat-read-index",
+              },
+            })
+            .then(({ meta_filename }) => author_path + "/" + meta_filename),
+        };
+        await pending_creation.promise.catch((err) => {
+          pending_creation = null;
+          throw err;
+        });
+      } catch (err) {
+        console.error("Failed to update chat read index:", err);
+      }
+    },
+
+    async _writeReadIndexes(new_indexes) {
+      const chat_read_indexes = {
+        ...JSON.parse(JSON.stringify(this.author_chat_read_index)),
+        ...new_indexes,
+      };
+
+      // update locally right away, so badges don't briefly count
+      // a message that was just read while the request is pending
+      this.$set(
+        this.author_chat_read_index_media,
+        "chat_read_indexes",
+        chat_read_indexes
       );
-      chat_read_indexes[chat_path] = chat_read_index;
 
       await this.$api.updateMeta({
         path: this.author_chat_read_index_media.$path,

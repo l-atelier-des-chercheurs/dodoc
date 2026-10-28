@@ -64,7 +64,36 @@
           :scale="scale"
           :can_edit="can_edit"
           :is_active="active_module.$path === publimodule.$path"
+          :snap_targets="can_edit && smart_guides && snap_targets"
+          @guides="guides = $event"
         />
+
+        <svg
+          v-if="guides.length > 0"
+          class="_smartGuides"
+          width="100%"
+          height="100%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <line
+            v-for="guide in guides"
+            :key="guide.axis + guide.pos"
+            :x1="guide.axis === 'x' ? guide.pos : 0"
+            :x2="guide.axis === 'x' ? guide.pos : magnify(page_width)"
+            :y1="guide.axis === 'y' ? guide.pos : 0"
+            :y2="guide.axis === 'y' ? guide.pos : magnify(page_height)"
+            vector-effect="non-scaling-stroke"
+          />
+          <rect
+            v-for="rect in snap_source_rects"
+            :key="rect.path"
+            :x="rect.x"
+            :y="rect.y"
+            :width="rect.width"
+            :height="rect.height"
+            vector-effect="non-scaling-stroke"
+          />
+        </svg>
 
         <svg
           v-if="can_edit && l_margins"
@@ -159,6 +188,7 @@ export default {
     scale: { type: Number, default: 1 },
     show_grid: { type: Boolean, default: false },
     snap_to_grid: { type: Boolean, default: false },
+    smart_guides: { type: Boolean, default: false },
     grid_z_index: { type: String, default: "under" },
     gridstep_in_mm: Number,
     margins: Object,
@@ -174,6 +204,7 @@ export default {
   data() {
     return {
       module_being_edited: undefined,
+      guides: [],
     };
   },
   created() {},
@@ -181,6 +212,70 @@ export default {
   beforeDestroy() {},
   watch: {},
   computed: {
+    snap_targets() {
+      // in px: page edges and middle, margins and their middle, other modules' edges
+      // centers only snap to centers, see MoveableItem
+      const w = this.magnify(this.page_width);
+      const h = this.magnify(this.page_height);
+      const x = [{ pos: 0 }, { pos: w / 2, center: true }, { pos: w }];
+      const y = [{ pos: 0 }, { pos: h / 2, center: true }, { pos: h }];
+
+      if (this.l_margins) {
+        const left = this.magnify(this.l_margins.left);
+        const right = w - this.magnify(this.l_margins.right);
+        const top = this.magnify(this.l_margins.top);
+        const bottom = h - this.magnify(this.l_margins.bottom);
+        x.push(
+          { pos: left },
+          { pos: right },
+          { pos: (left + right) / 2, center: true }
+        );
+        y.push(
+          { pos: top },
+          { pos: bottom },
+          { pos: (top + bottom) / 2, center: true }
+        );
+      }
+
+      // rotated modules are left out, their box doesn't match what is seen
+      const modules = this.page_modules
+        .filter(
+          (m) =>
+            !m.rotation &&
+            ["x", "y", "width", "height"].every((k) => typeof m[k] === "number")
+        )
+        .map((m) => {
+          const mx = this.magnify(m.x);
+          const my = this.magnify(m.y);
+          const source = m.$path;
+          return {
+            path: m.$path,
+            x: [
+              { pos: mx, source },
+              { pos: mx + this.magnify(m.width), source },
+            ],
+            y: [
+              { pos: my, source },
+              { pos: my + this.magnify(m.height), source },
+            ],
+          };
+        });
+
+      return { x, y, modules };
+    },
+    snap_source_rects() {
+      // modules another module snaps to, outlined like the guides
+      const sources = this.guides.flatMap((g) => g.sources || []);
+      return this.page_modules
+        .filter((m) => sources.includes(m.$path))
+        .map((m) => ({
+          path: m.$path,
+          x: this.magnify(m.x),
+          y: this.magnify(m.y),
+          width: this.magnify(m.width),
+          height: this.magnify(m.height),
+        }));
+    },
     l_margins() {
       if (Object.keys(this.margins).length === 0) return false;
       if (
@@ -296,6 +391,10 @@ export default {
   ._singlePage.is--editable & {
     overflow: visible;
   }
+  // the preview wrapper draws its own shadow, an inner one would scale with zoom
+  ._singlePage.is--preview & {
+    box-shadow: none;
+  }
 }
 
 ._item {
@@ -328,6 +427,21 @@ export default {
   z-index: 10000;
   pointer-events: none;
   stroke-width: 2px;
+}
+._smartGuides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10001;
+  overflow: visible;
+  pointer-events: none;
+
+  line,
+  rect {
+    stroke: var(--c-bleumarine_clair);
+    stroke-width: 2px;
+    fill: none;
+  }
 }
 ._margins {
   position: absolute;

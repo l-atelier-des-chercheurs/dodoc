@@ -99,13 +99,25 @@ export default {
   },
   methods: {
     compareSemver(a, b) {
-      const parse = (v) => v.split(".").map(Number);
-      const [a1, a2, a3] = parse(a);
-      const [b1, b2, b3] = parse(b);
+      // "14.1.0-alpha.2" -> { nums: [14, 1, 0], pre: "alpha.2" }
+      const parse = (v) => {
+        const dash = v.indexOf("-");
+        const core = dash === -1 ? v : v.slice(0, dash);
+        const pre = dash === -1 ? "" : v.slice(dash + 1);
+        return { nums: core.split(".").map(Number), pre };
+      };
+      const pa = parse(a);
+      const pb = parse(b);
 
-      if (a1 !== b1) return a1 - b1;
-      if (a2 !== b2) return a2 - b2;
-      return a3 - b3;
+      for (let i = 0; i < 3; i++)
+        if (pa.nums[i] !== pb.nums[i]) return pa.nums[i] - pb.nums[i];
+
+      // a pre-release comes before its stable version: 14.1.0-beta.3 < 14.1.0
+      if (pa.pre === pb.pre) return 0;
+      if (!pa.pre) return 1;
+      if (!pb.pre) return -1;
+      // alpha.2 < alpha.10 < beta.0
+      return pa.pre.localeCompare(pb.pre, "en", { numeric: true });
     },
     async checkLatestVersion() {
       this.is_checking = true;

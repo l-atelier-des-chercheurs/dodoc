@@ -80,6 +80,11 @@
         </router-link>
       </template>
 
+      <div class="_lang">
+        <DLabel :str="$t('ui_lang_select')" />
+        <LangSelector />
+      </div>
+
       <BaseModal2
         v-if="is_logging_in || is_logging_out"
         :size="'small'"
@@ -96,6 +101,7 @@
 import CreateAuthor from "@/adc-core/author/CreateAuthor.vue";
 import AuthorCard from "@/adc-core/author/AuthorCard.vue";
 import LoginAs from "@/adc-core/author/LoginAs.vue";
+import LangSelector from "@/adc-core/lang/LangSelector.vue";
 
 export default {
   props: {
@@ -108,6 +114,7 @@ export default {
     CreateAuthor,
     AuthorCard,
     LoginAs,
+    LangSelector,
   },
   data() {
     return {
@@ -180,4 +187,10 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._lang {
+  margin-top: calc(var(--spacing) * 1.5);
+  padding-top: calc(var(--spacing) / 2);
+  border-top: 1px solid var(--c-gris);
+}
+</style>

@@ -2,8 +2,7 @@
   <div class="_pageMenu">
     <div class="_pageMenu--pane">
       <button type="button" class="u-buttonLink" @click="$emit('close')">
-        <b-icon icon="x" />
-        <!-- {{ $t("close") }} -->
+        <b-icon icon="grid" />
         <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
         <template v-else>{{ $t("list_of_spreads") }}</template>
       </button>
@@ -78,7 +77,7 @@
           <DLabel :str="$t('add_on_page')" />
           <ModuleCreator
             :publication_path="publication_path"
-            :pre_addtl_meta="new_module_meta"
+            :pre_addtl_meta="getNewModuleMeta"
             :context="'page_by_page'"
             :start_collapsed="false"
             :enable_clipboard_paste="true"
@@ -132,6 +131,12 @@
                 @update:content="$emit('update:snap_to_grid', $event)"
               />
             </ToggledSection>
+            <ToggleInput
+              class="u-spacingBottom"
+              :content="smart_guides"
+              :label="$t('smart_guides')"
+              @update:content="$emit('update:smart_guides', $event)"
+            />
           </div>
           <div class="">
             <ColorInput
@@ -270,30 +275,7 @@
             </button>
           </div> -->
 
-          <div>
-            <button
-              type="button"
-              class="u-buttonLink"
-              @click="show_move_to_page_modal = true"
-            >
-              <b-icon icon="arrow-left-right" />
-              {{ $t("move_to_page") }}
-            </button>
-          </div>
-          <SelectPage
-            v-if="show_move_to_page_modal"
-            :pages="pages"
-            :current_page_id="active_page.id"
-            @submit="moveToAnotherPage"
-            @close="show_move_to_page_modal = false"
-          />
-
-          <div class="">
-            <button type="button" class="u-buttonLink" @click="duplicateModule">
-              <b-icon icon="file-plus" />
-              {{ $t("duplicate") }}
-            </button>
-          </div>
+          <DuplicateOrMoveModule :publimodule="active_module" />
           <div class="">
             <button
               type="button"
@@ -396,6 +378,9 @@
               <br />
               <b>{{ getPageNumberFromId(active_module.on_click.page_id) }}</b>
             </template>
+            <template v-else-if="opens_image_fullscreen">
+              {{ $t("open_image_fullscreen") }}
+            </template>
             <template v-else>
               {{ $t("do_nothing") }}
             </template>
@@ -408,6 +393,8 @@
             v-if="show_edit_link_modal"
             :path="active_module.$path"
             :on_click="active_module.on_click"
+            :allow_fullscreen="active_module_is_image"
+            :show_fs_button="active_module.show_fs_button === true"
             :pages="pages"
             :current_page_id="active_page.id"
             @save="updateMediaPubliMeta"
@@ -631,16 +618,6 @@
           :default_value="'#000000'"
           @save="updateMediaPubliMeta({ outline_color: $event })"
         />
-        <ToggleInput
-          v-if="
-            active_module_first_media &&
-            active_module_first_media.$type === 'image'
-          "
-          class="u-spacingBottom"
-          :content="active_module.show_fs_button"
-          :label="$t('show_fs_button')"
-          @update:content="updateMediaPubliMeta({ show_fs_button: $event })"
-        />
         <DepthInput
           :label="$t('z_index')"
           :value="active_module.z_index"
@@ -675,7 +652,7 @@
 <script>
 import ModuleCreator from "@/components/publications/modules/ModuleCreator.vue";
 import DepthInput from "@/components/publications/page_by_page/DepthInput.vue";
-import SelectPage from "@/components/publications/page_by_page/SelectPage.vue";
+import DuplicateOrMoveModule from "@/components/publications/modules/DuplicateOrMoveModule.vue";
 import LinkToPageOrURL from "@/components/publications/page_by_page/LinkToPageOrURL.vue";
 import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 
@@ -704,6 +681,7 @@ export default {
     scale: Number,
     show_grid: Boolean,
     snap_to_grid: Boolean,
+    smart_guides: Boolean,
     grid_z_index: String,
     gridstep_in_mm: Number,
     layout_mode: {
@@ -721,14 +699,13 @@ export default {
   components: {
     DepthInput,
     ModuleCreator,
-    SelectPage,
+    DuplicateOrMoveModule,
     LinkToPageOrURL,
     ImportFileZone,
   },
   data() {
     return {
       show_page_options: false,
-      show_move_to_page_modal: false,
       show_edit_link_modal: false,
       show_all_medias: false,
       has_editor_toolbar: false,
@@ -765,6 +742,16 @@ export default {
     active_module_first_media() {
       return this.firstMedia(this.active_module);
     },
+    active_module_is_image() {
+      return this.active_module_first_media?.$type === "image";
+    },
+    opens_image_fullscreen() {
+      if (!this.active_module_is_image) return false;
+      if (this.active_module.on_click?.type)
+        return this.active_module.on_click.type === "fullscreen";
+      // legacy option
+      return this.active_module.show_fs_button === true;
+    },
     first_media_ratio() {
       return this.active_module_first_media?.$infos?.ratio;
     },
@@ -800,17 +787,8 @@ export default {
       const z_index =
         Math.max(...this.page_modules.map((pm) => pm.z_index || 0)) + 1;
 
-      let x = this.$root.default_new_module_left;
-      let y = this.$root.default_new_module_top;
-
-      if (this.$root.set_new_module_offset_left)
-        x =
-          (this.$root.set_new_module_offset_left + this.$root.zoom_offset) /
-          this.magnification;
-      if (this.$root.set_new_module_offset_top)
-        y =
-          (this.$root.set_new_module_offset_top + this.$root.zoom_offset) /
-          this.magnification;
+      const x = this.$root.default_new_module_left;
+      const y = this.$root.default_new_module_top;
 
       const width =
         Math.max(
@@ -863,6 +841,45 @@ export default {
     },
   },
   methods: {
+    getNewModuleMeta() {
+      const meta = { ...this.new_module_meta };
+      const center = this.getViewportCenterOnPage();
+      if (!center) return meta;
+
+      // center the new module on what is visible, while keeping it on the page
+      const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+      meta.x = clamp(
+        center.x - meta.width / 2,
+        0,
+        Math.max(0, this.page_width - meta.width)
+      );
+      meta.y = clamp(
+        center.y - meta.height / 2,
+        0,
+        Math.max(0, this.page_height - meta.height)
+      );
+      return meta;
+    },
+    getViewportCenterOnPage() {
+      // page and viewer are measured on screen, so pan and zoom are accounted for
+      const opened_page = this.$el.closest("._openedPage");
+      const page_el = opened_page?.querySelector(
+        "._spreadNavigator--page.is--active ._pagecontent"
+      );
+      const viewer_el = opened_page?.querySelector(".viewer");
+      if (!page_el || !viewer_el) return false;
+
+      const page_rect = page_el.getBoundingClientRect();
+      const viewer_rect = viewer_el.getBoundingClientRect();
+      if (!page_rect.width || !page_rect.height) return false;
+
+      const center_x = viewer_rect.left + viewer_rect.width / 2;
+      const center_y = viewer_rect.top + viewer_rect.height / 2;
+      return {
+        x: ((center_x - page_rect.left) / page_rect.width) * this.page_width,
+        y: ((center_y - page_rect.top) / page_rect.height) * this.page_height,
+      };
+    },
     changePage(index) {
       if (this.pages[index]) {
         this.$emit("goToPage", this.pages[index].id);
@@ -873,11 +890,6 @@ export default {
       setTimeout(() => {
         this.$emit("nextPage");
       }, 500);
-    },
-    moveToAnotherPage($event) {
-      this.show_move_to_page_modal = false;
-      this.updateMediaPubliMeta({ page_id: $event });
-      this.setActive(false);
     },
     displayToolbarAndToolTip({ $toolbar, $tooltip }) {
       this.has_editor_toolbar = true;
@@ -958,9 +970,6 @@ export default {
     },
     changeModulePage() {
       this.$eventHub.$emit(`module.move.${this.module_meta_filename}`);
-    },
-    duplicateModule() {
-      this.$eventHub.$emit(`module.duplicate.${this.module_meta_filename}`);
     },
     removeModule() {
       this.$eventHub.$emit(`module.remove.${this.module_meta_filename}`);

@@ -4,25 +4,19 @@
 
     <div class="_container">
       <div class="_content">
-        <component :is="tag">
+        <EditablePreview
+          :tag="tag"
+          :layout="input_type === 'editor' ? 'block' : 'inline'"
+          :can_edit="can_edit"
+          :label="clean_content.length > 0 ? $t('edit') : $t('add')"
+          @edit="enableEditMode"
+        >
           <span
             v-if="content && clean_content.length > 0"
             v-html="clean_content"
-            @click="enableEditMode"
           />
-          <span
-            v-else
-            v-text="'-'"
-            class="u-instructions"
-            @click="enableEditMode"
-          />
-          <EditBtn
-            v-if="can_edit"
-            class="_edit"
-            :label="clean_content.length > 0 ? $t('edit') : $t('add')"
-            @click="enableEditMode"
-          />
-        </component>
+          <span v-else v-text="'-'" class="u-instructions" />
+        </EditablePreview>
       </div>
     </div>
 
@@ -47,9 +41,18 @@
         :minlength="minlength"
         :custom_formats="custom_formats"
         :maxlength="maxlength"
-        :key="edit_mode + content"
+        :key="edit_mode + content + restore_count"
         @toggleValidity="($event) => (allow_save = $event)"
         @onEnter="input_type !== 'editor' ? updateText() : undefined"
+      />
+
+      <FieldHistoryPanel
+        v-if="can_see_history"
+        :path="path"
+        :field_name="field_name"
+        :input_type="input_type"
+        :current_value="content"
+        @restore="restoreValue"
       />
 
       <SaveCancelButtons
@@ -115,6 +118,7 @@ export default {
       edit_mode: false,
       is_saving: false,
       new_content: this.content,
+      restore_count: 0,
 
       current_character_count: undefined,
       allow_save: false,
@@ -139,14 +143,20 @@ export default {
     clean_content() {
       return this.$sanitize(this.content);
     },
+    can_see_history() {
+      // history is only recorded for folders (not media files), and the API
+      // restricts it to folder admins
+      if (!this.path || !this.field_name) return false;
+      if (this.input_type === "password") return false;
+      if (this.path.endsWith(".meta.txt")) return false;
+      const folder = this.$api.store[this.path];
+      if (!folder || Array.isArray(folder)) return false;
+      return this.canLoggedinEditFolder({ folder });
+    },
   },
   methods: {
     enableEditMode() {
       if (!this.can_edit) return;
-      // Don't start edit mode if user currently has a text selection
-      if (window.getSelection && window.getSelection().toString().length > 0) {
-        return;
-      }
       this.edit_mode = true;
     },
     cancel() {
@@ -162,6 +172,11 @@ export default {
       });
 
       // todo interrupt updateMeta
+    },
+    restoreValue(value) {
+      this.new_content = value ?? "";
+      // TextInput (and its editor) don't follow content changes once mounted
+      this.restore_count++;
     },
     async updateText() {
       if (this.input_type === "number")
@@ -273,32 +288,6 @@ export default {
     content: attr(data-value) " ";
     visibility: hidden;
     white-space: break-spaces;
-  }
-}
-
-._edit {
-  margin-top: calc(var(--spacing) / -1);
-  margin-bottom: calc(var(--spacing) / -2);
-
-  // ._titleField:not([data-input_type="text"]) & {
-  // }
-
-  /* Hide edit button by default on devices that support hover */
-  @media (hover: hover) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  /* Always show on touch devices */
-  @media (hover: none) {
-    opacity: 1;
-  }
-}
-
-/* Show edit button on hover for devices that support hover */
-._titleField:hover ._edit {
-  @media (hover: hover) {
-    opacity: 1;
   }
 }
 </style>

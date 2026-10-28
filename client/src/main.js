@@ -18,6 +18,14 @@ const publicPath =
     ? "./_client/"
     : "/_client/";
 
+// fonts stay in public/fonts (not bundled): exports copy them but drop assets/
+["fonts/fira.css", "fonts/default_fonts.css"].forEach((href) => {
+  const link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.href = publicPath + href;
+  document.head.append(link);
+});
+
 const debug_mode = window.app_infos.debug_mode;
 Vue.prototype.$eventHub = new Vue(); // Global event bus
 
@@ -33,19 +41,15 @@ import PortalVue from "portal-vue";
 Vue.use(PortalVue);
 
 import VuePlyr from "vue-plyr";
+import { plyr_options } from "@/utils/plyr.js";
+// plyr icons, referenced as <use xlink:href="#plyr-…"> (plyr_options.iconUrl is empty)
+import plyr_sprite from "./plyr.svg?raw";
+const plyr_sprite_container = document.createElement("div");
+plyr_sprite_container.style.display = "none";
+plyr_sprite_container.innerHTML = plyr_sprite;
+document.body.prepend(plyr_sprite_container);
 Vue.use(VuePlyr, {
-  plyr: {
-    controls: [
-      "play-large",
-      "play",
-      "progress",
-      "current-time",
-      "mute",
-      "volume",
-      "fullscreen",
-    ],
-    iconUrl: "",
-  },
+  plyr: plyr_options,
 });
 
 if (window.app_infos.is_electron)
@@ -74,6 +78,10 @@ Vue.prototype.$sanitize = DOMPurify.sanitize;
 
 import TitleField from "@/adc-core/fields/TitleField.vue";
 Vue.component("TitleField", TitleField);
+import EditablePreview from "@/adc-core/fields/EditablePreview.vue";
+Vue.component("EditablePreview", EditablePreview);
+import FieldHistoryPanel from "@/adc-core/fields/FieldHistoryPanel.vue";
+Vue.component("FieldHistoryPanel", FieldHistoryPanel);
 import PickNativePath from "@/adc-core/fields/PickNativePath.vue";
 Vue.component("PickNativePath", PickNativePath);
 import AuthorField from "@/adc-core/fields/AuthorField.vue";
@@ -294,9 +302,6 @@ new Vue({
     default_new_module_height: 200,
     default_new_module_left: 15,
     default_new_module_top: 15,
-    set_new_module_offset_left: 0,
-    set_new_module_offset_top: 0,
-    zoom_offset: 50,
 
     page_magnification: 3.7952,
 

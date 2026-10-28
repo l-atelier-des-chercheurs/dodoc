@@ -1,15 +1,19 @@
 <template>
   <div class="_tagsField">
     <DLabel v-if="label" :str="label" />
-    <div class="_tl">
+    <EditablePreview
+      class="_tl"
+      :layout="'row'"
+      :can_edit="can_edit"
+      @edit="enableEditMode"
+    >
       <TagsList
         :tags="content"
         :tag_type="tag_type"
         :mode="'inactive'"
         :shorten_if_too_long="shorten_if_too_long"
       />
-      <EditBtn v-if="can_edit" class="_edit" @click="enableEditMode" />
-    </div>
+    </EditablePreview>
 
     <BaseModal2
       v-if="edit_mode"
@@ -207,12 +211,6 @@ export default {
   width: 100%;
 }
 
-._tl {
-  display: flex;
-  flex-flow: row wrap;
-  gap: calc(var(--spacing) / 4);
-}
-
 ._footer {
   display: flex;
   flex-flow: column nowrap;
@@ -252,26 +250,6 @@ export default {
     padding: calc(var(--spacing) / 8);
     height: 2rem;
     width: 2rem;
-  }
-}
-
-._edit {
-  /* Hide edit button by default on devices that support hover */
-  @media (hover: hover) {
-    opacity: 0;
-    transition: opacity 0.2s ease;
-  }
-
-  /* Always show on touch devices */
-  @media (hover: none) {
-    opacity: 1;
-  }
-}
-
-/* Show edit button on hover for devices that support hover */
-._tagsField:hover ._edit {
-  @media (hover: hover) {
-    opacity: 1;
   }
 }
 </style>

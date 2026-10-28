@@ -31,9 +31,11 @@ export default function () {
       rooms: {},
       store_meta: {},
 
-      is_tracking_users: false,
       self_user_id: null,
+      self_path: null,
+      // presence is only sent to logged-in accounts, see trackUsers
       users: new Array(),
+      anonymous_count: 0,
 
       // todo replace is_identified, create route to test
       is_correctly_logged_in: false,
@@ -46,9 +48,6 @@ export default function () {
       async init({ debug_mode }) {
         this.debug_mode = debug_mode;
         await this.initSocketio();
-        setTimeout(async () => {
-          await this.getAndTrackUsers();
-        }, 10);
       },
       async initSocketio() {
         console.log("initSocketio");
@@ -67,12 +66,7 @@ export default function () {
           this.join({ room: this.tokenpath.token_path, pinned: true });
         }
 
-        const sessionID = localStorage.getItem("sessionID");
-        let auth = {};
-        if (sessionID) auth.sessionID = sessionID;
-        if (this.tokenpath.token_path)
-          auth.token_path = this.tokenpath.token_path;
-        if (Object.keys(auth).length > 0) this.socket.auth = auth;
+        this.updateSocketAuth();
 
         await this.socket.connect();
 
@@ -85,7 +79,7 @@ export default function () {
             socketid: this.socket.id,
           });
           this.rejoinRooms();
-          if (this.is_tracking_users) this.getAndTrackUsers();
+          this.trackUsers();
         });
 
         this.socket.on("session", ({ sessionID, userID }) => {
@@ -97,6 +91,8 @@ export default function () {
           this.self_user_id = userID;
           localStorage.setItem("sessionID", sessionID);
           this.setAuthorizationHeader();
+          // views may have set their path before the session was known
+          this.pushSelfPresence();
         });
         this.socket.on("connect_error", (reason) => {
           console.log("socket connect error");
@@ -138,15 +134,24 @@ export default function () {
         this.socket.on("taskStatus", this.taskStatus);
         this.socket.on("taskEnded", this.taskEnded);
 
-        this.socket.on("userJoined", this.userJoined);
-        this.socket.on("userUpdated", this.userUpdated);
-        this.socket.on("userLeft", this.userLeft);
+        this.socket.on("presence", this.presenceReceived);
       },
       disconnectSocket() {
         this.socket.disconnect();
       },
       reconnectSocket() {
         this.socket.connect();
+      },
+      updateSocketAuth() {
+        // used on next (re)connections
+        const auth = {};
+        const sessionID = localStorage.getItem("sessionID");
+        if (sessionID) auth.sessionID = sessionID;
+        if (this.tokenpath.token && this.tokenpath.token_path) {
+          auth.token = this.tokenpath.token;
+          auth.token_path = this.tokenpath.token_path;
+        }
+        this.socket.auth = auth;
       },
       normalizeRoomPath(room) {
         if (typeof room !== "string") return "";
@@ -169,6 +174,15 @@ export default function () {
       isStoreStale(store_key) {
         const meta = this.store_meta[store_key];
         return !meta || meta.stale === true;
+      },
+      canUseStore(store_key) {
+        // a stored folder is only kept up to date through its room:
+        // without it, changes made elsewhere would be missed
+        return (
+          Boolean(this.store[store_key]) &&
+          !this.isStoreStale(store_key) &&
+          this.isRoomSubscribed(store_key)
+        );
       },
       markAllStoreStale() {
         Object.keys(this.store).forEach((store_key) => {
@@ -395,52 +409,42 @@ export default function () {
         });
       },
 
-      async getAndTrackUsers() {
-        const response = await this.$axios.get("_users").catch((err) => {
-          throw this.processError(err);
-        });
-        const users = response.data;
-        this.$set(this, "users", users);
-        if (!this.is_tracking_users) {
-          this.is_tracking_users = true;
-          this.socket.emit("trackUsers");
-        }
-        return this.users;
+      trackUsers() {
+        // server answers (and keeps updating) with a "presence" snapshot
+        const { token, token_path } = this.tokenpath;
+        if (!token || !token_path) return this.unTrackUsers();
+        this.socket.emit("trackUsers", { token, token_path });
       },
-      userJoined(user) {
-        const user_exists = this.users.some((u) => u.id === user.id);
-        if (!user_exists) this.users.push(user);
+      presenceReceived({ users, anonymous_count }) {
+        this.users = users;
+        this.anonymous_count = anonymous_count;
       },
-      userUpdated({ id, changed_data }) {
-        const index = this.users.findIndex((u) => u.id === id);
-        if (index === -1) {
-          this.getAndTrackUsers();
-        } else {
-          if (!this.users[index].meta) this.$set(this.users[index], "meta", {});
-          Object.entries(changed_data).map(([key, value]) => {
-            this.$set(this.users[index].meta, key, value);
-          });
-        }
-      },
-      userLeft(id) {
-        const index = this.users.findIndex((u) => u.id === id);
-        if (index !== -1) this.users.splice(index, 1);
-      },
-      async unTrackUsers() {
+      unTrackUsers() {
         this.socket.emit("leaveUsers");
         this.users = [];
-        this.is_tracking_users = false;
+        this.anonymous_count = 0;
+      },
+      identityChanged() {
+        // after login/logout without a new socket connection
+        this.updateSocketAuth();
+        this.pushSelfPresence();
+        this.trackUsers();
       },
       async updateSelfPath(path) {
-        if (!this.self_user_id) return;
+        this.self_path = path;
+        return await this.pushSelfPresence();
+      },
+      async pushSelfPresence() {
+        // sends current path; server reads identity from the auth header
+        if (!this.self_user_id || this.self_path === null) return;
         const response = await this.$axios
           .patch(`_users/${this.self_user_id}`, {
-            path,
+            path: this.self_path,
           })
           .catch((err) => {
-            throw this.processError(err);
+            this.processError(err);
           });
-        return response.data;
+        return response?.data;
       },
 
       folderCreated({ path, path_to_type, path_to_folder, meta }) {
@@ -602,6 +606,18 @@ export default function () {
 
         saveAs(response.data, filename);
       },
+      async readLog({ filename }) {
+        const response = await this.$axios({
+          url: `_logs/${encodeURIComponent(filename)}`,
+          method: "GET",
+          responseType: "text",
+          // keep the raw jsonl, axios would otherwise try to parse it
+          transformResponse: (data) => data,
+        }).catch((err) => {
+          throw this.processError(err);
+        });
+        return response.data;
+      },
       async restartApp() {
         await this.$axios.post(`_restartApp`);
       },
@@ -619,10 +635,7 @@ export default function () {
       },
       async getFolders({ path }) {
         const normalized_path = this.normalizeRoomPath(path);
-        if (
-          this.store[normalized_path] &&
-          !this.isStoreStale(normalized_path)
-        ) {
+        if (this.canUseStore(normalized_path)) {
           return this.store[normalized_path];
         }
 
@@ -642,11 +655,7 @@ export default function () {
       async getFolder({ path, no_files = false, detailed_infos = false }) {
         const use_store = detailed_infos === false && no_files === false;
         const store_path = this.normalizeRoomPath(path.split("?")[0]);
-        if (
-          use_store &&
-          this.store[store_path] &&
-          !this.isStoreStale(store_path)
-        ) {
+        if (use_store && this.canUseStore(store_path)) {
           return this.store[store_path];
         }
 
@@ -788,6 +797,7 @@ export default function () {
             JSON.stringify({ token, token_path: path })
           );
           this.setAuthorizationHeader();
+          this.identityChanged();
           await this.getCurrentAuthor();
 
           return;
@@ -824,6 +834,8 @@ export default function () {
           this.leave({ room: path });
           // remove token on the server
           await this.$axios.post(`${path}/_logout`, auth_infos);
+          this.setAuthorizationHeader();
+          this.identityChanged();
           return;
         } catch (err) {
           throw this.processError(err);
@@ -865,6 +877,7 @@ export default function () {
         this.tokenpath.token = token;
         this.tokenpath.token_path = token_path;
         this.setAuthorizationHeader();
+        this.identityChanged();
         return true;
       },
       hasStoredGeneralPassword() {
@@ -1232,6 +1245,44 @@ export default function () {
       },
       other_devices_connected() {
         return this.all_devices_connected.filter((u) => !u.is_self);
+      },
+      presence() {
+        // one entry per account (only accounts are listed by the server),
+        // with its devices (one per browser) and its open tabs
+        const by_account = this.all_devices_connected.reduce((acc, u) => {
+          const token_path = u.meta?.token_path;
+          if (!token_path) return acc;
+          if (!acc[token_path])
+            acc[token_path] = {
+              token_path,
+              is_self: token_path === this.tokenpath.token_path,
+              browsers: {},
+              tabs: [],
+            };
+          const account = acc[token_path];
+          // tabs of a same browser share a session, hence a browser_id
+          const browser_id = u.meta?.browser_id || u.id;
+          account.browsers[browser_id] = u.meta?.device || "laptop";
+          // the tab we're looking from is not worth listing
+          if (!u.is_self) account.tabs.push(u);
+          return acc;
+        }, {});
+
+        const accounts = Object.values(by_account)
+          .map(({ browsers, ...account }) => ({
+            ...account,
+            devices: Object.values(browsers),
+          }))
+          // self account only matters for its other tabs, shown last
+          .filter((a) => !a.is_self || a.tabs.length > 0)
+          .sort((a, b) => a.is_self - b.is_self);
+
+        return {
+          identified: accounts.filter((a) => !a.is_self).length,
+          // other browsers without an account, never listed nor located
+          anonymous: this.anonymous_count,
+          accounts,
+        };
       },
     },
   });

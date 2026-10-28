@@ -1,8 +1,8 @@
 export default {
-  welcome_to_dodoc: "Benvenuto su do•doc !",
+  welcome_to_dodoc: "Benvenuto su {app_name} !",
   current_lang_name: "Italiano",
   a_foss_made_by:
-    "Questa piattaforma usa do•doc, un software libero e gratuito creato da una comunità di designer, docenti, artisti, svilluppatori, makers &nbsp;…!",
+    "Questa piattaforma usa {app_name}, un software libero e gratuito creato da una comunità di designer, docenti, artisti, svilluppatori, makers &nbsp;…!",
   home: "Home",
   go_home: "Torna alla home",
   page_not_found: "Questa pagina non esiste",
@@ -51,6 +51,16 @@ export default {
     `,
   suggestions: "Suggerimenti",
   suggested_cat_kw: "Categorie e parole chiave suggerite",
+  suggested_cat_kw_instructions:
+    "Questi elenchi aiutano a descrivere i contenuti in modo coerente. Quando qualcuno aggiunge parole chiave, macchine, materiali o un gruppo, gli vengono proposti i termini dell’elenco corrispondente: può aggiungerli con un clic, oppure scriverne liberamente altri.<br><br>Apri un elenco per completarlo, oppure aggiungine uno con il pulsante qui sotto.",
+  suggestions_keywords_instr:
+    "Proposte quando si aggiungono parole chiave a un progetto o a un media.",
+  suggestions_machines_instr:
+    "Proposte nella scheda «Macchine e materiali» dei progetti.",
+  suggestions_materials_instr:
+    "Proposti nella scheda «Macchine e materiali» dei progetti.",
+  suggestions_accountgroup_instr:
+    "Proposti quando si indica il gruppo di un account (classe, squadra, organizzazione…), dalla pagina di quell’account.",
   list_of_suggestions: "Elenco di suggerimenti",
   create_suggestion_list_for: "Crea un elenco di suggerimenti",
 
@@ -72,7 +82,7 @@ export default {
   space_members: "Partecipanti a questo spazio",
 
   name_of_instance: "Nome dell'istanza",
-  name_of_instance_instructions: `Per esempio, <b>Documentazione del fablab di Malakoff</b>, <b>do•doc della classe  terza</b>, etc.
+  name_of_instance_instructions: `Per esempio, <b>Documentazione del fablab di Malakoff</b>, <b>{app_name} della classe  terza</b>, etc.
        Comparirà nella home page e nella scheda del browser.`,
   presentation_of_instance: "Presentazione dell'istanza",
   presentation_of_instance_instructions: `Comparirà solo nella home page.`,
@@ -98,6 +108,26 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   ancient: "Vecchio",
 
   connection_lost: `Connessione interrotta`,
+  changes_may_not_be_saved:
+    "Le modifiche recenti potrebbero non essere salvate.",
+  connection_lost_help_intro:
+    "Questo dispositivo non riesce più a raggiungere il server <b>{app_name}</b> su cui sono salvati i progetti.",
+  connection_lost_help_live:
+    "Anche le modifiche fatte dagli altri partecipanti non vengono più mostrate.",
+  connection_lost_help_causes: "Cause frequenti",
+  connection_lost_help_cause_network:
+    "Questo dispositivo non è più connesso alla rete (wifi spento o troppo debole, cavo scollegato).",
+  connection_lost_help_cause_server:
+    "Il computer o il server che ospita <b>{app_name}</b> è spento, in standby o si sta riavviando.",
+  connection_lost_help_cause_sleep:
+    "Questo dispositivo è andato in standby o la scheda è rimasta a lungo in background.",
+  connection_lost_help_what_to_do: "Cosa fare?",
+  connection_lost_help_todo_wait:
+    "Controlla la connessione di questo dispositivo, poi clicca su «Riprova». <b>{app_name}</b> riprova anche automaticamente a intervalli regolari.",
+  connection_lost_help_todo_unsaved:
+    "Evita di fare nuove modifiche finché la connessione non è tornata.",
+  connection_lost_help_todo_reload:
+    "Se il server è di nuovo raggiungibile ma questo messaggio resta visibile, ricarica la pagina.",
   connection_lost_in: `La connessione al server si è interrotta.`,
   attempting_to_reconnect_in: `Nuovo tentativo di connessione a :`,
   reload_page: "Ricarica questa pagina",
@@ -105,7 +135,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   reconnecting: "Tentativo di riconnessione…",
   if_issues_contact:
     "Se si verifica regolarmente questo errore, si prega di contattare ",
-  connection_back: "La connessione è ritornata.",
+  connection_back: "Connessione ristabilita",
   create_page: "Aggiungi una pagina",
   add_on_page: "Aggiungi sulla pagina",
   page_color: "Colore di questa pagina",
@@ -123,12 +153,24 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   text_image_layout: "Impaginazione testo e immagine ",
 
   favicon_image: "Immagine favicon",
-  favicon_image_instr: "Comparirà nella scheda del browser.",
+  favicon_image_instr: "Piccola icona mostrata nella scheda del browser e nei preferiti. Un’immagine quadrata e semplice funziona meglio. Predefinita: l’icona di do•doc.",
   topbar_image: "Logo nella barra di navigazione",
-  topbar_image_instr:
-    "In alto a sinistra dello schermo. Cliccando, riporta alla home page",
+  topbar_image_instr: "In alto a sinistra dello schermo, su tutte le pagine. Cliccando, riporta alla home page. Predefinito: il logo di do•doc.",
   hero_image: "Visuel home page",
-  hero_image_instr: "",
+  hero_image_instr: "Grande immagine mostrata in cima alla home page, accanto o dietro al testo di presentazione.",
+  imported_images: "Immagini importate",
+  imported_images_instr: "Importa una o più immagini, poi scegli qui sotto dove usarle. La stessa immagine può servire in più punti (logo, favicon e home page).",
+  navigation_and_tab: "Barra di navigazione e scheda",
+  home_page: "Home page",
+  logo: "Logo",
+  favicon: "Favicon",
+  default_dodoc_logo: "Nessuna immagine scelta: viene usato il logo di do•doc.",
+  default_dodoc_favicon: "Nessuna immagine scelta: viene usata l’icona di do•doc.",
+  no_image: "Nessuna immagine scelta.",
+  layout_image_text: "Immagine poi testo",
+  layout_text_image: "Testo poi immagine",
+  layout_text_image_overlay: "Testo sopra l’immagine",
+  layout_image_text_overlay: "Immagine sopra il testo",
   change_order: "Cambia l'ordine",
 
   bytes: "byte",
@@ -157,6 +199,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   contributor: "Contributore",
   admin: "Amministratore",
   create: "Crea",
+  mark_all_as_read: "Segna tutto come letto",
   existing: "Esistente",
   create_account: "Crea un account",
   your_account: "Il tuo account",
@@ -220,7 +263,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   in_this_section: "In questo capitolo",
   on_the_cover: "Sulla copertina",
   in_another_section: "In un altro capitolo",
-  change_section: "Sposta verso un altro capitolo",
   remove_section: "Elimina il capitolo",
   remove_area: "Elimina questa zona",
   remove_area_confirm: "Sei sicuro di voler eliminare questa zona?",
@@ -255,6 +297,12 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   custom: "Personalizzato",
   custom_f: "Personalizzata",
+  change_document_type_warning:
+    "Questa pubblicazione contiene già degli elementi. Posizioni e dimensioni vengono mantenute come valori, ma mm e px non hanno la stessa scala: l’impaginazione si rimpicciolirà o uscirà dalla pagina. Tornare al tipo precedente la ripristina.",
+  switch_to: "Passa a {type}",
+  orientation: "Orientamento",
+  portrait: "Verticale",
+  landscape: "Orizzontale",
   width: "Larghezza",
   height: "Altezza",
   text_size: "Dimensione del testo",
@@ -378,14 +426,14 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   show_projects: "Mostra i progetti",
   all_projects: "Tutti i progetti",
   all_projects_instr:
-    "Questo elenco mostra tutti i progetti documentati in questo do•doc, indipendentemente dai rispettivi spazi.",
+    "Questo elenco mostra tutti i progetti documentati in questo {app_name}, indipendentemente dai rispettivi spazi.",
   event_projects_instr:
     "Questo elenco mostra tutti i progetti documentati durante l'evento.",
 
   no_accounts_yet: "Nessun account ancora creato",
   add_accounts: "Aggiungi degli account",
   restart_to_apply:
-    "Chiudi e riavvia do•doc manualmente o utilizzando il pulsante sottostante perché l'impostazione abbia effetto.",
+    "Chiudi e riavvia {app_name} manualmente o utilizzando il pulsante sottostante perché l'impostazione abbia effetto.",
   restart: "Chiudi e riavvia",
 
   refresh_window_to_see_changes: "Aggiorna la finestra per vedere le modifiche",
@@ -435,6 +483,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   restricted_instr: "Solo questi account saranno autorizzati.",
 
   close: "Chiudi",
+  menu: "Menu",
   settings: "Impostazioni",
   admin_settings: "Impostazioni di amministrazione",
   list_of_pages: "Elenco delle pagine",
@@ -442,15 +491,21 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   grid: "Griglia",
   show_grid: "Visualizza la griglia",
   snap_to_grid: "Aggancia alla griglia",
+  smart_guides: "Guide intelligenti",
   gridstep: "Passo della griglia",
   scale: "Scala",
   over: "sopra",
   under: "sotto",
 
   path_to_content: "Percorso per il salvataggio dei contenuti ",
-  path_to_content_instructions: `Attenzione, questa è una funzione avanzata!
-      Il percorso sottostante indica la posizione della cartella contenente i contenuti di do•doc. Se si modifica questo percorso, si consiglia vivamente di utilizzare una cartella vuota o una cartella contenente solo contenuti creati da do•doc 10. Riavvia do•doc perché questa impostazione abbia effetto.`,
-
+  storage_instructions:
+    "Tutti i contenuti di {app_name} sono salvati in un’unica cartella: spazi, progetti, media, pubblicazioni, account, impostazioni dell’istanza… Per fare un backup basta copiare questa cartella, preferibilmente mentre {app_name} è chiuso.",
+  storage_change_instructions:
+    "<b>Cambiare posizione non sposta i contenuti.</b> Dopo il riavvio, {app_name} userà la cartella scelta:<br>• se contiene già contenuti {app_name} (versione 10 o successiva), verranno mostrati quelli;<br>• se è vuota, vi verrà creata una nuova istanza vuota;<br>• se contiene altri file, verrà rifiutata: crea invece una nuova sottocartella vuota e selezionala.<br>Per conservare i contenuti, chiudi {app_name}, copia la cartella attuale nella nuova posizione, poi scegli quella copia. Se la cartella scelta non è scrivibile, {app_name} tornerà alla cartella predefinita (Documents/dodoc).",
+  storage_folder_incompatible:
+    "Questa cartella non può essere usata: non è vuota e non contiene contenuti {app_name} 10. Non è stato modificato nulla. Scegli una cartella vuota, per esempio creando una nuova sottocartella con il pulsante «Nuova cartella» della finestra di selezione.",
+  storage_server_instructions:
+    "Su questa installazione la posizione non può essere modificata da questa pagina: è definita da chi amministra il server, con l’opzione <code>contentPath</code> del file <code>settings.json</code>.",
   administration_and_access_control:
     "Amministrazione e controllo degli accessi",
   logo_and_images: "Logo e immagini",
@@ -605,6 +660,10 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   saved: "OK !",
   connected: "Connesso",
   history: "Cronologia",
+  no_history_yet: "Nessuna modifica registrata finora.",
+  history_unavailable: "Impossibile caricare la cronologia.",
+  current_value: "valore attuale",
+  creation: "creazione",
 
   creativecommons_by_sa: "Creative Commons BY SA",
   creativecommons_by_sa_explanations:
@@ -797,6 +856,27 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   image_quality: "Qualità dell’immagine",
   audio_quality: "Qualità dell’audio",
   duration: "Durata",
+  session_crashed:
+    "Sessione andata in crash",
+  session_running:
+    "Sessione in corso",
+  session_interrupted:
+    "Sessione interrotta",
+  session_interrupted_instr:
+    "Arresto senza errori registrati: processo terminato forzatamente, computer spento o in ibernazione, interruzione di corrente…",
+  view_log: "Visualizza",
+  search_in_log: "Cerca nel registro…",
+  all_events: "Tutti gli eventi",
+  follow_live: "Segui in diretta",
+  no_matching_entries: "Nessuna voce corrisponde ai filtri.",
+  failed_to_copy: "Impossibile copiare",
+  show_more: "Mostra altro",
+  log_unavailable: "Impossibile caricare questo registro. Se la sessione si è appena fermata, chiudi questa finestra e aggiorna l’elenco.",
+  log_level_error: "Errori",
+  log_level_warning: "Avvisi",
+  log_level_notice: "Avvio / arresto",
+  log_level_info: "Info",
+  copied: "Copiato!",
   close_to_source: "Il più vicino possibile al media originale",
 
   very_high: "Molto alto",
@@ -814,14 +894,14 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   failed_to_start_streams_change_source_or_res:
     "Non è stato possibile avviare lo stream video o audio.<br>Provare a modificare il sorgente o la risoluzione nelle impostazioni.",
   stream_local_mode: "su questo dispositivo",
-  stream_remote_mode: "do•doc remoto",
+  stream_remote_mode: "{app_name} remoto",
   "stream_shown:": "Stream utilizzato&nbsp;:",
 
   remote_access: "Sorgenti remoti",
   hangup: "riagganciare",
   connect: "Login",
   connect_to_other_users:
-    "Accesso ai sorgenti provenienti da altri dispositivi attualmente collegati a questo do•doc",
+    "Accesso ai sorgenti provenienti da altri dispositivi attualmente collegati a questo {app_name}",
 
   seconds: "secondi",
   no_video_input_available: "Nessun sorgente video disponibile",
@@ -904,6 +984,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   wrong_signup_password: "Password errata",
 
   enable_events: "Attivare la funzionalità  «avvenimenti»",
+  enable_events_instructions:
+    "Gli eventi permettono di raggruppare i progetti realizzati durante un laboratorio, un corso, una residenza o un festival.<br><br>Una volta attivata la funzionalità:<br>• nella home page compare una sezione «Eventi». Gli amministratori e i contributori dell’istanza possono crearvi eventi, con un titolo, una presentazione, delle date e un’immagine;<br>• in ogni progetto, il campo «Creato durante un evento» permette ai suoi referenti di collegarlo a un evento;<br>• aprendo un evento dalla home page se ne vedono la presentazione e l’elenco dei progetti collegati.<br><br>Disattivare la funzionalità nasconde questi elementi, senza eliminare gli eventi né i collegamenti esistenti.",
 
   you_must_login_to_contribute:
     "È necessario iscriversi o connettersi per contribuire",
@@ -939,15 +1021,60 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     "In questo spazio o in un altro dove è possibile importare dei media.",
   dmp_instr:
     "All'interno di questo progetto o in un altro dove è possibile creare pubblicazioni. Tutte le impostazioni e i testi saranno duplicati e i media (foto, video, ecc.) saranno importati nel pannello Raccolta",
+  where: "Dove?",
+  publication: "Pubblicazione",
+  in_this_publication: "In questa pubblicazione",
+  in_another_publication_of_project:
+    "In un'altra pubblicazione di questo progetto",
+  in_another_project: "In un altro progetto",
+  dmmod_instr:
+    "I media utilizzati da questo modulo saranno importati nel pannello Raccolta del progetto scelto.",
+  no_compatible_publications:
+    "Nessuna pubblicazione di questo progetto può ricevere questo modulo (i moduli impaginati possono andare solo in pubblicazioni pagina per pagina, e viceversa)",
+  no_sections:
+    "Questa pubblicazione non contiene capitoli che possano ricevere questo modulo",
+  module_added_at_end_of_section:
+    "Il modulo sarà aggiunto alla fine di questo capitolo.",
+  module_added_at_end_of_publication:
+    "Il modulo sarà aggiunto alla fine di questa pubblicazione.",
+  module_copy_added_after_original:
+    "La copia sarà posizionata subito dopo il modulo originale.",
+  only_publications_with_same_template:
+    "Sono disponibili solo le pubblicazioni con lo stesso modello (i racconti a capitoli e le cartografie sono compatibili tra loro).",
+  module_added_to_page: "Il modulo sarà posizionato su questa pagina.",
+  module_already_there: "Il modulo si trova già qui.",
+  module_moved: "Modulo spostato",
+  module_duplicated: "Modulo duplicato",
+  module_moved_to: "Modulo spostato in {destination}",
+  module_duplicated_to: "Modulo duplicato in {destination}",
+  to_page_n: "pagina {number}",
+  to_section_x: "capitolo «{title}»",
+  to_publication_x: "pubblicazione «{title}»",
+  x_of_publication_y: "{place} della pubblicazione «{title}»",
+  click_to_show: "clicca per visualizzare",
+  in_this_project: "In questo progetto",
+  in_this_space: "In questo spazio",
+  in_another_space: "In un altro spazio",
+  no_other_space_available: "Nessun altro spazio in cui puoi contribuire.",
+  already_here_pick_another_destination:
+    "È già qui: scegli un’altra destinazione per spostarlo.",
+  media_moved: "Media spostato",
+  medias_duplicated: "{count} media duplicati",
+  medias_moved: "{count} media spostati",
+  publication_duplicated: "Pubblicazione duplicata",
+  publication_moved: "Pubblicazione spostata",
+  project_duplicated: "Progetto duplicato",
+  project_moved: "Progetto spostato",
+  project_remixed: "Progetto remixato",
   import_a_project: "Importa un progetto",
   import_a_project_instr: `È possibile aggiungere in questo spazio un progetto completo (con tutti i suoi media, produzioni e pubblicazioni) 
-    creato in un altro do•doc versione 10. Per questo clicca su <i>scarica</i> sul progetto nell'altro do•doc per recuperarlo in formato ZIP
+    creato in un altro {app_name} (versione 10 o successiva). Per questo clicca su <i>scarica</i> sul progetto nell'altro {app_name} per recuperarlo in formato ZIP
     quindi importarlo utilizzando il pulsante sottostante. Verrà aggiunto automaticamente e il tuo account attuale ne sarà il referente.`,
   import_zip: "Importa un progetto in formato ZIP",
   import_in_progress: "Importazione in corso…",
   import_finished:
     "Importazione terminata, clicca sul pulsante sottostante per aprire il progetto. Le anteprime di tutti i media verranno ricreate, il che può richiedere da pochi secondi a qualche minuto.",
-  zip_not_valid_project: "Questo file ZIP non è un progetto do•doc valido",
+  zip_not_valid_project: "Questo file ZIP non è un progetto {app_name} valido",
   zip_is_space_not_project:
     "Questo file ZIP sembra essere uno spazio e non un progetto",
 
@@ -1106,7 +1233,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
     compilate per informare gli utenti di queste regole.
     `,
   cookies_info: `
-    Su questa versione di do•doc, non viene effettuato nessun tracciamento delle visite,  
+    Su questa versione di {app_name}, non viene effettuato nessun tracciamento delle visite,  
     gli unici cookie sono utilizzati per registrare informazioni tecniche anonime
     (come la lingua, l'uso della fotocamera, ecc.).
     `,
@@ -1194,10 +1321,13 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   do_nothing: "Non fare nulla",
   open_webpage: "Apri una pagina web in una nuova scheda",
   navigate_to_page: "Naviga verso una pagina",
+  open_image_fullscreen: "Ingrandisci l’immagine a schermo intero",
 
   regenerate_thumbs: "Rigenera l'anteprima",
   failed_to_regenerate_thumbs: "Impossibile rigenerare l'anteprima",
   thumbs_regenerated: "Anteprima rigenerata",
+  use_view_as_preview: "Usa questa vista come anteprima",
+  preview_updated: "Anteprima aggiornata",
   embed_link: "Link per l'embedding",
   direct_link_to_file:
     "Questo link punta direttamente al file multimediale e può essere utilizzato in altre applicazioni o siti web. La pagina di questo link non conterrà la didascalia o altre informazioni sul media.",
@@ -1250,7 +1380,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   discard_changes: "Annulla modifiche",
   close_without_saving: "Chiudi senza salvare",
 
-  start_by_uploading_images: "Inizia importando le immagini di seguito",
+  start_by_uploading_images: "Nessuna immagine importata per ora.",
   or: "o",
   live_dubbing: "Doppiaggio in diretta",
   play_both: "Esegui entrambi contemporaneamente",
@@ -1268,7 +1398,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   toolbox: "Cassetta degli attrezzi",
   video_resolution_even:
     "Larghezza × Altezza. Ogni valore deve essere un multiplo di 2.",
-  no_audio_track: "Nessuna traccia audio (muto)",
+  no_sound: "Nessun suono",
   keep_audio_track: "Mantieni la traccia audio",
   stop_recording_with_video: "Interrompi la registrazione alla fine del video.",
 
@@ -1278,7 +1408,7 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   enable_image: "Attiva l'immagine",
   enable_sound: "Attiva l'audio",
   created_by_publication: "Creato dalla pubblicazione {publication_title}",
-  webpage_export_instructions: `Il file ZIP sottostante contiene tutti i contenuti necessari per visualizzare questa pubblicazione al di fuori di do•doc. 
+  webpage_export_instructions: `Il file ZIP sottostante contiene tutti i contenuti necessari per visualizzare questa pubblicazione al di fuori di {app_name}. 
   <br />Scompattando il file ZIP e aprendo il file index.html al suo interno, è possibile visualizzare la pubblicazione da qualsiasi computer utilizzando un browser web.
   <br /><br />È possibile anche metterlo online, in modo che sia accessibile via Internet. Per questo ti consigliamo di seguire il tutorial sul nostro forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Metti online media e pubblicazioni</a>.`,
 
@@ -1289,7 +1419,6 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
 
   remove_publication: "Elimina la pubblicazione {name}",
 
-  not_logged_in: "Utente senza account",
 
   chapters: "Capitoli",
   create_chapter: "Crea un capitolo",
@@ -1344,4 +1473,8 @@ Lascia il campo vuoto per rendere l'accesso aperto a tuttə. `,
   create_list_instructions:
     "Crea un nuovo elenco per organizzare le tue note e attività.",
   no_notes_to_show: "Nessuna nota da mostrare",
+  frames_per_second: "fps",
+  mono: "Mono",
+  stereo: "Stereo",
+  n_channels: "{n} canali",
 };

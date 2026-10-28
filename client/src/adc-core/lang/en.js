@@ -1,9 +1,9 @@
 export default {
-  welcome_to_dodoc: "Welcome to do•doc !",
+  welcome_to_dodoc: "Welcome to {app_name} !",
   current_lang_name: "English",
 
   a_foss_made_by:
-    "This platform uses do•doc, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
+    "This platform uses {app_name}, a free and open-source software made by a community of designers, teachers, artists, developers, makers,&nbsp;…!",
   home: "Home",
   go_home: "Back to home",
   page_not_found: "This page does not exist",
@@ -47,7 +47,7 @@ export default {
   year: "Year",
   admin_settings: "Admin settings",
   admin_welcome: "Get started",
-  admin_welcome_title: "Welcome to your do•doc",
+  admin_welcome_title: "Welcome to your {app_name}",
   admin_welcome_intro:
     "This is where you configure this instance. Everything you can set up is gathered here: pick a section in the list on the left, or start with the steps below.",
   admin_welcome_default_admin:
@@ -55,15 +55,18 @@ export default {
   admin_welcome_change_password: "Change the administration password",
   admin_password_modal_text:
     "Choose a new password for the “Admin” account, the default administrator of this instance.",
-  admin_password_must_differ: "Choose a password different from the default one.",
+  admin_password_must_differ:
+    "Choose a password different from the default one.",
   admin_password_changed: "The administration password was changed",
   admin_welcome_anyone_can_admin:
     "For now, anyone can edit these settings, even without an account. Define who the administrators are.",
   admin_welcome_steps: "To get started",
   admin_welcome_sections: "What you can configure",
   admin_welcome_step_password: "Change the administration password",
-  admin_welcome_step_informations: "Give a name and a presentation to your instance",
-  admin_welcome_step_access: "Choose who can administer, contribute and sign up",
+  admin_welcome_step_informations:
+    "Give a name and a presentation to your instance",
+  admin_welcome_step_access:
+    "Choose who can administer, contribute and sign up",
   admin_welcome_step_images: "Add a logo and a home page image",
   admin_page_restricted:
     "This page is reserved for the administrators of this instance. Log in with an administrator account to access it.",
@@ -80,6 +83,16 @@ export default {
     "Terms of use and confidentiality pages, and whether people must accept them to sign up.",
   admin_tab_desc_suggested_cat_kw:
     "Keywords and categories suggested when describing content.",
+  suggested_cat_kw_instructions:
+    "These lists help describe content consistently. When someone adds keywords, machines, materials or a group, the terms from the matching list are suggested: they can add them with one click, or freely type others.<br><br>Open a list to fill it in, or add one with the button below.",
+  suggestions_keywords_instr:
+    "Suggested when adding keywords to a project or a media.",
+  suggestions_machines_instr:
+    "Suggested in the “Machines and materials” card of projects.",
+  suggestions_materials_instr:
+    "Suggested in the “Machines and materials” card of projects.",
+  suggestions_accountgroup_instr:
+    "Suggested when setting an account’s group (class, team, organisation…), from that account’s page.",
   admin_tab_desc_storage:
     "Where content is stored on this computer (desktop app only).",
   admin_tab_desc_debug_logs: "Recent logs, to help diagnose a problem.",
@@ -111,7 +124,7 @@ export default {
   space_members: "Participants in this space",
 
   name_of_instance: "Instance name",
-  name_of_instance_instructions: `For example, <b>Malakoff fablab documentation</b>, <b>do•doc of the CM class</b>, etc.
+  name_of_instance_instructions: `For example, <b>Malakoff fablab documentation</b>, <b>{app_name} of the CM class</b>, etc.
       Will appear on the home page and in the browser tab.`,
   presentation_of_instance: "Instance presentation",
   presentation_of_instance_instructions: `Will appear on the home page only.`,
@@ -207,8 +220,8 @@ export default {
   create_a_publication: "Create a publication",
   import_a_project: "Import a project",
   import_a_project_instr: `
-  You can import a project with all its medias, makes and publications to this space, even if it has been created on another do•doc instance as long
-  as it is running version 10. To do so, click on <i>download</i> on that project on the other do•doc instance to get a ZIP file and choose this file
+  You can import a project with all its medias, makes and publications to this space, even if it has been created on another {app_name} instance as long
+  as it is running version 10 or later. To do so, click on <i>download</i> on that project on the other {app_name} instance to get a ZIP file and choose this file
   after clicking the button below. It will automatically be added to this space with your account as the admin.`,
 
   story_width: "Story width",
@@ -218,7 +231,6 @@ export default {
   in_this_section: "In this chapter",
   on_the_cover: "On the cover",
   in_another_section: "In another chapter",
-  change_section: "Move to another chapter",
   remove_section: "Remove this chapter",
   remove_area: "Remove this area",
   remove_area_confirm: "Are you sure you want to remove this area?",
@@ -277,7 +289,7 @@ export default {
   audiooutput: "Audio output",
 
   restart_to_apply:
-    "Close and restart do•doc manually or using the button below for the setting to take effect.",
+    "Close and restart {app_name} manually or using the button below for the setting to take effect.",
   restart: "Close and restart",
 
   refresh_window_to_see_changes: "Refresh the window to see the changes",
@@ -435,9 +447,14 @@ export default {
   projects_you_edited_last: "Projects you edited last",
 
   path_to_content: "Path to content",
-  path_to_content_instructions: `Attention, advanced functionality!
-  The path below indicates the location of the folder that contains the contents of do•doc. If you change this path, it is strongly recommended to use either an empty folder or a folder that only contains content created by do•doc 10. Restart do•doc for this setting to take effect.`,
-
+  storage_instructions:
+    "All {app_name} content is stored in a single folder: spaces, projects, media, publications, accounts, instance settings… To make a backup, simply copy this folder, ideally while {app_name} is closed.",
+  storage_change_instructions:
+    "<b>Changing the location does not move the content.</b> After restarting, {app_name} will use the selected folder:<br>• if it already contains {app_name} content (version 10 or later), that content will be shown;<br>• if it is empty, a new empty instance will be created there;<br>• if it contains other files, it will be refused: create a new empty subfolder instead and select it.<br>To keep your content, close {app_name}, copy the current folder to the new location, then select that copy. If the selected folder can’t be written to, {app_name} will fall back to the default folder (Documents/dodoc).",
+  storage_folder_incompatible:
+    "This folder can’t be used: it is not empty and does not contain {app_name} 10 content. Nothing was changed in it. Choose an empty folder, for example by creating a new subfolder with the “New Folder” button in the selection window.",
+  storage_server_instructions:
+    "On this installation, the location can’t be changed from this page: it is set by whoever administers the server, with the <code>contentPath</code> option in the <code>settings.json</code> file.",
   administration_and_access_control: "Administration and access control",
   logo_and_images: "Logo and images",
   fonts: "Typeface",
@@ -551,13 +568,32 @@ export default {
   url_to_open: "URL of the page to open",
   content: "Content",
   connection_lost: "Connection lost",
+  changes_may_not_be_saved: "Your recent changes may not be saved.",
+  connection_lost_help_intro:
+    "This device can no longer reach the <b>{app_name}</b> server where projects are stored.",
+  connection_lost_help_live:
+    "Changes made by other participants won’t show up either.",
+  connection_lost_help_causes: "Common causes",
+  connection_lost_help_cause_network:
+    "This device is no longer connected to the network (wifi off or too weak, cable unplugged).",
+  connection_lost_help_cause_server:
+    "The computer or server hosting <b>{app_name}</b> is off, asleep or restarting.",
+  connection_lost_help_cause_sleep:
+    "This device went to sleep or the tab stayed in the background for a long time.",
+  connection_lost_help_what_to_do: "What to do?",
+  connection_lost_help_todo_wait:
+    "Check this device’s connection, then click “Retry”. <b>{app_name}</b> also tries again automatically every few seconds.",
+  connection_lost_help_todo_unsaved:
+    "Avoid making new changes until the connection is back.",
+  connection_lost_help_todo_reload:
+    "If the server is reachable again but this message is still showing, reload the page.",
   connection_lost_in: "The connection to the server was lost.",
   attempting_to_reconnect_in: "Attempting to connect again in:",
   reload_page: "Reload this page",
   try_reconnect_now: "Try to reconnect now",
   reconnecting: "Attempting to reconnect…",
   if_issues_contact: "If you regularly encounter this error, please contact ",
-  connection_back: "The connection is back.",
+  connection_back: "Connection restored",
   create_page: "Add a page",
   add_on_page: "Add to page",
   page_color: "Color of this page",
@@ -568,12 +604,24 @@ export default {
   active_media_instr:
     "Find here the information on the media selected on the current page.",
   favicon_image: "Favicon image",
-  favicon_image_instr: "Will appear in browser tab.",
+  favicon_image_instr: "Small icon shown in the browser tab and bookmarks. A simple square image works best. Default: the do•doc icon.",
   topbar_image: "Logo in the navigation bar",
-  topbar_image_instr:
-    "At the top left of the screen. When clicked, takes you back to the home page.",
+  topbar_image_instr: "At the top left of the screen, on every page. When clicked, takes you back to the home page. Default: the do•doc logo.",
   hero_image: "Home page visual",
-  hero_image_instr: "",
+  hero_image_instr: "Large image shown at the top of the home page, next to or behind the presentation text.",
+  imported_images: "Imported images",
+  imported_images_instr: "Import one or more images, then choose below where to use them. The same image can be used in several places (logo, favicon and home page).",
+  navigation_and_tab: "Navigation bar and tab",
+  home_page: "Home page",
+  logo: "Logo",
+  favicon: "Favicon",
+  default_dodoc_logo: "No image selected: the do•doc logo is used.",
+  default_dodoc_favicon: "No image selected: the do•doc icon is used.",
+  no_image: "No image selected.",
+  layout_image_text: "Image then text",
+  layout_text_image: "Text then image",
+  layout_text_image_overlay: "Text over image",
+  layout_image_text_overlay: "Image over text",
   change_order: "Change order",
   bytes: "bytes",
   kb: "ko",
@@ -646,6 +694,10 @@ export default {
   desktop_720: "Desktop 720p",
   custom: "Custom",
   custom_f: "Custom",
+  change_document_type_warning:
+    "This publication already has content. Positions and sizes are kept as numbers but mm and px don’t match: the layout will shrink or move off the page. Switching back restores it.",
+  switch_to: "Switch to {type}",
+  orientation: "Orientation",
   width: "Width",
   height: "Height",
   text_size: "Text size",
@@ -736,12 +788,14 @@ export default {
   media_duplicated: "Media duplicated",
   media_was_saved_to_project: "The media was added to the project",
   close: "Close",
+  menu: "Menu",
   settings: "Settings",
   list_of_pages: "List of pages",
   list_of_spreads: "List of spreads",
   grid: "Grid",
   show_grid: "Show Grid",
   snap_to_grid: "Grid Snapping",
+  smart_guides: "Smart guides",
   gridstep: "Grid step",
   scale: "Scale",
   over: "Over",
@@ -865,6 +919,10 @@ export default {
   saved: "OK!",
   connected: "Connected",
   history: "History",
+  no_history_yet: "No changes recorded yet.",
+  history_unavailable: "Couldn’t load history.",
+  current_value: "current value",
+  creation: "creation",
   creativecommons_by_sa: "Creative Commons BY SA",
   creativecommons_by_sa_explanations: "Attribution – Share Alike",
   all_rights_reserved: "All Rights Reserved",
@@ -973,13 +1031,13 @@ export default {
   failed_to_start_streams_change_source_or_res:
     "The video or audio stream could not be started.<br>Try changing the source or resolution in the settings.",
   stream_local_mode: "on this device",
-  stream_remote_mode: "remote do•doc",
+  stream_remote_mode: "remote {app_name}",
   "stream_shown:": "Stream used:",
   remote_access: "Remote Sources",
   hangup: "hang up",
   connect: "Connect",
   connect_to_other_users:
-    "Access sources from other devices currently connected to this do•doc",
+    "Access sources from other devices currently connected to this {app_name}",
   seconds: "seconds",
   no_video_input_available: "No video source available",
   no_audio_input_available: "No audio source available",
@@ -1041,6 +1099,8 @@ export default {
   wrong_signup_password: "Wrong password",
 
   enable_events: "Enable the events functionality",
+  enable_events_instructions:
+    "Events let you group the projects made during a workshop, a course, a residency or a festival.<br><br>Once the feature is enabled:<br>• an “Events” section appears on the home page. Instance admins and contributors can create events there, with a title, a presentation, dates and an image;<br>• in each project, the “Created during an event” field lets its referents link it to an event;<br>• opening an event from the home page shows its presentation and the list of projects linked to it.<br><br>Disabling the feature hides these elements, without removing existing events or links.",
   you_must_login_to_contribute: "You must register or log in to contribute",
   not_allowed_to_contribute_contact_referent:
     "You do not have the possibility to contribute, contact a referent to be able to do so",
@@ -1069,6 +1129,49 @@ export default {
   dmm_instr: "In this space or another where you can import media.",
   dmp_instr:
     "In this project or another where you can create posts. All settings and texts will be duplicated, and the media (photos, videos, etc.) will be imported into the Collect panel.",
+  where: "Where?",
+  publication: "Publication",
+  in_this_publication: "In this publication",
+  in_another_publication_of_project: "In another publication of this project",
+  in_another_project: "In another project",
+  dmmod_instr:
+    "The media used by this module will be imported into the Collect panel of the chosen project.",
+  no_compatible_publications:
+    "No publication in this project can receive this module (page layout modules can only go to page by page publications, and vice versa)",
+  no_sections: "This publication has no chapter that can receive this module",
+  module_added_at_end_of_section:
+    "The module will be added at the end of this chapter.",
+  module_added_at_end_of_publication:
+    "The module will be added at the end of this publication.",
+  module_copy_added_after_original:
+    "The copy will be placed right after the original module.",
+  only_publications_with_same_template:
+    "Only publications with the same template are available (stories with sections and maps are compatible with each other).",
+  module_added_to_page: "The module will be placed on this page.",
+  module_already_there: "The module is already here.",
+  module_moved: "Module moved",
+  module_duplicated: "Module duplicated",
+  module_moved_to: "Module moved to {destination}",
+  module_duplicated_to: "Module duplicated to {destination}",
+  to_page_n: "page {number}",
+  to_section_x: "chapter “{title}”",
+  to_publication_x: "publication “{title}”",
+  x_of_publication_y: "{place} of publication “{title}”",
+  click_to_show: "click to show",
+  in_this_project: "In this project",
+  in_this_space: "In this space",
+  in_another_space: "In another space",
+  no_other_space_available: "No other space where you can contribute.",
+  already_here_pick_another_destination:
+    "Already here: pick another destination to move it.",
+  media_moved: "Media moved",
+  medias_duplicated: "{count} medias duplicated",
+  medias_moved: "{count} medias moved",
+  publication_duplicated: "Publication duplicated",
+  publication_moved: "Publication moved",
+  project_duplicated: "Project duplicated",
+  project_moved: "Project moved",
+  project_remixed: "Project remixed",
   import_zip: "Import a project in ZIP",
   import_in_progress: "Import in progress…",
   import_finished:
@@ -1144,7 +1247,7 @@ export default {
   completed to inform users of these rules.
     `,
   cookies_info: `
-  In this version of do•doc, know that no tracking is done and that the cookies only contain anonymous technical information
+  In this version of {app_name}, know that no tracking is done and that the cookies only contain anonymous technical information
   (like the language, the cameras used, etc.).
     `,
 
@@ -1233,10 +1336,13 @@ export default {
   do_nothing: "Do nothing",
   open_webpage: "Open a web page in a new tab",
   navigate_to_page: "Navigate to page",
+  open_image_fullscreen: "Enlarge image to full screen",
 
   regenerate_thumbs: "Regenerate preview",
   failed_to_regenerate_thumbs: "Failed to regenerate preview",
   thumbs_regenerated: "Preview regenerated",
+  use_view_as_preview: "Use this view as preview",
+  preview_updated: "Preview updated",
   embed_link: "Embed link",
   direct_link_to_file:
     "This link points directly to the media file, it can be used in other applications or websites.",
@@ -1287,7 +1393,7 @@ export default {
   add_after_existing_authors: "Add after existing authors",
   erase_and_replace_authors: "Erase and replace authors",
 
-  start_by_uploading_images: "Start by uploading images below",
+  start_by_uploading_images: "No images imported yet.",
   or: "or",
   live_dubbing: "Live dubbing",
   play_both: "Play both at the same time",
@@ -1303,7 +1409,6 @@ export default {
   edit_volume_or_mute: "Edit volume or mute",
   toolbox: "Toolbox",
   video_resolution_even: "Width × Height. Each value must be a multiple of 2.",
-  no_audio_track: "No audio track (muted)",
   keep_audio_track: "Keep the audio track",
   stop_recording_with_video: "Stop recording at the end of the video.",
 
@@ -1313,7 +1418,7 @@ export default {
   enable_image: "Enable image",
   enable_sound: "Enable sound",
   created_by_publication: "From the publication {publication_title}",
-  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of do•doc. 
+  webpage_export_instructions: `The ZIP file below contains all the contents necessary to display this publication outside of {app_name}. 
   <br />By decompressing the ZIP and opening the index.html file it contains, you can view the publication from any computer in a web browser.
   <br /><br />You can also publish it online so that it can be accessed on the internet. For this, we recommend following the tutorial on our forum: <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Upload media and publications online</a>.`,
 
@@ -1324,7 +1429,6 @@ export default {
 
   remove_publication: "Delete publication {name}",
 
-  not_logged_in: "User without account",
 
   chapters: "Chapters",
   create_chapter: "Create a chapter",
@@ -1411,7 +1515,8 @@ export default {
     "The chosen resolution is a minimum: each image is embedded at the smallest available size that reaches it at its printed size, or as its source file if no size is large enough.",
   image_quality_source_instructions:
     "Using source files can create much heavier PDFs.",
-  booklet_sheet_format: "Sheet: {width} × {height} mm{format}, printed double-sided",
+  booklet_sheet_format:
+    "Sheet: {width} × {height} mm{format}, printed double-sided",
   booklet_summary: "{signatures} signature(s) · {sheets} sheet(s) in total",
   booklet_blank_pages: "{count} blank page(s) added at the end",
   signature_n: "Signature {n}",
@@ -1441,7 +1546,6 @@ export default {
   folder_not_public:
     "This content is not public, to access it its author must make it public.",
 
-  other_devices_connected: "Other devices connected",
   width_alignment_grid_only_non_mobile:
     "The width and alignment of this module (when centered or right-aligned) will only be used if the window width is larger than 767 pixels.",
   add_column: "Add column",
@@ -1472,6 +1576,7 @@ export default {
   last_message_date: "Last message on",
   message_has_been_removed: "This message has been removed.",
   unread: "Unread",
+  mark_all_as_read: "Mark all as read",
   remove_chat: "Delete topic {name}",
   chat_was_removed: "The topic has been removed.",
   edit_this_message: "Edit this message",
@@ -1515,6 +1620,23 @@ export default {
   actions: "Actions",
   session_crashed: "Session crashed",
   session_running: "Session running",
+  session_interrupted:
+    "Session interrupted",
+  session_interrupted_instr:
+    "Stopped without a recorded error: process killed, computer shut down or hibernated, power cut…",
+  view_log: "View",
+  search_in_log: "Search in log…",
+  all_events: "All events",
+  follow_live: "Follow live",
+  no_matching_entries: "No entry matches the filters.",
+  failed_to_copy: "Couldn’t copy",
+  show_more: "Show more",
+  log_unavailable: "Couldn’t load this log. If the session just stopped, close this window and refresh the list.",
+  log_level_error: "Errors",
+  log_level_warning: "Warnings",
+  log_level_notice: "Start / stop",
+  log_level_info: "Info",
+  copied: "Copied!",
 
   last_page_reached: "Last page reached",
   fonts_instr:
@@ -1633,4 +1755,17 @@ export default {
   back_to_content: "Back to content",
   click_on_another_cell_to_continue:
     "Click on an empty cell to create a chained area.",
+  accounts_online: "Accounts online",
+  presence_anonymous_count:
+    "No one without an account | + {n} person without an account | + {n} people without an account",
+  in_a_private_folder: "In a private folder",
+  nobody_else_connected: "No other account is connected right now.",
+  unknown_location: "Unknown location",
+  you_are_here: "You are here",
+  open_tabs: "{n} open tab | {n} open tab | {n} open tabs",
+  your_other_tabs: "Your other tabs",
+  frames_per_second: "fps",
+  mono: "Mono",
+  stereo: "Stereo",
+  n_channels: "{n} channels",
 };

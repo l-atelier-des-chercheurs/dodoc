@@ -23,7 +23,9 @@
           :src="full_thumb"
           :data-print-sources="print_sources_attr"
           class="_mediaContent--image"
+          :class="{ 'is--clickable': show_fs_button }"
           :loading="img_loading"
+          @click="show_fs_button && (show_fullscreen = true)"
         />
         <ImageZoom
           v-else
@@ -51,7 +53,7 @@
         </template>
       </template>
       <template v-else>
-        <vue-plyr :key="file_full_path" ref="plyr">
+        <vue-plyr :key="file_full_path" ref="plyr" :options="plyr_options">
           <video
             v-if="file.$type === 'video'"
             :poster="thumb"
@@ -147,13 +149,29 @@
               :src="file_full_path"
               @load="iframeLoaded"
             />
-            <ThreeDPreview
-              v-else-if="load_iframe_type === '3D file'"
-              class="_threeDPreview"
-              :key="file_full_path"
-              :file_type="file.$type"
-              :src="file_full_path"
-            />
+            <template v-else-if="load_iframe_type === '3D file'">
+              <ThreeDPreview
+                ref="threeDPreview"
+                class="_threeDPreview"
+                :key="file_full_path"
+                :file_type="file.$type"
+                :src="file_full_path"
+                :view_matrix="file.$thumb_view"
+                @loaded="threed_is_loaded = true"
+              />
+              <div class="_saveThumbView" v-if="can_edit && threed_is_loaded">
+                <button
+                  type="button"
+                  class="u-button u-button_small u-button_white"
+                  :disabled="is_saving_thumb_view"
+                  @click="saveViewAsPreview"
+                >
+                  <b-icon icon="camera" />
+                  {{ $t("use_view_as_preview") }}
+                </button>
+                <LoaderSpinner v-if="is_saving_thumb_view" />
+              </div>
+            </template>
             <iframe
               v-else-if="load_iframe_type === 'any'"
               frameborder="0"
@@ -195,7 +213,8 @@
         ['image', 'stl', 'obj', 'pdf'].includes(file.$type) && show_fs_button
       "
     >
-      <div class="_fsButton">
+      <!-- images open on click (unless click already zooms), other types need pointer interactions -->
+      <div class="_fsButton" v-if="file.$type !== 'image' || zoom_on_click">
         <EditBtn :btn_type="'fullscreen'" @click="show_fullscreen = true" />
       </div>
       <FullscreenView v-if="show_fullscreen" @close="show_fullscreen = false">
@@ -224,6 +243,8 @@
   </div>
 </template>
 <script>
+import { plyr_options, plyr_options_muted } from "@/utils/plyr.js";
+
 export default {
   props: {
     file: Object,
@@ -263,6 +284,8 @@ export default {
       player: null,
 
       is_regenerating: false,
+      threed_is_loaded: false,
+      is_saving_thumb_view: false,
     };
   },
   created() {},
@@ -350,6 +373,11 @@ export default {
     img_ratio() {
       return this.file.$infos?.ratio;
     },
+    plyr_options() {
+      if (this.file.$type === "video" && this.file.$infos?.has_audio === false)
+        return plyr_options_muted;
+      return plyr_options;
+    },
   },
   methods: {
     volumeChanged(event) {
@@ -386,6 +414,29 @@ export default {
         this.$alertify.delay(4000).error(this.$t(error_code));
       } finally {
         this.is_regenerating = false;
+      }
+    },
+    async saveViewAsPreview() {
+      const view_matrix = this.$refs.threeDPreview?.getViewMatrix();
+      if (!view_matrix) return;
+
+      this.is_saving_thumb_view = true;
+      try {
+        await this.$api.updateMeta({
+          path: this.file.$path,
+          new_meta: { $thumb_view: view_matrix },
+        });
+        // removes the previous thumbs, makes new ones from this view
+        await this.$api.regenerateThumbs({ path: this.file.$path });
+        this.$alertify.delay(4000).success(this.$t("preview_updated"));
+        // close the 3D viewer to show the new preview
+        this.start_iframe = false;
+        this.threed_is_loaded = false;
+      } catch (err) {
+        const error_code = err?.code || "failed_to_regenerate_thumbs";
+        this.$alertify.delay(4000).error(this.$t(error_code));
+      } finally {
+        this.is_saving_thumb_view = false;
       }
     },
     loadIframe() {
@@ -523,6 +574,10 @@ export default {
   }
 }
 
+._mediaContent--image.is--clickable {
+  cursor: zoom-in;
+}
+
 ._fsButton {
   position: absolute;
   bottom: 0;
@@ -538,6 +593,21 @@ export default {
 ._pdfPreview {
   width: 100%;
   height: 100%;
+}
+
+._saveThumbView {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: calc(var(--spacing) / 1);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+
+  @media print {
+    display: none;
+  }
 }
 
 ._zoomed {

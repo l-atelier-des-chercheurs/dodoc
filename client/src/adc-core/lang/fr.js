@@ -1,8 +1,8 @@
 export default {
-  welcome_to_dodoc: "Bienvenue sur do•doc !",
+  welcome_to_dodoc: "Bienvenue sur {app_name} !",
   current_lang_name: "Français",
   a_foss_made_by:
-    "Cette plateforme utilise do•doc, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
+    "Cette plateforme utilise {app_name}, un logiciel libre et gratuit créé par une communauté de designers, enseignants, artistes, développeurs, makers,&nbsp;…!",
   home: "Accueil",
   go_home: "Retourner à l’accueil",
   page_not_found: "Cette page n’existe pas",
@@ -91,7 +91,7 @@ export default {
   space_members: "Participants à cet espace",
 
   name_of_instance: "Nom de l’instance",
-  name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>do•doc de la classe de CM</b>, etc.
+  name_of_instance_instructions: `Par exemple, <b>Documentation du fablab de Malakoff</b>, <b>{app_name} de la classe de CM</b>, etc.
       Apparaîtra sur la page d’accueil et dans l’onglet du navigateur.`,
   presentation_of_instance: "Présentation de l’instance",
   presentation_of_instance_instructions: `Apparaîtra sur la page d’accueil uniquement.`,
@@ -118,6 +118,26 @@ export default {
   ancient: "Ancien",
 
   connection_lost: `Connexion perdue`,
+  changes_may_not_be_saved:
+    "Vos modifications récentes pourraient ne pas être enregistrées.",
+  connection_lost_help_intro:
+    "Cet appareil n’arrive plus à joindre le serveur <b>{app_name}</b> sur lequel sont enregistrés les projets.",
+  connection_lost_help_live:
+    "Les changements faits par les autres participants ne s’affichent plus non plus.",
+  connection_lost_help_causes: "Causes fréquentes",
+  connection_lost_help_cause_network:
+    "Cet appareil n’est plus connecté au réseau (wifi coupé ou trop faible, câble débranché).",
+  connection_lost_help_cause_server:
+    "L’ordinateur ou le serveur qui héberge <b>{app_name}</b> est éteint, en veille ou en train de redémarrer.",
+  connection_lost_help_cause_sleep:
+    "Cet appareil s’est mis en veille ou l’onglet est resté longtemps en arrière-plan.",
+  connection_lost_help_what_to_do: "Que faire ?",
+  connection_lost_help_todo_wait:
+    "Vérifiez la connexion de cet appareil, puis cliquez sur « Réessayer ». <b>{app_name}</b> retente aussi automatiquement à intervalles réguliers.",
+  connection_lost_help_todo_unsaved:
+    "Évitez de faire de nouvelles modifications tant que la connexion n’est pas revenue.",
+  connection_lost_help_todo_reload:
+    "Si le serveur est de nouveau accessible mais que ce message reste affiché, rechargez la page.",
   connection_lost_in: `La connexion au serveur s’est interrompue.`,
   attempting_to_reconnect_in: `Nouvelle tentative de connexion dans :`,
   reload_page: "Recharger cette page",
@@ -125,7 +145,7 @@ export default {
   reconnecting: "Tentative de reconnection…",
   if_issues_contact:
     "Si vous rencontrez régulièrement cette erreur, veuillez contacter ",
-  connection_back: "La connection est revenue.",
+  connection_back: "Connexion rétablie",
   create_page: "Ajouter une page",
   add_on_page: "Ajouter sur la page",
   page_color: "Couleur de cette page",
@@ -143,12 +163,24 @@ export default {
   text_image_layout: "Mise en page texte et image",
 
   favicon_image: "Image favicon",
-  favicon_image_instr: "Apparaîtra dans l’onglet du navigateur.",
+  favicon_image_instr: "Petite icône affichée dans l’onglet du navigateur et dans les favoris. Une image carrée et simple fonctionne mieux. Par défaut : l’icône de do•doc.",
   topbar_image: "Logo dans la barre de navigation",
-  topbar_image_instr:
-    "En haut à gauche de l’écran. Au clic, ramène à la page d’accueil.",
+  topbar_image_instr: "En haut à gauche de l’écran, sur toutes les pages. Au clic, ramène à la page d’accueil. Par défaut : le logo de do•doc.",
   hero_image: "Visuel page d’accueil",
-  hero_image_instr: "",
+  hero_image_instr: "Grande image affichée en haut de la page d’accueil, à côté ou derrière le texte de présentation.",
+  imported_images: "Images importées",
+  imported_images_instr: "Importez une ou plusieurs images, puis choisissez ci-dessous où les utiliser. Une même image peut servir à plusieurs endroits (logo, favicon et page d’accueil).",
+  navigation_and_tab: "Barre de navigation et onglet",
+  home_page: "Page d’accueil",
+  logo: "Logo",
+  favicon: "Favicon",
+  default_dodoc_logo: "Aucune image choisie : le logo de do•doc est utilisé.",
+  default_dodoc_favicon: "Aucune image choisie : l’icône de do•doc est utilisée.",
+  no_image: "Aucune image choisie.",
+  layout_image_text: "Image puis texte",
+  layout_text_image: "Texte puis image",
+  layout_text_image_overlay: "Texte sur l’image",
+  layout_image_text_overlay: "Image sur le texte",
   change_order: "Changer l’ordre",
 
   bytes: "octets",
@@ -246,7 +278,6 @@ export default {
   in_this_section: "Dans ce chapitre",
   on_the_cover: "Sur la couverture",
   in_another_section: "Dans un autre chapitre",
-  change_section: "Déplacer vers un autre chapitre",
   remove_section: "Supprimer le chapitre",
   remove_area: "Supprimer cette zone",
   remove_area_confirm: "Êtes-vous sûr de vouloir supprimer cette zone ?",
@@ -281,6 +312,10 @@ export default {
 
   custom: "Personnalisé",
   custom_f: "Personnalisée",
+  change_document_type_warning:
+    "Cette publication contient déjà des éléments. Leurs positions et tailles sont conservées en valeur, mais mm et px n’ont pas la même échelle : la mise en page va rétrécir ou sortir de la page. Revenir au type précédent la rétablit.",
+  switch_to: "Passer en {type}",
+  orientation: "Orientation",
   width: "Largeur",
   height: "Hauteur",
   text_size: "Taille du texte",
@@ -408,7 +443,7 @@ export default {
   show_projects: "Afficher les projets",
   all_projects: "Tous les projets",
   all_projects_instr:
-    "Cette liste affiche l’ensemble des projets documentés sur ce do•doc, indépendamment de leurs espaces respectifs.",
+    "Cette liste affiche l’ensemble des projets documentés sur ce {app_name}, indépendamment de leurs espaces respectifs.",
   event_projects_instr:
     "Cette liste affiche l’ensemble des projets documentés pendant cet événement.",
 
@@ -416,7 +451,7 @@ export default {
   add_accounts: "Rajouter des comptes",
   add_by_group: "Ajouter par groupe",
   restart_to_apply:
-    "Fermez et redémarrez do•doc manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
+    "Fermez et redémarrez {app_name} manuellement ou avec le bouton ci-dessous pour que le réglage prenne effet.",
   restart: "Fermer et redémarrer",
 
   refresh_window_to_see_changes:
@@ -468,10 +503,11 @@ export default {
   restricted_instr: "Seuls ces comptes seront autorisés.",
 
   close: "Fermer",
+  menu: "Menu",
   settings: "Réglages",
   admin_settings: "Réglages d’administration",
   admin_welcome: "Prise en main",
-  admin_welcome_title: "Bienvenue sur votre do•doc",
+  admin_welcome_title: "Bienvenue sur votre {app_name}",
   admin_welcome_intro:
     "C’est ici que se règle cette instance. Tout ce que vous pouvez configurer est réuni ici : choisissez une section dans la liste à gauche, ou commencez par les étapes ci-dessous.",
   admin_welcome_default_admin:
@@ -509,6 +545,16 @@ export default {
     "Pages des conditions d’utilisation et de confidentialité, et acceptation obligatoire à l’inscription.",
   admin_tab_desc_suggested_cat_kw:
     "Mots-clés et catégories suggérés lors de la description d’un contenu.",
+  suggested_cat_kw_instructions:
+    "Ces listes aident à décrire les contenus de façon cohérente. Quand quelqu’un ajoute des mots-clés, des machines, des matériaux ou un groupe, les termes de la liste correspondante lui sont proposés : il peut les ajouter d’un clic, ou en saisir d’autres librement.<br><br>Ouvrez une liste pour la compléter, ou ajoutez-en une avec le bouton ci-dessous.",
+  suggestions_keywords_instr:
+    "Proposés lors de l’ajout de mots-clés à un projet ou à un média.",
+  suggestions_machines_instr:
+    "Proposées dans la carte « Machines et matériaux » des projets.",
+  suggestions_materials_instr:
+    "Proposés dans la carte « Machines et matériaux » des projets.",
+  suggestions_accountgroup_instr:
+    "Proposés lorsqu’on indique le groupe d’un compte (classe, équipe, structure…), depuis la page de ce compte.",
   admin_tab_desc_storage:
     "Emplacement du contenu sur cet ordinateur (application de bureau uniquement).",
   admin_tab_desc_debug_logs:
@@ -518,15 +564,21 @@ export default {
   grid: "Grille",
   show_grid: "Afficher la grille",
   snap_to_grid: "Magnétisme de la grille",
+  smart_guides: "Repères magnétiques",
   gridstep: "Pas de la grille",
   scale: "Échelle",
   over: "au-dessus",
   under: "en-dessous",
 
   path_to_content: "Chemin du stockage des contenus",
-  path_to_content_instructions: `Attention, fonctionnalité avancée !
-      Le chemin ci-dessous indique l’emplacement du dossier qui contient les contenus de do•doc. Si vous modifiez ce chemin, il est très fortement conseillé d’utiliser soit un dossier vide, soit un dossier qui contient uniquement des contenus créés par do•doc 10. Redémarrez do•doc pour que ce règlage prenne effet.`,
-
+  storage_instructions:
+    "Tous les contenus de {app_name} sont enregistrés dans un seul dossier : espaces, projets, médias, publications, comptes, paramètres de l’instance… Pour faire une sauvegarde, il suffit de copier ce dossier, de préférence pendant que {app_name} est fermé.",
+  storage_change_instructions:
+    "<b>Changer d’emplacement ne déplace pas les contenus.</b> Après redémarrage, {app_name} utilisera le dossier choisi :<br>• s’il contient déjà des contenus {app_name} (version 10 ou plus récente), ce sont eux qui s’afficheront ;<br>• s’il est vide, une nouvelle instance vide y sera créée ;<br>• s’il contient d’autres fichiers, il sera refusé : créez plutôt un nouveau sous-dossier vide et choisissez-le.<br>Pour conserver vos contenus, fermez {app_name}, copiez le dossier actuel au nouvel emplacement, puis choisissez cette copie. Si le dossier choisi n’est pas accessible en écriture, {app_name} reviendra au dossier par défaut (Documents/dodoc).",
+  storage_folder_incompatible:
+    "Ce dossier ne peut pas être utilisé : il n’est pas vide et ne contient pas de contenus {app_name} 10. Rien n’y a été modifié. Choisissez un dossier vide, par exemple en créant un nouveau sous-dossier avec le bouton « Nouveau dossier » de la fenêtre de sélection.",
+  storage_server_instructions:
+    "Sur cette installation, l’emplacement ne peut pas être modifié depuis cette page : il est défini par la personne qui administre le serveur, avec l’option <code>contentPath</code> du fichier <code>settings.json</code>.",
   administration_and_access_control: "Administration et contrôle des accès",
   logo_and_images: "Logo et images",
   fonts: "Police de caractères",
@@ -682,6 +734,10 @@ export default {
   saved: "OK !",
   connected: "Connecté",
   history: "Historique",
+  no_history_yet: "Aucune modification enregistrée pour l’instant.",
+  history_unavailable: "Impossible de charger l’historique.",
+  current_value: "valeur actuelle",
+  creation: "création",
 
   creativecommons_by_sa: "Creative Commons BY SA",
   creativecommons_by_sa_explanations:
@@ -900,14 +956,14 @@ export default {
   failed_to_start_streams_change_source_or_res:
     "Le flux vidéo ou audio n’a pas pu être démarré.<br>Essayez de modifier la source ou la résolution dans les réglages.",
   stream_local_mode: "sur cet appareil",
-  stream_remote_mode: "do•doc distant",
+  stream_remote_mode: "{app_name} distant",
   "stream_shown:": "Flux utilisé&nbsp;:",
 
   remote_access: "Sources distantes",
   hangup: "raccrocher",
   connect: "Se connecter",
   connect_to_other_users:
-    "Accéder à des sources provenant d’autres appareils connectés actuellement à ce do•doc",
+    "Accéder à des sources provenant d’autres appareils connectés actuellement à ce {app_name}",
 
   seconds: "secondes",
   no_video_input_available: "Aucune source vidéo disponible",
@@ -1001,6 +1057,8 @@ export default {
   wrong_signup_password: "Mauvais mot de passe",
 
   enable_events: "Activer la fonctionnalité « événements »",
+  enable_events_instructions:
+    "Les événements permettent de regrouper les projets réalisés lors d’un atelier, d’un stage, d’une résidence ou d’un festival.<br><br>Une fois la fonctionnalité activée :<br>• une section « Événements » apparaît sur la page d’accueil. Les administrateurs et contributeurs de l’instance peuvent y créer des événements, avec un titre, une présentation, des dates et une image ;<br>• dans chaque projet, le champ « Créé pendant un événement » permet à ses référents de le rattacher à un événement ;<br>• ouvrir un événement depuis la page d’accueil affiche sa présentation et la liste des projets qui y sont rattachés.<br><br>Désactiver la fonctionnalité masque ces éléments, sans supprimer les événements ni les rattachements existants.",
 
   you_must_login_to_contribute:
     "Vous devez vous inscrire ou vous connecter pour contribuer",
@@ -1036,15 +1094,59 @@ export default {
     "Dans cet espace ou vers un autre où vous pouvez importer des médias.",
   dmp_instr:
     "Dans ce projet ou vers un autre où vous pouvez créer des publications. L’ensemble des réglages et des textes seront dupliqués, et les médias (photos, vidéos, etc.) seront importés dans le panneau Collecter.",
+  where: "Où ?",
+  publication: "Publication",
+  in_this_publication: "Dans cette publication",
+  in_another_publication_of_project: "Dans une autre publication de ce projet",
+  in_another_project: "Dans un autre projet",
+  dmmod_instr:
+    "Les médias utilisés par ce module seront importés dans le panneau Collecter du projet choisi.",
+  no_compatible_publications:
+    "Aucune publication de ce projet ne peut recevoir ce module (les modules de mise en page ne peuvent aller que dans des publications page à page, et inversement)",
+  no_sections:
+    "Cette publication ne contient aucun chapitre pouvant recevoir ce module",
+  module_added_at_end_of_section:
+    "Le module sera ajouté à la fin de ce chapitre.",
+  module_added_at_end_of_publication:
+    "Le module sera ajouté à la fin de cette publication.",
+  module_copy_added_after_original:
+    "La copie sera placée juste après le module d’origine.",
+  only_publications_with_same_template:
+    "Seules les publications de même gabarit sont disponibles (les récits à chapitres et les cartographies sont compatibles entre eux).",
+  module_added_to_page: "Le module sera placé sur cette page.",
+  module_already_there: "Le module se trouve déjà à cet endroit.",
+  module_moved: "Module déplacé",
+  module_duplicated: "Module dupliqué",
+  module_moved_to: "Module déplacé vers {destination}",
+  module_duplicated_to: "Module dupliqué vers {destination}",
+  to_page_n: "la page {number}",
+  to_section_x: "le chapitre « {title} »",
+  to_publication_x: "la publication « {title} »",
+  x_of_publication_y: "{place} de la publication « {title} »",
+  click_to_show: "cliquer pour afficher",
+  in_this_project: "Dans ce projet",
+  in_this_space: "Dans cet espace",
+  in_another_space: "Dans un autre espace",
+  no_other_space_available: "Aucun autre espace où vous pouvez contribuer.",
+  already_here_pick_another_destination:
+    "Déjà à cet endroit : choisissez une autre destination pour le déplacer.",
+  media_moved: "Média déplacé",
+  medias_duplicated: "{count} médias dupliqués",
+  medias_moved: "{count} médias déplacés",
+  publication_duplicated: "Publication dupliquée",
+  publication_moved: "Publication déplacée",
+  project_duplicated: "Projet dupliqué",
+  project_moved: "Projet déplacé",
+  project_remixed: "Projet remixé",
   import_a_project: "Importer un projet",
   import_a_project_instr: `Vous pouvez ajouter dans cet espace un projet complet (avec tous ses médias, fabrications et publications) 
-    créé dans un autre do•doc version 10. Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre do•doc pour le récupérer en ZIP
+    créé dans un autre {app_name} (version 10 ou plus récente). Pour cela, cliquez sur <i>télécharger</i> sur le projet dans l’autre {app_name} pour le récupérer en ZIP
     puis importez le à l’aide du bouton ci-dessous. Il sera automatiquement ajouté et votre compte actuel en sera le référent.`,
   import_zip: "Importer un projet en ZIP",
   import_in_progress: "Importation en cours…",
   import_finished:
     "Importation terminée, cliquez sur le bouton ci-dessous pour ouvrir le projet. Les miniatures de tous les médias seront recréés, ce qui peut prendre quelques secondes à quelques minutes.",
-  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet do•doc valide",
+  zip_not_valid_project: "Ce fichier ZIP n’est pas un projet {app_name} valide",
   zip_is_space_not_project:
     "Ce fichier ZIP semble être un espace et non un projet",
 
@@ -1086,8 +1188,7 @@ export default {
   current: "Actuel",
   current_f: "Actuelle",
   save_on_this_device: "Sauvegarder pour cet appareil",
-  forget_general_password:
-    "Oublier le mot de passe général sur cet appareil",
+  forget_general_password: "Oublier le mot de passe général sur cet appareil",
   will_use_cookies: "Cette fonctionnalité utilise les cookies",
 
   "module.label.text": "Bloc de texte",
@@ -1226,7 +1327,7 @@ export default {
     remplies pour informer les utilisateurs de ces règles là.
     `,
   cookies_info: `
-    Sur cette version de do•doc, sachez qu’aucun suivi des visites n’est réalisé 
+    Sur cette version de {app_name}, sachez qu’aucun suivi des visites n’est réalisé 
     et que les seuls cookies servent à enregistrer des informations techniques anonymes
     (comme la langue, l’utilisation des caméras, etc.).
     `,
@@ -1316,10 +1417,13 @@ export default {
   do_nothing: "Ne rien faire",
   open_webpage: "Ouvrir une page web dans un nouvel onglet",
   navigate_to_page: "Naviguer vers une page",
+  open_image_fullscreen: "Agrandir l’image en plein écran",
 
   regenerate_thumbs: "Regénérer l’aperçu",
   failed_to_regenerate_thumbs: "Échec de la régénération de l’aperçu",
   thumbs_regenerated: "Aperçu régénéré",
+  use_view_as_preview: "Utiliser cette vue comme aperçu",
+  preview_updated: "Aperçu mis à jour",
   embed_link: "Lien d’intégration",
   direct_link_to_file:
     "Ce lien pointe directement vers le fichier du média, il peut être utilisé dans d’autres applications ou sites web. La page de ce lien ne contiendra pas la légende, ni les autres informations du média.",
@@ -1370,7 +1474,7 @@ export default {
   discard_changes: "Abandonner",
   close_without_saving: "Fermer sans enregistrer",
   done: "Terminé",
-  start_by_uploading_images: "Commencez par importer vos images ci-dessous",
+  start_by_uploading_images: "Aucune image importée pour l’instant.",
   or: "ou",
   live_dubbing: "Doublage en direct",
   play_both: "Lire les deux en même temps",
@@ -1388,7 +1492,6 @@ export default {
   toolbox: "Boîte à outils",
   video_resolution_even:
     "Largeur × Hauteur. Chaque valeur doit être un multiple de 2.",
-  no_audio_track: "Pas de piste audio (muet)",
   keep_audio_track: "Conserver la piste audio",
   stop_recording_with_video: "Arrêter l’enregistrement à la fin de la vidéo.",
 
@@ -1398,18 +1501,16 @@ export default {
   enable_image: "Activer l’image",
   enable_sound: "Activer le son",
   created_by_publication: "Créé par la publication {publication_title}",
-  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de do•doc. 
+  webpage_export_instructions: `Le fichier ZIP ci-dessous contient l’ensemble des contenus nécessaires à l’affichage de cette publication hors de {app_name}. 
   <br />En décompressant le ZIP et en ouvrant le fichier index.html qui s’y trouve, vous pouvez consulter la publication depuis n’importe quel ordinateur dans un navigateur web.
   <br /><br />Vous pouvez également la mettre en ligne pour qu’elle puisse être accessible par internet. Pour cela, nous vous recommandons de suivre le tutoriel sur notre forum : <a href="https://forum.latelier-des-chercheurs.fr/t/mettre-en-ligne-des-medias-et-des-publications/221" target="_blank">Mettre en ligne des médias et des publications</a>.`,
 
   all_fields_not_filled: "Tous les champs ne sont pas renseignés",
   pixels: "pixels",
   show_only_media_of_types: "Type de médias affiché : {types}",
-  other_devices_connected: "Autres appareils connectés",
 
   remove_publication: "Supprimer la publication {name}",
 
-  not_logged_in: "Utilisateur sans compte",
 
   chapters: "Chapitres",
   create_chapter: "Créer un chapitre",
@@ -1560,6 +1661,7 @@ export default {
   last_message_date: "Dernier message le",
   message_has_been_removed: "Ce message a été supprimé.",
   unread: "Non lu",
+  mark_all_as_read: "Tout marquer comme lu",
   remove_chat: "Supprimer la discussion {name}",
   chat_was_removed: "La discussion a été supprimée.",
   edit_this_message: "Modifier ce message",
@@ -1614,6 +1716,22 @@ export default {
   actions: "Actions",
   session_crashed: "Session plantée",
   session_running: "Session en cours",
+  session_interrupted:
+    "Session interrompue",
+  session_interrupted_instr:
+    "Arrêt sans erreur enregistrée : processus arrêté de force, ordinateur éteint ou mis en veille prolongée, coupure de courant…",
+  view_log: "Afficher",
+  search_in_log: "Rechercher dans le journal…",
+  all_events: "Tous les événements",
+  follow_live: "Suivre en direct",
+  no_matching_entries: "Aucune entrée ne correspond aux filtres.",
+  failed_to_copy: "Impossible de copier",
+  show_more: "Afficher plus",
+  log_unavailable: "Impossible de charger ce journal. Si la session vient de s’arrêter, fermez cette fenêtre et actualisez la liste.",
+  log_level_error: "Erreurs",
+  log_level_warning: "Avertissements",
+  log_level_notice: "Démarrage / arrêt",
+  log_level_info: "Infos",
 
   last_page_reached: "Dernière page atteinte",
   layout: "Mise en page",
@@ -1715,4 +1833,17 @@ export default {
   back_to_content: "Revenir au contenu",
   click_on_another_cell_to_continue:
     "Cliquez sur une cellule vide pour créer un bloc chaîné.",
+  accounts_online: "Comptes en ligne",
+  presence_anonymous_count:
+    "Aucune personne non connectée | + {n} personne non connectée à un compte | + {n} personnes non connectées à un compte",
+  in_a_private_folder: "Dans un dossier privé",
+  nobody_else_connected: "Aucun autre compte n’est connecté pour l’instant.",
+  unknown_location: "Emplacement inconnu",
+  you_are_here: "Vous êtes ici",
+  open_tabs: "{n} onglet ouvert | {n} onglet ouvert | {n} onglets ouverts",
+  your_other_tabs: "Vos autres onglets",
+  frames_per_second: "i/s",
+  mono: "Mono",
+  stereo: "Stéréo",
+  n_channels: "{n} canaux",
 };

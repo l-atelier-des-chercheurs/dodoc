@@ -1,11 +1,6 @@
 <template>
   <div class="_pickNativePath">
-    <!-- the instructions describe changing the path, which only the desktop
-      app allows: without it the path is shown as information only -->
-    <DLabel
-      :str="$t('path_to_content')"
-      :instructions="can_edit ? $t('path_to_content_instructions') : undefined"
-    />
+    <DLabel :str="$t('path_to_content')" />
 
     <div class="_sameLine">
       <div class="u-filename">
@@ -21,6 +16,9 @@
     </div>
     <div class="u-filename" v-if="new_path">
       {{ new_path }}
+    </div>
+    <div v-if="error_message" class="u-errorMsg">
+      {{ error_message }}
     </div>
 
     <template v-if="can_edit">
@@ -92,6 +90,7 @@ export default {
       allow_save: true,
 
       path_is_changed: false,
+      error_message: undefined,
     };
   },
   created() {},
@@ -114,6 +113,7 @@ export default {
       window.electronAPI.receive("fromMain", ({ type, path_to_content }) => {
         if (type === "new_path") {
           this.new_path = path_to_content;
+          this.error_message = undefined;
           this.edit_mode = true;
         }
       });
@@ -122,6 +122,7 @@ export default {
       this.edit_mode = false;
       this.is_saving = false;
       this.new_path = undefined;
+      this.error_message = undefined;
 
       this.$nextTick(() => {
         // this.content = "";
@@ -146,15 +147,23 @@ export default {
 
         this.edit_mode = false;
         this.is_saving = false;
+        this.error_message = undefined;
         this.path_is_changed = true;
       } catch (e) {
         this.is_saving = false;
 
-        this.$alertify
-          .closeLogOnClick(true)
-          .delay(4000)
-          .error(this.$t("couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        // e is { code, err_infos } from $api.processError
+        const { code, err_infos } = e || {};
+        if (code === "content_folder_incompatible")
+          this.error_message = this.$t("storage_folder_incompatible");
+        else {
+          const reason =
+            code && this.$te(code)
+              ? this.$t(code)
+              : err_infos?.message || code;
+          this.error_message =
+            this.$t("couldntbesaved") + (reason ? ` – ${reason}` : "");
+        }
       }
     },
     restartApp() {

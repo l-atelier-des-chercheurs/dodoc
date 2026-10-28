@@ -15,8 +15,10 @@
   "certificatePath": "",
   "passphrase": "",
 
-  "lruCacheMax": 10000,
+  "lruCacheMax": 50000,
   "lruCacheMaxSize": 25000000,
+  "lruFoldersCacheMax": 5000,
+  "lruFoldersCacheMaxSize": 5000000,
 
   "deletedFolderName": "_bin",
 
@@ -123,7 +125,7 @@
     },
     "$files": {
       "thumbs": {
-        "resolutions": [50, 320, 640, 2000]
+        "resolutions": [50, 180, 320, 640, 2000]
       }
     },
     "$folders": {

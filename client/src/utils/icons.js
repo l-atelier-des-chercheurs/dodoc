@@ -4,6 +4,7 @@ Vue.component("b-icon", BIcon);
 
 import {
   BIconKey,
+  BIconCamera,
   BIconCalendarEvent,
   BIconHdd,
   BIconBug,
@@ -52,6 +53,7 @@ import {
   BIconArrowLeftCircle,
   BIconArrowRightCircle,
   BIconFilePlus,
+  BIconFiles,
   BIconSave2Fill,
   BIconCheckCircleFill,
   BIconFileLock2Fill,
@@ -71,6 +73,7 @@ import {
   BIconPlusLg,
   BIconArrowLeftRight,
   BIconCheckLg,
+  BIconCheck2All,
   BIconPencilFill,
   BIconUpload,
   BIconArrowUpLeftCircleFill,
@@ -157,6 +160,7 @@ import {
   BIconSliders,
   BIconSignpost,
   BIconClock,
+  BIconClockHistory,
   BIconFilter,
   BIconThreeDots,
   BIconThreeDotsVertical,
@@ -185,6 +189,12 @@ import {
   BIconLayoutSidebarInsetReverse,
   BIconDashCircleDotted,
   BIconEraser,
+  BIconToggles,
+  BIconGrid,
+  BIconPhone,
+  BIconLaptop,
+  BIconTablet,
+  BIconPerson,
 } from "bootstrap-vue";
 
 Vue.component("BIconShieldCheck", BIconShieldCheck);
@@ -230,6 +240,7 @@ Vue.component("BIconTools", BIconTools);
 Vue.component("BIconArrowLeftCircle", BIconArrowLeftCircle);
 Vue.component("BIconArrowRightCircle", BIconArrowRightCircle);
 Vue.component("BIconFilePlus", BIconFilePlus);
+Vue.component("BIconFiles", BIconFiles);
 Vue.component("BIconSave2Fill", BIconSave2Fill);
 Vue.component("BIconCheckCircleFill", BIconCheckCircleFill);
 Vue.component("BIconFileLock2Fill", BIconFileLock2Fill);
@@ -249,6 +260,7 @@ Vue.component("BIconFullscreenExit", BIconFullscreenExit);
 Vue.component("BIconPlusLg", BIconPlusLg);
 Vue.component("BIconArrowLeftRight", BIconArrowLeftRight);
 Vue.component("BIconCheckLg", BIconCheckLg);
+Vue.component("BIconCheck2All", BIconCheck2All);
 Vue.component("BIconPencilFill", BIconPencilFill);
 Vue.component("BIconUpload", BIconUpload);
 Vue.component("BIconArrowUpLeftCircleFill", BIconArrowUpLeftCircleFill);
@@ -335,6 +347,7 @@ Vue.component("BIconRulers", BIconRulers);
 Vue.component("BIconSliders", BIconSliders);
 Vue.component("BIconSignpost", BIconSignpost);
 Vue.component("BIconClock", BIconClock);
+Vue.component("BIconClockHistory", BIconClockHistory);
 Vue.component("BIconFilter", BIconFilter);
 Vue.component("BIconThreeDots", BIconThreeDots);
 Vue.component("BIconThreeDotsVertical", BIconThreeDotsVertical);
@@ -365,8 +378,15 @@ Vue.component("BIconLayoutSidebarInsetReverse", BIconLayoutSidebarInsetReverse);
 Vue.component("BIconDashCircleDotted", BIconDashCircleDotted);
 Vue.component("BIconEraser", BIconEraser);
 Vue.component("BIconKey", BIconKey);
+Vue.component("BIconCamera", BIconCamera);
 Vue.component("BIconCalendarEvent", BIconCalendarEvent);
 Vue.component("BIconHdd", BIconHdd);
 Vue.component("BIconBug", BIconBug);
 Vue.component("BIconPersonPlus", BIconPersonPlus);
 Vue.component("BIconStars", BIconStars);
+Vue.component("BIconToggles", BIconToggles);
+Vue.component("BIconGrid", BIconGrid);
+Vue.component("BIconPhone", BIconPhone);
+Vue.component("BIconLaptop", BIconLaptop);
+Vue.component("BIconTablet", BIconTablet);
+Vue.component("BIconPerson", BIconPerson);

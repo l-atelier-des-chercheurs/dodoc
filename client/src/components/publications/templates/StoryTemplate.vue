@@ -55,12 +55,6 @@
               @resize="resize({ meta_filename, new_size: $event })"
               @moveUp="moveTo({ meta_filename, dir: -1 })"
               @moveDown="moveTo({ meta_filename, dir: +1 })"
-              @duplicate="
-                duplicatePublicationMedia({
-                  source_meta_filename: meta_filename,
-                  copy_meta_filename: $event,
-                })
-              "
               @remove="removeModuleFromList(meta_filename)"
             />
             <div class="_spacer" :key="'mc_' + index">
@@ -216,26 +210,6 @@ export default {
       else if (target_meta_index + dir > modules_list.length - 1) return false;
 
       modules_list.move(target_meta_index, target_meta_index + dir);
-      this.response = await this.updatePubliMeta({ modules_list });
-    },
-    async duplicatePublicationMedia({
-      source_meta_filename,
-      copy_meta_filename,
-    }) {
-      source_meta_filename;
-      copy_meta_filename;
-
-      let modules_list = this.modules_list.slice();
-      const position_of_original_media = modules_list.findIndex(
-        (_mf) => _mf === source_meta_filename
-      );
-
-      modules_list.splice(
-        position_of_original_media + 1,
-        0,
-        copy_meta_filename
-      );
-
       this.response = await this.updatePubliMeta({ modules_list });
     },
     async removeModuleFromList(meta_filename) {

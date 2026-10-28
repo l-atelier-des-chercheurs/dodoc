@@ -2,6 +2,7 @@
   <div
     class="_imageZoom"
     :data-zoomed="is_zoomed"
+    :data-canzoom="can_zoom"
     @click="toggleZoom"
     @mousemove="mouseMoved"
   >
@@ -21,7 +22,7 @@
     </transition>
 
     <transition name="slideupFade" mode="out-in">
-      <div class="_clickToZoomBtn" :key="is_zoomed">
+      <div class="_clickToZoomBtn" v-if="can_zoom" :key="is_zoomed">
         <button
           v-if="!is_zoomed"
           type="button"
@@ -79,8 +80,22 @@ export default {
       if (new_val) this.$emit("zoomingIn");
       else this.$emit("zoomingOut");
     },
+    can_zoom(new_val) {
+      if (!new_val) this.is_zoomed = false;
+    },
   },
   computed: {
+    can_zoom() {
+      if (!this.width || !this.ratio || !this.cont_width || !this.cont_height)
+        return true;
+      // image is displayed with object-fit: contain
+      const displayed_width = Math.min(
+        this.cont_width,
+        this.cont_height / this.ratio
+      );
+      // already shown at (or above) its full resolution: nothing to zoom into
+      return displayed_width * (window.devicePixelRatio || 1) < this.width;
+    },
     pos_x_percent() {
       return this.pos_x / this.cont_width;
     },
@@ -129,6 +144,7 @@ export default {
   },
   methods: {
     toggleZoom() {
+      if (!this.can_zoom) return;
       this.is_zoomed = !this.is_zoomed;
     },
     updateContSize() {
@@ -156,6 +172,9 @@ export default {
 
   &[data-zoomed] {
     cursor: zoom-out;
+  }
+  &:not([data-canzoom]) {
+    cursor: default;
   }
 }
 

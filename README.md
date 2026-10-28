@@ -34,9 +34,58 @@ The font [Belle Allure](https://www.jeanboyault.fr/belle-allure/) is used with p
 
 - **next** --> code for the next major version. Unified branch supporting both Electron and Node modes. Use at your own risks.
 
-`npm install sharp@0.31.3`
+## Releasing (maintainers)
 
-Note 2: bufferutil seems to be necessary specifically for intel macOS.
+Every `npm version …` builds the client, commits, tags `vX.Y.Z` and pushes. The pushed tag triggers the [Build/release](.github/workflows/build.yml) action (Electron installers + Docker image). Versions under development on **next** are semver pre-releases (`14.1.0-alpha.N`, then `14.1.0-beta.N`). Only **main** carries stable versions.
+
+**On next, while preparing a new version:**
+
+```bash
+npm version preminor --preid=alpha    # open the cycle: 14.0.6 → 14.1.0-alpha.0 (premajor for 15.0.0-alpha.0)
+npm version prerelease                # each new alpha: 14.1.0-alpha.0 → 14.1.0-alpha.1
+npm version prerelease --preid=beta   # switch to beta: 14.1.0-alpha.3 → 14.1.0-beta.0
+```
+
+Run `preminor`/`premajor` only once, to open the cycle. Running it again skips a version (14.1.0-alpha.1 → 14.2.0-alpha.0).
+
+For pre-releases, the action publishes the GitHub release directly as a **pre-release**, and the Docker image is tagged with its version only. `:latest` stays on the stable version.
+
+**Finalizing to main:**
+
+```bash
+git checkout main && git merge next
+npm version 14.1.0                  # drops the -alpha.N / -beta.N suffix → stable 14.1.0
+git checkout next && git merge main # next is back in sync with the stable version
+```
+
+Hotfixes on **main**: `npm version patch` (14.1.0 → 14.1.1). Then merge **main** back into **next**.
+
+### What a release publishes
+
+Each tag runs the same builds, whether it is stable or a pre-release. Only the GitHub release type and the Docker `:latest` tag differ.
+
+**GitHub release** ([releases page](https://github.com/l-atelier-des-chercheurs/dodoc/releases)), built by [electron-builder](electron/electron-builder.yml) on 4 runners:
+
+| OS      | File                                                                 | Notes                                                                                                                                                     |
+| ------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| macOS   | `dodoc-X.Y.Z-macos-arm.dmg`                                          | Apple Silicon, built on `macos-latest`. Signed and notarized: needs the `CSC_*` and `APPLE_*` secrets, and an up-to-date Apple developer agreement        |
+| macOS   | `dodoc-X.Y.Z-macos-intel.dmg`                                        | Intel, built on `macos-26-intel` (GitHub's Intel runners are planned to be available until Aug 2027). Signed and notarized like the Apple Silicon version |
+| Windows | `dodoc-X.Y.Z-windows.exe`                                            | NSIS one-click installer, x64                                                                                                                             |
+| Linux   | `dodoc-X.Y.Z-linux-x64.deb`, `dodoc-X.Y.Z-linux-arm64.deb`           |                                                                                                                                                           |
+| Linux   | `dodoc-X.Y.Z-linux-x64.AppImage`, `dodoc-X.Y.Z-linux-arm64.AppImage` |                                                                                                                                                           |
+
+electron-builder also uploads `latest*.yml` files. They are only used by `electron-updater`, which do•doc does not use. The Windows Store package (appx) is not built by the action: run `npm run electron:dist-win-store` by hand.
+
+The release is a **pre-release** when the version has a suffix (`-alpha.N`, `-beta.N`), and a regular release otherwise. It is published as soon as the first OS finishes, and the other installers are added as their jobs complete. electron-builder refuses to add files to a release published more than 2 hours earlier: to re-run a failed job after that, release a new version.
+
+**Docker image** on GHCR (`ghcr.io/l-atelier-des-chercheurs/dodoc`), linux/amd64 only:
+
+| Version                       | Tags                    |
+| ----------------------------- | ----------------------- |
+| Stable (`14.1.0`)             | `:14.1.0` and `:latest` |
+| Pre-release (`14.1.0-beta.2`) | `:14.1.0-beta.2` only   |
+
+GitHub also attaches the source code archives (zip and tar.gz) to every release automatically.
 
 # Install do•doc
 
@@ -50,7 +99,15 @@ See https://forum.latelier-des-chercheurs.fr/t/installer-do-doc-en-mode-developp
 
 ## Method 3 — the dev way
 
-To install do•doc in dev mode, you need to have Node.js and npm installed. Clone this repository and follow the instructions below based on your use case.
+To install do•doc in dev mode, you need to have Node.js and npm installed. The required Node.js version is in `.nvmrc` (`nvm install && nvm use` picks it up). Clone this repository and follow the instructions below based on your use case.
+
+Electron is managed by [adc-core](https://github.com/l-atelier-des-chercheurs/adc-core) and only declared in its `electron/package.json`: installing the root package never downloads it. Install it only when you need the desktop app.
+
+| Use case                     | Install                                     | Run                    |
+| ---------------------------- | ------------------------------------------- | ---------------------- |
+| Server (VPS, Raspberry Pi…)  | `npm install`                               | `npm start`            |
+| Web development              | `npm install`                               | `npm run debug`        |
+| Desktop app (Electron)       | `npm install` then `npm run install:electron` | `npm run electron`   |
 
 ### Node version (for servers/VPS)
 
@@ -61,12 +118,19 @@ npm install
 npm start
 ```
 
+The root `package.json` only lists what the server needs to run, and has no `devDependencies`: the client is shipped built in `client/dist`, its build tools are in `client/package.json`, and Electron is in adc-core's `electron/package.json`. adc-core is installed from a git tag of [its repo](https://github.com/l-atelier-des-chercheurs/adc-core). Docker and CI use `npm ci --omit=dev`, which installs the lockfile exactly.
+
+On a server where Chromium is already installed (Raspberry Pi, Docker), set `PUPPETEER_SKIP_DOWNLOAD=true` before installing and `PUPPETEER_EXECUTABLE_PATH` to the Chromium binary before starting.
+
 **Optional — Poppler (`pdftoppm`):** For faster PDF thumbnail generation on the server, install [Poppler](https://poppler.freedesktop.org/) so the `pdftoppm` binary is on your `PATH` (it is not an npm package). If Poppler is not installed, do•doc falls back to the existing web preview path (Puppeteer). Examples: macOS — `brew install poppler`; Debian/Ubuntu — `apt install poppler-utils`.
+
+**STL/OBJ thumbnails** are rendered in Node (adc-core's `server/mesh-thumb.js`), without a browser or a GPU. Users can pick the point of view of a thumbnail from the 3D viewer ("Use this view as preview"), it is stored in the file's `$thumb_view`. If rendering fails, do•doc falls back to a web preview screenshot (Puppeteer, or an Electron webview in the desktop app).
 
 Available scripts for Node mode:
 
 - `npm start` - run the app with minimal logging
 - `npm run debug` - run the app with debug logging
+- `npm run debug-verbose` - same, with verbose logs (very noisy)
 
 ### Electron version (for desktop app)
 
@@ -74,20 +138,22 @@ For running do•doc as a desktop application with Electron:
 
 ```bash
 npm install
-cd electron
-npm install
-npm start
+npm run install:electron
+npm run electron
 ```
 
-**Note:** When building Electron app, electron-builder automatically excludes puppeteer, typescript, and platform-folders from the final package to reduce app size. Both modes work from the same dependencies.
+These scripts call `adc-electron`, a command from adc-core: `install:electron` installs the exact Electron version set by adc-core (in `node_modules/adc-core/electron/node_modules`), `electron` runs the app with it. Run `install:electron` again after `npm ci` or an adc-core update, which empty that folder. Do not add `electron` to the root `package.json`, nor `node_modules/adc-core/electron` to npm workspaces: server installs would then download Electron. The [Headless install](.github/workflows/headless-install.yml) action checks it.
 
-Available scripts for Electron mode (run from `/electron` folder):
+**Note:** When building Electron app, electron-builder automatically excludes puppeteer and typescript from the final package to reduce app size. Both modes work from the same dependencies.
 
-- `npm start` - run the Electron app with minimal logging
-- `npm run debug` - run the app to debug locally
-- `npm run debug-lr` - run the app in debug mode with live reload
-- `npm run pack` - package the app (without creating installer)
-- `npm run dist` - build distributable installers
+Available scripts for Electron mode:
+
+- `npm run electron` - run the Electron app with minimal logging
+- `npm run electron:debug` - run the app to debug locally
+- `npm run electron:debug-verbose` - same, with verbose logs (very noisy)
+- `npm run electron:debug-lr` - run the app in debug mode, restarted when server files change
+- `npm run electron:pack` - package the app in `electron/dist` (without creating installer)
+- `npm run electron:dist` - build distributable installers, configured by `electron/electron-builder.yml`
 
 For development with live reload (client-side code):
 
@@ -102,12 +168,12 @@ npm run dev
 ### On Ubuntu (Electron only)
 
 Because of recent security changes on Ubuntu, you may encounter the following error on npm start or debug:
-`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/electron/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
+`[44615:1003/212648.080818:FATAL:sandbox/linux/suid/client/setuid_sandbox_host.cc:169] The SUID sandbox helper binary was found, but is not configured correctly. Rather than run without sandboxing I'm aborting now. You need to make sure that /home/julien/dodoc12/dodoc/node_modules/adc-core/electron/node_modules/electron/dist/chrome-sandbox is owned by root and has mode 4755.`
 
 To fix, use the following commands:
 
 ```bash
-cd electron/node_modules/electron/dist/
+cd node_modules/adc-core/electron/node_modules/electron/dist/
 sudo chown root chrome-sandbox
 chmod 4755 chrome-sandbox
 ```
@@ -163,7 +229,6 @@ More advanced settings are available to all by duplicating the settings.example.
 - indicate a bonjour domain for local discovery, like dodoc.local
 
 - change the folder used for storing all the user-generated contents by editing the contentPath field.
-
   - if the value is just a string without any slashes (like "dodoc"), then this will be the name of the folder used in the /Documents subfolder.
   - if the value contains any forward slashes (/) or system path separators, it will be treated as a full path (like /mnt/storage/dodoc-custom)
   - if the specified path is not writable, do•doc will automatically fall back to using a "dodoc" folder in the Documents directory
@@ -225,6 +290,7 @@ Default values are:
 - $origin           (String, editable)                    used to indicate the origin of the media (capture page, upload, etc.)
 - $processing        (Array, editable)                    used to list processing applied to media (blurred, cropped, resized, etc.)
 - $thumbs           (object)                              list of possible media image thumbs
+- $thumb_view       (Array, editable)                     for stl/obj: point of view of the thumb, chosen in the 3D viewer (3x3 rotation matrix, row-major)
 - $content          (String, editable)                    text content of a file
 - $credits          (String, editable)                    Credits for media
 - $location         (Object, editable)                    GPS location for file
@@ -237,6 +303,13 @@ Default values are:
   - size            (Number)                              size in bytes
   - gps             (Object)
   - hash            (String)                              file hash (to find duplicates)
+  - has_audio       (Boolean)                             for videos and audios: false if the file has no audio track, or (videos only) if its first 2 minutes are digital silence
+  - video_codec     (String)                              for videos
+  - fps             (Number)                              for videos: average frame rate
+  - bitrate         (Number)                              for videos and audios: overall bitrate in bits/s
+  - audio_codec     (String)                              for videos and audios
+  - audio_channels  (Number)                              for videos and audios
+  - audio_sample_rate (Number)                            for videos and audios, in Hz
 ```
 
 Custom values can be defined in the schema property in settings_base.json.

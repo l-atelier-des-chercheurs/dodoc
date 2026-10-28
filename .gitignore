@@ -36,8 +36,7 @@ Temporary Items
 .apdisk
 
 # mkcert-generated dev certificates (run: node scripts/setup-https-certs.js)
-core2/ssl/localhost.crt
-core2/ssl/localhost.key
+/ssl/
 
 changelog.csv
 access.csv
@@ -45,3 +44,6 @@ client/dist/report.html
 tokens.json
 /dist/
 docker-compose.override.yml
+
+# adc-electron dist output
+electron/dist/

@@ -28,6 +28,7 @@
     :grid="grid"
     :id="publimodule.$path"
     :zoom="scale"
+    :snap="snap_targets || gridstep > 1 ? snapToGuides : null"
     :style="module_z_index"
     @dragstart="dragStart"
     @drag="onDrag"
@@ -54,7 +55,6 @@
         @update:module_being_edited="
           $emit('update:module_being_edited', $event)
         "
-        @duplicate="onDuplicateModule"
         @contentIsEdited="contentIsEdited"
         @contentIsNotEdited="contentIsNotEdited"
         :style="module_styles"
@@ -156,6 +156,8 @@ export default {
     scale: Number,
     module_being_edited: String,
     is_active: Boolean,
+    // { x: [], y: [], modules: [] } of { pos, center, source } in px
+    snap_targets: [Boolean, Object],
   },
   components: {
     DDR,
@@ -251,6 +253,16 @@ export default {
     },
     grid() {
       return [this.gridstep, this.gridstep];
+    },
+    own_snap_targets() {
+      if (!this.snap_targets) return false;
+      const others = (this.snap_targets.modules || []).filter(
+        (m) => m.path !== this.publimodule.$path
+      );
+      return {
+        x: [...this.snap_targets.x, ...others.flatMap((m) => m.x)],
+        y: [...this.snap_targets.y, ...others.flatMap((m) => m.y)],
+      };
     },
     module_z_index() {
       return `
@@ -355,6 +367,176 @@ export default {
       this.content_is_edited = false;
     },
 
+    snapToGuides(transform, options) {
+      // only axis-aligned items: rotated bounding boxes would snap misleadingly
+      if (transform.rotation) {
+        this.$emit("guides", []);
+        return transform;
+      }
+
+      const snapped = this.snap_targets
+        ? this.applySmartGuides(transform, options)
+        : { transform, guides: [] };
+      const guides = [
+        ...snapped.guides,
+        ...this.getGridGuides(snapped.transform, options, snapped.guides),
+      ];
+      this.$emit("guides", guides);
+      return snapped.transform;
+    },
+    getGridGuides(t, { type, handle }, existing_guides) {
+      // grid snapping is done by DDR, this only shows which edges sit on the grid
+      if (!(this.gridstep > 1)) return [];
+
+      let edges_x = [t.x, t.x + t.width];
+      let edges_y = [t.y, t.y + t.height];
+      if (type === "resize") {
+        edges_x = [];
+        edges_y = [];
+        if (handle.includes("l")) edges_x.push(t.x);
+        if (handle.includes("r")) edges_x.push(t.x + t.width);
+        if (handle.startsWith("t")) edges_y.push(t.y);
+        if (handle.startsWith("b")) edges_y.push(t.y + t.height);
+      }
+
+      const is_on_grid = (v) =>
+        Math.abs(v / this.gridstep - Math.round(v / this.gridstep)) < 0.01;
+      const is_shown = (axis, pos) =>
+        existing_guides.some(
+          (g) => g.axis === axis && Math.abs(g.pos - pos) < 0.5
+        );
+
+      return [
+        ...edges_x
+          .filter((pos) => is_on_grid(pos) && !is_shown("x", pos))
+          .map((pos) => ({ axis: "x", pos })),
+        ...edges_y
+          .filter((pos) => is_on_grid(pos) && !is_shown("y", pos))
+          .map((pos) => ({ axis: "y", pos })),
+      ];
+    },
+    applySmartGuides(transform, { type, handle, keep_ratio }) {
+      const threshold = 6 / (this.scale || 1);
+      // positions are { pos, center }: a center only snaps to centers
+      // (page, margins), edges snap to everything
+      const findSnap = (positions, targets) => {
+        let best = false;
+        positions.forEach((position) =>
+          targets.forEach((target) => {
+            if (position.center && !target.center) return;
+            const delta = target.pos - position.pos;
+            if (
+              Math.abs(delta) <= threshold &&
+              (!best || Math.abs(delta) < Math.abs(best.delta))
+            )
+              best = { delta, target: target.pos };
+          })
+        );
+        if (best)
+          // every module with an edge on that line triggered the snap
+          best.sources = targets
+            .filter((t) => t.source && Math.abs(t.pos - best.target) < 0.5)
+            .map((t) => t.source);
+        return best;
+      };
+
+      const t = { ...transform };
+      const guides = [];
+
+      if (type === "drag") {
+        const snap_x = findSnap(
+          [
+            { pos: t.x },
+            { pos: t.x + t.width / 2, center: true },
+            { pos: t.x + t.width },
+          ],
+          this.own_snap_targets.x
+        );
+        const snap_y = findSnap(
+          [
+            { pos: t.y },
+            { pos: t.y + t.height / 2, center: true },
+            { pos: t.y + t.height },
+          ],
+          this.own_snap_targets.y
+        );
+        if (snap_x) {
+          t.x += snap_x.delta;
+          guides.push({
+            axis: "x",
+            pos: snap_x.target,
+            sources: snap_x.sources,
+          });
+        }
+        if (snap_y) {
+          t.y += snap_y.delta;
+          guides.push({
+            axis: "y",
+            pos: snap_y.target,
+            sources: snap_y.sources,
+          });
+        }
+        return { transform: t, guides };
+      }
+
+      // resize: only the edges being moved snap
+      const moves_left = handle.includes("l");
+      const moves_right = handle.includes("r");
+      const moves_top = handle.startsWith("t");
+      const moves_bottom = handle.startsWith("b");
+
+      let snap_x = false;
+      let snap_y = false;
+      if (moves_left || moves_right)
+        snap_x = findSnap(
+          [{ pos: moves_left ? t.x : t.x + t.width }],
+          this.own_snap_targets.x
+        );
+      if (moves_top || moves_bottom)
+        snap_y = findSnap(
+          [{ pos: moves_top ? t.y : t.y + t.height }],
+          this.own_snap_targets.y
+        );
+
+      if (keep_ratio && snap_x && snap_y) {
+        // only one axis can snap without breaking the ratio
+        if (Math.abs(snap_x.delta) <= Math.abs(snap_y.delta)) snap_y = false;
+        else snap_x = false;
+      }
+
+      let width = t.width;
+      let height = t.height;
+      if (snap_x) width += moves_left ? -snap_x.delta : snap_x.delta;
+      if (snap_y) height += moves_top ? -snap_y.delta : snap_y.delta;
+      if (keep_ratio) {
+        const ratio = t.width / t.height;
+        if (snap_x) height = width / ratio;
+        else if (snap_y) width = height * ratio;
+      }
+      if (width < 1 || height < 1) return { transform, guides: [] };
+
+      // keep the opposite edge (or the center for side handles) in place
+      if (moves_left) t.x = t.x + t.width - width;
+      else if (!moves_right) t.x = t.x + (t.width - width) / 2;
+      if (moves_top) t.y = t.y + t.height - height;
+      else if (!moves_bottom) t.y = t.y + (t.height - height) / 2;
+      t.width = width;
+      t.height = height;
+
+      if (snap_x)
+        guides.push({
+          axis: "x",
+          pos: snap_x.target,
+          sources: snap_x.sources,
+        });
+      if (snap_y)
+        guides.push({
+          axis: "y",
+          pos: snap_y.target,
+          sources: snap_y.sources,
+        });
+      return { transform: t, guides };
+    },
     dragStart() {
       // console.log("dragStart");
       // this.$eventHub.$emit(`module.dragStart`);
@@ -366,6 +548,7 @@ export default {
       // this.$eventHub.$emit(`module.onDrag`);
     },
     dragEnd(event, transform) {
+      this.$emit("guides", []);
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
       if (
@@ -390,6 +573,7 @@ export default {
       return (this.aspect_ratio = false);
     },
     resizeEnd(event, transform) {
+      this.$emit("guides", []);
       if (JSON.stringify(transform) === JSON.stringify(this.transform))
         return false;
 
@@ -440,6 +624,7 @@ export default {
       this.$eventHub.$emit(`panzoom.panTo`, {
         x: this.transform.x,
         y: this.transform.y,
+        el: this.$el,
       });
     },
     setActive($event) {
@@ -502,16 +687,6 @@ export default {
           this.$alertify.delay(4000).error(err);
           throw err;
         });
-    },
-    onDuplicateModule(meta_filename) {
-      const path =
-        this.publimodule.$path.substring(
-          0,
-          this.publimodule.$path.lastIndexOf("/") + 1
-        ) + meta_filename;
-      setTimeout(() => {
-        this.$eventHub.$emit(`module.setActive`, path);
-      }, 100);
     },
   },
 };

@@ -1,27 +1,53 @@
 <template>
   <transition name="slideup">
     <div v-if="!page_opened_id" class="_pagesList">
-      <div class="_setPreviewSize">
-        <h2>
+      <div class="_topRow">
+        <h2 class="_title">
+          <b-icon icon="grid" />
           <template v-if="!is_spread">{{ $t("list_of_pages") }}</template>
           <template v-else>{{ $t("list_of_spreads") }}</template>
         </h2>
 
-        <div class="u-spacingBottom" />
+        <div class="_topRow--actions">
+          <div class="_previewsSize" :title="$t('previews_size')">
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              :disabled="previews_size <= previews_sizes[0]"
+              @click="stepPreviewsSize(-1)"
+            >
+              <b-icon icon="zoom-out" :aria-label="$t('previews_size')" />
+            </button>
+            <span class="_previewsSize--value">{{ previews_size }}%</span>
+            <button
+              type="button"
+              class="u-button u-button_icon u-button_small"
+              :disabled="
+                previews_size >= previews_sizes[previews_sizes.length - 1]
+              "
+              @click="stepPreviewsSize(1)"
+            >
+              <b-icon icon="zoom-in" :aria-label="$t('previews_size')" />
+            </button>
+          </div>
 
-        <div class="_previewsSizeInput">
-          <RangeValueInput
-            :label="$t('previews_size')"
-            :value="previews_size"
-            :can_toggle="false"
-            :min="20"
-            :max="600"
-            :step="1"
-            :ticks="[20, 50, 100, 200, 400, 600]"
-            :default_value="200"
-            :suffix="'%'"
-            @save="previews_size = $event"
-          />
+          <component
+            :is="can_edit ? 'button' : 'div'"
+            :type="can_edit ? 'button' : undefined"
+            class="u-button u-button_small _paperFormat"
+            :class="{ 'is--static': !can_edit }"
+            :title="can_edit ? $t('settings') : undefined"
+            @click="can_edit && $eventHub.$emit('publication.settings.toggle')"
+          >
+            <span v-if="format_name" class="_paperFormat--name">
+              {{ format_name }}
+            </span>
+            <span class="_paperFormat--size">
+              {{ publication.page_width }} × {{ publication.page_height }}
+              {{ format_unit }}
+            </span>
+            <b-icon v-if="can_edit" icon="gear" :aria-label="$t('settings')" />
+          </component>
         </div>
       </div>
 
@@ -30,12 +56,16 @@
         name="listComplete"
         class="_allPages"
         key="allpages"
+        :style="{
+          '--preview-width': preview_width + 'px',
+          '--preview-height': preview_height + 'px',
+        }"
       >
         <template v-if="!is_spread">
           <div
             v-for="(page, index) in pages"
             :key="'page-' + page.id"
-            class="u-sameRow _singlePage"
+            class="_singlePage"
           >
             <div class="_createPageBtn">
               <EditBtn
@@ -92,22 +122,28 @@
           </div>
         </template>
         <template v-else>
-          <template v-for="(spread, index) in spreads">
-            <template v-for="(page, iindex) in spread">
+          <div
+            v-for="(spread, index) in spreads"
+            :key="'spread-' + spread.map((p) => (p ? p.id : '')).join('-')"
+            class="_singlePage"
+          >
+            <div class="_createPageBtn">
               <EditBtn
-                v-if="can_edit && iindex === 0"
-                class="_createPage"
+                v-if="can_edit"
                 :style="
                   is_creating_page
                     ? 'opacity: 0 !important;'
                     : 'opacity: 1 !important;'
                 "
                 :btn_type="'create_page'"
-                :key="'createPage-' + Math.max(0, index * 2 + iindex - 1)"
-                @click="createPage(Math.max(0, index * 2 + iindex - 1))"
+                @click="createPage(Math.max(0, index * 2 - 1))"
               />
+            </div>
+            <div class="_spread">
               <div
-                :key="page ? page.id : iindex"
+                v-for="(page, iindex) in spread"
+                :key="iindex"
+                class="_spreadPage"
                 :data-pageposition="iindex === 0 ? 'left' : 'right'"
               >
                 <template v-if="page && page.id">
@@ -134,7 +170,6 @@
                       @click="$emit('togglePage', page.id)"
                       v-html="$t('open')"
                     />
-                    <!-- <div v-else>No preview</div> -->
                   </div>
                   <PageLabel
                     :index="index * 2 + iindex - 1"
@@ -150,13 +185,15 @@
                     @removePage="removePage(page.id)"
                   />
                 </template>
+                <div v-else class="_emptyPage" />
               </div>
-            </template>
-          </template>
+            </div>
+          </div>
         </template>
         <span
           v-if="can_edit"
           :key="'createPage'"
+          class="_createPageBtn"
           :style="
             is_creating_page
               ? 'opacity: 0 !important;'
@@ -220,6 +257,7 @@ export default {
     return {
       is_creating_page: false,
       previews_size: 200,
+      previews_sizes: [20, 50, 100, 200, 400, 600],
     };
   },
 
@@ -240,6 +278,35 @@ export default {
     },
     is_spread() {
       return this.publication.page_spreads === true;
+    },
+    preview_width() {
+      const { page_width, page_height } = this.publication;
+      return (
+        (this.previews_size * page_width) / Math.max(page_width, page_height)
+      );
+    },
+    preview_height() {
+      const { page_width, page_height } = this.publication;
+      return (
+        (this.previews_size * page_height) / Math.max(page_width, page_height)
+      );
+    },
+    format_unit() {
+      return this.publication.layout_mode === "screen" ? "px" : "mm";
+    },
+    format_name() {
+      if (this.publication.layout_mode === "screen") return false;
+      const { page_width: w, page_height: h } = this.publication;
+      const formats = {
+        A4_portrait: [210, 297],
+        A4_landscape: [297, 210],
+        A5_portrait: [148, 210],
+        A5_landscape: [210, 148],
+      };
+      const key = Object.keys(formats).find(
+        (k) => formats[k][0] === w && formats[k][1] === h
+      );
+      return key ? this.$t(key) : false;
     },
 
     page_preview_zoom() {
@@ -311,6 +378,18 @@ export default {
     },
   },
   methods: {
+    stepPreviewsSize(direction) {
+      const sizes = this.previews_sizes;
+      if (direction > 0)
+        this.previews_size =
+          sizes.find((s) => s > this.previews_size) || sizes[sizes.length - 1];
+      else
+        this.previews_size =
+          sizes
+            .slice()
+            .reverse()
+            .find((s) => s < this.previews_size) || sizes[0];
+    },
     getCorrectPageNumber(page_id) {
       const page_index = this.pages.findIndex((p) => p.id === page_id);
       return page_index;
@@ -426,21 +505,63 @@ export default {
   margin: 0 auto;
 }
 
+._topRow {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: calc(var(--spacing) / 2) calc(var(--spacing) * 1);
+  padding: calc(var(--spacing) / 1);
+}
+._title {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  margin: 0;
+}
+._topRow--actions {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+}
+
+._previewsSize {
+  display: flex;
+  align-items: center;
+}
+._previewsSize--value {
+  min-width: 3.5em;
+  text-align: center;
+  font-size: var(--sl-font-size-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--c-gris_fonce);
+}
+
+._paperFormat {
+  flex: 0 0 auto;
+  gap: calc(var(--spacing) / 2);
+
+  &.is--static {
+    cursor: default;
+  }
+}
+._paperFormat--size {
+  color: var(--c-gris_fonce);
+  font-variant-numeric: tabular-nums;
+}
+
 ._allPages {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1) 0;
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2)
     calc(var(--spacing) * 4);
 
   > * {
     margin-right: calc(var(--spacing) * 1);
-
-    &[data-pageposition="left"] {
-      margin-right: 0;
-    }
   }
 }
 
@@ -455,10 +576,15 @@ export default {
   // height: 297px;
 }
 ._singlePage {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
   gap: calc(var(--spacing) * 1);
 }
 ._createPageBtn {
-  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  height: var(--preview-height);
 }
 
 ._preview {
@@ -490,18 +616,24 @@ export default {
     opacity: 1;
   }
 }
-._createPage {
-  margin-right: calc(var(--spacing) * 1);
-}
 
-._previewsSizeInput input {
-  max-width: 100px;
+._spread {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
 }
+// pages meet at the spine, labels stay under their page without overlapping
+._spreadPage {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-end;
 
-._setPreviewSize {
-  max-width: 320px;
-  margin: 0 auto;
-  margin-left: 0;
-  padding: calc(var(--spacing) / 1);
+  &[data-pageposition="right"] {
+    align-items: flex-start;
+  }
+}
+._emptyPage {
+  width: var(--preview-width);
+  height: var(--preview-height);
 }
 </style>

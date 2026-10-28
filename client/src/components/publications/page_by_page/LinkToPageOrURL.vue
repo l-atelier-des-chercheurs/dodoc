@@ -50,31 +50,21 @@ export default {
     pages: Array,
     current_page_id: String,
     path: String,
+    allow_fullscreen: Boolean,
+    // legacy show_fs_button option, set before on_click could be fullscreen
+    show_fs_button: Boolean,
   },
   components: {
     SelectPage,
   },
   data() {
     return {
-      type_of_link: this.on_click?.type || "",
+      type_of_link:
+        this.on_click?.type ||
+        (this.allow_fullscreen && this.show_fs_button ? "fullscreen" : ""),
       content_url: this.on_click?.url || "",
       content_page_id: this.on_click?.page_id || "",
       show_page_select: false,
-
-      options: [
-        {
-          key: "",
-          label: this.$t("do_nothing"),
-        },
-        {
-          key: "url",
-          label: this.$t("open_webpage"),
-        },
-        {
-          key: "page",
-          label: this.$t("navigate_to_page"),
-        },
-      ],
     };
   },
   created() {},
@@ -96,6 +86,30 @@ export default {
     },
   },
   computed: {
+    options() {
+      let options = [
+        {
+          key: "",
+          label: this.$t("do_nothing"),
+        },
+      ];
+      if (this.allow_fullscreen)
+        options.push({
+          key: "fullscreen",
+          label: this.$t("open_image_fullscreen"),
+        });
+      options.push(
+        {
+          key: "url",
+          label: this.$t("open_webpage"),
+        },
+        {
+          key: "page",
+          label: this.$t("navigate_to_page"),
+        }
+      );
+      return options;
+    },
     selected_page_id() {
       return (
         this.pages.findIndex((page) => page.id === this.content_page_id) + 1
@@ -111,7 +125,7 @@ export default {
         return this.content_page_id.length > 0;
       } else if (this.type_of_link === "url") {
         return this.content_url.length > 0;
-      } else if (this.type_of_link === "") {
+      } else if (["", "fullscreen"].includes(this.type_of_link)) {
         return true;
       }
       return false;
@@ -134,10 +148,15 @@ export default {
           type: this.type_of_link,
           page_id: this.content_page_id,
         };
+      } else if (this.type_of_link === "fullscreen") {
+        on_click = {
+          type: this.type_of_link,
+        };
       } else {
         on_click = {};
       }
-      this.$emit("save", { on_click });
+      // legacy option is replaced by on_click.type === "fullscreen"
+      this.$emit("save", { on_click, show_fs_button: false });
       this.$emit("close");
     },
   },

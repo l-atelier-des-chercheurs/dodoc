@@ -230,7 +230,7 @@ export default {
   flex-flow: column nowrap;
   // gap: 2px;
   margin-top: 2px;
-  // padding: 2px;
+  padding: calc(var(--spacing) / 4);
   background: white;
   // border: 2px solid var(--c-gris);
   border-radius: 4px;
@@ -251,9 +251,20 @@ export default {
 
     width: 100%;
     text-align: left;
-    border-radius: 2px;
+    justify-content: flex-start;
+    gap: calc(var(--spacing) / 2);
+    font-size: var(--sl-font-size-small);
+    line-height: 1.2;
+    border-radius: var(--input-border-radius);
+    text-decoration: none;
 
-    transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+    transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+
+    .b-icon.bi {
+      flex: 0 0 auto;
+      width: 1.35rem;
+      height: 1.35rem;
+    }
 
     &:hover,
     &:active,

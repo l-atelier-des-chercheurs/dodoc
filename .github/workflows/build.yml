@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       app_version: ${{ steps.app_version.outputs.current_version }}
+      is_prerelease: ${{ steps.app_version.outputs.is_prerelease }}
+      has_electron: ${{ steps.app_version.outputs.has_electron }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -20,6 +22,12 @@ jobs:
           echo "Reading package.json from package.json"
           PACKAGE_VERSION=$(jq -r '.version' package.json)
           echo "current_version=${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
+          # semver pre-releases (14.1.0-alpha.0, 14.1.0-beta.2…) contain a dash
+          if [[ "$PACKAGE_VERSION" == *-* ]]; then IS_PRERELEASE=true; else IS_PRERELEASE=false; fi
+          echo "is_prerelease=${IS_PRERELEASE}" >> "$GITHUB_OUTPUT"
+          # an app without electron/electron-builder.yml has no desktop version
+          if [ -f electron/electron-builder.yml ]; then HAS_ELECTRON=true; else HAS_ELECTRON=false; fi
+          echo "has_electron=${HAS_ELECTRON}" >> "$GITHUB_OUTPUT"
   docker:
     runs-on: ubuntu-latest
     needs: meta
@@ -31,42 +39,57 @@ jobs:
         run: |
           echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
+          # pre-releases never move :latest
           tags: |
             ${{ steps.image_name.outputs.image }}:${{ needs.meta.outputs.app_version }}
-            ${{ steps.image_name.outputs.image }}:latest
+            ${{ needs.meta.outputs.is_prerelease != 'true' && format('{0}:latest', steps.image_name.outputs.image) || '' }}
 
   electron:
     runs-on: ${{ matrix.os }}
     needs: meta
+    if: needs.meta.outputs.has_electron == 'true'
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            build: linux
+          - os: windows-latest
+            build: windows
+          # Apple Silicon runner — native arm64 DMG (cross-compiling x64 here is brittle for native deps)
+          - os: macos-latest
+            build: mac
+            mac_arch: arm64
+          # Intel runner — native x64 DMG (macos-15-intel also works until Aug 2027)
+          - os: macos-26-intel
+            build: mac
+            mac_arch: x64
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Node.js, NPM and Yarn
         uses: actions/setup-node@v6
         with:
-          node-version: 24.14.0
+          node-version-file: .nvmrc
       - name: Install Electron dependencies
         run: |
           npm install
-          cd electron
-          npm install
+          npm run install:electron
+      - name: Check Node and Electron versions agree
+        run: node scripts/check-versions.js
       - name: Package Electron app (macOS)
-        if: matrix.os == 'macos-latest'
+        if: matrix.build == 'mac'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
@@ -74,22 +97,32 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          EP_PRE_RELEASE: ${{ needs.meta.outputs.is_prerelease }}
         run: |
-          cd electron
-          npm run dist -- --mac dmg
+          if [ "${{ matrix.mac_arch }}" = "x64" ]; then
+            mac_artifact_name='dodoc-${version}-macos-intel.${ext}'
+          else
+            mac_artifact_name='dodoc-${version}-macos-arm.${ext}'
+          fi
+          npm run electron:dist -- --mac dmg --${{ matrix.mac_arch }} --config.mac.artifactName="${mac_artifact_name}"
       - name: Package Electron app (non-macOS)
-        if: matrix.os != 'macos-latest'
+        if: matrix.build != 'mac'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
           CSC_LINK: ${{ secrets.CSC_LINK }}
-        run: |
-          cd electron
-          npm run dist
+          EP_PRE_RELEASE: ${{ needs.meta.outputs.is_prerelease }}
+        run: npm run electron:dist
       - name: check macOS image
-        if: matrix.os == 'macos-latest'
+        if: matrix.build == 'mac'
         run: |
-          echo "🔍 verify signature"
-          codesign -dv electron/dist/mac-arm64/do•doc.app
-          echo "🔍 verify notarisation"
-          spctl -a -vvv -t open -vvv --context context:primary-signature electron/dist/mac-arm64/do•doc.app
+          if [ "${{ matrix.mac_arch }}" = "arm64" ]; then
+            app="electron/dist/mac-arm64/do•doc.app"
+          else
+            # x64 is electron-builder's default mac arch → output folder is `mac`, not `mac-x64`
+            app="electron/dist/mac/do•doc.app"
+          fi
+          echo "🔍 verify signature (${{ matrix.mac_arch }} on ${{ matrix.os }})"
+          codesign -dv "${app}"
+          echo "🔍 verify notarisation (${{ matrix.mac_arch }} on ${{ matrix.os }})"
+          spctl -a -vvv -t open -vvv --context context:primary-signature "${app}"

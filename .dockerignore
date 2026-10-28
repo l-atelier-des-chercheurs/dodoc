@@ -1,4 +1,6 @@
-node_modules
+**/node_modules
+# desktop builds (adc-electron dist)
+electron/dist
 npm-debug.log
 Makefile
 Dockerfile

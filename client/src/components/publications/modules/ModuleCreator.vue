@@ -144,7 +144,8 @@ import ImportFileZone from "@/adc-core/ui/ImportFileZone.vue";
 export default {
   props: {
     publication_path: String,
-    pre_addtl_meta: Object,
+    // can be a function, to compute the meta when the module is created
+    pre_addtl_meta: [Object, Function],
     post_addtl_meta: Object,
     select_mode: String,
     pick_from_types: [String, Array],
@@ -300,14 +301,26 @@ export default {
 
           if (["page_by_page", "montage"].includes(this.context)) {
             let addtl_meta = {};
-            if (source_media?.$infos?.ratio && this.pre_addtl_meta?.width) {
+            const pre_addtl_meta = this.getPreAddtlMeta();
+            if (source_media?.$infos?.ratio && pre_addtl_meta?.width) {
               addtl_meta.height =
-                this.pre_addtl_meta.width * source_media.$infos.ratio;
+                pre_addtl_meta.width * source_media.$infos.ratio;
+              // keep the module centered where it was meant to be
+              if (
+                typeof pre_addtl_meta.y === "number" &&
+                typeof pre_addtl_meta.height === "number"
+              )
+                addtl_meta.y = Math.max(
+                  0,
+                  pre_addtl_meta.y +
+                    (pre_addtl_meta.height - addtl_meta.height) / 2
+                );
             }
             const meta_filename = await this.createMetaForModule({
               module_type: source_media?.$type === "text" ? "text" : "mosaic",
               source_medias: [new_entry],
               addtl_meta,
+              pre_addtl_meta,
             });
             meta_filenames.push(meta_filename);
           } else {
@@ -426,15 +439,24 @@ export default {
       this.show_module_selector = false;
       return meta_filename;
     },
-    async createMetaForModule({ module_type, source_medias, addtl_meta }) {
+    getPreAddtlMeta() {
+      if (typeof this.pre_addtl_meta === "function")
+        return this.pre_addtl_meta();
+      return this.pre_addtl_meta;
+    },
+    async createMetaForModule({
+      module_type,
+      source_medias,
+      addtl_meta,
+      pre_addtl_meta = this.getPreAddtlMeta(),
+    }) {
       let additional_meta = {
         module_type,
         source_medias,
         requested_slug: "module",
       };
 
-      if (this.pre_addtl_meta)
-        Object.assign(additional_meta, this.pre_addtl_meta);
+      if (pre_addtl_meta) Object.assign(additional_meta, pre_addtl_meta);
       if (addtl_meta) Object.assign(additional_meta, addtl_meta);
       if (this.post_addtl_meta)
         Object.assign(additional_meta, this.post_addtl_meta);

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <fieldset>
+    <fieldset :disabled="is_saving">
       <legend>{{ $t("pagination") }}</legend>
       <div class="u-instructions">
         <small>{{ $t("pagination_instructions") }}</small>
@@ -9,71 +9,56 @@
         >
       </div>
 
-      <br />
-
-      <EditBtn
-        v-if="can_edit && !edit_mode"
-        :is_unfolded="true"
-        @click="enableEditMode"
-      />
-
-      <br />
-      <br />
+      <div class="u-spacingBottom" />
 
       <ToggleInput
-        :content.sync="enable_pagination"
+        :content="publication.enable_pagination === true"
         :label="$t('enable')"
-        :disabled="!edit_mode"
+        @update:content="updateMeta({ enable_pagination: $event })"
       />
-      <br />
 
-      <div class="">
-        <DLabel :str="$t('pagn_starts_on_page')" />
-        <input
-          type="number"
-          v-model.number="pagn_starts_on_page"
-          :disabled="!edit_mode"
-        />
-      </div>
-
-      <br />
-      <div class="u-sameRow">
-        <div class="">
-          <DLabel
-            :str="
-              is_spread ? $t('distance_to_outside') : $t('distance_to_right')
-            "
+      <template v-if="publication.enable_pagination === true">
+        <div class="_inputs">
+          <DLabel :str="$t('pagn_starts_on_page')" />
+          <input
+            type="number"
+            min="1"
+            v-model.number="pagn_starts_on_page"
+            @change="saveNumber('pagn_starts_on_page', pagn_starts_on_page, 1)"
           />
-          <div class="u-inputGroup">
-            <input
-              type="number"
-              v-model.number="right"
-              :disabled="!edit_mode"
-            />
-            <span class="u-suffix" v-text="unit" />
-          </div>
         </div>
-        <div class="">
-          <DLabel :str="$t('distance_to_bottom')" />
-          <div class="u-inputGroup">
-            <input
-              type="number"
-              v-model.number="bottom"
-              :disabled="!edit_mode"
-            />
-            <span class="u-suffix" v-text="unit" />
-          </div>
-        </div>
-      </div>
 
-      <div class="_footer" v-if="edit_mode">
-        <SaveCancelButtons
-          class="_scb"
-          :is_saving="is_saving"
-          @save="updatePagination"
-          @cancel="cancel"
-        />
-      </div>
+        <div class="u-sameRow _inputs">
+          <div>
+            <DLabel
+              :str="
+                is_spread ? $t('distance_to_outside') : $t('distance_to_right')
+              "
+            />
+            <div class="u-inputGroup">
+              <input
+                type="number"
+                min="0"
+                v-model.number="right"
+                @change="saveNumber('pagn_right', right, 0)"
+              />
+              <span class="u-suffix" v-text="unit" />
+            </div>
+          </div>
+          <div>
+            <DLabel :str="$t('distance_to_bottom')" />
+            <div class="u-inputGroup">
+              <input
+                type="number"
+                min="0"
+                v-model.number="bottom"
+                @change="saveNumber('pagn_bottom', bottom, 0)"
+              />
+              <span class="u-suffix" v-text="unit" />
+            </div>
+          </div>
+        </div>
+      </template>
     </fieldset>
   </div>
 </template>
@@ -86,20 +71,29 @@ export default {
   components: {},
   data() {
     return {
-      edit_mode: false,
       is_saving: false,
-      can_edit: true,
 
-      enable_pagination: this.publication.enable_pagination || false,
-      pagn_starts_on_page: this.publication.pagn_starts_on_page || 1,
-      right: this.publication.pagn_right || 10,
-      bottom: this.publication.pagn_bottom || 10,
+      pagn_starts_on_page: undefined,
+      right: undefined,
+      bottom: undefined,
     };
   },
-  created() {},
+  created() {
+    this.initValues();
+  },
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    "publication.pagn_starts_on_page"() {
+      this.initValues();
+    },
+    "publication.pagn_right"() {
+      this.initValues();
+    },
+    "publication.pagn_bottom"() {
+      this.initValues();
+    },
+  },
   computed: {
     unit() {
       if (this.publication.layout_mode === "screen") return "px";
@@ -107,46 +101,38 @@ export default {
     },
   },
   methods: {
-    enableEditMode() {
-      this.edit_mode = true;
-    },
-    cancel() {
-      this.edit_mode = false;
-      this.is_saving = false;
-      this.enable_pagination = this.publication.enable_pagination;
-      this.pagn_starts_on_page = this.publication.pagn_starts_on_page;
+    initValues() {
+      this.pagn_starts_on_page = this.publication.pagn_starts_on_page || 1;
       this.right = this.publication.pagn_right || 10;
       this.bottom = this.publication.pagn_bottom || 10;
     },
-    async updatePagination() {
+    saveNumber(field, value, min) {
+      if (typeof value !== "number" || value < min) return this.initValues();
+      this.updateMeta({ [field]: value });
+    },
+    async updateMeta(new_meta) {
       this.is_saving = true;
-
       try {
-        const new_meta = {
-          enable_pagination: this.enable_pagination,
-          pagn_starts_on_page: this.pagn_starts_on_page,
-          pagn_right: this.right,
-          pagn_bottom: this.bottom,
-        };
         await this.$api.updateMeta({
           path: this.publication.$path,
           new_meta,
         });
-
-        this.edit_mode = false;
-        this.is_saving = false;
       } catch (e) {
-        this.is_saving = false;
-        this.edit_mode = false;
-
+        this.initValues();
         this.$alertify
           .closeLogOnClick(true)
           .delay(4000)
           .error(this.$t("couldntbesaved"));
-        this.$alertify.closeLogOnClick(true).error(e.response.data);
+        this.$alertify.closeLogOnClick(true).error(e.response?.data);
       }
+      this.is_saving = false;
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+._inputs {
+  justify-content: flex-start;
+  margin-top: calc(var(--spacing) / 2);
+}
+</style>

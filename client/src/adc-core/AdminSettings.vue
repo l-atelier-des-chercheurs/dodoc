@@ -174,7 +174,9 @@
             </div>
             <FontsPanel v-else-if="current_tab === 'fonts'" />
             <div v-else-if="current_tab === 'events'">
-              <DLabel :str="$t('events')" />
+              <div class="u-instructions u-spacingBottom">
+                <p v-html="$t('enable_events_instructions')" />
+              </div>
               <ToggleField
                 :label="$t('enable_events')"
                 :field_name="'enable_events'"
@@ -182,6 +184,10 @@
                 :path="settings.$path"
                 :can_edit="is_instance_admin"
               />
+              <div class="u-spacingBottom" />
+              <button type="button" class="u-buttonLink" @click="reloadPage">
+                {{ $t("refresh_window_to_see_changes") }}
+              </button>
             </div>
             <div v-else-if="current_tab === 'chats'">
               <div class="u-instructions u-spacingBottom">
@@ -210,10 +216,19 @@
             <SuggestedCategories
               v-else-if="current_tab === 'suggested_cat_kw'"
             />
-            <PickNativePath
-              v-else-if="current_tab === 'storage'"
-              :can_edit="is_instance_admin && $root.app_infos.is_electron"
-            />
+            <div v-else-if="current_tab === 'storage'">
+              <div class="u-instructions u-spacingBottom">
+                <p v-html="$t('storage_instructions')" />
+                <p
+                  v-if="$root.app_infos.is_electron"
+                  v-html="$t('storage_change_instructions')"
+                />
+                <p v-else v-html="$t('storage_server_instructions')" />
+              </div>
+              <PickNativePath
+                :can_edit="is_instance_admin && $root.app_infos.is_electron"
+              />
+            </div>
             <LogsPanel v-else-if="current_tab === 'debug_logs'" />
           </transition>
         </div>

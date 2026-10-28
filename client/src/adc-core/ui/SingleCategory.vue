@@ -25,6 +25,9 @@
           :maxlength="30"
           :can_edit="false"
         />
+        <p v-if="category_instructions" class="u-instructions">
+          <small>{{ category_instructions }}</small>
+        </p>
       </div>
 
       <!-- <div class="u-spacingBottom">
@@ -86,6 +89,10 @@ export default {
   computed: {
     tag_type() {
       return this.path.split("/").at(-1);
+    },
+    category_instructions() {
+      const key = `suggestions_${this.tag_type}_instr`;
+      return this.$te(key) ? this.$t(key) : "";
     },
     new_keyword_already_exists() {
       return this.new_list_of_suggestions.some(

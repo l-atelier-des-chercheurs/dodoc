@@ -1,3 +1,7 @@
+"$content_app" = "dodoc"
+"$content_version" = "10"
+# not read by this version: protects this folder from do•doc <= 14.0.7, which
+# would copy the default content over a folder without dodoc_version="10"
 dodoc_version="10"
 "$admins" = [ "authors/admin" ]
 "$contributors" = "everyone"

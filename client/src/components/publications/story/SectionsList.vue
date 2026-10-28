@@ -10,7 +10,7 @@
       @toggleSection="$emit('toggleSection', $event)"
       @openFirstSection="openFirstSection"
     />
-    <transition name="pagechange" mode="out-in">
+    <transition name="pagechange" mode="out-in" @enter="scrollToTop">
       <OpenedSection
         v-if="opened_section_meta_filename"
         :key="opened_section_meta_filename"
@@ -45,12 +45,20 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      scroll_box: undefined,
+    };
   },
   created() {},
   mounted() {},
   beforeDestroy() {},
-  watch: {},
+  watch: {
+    opened_section_meta_filename() {
+      // find scroll container while the previous section is still in the DOM:
+      // once it's removed, the container may no longer be scrollable
+      this.scroll_box = this.getScrollableParent(this.$el);
+    },
+  },
   computed: {
     sections() {
       return this.getSectionsWithProps({
@@ -80,6 +88,26 @@ export default {
     },
   },
   methods: {
+    getScrollableParent(el) {
+      while (el && el !== document.body && el !== document.documentElement) {
+        const overflow_y = window.getComputedStyle(el).overflowY;
+        if (
+          el.scrollHeight > el.clientHeight &&
+          ["auto", "scroll", "overlay"].includes(overflow_y)
+        )
+          return el;
+        el = el.parentElement;
+      }
+      return document.scrollingElement || document.documentElement;
+    },
+    scrollToTop() {
+      // called when the new section enters (old one is gone, new one is still
+      // invisible): jump instantly, a smooth scroll would be interrupted by
+      // the content change (and html has scroll-behavior: smooth)
+      if (!this.scroll_box) return;
+      this.scroll_box.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      this.scroll_box = undefined;
+    },
     openFirstSection() {
       const section_meta_filename = this.getFilename(this.sections[0].$path);
       this.$emit("toggleSection", section_meta_filename);

@@ -238,5 +238,33 @@ export default {
   margin: 0 auto;
   padding-top: calc(var(--spacing) * 1);
   padding-bottom: calc(var(--spacing) * 4);
+
+  // align publications on their title rather than their cover:
+  // cover and header share rows across items, covers sit on the title line
+  ::v-deep ._list.is--grid > ._item {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: calc(var(--spacing) / 2);
+
+    > ._publicationPreview {
+      grid-area: 1 / 1 / span 2 / 2;
+      display: grid;
+      grid-template-rows: subgrid;
+    }
+    ._publicationPreview--cover {
+      align-self: end;
+    }
+    ._header {
+      align-self: start;
+    }
+    // keep pin buttons on the cover
+    > ._pinSpace {
+      position: relative;
+      grid-area: 1 / 1;
+      align-self: end;
+      justify-self: start;
+    }
+  }
 }
 </style>

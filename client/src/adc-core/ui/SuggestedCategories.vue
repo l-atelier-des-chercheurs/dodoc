@@ -1,6 +1,9 @@
 <template>
   <div>
     <template v-if="!opened_category_path">
+      <div class="u-instructions u-spacingBottom">
+        <p v-html="$t('suggested_cat_kw_instructions')" />
+      </div>
       <div>
         <div
           v-for="category in categories"
